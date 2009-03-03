@@ -1,7 +1,5 @@
 package org.as3commons.logging.impl {
 	
-	import flash.events.EventDispatcher;
-	
 	import org.as3commons.logging.ILogger;
 	
 	/**
@@ -36,7 +34,7 @@ package org.as3commons.logging.impl {
 			_level = value;
 		}
 		
-		public function log(level:int, message:String, ... params):void {
+		public function log(level:int, message:String, params:Array):void {
 			if (level >= this._level) {
 				//var message:String = "";
 				
