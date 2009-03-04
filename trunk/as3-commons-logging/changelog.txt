@@ -1,0 +1,11 @@
+AS3COMMONS LOGGING CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+
+Changes in version 1.0RC1 (04.03.2009)
+--------------------------------------
+
+General
+* initial release
