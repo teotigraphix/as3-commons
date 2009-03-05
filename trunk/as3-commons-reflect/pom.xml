@@ -198,6 +198,10 @@
 						<name>Yoolab.org snapshots repository</name>
 						<url>dav:https://www.yoolab.org/maven/content/repositories/snapshots</url>
 				</snapshotRepository>
+				<site>
+                    <id>yoolab.org-as3commons</id>
+                    <url>scp://www.as3commons.org/srv/www/www.as3commons.org/public_html/as3-commons-reflect</url>
+                </site>
 		</distributionManagement>
 			
 </project>
