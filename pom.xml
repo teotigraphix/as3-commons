@@ -1,0 +1,255 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.as3commons</groupId>
+	<artifactId>AS3Commons</artifactId>
+	<packaging>pom</packaging>
+	<name>as3commons-project</name>
+	<version>1.0.0-SNAPSHOT</version>
+	<inceptionYear>2009</inceptionYear>
+	<url>http://www.as3commons.org/</url>
+	<description>AS3Commons project</description>
+
+	<licenses>
+		<license>
+			<name>Apache Software License 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/as3-commons/issues/list</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/</developerConnection>
+		<url>http://code.google.com/p/as3-commons/source/browse/</url>
+	</scm>
+
+	<properties>
+		<flex-mojos.version>2.0.1</flex-mojos.version>
+	</properties>
+
+
+	<developers>
+		<developer>
+			<id>cherreman</id>
+			<name>Christophe Herreman</name>
+			<email>christophe.herreman [at] gmail.com</email>
+			<url>http://www.herrodius.com</url>
+			<organization>Boulevart</organization>
+			<organizationUrl>http://www.boulevart.be</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>martino.piccinato</id>
+			<name>Martino Piccinato</name>
+			<email>mp [at] yoolab.com</email>
+			<organization>Yoolab</organization>
+			<organizationUrl>http://www.yoolab.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+
+	<modules>
+		<module>as3-commons-logging</module>
+		<module>as3-commons-reflect</module>
+	</modules>
+
+	<build>
+	
+		<sourceDirectory>src/main/actionscript</sourceDirectory>
+		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
+		<defaultGoal>install</defaultGoal>
+		
+		<plugins>
+			<plugin>
+				<groupId>info.flex-mojos</groupId>
+				<artifactId>flex-compiler-mojo</artifactId>
+				<version>${flex-mojos.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<locales>
+						<param>en_US</param>
+					</locales>
+					<keepAs3Metadatas>
+						<param>Required</param>
+					</keepAs3Metadatas>
+					<updateSecuritySandbox>true</updateSecuritySandbox>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.agilejava.docbkx</groupId>
+				<artifactId>docbkx-maven-plugin</artifactId>
+				<version>2.0.7</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate-html</goal>
+							<goal>generate-pdf</goal>
+						</goals>
+						<phase>site</phase>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.docbook</groupId>
+						<artifactId>docbook-xml</artifactId>
+						<version>4.4</version>
+						<scope>runtime</scope>
+					</dependency>
+					<dependency>
+						<groupId>javax.media</groupId>
+						<artifactId>jai_core</artifactId>
+						<version>1.1.3</version>
+						<type>jar</type>
+						<scope>runtime</scope>
+					</dependency>
+					<dependency>
+						<groupId>ant</groupId>
+						<artifactId>ant-optional</artifactId>
+						<version>1.5.2</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<includes>index.xml</includes>
+					<chunkedOutput>true</chunkedOutput>
+					<htmlStylesheet>css/html.css</htmlStylesheet>
+					<xincludeSupported>true</xincludeSupported>
+					<htmlCustomization>src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
+					<foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+					<entities>
+						<entity>
+							<name>version</name>
+							<value>${version}</value>
+						</entity>
+					</entities>
+					<postProcess>
+						<copy todir="target/site/docs/reference">
+							<fileset dir="target/docbkx">
+								<include name="**/*.html" />
+								<include name="**/*.pdf" />
+							</fileset>
+						</copy>
+						<copy todir="target/site/docs/reference/html">
+							<fileset dir="src/docbkx/resources">
+								<include name="**/*.css" />
+								<include name="**/*.png" />
+								<include name="**/*.gif" />
+								<include name="**/*.jpg" />
+							</fileset>
+						</copy>
+						<copy todir="target/docbkx/html">
+							<fileset dir="src/docbkx/resources">
+								<include name="**/*.css" />
+								<include name="**/*.png" />
+								<include name="**/*.gif" />
+								<include name="**/*.jpg" />
+							</fileset>
+						</copy>
+					</postProcess>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>info.flex-mojos</groupId>
+				<artifactId>flex-compiler-mojo</artifactId>
+				<version>${flex-mojos.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<locales>
+						<param>en_US</param>
+					</locales>
+					<updateSecuritySandbox>true</updateSecuritySandbox>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>LATEST</version>
+			</plugin>
+		</plugins>
+	</reporting>
+
+
+	<distributionManagement>
+		<repository>
+			<id>yoolab.org-releases</id>
+			<name>Yoolab.org releases repository</name>
+			<url>dav:https://www.yoolab.org/maven/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>yoolab.org-snapshots</id>
+			<name>Yoolab.org snapshots repository</name>
+			<url>dav:https://www.yoolab.org/maven/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<site>
+			<id>yoolab.org-as3commons</id>
+			<url>scp://www.as3commons.org/srv/www/www.as3commons.org/public_html</url>
+		</site>
+	</distributionManagement>
+
+
+	<repositories>
+		<repository>
+			<id>flex-mojos-repository</id>
+			<url>http://svn.sonatype.org/flexmojos/repository</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>fna-repository</id>
+			<url>http://fna.googlecode.com/svn/trunk/fna/fna_m2_repository</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>flex-mojos-repository</id>
+			<url>http://repository.sonatype.org/content/groups/flex</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>fna-repository</id>
+			<url>http://fna.googlecode.com/svn/trunk/fna/fna_m2_repository</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>
