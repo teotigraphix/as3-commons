@@ -59,5 +59,13 @@ package org.as3commons.reflect {
 			return this._declaringType;
 		}
 		
+		/**
+		 * @return <code>true</code> if the constructor has no arguments, <code>false</code>
+		 * otherwise.
+		 */
+		public function hasNoArguments():Boolean {
+			return this._parameters.count == 0 ? true : false;
+		}
+		
 	}
 }

@@ -49,6 +49,22 @@ package org.as3commons.reflect {
 		public function get access():AccessorAccess {
 			return _access;
 		}
+		
+		/**
+		 * @return <code>true</code> if the accessor can be used to read the value (the "get" accessor is present), 
+		 * <code>false</code> otherwise.
+		 */
+		public function isReadable():Boolean {
+			return _access == AccessorAccess.READ_ONLY || AccessorAccess.READ_WRITE ? true : false;	
+		}
+		
+		/**
+		 * @return <code>true</code> if the accessor can be used to read the value (the "set" accessor is present), 
+		 * <code>false</code> otherwise.
+		 */	
+	    public function isWriteable():Boolean {
+			return _access == AccessorAccess.WRITE_ONLY || AccessorAccess.READ_WRITE ? true : false;	
+		}
 
 	}
 }
