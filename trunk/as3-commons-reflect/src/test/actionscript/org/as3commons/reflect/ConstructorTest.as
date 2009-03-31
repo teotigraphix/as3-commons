@@ -19,52 +19,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.reflect {
-
-	/**
-	 * Provides information about a class constructor.
-	 * 
+package org.as3commons.reflect
+{
+    import flexunit.framework.Reflective;
+	import flexunit.framework.Test;
+	import flexunit.framework.TestCase;
+	
+    /**
 	 * @author Martino Piccinato
 	 */
-	public class Constructor {
-		
-		private var _parameters:Array = [];
-		
-		private var _declaringType:Type;
-		
-		/**
-		 * Creates a new Constructor object.
-		 * 
-		 * @param declaringType The Type declaring the constrcutor.
-		 * @param parameters an Array of Parameter objects being the parameters of the constructor.
-		 */
-		public function Constructor(declaringType:Type, parameters:Array = null) {
-			if (parameters != null) {
-				this._parameters = parameters;
-			}
-			this._declaringType = declaringType;
+	public class ConstructorTest extends TestCase
+	{
+		public function ConstructorTest(methodName:String = null)
+		{
+			super(methodName);
 		}
 		
-		/**
-		 * Returns the parameters of this Constructor.
-		 */
-		public function get parameters():Array {
-			return this._parameters;
+		public function testNoArgumentConstructor():void {
+			var type:Type = Type.forName("org.as3commons.reflect.testclasses.PublicClass");
+			assertNotNull(type.constructor);
+			assertTrue(type.constructor.hasNoArguments());
 		}
 		
-		/**
-		 * Returns the declaring type of this Constructor.
-		 */
-		public function get declaringType():Type {
-			return this._declaringType;
-		}
-		
-		/**
-		 * @return <code>true</code> if the constructor has no arguments, <code>false</code>
-		 * otherwise.
-		 */
-		public function hasNoArguments():Boolean {
-			return (this._parameters.length == 0 ? true : false);
+		public function testArgumentConstructor():void {
+			var type:Type = Type.forName("org.as3commons.reflect.testclasses.ComplexClass");
+			assertNotNull(type.constructor);
+			assertFalse(type.constructor.hasNoArguments());
+			assertEquals(3, type.constructor.parameters.length);
 		}
 		
 	}
