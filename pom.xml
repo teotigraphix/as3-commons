@@ -121,6 +121,24 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId>info.flex-mojos</groupId>
+				<artifactId>asdoc-mojo</artifactId>
+				<version>${flex-mojos.version}</version>
+				<executions>
+					<execution>
+						<id>make-asdoc</id>
+						<phase>site</phase>
+						<goals>
+							<goal>asdoc-report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<reportOutputDirectory>target/site/docs</reportOutputDirectory>
+				</configuration>
+			</plugin>
+
 		</plugins>
 
 	</build>
@@ -131,6 +149,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 				<version>LATEST</version>
+			</plugin>
+			<plugin>
+				<groupId>info.flex-mojos</groupId>
+				<artifactId>asdoc-mojo</artifactId>
+				<version>${flex-mojos.version}</version>
 			</plugin>
 		</plugins>
 	</reporting>
