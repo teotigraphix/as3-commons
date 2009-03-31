@@ -1,77 +1,34 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.as3commons</groupId>
+		<artifactId>as3commons-project</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-logging</artifactId>
 	<packaging>swc</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>AS3Commons-Logging</name>
+	<name>AS3Commons Logging</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
 			Library providing a logging API for ActionScript 3.0
-		</description>
-		<inceptionYear>2009</inceptionYear>
-	
+	</description>
+	<inceptionYear>2009</inceptionYear>
+
 	<licenses>
-			<license>
-				<name>The Apache Software License, Version 2.0</name>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	
+
 	<issueManagement>
 		<system>google-code</system>
 		<url>http://code.google.com/p/as3-commons/issues/list</url>
 	</issueManagement>
-	
-	<pluginRepositories>
-		<pluginRepository>
-			<id>flex-mojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/flex</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>fna-repository</id>
-			<url>http://fna.googlecode.com/svn/trunk/fna/fna_m2_repository</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-	
-	<properties>
-		<flex-mojos.version>2.0.1</flex-mojos.version>
-	</properties>
-	
-	<dependencies>
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>flex-framework</artifactId>
-			<version>3.2.0.3958</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>com.adobe.flexunit</groupId>
-			<artifactId>flexunit</artifactId>
-			<version>0.9</version>
-			<type>swc</type>
-		</dependency>
-		<dependency>
-			<groupId>info.flex-mojos</groupId>
-			<artifactId>testing-support</artifactId>
-			<version>${flex-mojos.version}</version>
-			<type>swc</type>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-	
+
 	<developers>
 		<developer>
 			<id>cherreman</id>
@@ -91,117 +48,34 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-		
+
 	<build>
-	
-		<sourceDirectory>src/main/actionscript</sourceDirectory>
-		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
-		<defaultGoal>install</defaultGoal>
 
 		<plugins>
-			<plugin>
-				<groupId>info.flex-mojos</groupId>
-				<artifactId>flex-compiler-mojo</artifactId>
-				<version>${flex-mojos.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<locales>
-						<param>en_US</param>
-					</locales>
-					<updateSecuritySandbox>true</updateSecuritySandbox>
-				</configuration>
-			</plugin>
-			
-			<plugin>
-				<groupId>info.flex-mojos</groupId>
-				<artifactId>asdoc-mojo</artifactId>
-				<version>${flex-mojos.version}</version>
-				<executions>
-					<execution>
-						<id>make-asdoc</id>
-						<phase>package</phase>
-						<goals>
-							<goal>asdoc</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-						
-
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-				<descriptors>
-							<descriptor>src/main/assembly/package.xml</descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-							<execution>
-									<id>make-assembly</id>
-									<phase>package</phase>
-									<goals>
-										<goal>single</goal>
-									</goals>
-							</execution>
-					</executions>
-			</plugin>
 
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
 					<tagBase>
-							https://as3-commons.googlecode.com/svn/tags/as3-commons-logging
+						https://as3-commons.googlecode.com/svn/tags/as3-commons-logging
 					</tagBase>
 				</configuration>
 			</plugin>
-						
+
 		</plugins>
-		
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ftp</artifactId>
-				<version>1.0-alpha-6</version>
-			</extension>
-		</extensions>
-		
+
 	</build>
-	
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>LATEST</version>
-			</plugin>
-			<plugin>
-				<groupId>info.flex-mojos</groupId>
-				<artifactId>asdoc-mojo</artifactId>
-				<version>${flex-mojos.version}</version>
-			</plugin>
-		</plugins>
-	</reporting>
-	
-		<scm>
-				<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-logging</developerConnection>
-				<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-logging</url>
-		</scm>
-		
-		<distributionManagement>
-				<repository>
-						<id>yoolab.org-releases</id>
-						<name>Yoolab.org releases repository</name>
-						<url>dav:https://www.yoolab.org/maven/content/repositories/releases</url>
-				</repository>
-				<snapshotRepository>
-						<id>yoolab.org-snapshots</id>
-						<name>Yoolab.org snapshots repository</name>
-						<url>dav:https://www.yoolab.org/maven/content/repositories/snapshots</url>
-				</snapshotRepository>
-				<site>
-                    <id>yoolab.org-as3commons</id>
-                    <url>scp://www.as3commons.org/srv/www/www.as3commons.org/public_html/as3-commons-logging</url>
-                </site>
-		</distributionManagement>
-			
+
+	<scm>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-logging</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-logging</url>
+	</scm>
+
+	<distributionManagement>
+		<site>
+			<id>yoolab.org-as3commons</id>
+			<url>scp://www.as3commons.org/srv/www/www.as3commons.org/public_html/as3-commons-logging</url>
+		</site>
+	</distributionManagement>
+
 </project>
