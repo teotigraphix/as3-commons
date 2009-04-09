@@ -30,6 +30,10 @@ package org.as3commons.logging {
 			return getInstance().getLogger(name);
 		}
 		
+		public static function getClassLogger(clazz:Class):ILogger {
+			return getInstance().getLogger((getQualifiedClassName(clazz)));	
+		}
+		
 		/**
 		 * Sets the logger factory for the logging system.
 		 */
@@ -66,5 +70,6 @@ package org.as3commons.logging {
 			
 			return result;
 		}
+
 	}
 }
