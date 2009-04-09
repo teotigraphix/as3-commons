@@ -140,10 +140,15 @@ package org.as3commons.reflect {
 				result = _cache[fullyQualifiedClassName];
 			}
 			else {
-				var description:XML = _getTypeDescription(clazz);
 				result = new Type();
-				// add the Type to the cache before assigning any values to prevent looping
+			    // Add the Type to the cache before assigning any values to prevent looping.
+                // Due to the work-around implemented for constructor argument types
+                // in _getTypeDescription(), an instance is created, which could also
+                // lead to infinite recursion if the constructor uses Type.forName().
+                // Therefore it is important to seed the cache before calling
+                // _getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
 				_cache[fullyQualifiedClassName] = result;
+				var description:XML = _getTypeDescription(clazz);
 				result.fullName = fullyQualifiedClassName;
 				result.name = ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
 				result.clazz = clazz;
