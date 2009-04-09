@@ -23,6 +23,9 @@ package org.as3commons.reflect {
 
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
+	
+	import org.as3commons.logging.ILogger;
+	import org.as3commons.logging.LoggerFactory;
 
 	/**
 	 * Provides information about the characteristics of a class or an interface.
@@ -54,6 +57,8 @@ package org.as3commons.reflect {
 		public static const PRIVATE:Type = new Type();
 
 		private static var _cache:Object = {};
+		
+		private static var LOGGER:ILogger = LoggerFactory.getClassLogger(Type);
 
 		private var _name:String;
 		private var _fullName:String;
@@ -120,7 +125,7 @@ package org.as3commons.reflect {
 					result = Type.forClass(Class(getDefinitionByName(name)));
 				}
 				catch (e:ReferenceError) {
-					trace("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
+					LOGGER.warn("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
 				}
 
 			}
@@ -270,9 +275,12 @@ package org.as3commons.reflect {
 					try {
 						ClassUtils.newInstance(clazz, args);
 					} catch (e:Error) {
-						// Do nothing (here is not a problem to hide the Error as we just need to
-						// instantiate the class once to have complete constructor
-						// parameters information
+						// Logging is set to debug level as any Error ocurring here shouldn't 
+						// cause any problem to the application
+						LOGGER.debug("Error while instantiating class {0} with null arguments in order to retrieve constructor argument types: {1}, {2}" + 
+								"\nMessage: {3}" + 
+								"\nStack trace: {4}", 
+							clazz, e.name, e.errorID, e.message, e.getStackTrace());		
 					}
 						
 					description = describeType(clazz);

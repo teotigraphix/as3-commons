@@ -6,7 +6,6 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-reflect</artifactId>
 	<packaging>swc</packaging>
 	<version>1.0-SNAPSHOT</version>
@@ -14,20 +13,17 @@
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
 			Library providing a reflection API for ActionScript 3.0
-		</description>
+	</description>
 	<inceptionYear>2007</inceptionYear>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
-
-	<issueManagement>
-		<system>google-code</system>
-		<url>http://code.google.com/p/as3-commons/issues/list</url>
-	</issueManagement>
+	<dependencies>
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-logging</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<type>swc</type>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
@@ -36,7 +32,7 @@
 				<configuration>
 					<tagBase>
 						https://as3-commons.googlecode.com/svn/tags/as3-commons-reflect
-										</tagBase>
+					</tagBase>
 				</configuration>
 			</plugin>
 
