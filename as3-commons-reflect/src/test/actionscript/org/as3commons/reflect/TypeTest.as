@@ -51,6 +51,7 @@ package org.as3commons.reflect {
 			assertEquals(4, type.variables.length);
 			assertEquals("PublicClass", type.name);
 			assertEquals("org.as3commons.reflect.testclasses::PublicClass", type.fullName);
+			assertEquals(4, describeType(PublicClass));
 		}
 
 		public function testForInstanceWithStringInstance():void {
