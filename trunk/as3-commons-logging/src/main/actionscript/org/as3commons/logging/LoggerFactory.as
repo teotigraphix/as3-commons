@@ -30,8 +30,15 @@ package org.as3commons.logging {
 			return getInstance().getLogger(name);
 		}
 		
+		/**
+		 * Returns a logger for the given class, using the fully qualified name of the class as the name of the
+		 * logger.
+		 */
 		public static function getClassLogger(clazz:Class):ILogger {
-			return getInstance().getLogger((getQualifiedClassName(clazz)));	
+			// replace the colons (::) in the name since this is not allowed in the Flex logging API
+			var name:String = getQualifiedClassName(clazz);
+			name = name.replace("::", ".");
+			return getInstance().getLogger(name);	
 		}
 		
 		/**
