@@ -24,6 +24,13 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
+		public function get name():String {
+			return _logger.category;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function debug(message:String, ...params):void {
 			var args:Array = params.concat();
 			args.unshift(message);

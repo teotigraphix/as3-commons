@@ -7,6 +7,11 @@ package org.as3commons.logging {
 	 */
 	public interface ILogger {
 		
+		/**
+		 * Returns the name of this logger.
+		 */
+		function get name():String;
+		
 		function debug(message:String, ... params):void;
 		
 		function info(message:String, ... params):void;

@@ -19,6 +19,13 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
+		public function get name():String {
+			return "";
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function debug(message:String, ...params):void {
 		}
 		
