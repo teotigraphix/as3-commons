@@ -138,6 +138,18 @@ package org.as3commons.reflect {
 			}
 			return result;
 		}
+		
+		/**
+		 * Determines if the class or interface represented by the clazz1 parameter is either the same as, or is
+		 * a superclass or superinterface of the clazz2 parameter. It returns true if so; otherwise it returns false.
+		 * 
+		 * @return the boolean value indicating whether objects of the type clazz2 can be assigned to objects of clazz1
+		 */
+		public static function isAssignableFrom(clazz1:Class, clazz2:Class):Boolean {
+			return (clazz1 == clazz2)
+				|| isSubclassOf(clazz2, clazz1)
+				|| isImplementationOf(clazz2, clazz1);
+		}
 
 		/**
 		 * Returns whether the passed in Class object is a subclass of the
