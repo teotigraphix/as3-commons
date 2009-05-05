@@ -21,11 +21,18 @@
  */
 package org.as3commons.reflect {
 
-	import org.as3commons.reflect.errors.ClassNotFoundError;
-
+	import flexunit.framework.Assert;
 	import flexunit.framework.Reflective;
 	import flexunit.framework.Test;
 	import flexunit.framework.TestCase;
+	
+	import org.as3commons.reflect.errors.ClassNotFoundError;
+	import org.as3commons.reflect.testclasses.ComplexClass;
+	import org.as3commons.reflect.testclasses.ISubInterface;
+	import org.as3commons.reflect.testclasses.Interface;
+	import org.as3commons.reflect.testclasses.InterfaceImplementation;
+	import org.as3commons.reflect.testclasses.PublicSubClass;
+	import org.as3commons.reflect.testclasses.SubInterfaceImplementation;
 
 	/**
 	 * @author Christophe Herreman
@@ -179,6 +186,50 @@ package org.as3commons.reflect {
 		public function testConvertFullyQualifiedName():void {
 			var result:String = ClassUtils.convertFullyQualifiedName("flexunit.framework::TestCase");
 			assertEquals("flexunit.framework.TestCase", result);
+		}
+		
+		// --------------------------------------------------------------------
+		// isImplementationOf
+		// --------------------------------------------------------------------
+		
+		public function testIsImplementationOf_shouldReturnTrueForInterfaceImplementation():void {
+			Assert.assertTrue(InterfaceImplementation, Interface);
+		}
+		
+		public function testIsImplementationOf_shouldReturnTrueForSubInterface():void {
+			Assert.assertTrue(ISubInterface, Interface);
+		}
+		
+		public function testIsImplementationOf_shouldReturnFalseForSameInterface():void {
+			Assert.assertTrue(Interface, Interface);
+		}
+		
+		// --------------------------------------------------------------------
+		// isInterface
+		// --------------------------------------------------------------------
+		
+		public function testIsInterface_withInterface():void {
+			Assert.assertTrue(ClassUtils.isInterface(Interface));
+		}
+		
+		public function testIsInterface_withSubInterface():void {
+			Assert.assertTrue(ClassUtils.isInterface(ISubInterface));
+		}
+		
+		public function testIsInterface_withComplexClass():void {
+			Assert.assertFalse(ClassUtils.isInterface(ComplexClass));
+		}
+		
+		public function testIsInterface_withPublicSubClass():void {
+			Assert.assertFalse(ClassUtils.isInterface(PublicSubClass));
+		}
+		
+		public function testIsInterface_withInterfaceImplementation():void {
+			Assert.assertFalse(ClassUtils.isInterface(InterfaceImplementation));
+		}
+		
+		public function testIsInterface_withSubInterfaceImplementation():void {
+			Assert.assertFalse(ClassUtils.isInterface(SubInterfaceImplementation));
 		}
 
 	}
