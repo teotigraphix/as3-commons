@@ -31,6 +31,7 @@ package org.as3commons.reflect {
 	import org.as3commons.reflect.testclasses.ISubInterface;
 	import org.as3commons.reflect.testclasses.Interface;
 	import org.as3commons.reflect.testclasses.InterfaceImplementation;
+	import org.as3commons.reflect.testclasses.PublicClass;
 	import org.as3commons.reflect.testclasses.PublicSubClass;
 	import org.as3commons.reflect.testclasses.SubInterfaceImplementation;
 
@@ -189,19 +190,69 @@ package org.as3commons.reflect {
 		}
 		
 		// --------------------------------------------------------------------
+		// isAssignableFrom
+		// --------------------------------------------------------------------
+		
+		// helpers
+		
+		private function assertIsAssignableFrom(c1:Class, c2:Class):void {
+			Assert.assertTrue(ClassUtils.isAssignableFrom(c1, c2));
+		}
+		
+		private function assertIsNotAssignableFrom(c1:Class, c2:Class):void {
+			Assert.assertFalse(ClassUtils.isAssignableFrom(c1, c2));
+		}
+		
+		// assignable
+		
+		public function testIsAssignableFrom_shouldReturnTrueForObjectAndObject():void {
+			assertIsAssignableFrom(Object, Object);
+		}
+		
+		public function testIsAssignableFrom_shouldReturnTrueForObjectAndString():void {
+			assertIsAssignableFrom(Object, String);
+		}
+		
+		public function testIsAssignableFrom_shouldReturnTrueForObjectAndInt():void {
+			assertIsAssignableFrom(Object, int);
+		}
+		
+		public function testIsAssignableFrom_shouldReturnTrueForInterfaceAndInterfaceImplementation():void {
+			assertIsAssignableFrom(Interface, InterfaceImplementation);
+		}
+		
+		public function testIsAssignableFrom_shouldReturnTrueForInterfaceAndSubInterfaceImplementation():void {
+			assertIsAssignableFrom(Interface, SubInterfaceImplementation);
+		}
+		
+		public function testIsAssignableFrom_shouldReturnTrueForPublicClassAndPublicSubClass():void {
+			assertIsAssignableFrom(PublicClass, PublicSubClass);
+		}
+		
+		public function testIsAssignableFrom_shouldReturnTrueForObjectAndPublicSubClass():void {
+			assertIsAssignableFrom(Object, PublicSubClass);
+		}
+		
+		// NOT assignable
+		
+		public function testIsNotAssignableFrom_shouldReturnFalseForStringAndObject():void {
+			assertIsNotAssignableFrom(String, Object);
+		}
+		
+		// --------------------------------------------------------------------
 		// isImplementationOf
 		// --------------------------------------------------------------------
 		
 		public function testIsImplementationOf_shouldReturnTrueForInterfaceImplementation():void {
-			Assert.assertTrue(InterfaceImplementation, Interface);
+			Assert.assertTrue(ClassUtils.isImplementationOf(InterfaceImplementation, Interface));
 		}
 		
 		public function testIsImplementationOf_shouldReturnTrueForSubInterface():void {
-			Assert.assertTrue(ISubInterface, Interface);
+			Assert.assertTrue(ClassUtils.isImplementationOf(ISubInterface, Interface));
 		}
 		
 		public function testIsImplementationOf_shouldReturnFalseForSameInterface():void {
-			Assert.assertTrue(Interface, Interface);
+			Assert.assertFalse(ClassUtils.isImplementationOf(Interface, Interface));
 		}
 		
 		// --------------------------------------------------------------------
