@@ -21,12 +21,12 @@
  */
 package org.as3commons.reflect {
 
-	import org.as3commons.reflect.errors.ClassNotFoundError;
-
 	import flash.system.ApplicationDomain;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.getQualifiedSuperclassName;
+	
+	import org.as3commons.reflect.errors.ClassNotFoundError;
 
 	/**
 	 * Provides utilities for working with <code>Class</code> objects.
@@ -141,7 +141,8 @@ package org.as3commons.reflect {
 
 		/**
 		 * Returns whether the passed in Class object is a subclass of the
-		 * passed in parent Class.
+		 * passed in parent Class. To check if an interface extends another interface, use the isImplementationOf()
+		 * method instead.
 		 */
 		public static function isSubclassOf(clazz:Class, parentClass:Class):Boolean {
 			var classDescription:XML = MetadataUtils.getFromObject(clazz);
@@ -216,6 +217,17 @@ package org.as3commons.reflect {
 				result = (classDescription.factory.implementsInterface.(@type == getQualifiedClassName(interfaze)).length() != 0);
 			}
 			return result;
+		}
+		
+		/**
+		 * Returns whether the passed in Class object is an interface.
+		 * 
+		 * @param clazz the class to check
+		 * @return true if the clazz is an interface; false if not
+		 */
+		public static function isInterface(clazz:Class):Boolean {
+			var classDescription:XML = MetadataUtils.getFromObject(clazz);
+			return (classDescription.factory.extendsClass.(@type == "Object").length() == 0);
 		}
 
 		/**
