@@ -51,7 +51,6 @@ package org.as3commons.reflect {
 			assertEquals(4, type.variables.length);
 			assertEquals("PublicClass", type.name);
 			assertEquals("org.as3commons.reflect.testclasses::PublicClass", type.fullName);
-			assertEquals(4, describeType(PublicClass));
 		}
 
 		public function testForInstanceWithStringInstance():void {
@@ -138,19 +137,19 @@ package org.as3commons.reflect {
 		public function testConstructorRecursionHazard():void {
 			var type:Type = Type.forClass(ConstructorRecursionHazardClass);
 
-	        var constructor:Constructor= type.constructor;
-	        assertNotNull(constructor);
-	        assertNotNull(constructor.declaringType);
-	        assertEquals(constructor.declaringType.clazz, ConstructorRecursionHazardClass);
-	        assertEquals(constructor.parameters.length, 1);
-	            
-	        var firstParameter:Parameter = constructor.parameters[0];
-	            
-	        assertTrue(firstParameter.isOptional);
-	        assertEquals(1, firstParameter.index);
-	        assertEquals(String, firstParameter.type.clazz);
-	        // Constructor should be called just once in any case
-	        assertEquals(1, ConstructorRecursionHazardClass.constructorCalls);
+					var constructor:Constructor= type.constructor;
+					assertNotNull(constructor);
+					assertNotNull(constructor.declaringType);
+					assertEquals(constructor.declaringType.clazz, ConstructorRecursionHazardClass);
+					assertEquals(constructor.parameters.length, 1);
+							
+					var firstParameter:Parameter = constructor.parameters[0];
+							
+					assertTrue(firstParameter.isOptional);
+					assertEquals(1, firstParameter.index);
+					assertEquals(String, firstParameter.type.clazz);
+					// Constructor should be called just once in any case
+					assertEquals(1, ConstructorRecursionHazardClass.constructorCalls);
 
 		}
 
