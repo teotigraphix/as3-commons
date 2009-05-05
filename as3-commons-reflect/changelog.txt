@@ -11,6 +11,7 @@ Package as3reflect
 * fixed "invoke" method on MethodInvoker to handle proxied methods correctly
 * fixed "hasMetaData" method in MetaDataContainer, always returned true
 * added "isInterface" method in ClassUtils
+* added "isAssignableFrom" method in ClassUtils
 
 
 Changes in version 1.0RC2 (20.01.2009)
