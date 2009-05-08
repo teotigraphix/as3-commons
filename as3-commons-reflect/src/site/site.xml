@@ -7,6 +7,9 @@
         <version>1.2</version>
     </skin>
 
+    <publishDate format="dd MMM yyyy"/>
+    <version/>
+    
   <body>
 
     <menu name="Project">
@@ -20,6 +23,7 @@
     </menu>
 
     <menu name="Documentation">
+      <item name="Introduction" href="/usersguide/index.html" />
       <item name="API" href="asdoc/index.html"/>
     </menu>
 
