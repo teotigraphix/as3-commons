@@ -146,12 +146,12 @@ package org.as3commons.reflect {
 			}
 			else {
 				result = new Type();
-			    // Add the Type to the cache before assigning any values to prevent looping.
-                // Due to the work-around implemented for constructor argument types
-                // in _getTypeDescription(), an instance is created, which could also
-                // lead to infinite recursion if the constructor uses Type.forName().
-                // Therefore it is important to seed the cache before calling
-                // _getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
+				// Add the Type to the cache before assigning any values to prevent looping.
+				// Due to the work-around implemented for constructor argument types
+				// in _getTypeDescription(), an instance is created, which could also
+				// lead to infinite recursion if the constructor uses Type.forName().
+				// Therefore it is important to seed the cache before calling
+				// _getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
 				_cache[fullyQualifiedClassName] = result;
 				var description:XML = _getTypeDescription(clazz);
 				result.fullName = fullyQualifiedClassName;
@@ -183,8 +183,8 @@ package org.as3commons.reflect {
 			var result:Method;
 			for each (var method:Method in methods) {
 				if (method.name == name) {
-				result = method;
-				break;
+					result = method;
+					break;
 				}
 			}
 			return result;
@@ -200,8 +200,8 @@ package org.as3commons.reflect {
 			var result:Field;
 			for each (var field:Field in fields) {
 				if (field.name == name) {
-				result = field;
-				break;
+					result = field;
+					break;
 				}
 			}
 			return result;
@@ -309,12 +309,12 @@ import org.as3commons.reflect.Constructor;
  */
 class TypeXmlParser {
 	public static function parseConstructor(type:Type, constructorXML:XMLList):Constructor {
-	if (constructorXML.length() > 0) {
-		var params:Array = parseParameters(constructorXML[0].parameter);
-		return new Constructor(type, params);
-	} else {
-		return new Constructor(type);
-	}
+		if (constructorXML.length() > 0) {
+			var params:Array = parseParameters(constructorXML[0].parameter);
+			return new Constructor(type, params);
+		} else {
+			return new Constructor(type);
+		}
 	}	
 	public static function parseMethods(type:Type, xml:XML):Array {
 		var classMethods:Array = parseMethodsByModifier(type, xml.method, true);
@@ -348,9 +348,9 @@ class TypeXmlParser {
 	private static function parseParameters(paramsXML:XMLList):Array {
 		var params:Array = [];
 		for each(var paramXML:XML in paramsXML) {
-		var paramType:Type = Type.forName(paramXML.@type);
-		var param:Parameter = new Parameter(paramXML.@index, paramType, paramXML.@optional == "true" ? true : false );
-		params.push(param);
+			var paramType:Type = Type.forName(paramXML.@type);
+			var param:Parameter = new Parameter(paramXML.@index, paramType, paramXML.@optional == "true" ? true : false );
+			params.push(param);
 		}
 	
 		return params;
