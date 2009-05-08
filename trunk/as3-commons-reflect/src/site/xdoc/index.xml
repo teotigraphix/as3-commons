@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>Welcome to as3commons-reflect</title>
+        <author email="mp@yoolab.com">Martino Piccinato</author>
+    </properties>
+    <body>
+        <section name="Welcome to as3commons-reflect">
+            
+            <div id="downloadbox"><!--
+                <h5>Get latest stable</h5>
+                <p>
+                    <a href="https://dev.yoolab.org/maven/content/repositories/snapshots/org/as3commons/as3commons-reflect/1.0-SNAPSHOT/">
+                        <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                        Download
+                    </a>
+                    latest stable
+                </p>
+                --><br/>
+                <h5>Get lastest development snapshot</h5>
+                <p>
+                    <a href="downloads/as3commons-latest-snapshot-bin.zip">
+                        <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                        Download
+                    </a>
+                    latest snapshot
+                </p>
+            </div>
+
+
+            <p>
+                AS3Commons-reflect is an open-source library providing a reflection API for 
+                ActionScript 3.0. Being a pure actionscript library it can be used for any
+                Flash/Flex/AIR project.
+            </p>
+
+        </section>
+
+        <section name="Introduction">
+
+            <p>
+				The 2 most important classes in this library are the Type and ClassUtils classes. 
+				The Type class will give you all the information of a class or instance while the 
+				ClassUtils class contains utility methods for working with class objects.
+			</p>
+			
+			<p>
+				Using as3commons-reflect is really easy, after reading this short introduction
+				the only thing you might need is having a look at the <a href="asdoc/index.html">API</a>
+				to navigate through the properties and methods exposed by the library. Here below
+				we give some short instructions on how to use the library.
+			</p>
+			
+			<p>
+				Assuming you have a class called Person in the package com.company.domain)
+				you want to use reflection on, you start by getting its "Type" in one of the
+				following methods:
+
+				By class...
+				
+				<pre>
+				var type:Type = Type.forClass(Person);
+				</pre>
+
+				... by instance
+
+				<pre>
+				var person:Person = new Person();
+				var type:Type = Type.forInstance(person);
+				</pre>
+
+				... or by class name...
+				<pre>
+				var type:Type = Type.forName("com.company.domain.Person");
+				// or var type:Type = Type.forName("com.company.domain::Person");
+				</pre>
+				
+				Once you have a type instance you can get access to all variables, constants, 
+				accessors (getters/setters) and methods defined by that type and the properties 
+				of the type:
+				
+				<pre>
+				type.accessors
+				type.constants
+				type.fields
+				type.fullName
+				type.isDynamic
+				type.isFinal
+				type.isStatic
+				type.methods
+				type.name
+				type.staticConstants
+				type.staticVariables
+				type.variables
+				method:Method = type.methods[0];
+				retType:Type = getReturnType();
+				method.invoke(object, [arg1, arg2]);
+				accessor:Accessor = type.accessors[0];
+				metadata:Metadata = accessor.getMetadata("myMetadata");
+				arg:MetadataArgument = metadata.getArgument("myArg");
+				...
+				</pre>
+				
+				
+            </p>
+
+
+        </section>
+
+
+        <section name="Other projects using as3commons-reflect">
+
+            <p>
+                Here is a list of other projects using As3commons-reflect.
+            </p>
+
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="http://www.springactionscript.org/">Spring Actionscript</a>
+                    </td>
+                    <td>
+                        Christophe Herreman
+                    </td>
+                    <td>
+                        An Inversion Of Control framework for Actionscript based application.
+                    </td>
+                </tr>
+
+            </table>
+
+        </section>
+        
+    </body>
+</document>
+

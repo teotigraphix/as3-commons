@@ -36,6 +36,28 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>
+						src/main/assembly/package.xml
+					</descriptor>
+					<finalName>as3commons-latest-snapshot</finalName>
+          			<outputDirectory>target/site/downloads</outputDirectory>
+          			<workDirectory>target/assembly/work</workDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>site</phase> <!-- append to the packaging phase. -->
+						<goals>
+							<goal>single</goal> <!-- goals == mojos -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
 		</plugins>
 
 	</build>
