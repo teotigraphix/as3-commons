@@ -28,6 +28,11 @@ package org.as3commons.reflect {
 	 */
 	public class AbstractMember extends MetaDataContainer implements IMember {
 
+		private var _name:String;
+		private var _type:String;
+		private var _declaringType:String;
+		private var _isStatic:Boolean;
+
 		/**
 		 * Creates a new AbstractMember object.
 		 *
@@ -37,7 +42,7 @@ package org.as3commons.reflect {
 		 * @param isStatic whether this member is static
 		 * @param metadata an array of MetaData objects describing this member
 		 */
-		public function AbstractMember(name:String, type:Type, declaringType:Type, isStatic:Boolean, metaData:Array = null) {
+		public function AbstractMember(name:String, type:String, declaringType:String, isStatic:Boolean, metaData:Array = null) {
 			super(metaData);
 			_name = name;
 			_type = type;
@@ -46,7 +51,7 @@ package org.as3commons.reflect {
 		}
 
 		public function get declaringType():Type {
-			return _declaringType;
+			return Type.forName(_declaringType);
 		}
 
 		public function get name():String {
@@ -54,16 +59,13 @@ package org.as3commons.reflect {
 		}
 
 		public function get type():Type {
-			return _type;
+			return Type.forName(_type);
 		}
 
 		public function get isStatic():Boolean {
 			return _isStatic;
 		}
 
-		private var _name:String;
-		private var _type:Type;
-		private var _declaringType:Type;
-		private var _isStatic:Boolean;
+		
 	}
 }
