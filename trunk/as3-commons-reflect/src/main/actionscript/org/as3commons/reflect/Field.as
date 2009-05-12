@@ -31,7 +31,7 @@ package org.as3commons.reflect {
 		/**
 		 * Creates a new Field objects.
 		 */
-		public function Field(name:String, type:Type, declaringType:Type, isStatic:Boolean, metaData:Array = null) {
+		public function Field(name:String, type:String, declaringType:String, isStatic:Boolean, metaData:Array = null) {
 			super(name, type, declaringType, isStatic, metaData);
 		}
 

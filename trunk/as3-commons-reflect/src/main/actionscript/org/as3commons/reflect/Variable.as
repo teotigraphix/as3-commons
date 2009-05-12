@@ -36,7 +36,7 @@ package org.as3commons.reflect {
 		 * @param declaringType the type that declares the variable
 		 * @param isStatic whether or not this member is static (class member)
 		 */
-		public function Variable(name:String, type:Type, declaringType:Type, isStatic:Boolean) {
+		public function Variable(name:String, type:String, declaringType:String, isStatic:Boolean) {
 			super(name, type, declaringType, isStatic);
 		}
 	}

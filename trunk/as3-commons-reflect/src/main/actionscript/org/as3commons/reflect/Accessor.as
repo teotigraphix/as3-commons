@@ -41,7 +41,7 @@ package org.as3commons.reflect {
 		 * @param declaringType the type that declares the variable
 		 * @param isStatic whether or not this member is static (class member)
 		 */
-		public function Accessor(name:String, access:AccessorAccess, type:Type, declaringType:Type, isStatic:Boolean, metaData:Array = null) {
+		public function Accessor(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, metaData:Array = null) {
 			super(name, type, declaringType, isStatic, metaData);
 			_access = access;
 		}
@@ -62,7 +62,7 @@ package org.as3commons.reflect {
 		 * @return <code>true</code> if the accessor can be used to read the value (the "set" accessor is present), 
 		 * <code>false</code> otherwise.
 		 */	
-	    public function isWriteable():Boolean {
+		public function isWriteable():Boolean {
 			return _access == AccessorAccess.WRITE_ONLY || AccessorAccess.READ_WRITE ? true : false;	
 		}
 

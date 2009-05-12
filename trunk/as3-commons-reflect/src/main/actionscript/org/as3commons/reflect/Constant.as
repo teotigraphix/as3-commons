@@ -36,7 +36,7 @@ package org.as3commons.reflect {
 		 * @param declaringType the type that declares the constant
 		 * @param isStatic whether or not this member is static (class member)
 		 */
-		public function Constant(name:String, type:Type, declaringType:Type, isStatic:Boolean) {
+		public function Constant(name:String, type:String, declaringType:String, isStatic:Boolean) {
 			super(name, type, declaringType, isStatic);
 		}
 	}

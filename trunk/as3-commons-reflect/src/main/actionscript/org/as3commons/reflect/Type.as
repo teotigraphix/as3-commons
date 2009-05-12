@@ -163,10 +163,10 @@ package org.as3commons.reflect {
 				result.constructor = TypeXmlParser.parseConstructor(result, description.factory.constructor);
 				result.accessors = TypeXmlParser.parseAccessors(result, description);
 				result.methods = TypeXmlParser.parseMethods(result, description);
-				result.staticConstants = TypeXmlParser.parseMembers(Constant, description.constant, result, true);
-				result.constants = TypeXmlParser.parseMembers(Constant, description.factory.constant, result, false);
-				result.staticVariables = TypeXmlParser.parseMembers(Variable, description.variable, result, true);
-				result.variables = TypeXmlParser.parseMembers(Variable, description.factory.variable, result, false);
+				result.staticConstants = TypeXmlParser.parseMembers(Constant, description.constant, fullyQualifiedClassName, true);
+				result.constants = TypeXmlParser.parseMembers(Constant, description.factory.constant, fullyQualifiedClassName, false);
+				result.staticVariables = TypeXmlParser.parseMembers(Variable, description.variable, fullyQualifiedClassName, true);
+				result.variables = TypeXmlParser.parseMembers(Variable, description.factory.variable, fullyQualifiedClassName, false);
 				TypeXmlParser.parseMetaData(description.factory[0].metadata, result);
 			}
 
@@ -326,10 +326,10 @@ class TypeXmlParser {
 		var instanceAccessors:Array = parseAccessorsByModifier(type, xml.factory.accessor, false);
 		return classAccessors.concat(instanceAccessors);
 	}
-	public static function parseMembers(memberClass:Class, members:XMLList, declaringType:Type, isStatic:Boolean):Array {
+	public static function parseMembers(memberClass:Class, members:XMLList, declaringType:String, isStatic:Boolean):Array {
 		var result:Array = [];
 		for each (var m:XML in members) {
-			var member:IMember = new memberClass(m.@name, Type.forName(m.@type), declaringType, isStatic);
+			var member:IMember = new memberClass(m.@name, m.@type.toString(), declaringType, isStatic);
 			parseMetaData(m.metadata, member);
 			result.push(member);
 		}
@@ -361,8 +361,8 @@ class TypeXmlParser {
 			var accessor:Accessor = new Accessor(
 							accessorXML.@name,
 							AccessorAccess.fromString(accessorXML.@access),
-							Type.forName(accessorXML.@type),
-							Type.forName(accessorXML.@declaredBy),
+							accessorXML.@type.toString(),
+							accessorXML.@declaredBy.toString(),
 							isStatic);
 			parseMetaData(accessorXML.metadata, accessor);
 			result.push(accessor);
