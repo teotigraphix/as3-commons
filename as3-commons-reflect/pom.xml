@@ -42,7 +42,7 @@
 					<descriptor>
 						src/main/assembly/package.xml
 					</descriptor>
-					<finalName>as3commons-latest-snapshot</finalName>
+					<finalName>as3commons-reflect-latest-snapshot</finalName>
           			<outputDirectory>target/site/downloads</outputDirectory>
           			<workDirectory>target/assembly/work</workDirectory>
 				</configuration>
