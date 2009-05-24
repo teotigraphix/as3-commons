@@ -20,10 +20,11 @@
       <item name="Project reports" href="project-reports.html"/>
       <item name="Team list" href="team-list.html"/>
       <item name="Dependencies" href="dependencies.html"/>
+      <item name="Related projects" href="related_projects.html"/>
     </menu>
 
     <menu name="Documentation">
-      <item name="Introduction" href="/usersguide/index.html" />
+      <item name="Introduction" href="introduction.html" />
       <item name="API" href="asdoc/index.html"/>
     </menu>
 

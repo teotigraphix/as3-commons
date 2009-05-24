@@ -11,7 +11,7 @@
 	<description>AS3Commons project</description>
 
 	<properties>
-		<flex-mojos.version>2.0.3</flex-mojos.version>
+		<flex-mojos.version>3.2.0</flex-mojos.version>
 	</properties>
 
 	<licenses>
@@ -72,8 +72,8 @@
 			<type>swc</type>
 		</dependency>
 		<dependency>
-			<groupId>info.flex-mojos</groupId>
-			<artifactId>testing-support</artifactId>
+			<groupId>org.sonatype.flexmojos</groupId>
+			<artifactId>flexmojos-unittest-support</artifactId>
 			<version>${flex-mojos.version}</version>
 			<type>swc</type>
 			<scope>test</scope>
@@ -88,17 +88,14 @@
 
 		<plugins>
 			<plugin>
-				<groupId>info.flex-mojos</groupId>
-				<artifactId>flex-compiler-mojo</artifactId>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
 				<version>${flex-mojos.version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<locales>
 						<param>en_US</param>
 					</locales>
-					<keepAs3Metadatas>
-						<param>Required</param>
-					</keepAs3Metadatas>
 					<updateSecuritySandbox>true</updateSecuritySandbox>
 				</configuration>
 			</plugin>
@@ -106,37 +103,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<groupId>info.flex-mojos</groupId>
-				<artifactId>flex-compiler-mojo</artifactId>
-				<version>${flex-mojos.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<locales>
-						<param>en_US</param>
-					</locales>
-					<updateSecuritySandbox>true</updateSecuritySandbox>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>info.flex-mojos</groupId>
-				<artifactId>asdoc-mojo</artifactId>
-				<version>${flex-mojos.version}</version>
-				<executions>
-					<execution>
-						<id>make-asdoc</id>
-						<phase>site</phase>
-						<goals>
-							<goal>asdoc-report</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<reportOutputDirectory>target/site/docs</reportOutputDirectory>
-				</configuration>
 			</plugin>
 
 		</plugins>
@@ -148,12 +114,17 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>LATEST</version>
 			</plugin>
 			<plugin>
-				<groupId>info.flex-mojos</groupId>
-				<artifactId>asdoc-mojo</artifactId>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
 				<version>${flex-mojos.version}</version>
+				<configuration>
+					<locales>
+						<param>en_US</param>
+					</locales>
+					<reportOutputDirectory>target/site/docs</reportOutputDirectory>
+				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
@@ -176,17 +147,10 @@
 		</site>
 	</distributionManagement>
 
-
 	<repositories>
 		<repository>
-			<id>flex-mojos-repository</id>
-			<url>http://svn.sonatype.org/flexmojos/repository</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
+			<id>flexmojos-repository</id>
+			<url>http://repository.sonatype.org/content/groups/flex/</url>
 		</repository>
 		<repository>
 			<id>fna-repository</id>
@@ -202,24 +166,8 @@
 
 	<pluginRepositories>
 		<pluginRepository>
-			<id>flex-mojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/flex</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>fna-repository</id>
-			<url>http://fna.googlecode.com/svn/trunk/fna/fna_m2_repository</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
+			<id>flexmojos-repository</id>
+			<url>http://repository.sonatype.org/content/groups/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
 

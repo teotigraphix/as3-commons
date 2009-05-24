@@ -19,7 +19,7 @@
                 --><br/>
                 <h5>Get lastest development snapshot</h5>
                 <p>
-                    <a href="downloads/as3commons-latest-snapshot-bin.zip">
+                    <a href="downloads/as3commons-reflect-latest-snapshot-bin.zip">
                         <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
                         Download
                     </a>
@@ -33,109 +33,20 @@
                 ActionScript 3.0. Being a pure actionscript library it can be used for any
                 Flash/Flex/AIR project.
             </p>
-
-        </section>
-
-        <section name="Introduction">
-
+            
             <p>
-				The 2 most important classes in this library are the Type and ClassUtils classes. 
-				The Type class will give you all the information of a class or instance while the 
-				ClassUtils class contains utility methods for working with class objects.
-			</p>
-			
-			<p>
-				Using as3commons-reflect is really easy, after reading this short introduction
-				the only thing you might need is having a look at the <a href="asdoc/index.html">API</a>
-				to navigate through the properties and methods exposed by the library. Here below
-				we give some short instructions on how to use the library.
-			</p>
-			
-			<p>
-				Assuming you have a class called Person in the package com.company.domain)
-				you want to use reflection on, you start by getting its "Type" in one of the
-				following methods:
-
-				By class...
-				
-				<pre>
-				var type:Type = Type.forClass(Person);
-				</pre>
-
-				... by instance
-
-				<pre>
-				var person:Person = new Person();
-				var type:Type = Type.forInstance(person);
-				</pre>
-
-				... or by class name...
-				<pre>
-				var type:Type = Type.forName("com.company.domain.Person");
-				// or var type:Type = Type.forName("com.company.domain::Person");
-				</pre>
-				
-				Once you have a type instance you can get access to all variables, constants, 
-				accessors (getters/setters) and methods defined by that type and the properties 
-				of the type:
-				
-				<pre>
-				type.accessors
-				type.constants
-				type.fields
-				type.fullName
-				type.isDynamic
-				type.isFinal
-				type.isStatic
-				type.methods
-				type.name
-				type.staticConstants
-				type.staticVariables
-				type.variables
-				method:Method = type.methods[0];
-				retType:Type = getReturnType();
-				method.invoke(object, [arg1, arg2]);
-				accessor:Accessor = type.accessors[0];
-				metadata:Metadata = accessor.getMetadata("myMetadata");
-				arg:MetadataArgument = metadata.getArgument("myArg");
-				...
-				</pre>
-				
-				
+            	The library provides clean, easy and complete introspection on class variables,
+            	accessors, methods, metadata etc. etc. by parsing the xml returned by 
+            	<code>flash.utils.describeType</code>. Parsing results are cached so that
+            	possibly resource expensive parsing won't occur next time for the same class.
             </p>
-
-
-        </section>
-
-
-        <section name="Other projects using as3commons-reflect">
-
+            
             <p>
-                Here is a list of other projects using As3commons-reflect.
+            	The library is thoroughly tested and is being intensively used for the
+            	<a href="http://www.springactionsript.org/">Spring Actionscript</a> project. 
             </p>
-
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Author</th>
-                    <th>Description</th>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="http://www.springactionscript.org/">Spring Actionscript</a>
-                    </td>
-                    <td>
-                        Christophe Herreman
-                    </td>
-                    <td>
-                        An Inversion Of Control framework for Actionscript based application.
-                    </td>
-                </tr>
-
-            </table>
-
         </section>
-        
+
     </body>
 </document>
 
