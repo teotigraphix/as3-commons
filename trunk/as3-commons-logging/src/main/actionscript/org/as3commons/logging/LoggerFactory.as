@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2008-2009 the original author or authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.as3commons.logging {
 	
 	import flash.utils.getQualifiedClassName;
@@ -8,14 +29,20 @@ package org.as3commons.logging {
 	/**
 	 * Use the LoggerFactory to obtain a logger.
 	 * 
+	 * <p>You either request a logger via the LoggerFactory.getClassLogger() or LoggerFactory.getLogger() methods
+	 * 
 	 * @author Christophe Herreman
 	 */
 	public class LoggerFactory implements ILoggerFactory {
 		
+		/** The singleton instance */
 		private static var _instance:LoggerFactory;
 		
+		/** The logger factory that creates loggers */
 		private var _loggerFactory:ILoggerFactory = new DefaultLoggerFactory();
-		private var _loggers:Array /* of ILogger */ = [];
+		
+		/** A cache of loggers */
+		private var _loggers:Object /* <String, ILogger> */ = {};
 		
 		/**
 		 * Constructs a new LoggerFactory.
@@ -49,7 +76,7 @@ package org.as3commons.logging {
 		}
 		
 		/**
-		 * 
+		 * Returns the singleton instance of the logger factory.
 		 */
 		private static function getInstance():LoggerFactory {
 			if (!_instance) {
@@ -59,7 +86,10 @@ package org.as3commons.logging {
 		}
 		
 		/**
+		 * Returns a logger for the given name.
 		 * 
+		 * @param name the name of the logger
+		 * @return a logger with the given name
 		 */
 		public function getLogger(name:String):ILogger {
 			var result:ILogger = _loggers[name];
