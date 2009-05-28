@@ -27,9 +27,17 @@ package org.as3commons.logging {
 	import org.as3commons.logging.impl.NullLogger;
 	
 	/**
-	 * Use the LoggerFactory to obtain a logger.
+	 * Use the LoggerFactory to obtain a logger. This is the main class used when working with the as3commons-logging
+	 * library.
 	 * 
-	 * <p>You either request a logger via the LoggerFactory.getClassLogger() or LoggerFactory.getLogger() methods
+	 * <p>You can either request a logger via the LoggerFactory.getClassLogger() or LoggerFactory.getLogger() methods.
+	 * 
+	 * <p>When configuring a custom logger factory, make sure the logger factory is set before a logger is created.
+	 * Here is an example (for your main application file):
+	 * 
+	 * <p><code>// force the FlexLoggerFactory to be set before any loggers are created
+	 * private static var loggerSetup:* = (LoggerFactory.loggerFactory = new FlexLoggerFactory());
+	 * private static var logger:ILogger = LoggerFactory.getLogger("TMSNG.Main");</code>
 	 * 
 	 * @author Christophe Herreman
 	 */
