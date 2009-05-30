@@ -5,18 +5,18 @@
         <author email="mp@yoolab.com">Martino Piccinato</author>
     </properties>
     <body>
-        <section name="Welcome to as3commons-reflect">
+        <section name="Welcome to as3-commons-reflect">
             
-            <div id="downloadbox"><!--
+            <div id="downloadbox">
                 <h5>Get latest stable</h5>
                 <p>
-                    <a href="https://dev.yoolab.org/maven/content/repositories/snapshots/org/as3commons/as3commons-reflect/1.0-SNAPSHOT/">
+                    <a href="https://dev.yoolab.org/maven/content/repositories/snapshots/org/as3commons/as3commons-reflect/1.0/as3commons-reflect-1.0.swc">
                         <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
                         Download
                     </a>
-                    latest stable
+                    latest stable (1.0)
                 </p>
-                --><br/>
+                <br/>
                 <h5>Get lastest development snapshot</h5>
                 <p>
                     <a href="downloads/as3commons-reflect-latest-snapshot-bin.zip">
