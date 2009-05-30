@@ -16,10 +16,11 @@
       <item name="Source Repository" href="source-repository.html"/>
       <item name="Project reports" href="project-reports.html"/>
       <item name="Team list" href="team-list.html"/>
-      <item name="Dependencies" href="dependencies.html"/>
+      <item name="Related projects" href="related_projects.html"/>
     </menu>
 
     <menu name="Documentation">
+      <item name="User guide" href="userguide.html" />
       <item name="API" href="asdoc/index.html"/>
     </menu>
 
