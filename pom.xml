@@ -5,7 +5,7 @@
 	<artifactId>as3commons-project</artifactId>
 	<packaging>pom</packaging>
 	<name>AS3Commons Project</name>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<inceptionYear>2009</inceptionYear>
 	<url>http://www.as3commons.org/</url>
 	<description>AS3Commons project</description>
