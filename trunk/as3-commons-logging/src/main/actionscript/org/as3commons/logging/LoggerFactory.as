@@ -29,16 +29,23 @@ package org.as3commons.logging {
 	/**
 	 * Use the LoggerFactory to obtain a logger. This is the main class used when working with the as3commons-logging
 	 * library.
-	 * 
+	 *
 	 * <p>You can either request a logger via the LoggerFactory.getClassLogger() or LoggerFactory.getLogger() methods.</p>
-	 * 
+	 *
 	 * <p>When configuring a custom logger factory, make sure the logger factory is set before a logger is created.
 	 * Here is an example (for your main application file):</p>
-	 * 
+	 *
 	 * <listing version="3.0">// force the FlexLoggerFactory to be set before any loggers are created
 	 * private static var loggerSetup:&#42; = (LoggerFactory.loggerFactory = new FlexLoggerFactory());
-	 * private static var logger:ILogger = LoggerFactory.getLogger("TMSNG.Main");</listing>
-	 * 
+	 * private static var logger:ILogger = LoggerFactory.getLogger("com.domain.MyClass");</listing>
+	 *
+	 * <p>By default, the DefaultLoggerFactory will be used that will write all log statements to the console using
+	 * trace(). If you don't want any logging, set the logger factory to <code>null</code>.</p>
+	 *
+	 * <listing version="3.0">// set the logger factory to null because we don't want to see any logging
+	 * private static var loggerSetup:&#42; = (LoggerFactory.loggerFactory = null);
+	 * private static var logger:ILogger = LoggerFactory.getLogger("com.domain.MyClass");</listing>
+	 *
 	 * @author Christophe Herreman
 	 */
 	public class LoggerFactory implements ILoggerFactory {
@@ -50,7 +57,7 @@ package org.as3commons.logging {
 		private var _loggerFactory:ILoggerFactory = new DefaultLoggerFactory();
 		
 		/** A cache of loggers */
-		private var _loggers:Object /* <String, ILogger> */ = {};
+		private var _loggers:Object /* <String, ILogger> */  = {};
 		
 		/**
 		 * Constructs a new LoggerFactory.
@@ -73,7 +80,7 @@ package org.as3commons.logging {
 			// replace the colons (::) in the name since this is not allowed in the Flex logging API
 			var name:String = getQualifiedClassName(clazz);
 			name = name.replace("::", ".");
-			return getInstance().getLogger(name);	
+			return getInstance().getLogger(name);
 		}
 		
 		/**
@@ -95,7 +102,7 @@ package org.as3commons.logging {
 		
 		/**
 		 * Returns a logger for the given name.
-		 * 
+		 *
 		 * @param name the name of the logger
 		 * @return a logger with the given name
 		 */
@@ -115,6 +122,6 @@ package org.as3commons.logging {
 			
 			return result;
 		}
-
+	
 	}
 }
