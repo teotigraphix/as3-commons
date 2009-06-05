@@ -22,26 +22,19 @@
 package org.as3commons.logging.impl {
 	
 	import org.as3commons.logging.ILogger;
+	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.util.MessageUtil;
 	
 	/**
 	 * Default AS3Commons logging implementation of the ILogger interface that writes messages to the console using
 	 * the trace() method. If no ILoggerFactory is set on the LoggerFactory, then this is the logger that will be used.
-	 * 
+	 *
 	 * @author Christophe Herreman
 	 */
 	public class DefaultLogger implements ILogger {
 		
-		public static const LOG_LEVEL_DEBUG:int	= 1;
-		public static const LOG_LEVEL_INFO:int	= 2;
-		public static const LOG_LEVEL_WARN:int	= 3;
-		public static const LOG_LEVEL_ERROR:int	= 4;
-		public static const LOG_LEVEL_FATAL:int	= 5;
-		
-		public static const LOG_LEVEL_ALL:int	= (LOG_LEVEL_DEBUG - 1);
-		
-		public static const LOG_LEVEL_OFF:int	= (LOG_LEVEL_FATAL + 1);
-		
 		private var _name:String;
+		
 		private var _level:int;
 		
 		/**
@@ -66,36 +59,10 @@ package org.as3commons.logging.impl {
 				var msg:String = "";
 				
 				// add datetime
-				msg += (new Date()).toString() + " ";
+				msg += (new Date()).toString() + " " + LogLevel.toString(level) + " - ";
 				
-				// add level
-				switch (level) {
-					case LOG_LEVEL_DEBUG:
-						msg += "[DEBUG] ";
-						break;
-					case LOG_LEVEL_INFO:
-						msg += "[INFO]  ";
-						break;
-					case LOG_LEVEL_WARN:
-						msg += "[WARN]  ";
-						break;
-					case LOG_LEVEL_ERROR:
-						msg += "[ERROR] ";
-						break;
-					case LOG_LEVEL_FATAL:
-						msg += "[FATAL] ";
-						break;
-				}
-				
-				// add name
-				msg += _name + " - ";
-				
-				// replace placeholders in message
-				var numParams:int = params.length;
-				for (var i:int = 0; i < numParams; i++) {
-					message = message.replace(new RegExp("\\{" + i + "\\}", "g"), params[i]);
-				}
-				msg += message;
+				// add name and params
+				msg += name + " - " + MessageUtil.toString(message, params);
 				
 				// trace the message
 				trace(msg);
@@ -105,36 +72,71 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:String, ...params):void {
-			log(LOG_LEVEL_DEBUG, message, params);
+		public function debug(message:String, ... params):void {
+			log(LogLevel.DEBUG, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:String, ...params):void {
-			log(LOG_LEVEL_INFO, message, params);
+		public function info(message:String, ... params):void {
+			log(LogLevel.INFO, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:String, ...params):void {
-			log(LOG_LEVEL_WARN, message, params);
+		public function warn(message:String, ... params):void {
+			log(LogLevel.WARN, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:String, ...params):void {
-			log(LOG_LEVEL_ERROR, message, params);
+		public function error(message:String, ... params):void {
+			log(LogLevel.ERROR, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal(message:String, ...params):void {
-			log(LOG_LEVEL_FATAL, message, params);
+		public function fatal(message:String, ... params):void {
+			log(LogLevel.FATAL, message, params);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get debugEnabled():Boolean {
+			return (_level <= LogLevel.DEBUG);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get infoEnabled():Boolean {
+			return (_level <= LogLevel.INFO);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get warnEnabled():Boolean {
+			return (_level <= LogLevel.WARN);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get errorEnabled():Boolean {
+			return (_level <= LogLevel.ERROR);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get fatalEnabled():Boolean {
+			return (_level <= LogLevel.FATAL);
 		}
 	}
 }
