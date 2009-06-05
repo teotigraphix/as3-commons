@@ -26,7 +26,7 @@ package org.as3commons.logging.impl {
 	/**
 	 * Null object implementation of the the ILogger interface. This class is used internally by the LoggerFactory
 	 * when its logger factory is set to null so that no logging happens.
-	 * 
+	 *
 	 * @author Christophe Herreman
 	 */
 	public class NullLogger implements ILogger {
@@ -47,31 +47,66 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:String, ...params):void {
+		public function debug(message:String, ... params):void {
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:String, ...params):void {
+		public function info(message:String, ... params):void {
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:String, ...params):void {
+		public function warn(message:String, ... params):void {
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:String, ...params):void {
+		public function error(message:String, ... params):void {
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal(message:String, ...params):void {
+		public function fatal(message:String, ... params):void {
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get debugEnabled():Boolean {
+			return false;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get infoEnabled():Boolean {
+			return false;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get warnEnabled():Boolean {
+			return false;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get errorEnabled():Boolean {
+			return false;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get fatalEnabled():Boolean {
+			return false;
 		}
 	}
 }

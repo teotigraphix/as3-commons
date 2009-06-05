@@ -27,7 +27,7 @@ package org.as3commons.logging.impl {
 	/**
 	 * Default AS3Commons logger factory. If no logger factory is set on LoggerFactory, then this is the factory
 	 * that will be used.
-	 * 
+	 *
 	 * @author Christophe Herreman
 	 */
 	public class DefaultLoggerFactory implements ILoggerFactory {
@@ -36,7 +36,6 @@ package org.as3commons.logging.impl {
 		 * Creates a new DefaultLoggerFactory
 		 */
 		public function DefaultLoggerFactory() {
-			
 		}
 		
 		/**

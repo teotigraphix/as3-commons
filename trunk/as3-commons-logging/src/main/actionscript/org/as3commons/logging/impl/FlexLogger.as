@@ -22,15 +22,16 @@
 package org.as3commons.logging.impl {
 	
 	import mx.logging.ILogger;
+	import mx.logging.Log;
 	
 	import org.as3commons.logging.ILogger;
 	
 	/**
 	 * Logger decorator for the logging API in the Flex framework.
-	 * 
+	 *
 	 * @author Christophe Herreman
 	 */
-	public class FlexLogger implements ILogger {
+	public class FlexLogger implements org.as3commons.logging.ILogger {
 		
 		/** The decorated flex framework logger */
 		private var _logger:mx.logging.ILogger;
@@ -52,7 +53,7 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:String, ...params):void {
+		public function debug(message:String, ... params):void {
 			var args:Array = params.concat();
 			args.unshift(message);
 			_logger.debug.apply(_logger, args);
@@ -61,7 +62,7 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:String, ...params):void {
+		public function info(message:String, ... params):void {
 			var args:Array = params.concat();
 			args.unshift(message);
 			_logger.info.apply(_logger, args);
@@ -70,7 +71,7 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:String, ...params):void {
+		public function warn(message:String, ... params):void {
 			var args:Array = params.concat();
 			args.unshift(message);
 			_logger.warn.apply(_logger, args);
@@ -79,7 +80,7 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:String, ...params):void {
+		public function error(message:String, ... params):void {
 			var args:Array = params.concat();
 			args.unshift(message);
 			_logger.error.apply(_logger, args);
@@ -88,10 +89,45 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal(message:String, ...params):void {
+		public function fatal(message:String, ... params):void {
 			var args:Array = params.concat();
 			args.unshift(message);
 			_logger.fatal.apply(_logger, args);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get debugEnabled():Boolean {
+			return Log.isDebug();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get infoEnabled():Boolean {
+			return Log.isInfo();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get warnEnabled():Boolean {
+			return Log.isWarn();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get errorEnabled():Boolean {
+			return Log.isError();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get fatalEnabled():Boolean {
+			return Log.isFatal();
 		}
 	}
 }
