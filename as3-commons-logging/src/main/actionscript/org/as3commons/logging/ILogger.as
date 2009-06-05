@@ -23,7 +23,7 @@ package org.as3commons.logging {
 	
 	/**
 	 * The main logging interface to abstract logger implementations.
-	 * 
+	 *
 	 * @author Christophe Herreman
 	 */
 	public interface ILogger {
@@ -58,5 +58,30 @@ package org.as3commons.logging {
 		 */
 		function fatal(message:String, ... params):void;
 		
+		/**
+		 * Is debug logging currently enabled?
+		 */
+		function get debugEnabled():Boolean;
+		
+		/**
+		 * Is info logging currently enabled?
+		 */
+		function get infoEnabled():Boolean;
+		
+		/**
+		 * Is warn logging currently enabled?
+		 */
+		function get warnEnabled():Boolean;
+		
+		/**
+		 * Is error logging currently enabled?
+		 */
+		function get errorEnabled():Boolean;
+		
+		/**
+		 * Is fatal logging currently enabled?
+		 */
+		function get fatalEnabled():Boolean;
+	
 	}
 }

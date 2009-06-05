@@ -28,7 +28,7 @@ package org.as3commons.logging.impl {
 	
 	/**
 	 * Logger factory that creates a logger from the Flex mx.logging.* package.
-	 * 
+	 *
 	 * @author Christophe Herreman
 	 */
 	public class FlexLoggerFactory implements ILoggerFactory {
