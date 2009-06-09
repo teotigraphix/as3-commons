@@ -73,10 +73,6 @@ package org.as3commons.logging.impl {
 			_name = name;
 		}
 		
-		public function get name():String {
-			return _name;
-		}
-		
 		/**
 		 * @inheritDoc
 		 */
