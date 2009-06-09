@@ -21,7 +21,6 @@
  */
 package org.as3commons.logging.impl {
 	
-	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LogLevel;
 	import org.as3commons.logging.util.MessageUtil;
 	
@@ -31,9 +30,7 @@ package org.as3commons.logging.impl {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class DefaultLogger implements ILogger {
-		
-		private var _name:String;
+	public class DefaultLogger extends AbstractLogger {
 		
 		private var _level:int;
 		
@@ -41,18 +38,14 @@ package org.as3commons.logging.impl {
 		 * Creates a new DefaultLogger.
 		 */
 		public function DefaultLogger(name:String) {
-			_name = name;
-		}
-		
-		public function get name():String {
-			return _name;
+			super(name);
 		}
 		
 		public function set level(value:int):void {
 			_level = value;
 		}
 		
-		public function log(level:int, message:String, params:Array):void {
+		override protected function log(level:uint, message:String, params:Array):void {
 			if (level >= this._level) {
 				//var message:String = "";
 				
@@ -72,70 +65,35 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:String, ... params):void {
-			log(LogLevel.DEBUG, message, params);
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function info(message:String, ... params):void {
-			log(LogLevel.INFO, message, params);
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function warn(message:String, ... params):void {
-			log(LogLevel.WARN, message, params);
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function error(message:String, ... params):void {
-			log(LogLevel.ERROR, message, params);
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function fatal(message:String, ... params):void {
-			log(LogLevel.FATAL, message, params);
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function get debugEnabled():Boolean {
+		override public function get debugEnabled():Boolean {
 			return (_level <= LogLevel.DEBUG);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function get infoEnabled():Boolean {
+		override public function get infoEnabled():Boolean {
 			return (_level <= LogLevel.INFO);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function get warnEnabled():Boolean {
+		override public function get warnEnabled():Boolean {
 			return (_level <= LogLevel.WARN);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function get errorEnabled():Boolean {
+		override public function get errorEnabled():Boolean {
 			return (_level <= LogLevel.ERROR);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function get fatalEnabled():Boolean {
+		override public function get fatalEnabled():Boolean {
 			return (_level <= LogLevel.FATAL);
 		}
 	}
