@@ -31,7 +31,7 @@ package org.as3commons.logging {
 		/**
 		 * Returns the name of this logger.
 		 */
-		function get name():String;
+		//function get name():String;
 		
 		/**
 		 * Logs a message with a "debug" level.
