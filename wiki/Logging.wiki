@@ -1,9 +1,9 @@
 #summary Logging examples
 
-= How do I get or create a logger? =
+*How do I get or create a logger?*
 
-var logger:ILogger = LoggerFactory.getLogger("com.domain.MyClass");
+'var logger:ILogger = LoggerFactory.getLogger("com.domain.MyClass");'
 
 or
 
-var logger:ILogger = LoggerFactory.getClassLogger(MyClass);
+'var logger:ILogger = LoggerFactory.getClassLogger(MyClass);'
