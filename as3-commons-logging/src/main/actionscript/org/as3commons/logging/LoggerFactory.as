@@ -47,11 +47,12 @@ package org.as3commons.logging {
 	 * private static var logger:ILogger = LoggerFactory.getLogger("com.domain.MyClass");</listing>
 	 *
 	 * @author Christophe Herreman
+	 * @author Martin Heidegger
 	 */
 	public class LoggerFactory implements ILoggerFactory {
 		
-		/** The singleton instance */
-		private static var _instance:LoggerFactory;
+		/** The singleton instance, eagerly instantiated. */
+		private static var _instance:LoggerFactory = LoggerFactory.getInstance();
 		
 		/** The logger factory that creates loggers */
 		private var _loggerFactory:ILoggerFactory = new DefaultLoggerFactory();
@@ -69,7 +70,7 @@ package org.as3commons.logging {
 		 * Returns a logger for the given name.
 		 */
 		public static function getLogger(name:String):ILogger {
-			return getInstance().getLogger(name);
+			return _instance.getLogger(name);
 		}
 		
 		/**
@@ -80,14 +81,14 @@ package org.as3commons.logging {
 			// replace the colons (::) in the name since this is not allowed in the Flex logging API
 			var name:String = getQualifiedClassName(clazz);
 			name = name.replace("::", ".");
-			return getInstance().getLogger(name);
+			return _instance.getLogger(name);
 		}
 		
 		/**
 		 * Sets the logger factory for the logging system.
 		 */
 		public static function set loggerFactory(value:ILoggerFactory):void {
-			getInstance()._loggerFactory = value;
+			_instance.loggerFactory = value;
 		}
 		
 		/**
@@ -111,9 +112,9 @@ package org.as3commons.logging {
 			
 			if (!result) {
 				if (_loggerFactory) {
-					result = _loggerFactory.getLogger(name);
+					result = new LoggerProxy(name, _loggerFactory.getLogger(name));
 				} else {
-					result = new NullLogger();
+					result = new LoggerProxy(name);
 				}
 				
 				// cache the logger
@@ -121,6 +122,20 @@ package org.as3commons.logging {
 			}
 			
 			return result;
+		}
+		
+		/**
+		 * Sets the factory used to generate loggers. A new logger, created by the given factory, will
+		 * be set on each LoggerProxy in the cache.
+		 *
+		 * @param value the new logger factory or null
+		 */
+		private function set loggerFactory(value:ILoggerFactory):void {
+			_loggerFactory = value;
+			
+			for (var name:String in _loggers) {
+				LoggerProxy(_loggers[name]).logger = (_loggerFactory ? _loggerFactory.getLogger(name) : null);
+			}
 		}
 	
 	}
