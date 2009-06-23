@@ -7,3 +7,9 @@
 or
 
 {{{var logger:ILogger = LoggerFactory.getClassLogger(MyClass);}}}
+
+*How do I configure as3commons-logging to use the Flex logger?*
+
+Set the correct logger factory on the LoggerFactory. You can do this before or after requesting a logger from the factory. All existing loggers will be redirected to the newly assigned logger factory, in this case the Flex logger.
+
+{{{LoggerFactory.loggerFactory = new FlexLoggerFactory();}}}
