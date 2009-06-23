@@ -2,14 +2,28 @@
 
 *How do I get or create a logger?*
 
-{{{var logger:ILogger = LoggerFactory.getLogger("com.domain.MyClass");}}}
+{{{
+var logger:ILogger = LoggerFactory.getLogger("com.domain.MyClass");
+}}}
 
 or
 
-{{{var logger:ILogger = LoggerFactory.getClassLogger(MyClass);}}}
+{{{
+var logger:ILogger = LoggerFactory.getClassLogger(MyClass);
+}}}
 
 *How do I configure as3commons-logging to use the Flex logger?*
 
-Set the correct logger factory on the LoggerFactory. You can do this before or after requesting a logger from the factory. All existing loggers will be redirected to the newly assigned logger factory, in this case the Flex logger.
+Set the correct logger factory on the LoggerFactory class. You can do this before or after requesting a logger from the factory. All existing loggers will be redirected to the newly assigned logger factory, in this case the Flex logger factory. Once the Flex logger factory is assigned, you can configure the log targets and add them to the Flex Log class, just as you would configure the Flex logger without as3commons-logging.
 
-{{{LoggerFactory.loggerFactory = new FlexLoggerFactory();}}}
+{{{
+LoggerFactory.loggerFactory = new FlexLoggerFactory();
+
+var traceTarget:TraceTarget = new TraceTarget();
+traceTarget.includeCategory = true;
+traceTarget.includeDate = true;
+traceTarget.includeLevel = true;
+traceTarget.includeTime = true;
+traceTarget.filters = ["com.domain.*"];
+Log.addTarget(traceTarget);
+}}}
