@@ -67,5 +67,17 @@ package org.as3commons.lang {
 			}
 			return result;
 		}
+		
+		/**
+		 * Returns an array with the properties of the given object.
+		 */
+		public static function getProperties(object:Object):Array {
+			var result:Array = [];
+			
+			for each (var p:Object in object) {
+				result.push(p);;
+			}
+			return result;
+		}
 	}
 }
