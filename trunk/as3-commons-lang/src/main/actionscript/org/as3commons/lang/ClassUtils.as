@@ -21,7 +21,9 @@
  */
 package org.as3commons.lang {
 	
+	import flash.events.TimerEvent;
 	import flash.system.ApplicationDomain;
+	import flash.utils.Timer;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
@@ -153,7 +155,7 @@ package org.as3commons.lang {
 		 * method instead.
 		 */
 		public static function isSubclassOf(clazz:Class, parentClass:Class):Boolean {
-			var classDescription:XML = describeType(clazz);
+			var classDescription:XML = getFromObject(clazz);
 			var parentName:String = getQualifiedClassName(parentClass);
 			return (classDescription.factory.extendsClass.(@type == parentName).length() != 0);
 		}
@@ -168,7 +170,7 @@ package org.as3commons.lang {
 		 */
 		public static function getSuperClass(clazz:Class):Class {
 			var result:Class;
-			var classDescription:XML = describeType(clazz);
+			var classDescription:XML = getFromObject(clazz);
 			var superClasses:XMLList = classDescription.factory.extendsClass;
 			
 			if (superClasses.length() > 0) {
@@ -223,7 +225,7 @@ package org.as3commons.lang {
 			if (clazz == null) {
 				result = false;
 			} else {
-				var classDescription:XML = describeType(clazz);
+				var classDescription:XML = getFromObject(clazz);
 				result = (classDescription.factory.implementsInterface.(@type == getQualifiedClassName(interfaze)).length() != 0);
 			}
 			return result;
@@ -258,7 +260,7 @@ package org.as3commons.lang {
 		 */
 		public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean = false):Array {
 			var result:Array = [];
-			var classDescription:XML = describeType(clazz);
+			var classDescription:XML = getFromObject(clazz);
 			var interfacesDescription:XMLList = classDescription.factory.implementsInterface;
 			
 			if (interfacesDescription) {
@@ -346,5 +348,113 @@ package org.as3commons.lang {
 		public static function convertFullyQualifiedName(className:String):String {
 			return className.replace(PACKAGE_CLASS_SEPARATOR, ".");
 		}
+		
+		// --------------------------------------------------------------------
+		//
+		// describeType cache implementation
+		//
+		// --------------------------------------------------------------------
+		
+		/**
+		 * The default value for the interval to clear the describe type cache.
+		 */
+		public static const CLEAR_CACHE_INTERVAL:uint = 60000;
+		
+		/**
+		 * The interval (in miliseconds) at which the cache will be cleared. Note that this value is only used
+		 * on the first call to getFromObject.
+		 *
+		 * @default 60000 (one minute)
+		 */
+		public static var clearCacheInterval:uint = CLEAR_CACHE_INTERVAL;
+		
+		private static var _describeTypeCache:Object = {};
+		
+		private static var _timer:Timer;
+		
+		/**
+		 * Clears the describe type cache. This method is called automatically at regular intervals
+		 * defined by the clearCacheInterval property.
+		 */
+		public static function clearDescribeTypeCache():void {
+			_describeTypeCache = {};
+			
+			if (_timer && _timer.running) {
+				_timer.stop();
+			}
+		}
+		
+		/**
+		 * Timer handler. Clear the cache.
+		 */
+		private static function timerHandler(e:TimerEvent):void {
+			clearDescribeTypeCache();
+		}
+		
+		/**
+		 * Will return the metadata for the given object or class. If metadata has already been requested for
+		 * this type, it will be retrieved from cache. Note that the metadata will allways be that of the class,
+		 * even if you pass an instance.
+		 * <p />
+		 * In order to get instance specific metadata, use the 'factory' property.
+		 * <p />
+		 * The reason we do not allow retrieval of instance metadata is because then we would need to cache the
+		 * metadata double. Metadata takes up a significant amount of memory.
+		 *
+		 * @param object  The object from which you want to grab the metadata
+		 *
+		 * @return The class metadata of the given object.
+		 */
+		private static function getFromObject(object:Object):XML {
+			var className:String = getQualifiedClassName(object);
+			var metadata:XML;
+			
+			if (_describeTypeCache.hasOwnProperty(className)) {
+				metadata = _describeTypeCache[className];
+			} else {
+				if (!_timer) {
+					// Only run the timer once to prevent unneeded overhead. This also prevents
+					// this class from falling for the bug described here:
+					// http://www.gskinner.com/blog/archives/2008/04/failure_to_unlo.html
+					_timer = new Timer(clearCacheInterval, 1);
+					_timer.addEventListener(TimerEvent.TIMER, timerHandler);
+				}
+				
+				if (!(object is Class)) {
+					object = object.constructor;
+				}
+				
+				metadata = describeType(object);
+				
+				_describeTypeCache[className] = metadata;
+				
+				// Only run the timer if it is not already running.
+				if (!_timer.running) {
+					_timer.start();
+				}
+			}
+			
+			return metadata;
+		}
+		
+		/**
+		 * Will retrieve the metadata for the given class. Note that in order to access properties and
+		 * methods you need to grab the 'factory' part of the metadata.
+		 *
+		 * @param className    The name of the class that you want to retrieve metadata from. The className
+		 *             may be in the following forms: package.Class or package::Class
+		 */
+		private static function getFromString(className:String):XML {
+			var classDefinition:Class = getDefinitionByName(className) as Class;
+			
+			// Calling getFromObject seems double, as it results in the getObjectMethod getting
+			// the class name using getQualifiedClassName. It however saves us a check on the
+			// given className which might be in two forms.
+			
+			// getQualifiedClassName(getDefinitionByName(className)) is faster then converting the
+			// string using conventional methods.
+			return getFromObject(classDefinition);
+		}
+	
 	}
 }
