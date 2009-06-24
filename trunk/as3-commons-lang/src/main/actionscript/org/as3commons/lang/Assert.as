@@ -130,7 +130,7 @@ package org.as3commons.lang {
 				message = "[Assertion failed] - this String argument must have text; it must not be <code>null</code>, empty, or blank";
 			}
 			
-			if (StringUtils.isEmpty(string)) {
+			if (StringUtils.isBlank(string)) {
 				throw new IllegalArgumentError(message);
 			}
 		}
