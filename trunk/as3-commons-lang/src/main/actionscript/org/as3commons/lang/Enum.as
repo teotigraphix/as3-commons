@@ -94,7 +94,7 @@ package org.as3commons.lang {
 			
 			// add the enum value if we have a valid name
 			// this will only happen once for each unique enum value that is not null or empty
-			if (!StringUtils.isBlank(name)) {
+			if (!StringUtils.isEmpty(name)) {
 				if (!_values[declaringClassName]) {
 					_values[declaringClassName] = {};
 				}
