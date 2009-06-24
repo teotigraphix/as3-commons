@@ -33,6 +33,7 @@ package org.as3commons.lang {
 	 * Provides utilities for working with <code>Class</code> objects.
 	 *
 	 * @author Christophe Herreman
+	 * @author Erik Westra
 	 */
 	public class ClassUtils {
 		
