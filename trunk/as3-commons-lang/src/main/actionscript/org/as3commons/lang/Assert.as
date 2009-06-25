@@ -50,11 +50,10 @@ package org.as3commons.lang {
 		 * @throws org.as3commons.lang.IllegalArgumentError if the object is not <code>null</code>
 		 */
 		public static function notNull(object:Object, message:String = ""):void {
-			if (message == "" || message == null) {
-				message = "[Assertion failed] - this argument is required; it must not null";
-			}
-			
 			if (object == null) {
+				if (message == "" || message == null) {
+					message = "[Assertion failed] - this argument is required; it must not null";
+				}
 				throw new IllegalArgumentError(message);
 			}
 		}
@@ -67,11 +66,10 @@ package org.as3commons.lang {
 		 * @throws org.as3commons.lang.IllegalArgumentError if the object is not an instance of the given type
 		 */
 		public static function instanceOf(object:*, type:Class, message:String = ""):void {
-			if (message == "" || message == null) {
-				message = "[Assertion failed] - this argument is not of type '" + type + "'";
-			}
-			
 			if (!(object is type)) {
+				if (message == "" || message == null) {
+					message = "[Assertion failed] - this argument is not of type '" + type + "'";
+				}
 				throw new IllegalArgumentError(message);
 			}
 		}
@@ -80,11 +78,10 @@ package org.as3commons.lang {
 		 * Asserts that a class is a subclass of another class.
 		 */
 		public static function subclassOf(clazz:Class, parentClass:Class, message:String = ""):void {
-			if (message == "" || message == null) {
-				message = "[Assertion failed] - this argument is not a subclass of '" + parentClass + "'";
-			}
-			
 			if (!ClassUtils.isSubclassOf(clazz, parentClass)) {
+				if (message == "" || message == null) {
+					message = "[Assertion failed] - this argument is not a subclass of '" + parentClass + "'";
+				}
 				throw new IllegalArgumentError(message);
 			}
 		}
@@ -93,11 +90,10 @@ package org.as3commons.lang {
 		 * Assert that an object implements a certain interface.
 		 */
 		public static function implementationOf(object:*, interfaze:Class, message:String = ""):void {
-			if (message == "" || message == null) {
-				message = "[Assertion failed] - this argument does not implement the interface '" + interfaze + "'";
-			}
-			
 			if (!ClassUtils.isImplementationOf(ClassUtils.forInstance(object), interfaze)) {
+				if (message == "" || message == null) {
+					message = "[Assertion failed] - this argument does not implement the interface '" + interfaze + "'";
+				}
 				throw new IllegalArgumentError(message);
 			}
 		}
@@ -108,11 +104,10 @@ package org.as3commons.lang {
 		 * @param the error message if the assertion fails
 		 */
 		public static function state(expression:Boolean, message:String = ""):void {
-			if (message == "" || message == null) {
-				message = "[Assertion failed] - this state invariant must be true";
-			}
-			
 			if (!expression) {
+				if (message == "" || message == null) {
+					message = "[Assertion failed] - this state invariant must be true";
+				}
 				throw new IllegalStateError(message);
 			}
 		}
@@ -126,11 +121,10 @@ package org.as3commons.lang {
 		 * @see StringUtils#hasText
 		 */
 		public static function hasText(string:String, message:String = ""):void {
-			if (message == "" || message == null) {
-				message = "[Assertion failed] - this String argument must have text; it must not be <code>null</code>, empty, or blank";
-			}
-			
 			if (StringUtils.isBlank(string)) {
+				if (message == "" || message == null) {
+					message = "[Assertion failed] - this String argument must have text; it must not be <code>null</code>, empty, or blank";
+				}
 				throw new IllegalArgumentError(message);
 			}
 		}
@@ -139,12 +133,11 @@ package org.as3commons.lang {
 		 * Assert that the given Dictionary contains only keys of the given type.
 		 */
 		public static function dictionaryKeysOfType(dictionary:Dictionary, type:Class, message:String = ""):void {
-			if (message == "" || message == null) {
-				message = "[Assertion failed] - this Dictionary argument must have keys of type '" + type + "'";
-			}
-			
 			for (var key:Object in dictionary) {
 				if (!(key is type)) {
+					if (message == "" || message == null) {
+						message = "[Assertion failed] - this Dictionary argument must have keys of type '" + type + "'";
+					}
 					throw new IllegalArgumentError(message);
 				}
 			}
@@ -154,11 +147,10 @@ package org.as3commons.lang {
 		 * Assert that the array contains the passed in item.
 		 */
 		public static function arrayContains(array:Array, item:*, message:String = ""):void {
-			if (message == "" || message == null) {
-				message = "[Assertion failed] - this Array argument does not contain the item '" + item + "'";
-			}
-			
 			if (array.indexOf(item) == -1) {
+				if (message == "" || message == null) {
+					message = "[Assertion failed] - this Array argument does not contain the item '" + item + "'";
+				}
 				throw new IllegalArgumentError(message);
 			}
 		}
@@ -171,12 +163,11 @@ package org.as3commons.lang {
 		 * @param message the error message to use if the assertion fails
 		 */
 		public static function arrayItemsOfType(array:Array, type:Class, message:String = ""):void {
-			if (message == "" || message == null) {
-				message = "[Assertion failed] - this Array must have items of type '" + type + "'";
-			}
-			
 			for each (var item:*in array) {
 				if (!(item is type)) {
+					if (message == "" || message == null) {
+						message = "[Assertion failed] - this Array must have items of type '" + type + "'";
+					}
 					throw new IllegalArgumentError(message);
 				}
 			}
