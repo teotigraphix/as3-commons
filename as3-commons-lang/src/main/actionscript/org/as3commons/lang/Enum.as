@@ -71,10 +71,15 @@ package org.as3commons.lang {
 		 * @param name the name of the enum entry to get
 		 */
 		public static function getEnum(clazz:Class, name:String):Enum {
-			Assert.notNull(_values[clazz], "Enum values for the class '" + clazz + "' do not exist");
-			Assert.notNull(_values[clazz][name], "An enum for type '" + clazz + "' and name '" + name + "' was not found.");
+			Assert.notNull(clazz, "The class must not be null");
+			Assert.hasText(name, "The name must have text");
 			
-			return _values[clazz][name];
+			var className:String = ClassUtils.getFullyQualifiedName(clazz);
+			
+			Assert.notNull(_values[className], "Enum values for the class '" + clazz + "' do not exist");
+			Assert.notNull(_values[className][name], "An enum for type '" + clazz + "' and name '" + name + "' was not found.");
+			
+			return _values[className][name];
 		}
 		
 		/**
