@@ -33,11 +33,10 @@ package org.as3commons.lang {
 		 * @throws org.as3commons.lang.IllegalArgumentError if the expression is not <code>true</code>
 		 */
 		public static function isTrue(expression:Boolean, message:String = ""):void {
-			if (message == "" || message == null) {
-				message = "[Assertion failed] - this expression must be true";
-			}
-			
 			if (!expression) {
+				if (message == "" || message == null) {
+					message = "[Assertion failed] - this expression must be true";
+				}
 				throw new IllegalArgumentError(message);
 			}
 		}
