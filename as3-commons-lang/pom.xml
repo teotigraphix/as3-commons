@@ -49,6 +49,20 @@
 					</tagBase>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>src/main/actionscript</directory>
+							<includes>
+								<include>FlexUnitApplication.mxml</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
 
 		</plugins>
 
