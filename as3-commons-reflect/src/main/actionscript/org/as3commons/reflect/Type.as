@@ -96,13 +96,13 @@ package org.as3commons.reflect {
 		 */
 		public function Type() {
 			super();
-			_methods = new Array();
-			_accessors = new Array();
-			_staticConstants = new Array();
-			_constants = new Array();
-			_staticVariables = new Array();
-			_variables = new Array();
-			_fields = new Array();
+			_methods = [];
+			_accessors = [];
+			_staticConstants = [];
+			_constants = [];
+			_staticVariables = [];
+			_variables = [];
+			_fields = [];
 		}
 		
 		/**
