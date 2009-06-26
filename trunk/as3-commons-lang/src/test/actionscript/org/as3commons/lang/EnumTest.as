@@ -112,13 +112,21 @@ package org.as3commons.lang {
 		}
 		
 		public function testGetValues_shouldNotContainDuplicateValues():void {
-			new Enum("myEnum");
+			new Day("MONDAY");
 			
-			var numValues:uint = Enum.getValues(Enum).length;
+			var numValues:uint = Enum.getValues(Day).length;
 			
-			new Enum("myEnum");
+			new Day("MONDAY");
 			
-			assertEquals(numValues, Enum.getValues(Enum).length);
+			assertEquals(numValues, Enum.getValues(Day).length);
+		}
+		
+		public function testGetValues_shouldFailForNonEnumClass():void {
+			try {
+				Enum.getValues(TestCase);
+				fail("Enum.getValues(TestCase) should fail");
+			} catch(e:IllegalArgumentError) {
+			}
 		}
 	}
 }
