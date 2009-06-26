@@ -23,7 +23,7 @@ package org.as3commons.reflect {
 	
 	import flash.utils.Proxy;
 	import flash.utils.flash_proxy;
-
+	
 	/**
 	 * A MethodInvoker is a representation of a method call or invocation. Use this to dynamically invoke methods
 	 * on an object.
@@ -37,25 +37,27 @@ package org.as3commons.reflect {
 	 * @author Christophe Herreman
 	 */
 	public class MethodInvoker {
-
+		
 		private var _target:*;
+		
 		private var _method:String = "";
+		
 		private var _arguments:Array;
-
+		
 		/**
 		 * Creates a new MethodInvoker object.
 		 */
 		public function MethodInvoker() {
-			_arguments = new Array();
+			_arguments = [];
 		}
-
+		
 		/**
 		 * Returns the target of this MethodInvoker.
 		 */
 		public function get target():* {
 			return _target;
 		}
-
+		
 		/**
 		 * Sets the target of this MethodInvoker.
 		 *
@@ -64,35 +66,35 @@ package org.as3commons.reflect {
 		public function set target(value:*):void {
 			_target = value;
 		}
-
+		
 		/**
 		 * Returns the method this MethodInvoker is dealing with.
 		 */
 		public function get method():String {
 			return _method;
 		}
-
+		
 		/**
 		 * Sets the method this MethodInvoker is dealing with.
 		 */
 		public function set method(value:String):void {
 			_method = value;
 		}
-
+		
 		/**
 		 * Returns the arguments used by this MethodInvoker.
 		 */
 		public function get arguments():Array {
 			return _arguments;
 		}
-
+		
 		/**
 		 * Sets the arguments used by this MethodInvoker.
 		 */
 		public function set arguments(value:Array):void {
 			_arguments = value;
 		}
-
+		
 		/**
 		 * Executes this MethodInvoker.
 		 */
@@ -102,8 +104,7 @@ package org.as3commons.reflect {
 			
 			if (f != null) {
 				result = f.apply(target, this.arguments);
-			}
-			else {
+			} else {
 				// we don't have a valid function, this might be a proxied method call
 				if (target is Proxy) {
 					var args:Array = [method].concat(this.arguments);
