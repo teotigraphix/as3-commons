@@ -33,7 +33,43 @@ package org.as3commons.lang {
 	 */
 	public class Enum implements IEquals {
 		
-		private static var _values:Object = {};
+		/**
+		 * A map with the enum values of all Enum types in memory.
+		 * As its keys, the fully qualified name of the enum class is used.
+		 * As its values, another map is used to map the individual enum values,
+		 * from name to enum instance.
+		 * 
+		 * Example:
+		 * 
+		 * 	{
+		 * 		"com.domain.Color":
+		 * 			{
+		 * 				"RED": Color.RED,
+		 * 				"GREEN": Color.GREEN,
+		 * 				"BLUE": Color.BLUE
+		 * 			},
+		 * 		"com.domain.Day":
+		 * 			{
+		 * 				"MONDAY": Day.MONDAY,
+		 * 				"TUESDAY": Day.TUESDAY,
+		 * 				"WEDNESDAY": Day.WEDNESDAY
+		 * 			}
+		 *	}
+		 */
+		private static var _values:Object /* <String, Object> */ = {};
+		
+		/**
+		 * A map with the value arrays of the Enum types in memory.
+		 * As its keys, the fully qualified name of the enum class is used.
+		 * As its values, an array with the enum values of a Enum class is used.
+		 * 
+		 * Example:
+		 * 
+		 * 	{
+		 * 		"com.domain.Color": [Color.RED, Color.GREEN, Color.BLUE]
+		 * 	}
+		 */
+		private static var _valueArrays:Object /* <String, > */ = {};
 		
 		private var _name:String;
 		
@@ -60,8 +96,16 @@ package org.as3commons.lang {
 		 * @return an array of Enum objects or Enum subtype objects
 		 */
 		public static function getValues(clazz:Class):Array {
-			Assert.notNull(_values[getQualifiedClassName(clazz)], "Enum values for the class '" + clazz + "' do not exist");
-			return ObjectUtils.getProperties(_values[getQualifiedClassName(clazz)]);
+			Assert.subclassOf(clazz, Enum, "Can not get enum values for class [" + clazz + "] because it is not a subclass of Enum.");
+			
+			var className:String = getQualifiedClassName(clazz);
+			
+			Assert.notNull(_values[className], "Enum values for the class '" + clazz + "' do not exist");
+			
+			if ((_valueArrays[className] as Array).length == 0) {
+				_valueArrays[className] = ObjectUtils.getProperties(_values[getQualifiedClassName(clazz)]);
+			}
+			return _valueArrays[className];
 		}
 		
 		/**
@@ -100,12 +144,19 @@ package org.as3commons.lang {
 			// add the enum value if we have a valid name
 			// this will only happen once for each unique enum value that is not null or empty
 			if (!StringUtils.isEmpty(name)) {
+				// create the map to store the enum values for this class
 				if (!_values[declaringClassName]) {
 					_values[declaringClassName] = {};
 				}
 				
+				// add this enum value
 				if (!_values[declaringClassName][name]) {
 					_values[declaringClassName][name] = this;
+				}
+				
+				// create the value array for this class
+				if (!_valueArrays[declaringClassName]) {
+					_valueArrays[declaringClassName] = [];
 				}
 			}
 		}
