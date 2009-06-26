@@ -325,7 +325,7 @@ package org.as3commons.lang {
 			} else if (pads < padLen) {
 				return padStr.substring(0, pads).concat(str);
 			} else {
-				var padding:Array = new Array();
+				var padding:Array = [];
 				var padChars:Array = padStr.split("");
 				
 				for (var i:int = 0; i < pads; i++) {
@@ -419,7 +419,7 @@ package org.as3commons.lang {
 			} else if (pads < padLen) {
 				return str.concat(padStr.substring(0, pads));
 			} else {
-				var padding:Array = new Array();
+				var padding:Array = [];
 				var padChars:Array = padStr.split("");
 				
 				for (var i:int = 0; i < pads; i++) {
