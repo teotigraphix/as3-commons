@@ -1963,5 +1963,379 @@ package org.as3commons.lang {
 			}
 			return str1.localeCompare(str2);
 		}
+		
+		/**
+		 * Adds/inserts a new string at a certain position in the source string.
+		 */
+		public static function addAt(string:String, value:*, position:int):String {
+			if (position > string.length) {
+				position = string.length;
+			}
+			var firstPart:String = string.substring(0, position);
+			var secondPart:String = string.substring(position, string.length);
+			return (firstPart + value + secondPart);
+		}
+		
+		/**
+		 * Replaces a part of the text between 2 positions.
+		 */
+		public static function replaceAt(string:String, value:*, beginIndex:int, endIndex:int):String {
+			beginIndex = Math.max(beginIndex, 0);
+			endIndex = Math.min(endIndex, string.length);
+			var firstPart:String = string.substr(0, beginIndex);
+			var secondPart:String = string.substr(endIndex, string.length);
+			return (firstPart + value + secondPart);
+		}
+		
+		/**
+		 * Removes a part of the text between 2 positions.
+		 */
+		public static function removeAt(string:String, beginIndex:int, endIndex:int):String {
+			return StringUtils.replaceAt(string, "", beginIndex, endIndex);
+		}
+		
+		/**
+		 * Fixes double newlines in a text.
+		 */
+		public static function fixNewlines(string:String):String {
+			return string.replace(/\r\n/gm, "\n");
+		}
+		
+		/**
+		 * Checks if the given string has actual text.
+		 */
+		public static function hasText(string:String):Boolean {
+			if (!string)
+				return false;
+			return (StringUtils.trim(string).length > 0);
+		}
+		
+		/**
+		 * Removes all empty characters at the beginning of a string.
+		 *
+		 * <p>Characters that are removed: spaces {@code " "}, line forwards {@code "\n"}
+		 * and extended line forwarding {@code "\t\n"}.
+		 *
+		 * @param string the string to trim
+		 * @return the trimmed string
+		 */
+		public static function leftTrim(string:String):String {
+			return leftTrimForChars(string, "\n\t\n ");
+		}
+		
+		/**
+		 * Removes all empty characters at the end of a string.
+		 *
+		 * <p>Characters that are removed: spaces {@code " "}, line forwards {@code "\n"}
+		 * and extended line forwarding {@code "\t\n"}.
+		 *
+		 * @param string the string to trim
+		 * @return the trimmed string
+		 */
+		public static function rightTrim(string:String):String {
+			return rightTrimForChars(string, "\n\t\n ");
+		}
+		
+		/**
+		 * Removes all characters at the beginning of the {@code string} that match to the
+		 * set of {@code chars}.
+		 *
+		 * <p>This method splits all {@code chars} and removes occurencies at the beginning.
+		 *
+		 * <p>Example:
+		 * <code>
+		 *   trace(StringUtil.rightTrimForChars("ymoynkeym", "ym")); // oynkeym
+		 *   trace(StringUtil.rightTrimForChars("monkey", "mo")); // nkey
+		 *   trace(StringUtil.rightTrimForChars("monkey", "om")); // nkey
+		 * </code>
+		 *
+		 * @param string the string to trim
+		 * @param chars the characters to remove from the beginning of the {@code string}
+		 * @return the trimmed string
+		 */
+		public static function leftTrimForChars(string:String, chars:String):String {
+			var from:Number = 0;
+			var to:Number = string.length;
+			
+			while (from < to && chars.indexOf(string.charAt(from)) >= 0) {
+				from++;
+			}
+			return (from > 0 ? string.substr(from, to) : string);
+		}
+		
+		/**
+		 * Removes all characters at the end of the {@code string} that match to the set of
+		 * {@code chars}.
+		 *
+		 * <p>This method splits all {@code chars} and removes occurencies at the end.
+		 *
+		 * <p>Example:
+		 * <code>
+		 *   trace(StringUtil.rightTrimForChars("ymoynkeym", "ym")); // ymoynke
+		 *   trace(StringUtil.rightTrimForChars("monkey***", "*y")); // monke
+		 *   trace(StringUtil.rightTrimForChars("monke*y**", "*y")); // monke
+		 * </code>
+		 *
+		 * @param string the string to trim
+		 * @param chars the characters to remove from the end of the {@code string}
+		 * @return the trimmed string
+		 */
+		public static function rightTrimForChars(string:String, chars:String):String {
+			var from:Number = 0;
+			var to:Number = string.length - 1;
+			
+			while (from < to && chars.indexOf(string.charAt(to)) >= 0) {
+				to--;
+			}
+			return (to >= 0 ? string.substr(from, to + 1) : string);
+		}
+		
+		/**
+		 * Removes all characters at the beginning of the {@code string} that matches the
+		 * {@code char}.
+		 *
+		 * <p>Example:
+		 * <code>
+		 *   trace(StringUtil.leftTrimForChar("yyyymonkeyyyy", "y"); // monkeyyyy
+		 * </code>
+		 *
+		 * @param string the string to trim
+		 * @param char the character to remove
+		 * @return the trimmed string
+		 * @throws IllegalArgumentException if you try to remove more than one character
+		 */
+		public static function leftTrimForChar(string:String, char:String):String {
+			if (char.length != 1) {
+				throw new IllegalArgumentError("The Second Attribute char [" + char + "] must exactly one character.");
+			}
+			return leftTrimForChars(string, char);
+		}
+		
+		/**
+		 * Removes all characters at the end of the {@code string} that matches the passed-in
+		 * {@code char}.
+		 *
+		 * <p>Example:
+		 * <code>
+		 *   trace(StringUtil.rightTrimForChar("yyyymonkeyyyy", "y"); // yyyymonke
+		 * </code>
+		 *
+		 * @param string the string to trim
+		 * @param char the character to remove
+		 * @return the trimmed string
+		 * @throws IllegalArgumentException if you try to remove more than one character
+		 */
+		public static function rightTrimForChar(string:String, char:String):String {
+			if (char.length != 1) {
+				throw new IllegalArgumentError("The Second Attribute char [" + char + "] must exactly one character.");
+			}
+			return rightTrimForChars(string, char);
+		}
+		
+		/**
+		 * Extended String::indexOf
+		 *
+		 * @param haystack string to search in
+		 * @param n which ocurance of needle
+		 * @param needle The substring for which to search
+		 * @param startIndex An optional integer specifying the starting index of the search.
+		 * @returns startIndex if n is 0
+		 * @returns -1 if not enough ocurances of needle are found
+		 * @returns charIndex of nth needle ocurances
+		 */
+		public static function nthIndexOf(haystack:String, n:uint, needle:String, startIndex:Number = 0):int {
+			var result:int = startIndex;
+			
+			if (n >= 1) {
+				result = haystack.indexOf(needle, result);
+				
+				for (var i:int = 1; result != -1 && i < n; i++) {
+					result = haystack.indexOf(needle, result + 1);
+				}
+			}
+			return result;
+		}
+		
+		/**
+		 * Returns if the given character is a white space or not.
+		 */ /*public static function isWhitespace(a:String):Boolean {
+		   return (a.charCodeAt(0) <= 32);
+		 }*/
+		
+		/**
+		 * Returns if the given character is a digit or not.
+		 */
+		public static function isDigit(a:String):Boolean {
+			var charCode:Number = a.charCodeAt(0);
+			return (charCode >= 48 && charCode <= 57);
+		}
+		
+		/**
+		 * Natural sort order compare function.
+		 *
+		 * @ignore Based on the JavaScript version by Kristof Coomans.
+		 * (http://sourcefrog.net/projects/natsort/natcompare.js)
+		 */
+		public static function naturalCompare(a:String, b:String):int {
+			var ia:int = 0, ib:int = 0;
+			var nza:int = 0, nzb:int = 0;
+			var ca:String, cb:String;
+			var result:int;
+			var lowerCaseBeforeUpperCase:Boolean = true; // used to be a method argument, keep this
+			
+			// replace null values with empty strings
+			if (!a)
+				a = "";
+			
+			if (!b)
+				b = "";
+			
+			/*if (!caseSensitive) {
+			   a = a.toLowerCase();
+			   b = b.toLowerCase();
+			 }*/
+			
+			var stringsAreCaseInsensitiveEqual:Boolean = false;
+			
+			if (a.toLocaleLowerCase() == b.toLocaleLowerCase()) {
+				stringsAreCaseInsensitiveEqual = true;
+			} else {
+				a = a.toLowerCase();
+				b = b.toLowerCase();
+			}
+			
+			while (true) {
+				// only count the number of zeroes leading the last number compared
+				nza = nzb = 0;
+				
+				ca = a.charAt(ia);
+				cb = b.charAt(ib);
+				
+				// skip over leading spaces or zeros
+				while (StringUtils.isWhitespace(ca) || ca == "0") {
+					if (ca == "0") {
+						nza++;
+					} else {
+						// only count consecutive zeroes
+						nza = 0;
+					}
+					
+					ca = a.charAt(++ia);
+				}
+				
+				while (StringUtils.isWhitespace(cb) || cb == "0") {
+					if (cb == "0") {
+						nzb++;
+					} else {
+						// only count consecutive zeroes
+						nzb = 0;
+					}
+					
+					cb = b.charAt(++ib);
+				}
+				
+				// process run of digits
+				if (StringUtils.isDigit(ca) && StringUtils.isDigit(cb)) {
+					if ((result = compareRight(a.substring(ia), b.substring(ib))) != 0) {
+						return result;
+					}
+				}
+				
+				if (ca == "" && cb == "") {
+					// The strings compare the same.  Perhaps the caller
+					// will want to call strcmp to break the tie.
+					return nza - nzb;
+				}
+				
+				if (stringsAreCaseInsensitiveEqual) {
+					// If the characters are in another case (upper or lower)
+					if (ca != cb) {
+						if (ca < cb) {
+							return lowerCaseBeforeUpperCase ? +1 : -1;
+						} else if (ca > cb) {
+							return lowerCaseBeforeUpperCase ? -1 : +1;
+						}
+					}
+				}
+				
+				if (ca < cb) {
+					return -1;
+				} else if (ca > cb) {
+					return +1;
+				}
+				
+				++ia;
+				++ib;
+			}
+			
+			return 0;
+		}
+		
+		/**
+		 * Helper function used by the naturalCompare method.
+		 */
+		private static function compareRight(a:String, b:String):int {
+			var bias:int = 0;
+			var ia:int = 0;
+			var ib:int = 0;
+			var ca:String;
+			var cb:String;
+			
+			// The longest run of digits wins.  That aside, the greatest
+			// value wins, but we can't know that it will until we've scanned
+			// both numbers to know that they have the same magnitude, so we
+			// remember it in BIAS.
+			for (; ; ia++, ib++) {
+				ca = a.charAt(ia);
+				cb = b.charAt(ib);
+				
+				if (!StringUtils.isDigit(ca) && !StringUtils.isDigit(cb)) {
+					return bias;
+				} else if (!StringUtils.isDigit(ca)) {
+					return -1;
+				} else if (!StringUtils.isDigit(cb)) {
+					return +1;
+				} else if (ca < cb) {
+					if (bias == 0) {
+						bias = -1;
+					}
+				} else if (ca > cb) {
+					if (bias == 0)
+						bias = +1;
+				} else if (ca == "" && cb == "") {
+					return bias;
+				}
+			}
+			
+			return 0;
+		}
+		
+		/**
+		 * Tokenizes a string to an array using the given delimiters.
+		 */
+		public static function tokenizeToArray(string:String, delimiters:String):Array {
+			var result:Array = [];
+			var numCharacters:int = string.length;
+			var delimiterFound:Boolean = false;
+			var token:String = "";
+			
+			for (var i:int = 0; i < numCharacters; i++) {
+				var character:String = string.charAt(i);
+				
+				if (delimiters.indexOf(character) == -1) {
+					token += character;
+				} else {
+					result.push(token);
+					token = "";
+				}
+				
+				// add the last token if we reached the end of the string
+				if (i == numCharacters - 1) {
+					result.push(token);
+				}
+			}
+			
+			return result;
+		}
 	}
 }
