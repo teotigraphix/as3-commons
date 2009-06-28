@@ -595,5 +595,70 @@ package org.as3commons.lang {
 			assertFalse(StringUtils.startsWith('m', null));
 			assertTrue(StringUtils.startsWith('www.domain.com', 'www.'));
 		}
+		
+		//=====================================================================
+		// addAt(string:String, value:*, position:int):String
+		//=====================================================================
+		public function testAddAt():void {
+			var s:String = "This is a test";
+			var s2:String = StringUtils.addAt(s, "string ", 10);
+			assertEquals("This is a string test", s2);
+		}
+		
+		public function testAddAtWithIndexOutOfBounds():void {
+			var s:String = "This is a test";
+			var s2:String = StringUtils.addAt(s, " for index out of bounds", 10000);
+			assertEquals("This is a test for index out of bounds", s2);
+		}
+		
+		public function testAddAtWithNegativeIndex():void {
+			var s:String = "This is a test";
+			var s2:String = StringUtils.addAt(s, "Negative index. ", -1);
+			assertEquals("Negative index. This is a test", s2);
+		}
+		
+		//=====================================================================
+		// replaceAt(string:String, value:*, beginIndex:int, endIndex:int):String
+		//=====================================================================
+		public function testReplaceAt():void {
+			var s:String = "This is a test.";
+			var s2:String = StringUtils.replaceAt(s, "was", 5, 7);
+			assertEquals("This was a test.", s2);
+		}
+		
+		public function testReplaceAtWithEndIndexOutOfBounds():void {
+			var s:String = "This is a test.";
+			var s2:String = StringUtils.replaceAt(s, "was", 5, 10000);
+			assertEquals("This was", s2);
+		}
+		
+		public function testReplaceAtWithNegativeBeginIndex():void {
+			var s:String = "This is a test.";
+			var s2:String = StringUtils.replaceAt(s, "That", -1, 4);
+			assertEquals("That is a test.", s2);
+		}
+		
+		//=====================================================================
+		// tokenizeToArray(string:String, delimiters:String):Array
+		//=====================================================================
+		public function testTokenizeToArray():void {
+			var tokens:Array = StringUtils.tokenizeToArray("This is a test", " ");
+			assertNotNull(tokens);
+			assertEquals(4, tokens.length);
+			assertEquals("This", tokens[0]);
+			assertEquals("is", tokens[1]);
+			assertEquals("a", tokens[2]);
+			assertEquals("test", tokens[3]);
+		}
+		
+		public function testTokenizeToArray2():void {
+			var tokens:Array = StringUtils.tokenizeToArray("a,b;c d", ",; ");
+			assertNotNull(tokens);
+			assertEquals(4, tokens.length);
+			assertEquals("a", tokens[0]);
+			assertEquals("b", tokens[1]);
+			assertEquals("c", tokens[2]);
+			assertEquals("d", tokens[3]);
+		}
 	}
 }

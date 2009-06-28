@@ -27,32 +27,13 @@ package org.as3commons.lang.builder {
 	 * @author Christophe Herreman
 	 */
 	public class EqualsBuilderTest extends TestCase {
-		// please note that all test methods should start with 'test' and should be public
-		
-		// Reference declaration for class to test
-		private var classToTestRef:org.as3commons.lang.builder.EqualsBuilder;
-		
-		private var builder:EqualsBuilder;
-		
 		
 		public function EqualsBuilderTest(methodName:String = null) {
 			super(methodName);
 		}
 		
-		override public function setUp():void {
-			//TODO: implement function
-			super.setUp();
-			builder = new EqualsBuilder();
-		}
-		
-		//This method will be called after every test function
-		override public function tearDown():void {
-			//TODO: implement function
-			super.tearDown();
-		}
-		
 		public function testEquals_shouldBeTrueForNewEqualsBuilder():void {
-			assertTrue(builder.equals);
+			assertTrue(new EqualsBuilder().equals);
 		}
 		
 		public function testEquals_null():void {
@@ -122,8 +103,8 @@ package org.as3commons.lang.builder {
 		}
 		
 		public function testEquals_xml():void {
-			assertTrue(new EqualsBuilder().append(<a><b/></a>,                    <a><b/></a>).equals);
-			assertTrue(new EqualsBuilder().append(<a><b/></a>,                    <a><b></b></a>).equals);
+			assertTrue(new EqualsBuilder().append(<a><b/></a>,                     <a><b/></a>).equals);
+			assertTrue(new EqualsBuilder().append(<a><b/></a>,                     <a><b></b></a>).equals);
 		}
 		
 		public function testEquals_xmlList():void {
