@@ -4,7 +4,7 @@ package org.as3commons.lang {
 	
 	public class XMLUtilsTest extends TestCase {
 		
-		private var xml;
+		private var xml:XML;
 		
 		public function XMLUtilsTest(methodName:String = null) {
 			super(methodName);
@@ -14,7 +14,7 @@ package org.as3commons.lang {
 			super.setUp();
 			XML.ignoreComments = false;
 			XML.ignoreProcessingInstructions = false;
-			xml =  <example id="10">
+			xml =   <example id="10">
 					<!-- this is a comment -->
 					<?test this is a pi ?>
 					and some text
