@@ -2158,14 +2158,15 @@ package org.as3commons.lang {
 		
 		/**
 		 * Returns if the given character is a white space or not.
-		 */ /*public static function isWhitespace(a:String):Boolean {
-		   return (a.charCodeAt(0) <= 32);
-		 }*/
+		 */
+		public static function characterIsWhitespace(a:String):Boolean {
+			return (a.charCodeAt(0) <= 32);
+		}
 		
 		/**
 		 * Returns if the given character is a digit or not.
 		 */
-		public static function isDigit(a:String):Boolean {
+		public static function characterIsDigit(a:String):Boolean {
 			var charCode:Number = a.charCodeAt(0);
 			return (charCode >= 48 && charCode <= 57);
 		}
@@ -2212,7 +2213,7 @@ package org.as3commons.lang {
 				cb = b.charAt(ib);
 				
 				// skip over leading spaces or zeros
-				while (StringUtils.isWhitespace(ca) || ca == "0") {
+				while (StringUtils.characterIsWhitespace(ca) || ca == "0") {
 					if (ca == "0") {
 						nza++;
 					} else {
@@ -2223,7 +2224,7 @@ package org.as3commons.lang {
 					ca = a.charAt(++ia);
 				}
 				
-				while (StringUtils.isWhitespace(cb) || cb == "0") {
+				while (StringUtils.characterIsWhitespace(cb) || cb == "0") {
 					if (cb == "0") {
 						nzb++;
 					} else {
@@ -2235,7 +2236,7 @@ package org.as3commons.lang {
 				}
 				
 				// process run of digits
-				if (StringUtils.isDigit(ca) && StringUtils.isDigit(cb)) {
+				if (StringUtils.characterIsDigit(ca) && StringUtils.characterIsDigit(cb)) {
 					if ((result = compareRight(a.substring(ia), b.substring(ib))) != 0) {
 						return result;
 					}
@@ -2289,11 +2290,11 @@ package org.as3commons.lang {
 				ca = a.charAt(ia);
 				cb = b.charAt(ib);
 				
-				if (!StringUtils.isDigit(ca) && !StringUtils.isDigit(cb)) {
+				if (!StringUtils.characterIsDigit(ca) && !StringUtils.characterIsDigit(cb)) {
 					return bias;
-				} else if (!StringUtils.isDigit(ca)) {
+				} else if (!StringUtils.characterIsDigit(ca)) {
 					return -1;
-				} else if (!StringUtils.isDigit(cb)) {
+				} else if (!StringUtils.characterIsDigit(cb)) {
 					return +1;
 				} else if (ca < cb) {
 					if (bias == 0) {
