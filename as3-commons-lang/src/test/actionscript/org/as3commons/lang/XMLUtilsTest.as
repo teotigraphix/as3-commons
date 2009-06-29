@@ -4,16 +4,27 @@ package org.as3commons.lang {
 	
 	public class XMLUtilsTest extends TestCase {
 		
-		private var xml:XML =                <example id="10">
-				<!-- this is a comment -->
-				<?test this is a pi ?>
-				and some text
-			</example>;
+		private var xml;
 		
 		public function XMLUtilsTest(methodName:String = null) {
 			super(methodName);
+		}
+		
+		override public function setUp():void {
+			super.setUp();
 			XML.ignoreComments = false;
 			XML.ignoreProcessingInstructions = false;
+			xml =  <example id="10">
+					<!-- this is a comment -->
+					<?test this is a pi ?>
+					and some text
+				</example>;
+		}
+		
+		override public function tearDown():void {
+			super.tearDown();
+			XML.ignoreComments = true;
+			XML.ignoreProcessingInstructions = true;
 		}
 		
 		public function testIsElementNode():void {
