@@ -182,5 +182,19 @@ package org.as3commons.lang {
 			var c:Class = ClassUtils.forInstance(object);
 			return (c == clazz);
 		}
+		
+		/**
+		 * Returns the class name of the given object.
+		 */
+		public static function getClassName(object:Object):String {
+			return ClassUtils.getName(ClassUtils.forInstance(object));
+		}
+		
+		/**
+		 * Returns the fully qualified class name of the given object.
+		 */
+		public static function getFullyQualifiedClassName(object:Object, replaceColons:Boolean = false):String {
+			return ClassUtils.getFullyQualifiedName(ClassUtils.forInstance(object), replaceColons);
+		}
 	}
 }
