@@ -17,6 +17,8 @@ package org.as3commons.lang {
 	
 	import flash.utils.getQualifiedClassName;
 	
+	import org.as3commons.lang.builder.EqualsBuilder;
+	
 	/**
 	 * Base class for enumerations.
 	 *
@@ -38,9 +40,9 @@ package org.as3commons.lang {
 		 * As its keys, the fully qualified name of the enum class is used.
 		 * As its values, another map is used to map the individual enum values,
 		 * from name to enum instance.
-		 * 
+		 *
 		 * Example:
-		 * 
+		 *
 		 * 	{
 		 * 		"com.domain.Color":
 		 * 			{
@@ -62,16 +64,18 @@ package org.as3commons.lang {
 		 * A map with the value arrays of the Enum types in memory.
 		 * As its keys, the fully qualified name of the enum class is used.
 		 * As its values, an array with the enum values of a Enum class is used.
-		 * 
+		 *
 		 * Example:
-		 * 
+		 *
 		 * 	{
 		 * 		"com.domain.Color": [Color.RED, Color.GREEN, Color.BLUE]
 		 * 	}
 		 */
-		private static var _valueArrays:Object /* <String, > */ = {};
+		private static var _valueArrays:Object /* <String, Array> */ = {};
 		
 		private var _name:String;
+		
+		private var _index:int = -1;
 		
 		private var _declaringClassName:String;
 		
@@ -100,11 +104,8 @@ package org.as3commons.lang {
 			
 			var className:String = getQualifiedClassName(clazz);
 			
-			Assert.notNull(_values[className], "Enum values for the class '" + clazz + "' do not exist");
+			Assert.notNull(_valueArrays[className], "Enum values for the class '" + clazz + "' do not exist");
 			
-			if ((_valueArrays[className] as Array).length == 0) {
-				_valueArrays[className] = ObjectUtils.getProperties(_values[getQualifiedClassName(clazz)]);
-			}
 			return _valueArrays[className];
 		}
 		
@@ -127,6 +128,28 @@ package org.as3commons.lang {
 		}
 		
 		/**
+		 * Returns the index of the given enum, based on equality using the equals method.
+		 *
+		 * @return the index of the enum
+		 */
+		public static function getIndex(enum:Enum):int {
+			Assert.notNull(enum, "The enum must not be null");
+			
+			var className:String = getQualifiedClassName(enum);
+			var values:Array = _valueArrays[className];
+			
+			Assert.notNull(values, "Enum values for the class name '" + className + "' do not exist");
+			
+			for each (var e:Enum in values) {
+				if (e.equals(enum)) {
+					return e.index;
+				}
+			}
+			
+			return -1;
+		}
+		
+		/**
 		 * Returns the name of this enum.
 		 */
 		final public function get name():String {
@@ -141,24 +164,14 @@ package org.as3commons.lang {
 			
 			_name = StringUtils.trim(value);
 			
-			// add the enum value if we have a valid name
-			// this will only happen once for each unique enum value that is not null or empty
-			if (!StringUtils.isEmpty(name)) {
-				// create the map to store the enum values for this class
-				if (!_values[declaringClassName]) {
-					_values[declaringClassName] = {};
-				}
-				
-				// add this enum value
-				if (!_values[declaringClassName][name]) {
-					_values[declaringClassName][name] = this;
-				}
-				
-				// create the value array for this class
-				if (!_valueArrays[declaringClassName]) {
-					_valueArrays[declaringClassName] = [];
-				}
-			}
+			initializeEnum(name);
+		}
+		
+		/**
+		 *
+		 */
+		final public function get index():int {
+			return _index;
 		}
 		
 		/**
@@ -189,11 +202,15 @@ package org.as3commons.lang {
 			}
 			
 			// types do not match?
-			if (!(other is ClassUtils.forInstance(this))) {
-				return false;
-			}
+			/*if (!(other is ClassUtils.forInstance(this))) {
+			   return false;
+			 }*/
 			
-			return (name == Enum(other).name);
+			var that:Enum = Enum(other);
+			return new EqualsBuilder()
+				.append(declaringClassName, that.declaringClassName)
+				.append(name, that.name)
+				.equals;
 		}
 		
 		/**
@@ -204,6 +221,38 @@ package org.as3commons.lang {
 			var className:String = ClassUtils.getName(clazz);
 			return ("[" + className + "(" + name + ")]");
 		}
+		
+		/**
+		 * Initiliazes the enum value.
+		 */
+		private function initializeEnum(name:String):void {
+			// add the enum value if we have a valid name
+			// this will only happen once for each unique enum value that is not null or empty
+			if (!StringUtils.isEmpty(name)) {
+				// create the lookup maps to store the enum values for this class
+				if (!_values[declaringClassName]) {
+					_values[declaringClassName] = {};
+					_valueArrays[declaringClassName] = [];
+				}
+				
+				var equalityIndex:int = Enum.getIndex(this);
+				
+				// if this is a new enum, set its index to the number of same enum types
+				// and add it to the lookup maps
+				if (equalityIndex == -1) {
+					// set the index on the enum
+					_index = _valueArrays[declaringClassName].length;
+					
+					// add the enum to the values array
+					_values[declaringClassName][name] = this;
+					_valueArrays[declaringClassName].push(this);
+				} else {
+					// this enum is already created, set its index to the one found
+					_index = equalityIndex;
+				}
+			}
+		}
+	
 	
 	}
 }
