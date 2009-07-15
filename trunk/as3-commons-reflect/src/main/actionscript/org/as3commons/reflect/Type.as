@@ -49,7 +49,8 @@ package org.as3commons.reflect {
 	 * <code>var type:Type = Type.forName("MyClass");</code>
 	 * </p>
 	 *
-	 * @author Christophe Herreman, Martino Piccinato
+	 * @author Christophe Herreman
+	 * @author Martino Piccinato
 	 */
 	public class Type extends MetaDataContainer {
 		
@@ -61,49 +62,13 @@ package org.as3commons.reflect {
 		
 		private static var _cache:Object = {};
 		
-		private static var LOGGER:ILogger = LoggerFactory.getClassLogger(Type);
+		private static var logger:ILogger = LoggerFactory.getClassLogger(Type);
 		
-		private var _name:String;
-		
-		private var _fullName:String;
-		
-		private var _isDynamic:Boolean;
-		
-		private var _isFinal:Boolean;
-		
-		private var _isStatic:Boolean;
-		
-		private var _constructor:Constructor;
-		
-		private var _methods:Array;
-		
-		private var _accessors:Array;
-		
-		private var _staticConstants:Array;
-		
-		private var _constants:Array;
-		
-		private var _staticVariables:Array;
-		
-		private var _variables:Array;
-		
-		private var _fields:Array;
-		
-		private var _class:Class;
-		
-		/**
-		 * Creates a new <code>Type</code> instance.
-		 */
-		public function Type() {
-			super();
-			_methods = [];
-			_accessors = [];
-			_staticConstants = [];
-			_constants = [];
-			_staticVariables = [];
-			_variables = [];
-			_fields = [];
-		}
+		// --------------------------------------------------------------------
+		//
+		// Static Methods
+		//
+		// --------------------------------------------------------------------
 		
 		/**
 		 * Returns a <code>Type</code> object that describes the given instance.
@@ -142,7 +107,7 @@ package org.as3commons.reflect {
 					try {
 						result = Type.forClass(Class(getDefinitionByName(name)));
 					} catch (e:ReferenceError) {
-						LOGGER.warn("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
+						logger.warn("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
 					}
 			
 			}
@@ -162,6 +127,7 @@ package org.as3commons.reflect {
 				result = _cache[fullyQualifiedClassName];
 			} else {
 				result = new Type();
+				
 				// Add the Type to the cache before assigning any values to prevent looping.
 				// Due to the work-around implemented for constructor argument types
 				// in _getTypeDescription(), an instance is created, which could also
@@ -169,7 +135,7 @@ package org.as3commons.reflect {
 				// Therefore it is important to seed the cache before calling
 				// _getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
 				_cache[fullyQualifiedClassName] = result;
-				var description:XML = _getTypeDescription(clazz);
+				var description:XML = getTypeDescription(clazz);
 				result.fullName = fullyQualifiedClassName;
 				result.name = org.as3commons.lang.ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
 				result.clazz = clazz;
@@ -184,10 +150,397 @@ package org.as3commons.reflect {
 				result.staticVariables = TypeXmlParser.parseMembers(Variable, description.variable, fullyQualifiedClassName, true);
 				result.variables = TypeXmlParser.parseMembers(Variable, description.factory.variable, fullyQualifiedClassName, false);
 				TypeXmlParser.parseMetaData(description.factory[0].metadata, result);
+				
+				// Combine metadata from implemented interfaces
+				var interfaces:Array = org.as3commons.lang.ClassUtils.getImplementedInterfaces(result.clazz);
+				var numInterfaces:int = interfaces.length;
+				
+				for (var i:int = 0; i < numInterfaces; i++) {
+					var interfaze:Type = Type.forClass(interfaces[i]);
+					concatMetadata(result, interfaze.methods, "methods");
+					concatMetadata(result, interfaze.accessors, "accessors");
+					var interfaceMetaData:Array = interfaze.metaData;
+					var numMetaData:int = interfaceMetaData.length;
+					
+					for (var j:int = 0; j < numMetaData; j++) {
+						result.addMetaData(interfaceMetaData[j]);
+					}
+				}
 			}
 			
 			return result;
 		}
+		
+		/**
+		 *
+		 */
+		private static function concatMetadata(type:Type, metaDataContainers:Array, propertyName:String):void {
+			for each (var container:IMetaDataContainer in metaDataContainers) {
+				type[propertyName].some(function(item:Object, index:int, arr:Array):Boolean {
+						if (item.name == Object(container).name) {
+							var metaDataList:Array = container.metaData;
+							var numMetaData:int = metaDataList.length;
+							
+							for (var j:int = 0; j < numMetaData; j++) {
+								item.addMetaData(metaDataList[j]);
+							}
+							return true;
+						}
+						return false;
+					});
+			}
+		}
+		
+		/**
+		 * Get XML clazz description as given by flash.utils.describeType
+		 * using a workaround for bug http://bugs.adobe.com/jira/browse/FP-183
+		 * that in certain cases do not allow to retrieve complete constructor
+		 * description.
+		 */
+		private static function getTypeDescription(clazz:Class):XML {
+			var description:XML = describeType(clazz);
+			
+			// Workaround for bug http://bugs.adobe.com/jira/browse/FP-183
+			var constructorXML:XMLList = description.factory.constructor;
+			
+			if (constructorXML && constructorXML.length() > 0) {
+				var parametersXML:XMLList = constructorXML[0].parameter;
+				
+				if (parametersXML && parametersXML.length() > 0) {
+					// Instantiate class with all null arguments.
+					var args:Array = [];
+					
+					for (var n:int = 0; n < parametersXML.length(); n++) {
+						args.push(null);
+					}
+					
+					// As the constructor may throw Errors on null arguments arguments 
+					// surround it with a try/catch block
+					try {
+						org.as3commons.lang.ClassUtils.newInstance(clazz, args);
+					} catch (e:Error) {
+						// Logging is set to debug level as any Error ocurring here shouldn't 
+						// cause any problem to the application
+						logger.debug("Error while instantiating class {0} with null arguments in order to retrieve constructor argument types: {1}, {2}" +
+									 "\nMessage: {3}" + "\nStack trace: {4}", clazz, e.name, e.errorID, e.message, e.getStackTrace());
+					}
+					
+					description = describeType(clazz);
+				}
+			}
+			
+			return description;
+		}
+		
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
+		
+		/**
+		 * Creates a new <code>Type</code> instance.
+		 */
+		public function Type() {
+			super();
+			_methods = [];
+			_accessors = [];
+			_staticConstants = [];
+			_constants = [];
+			_staticVariables = [];
+			_variables = [];
+		}
+		
+		// --------------------------------------------------------------------
+		//
+		// Properties
+		//
+		// --------------------------------------------------------------------
+		
+		// ----------------------------
+		// name
+		// ----------------------------
+		
+		private var _name:String;
+		
+		/**
+		 * The name of the type
+		 */
+		public function get name():String {
+			return _name;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set name(value:String):void {
+			_name = value;
+		}
+		
+		// ----------------------------
+		// fullName
+		// ----------------------------
+		
+		private var _fullName:String;
+		
+		/**
+		 * The fully qualified name of the type, this includes the namespace
+		 */
+		public function get fullName():String {
+			return _fullName;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set fullName(value:String):void {
+			_fullName = value;
+		}
+		
+		// ----------------------------
+		// clazz
+		// ----------------------------
+		
+		private var _class:Class;
+		
+		/**
+		 * The Class of the <code>Type</code>
+		 */
+		public function get clazz():Class {
+			return _class;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set clazz(value:Class):void {
+			_class = value;
+		}
+		
+		// ----------------------------
+		// isDynamic
+		// ----------------------------
+		
+		private var _isDynamic:Boolean;
+		
+		/**
+		 * True if the <code>Type</code> is dynamic
+		 */
+		public function get isDynamic():Boolean {
+			return _isDynamic;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set isDynamic(value:Boolean):void {
+			_isDynamic = value;
+		}
+		
+		// ----------------------------
+		// isFinal
+		// ----------------------------
+		
+		private var _isFinal:Boolean;
+		
+		/**
+		 * True if the <code>Type</code> is final
+		 */
+		public function get isFinal():Boolean {
+			return _isFinal;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set isFinal(value:Boolean):void {
+			_isFinal = value;
+		}
+		
+		// ----------------------------
+		// isStatic
+		// ----------------------------
+		
+		private var _isStatic:Boolean;
+		
+		/**
+		 * True if the <code>Type</code> is static
+		 */
+		public function get isStatic():Boolean {
+			return _isStatic;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set isStatic(value:Boolean):void {
+			_isStatic = value;
+		}
+		
+		// ----------------------------
+		// constructor
+		// ----------------------------
+		
+		private var _constructor:Constructor;
+		
+		/**
+		 * A reference to a <code>Constructor</code> instance that describes the constructor of the <code>Type</code>
+		 * @see org.as3commons.reflect.Constructor Constructor
+		 */
+		public function get constructor():Constructor {
+			return _constructor;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set constructor(constructor:Constructor):void {
+			_constructor = constructor;
+		}
+		
+		// ----------------------------
+		// accessors
+		// ----------------------------
+		
+		private var _accessors:Array;
+		
+		/**
+		 * An array of <code>Accessor</code> instances
+		 * @see org.as3commons.reflect.Accessor Accessor
+		 */
+		public function get accessors():Array {
+			return _accessors;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set accessors(value:Array):void {
+			_accessors = value;
+		}
+		
+		// ----------------------------
+		// methods
+		// ----------------------------
+		
+		private var _methods:Array;
+		
+		/**
+		 * An array of <code>Method</code> instances
+		 * @see org.as3commons.reflect.Method Method
+		 */
+		public function get methods():Array {
+			return _methods;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set methods(value:Array):void {
+			_methods = value;
+		}
+		
+		// ----------------------------
+		// staticConstants
+		// ----------------------------
+		
+		private var _staticConstants:Array;
+		
+		/**
+		 * An array of <code>IMember</code> instances that describe the static constants of the <code>Type</code>
+		 * @see org.as3commons.reflect.IMember IMember
+		 */
+		public function get staticConstants():Array {
+			return _staticConstants;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set staticConstants(value:Array):void {
+			_staticConstants = value;
+		}
+		
+		// ----------------------------
+		// constants
+		// ----------------------------
+		
+		private var _constants:Array;
+		
+		/**
+		 * An array of <code>IMember</code> instances that describe the constants of the <code>Type</code>
+		 * @see org.as3commons.reflect.IMember IMember
+		 */
+		public function get constants():Array {
+			return _constants;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set constants(value:Array):void {
+			_constants = value;
+		}
+		
+		// ----------------------------
+		// staticVariables
+		// ----------------------------
+		
+		private var _staticVariables:Array;
+		
+		/**
+		 * An array of <code>IMember</code> instances that describe the static variables of the <code>Type</code>
+		 * @see org.as3commons.reflect.IMember IMember
+		 */
+		public function get staticVariables():Array {
+			return _staticVariables;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set staticVariables(value:Array):void {
+			_staticVariables = value;
+		}
+		
+		// ----------------------------
+		// variables
+		// ----------------------------
+		
+		private var _variables:Array;
+		
+		/**
+		 * An array of <code>IMember</code> instances that describe the variables of the <code>Type</code>
+		 * @see org.as3commons.reflect.IMember IMember
+		 */
+		public function get variables():Array {
+			return _variables;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set variables(value:Array):void {
+			_variables = value;
+		}
+		
+		// ----------------------------
+		// fields
+		// ----------------------------
+		
+		/**
+		 * An array of all the static constants, constants, static variables and variables of the <code>Type</code>
+		 * @see org.as3commons.reflect.IMember IMember
+		 */
+		public function get fields():Array {
+			return accessors.concat(staticConstants).concat(constants).concat(staticVariables).concat(variables);
+		}
+		
+		// --------------------------------------------------------------------
+		//
+		// Public Methods
+		//
+		// --------------------------------------------------------------------
 		
 		/**
 		 * Returns the <code>Method</code> object for the method in this type
@@ -223,154 +576,6 @@ package org.as3commons.reflect {
 				}
 			}
 			return result;
-		}
-		
-		public function get name():String {
-			return _name;
-		}
-		
-		public function set name(value:String):void {
-			_name = value;
-		}
-		
-		public function get fullName():String {
-			return _fullName;
-		}
-		
-		public function set fullName(value:String):void {
-			_fullName = value;
-		}
-		
-		public function get clazz():Class {
-			return _class;
-		}
-		
-		public function set clazz(value:Class):void {
-			_class = value;
-		}
-		
-		public function get isDynamic():Boolean {
-			return _isDynamic;
-		}
-		
-		public function set isDynamic(value:Boolean):void {
-			_isDynamic = value;
-		}
-		
-		public function get isFinal():Boolean {
-			return _isFinal;
-		}
-		
-		public function set isFinal(value:Boolean):void {
-			_isFinal = value;
-		}
-		
-		public function get isStatic():Boolean {
-			return _isStatic;
-		}
-		
-		public function set isStatic(value:Boolean):void {
-			_isStatic = value;
-		}
-		
-		public function get constructor():Constructor {
-			return _constructor;
-		}
-		
-		public function set constructor(constructor:Constructor):void {
-			_constructor = constructor;
-		}
-		
-		public function get accessors():Array {
-			return _accessors;
-		}
-		
-		public function set accessors(value:Array):void {
-			_accessors = value;
-		}
-		
-		public function get methods():Array {
-			return _methods;
-		}
-		
-		public function set methods(value:Array):void {
-			_methods = value;
-		}
-		
-		public function get staticConstants():Array {
-			return _staticConstants;
-		}
-		
-		public function set staticConstants(value:Array):void {
-			_staticConstants = value;
-		}
-		
-		public function get constants():Array {
-			return _constants;
-		}
-		
-		public function set constants(value:Array):void {
-			_constants = value;
-		}
-		
-		public function get staticVariables():Array {
-			return _staticVariables;
-		}
-		
-		public function set staticVariables(value:Array):void {
-			_staticVariables = value;
-		}
-		
-		public function get variables():Array {
-			return _variables;
-		}
-		
-		public function set variables(value:Array):void {
-			_variables = value;
-		}
-		
-		public function get fields():Array {
-			return accessors.concat(staticConstants).concat(constants).concat(staticVariables).concat(variables);
-		}
-		
-		/**
-		 * Get XML clazz description as given by flash.utils.describeType
-		 * using a workaround for bug http://bugs.adobe.com/jira/browse/FP-183
-		 * that in certain cases do not allow to retrieve complete constructor
-		 * description.
-		 */
-		private static function _getTypeDescription(clazz:Class):XML {
-			var description:XML = describeType(clazz);
-			
-			// Workaround for bug http://bugs.adobe.com/jira/browse/FP-183
-			var constructorXML:XMLList = description.factory.constructor;
-			
-			if (constructorXML && constructorXML.length() > 0) {
-				var parametersXML:XMLList = constructorXML[0].parameter;
-				
-				if (parametersXML && parametersXML.length() > 0) {
-					// Instantiate class with all null arguments.
-					var args:Array = [];
-					
-					for (var n:int = 0; n < parametersXML.length(); n++) {
-						args.push(null);
-					}
-					
-					// As the constructor may throw Errors on null arguments arguments 
-					// surround it with a try/catch block
-					try {
-						org.as3commons.lang.ClassUtils.newInstance(clazz, args);
-					} catch (e:Error) {
-						// Logging is set to debug level as any Error ocurring here shouldn't 
-						// cause any problem to the application
-						LOGGER.debug("Error while instantiating class {0} with null arguments in order to retrieve constructor argument types: {1}, {2}" + "\nMessage: {3}" + "\nStack trace: {4}", clazz, e.name, e.errorID, e.message, e.getStackTrace());
-					}
-					
-					description = describeType(clazz);
-				}
-			}
-			
-			return description;
 		}
 	
 	}
