@@ -158,6 +158,31 @@ package org.as3commons.lang {
 		}
 		
 		/**
+		 * Returns the index of the given item in the array based on equality via the equals method
+		 * of the IEquals interface.
+		 *
+		 * <p>If either the array or the item are null, -1 is returned.</p>
+		 *
+		 * @param array the array to search for the index of the item
+		 * @param item the item to search for
+		 * @return The index of the item, or -1 if the item was not found or if either the array or the item are null
+		 */
+		public static function indexOfEquals(array:Array, item:IEquals):int {
+			if (!array || !item) {
+				return -1;
+			}
+			
+			var numItems:int = array.length;
+			
+			for (var i:int = 0; i < numItems; i++) {
+				if (item.equals(array[i])) {
+					return i;
+				}
+			}
+			return -1;
+		}
+		
+		/**
 		 * Returns a string from the given array, using the specified separator.
 		 *
 		 * @param array the array from which to return a string
