@@ -4,7 +4,7 @@ AS3COMMONS LOGGING CHANGELOG
 Note: dates are in DD.MM.YYYY format
 
 
-Changes in version 1.1 (??.07.2009)
+Changes in version 1.1 (27.07.2009)
 -----------------------------------
 
 Package org.as3commons.logging
