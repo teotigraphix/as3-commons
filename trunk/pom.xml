@@ -69,7 +69,7 @@
 		<dependency>
 			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
-			<version>0.9</version>
+			<version>0.90</version>
 			<type>swc</type>
 		</dependency>
 		<dependency>
@@ -160,7 +160,7 @@
 	<repositories>
 		<repository>
 			<id>flexmojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/flex/</url>
+			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
 		</repository>
 		<repository>
 			<id>fna-repository</id>
@@ -177,7 +177,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>flexmojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/public/</url>
+			<url>http://repository.sonatype.org/content/groups/public</url>
 		</pluginRepository>
 	</pluginRepositories>
 
