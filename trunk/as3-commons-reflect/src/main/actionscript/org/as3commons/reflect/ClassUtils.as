@@ -36,6 +36,7 @@ package org.as3commons.reflect {
 	 *
 	 * @author Christophe Herreman
 	 */
+	[Deprecated(replacement="org.as3commons.lang.ClassUtils", since="1.1")]
 	public class ClassUtils {
 		
 		private static const PACKAGE_CLASS_SEPARATOR:String = "::";
@@ -44,16 +45,15 @@ package org.as3commons.reflect {
 		
 		/**
 		 * Returns a <code>Class</code> object that corresponds with the given
-		 * instance. If no correspoding class was found, a
+		 * instance. If no corresponding class was found, a
 		 * <code>ClassNotFoundError</code> will be thrown.
 		 *
 		 * @param instance the instance from which to return the class
 		 * @param applicationDomain the optional applicationdomain where the instance's class resides
 		 *
 		 * @return the <code>Class</code> that corresponds with the given instance
-		 *
-		 * @see org.springextensions.actionscript.errors.ClassNotFoundError
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.forInstance()", since="1.1")]
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):Class {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.forInstance(instance, applicationDomain);
@@ -71,7 +71,7 @@ package org.as3commons.reflect {
 		 *
 		 * @see org.springextensions.actionscript.errors.ClassNotFoundError
 		 */
-		[Deprecated("org.as3commons.lang.ClassUtils.forName()")]
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.forName()", since="1.1")]
 		public static function forName(name:String, applicationDomain:ApplicationDomain = null):Class {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.forName(name, applicationDomain);
@@ -84,6 +84,7 @@ package org.as3commons.reflect {
 		 *
 		 * @return the name of the class
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.getName()", since="1.1")]
 		public static function getName(clazz:Class):String {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.getName(clazz);
@@ -97,6 +98,7 @@ package org.as3commons.reflect {
 		 *
 		 * @return the name of the class or interface
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.getNameFromFullyQualifiedName()", since="1.1")]
 		public static function getNameFromFullyQualifiedName(fullyQualifiedName:String):String {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedName);
@@ -111,6 +113,7 @@ package org.as3commons.reflect {
 		 *
 		 * @return the fully qualified name of the class
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.getFullyQualifiedName()", since="1.1")]
 		public static function getFullyQualifiedName(clazz:Class, replaceColons:Boolean = false):String {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.getFullyQualifiedName(clazz, replaceColons);
@@ -122,6 +125,7 @@ package org.as3commons.reflect {
 		 *
 		 * @return the boolean value indicating whether objects of the type clazz2 can be assigned to objects of clazz1
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.isAssignableFrom()", since="1.1")]
 		public static function isAssignableFrom(clazz1:Class, clazz2:Class):Boolean {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.isAssignableFrom(clazz1, clazz2);
@@ -132,6 +136,7 @@ package org.as3commons.reflect {
 		 * passed in parent Class. To check if an interface extends another interface, use the isImplementationOf()
 		 * method instead.
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.isSubclassOf()", since="1.1")]
 		public static function isSubclassOf(clazz:Class, parentClass:Class):Boolean {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.isSubclassOf(clazz, parentClass);
@@ -145,6 +150,7 @@ package org.as3commons.reflect {
 		 *
 		 * @returns the super class or null if no parent class was found
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.getSuperClass()", since="1.1")]
 		public static function getSuperClass(clazz:Class):Class {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.getSuperClass(clazz);
@@ -157,6 +163,7 @@ package org.as3commons.reflect {
 		 *
 		 * @return the name of the class' superclass
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.getSuperClassName()", since="1.1")]
 		public static function getSuperClassName(clazz:Class):String {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.getSuperClassName(clazz);
@@ -171,6 +178,7 @@ package org.as3commons.reflect {
 		 *
 		 * @return the fully qualified name of the class' superclass
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.getFullyQualifiedSuperClassName()", since="1.1")]
 		public static function getFullyQualifiedSuperClassName(clazz:Class, replaceColons:Boolean = false):String {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.getFullyQualifiedSuperClassName(clazz, replaceColons);
@@ -185,6 +193,7 @@ package org.as3commons.reflect {
 		 *
 		 * @return true if the clazz object implements the given interface; false if not
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.isImplementationOf()", since="1.1")]
 		public static function isImplementationOf(clazz:Class, interfaze:Class):Boolean {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.isImplementationOf(clazz, interfaze);
@@ -196,6 +205,7 @@ package org.as3commons.reflect {
 		 * @param clazz the class to check
 		 * @return true if the clazz is an interface; false if not
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.isInterface()", since="1.1")]
 		public static function isInterface(clazz:Class):Boolean {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.isInterface(clazz);
@@ -204,6 +214,7 @@ package org.as3commons.reflect {
 		/**
 		 * Returns an array of all interface names that the given class implements.
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.getImplementedInterfaceNames()", since="1.1")]
 		public static function getImplementedInterfaceNames(clazz:Class):Array {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.getImplementedInterfaceNames(clazz);
@@ -213,6 +224,7 @@ package org.as3commons.reflect {
 		 * Returns an array of all fully qualified interface names that the
 		 * given class implements.
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.getFullyQualifiedImplementedInterfaceNames()", since="1.1")]
 		public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean = false):Array {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.getFullyQualifiedImplementedInterfaceNames(clazz, replaceColons);
@@ -221,6 +233,7 @@ package org.as3commons.reflect {
 		/**
 		 * Returns an array of all interface names that the given class implements.
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.getImplementedInterfaces()", since="1.1")]
 		public static function getImplementedInterfaces(clazz:Class):Array {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.getImplementedInterfaces(clazz);
@@ -236,6 +249,7 @@ package org.as3commons.reflect {
 		 * @param clazz the class from which an instance will be created
 		 * @param args the arguments that need to be passed to the constructor
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.newInstance()", since="1.1")]
 		public static function newInstance(clazz:Class, args:Array = null):* {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.newInstance(clazz, args);
@@ -244,6 +258,7 @@ package org.as3commons.reflect {
 		/**
 		 * Converts the double colon (::) in a fully qualified class name to a dot (.)
 		 */
+		[Deprecated(replacement="org.as3commons.lang.ClassUtils.convertFullyQualifiedName()", since="1.1")]
 		public static function convertFullyQualifiedName(className:String):String {
 			logDeprecation();
 			return org.as3commons.lang.ClassUtils.convertFullyQualifiedName(className);
