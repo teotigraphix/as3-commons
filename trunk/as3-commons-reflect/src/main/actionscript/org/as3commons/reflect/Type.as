@@ -142,6 +142,7 @@ package org.as3commons.reflect {
 				result.isDynamic = description.@isDynamic;
 				result.isFinal = description.@isFinal;
 				result.isStatic = description.@isStatic;
+				result.isInterface = (clazz === Object) ? false : (description.factory.extendsClass.length() == 0);
 				result.constructor = TypeXmlParser.parseConstructor(result, description.factory.constructor);
 				result.accessors = TypeXmlParser.parseAccessors(result, description);
 				result.methods = TypeXmlParser.parseMethods(result, description);
@@ -375,6 +376,26 @@ package org.as3commons.reflect {
 		 */
 		public function set isStatic(value:Boolean):void {
 			_isStatic = value;
+		}
+
+		// ----------------------------
+		// isInterface
+		// ----------------------------
+
+		private var _isInterface:Boolean;
+
+		/**
+		 * True if the <code>Type</code> is an interface
+		 */
+		public function get isInterface():Boolean {
+			return _isInterface;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set isInterface(value:Boolean):void {
+			_isInterface = value;
 		}
 		
 		// ----------------------------
