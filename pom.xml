@@ -57,6 +57,7 @@
 		<module>as3-commons-lang</module>
 		<module>as3-commons-logging</module>
 		<module>as3-commons-reflect</module>
+		<module>as3-commons-concurrency</module>
 	</modules>
 
 	<dependencies>
