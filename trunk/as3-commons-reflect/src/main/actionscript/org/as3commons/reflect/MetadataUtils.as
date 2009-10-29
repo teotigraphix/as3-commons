@@ -22,10 +22,12 @@
 package org.as3commons.reflect {
 
   import flash.events.TimerEvent;
+  import flash.system.ApplicationDomain;
   import flash.utils.Timer;
   import flash.utils.describeType;
-  import flash.utils.getDefinitionByName;
   import flash.utils.getQualifiedClassName;
+  
+  import org.as3commons.lang.ClassUtils;
 
   /**
    * This class provides utility methods concerning metadata. Retrieved metadata is cached and cleared with the
@@ -111,8 +113,9 @@ package org.as3commons.reflect {
      * @param className    The name of the class that you want to retrieve metadata from. The className
      *             may be in the following forms: package.Class or package::Class
      */
-    static public function getFromString(className:String):XML {
-      var classDefinition:Class = getDefinitionByName(className) as Class;
+    static public function getFromString(className:String, applicationDomain:ApplicationDomain=null):XML {
+		applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+		var classDefinition:Class = org.as3commons.lang.ClassUtils.forName(className, applicationDomain);
 
       /*
         Calling getFromObject seems double, as it results in the getObjectMethod getting
