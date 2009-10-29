@@ -22,14 +22,10 @@
 package org.as3commons.reflect {
 	
 	import flash.system.ApplicationDomain;
-	import flash.utils.getDefinitionByName;
-	import flash.utils.getQualifiedClassName;
-	import flash.utils.getQualifiedSuperclassName;
 	
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
-	import org.as3commons.reflect.errors.ClassNotFoundError;
 	
 	/**
 	 * Provides utilities for working with <code>Class</code> objects.

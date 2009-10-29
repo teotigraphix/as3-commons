@@ -19,7 +19,6 @@ package org.as3commons.lang {
 	import flash.system.ApplicationDomain;
 	import flash.utils.Timer;
 	import flash.utils.describeType;
-	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.getQualifiedSuperclassName;
 	
@@ -439,8 +438,9 @@ package org.as3commons.lang {
 		 * @param className    The name of the class that you want to retrieve metadata from. The className
 		 *             may be in the following forms: package.Class or package::Class
 		 */
-		private static function getFromString(className:String):XML {
-			var classDefinition:Class = getDefinitionByName(className) as Class;
+		private static function getFromString(className:String, applicationDomain:ApplicationDomain=null):XML {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			var classDefinition:Class = forName(className, applicationDomain);
 			
 			// Calling getFromObject seems double, as it results in the getObjectMethod getting
 			// the class name using getQualifiedClassName. It however saves us a check on the
