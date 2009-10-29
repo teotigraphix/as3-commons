@@ -275,11 +275,12 @@ package org.as3commons.lang {
 		/**
 		 * Returns an array of all interface names that the given class implements.
 		 */
-		public static function getImplementedInterfaces(clazz:Class):Array {
+		public static function getImplementedInterfaces(clazz:Class, applicationDomain:ApplicationDomain=null):Array {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Array = getFullyQualifiedImplementedInterfaceNames(clazz);
 			
 			for (var i:int = 0; i < result.length; i++) {
-				result[i] = getDefinitionByName(result[i]);
+				result[i] = ClassUtils.forName(result[i],applicationDomain);
 			}
 			return result;
 		}

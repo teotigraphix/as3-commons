@@ -21,8 +21,8 @@
  */
 package org.as3commons.reflect {
 	
+	import flash.system.ApplicationDomain;
 	import flash.utils.describeType;
-	import flash.utils.getDefinitionByName;
 	
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.logging.ILogger;
@@ -75,7 +75,8 @@ package org.as3commons.reflect {
 		 *
 		 * @param instance the instance from which to get a type description
 		 */
-		public static function forInstance(instance:*):Type {
+		public static function forInstance(instance:*, applicationDomain:ApplicationDomain=null):Type {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Type;
 			var clazz:Class = org.as3commons.lang.ClassUtils.forInstance(instance);
 			
@@ -90,7 +91,8 @@ package org.as3commons.reflect {
 		 *
 		 * @param name the classname from which to get a type description
 		 */
-		public static function forName(name:String):Type {
+		public static function forName(name:String, applicationDomain:ApplicationDomain=null):Type {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Type;
 			
 			/*if(name.indexOf("$")!=-1){
@@ -105,11 +107,10 @@ package org.as3commons.reflect {
 					break;
 				default:
 					try {
-						result = Type.forClass(Class(getDefinitionByName(name)));
+						result = Type.forClass(org.as3commons.lang.ClassUtils.forName(name, applicationDomain));
 					} catch (e:ReferenceError) {
 						logger.warn("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
 					}
-			
 			}
 			return result;
 		}
@@ -119,7 +120,8 @@ package org.as3commons.reflect {
 		 *
 		 * @param clazz the class from which to get a type description
 		 */
-		public static function forClass(clazz:Class):Type {
+		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain=null):Type {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Type;
 			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(clazz);
 			
@@ -153,7 +155,7 @@ package org.as3commons.reflect {
 				TypeXmlParser.parseMetaData(description.factory[0].metadata, result);
 				
 				// Combine metadata from implemented interfaces
-				var interfaces:Array = org.as3commons.lang.ClassUtils.getImplementedInterfaces(result.clazz);
+				var interfaces:Array = org.as3commons.lang.ClassUtils.getImplementedInterfaces(result.clazz, applicationDomain);
 				var numInterfaces:int = interfaces.length;
 				
 				for (var i:int = 0; i < numInterfaces; i++) {
