@@ -78,10 +78,10 @@ package org.as3commons.reflect {
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain=null):Type {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Type;
-			var clazz:Class = org.as3commons.lang.ClassUtils.forInstance(instance);
+			var clazz:Class = org.as3commons.lang.ClassUtils.forInstance(instance, applicationDomain);
 			
 			if (clazz != null) {
-				result = Type.forClass(clazz);
+				result = Type.forClass(clazz, applicationDomain);
 			}
 			return result;
 		}
@@ -145,9 +145,9 @@ package org.as3commons.reflect {
 				result.isFinal = description.@isFinal;
 				result.isStatic = description.@isStatic;
 				result.isInterface = (clazz === Object) ? false : (description.factory.extendsClass.length() == 0);
-				result.constructor = TypeXmlParser.parseConstructor(result, description.factory.constructor);
+				result.constructor = TypeXmlParser.parseConstructor(result, description.factory.constructor,applicationDomain);
 				result.accessors = TypeXmlParser.parseAccessors(result, description);
-				result.methods = TypeXmlParser.parseMethods(result, description);
+				result.methods = TypeXmlParser.parseMethods(result, description, applicationDomain);
 				result.staticConstants = TypeXmlParser.parseMembers(Constant, description.constant, fullyQualifiedClassName, true);
 				result.constants = TypeXmlParser.parseMembers(Constant, description.factory.constant, fullyQualifiedClassName, false);
 				result.staticVariables = TypeXmlParser.parseMembers(Variable, description.variable, fullyQualifiedClassName, true);
@@ -159,7 +159,7 @@ package org.as3commons.reflect {
 				var numInterfaces:int = interfaces.length;
 				
 				for (var i:int = 0; i < numInterfaces; i++) {
-					var interfaze:Type = Type.forClass(interfaces[i]);
+					var interfaze:Type = Type.forClass(interfaces[i], applicationDomain);
 					concatMetadata(result, interfaze.methods, "methods");
 					concatMetadata(result, interfaze.accessors, "accessors");
 					var interfaceMetaData:Array = interfaze.metaData;
@@ -603,7 +603,6 @@ package org.as3commons.reflect {
 	
 	}
 }
-
 import org.as3commons.reflect.Type;
 import org.as3commons.reflect.IMetaDataContainer;
 import org.as3commons.reflect.AccessorAccess;
@@ -614,23 +613,23 @@ import org.as3commons.reflect.MetaDataArgument;
 import org.as3commons.reflect.MetaData;
 import org.as3commons.reflect.IMember;
 import org.as3commons.reflect.Constructor;
-
+import flash.system.ApplicationDomain;
 /**
  * Internal xml parser
  */
 class TypeXmlParser {
-	public static function parseConstructor(type:Type, constructorXML:XMLList):Constructor {
+	public static function parseConstructor(type:Type, constructorXML:XMLList, applicationDomain:ApplicationDomain):Constructor {
 		if (constructorXML.length() > 0) {
-			var params:Array = parseParameters(constructorXML[0].parameter);
+			var params:Array = parseParameters(constructorXML[0].parameter, applicationDomain);
 			return new Constructor(type, params);
 		} else {
 			return new Constructor(type);
 		}
 	}
 	
-	public static function parseMethods(type:Type, xml:XML):Array {
-		var classMethods:Array = parseMethodsByModifier(type, xml.method, true);
-		var instanceMethods:Array = parseMethodsByModifier(type, xml.factory.method, false);
+	public static function parseMethods(type:Type, xml:XML, applicationDomain:ApplicationDomain):Array {
+		var classMethods:Array = parseMethodsByModifier(type, xml.method, true, applicationDomain);
+		var instanceMethods:Array = parseMethodsByModifier(type, xml.factory.method, false, applicationDomain);
 		return classMethods.concat(instanceMethods);
 	}
 	
@@ -651,23 +650,23 @@ class TypeXmlParser {
 		return result;
 	}
 	
-	private static function parseMethodsByModifier(type:Type, methodsXML:XMLList, isStatic:Boolean):Array {
+	private static function parseMethodsByModifier(type:Type, methodsXML:XMLList, isStatic:Boolean, applicationDomain:ApplicationDomain):Array {
 		var result:Array = [];
 		
 		for each (var methodXML:XML in methodsXML) {
-			var params:Array = parseParameters(methodXML.parameter);
-			var method:Method = new Method(type, methodXML.@name, isStatic, params, Type.forName(methodXML.@returnType));
+			var params:Array = parseParameters(methodXML.parameter, applicationDomain);
+			var method:Method = new Method(type, methodXML.@name, isStatic, params, Type.forName(methodXML.@returnType,applicationDomain));
 			parseMetaData(methodXML.metadata, method);
 			result.push(method);
 		}
 		return result;
 	}
 	
-	private static function parseParameters(paramsXML:XMLList):Array {
+	private static function parseParameters(paramsXML:XMLList, applicationDomain:ApplicationDomain):Array {
 		var params:Array = [];
 		
 		for each (var paramXML:XML in paramsXML) {
-			var paramType:Type = Type.forName(paramXML.@type);
+			var paramType:Type = Type.forName(paramXML.@type, applicationDomain);
 			var param:Parameter = new Parameter(paramXML.@index, paramType, paramXML.@optional == "true" ? true : false);
 			params.push(param);
 		}
