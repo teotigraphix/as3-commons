@@ -23,7 +23,8 @@ package org.as3commons.reflect {
 	
 	import flash.system.ApplicationDomain;
 	import flash.utils.describeType;
-	
+
+	import org.as3commons.lang.ClassNotFoundError;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
@@ -110,6 +111,8 @@ package org.as3commons.reflect {
 						result = Type.forClass(org.as3commons.lang.ClassUtils.forName(name, applicationDomain));
 					} catch (e:ReferenceError) {
 						logger.warn("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
+					} catch (e:ClassNotFoundError) {
+						logger.warn("The class with the name '{0}' could not be found in the application domain '{1}'", name, applicationDomain);
 					}
 			}
 			return result;
@@ -132,10 +135,10 @@ package org.as3commons.reflect {
 				
 				// Add the Type to the cache before assigning any values to prevent looping.
 				// Due to the work-around implemented for constructor argument types
-				// in _getTypeDescription(), an instance is created, which could also
+				// in getTypeDescription(), an instance is created, which could also
 				// lead to infinite recursion if the constructor uses Type.forName().
 				// Therefore it is important to seed the cache before calling
-				// _getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
+				// getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
 				_cache[fullyQualifiedClassName] = result;
 				var description:XML = getTypeDescription(clazz);
 				result.fullName = fullyQualifiedClassName;
@@ -145,7 +148,7 @@ package org.as3commons.reflect {
 				result.isFinal = description.@isFinal;
 				result.isStatic = description.@isStatic;
 				result.isInterface = (clazz === Object) ? false : (description.factory.extendsClass.length() == 0);
-				result.constructor = TypeXmlParser.parseConstructor(result, description.factory.constructor,applicationDomain);
+				result.constructor = TypeXmlParser.parseConstructor(result, description.factory.constructor, applicationDomain);
 				result.accessors = TypeXmlParser.parseAccessors(result, description);
 				result.methods = TypeXmlParser.parseMethods(result, description, applicationDomain);
 				result.staticConstants = TypeXmlParser.parseMembers(Constant, description.constant, fullyQualifiedClassName, true);
@@ -173,7 +176,14 @@ package org.as3commons.reflect {
 			
 			return result;
 		}
-		
+
+		/**
+		 * Clears the cache of Type objects.
+		 */
+		public static function clearCache():void {
+			_cache = {};
+		}
+
 		/**
 		 *
 		 */
@@ -202,7 +212,7 @@ package org.as3commons.reflect {
 		 */
 		private static function getTypeDescription(clazz:Class):XML {
 			var description:XML = describeType(clazz);
-			
+
 			// Workaround for bug http://bugs.adobe.com/jira/browse/FP-183
 			var constructorXML:XMLList = description.factory.constructor;
 			
@@ -603,6 +613,7 @@ package org.as3commons.reflect {
 	
 	}
 }
+
 import org.as3commons.reflect.Type;
 import org.as3commons.reflect.IMetaDataContainer;
 import org.as3commons.reflect.AccessorAccess;
