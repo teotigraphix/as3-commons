@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import flash.system.ApplicationDomain;
+	
 
 	/**
 	 * Abstract base class for members of a <code>class</object>.
@@ -32,6 +34,7 @@ package org.as3commons.reflect {
 		private var _type:String;
 		private var _declaringType:String;
 		private var _isStatic:Boolean;
+		private var _applicationDomain:ApplicationDomain;
 
 		/**
 		 * Creates a new AbstractMember object.
@@ -59,7 +62,7 @@ package org.as3commons.reflect {
 		}
 
 		public function get type():Type {
-			return Type.forName(_type);
+			return Type.forName(_type, declaringType.applicationDomain);
 		}
 
 		public function get isStatic():Boolean {

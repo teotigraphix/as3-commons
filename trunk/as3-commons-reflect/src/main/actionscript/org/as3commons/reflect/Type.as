@@ -23,9 +23,10 @@ package org.as3commons.reflect {
 	
 	import flash.system.ApplicationDomain;
 	import flash.utils.describeType;
-
+	
 	import org.as3commons.lang.ClassNotFoundError;
 	import org.as3commons.lang.ClassUtils;
+	import org.as3commons.lang.SoftReference;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
 	
@@ -55,11 +56,11 @@ package org.as3commons.reflect {
 	 */
 	public class Type extends MetaDataContainer {
 		
-		public static const UNTYPED:Type = new Type();
+		public static const UNTYPED:Type = new Type(ApplicationDomain.currentDomain);
 		
-		public static const VOID:Type = new Type();
+		public static const VOID:Type = new Type(ApplicationDomain.currentDomain);
 		
-		public static const PRIVATE:Type = new Type();
+		public static const PRIVATE:Type = new Type(ApplicationDomain.currentDomain);
 		
 		private static var _cache:Object = {};
 		
@@ -108,7 +109,11 @@ package org.as3commons.reflect {
 					break;
 				default:
 					try {
-						result = Type.forClass(org.as3commons.lang.ClassUtils.forName(name, applicationDomain));
+						if (_cache[name]) {
+							result = _cache[name];
+						} else {
+							result = Type.forClass(org.as3commons.lang.ClassUtils.forName(name, applicationDomain));
+						}
 					} catch (e:ReferenceError) {
 						logger.warn("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
 					} catch (e:ClassNotFoundError) {
@@ -131,7 +136,7 @@ package org.as3commons.reflect {
 			if (_cache[fullyQualifiedClassName]) {
 				result = _cache[fullyQualifiedClassName];
 			} else {
-				result = new Type();
+				result = new Type(applicationDomain);
 				
 				// Add the Type to the cache before assigning any values to prevent looping.
 				// Due to the work-around implemented for constructor argument types
@@ -254,7 +259,7 @@ package org.as3commons.reflect {
 		/**
 		 * Creates a new <code>Type</code> instance.
 		 */
-		public function Type() {
+		public function Type(applicationDomain:ApplicationDomain) {
 			super();
 			_methods = [];
 			_accessors = [];
@@ -262,6 +267,8 @@ package org.as3commons.reflect {
 			_constants = [];
 			_staticVariables = [];
 			_variables = [];
+			_applicationDomain = new SoftReference()
+			_applicationDomain.value = applicationDomain;
 		}
 		
 		// --------------------------------------------------------------------
@@ -269,6 +276,25 @@ package org.as3commons.reflect {
 		// Properties
 		//
 		// --------------------------------------------------------------------
+		
+		// ----------------------------
+		// applicationDomain
+		// ----------------------------
+		
+		private var _applicationDomain:SoftReference;
+		/**
+		 * The ApplicationDomain which is able to retrieve the object definition for this type. The definition does not
+		 * necessarily have to be part of this <code>ApplicationDomain</code>, it could possible be present in the parent domain as well.
+		 */
+		public function get applicationDomain():ApplicationDomain {
+			return _applicationDomain.value as ApplicationDomain;
+		}
+		/**
+		 * @private
+		 */		
+		public function set applicationDomain(value:ApplicationDomain):void {
+			_applicationDomain.value = value;
+		}
 		
 		// ----------------------------
 		// name
