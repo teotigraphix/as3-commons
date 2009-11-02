@@ -239,8 +239,9 @@ package org.as3commons.reflect {
 					} catch (e:Error) {
 						// Logging is set to debug level as any Error ocurring here shouldn't 
 						// cause any problem to the application
-						logger.debug("Error while instantiating class {0} with null arguments in order to retrieve constructor argument types: {1}, {2}" +
-									 "\nMessage: {3}" + "\nStack trace: {4}", clazz, e.name, e.errorID, e.message, e.getStackTrace());
+						// CH: not sure if we should log this as it seems be causing confusion to users, disabling for now
+						/*logger.debug("Error while instantiating class {0} with null arguments in order to retrieve constructor argument types: {1}, {2}" +
+									 "\nMessage: {3}" + "\nStack trace: {4}", clazz, e.name, e.errorID, e.message, e.getStackTrace());*/
 					}
 					
 					description = describeType(clazz);
