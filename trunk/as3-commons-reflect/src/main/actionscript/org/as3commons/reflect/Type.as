@@ -595,7 +595,18 @@ package org.as3commons.reflect {
 		public function get fields():Array {
 			return accessors.concat(staticConstants).concat(constants).concat(staticVariables).concat(variables);
 		}
-		
+
+        /**
+		 * An array of Field containing all accessors and variables for the type.
+         *
+		 * @see org.as3commons.reflect.Variable
+         * @see org.as3commons.reflect.Accessor
+         * @see org.as3commons.reflect.Field
+		 */
+		public function get properties():Array {
+			return accessors.concat(variables);
+		}
+	
 		// --------------------------------------------------------------------
 		//
 		// Public Methods
