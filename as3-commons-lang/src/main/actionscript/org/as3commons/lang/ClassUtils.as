@@ -45,6 +45,7 @@ package org.as3commons.lang {
 		 * @see org.springextensions.actionscript.errors.ClassNotFoundError
 		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):Class {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var className:String = getQualifiedClassName(instance);
 			return forName(className, applicationDomain);
 		}
@@ -62,6 +63,7 @@ package org.as3commons.lang {
 		 * @see org.springextensions.actionscript.errors.ClassNotFoundError
 		 */
 		public static function forName(name:String, applicationDomain:ApplicationDomain = null):Class {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Class;
 			
 			if (!applicationDomain) {
@@ -139,8 +141,9 @@ package org.as3commons.lang {
 		 *
 		 * @return the boolean value indicating whether objects of the type clazz2 can be assigned to objects of clazz1
 		 */
-		public static function isAssignableFrom(clazz1:Class, clazz2:Class):Boolean {
-			return (clazz1 == clazz2) || isSubclassOf(clazz2, clazz1) || isImplementationOf(clazz2, clazz1);
+		public static function isAssignableFrom(clazz1:Class, clazz2:Class, applicationDomain:ApplicationDomain = null):Boolean {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			return (clazz1 == clazz2) || isSubclassOf(clazz2, clazz1, applicationDomain) || isImplementationOf(clazz2, clazz1, applicationDomain);
 		}
 		
 		/**
@@ -148,8 +151,9 @@ package org.as3commons.lang {
 		 * passed in parent Class. To check if an interface extends another interface, use the isImplementationOf()
 		 * method instead.
 		 */
-		public static function isSubclassOf(clazz:Class, parentClass:Class):Boolean {
-			var classDescription:XML = getFromObject(clazz);
+		public static function isSubclassOf(clazz:Class, parentClass:Class, applicationDomain:ApplicationDomain = null):Boolean {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			var classDescription:XML = getFromObject(clazz,applicationDomain);
 			var parentName:String = getQualifiedClassName(parentClass);
 			return (classDescription.factory.extendsClass.(@type == parentName).length() != 0);
 		}
@@ -162,9 +166,10 @@ package org.as3commons.lang {
 		 *
 		 * @returns the super class or null if no parent class was found
 		 */
-		public static function getSuperClass(clazz:Class):Class {
+		public static function getSuperClass(clazz:Class, applicationDomain:ApplicationDomain = null):Class {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Class;
-			var classDescription:XML = getFromObject(clazz);
+			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var superClasses:XMLList = classDescription.factory.extendsClass;
 			
 			if (superClasses.length() > 0) {
@@ -213,13 +218,14 @@ package org.as3commons.lang {
 		 *
 		 * @return true if the clazz object implements the given interface; false if not
 		 */
-		public static function isImplementationOf(clazz:Class, interfaze:Class):Boolean {
+		public static function isImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Boolean;
 			
 			if (clazz == null) {
 				result = false;
 			} else {
-				var classDescription:XML = getFromObject(clazz);
+				var classDescription:XML = getFromObject(clazz, applicationDomain);
 				result = (classDescription.factory.implementsInterface.(@type == getQualifiedClassName(interfaze)).length() != 0);
 			}
 			return result;
@@ -251,9 +257,10 @@ package org.as3commons.lang {
 		 * Returns an array of all fully qualified interface names that the
 		 * given class implements.
 		 */
-		public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean = false):Array {
+		public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean = false, applicationDomain:ApplicationDomain = null):Array {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Array = [];
-			var classDescription:XML = getFromObject(clazz);
+			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var interfacesDescription:XMLList = classDescription.factory.implementsInterface;
 			
 			if (interfacesDescription) {
@@ -274,7 +281,7 @@ package org.as3commons.lang {
 		/**
 		 * Returns an array of all interface names that the given class implements.
 		 */
-		public static function getImplementedInterfaces(clazz:Class, applicationDomain:ApplicationDomain=null):Array {
+		public static function getImplementedInterfaces(clazz:Class, applicationDomain:ApplicationDomain = null):Array {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Array = getFullyQualifiedImplementedInterfaceNames(clazz);
 			
@@ -399,7 +406,8 @@ package org.as3commons.lang {
 		 *
 		 * @return The class metadata of the given object.
 		 */
-		private static function getFromObject(object:Object):XML {
+		private static function getFromObject(object:Object, applicationDomain:ApplicationDomain):XML {
+			Assert.notNull(object,"The object argument must not be null");
 			var className:String = getQualifiedClassName(object);
 			var metadata:XML;
 			
@@ -415,7 +423,11 @@ package org.as3commons.lang {
 				}
 				
 				if (!(object is Class)) {
-					object = object.constructor;
+					if (object.hasOwnProperty("constructor")) {
+						object = object.constructor;
+					} else {
+						object = forName(className,applicationDomain);
+					}
 				}
 				
 				metadata = describeType(object);
@@ -438,7 +450,7 @@ package org.as3commons.lang {
 		 * @param className    The name of the class that you want to retrieve metadata from. The className
 		 *             may be in the following forms: package.Class or package::Class
 		 */
-		private static function getFromString(className:String, applicationDomain:ApplicationDomain=null):XML {
+		private static function getFromString(className:String, applicationDomain:ApplicationDomain = null):XML {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var classDefinition:Class = forName(className, applicationDomain);
 			
@@ -448,7 +460,7 @@ package org.as3commons.lang {
 			
 			// getQualifiedClassName(getDefinitionByName(className)) is faster then converting the
 			// string using conventional methods.
-			return getFromObject(classDefinition);
+			return getFromObject(classDefinition, applicationDomain);
 		}
 	
 	}
