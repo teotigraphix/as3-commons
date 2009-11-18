@@ -17,7 +17,6 @@ package org.as3commons.serialization.xml
 {
 	import flash.net.getClassByAlias;
 	
-	import org.as3commons.lang.Priority;
 	import org.as3commons.serialization.xml.converters.basic.*;
 	import org.as3commons.serialization.xml.converters.extended.ByteArrayConverter;
 	import org.as3commons.serialization.xml.core.*;
@@ -52,18 +51,18 @@ package org.as3commons.serialization.xml
 		{	
 			
 			//Register native type converters
-			ConverterRegistery.registerConverter(ArrayConverter,"Array",Priority.MEDIUM);
-			ConverterRegistery.registerConverter(BooleanConverter,"Boolean",Priority.MEDIUM);
-			ConverterRegistery.registerConverter(IntConverter,"int",Priority.MEDIUM);
-			ConverterRegistery.registerConverter(NumberConverter,"Number",Priority.MEDIUM);
-			ConverterRegistery.registerConverter(StringConverter,"String",Priority.MEDIUM);
-			ConverterRegistery.registerConverter(UintConverter,"uint",Priority.MEDIUM);
+			ConverterRegistery.registerConverter(ArrayConverter,"Array",.5);
+			ConverterRegistery.registerConverter(BooleanConverter,"Boolean",.5);
+			ConverterRegistery.registerConverter(IntConverter,"int",.5);
+			ConverterRegistery.registerConverter(NumberConverter,"Number",.5);
+			ConverterRegistery.registerConverter(StringConverter,"String",.5);
+			ConverterRegistery.registerConverter(UintConverter,"uint",.5);
 			
 			//Register reflective converters
-			ConverterRegistery.registerConverter(ReflectionConverter,"*",Priority.LOW);
+			ConverterRegistery.registerConverter(ReflectionConverter,"*",.2);
 			
 			//Register extended types
-			ConverterRegistery.registerConverter(ByteArrayConverter,"flash.utils.ByteArray",Priority.MEDIUM);
+			ConverterRegistery.registerConverter(ByteArrayConverter,"flash.utils.ByteArray",.5);
 			
 		}
 		
