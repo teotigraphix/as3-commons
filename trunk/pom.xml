@@ -11,7 +11,7 @@
 	<description>AS3Commons project</description>
 
 	<properties>
-		<flex-mojos.version>3.3.0</flex-mojos.version>
+		<flex-mojos.version>3.4.2</flex-mojos.version>
 	</properties>
 
 	<licenses>
@@ -54,10 +54,11 @@
 	</developers>
 
 	<modules>
+		<module>as3-commons-concurrency</module>
 		<module>as3-commons-lang</module>
 		<module>as3-commons-logging</module>
 		<module>as3-commons-reflect</module>
-		<module>as3-commons-concurrency</module>
+		<module>as3-commons-serialization</module>
 	</modules>
 
 	<dependencies>
