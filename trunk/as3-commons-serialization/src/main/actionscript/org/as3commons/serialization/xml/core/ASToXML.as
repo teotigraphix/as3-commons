@@ -59,14 +59,17 @@ package org.as3commons.serialization.xml.core
 			
 			var xml:XML;
 				
-			if ( type.alias ){
+			/*if ( type.alias ){
 				//substr off X2A to get to node name
 				xml = new XML("<"+type.alias.substr(XMLConverter.X2A.length)+"/>");
 			} else {
 				//TODO: Get original node name from metadata?
 				xml = new XML("<"+StringUtils.uncapitalize(type.name)+"/>");
 				//xml = new XML("<"+type.name.toLowerCase()+" type=\""+getQualifiedClassName(obj)+"\"/>");
-			}				
+			}*/
+			
+			// CH: disabled the check on Type.alias for now since it is not implemented
+			xml = new XML("<"+StringUtils.uncapitalize(type.name)+"/>");
 			
 			for each ( var variable:Variable in parentVars ){
 				
