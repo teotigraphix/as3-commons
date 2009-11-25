@@ -20,7 +20,7 @@ package org.as3commons.serialization.xml.mapper
 	
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.Variable;
-	import org.as3commons.serialization.xml.XMLConverter;
+	import org.as3commons.serialization.xml.XMLAlias;
 	
 	public class Mapper
 	{
@@ -46,7 +46,7 @@ package org.as3commons.serialization.xml.mapper
 		//returns Actionscript type of property name on object
 		public static function resolveTypeFromAlias(name:String):String{
 			
-			var clazz:Class = XMLConverter.getClassByAlias( name );
+			var clazz:Class = XMLAlias.classForNodeName( name );
 			if ( clazz ) return getQualifiedClassName( clazz );	
 			
 			return undefined;
