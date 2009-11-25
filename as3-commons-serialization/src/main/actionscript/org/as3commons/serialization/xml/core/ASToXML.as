@@ -20,7 +20,7 @@ package org.as3commons.serialization.xml.core
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.Variable;
 	import org.as3commons.serialization.xml.ConverterRegistery;
-	import org.as3commons.serialization.xml.XMLConverter;
+	import org.as3commons.serialization.xml.XMLAlias;
 	import org.as3commons.serialization.xml.converters.IConverter;
 	import org.as3commons.serialization.xml.mapper.Mapper;
 	
@@ -58,18 +58,14 @@ package org.as3commons.serialization.xml.core
 			}
 			
 			var xml:XML;
-				
-			/*if ( type.alias ){
+			var nodeName:String = XMLAlias.nodeNameForClass( type.clazz );
+			if ( nodeName ){
 				//substr off X2A to get to node name
-				xml = new XML("<"+type.alias.substr(XMLConverter.X2A.length)+"/>");
+				xml = new XML("<"+nodeName+"/>");
 			} else {
 				//TODO: Get original node name from metadata?
 				xml = new XML("<"+StringUtils.uncapitalize(type.name)+"/>");
-				//xml = new XML("<"+type.name.toLowerCase()+" type=\""+getQualifiedClassName(obj)+"\"/>");
-			}*/
-			
-			// CH: disabled the check on Type.alias for now since it is not implemented
-			xml = new XML("<"+StringUtils.uncapitalize(type.name)+"/>");
+			}				
 			
 			for each ( var variable:Variable in parentVars ){
 				

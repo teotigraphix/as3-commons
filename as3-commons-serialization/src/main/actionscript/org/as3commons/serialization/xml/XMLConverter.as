@@ -15,7 +15,11 @@
  */
 package org.as3commons.serialization.xml
 {
-	import flash.net.getClassByAlias;
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
 	
 	import org.as3commons.serialization.xml.converters.basic.*;
 	import org.as3commons.serialization.xml.converters.extended.ByteArrayConverter;
@@ -23,8 +27,6 @@ package org.as3commons.serialization.xml
 	
 	public class XMLConverter
 	{
-		//identifier prepended to class alias identifier prevent any possible conflict with AMF types registered with same name as XML node
-		public static const X2A:String="X2A_";
 		
 		/**
 		 * 
@@ -32,19 +34,8 @@ package org.as3commons.serialization.xml
 		 * @param type Class to map XML values to. Be sure to register Aliases for all child types.
 		 * 
 		 */		
-		public static function register(nodeName:String,type:Class):void{
-			flash.net.registerClassAlias(X2A+nodeName,type);
-		}
-		
-		public static function getClassByAlias(alias:String):Class{		
-			
-			try {
-				return flash.net.getClassByAlias( X2A+alias);
-			} catch (e:Error){
-				//TODO: Remove try/catch
-			}
-			
-			return null;
+		public function register(nodeName:String,type:Class):void{
+			XMLAlias.registerClassForNodeName(nodeName,type);
 		}
 		
 		public function XMLConverter()
@@ -70,7 +61,7 @@ package org.as3commons.serialization.xml
 			return XMLToAS.objectFromXML(xml,xml,returnType);		
 		}
 		
-		public function toXML(obj:Object):XML{			
+		public function toXML(obj:Object):XML{
 			return ASToXML.xmlFromObject(obj);
 		}
 		
@@ -78,8 +69,51 @@ package org.as3commons.serialization.xml
 			return ASToXML.xmlFromArray(array,nodeName);
 		}
 		
-		public function alias(nodeName:String,type:Class):void{
-			XMLConverter.register(nodeName,type);
+		
+		//Load and parse convenience functions		
+		private static var _urlLoader:URLLoader;
+		private static var _request:URLRequest;
+		private static var _callbackFunction:Function;
+		
+		public static function loadAndParse(url:String,callbackFunction:Function):void{
+			
+			_callbackFunction = callbackFunction;
+			
+			_urlLoader = new URLLoader();			
+			_urlLoader.addEventListener(Event.COMPLETE, loadSuccessHandler);
+			_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, loadFailHandler);
+			_urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loadFailHandler);
+			
+			_urlLoader.load( new URLRequest(url) );
+			
+		}
+		
+		private static function loadSuccessHandler(event:Event):void{
+			
+			var xml:XML = new XML( event.target.data );
+			var converter:XMLConverter = new XMLConverter();		
+			var obj:Object = converter.fromXML(xml);	
+			_callbackFunction( obj );
+			
+			cleanUpLoad();
+			
+		}
+		
+		private static function loadFailHandler():void{
+			cleanUpLoad();
+			trace("XMLToAS could not load data from "+_request.url)
+		}
+		
+		private static function cleanUpLoad():void{
+			
+			_urlLoader.removeEventListener(Event.COMPLETE, loadSuccessHandler);
+			_urlLoader.removeEventListener(IOErrorEvent.IO_ERROR, loadFailHandler);
+			_urlLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, loadFailHandler);
+			
+			_request = null;
+			_callbackFunction = null;
+			_urlLoader = null;
+			
 		}	
 
 	}

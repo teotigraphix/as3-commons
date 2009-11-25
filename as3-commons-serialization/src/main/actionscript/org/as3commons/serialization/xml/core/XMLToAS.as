@@ -52,8 +52,7 @@ package org.as3commons.serialization.xml.core
 			
 			//Use converter to convert XML
 			var obj:Object = converter.fromXML(xml,contextXML);
-			
-			//var obj:Object = new returnType();					
+							
 			return obj;
 				
 		}
@@ -77,54 +76,6 @@ package org.as3commons.serialization.xml.core
 			}
 			
 		}
-		
-		
-		//Load and parse functions
-		
-		private static var _urlLoader:URLLoader;
-		private static var _request:URLRequest;
-		private static var _callbackFunction:Function;
-		
-		public static function loadAndParse(url:String,callbackFunction:Function):void{
-			
-			_callbackFunction = callbackFunction;
-			
-			_urlLoader = new URLLoader();			
-			_urlLoader.addEventListener(Event.COMPLETE, loadSuccessHandler);
-			_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, loadFailHandler);
-			_urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loadFailHandler);
-			
-			_urlLoader.load( new URLRequest(url) );
-			
-		}
-		
-		private static function loadSuccessHandler(event:Event):void{
-			
-			var xml:XML = new XML( event.target.data );
-			var xstream:XMLConverter = new XMLConverter();		
-			var obj:Object = xstream.fromXML(xml);	
-			_callbackFunction( obj );
-			
-			cleanUpLoad();
-			
-		}
-		
-		private static function loadFailHandler():void{
-			cleanUpLoad();
-			trace("XMLToAS could not load data from "+_request.url)
-		}
-		
-		private static function cleanUpLoad():void{
-			
-			_urlLoader.removeEventListener(Event.COMPLETE, loadSuccessHandler);
-			_urlLoader.removeEventListener(IOErrorEvent.IO_ERROR, loadFailHandler);
-			_urlLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, loadFailHandler);
-			
-			_request = null;
-			_callbackFunction = null;
-			_urlLoader = null;
-			
-		}	
 			
 	}
 }

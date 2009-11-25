@@ -22,7 +22,7 @@ package org.as3commons.serialization.xml.converters.basic
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.Variable;
 	import org.as3commons.serialization.xml.ConverterRegistery;
-	import org.as3commons.serialization.xml.XMLConverter;
+	import org.as3commons.serialization.xml.XMLAlias;
 	import org.as3commons.serialization.xml.converters.IConverter;
 	import org.as3commons.serialization.xml.core.XMLToAS;
 	import org.as3commons.serialization.xml.mapper.Mapper;
@@ -43,13 +43,14 @@ package org.as3commons.serialization.xml.converters.basic
 		
 		public function fromXML(typeXML:XML, contextXML:XML):Object
 		{
-			//First try to get Class from XMLAlias (meaning XStream.alias() was called for this type)
 			var returnType:Class;
-			returnType = XMLConverter.getClassByAlias( typeXML.name() );
+			
+			//First try to get Class from XMLAlias (meaning XMLConverter.getClassByAlias() was called for this type)
+			returnType = XMLAlias.classForNodeName( typeXML.name() );
 			
 			if ( ! returnType ){
 				//If no type was registered, fall back to String value interpretation
-				var returnTypeString:String = returnTypeString = Mapper.resolveNativeTypeFromStringValue( typeXML.valueOf() );
+				var returnTypeString:String = Mapper.resolveNativeTypeFromStringValue( typeXML.valueOf() );
 				returnType = getDefinitionByName(returnTypeString) as Class;
 			}
 			

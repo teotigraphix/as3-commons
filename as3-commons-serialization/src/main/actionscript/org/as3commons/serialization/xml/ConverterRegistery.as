@@ -20,7 +20,6 @@ package org.as3commons.serialization.xml
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.serialization.xml.converters.IConverter;
 	
-	
 	public class ConverterRegistery
 	{
 		private static var _converters:Array=[];
