@@ -41,7 +41,7 @@ package org.as3commons.serialization.xml.converters.basic
 			
 		}
 		
-		public function fromXML(typeXML:XML, contextXML:XML):Object
+		public function fromXML(typeXML:XML,contextXML:XML):Object
 		{
 			var returnType:Class;
 			
@@ -129,7 +129,7 @@ package org.as3commons.serialization.xml.converters.basic
 			var stringValue:String = xml.toString();
 			
 			var nativeType:String = nativeType = Mapper.resolveTypeFromAlias( propName );
-			if ( ! nativeType ) Mapper.resolveTypeByReflection(obj,propName);
+			if ( ! nativeType ) nativeType = Mapper.resolveTypeByReflection(obj,propName);
 			if ( ! nativeType ) nativeType = Mapper.resolveNativeTypeFromStringValue( stringValue );
 			
 			var nativeValue:Object;
@@ -183,8 +183,13 @@ package org.as3commons.serialization.xml.converters.basic
 		protected function setValueOnObject(obj:Object,propertyName:String,value:Object):void{
 			
 			if ( obj.hasOwnProperty( propertyName ) ){
+				
+				//Fix for 0 length children to Array for now
+				if ( obj[propertyName] is Array && ! value is Array ) value = null;
+				
 				//Has enumerated property, set it directly
 				obj[propertyName] = value;
+				
 			} else {
 				//Is Dynamic, create new dynamic property
 				if ( obj is Object ){
