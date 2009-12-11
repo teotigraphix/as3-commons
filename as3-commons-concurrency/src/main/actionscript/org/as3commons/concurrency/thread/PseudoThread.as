@@ -38,7 +38,9 @@
 	[Event(name="error", type="flash.events.ErrorEvent")]
 	
 	/**
-	 * Dispatched when the thread's work (IRunnable) makes progress
+	 * Dispatched when the thread's work (IRunnable) makes progress.
+	 * The bytesTotal value contains the value of the last call to IRunnable.getTotal()
+	 * and the bytesLoaded value contains the results of the last call to IRunnable.getProgress()
 	 * 
 	 * @eventType	flash.events.ErrorEvent.ERROR
 	 */ 
@@ -59,6 +61,10 @@
 	 * will be called with the thread is destroyed by reaching completion normally or
 	 * when the stop() method is called. NOTE that IRunnable.cleanup() is always called AFTER
 	 * the dispatch of ERROR or COMPLETE events</p>
+	 * 
+	 * <p>Callers can also use the pause() and resume() method to control
+	 * a PseudoThread that has already been started. Calling pause() or resume()
+	 * simple stops/starts subsequent calls to IRunnable.process()</p>
 	 * 
 	 * <p>PseudoThreads are useful for time consuming processing operations
 	 * where a delay in the UI is un-acceptable. The smaller you set the <code>msDelay</code>
@@ -93,8 +99,9 @@
 		
 		// a unique name for me
 		private var myName:String;
-
-			
+		
+		// our state, if we have been started or not
+		private var started:Boolean = false;
 		
 		/**
 		 * Constructor. 
@@ -170,6 +177,7 @@
 			}
 			
 			if (runnable.isComplete()) {
+				this.dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS,false,false,runnable.getProgress(),runnable.getTotal()));
 				this.dispatchEvent(new Event(Event.COMPLETE,false,false));
 				destroy();
 			} else {
@@ -192,7 +200,41 @@
 		 * 
 		 * */
 		public function start():void {
-			this.intTimer.start(); 
+			if (!started){
+				this.intTimer.start(); 
+				this.started = true;
+			}
+		}
+		
+		/**
+		 * This method should be called when the thread is to pause and cease calling
+		 * it's IRunnable's process() method until resume() is called. 
+		 * 
+		 * */
+		public function pause():void {
+			if (isRunning()) {
+				this.intTimer.stop(); 
+			}
+		}
+		
+		/**
+		 * This method should be called when the thread is paused() and is 
+		 * to resume running.
+		 * 
+		 * */
+		public function resume():void {
+			if (!isRunning()) {
+				this.intTimer.start();
+			}
+		}
+		
+		/**
+		 * Determine if the thread is running or not
+		 * 
+		 * @return boolean true/false if the thread is running
+		 * */
+		public function isRunning():Boolean {
+			return intTimer.running;
 		}
 		
 		/**
