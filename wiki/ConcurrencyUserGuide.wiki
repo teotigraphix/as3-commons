@@ -1,9 +1,9 @@
 #summary Introduction to as3commons-concurrency
 
 = Introduction to as3commons concurrency =
-The concurrency module was created to address the ActionScript's lack of support for traditional threads which is a common complaint from developers transitioning from languages such as Java. Flex applications are single threaded and if you are creating a more complex application that has the need to execute tasks in the background, while still maintaining a responsive GUI for the user, then the AS3 Commons Concurrency module might be useful for you.
+The concurrency module was created to address the ActionScript's lack of support for traditional threads which is a common complaint from developers transitioning from languages such as Java. Flex applications are single threaded and if you are creating a more complex application that has the need to execute tasks in the background, while still maintaining a responsive GUI for the user, then the AS3 Commons Concurrency module might be useful for you. 
 
-Made up of only one class and a lightweight interface,  [http://code.google.com/p/as3-commons/source/browse/trunk/as3-commons-concurrency/src/main/actionscript/org/as3commons/concurrency/thread/IRunnable.as IRunnable] and [http://code.google.com/p/as3-commons/source/browse/trunk/as3-commons-concurrency/src/main/actionscript/org/as3commons/concurrency/thread/PseudoThread.as PseudoThread], the concurrency module in its current state is very lightweight and unobtrusive for the developer to integrate into an existing application.
+Made up of only one class and a lightweight interface,  [http://code.google.com/p/as3-commons/source/browse/trunk/as3-commons-concurrency/src/main/actionscript/org/as3commons/concurrency/thread/IRunnable.as IRunnable] and [http://code.google.com/p/as3-commons/source/browse/trunk/as3-commons-concurrency/src/main/actionscript/org/as3commons/concurrency/thread/PseudoThread.as PseudoThread], the concurrency module in its current state is very lightweight and unobtrusive for the developer to integrate into an existing application. The document below gives an overview of the concurrency framework. You can also [http://code.google.com/p/as3-commons/downloads/list download the as3commons-concurrency-example.zip] file to see some working code.
 
 = PseudoThread & IRunnable =
 
