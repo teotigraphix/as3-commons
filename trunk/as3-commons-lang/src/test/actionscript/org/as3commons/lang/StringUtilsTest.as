@@ -219,10 +219,10 @@ package org.as3commons.lang {
 			assertEquals(StringUtils.uncapitalize('CAT'), 'cAT');
 		}
 		
-		public function testTtitleize():void {
+		public function testTitleize():void {
 			assertNull(StringUtils.titleize(null));
 			assertEquals('', StringUtils.titleize(""));
-			assertEquals("Man From The Boondocks", StringUtils.titleize("man from the boondocks"))
+			assertEquals("Man From The Boondocks", StringUtils.titleize("man from the boondocks"));
 			assertEquals("Man From The Boondocks", StringUtils.titleize("man from THE bOOndocks"));
 		}
 		
