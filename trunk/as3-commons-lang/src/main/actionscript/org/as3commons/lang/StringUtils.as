@@ -1490,7 +1490,7 @@ package org.as3commons.lang {
 		 *  both <code>null</code>
 		 */
 		public static function equals(str1:String, str2:String):Boolean {
-			return new RegExp(str1, '').test(str2);
+			return (str1 === str2);
 		}
 		
 		/**
@@ -1514,7 +1514,12 @@ package org.as3commons.lang {
 		 *  both <code>null</code>
 		 */
 		public static function equalsIgnoreCase(str1:String, str2:String):Boolean {
-			return new RegExp(str1, 'i').test(str2);
+			if (str1 == null && str2 == null) {
+				return true;
+			} else if (str1 == null || str2 == null) {
+				return false;
+			}
+			return equals(str1.toLowerCase(), str2.toLowerCase());
 		}
 		
 		/**
