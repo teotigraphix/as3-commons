@@ -440,6 +440,7 @@ package org.as3commons.lang {
 			assertFalse(StringUtils.equals('abc', null));
 			assertTrue(StringUtils.equals('abc', 'abc'));
 			assertFalse(StringUtils.equals('abc', 'ABC'));
+			assertFalse(StringUtils.equals('in', 'notin'));
 		}
 		
 		public function testEqualsIgnoreCase():void {
@@ -448,6 +449,8 @@ package org.as3commons.lang {
 			assertFalse(StringUtils.equalsIgnoreCase('abc', null));
 			assertTrue(StringUtils.equalsIgnoreCase('abc', 'abc'));
 			assertTrue(StringUtils.equalsIgnoreCase('abc', 'ABC'));
+			assertFalse(StringUtils.equalsIgnoreCase('in', 'notin'));
+			assertFalse(StringUtils.equalsIgnoreCase('in', 'NOTIN'));
 		}
 		
 		public function testIsAlpha():void {
