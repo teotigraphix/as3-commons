@@ -20,18 +20,17 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.impl {
-	
+	import org.as3commons.logging.ILogTarget;
+	import org.as3commons.logging.ILogTargetFactory;
+
 	import mx.logging.Log;
-	
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.ILoggerFactory;
-	
+
 	/**
 	 * Logger factory that creates a logger from the Flex mx.logging.* package.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class FlexLoggerFactory implements ILoggerFactory {
+	public class FlexLoggerFactory implements ILogTargetFactory {
 		
 		/**
 		 * Creates a new FlexLoggerFactory.
@@ -42,7 +41,7 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function getLogger(name:String):ILogger {
+		public function getLogTarget(name:String):ILogTarget {
 			return new FlexLogger(Log.getLogger(name));
 		}
 	}

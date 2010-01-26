@@ -20,18 +20,17 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.impl {
-	
+	import org.as3commons.logging.ILogTarget;
+
 	import mx.logging.ILogger;
 	import mx.logging.Log;
-	
-	import org.as3commons.logging.ILogger;
-	
+
 	/**
 	 * Logger decorator for the logging API in the Flex framework.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class FlexLogger implements org.as3commons.logging.ILogger {
+	public class FlexLogger implements ILogTarget {
 		
 		/** The decorated flex framework logger */
 		private var _logger:mx.logging.ILogger;

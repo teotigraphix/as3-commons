@@ -20,9 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.util {
-	
 	import org.as3commons.logging.LogLevel;
-	
+
 	/**
 	 * Utilities for working with log messages.
 	 *
@@ -30,21 +29,35 @@ package org.as3commons.logging.util {
 	 */
 	public class MessageUtil {
 		
-		public function MessageUtil() {
-		}
+		public static const DEFAULT_FORMAT: String = "{date} {logLevel} - {name} - {message}";
+		
+		private static const PARAMETER_REGEXP: Array /* RegExp */ = [];
+		private static const NAME: RegExp = /{name}/g;
+		private static const MESSAGE: RegExp = /{message}/g;
+		private static const DATE: RegExp = /{date}/g;
+		private static const LOG_LEVEL: RegExp = /{logLevel}/g;
+		
 		
 		/**
 		 * Returns a string with the parameters replaced.
 		 */
-		public static function toString(message:String, params:Array):String {
-			var result:String = message;
+		public static function toString( format: String, name: String, level: LogLevel, message:String, params:Array, date: Date = null ):String {
+			if( !date ) {
+				date = new Date();
+			}
 			var numParams:int = params.length;
-			
-			for (var i:int = 0; i < numParams; i++) {
-				result = result.replace(new RegExp("\\{" + i + "\\}", "g"), params[i]);
+			while( PARAMETER_REGEXP.length < numParams ) {
+				PARAMETER_REGEXP.push( new RegExp("\\{" + PARAMETER_REGEXP.length + "\\}", "g") );
+			}
+			for (var i:int = 0; i < numParams; ++i) {
+				message = message.replace( PARAMETER_REGEXP[i], params[i] );
 			}
 			
-			return result;
+			return format.
+				replace( MESSAGE, message ).
+				replace( NAME, name ).
+				replace( DATE, date.toDateString()).
+				replace( LOG_LEVEL, level.name );
 		}
 	}
 }

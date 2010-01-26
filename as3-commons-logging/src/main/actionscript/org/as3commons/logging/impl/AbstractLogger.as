@@ -1,59 +1,49 @@
 package org.as3commons.logging.impl {
-	
-	import flash.errors.IllegalOperationError;
-	
-	import org.as3commons.logging.ILogger;
+	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.LogLevel;
-	
+
+	import flash.errors.IllegalOperationError;
+
 	/**
 	 * Abstract base class for ILogger implementations.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class AbstractLogger implements ILogger {
-		
-		protected var name:String;
+	public class AbstractLogger implements ILogTarget {
 		
 		/**
-		 * Creates a new AbstractLogger
+		 * @inheritDoc
 		 */
-		public function AbstractLogger(name:String = "") {
-			this.name = name;
+		public function debug( name: String, message:String, params: Array ):void {
+			log(name,LogLevel.DEBUG_ONLY, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:String, ... params):void {
-			log(LogLevel.DEBUG, message, params);
+		public function info( name: String, message:String, params: Array ):void {
+			log(name,LogLevel.INFO_ONLY, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:String, ... params):void {
-			log(LogLevel.INFO, message, params);
+		public function warn( name: String, message:String, params: Array ):void {
+			log(name,LogLevel.WARN_ONLY, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:String, ... params):void {
-			log(LogLevel.WARN, message, params);
+		public function error( name: String, message:String, params: Array ):void {
+			log(name,LogLevel.ERROR_ONLY, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:String, ... params):void {
-			log(LogLevel.ERROR, message, params);
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function fatal(message:String, ... params):void {
-			log(LogLevel.FATAL, message, params);
+		public function fatal( name: String, message:String, params: Array ):void {
+			log(name,LogLevel.FATAL_ONLY, message, params);
 		}
 		
 		/**
@@ -94,7 +84,7 @@ package org.as3commons.logging.impl {
 		/**
 		 * Subclasses must override this method and provide a concrete log implementation.
 		 */
-		protected function log(level:uint, message:String, params:Array):void {
+		protected function log(name: String, level:LogLevel, message:String, params:Array):void {
 			throw new IllegalOperationError("The 'log' method is abstract and must be overridden in '" + this + "'");
 		}
 	}

@@ -20,12 +20,11 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging {
-	
+	import org.as3commons.logging.impl.TraceLoggerFactory;
+
+	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
-	
-	import org.as3commons.logging.impl.DefaultLoggerFactory;
-	import org.as3commons.logging.impl.NullLogger;
-	
+
 	/**
 	 * Use the LoggerFactory to obtain a logger. This is the main class used when working with the as3commons-logging
 	 * library.
@@ -49,30 +48,32 @@ package org.as3commons.logging {
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
 	 */
-	public class LoggerFactory implements ILoggerFactory {
-		
+	public class LoggerFactory {
+
 		/** The singleton instance, eagerly instantiated. */
 		private static var _instance:LoggerFactory = LoggerFactory.getInstance();
-		
+
 		/** The logger factory that creates loggers */
-		private var _loggerFactory:ILoggerFactory = new DefaultLoggerFactory();
-		
+		private var _loggerFactory:ILogTargetFactory = new TraceLoggerFactory();
+
 		/** A cache of loggers */
-		private var _loggers:Object /* <String, ILogger> */  = {};
-		
+		private var _loggers:Dictionary /* <String, ILogger> */  = new Dictionary();
+		private var _nullLogger:ILogger;
+		private var _undefinedLogger:ILogger;
+
 		/**
 		 * Constructs a new LoggerFactory.
 		 */
 		public function LoggerFactory() {
 		}
-		
+
 		/**
 		 * Returns a logger for the given name.
 		 */
 		public static function getLogger(name:String):ILogger {
 			return _instance.getLogger(name);
 		}
-		
+
 		/**
 		 * Returns a logger for the given class, using the fully qualified name of the class as the name of the
 		 * logger.
@@ -83,14 +84,14 @@ package org.as3commons.logging {
 			name = name.replace("::", ".");
 			return _instance.getLogger(name);
 		}
-		
+
 		/**
 		 * Sets the logger factory for the logging system.
 		 */
-		public static function set loggerFactory(value:ILoggerFactory):void {
+		public static function set loggerFactory(value:ILogTargetFactory):void {
 			_instance.loggerFactory = value;
 		}
-		
+
 		/**
 		 * Returns the singleton instance of the logger factory.
 		 */
@@ -100,7 +101,7 @@ package org.as3commons.logging {
 			}
 			return _instance;
 		}
-		
+
 		/**
 		 * Returns a logger for the given name.
 		 *
@@ -108,35 +109,54 @@ package org.as3commons.logging {
 		 * @return a logger with the given name
 		 */
 		public function getLogger(name:String):ILogger {
-			var result:ILogger = _loggers[name];
+			var result:ILogger;
+			var compileSafeName:* = name;
+			if( compileSafeName === null ) {
+				result = _nullLogger;
+			} else if( compileSafeName === undefined ) {
+				result = _undefinedLogger;
+			} else {
+				result = _loggers[name];
+			}
 			
 			if (!result) {
 				if (_loggerFactory) {
-					result = new LoggerProxy(name, _loggerFactory.getLogger(name));
+					result = new LoggerProxy(name, _loggerFactory.getLogTarget(name));
 				} else {
 					result = new LoggerProxy(name);
 				}
 				
-				// cache the logger
-				_loggers[name] = result;
+				if ( compileSafeName === null) {
+					_nullLogger = result;
+				} else if ( compileSafeName === undefined ) {
+					_undefinedLogger = result;
+				} else {
+					// cache the logger
+					_loggers[name] = result;
+				}
 			}
 			
 			return result;
 		}
-		
+
 		/**
 		 * Sets the factory used to generate loggers. A new logger, created by the given factory, will
 		 * be set on each LoggerProxy in the cache.
 		 *
 		 * @param value the new logger factory or null
 		 */
-		private function set loggerFactory(value:ILoggerFactory):void {
+		private function set loggerFactory(value:ILogTargetFactory):void {
 			_loggerFactory = value;
-			
-			for (var name:String in _loggers) {
-				LoggerProxy(_loggers[name]).logger = (_loggerFactory ? _loggerFactory.getLogger(name) : null);
+			var name:String;
+			if ( _loggerFactory ) {
+				for ( name in _loggers) {
+					LoggerProxy(_loggers[name]).logger = _loggerFactory.getLogTarget(name);
+				}
+			} else {
+				for ( name in _loggers) {
+					LoggerProxy(_loggers[name]).logger = null;
+				}
 			}
 		}
-	
 	}
 }
