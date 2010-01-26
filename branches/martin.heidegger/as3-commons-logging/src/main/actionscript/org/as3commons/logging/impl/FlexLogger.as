@@ -46,55 +46,45 @@ package org.as3commons.logging.impl {
 		 * @inheritDoc
 		 */
 		public function debug(message:String, ... params):void {
-			if (debugEnabled) {
-				var args:Array = params.concat();
-				args.unshift(message);
-				_logger.debug.apply(_logger, args);
-			}
+			var args:Array = params.concat();
+			args.unshift(message);
+			_logger.debug.apply(_logger, args);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function info(message:String, ... params):void {
-			if (infoEnabled) {
-				var args:Array = params.concat();
-				args.unshift(message);
-				_logger.info.apply(_logger, args);
-			}
+			var args:Array = params.concat();
+			args.unshift(message);
+			_logger.info.apply(_logger, args);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function warn(message:String, ... params):void {
-			if (warnEnabled) {
-				var args:Array = params.concat();
-				args.unshift(message);
-				_logger.warn.apply(_logger, args);
-			}
+			var args:Array = params.concat();
+			args.unshift(message);
+			_logger.warn.apply(_logger, args);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function error(message:String, ... params):void {
-			if (errorEnabled) {
-				var args:Array = params.concat();
-				args.unshift(message);
-				_logger.error.apply(_logger, args);
-			}
+			var args:Array = params.concat();
+			args.unshift(message);
+			_logger.error.apply(_logger, args);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function fatal(message:String, ... params):void {
-			if (fatalEnabled) {
-				var args:Array = params.concat();
-				args.unshift(message);
-				_logger.fatal.apply(_logger, args);
-			}
+			var args:Array = params.concat();
+			args.unshift(message);
+			_logger.fatal.apply(_logger, args);
 		}
 		
 		/**
