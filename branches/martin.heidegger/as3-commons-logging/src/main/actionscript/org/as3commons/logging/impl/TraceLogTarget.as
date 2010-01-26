@@ -19,32 +19,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.impl {
+package org.as3commons.logging.impl 
+{
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
-
+	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.util.MessageUtil;
+	
 	/**
-	 * Default AS3Commons logger factory. If no logger factory is set on LoggerFactory, then this is the factory
-	 * that will be used.
+	 * Default AS3Commons logging implementation of the ILogger interface that writes messages to the console using
+	 * the trace() method. If no ILoggerFactory is set on the LoggerFactory, then this is the logger that will be used.
 	 *
 	 * @author Christophe Herreman
+	 * @author Martin Heidegger
 	 */
-	public class TraceLoggerFactory implements ILogTargetFactory {
-
-		private var _logger:TraceLogger;
+	public class TraceLogTarget extends AbstractLogTarget implements ILogTargetFactory {
 		
-		/**
-		 * Creates a new DefaultLoggerFactory
-		 */
-		public function TraceLoggerFactory() {
-			_logger = new TraceLogger();
+		private var _format:String;
+
+		public function TraceLogTarget( format: String = null ) {
+			if( format ) {
+				_format = format;
+			} else {
+				_format = MessageUtil.DEFAULT_FORMAT;
+			}
 		}
 		
-		/**
-		 * @inheritDoc
-		 */
-		public function getLogTarget(name:String):ILogTarget {
-			return _logger;
+		override public function log(name: String, level:LogLevel, timeMs: Number, message:String, params:Array):void {
+			trace( MessageUtil.toString( _format, name, level, timeMs, message, params) );
+		}
+		
+		public function getLogTarget(name: String): ILogTarget
+		{
+			return this;
 		}
 	}
 }

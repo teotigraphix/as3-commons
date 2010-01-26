@@ -5,7 +5,7 @@ package org.as3commons.logging.impl {
 	/**
 	 * @author Martin
 	 */
-	public class NameBasedLoggerFactory implements ILogTargetFactory {
+	public class NameBasedLogTargetFactory implements ILogTargetFactory {
 
 		private var _loggerFactories:Object /* <String, ILogger> */ = {};
 		

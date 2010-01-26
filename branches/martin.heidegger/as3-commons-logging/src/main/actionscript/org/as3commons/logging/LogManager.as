@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging {
-	import org.as3commons.logging.impl.TraceLoggerFactory;
+	import org.as3commons.logging.impl.TraceLogTargetFactory;
 
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
@@ -48,13 +48,13 @@ package org.as3commons.logging {
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
 	 */
-	public class LoggerFactory {
+	public class LogManager {
 
 		/** The singleton instance, eagerly instantiated. */
-		private static var _instance:LoggerFactory = LoggerFactory.getInstance();
+		private static var _instance:LogManager = LogManager.getInstance();
 
 		/** The logger factory that creates loggers */
-		private var _loggerFactory:ILogTargetFactory = new TraceLoggerFactory();
+		private var _loggerFactory:ILogTargetFactory = new TraceLogTargetFactory();
 
 		/** A cache of loggers */
 		private var _loggers:Dictionary /* <String, ILogger> */  = new Dictionary();
@@ -64,7 +64,7 @@ package org.as3commons.logging {
 		/**
 		 * Constructs a new LoggerFactory.
 		 */
-		public function LoggerFactory() {
+		public function LogManager() {
 		}
 
 		/**
@@ -95,9 +95,9 @@ package org.as3commons.logging {
 		/**
 		 * Returns the singleton instance of the logger factory.
 		 */
-		private static function getInstance():LoggerFactory {
+		private static function getInstance():LogManager {
 			if (!_instance) {
-				_instance = new LoggerFactory();
+				_instance = new LogManager();
 			}
 			return _instance;
 		}
@@ -121,9 +121,9 @@ package org.as3commons.logging {
 			
 			if (!result) {
 				if (_loggerFactory) {
-					result = new LoggerProxy(name, _loggerFactory.getLogTarget(name));
+					result = new Log(name, _loggerFactory.getLogTarget(name));
 				} else {
-					result = new LoggerProxy(name);
+					result = new Log(name);
 				}
 				
 				if ( compileSafeName === null) {
@@ -150,11 +150,11 @@ package org.as3commons.logging {
 			
 			if ( _loggerFactory ) {
 				for (var name1:String in _loggers) {
-					LoggerProxy(_loggers[name1]).logger = _loggerFactory.getLogTarget(name1);
+					Log(_loggers[name1]).logger = _loggerFactory.getLogTarget(name1);
 				}
 			} else {
 				for (var name2:String in _loggers) {
-					LoggerProxy(_loggers[name2]).logger = null;
+					Log(_loggers[name2]).logger = null;
 				}
 			}
 		}

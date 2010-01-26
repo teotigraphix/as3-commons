@@ -11,7 +11,7 @@ package org.as3commons.logging.impl {
 	/**
 	 * @author mh
 	 */
-	public class AirFileLogger extends AbstractLogger implements ILogTargetFactory, ILogTarget{
+	public class AirFileLogTarget extends AbstractLogTarget implements ILogTargetFactory, ILogTarget{
 		
 		private static const DEFAULT_FILE_PATTERN: String = File.applicationDirectory.resolvePath("out-{date}.log").nativePath;
 		private static const DATE: RegExp = /{date}/g;
@@ -22,7 +22,7 @@ package org.as3commons.logging.impl {
 		private var _formerDate:*;
 		private var _format:String;
 
-		public function AirFileLogger( filePattern: String = null, format: String = null ) {
+		public function AirFileLogTarget( filePattern: String = null, format: String = null ) {
 			
 			if( filePattern ) {
 				_filePattern = filePattern;
@@ -41,7 +41,7 @@ package org.as3commons.logging.impl {
 			return this;
 		}
 		
-		override protected function log(name:String, level:LogLevel, timeMs: Number,message:String, params:Array):void {
+		override public function log(name:String, level:LogLevel, timeMs: Number,message:String, params:Array):void {
 			var date: Date = new Date();
 			if( date.dateUTC != _formerDate || !_file.exists ) {
 				if( _file ) {

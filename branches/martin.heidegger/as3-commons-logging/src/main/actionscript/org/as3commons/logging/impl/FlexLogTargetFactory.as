@@ -30,19 +30,19 @@ package org.as3commons.logging.impl {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class FlexLoggerFactory implements ILogTargetFactory {
+	public class FlexLogTargetFactory implements ILogTargetFactory {
 		
 		/**
 		 * Creates a new FlexLoggerFactory.
 		 */
-		public function FlexLoggerFactory() {
+		public function FlexLogTargetFactory() {
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function getLogTarget(name:String):ILogTarget {
-			return new FlexLogger(Log.getLogger(name));
+			return new FlexLogTarget(Log.getLogger(name));
 		}
 	}
 }
