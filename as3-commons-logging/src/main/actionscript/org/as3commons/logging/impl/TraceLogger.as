@@ -29,36 +29,28 @@ package org.as3commons.logging.impl {
 	 * the trace() method. If no ILoggerFactory is set on the LoggerFactory, then this is the logger that will be used.
 	 *
 	 * @author Christophe Herreman
+	 * @author Martin Heidegger
 	 */
-	public class DefaultLogger extends AbstractLogger {
+	public class TraceLogger extends AbstractLogger {
 		
-		private var _level:int;
-		
-		/**
-		 * Creates a new DefaultLogger.
-		 */
-		public function DefaultLogger(name:String) {
-			super(name);
+		private var _level:LogLevel;
+		private var _format:String;
+
+		public function TraceLogger( format: String = null ) {
+			if( format ) {
+				_format = format;
+			} else {
+				_format = MessageUtil.DEFAULT_FORMAT;
+			}
+		}
+
+		public function set level(logLevel:LogLevel):void {
+			_level = logLevel;
 		}
 		
-		public function set level(value:int):void {
-			_level = value;
-		}
-		
-		override protected function log(level:uint, message:String, params:Array):void {
+		override protected function log(name: String, level:LogLevel, message:String, params:Array):void {
 			if (level >= this._level) {
-				//var message:String = "";
-				
-				var msg:String = "";
-				
-				// add datetime
-				msg += (new Date()).toString() + " " + LogLevel.toString(level) + " - ";
-				
-				// add name and params
-				msg += name + " - " + MessageUtil.toString(message, params);
-				
-				// trace the message
-				trace(msg);
+				trace( MessageUtil.toString( _format, name, level, message, params) );
 			}
 		}
 		
@@ -66,35 +58,35 @@ package org.as3commons.logging.impl {
 		 * @inheritDoc
 		 */
 		override public function get debugEnabled():Boolean {
-			return (_level <= LogLevel.DEBUG);
+			return _level.matches( LogLevel.DEBUG );
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		override public function get infoEnabled():Boolean {
-			return (_level <= LogLevel.INFO);
+			return _level.matches( LogLevel.INFO );
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		override public function get warnEnabled():Boolean {
-			return (_level <= LogLevel.WARN);
+			return _level.matches( LogLevel.WARN );
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		override public function get errorEnabled():Boolean {
-			return (_level <= LogLevel.ERROR);
+			return _level.matches( LogLevel.ERROR );
 		}
-		
+
 		/**
 		 * @inheritDoc
 		 */
 		override public function get fatalEnabled():Boolean {
-			return (_level <= LogLevel.FATAL);
+			return _level.matches( LogLevel.FATAL );
 		}
 	}
 }

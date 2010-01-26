@@ -147,14 +147,14 @@ package org.as3commons.logging {
 		 */
 		private function set loggerFactory(value:ILogTargetFactory):void {
 			_loggerFactory = value;
-			var name:String;
+			
 			if ( _loggerFactory ) {
-				for ( name in _loggers) {
-					LoggerProxy(_loggers[name]).logger = _loggerFactory.getLogTarget(name);
+				for (var name1:String in _loggers) {
+					LoggerProxy(_loggers[name1]).logger = _loggerFactory.getLogTarget(name1);
 				}
 			} else {
-				for ( name in _loggers) {
-					LoggerProxy(_loggers[name]).logger = null;
+				for (var name2:String in _loggers) {
+					LoggerProxy(_loggers[name2]).logger = null;
 				}
 			}
 		}
