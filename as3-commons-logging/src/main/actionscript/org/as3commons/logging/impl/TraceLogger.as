@@ -49,9 +49,7 @@ package org.as3commons.logging.impl {
 		}
 		
 		override protected function log(name: String, level:LogLevel, message:String, params:Array):void {
-			if (level >= this._level) {
-				trace( MessageUtil.toString( _format, name, level, message, params) );
-			}
+			trace( MessageUtil.toString( _format, name, level, message, params) );
 		}
 		
 		/**

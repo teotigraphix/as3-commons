@@ -37,13 +37,18 @@ package org.as3commons.logging {
 		private var _logger:ILogTarget;
 		
 		private var _name:String;
-		
+		private var _debugEnabled:Boolean = false;
+		private var _infoEnabled:Boolean = false;
+		private var _warnEnabled:Boolean = false;
+		private var _errorEnabled:Boolean = false;
+		private var _fatalEnabled:Boolean = false;
+
 		/**
 		 * Creates a new LoggerProxy.
 		 */
 		public function LoggerProxy(name:String, logger:ILogTarget = null) {
 			_name = name;
-			_logger = logger;
+			this.logger = logger;
 		}
 		
 		/**
@@ -51,13 +56,18 @@ package org.as3commons.logging {
 		 */
 		public function set logger(value:ILogTarget):void {
 			_logger = value;
+			_debugEnabled = _logger && _logger.debugEnabled;
+			_infoEnabled = _logger && _logger.infoEnabled;
+			_warnEnabled = _logger && _logger.warnEnabled;
+			_errorEnabled = _logger && _logger.errorEnabled;
+			_fatalEnabled = _logger && _logger.fatalEnabled;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function debug(message:String = null, ... params:*):void {
-			if (_logger) {
+			if (_debugEnabled) {
 				_logger.debug( _name, message, params );
 			}
 		}
@@ -66,7 +76,7 @@ package org.as3commons.logging {
 		 * @inheritDoc
 		 */
 		public function info(message:String = null, ... params:*):void {
-			if (_logger) {
+			if (_infoEnabled) {
 				_logger.info( _name, message, params);
 			}
 		}
@@ -75,7 +85,7 @@ package org.as3commons.logging {
 		 * @inheritDoc
 		 */
 		public function warn(message:String = null, ... params:*):void {
-			if (_logger) {
+			if (_warnEnabled) {
 				_logger.warn( _name, message, params);
 			}
 		}
@@ -84,7 +94,7 @@ package org.as3commons.logging {
 		 * @inheritDoc
 		 */
 		public function error(message:String = null, ... params:*):void {
-			if (_logger) {
+			if (_errorEnabled) {
 				_logger.error( _name, message, params);
 			}
 		}
@@ -93,7 +103,7 @@ package org.as3commons.logging {
 		 * @inheritDoc
 		 */
 		public function fatal(message:String = null, ... params:*):void {
-			if (_logger) {
+			if (_fatalEnabled) {
 				_logger.fatal( _name, message, params);
 			}
 		}
@@ -102,39 +112,43 @@ package org.as3commons.logging {
 		 * @inheritDoc
 		 */
 		public function get debugEnabled():Boolean {
-			return (_logger ? _logger.debugEnabled : false);
+			return _debugEnabled;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function get infoEnabled():Boolean {
-			return (_logger ? _logger.infoEnabled : false);
+			return _infoEnabled;
 		}
-		
+
 		/**
 		 * @inheritDoc
 		 */
 		public function get warnEnabled():Boolean {
-			return (_logger ? _logger.warnEnabled : false);
+			return _warnEnabled;
 		}
-		
+
 		/**
 		 * @inheritDoc
 		 */
 		public function get errorEnabled():Boolean {
-			return (_logger ? _logger.errorEnabled : false);
+			return _errorEnabled;
 		}
-		
+
 		/**
 		 * @inheritDoc
 		 */
 		public function get fatalEnabled():Boolean {
-			return (_logger ? _logger.fatalEnabled : false);
+			return _fatalEnabled;
 		}
-		
+
 		public function get name():String {
 			return _name;
+		}
+		
+		public function set errorEnabled(errorEnabled:Boolean):void {
+			_errorEnabled = errorEnabled;
 		}
 	}
 }
