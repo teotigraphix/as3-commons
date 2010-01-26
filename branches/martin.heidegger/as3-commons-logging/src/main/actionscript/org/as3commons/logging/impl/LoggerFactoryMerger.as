@@ -6,13 +6,13 @@ package org.as3commons.logging.impl {
 	 * @author mh
 	 */
 	public class LoggerFactoryMerger implements ILogTargetFactory {
-
+		
 		private var _factories:Array /* ILogTargetFactory */;
 		
 		public function LoggerFactoryMerger( factories: Array ) {
 			_factories = factories;
 		}
-
+		
 		public function getLogTarget(name:String):ILogTarget {
 			var result: ILogTarget;
 			const l:int = _factories.length;
@@ -69,7 +69,7 @@ class MultipleLoggerFactoryNode implements ILogTarget {
 			_logTargetB.debug(name, message, parameters);
 		} else if( _logTargetA.debugEnabled ) {
 			_logTargetA.debug(name, message, parameters);
-		} else {
+		} else if( _debugEnabled ) {
 			_logTargetB.debug(name, message, parameters);
 		}
 	}
@@ -80,7 +80,7 @@ class MultipleLoggerFactoryNode implements ILogTarget {
 			_logTargetB.info(name, message, parameters);
 		} else if( _logTargetA.infoEnabled ) {
 			_logTargetA.info(name, message, parameters);
-		} else {
+		} else if( _infoEnabled ) {
 			_logTargetB.info(name, message, parameters);
 		}
 	}
@@ -91,7 +91,7 @@ class MultipleLoggerFactoryNode implements ILogTarget {
 			_logTargetB.warn(name, message, parameters);
 		} else if( _logTargetA.infoEnabled ) {
 			_logTargetA.warn(name, message, parameters);
-		} else {
+		} else if( _warnEnabled ) {
 			_logTargetB.warn(name, message, parameters);
 		}
 	}
@@ -102,7 +102,7 @@ class MultipleLoggerFactoryNode implements ILogTarget {
 			_logTargetB.error(name, message, parameters);
 		} else if( _logTargetA.infoEnabled ) {
 			_logTargetA.error(name, message, parameters);
-		} else {
+		} else if( _errorEnabled ) {
 			_logTargetB.error(name, message, parameters);
 		}
 	}
@@ -113,7 +113,7 @@ class MultipleLoggerFactoryNode implements ILogTarget {
 			_logTargetB.fatal(name, message, parameters);
 		} else if( _logTargetA.infoEnabled ) {
 			_logTargetA.fatal(name, message, parameters);
-		} else {
+		} else if( _fatalEnabled ) {
 			_logTargetB.fatal(name, message, parameters);
 		}
 	}
