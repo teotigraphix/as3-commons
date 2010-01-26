@@ -41,7 +41,7 @@ package org.as3commons.logging.impl {
 			return this;
 		}
 		
-		override protected function log(name:String, level:LogLevel, message:String, params:Array):void {
+		override protected function log(name:String, level:LogLevel, timeMs: Number,message:String, params:Array):void {
 			var date: Date = new Date();
 			if( date.dateUTC != _formerDate || !_file.exists ) {
 				if( _file ) {
@@ -58,7 +58,7 @@ package org.as3commons.logging.impl {
 				}
 				_stream.openAsync( _file, FileMode.APPEND );
 			}
-			_stream.writeUTFBytes( MessageUtil.toString( _format, name, level, message, params ) + "\n" );
+			_stream.writeUTFBytes( MessageUtil.toString( _format, name, level, timeMs, message, params ) + "\n" );
 		}
 		
 		private function createFileName(date:Date, no: int = -1):String {

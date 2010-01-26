@@ -48,8 +48,8 @@ package org.as3commons.logging.impl {
 			_level = logLevel;
 		}
 		
-		override protected function log(name: String, level:LogLevel, message:String, params:Array):void {
-			trace( MessageUtil.toString( _format, name, level, message, params) );
+		override protected function log(name: String, level:LogLevel, timeMs: Number, message:String, params:Array):void {
+			trace( MessageUtil.toString( _format, name, level, timeMs, message, params) );
 		}
 		
 		/**
