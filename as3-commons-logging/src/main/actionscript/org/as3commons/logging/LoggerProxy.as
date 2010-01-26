@@ -44,10 +44,7 @@ package org.as3commons.logging {
 		private var _errorEnabled:Boolean = false;
 		private var _fatalEnabled:Boolean = false;
 		
-		private static var _startTime: int;
-		{
-			_startTime = new Date().getTime() - getTimer();
-		}
+		private static const _startTime: Number = new Date().getTime() - getTimer();
 		
 		/**
 		 * Creates a new LoggerProxy.
