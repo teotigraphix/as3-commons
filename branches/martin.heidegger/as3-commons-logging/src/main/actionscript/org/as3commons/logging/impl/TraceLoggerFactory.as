@@ -20,29 +20,31 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.impl {
-	
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.ILoggerFactory;
-	
+	import org.as3commons.logging.ILogTarget;
+	import org.as3commons.logging.ILogTargetFactory;
+
 	/**
 	 * Default AS3Commons logger factory. If no logger factory is set on LoggerFactory, then this is the factory
 	 * that will be used.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class DefaultLoggerFactory implements ILoggerFactory {
+	public class TraceLoggerFactory implements ILogTargetFactory {
+
+		private var _logger:TraceLogger;
 		
 		/**
 		 * Creates a new DefaultLoggerFactory
 		 */
-		public function DefaultLoggerFactory() {
+		public function TraceLoggerFactory() {
+			_logger = new TraceLogger();
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function getLogger(name:String):ILogger {
-			return new DefaultLogger(name);
+		public function getLogTarget(name:String):ILogTarget {
+			return _logger;
 		}
 	}
 }

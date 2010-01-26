@@ -26,6 +26,7 @@ package org.as3commons.logging.util {
 	 * Utilities for working with log messages.
 	 *
 	 * @author Christophe Herreman
+	 * @author Martin Heidegger
 	 */
 	public class MessageUtil {
 		
