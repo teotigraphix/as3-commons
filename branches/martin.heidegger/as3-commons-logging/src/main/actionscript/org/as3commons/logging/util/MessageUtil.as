@@ -55,7 +55,7 @@ package org.as3commons.logging.util {
 			return format.
 				replace( MESSAGE, message ).
 				replace( NAME, name ).
-				replace(DATE, DATE_INSTANCE.toString()).
+				replace( DATE, DATE_INSTANCE.toString() ).
 				replace( LOG_LEVEL, level.name );
 		}
 	}

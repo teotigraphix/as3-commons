@@ -150,11 +150,11 @@ package org.as3commons.logging {
 			
 			if ( _loggerFactory ) {
 				for (var name1:String in _loggers) {
-					Log(_loggers[name1]).logger = _loggerFactory.getLogTarget(name1);
+					Log(_loggers[name1]).logTarget = _loggerFactory.getLogTarget(name1);
 				}
 			} else {
 				for (var name2:String in _loggers) {
-					Log(_loggers[name2]).logger = null;
+					Log(_loggers[name2]).logTarget = null;
 				}
 			}
 		}
