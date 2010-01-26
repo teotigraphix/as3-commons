@@ -32,7 +32,7 @@ package org.as3commons.logging {
 	 * @author Martin Heidegger
 	 * @author Christophe Herreman
 	 */
-	public class LoggerProxy implements ILogger {
+	public class Log implements ILogger {
 		
 		/** The proxied logger. */
 		private var _logger:ILogTarget;
@@ -49,7 +49,7 @@ package org.as3commons.logging {
 		/**
 		 * Creates a new LoggerProxy.
 		 */
-		public function LoggerProxy(name:String, logger:ILogTarget = null) {
+		public function Log(name:String, logger:ILogTarget = null) {
 			_name = name;
 			this.logger = logger;
 		}
@@ -59,19 +59,19 @@ package org.as3commons.logging {
 		 */
 		public function set logger(value:ILogTarget):void {
 			_logger = value;
-			_debugEnabled = _logger && _logger.debugEnabled;
-			_infoEnabled = _logger && _logger.infoEnabled;
-			_warnEnabled = _logger && _logger.warnEnabled;
-			_errorEnabled = _logger && _logger.errorEnabled;
-			_fatalEnabled = _logger && _logger.fatalEnabled;
+			_debugEnabled = _logger && _logger.logLevel.matches( LogLevel.DEBUG_ONLY );
+			_infoEnabled = _logger && _logger.logLevel.matches( LogLevel.INFO_ONLY );
+			_warnEnabled = _logger && _logger.logLevel.matches( LogLevel.WARN_ONLY );
+			_errorEnabled = _logger && _logger.logLevel.matches( LogLevel.ERROR_ONLY );
+			_fatalEnabled = _logger && _logger.logLevel.matches( LogLevel.FATAL_ONLY );
 		}
-		
+
 		/**
 		 * @inheritDoc
 		 */
 		public function debug(message:String = null, ... params:*):void {
 			if (_debugEnabled) {
-				_logger.debug( _name, _startTime+getTimer(), message, params );
+				_logger.log( _name, LogLevel.DEBUG_ONLY, _startTime+getTimer(), message, params );
 			}
 		}
 		
@@ -80,7 +80,7 @@ package org.as3commons.logging {
 		 */
 		public function info(message:String = null, ... params:*):void {
 			if (_infoEnabled) {
-				_logger.info( _name, _startTime+getTimer(), message, params);
+				_logger.log( _name, LogLevel.INFO_ONLY, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -89,7 +89,7 @@ package org.as3commons.logging {
 		 */
 		public function warn(message:String = null, ... params:*):void {
 			if (_warnEnabled) {
-				_logger.warn( _name, _startTime+getTimer(), message, params);
+				_logger.log( _name, LogLevel.WARN_ONLY, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -98,7 +98,7 @@ package org.as3commons.logging {
 		 */
 		public function error(message:String = null, ... params:*):void {
 			if (_errorEnabled) {
-				_logger.error( _name, _startTime+getTimer(), message, params);
+				_logger.log( _name, LogLevel.ERROR_ONLY, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -107,7 +107,7 @@ package org.as3commons.logging {
 		 */
 		public function fatal(message:String = null, ... params:*):void {
 			if (_fatalEnabled) {
-				_logger.fatal( _name, _startTime+getTimer(), message, params);
+				_logger.log( _name, LogLevel.FATAL_ONLY, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -148,10 +148,6 @@ package org.as3commons.logging {
 
 		public function get name():String {
 			return _name;
-		}
-		
-		public function set errorEnabled(errorEnabled:Boolean):void {
-			_errorEnabled = errorEnabled;
 		}
 	}
 }

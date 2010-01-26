@@ -63,7 +63,7 @@ package org.as3commons.logging {
 			return _levels[ value ];
 		}
 
-		private static function createLogLevel(name:String,value:int):LogLevel {
+		public static function createLogLevel(name:String,value:int):LogLevel {
 			var result:LogLevel = getLevelByValue(value);
 			if( !result ) {
 				result = _levels[value] = new LogLevel(name, value);
