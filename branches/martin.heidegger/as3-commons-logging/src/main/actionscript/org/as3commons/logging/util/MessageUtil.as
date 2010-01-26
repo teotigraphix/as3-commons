@@ -38,14 +38,12 @@ package org.as3commons.logging.util {
 		private static const DATE: RegExp = /{date}/g;
 		private static const LOG_LEVEL: RegExp = /{logLevel}/g;
 		
+		private static const DATE_INSTANCE: Date = new Date();
 		
 		/**
 		 * Returns a string with the parameters replaced.
 		 */
-		public static function toString( format: String, name: String, level: LogLevel, message:String, params:Array, date: Date = null ):String {
-			if( !date ) {
-				date = new Date();
-			}
+		public static function toString( format: String, name: String, level: LogLevel, timeMs: Number, message:String, params:Array ):String {
 			var numParams:int = params.length;
 			while( PARAMETER_REGEXP.length < numParams ) {
 				PARAMETER_REGEXP.push( new RegExp("\\{" + PARAMETER_REGEXP.length + "\\}", "g") );
@@ -53,11 +51,11 @@ package org.as3commons.logging.util {
 			for (var i:int = 0; i < numParams; ++i) {
 				message = message.replace( PARAMETER_REGEXP[i], params[i] );
 			}
-			
+			DATE_INSTANCE.time = timeMs;
 			return format.
 				replace( MESSAGE, message ).
 				replace( NAME, name ).
-				replace( DATE, date.toDateString()).
+				replace(DATE, DATE_INSTANCE.toDateString()).
 				replace( LOG_LEVEL, level.name );
 		}
 	}

@@ -63,58 +63,58 @@ class MultipleLoggerFactoryNode implements ILogTarget {
 		_fatalEnabled = logTargetA.fatalEnabled || logTargetB.fatalEnabled;
 	}
 
-	public function debug(name: String, message : String, parameters : Array) : void{
+	public function debug(name: String, timeMs: Number, message : String, parameters : Array) : void{
 		if( _debugBothEnabled ) {
-			_logTargetA.debug(name, message, parameters);
-			_logTargetB.debug(name, message, parameters);
+			_logTargetA.debug(name, timeMs, message, parameters);
+			_logTargetB.debug(name, timeMs, message, parameters);
 		} else if( _logTargetA.debugEnabled ) {
-			_logTargetA.debug(name, message, parameters);
+			_logTargetA.debug(name, timeMs, message, parameters);
 		} else if( _debugEnabled ) {
-			_logTargetB.debug(name, message, parameters);
+			_logTargetB.debug(name, timeMs, message, parameters);
 		}
 	}
 	
-	public function info(name : String, message : String, parameters : Array) : void{
+	public function info(name : String, timeMs: Number, message : String, parameters : Array) : void{
 		if( _infoBothEnabled ) {
-			_logTargetA.info(name, message, parameters);
-			_logTargetB.info(name, message, parameters);
+			_logTargetA.info(name, timeMs, message, parameters);
+			_logTargetB.info(name, timeMs, message, parameters);
 		} else if( _logTargetA.infoEnabled ) {
-			_logTargetA.info(name, message, parameters);
+			_logTargetA.info(name, timeMs, message, parameters);
 		} else if( _infoEnabled ) {
-			_logTargetB.info(name, message, parameters);
+			_logTargetB.info(name, timeMs, message, parameters);
 		}
 	}
 	
-	public function warn(name : String, message : String, parameters : Array) : void{
+	public function warn(name : String, timeMs: Number, message : String, parameters : Array) : void{
 		if( _warnBothEnabled ) {
-			_logTargetA.warn(name, message, parameters);
-			_logTargetB.warn(name, message, parameters);
+			_logTargetA.warn(name, timeMs, message, parameters);
+			_logTargetB.warn(name, timeMs, message, parameters);
 		} else if( _logTargetA.infoEnabled ) {
-			_logTargetA.warn(name, message, parameters);
+			_logTargetA.warn(name, timeMs, message, parameters);
 		} else if( _warnEnabled ) {
-			_logTargetB.warn(name, message, parameters);
+			_logTargetB.warn(name, timeMs, message, parameters);
 		}
 	}
 	
-	public function error(name : String, message : String, parameters : Array) : void{
+	public function error(name : String, timeMs: Number, message : String, parameters : Array) : void{
 		if( _errorBothEnabled ) {
-			_logTargetA.error(name, message, parameters);
-			_logTargetB.error(name, message, parameters);
+			_logTargetA.error(name, timeMs, message, parameters);
+			_logTargetB.error(name, timeMs, message, parameters);
 		} else if( _logTargetA.infoEnabled ) {
-			_logTargetA.error(name, message, parameters);
+			_logTargetA.error(name, timeMs, message, parameters);
 		} else if( _errorEnabled ) {
-			_logTargetB.error(name, message, parameters);
+			_logTargetB.error(name, timeMs, message, parameters);
 		}
 	}
 	
-	public function fatal(name : String, message : String, parameters : Array) : void{
+	public function fatal(name : String, timeMs: Number, message : String, parameters : Array) : void{
 		if( _fatalBothEnabled ) {
-			_logTargetA.fatal(name, message, parameters);
-			_logTargetB.fatal(name, message, parameters);
+			_logTargetA.fatal(name, timeMs, message, parameters);
+			_logTargetB.fatal(name, timeMs, message, parameters);
 		} else if( _logTargetA.infoEnabled ) {
-			_logTargetA.fatal(name, message, parameters);
+			_logTargetA.fatal(name, timeMs, message, parameters);
 		} else if( _fatalEnabled ) {
-			_logTargetB.fatal(name, message, parameters);
+			_logTargetB.fatal(name, timeMs, message, parameters);
 		}
 	}
 	

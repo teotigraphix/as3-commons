@@ -14,36 +14,36 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug( name: String, message:String, params: Array ):void {
-			log(name,LogLevel.DEBUG_ONLY, message, params);
+		public function debug( name: String, timeMs: Number, message:String, params: Array ):void {
+			log(name,LogLevel.DEBUG_ONLY, timeMs, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function info( name: String, message:String, params: Array ):void {
-			log(name,LogLevel.INFO_ONLY, message, params);
+		public function info( name: String, timeMs: Number, message:String, params: Array ):void {
+			log(name,LogLevel.INFO_ONLY, timeMs, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function warn( name: String, message:String, params: Array ):void {
-			log(name,LogLevel.WARN_ONLY, message, params);
+		public function warn( name: String, timeMs: Number, message:String, params: Array ):void {
+			log(name,LogLevel.WARN_ONLY, timeMs, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function error( name: String, message:String, params: Array ):void {
-			log(name,LogLevel.ERROR_ONLY, message, params);
+		public function error( name: String, timeMs: Number, message:String, params: Array ):void {
+			log(name,LogLevel.ERROR_ONLY, timeMs, message, params);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal( name: String, message:String, params: Array ):void {
-			log(name,LogLevel.FATAL_ONLY, message, params);
+		public function fatal( name: String, timeMs: Number, message:String, params: Array ):void {
+			log(name,LogLevel.FATAL_ONLY, timeMs, message, params);
 		}
 		
 		/**
@@ -84,7 +84,7 @@ package org.as3commons.logging.impl {
 		/**
 		 * Subclasses must override this method and provide a concrete log implementation.
 		 */
-		protected function log(name: String, level:LogLevel, message:String, params:Array):void {
+		protected function log(name: String, level:LogLevel, timeMs: Number, message:String, params:Array):void {
 			throw new IllegalOperationError("The 'log' method is abstract and must be overridden in '" + this + "'");
 		}
 	}

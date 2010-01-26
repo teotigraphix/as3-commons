@@ -20,7 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging {
-	
+	import flash.utils.getTimer;
+
 	/**
 	 * Proxy for an ILogger implementation. This class is used internally by the LoggerFactory and
 	 * should not be used directly.
@@ -42,7 +43,12 @@ package org.as3commons.logging {
 		private var _warnEnabled:Boolean = false;
 		private var _errorEnabled:Boolean = false;
 		private var _fatalEnabled:Boolean = false;
-
+		
+		private static var _startTime: int;
+		{
+			_startTime = new Date().getTime() - getTimer();
+		}
+		
 		/**
 		 * Creates a new LoggerProxy.
 		 */
@@ -68,7 +74,7 @@ package org.as3commons.logging {
 		 */
 		public function debug(message:String = null, ... params:*):void {
 			if (_debugEnabled) {
-				_logger.debug( _name, message, params );
+				_logger.debug( _name, _startTime+getTimer(), message, params );
 			}
 		}
 		
@@ -77,7 +83,7 @@ package org.as3commons.logging {
 		 */
 		public function info(message:String = null, ... params:*):void {
 			if (_infoEnabled) {
-				_logger.info( _name, message, params);
+				_logger.info( _name, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -86,7 +92,7 @@ package org.as3commons.logging {
 		 */
 		public function warn(message:String = null, ... params:*):void {
 			if (_warnEnabled) {
-				_logger.warn( _name, message, params);
+				_logger.warn( _name, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -95,7 +101,7 @@ package org.as3commons.logging {
 		 */
 		public function error(message:String = null, ... params:*):void {
 			if (_errorEnabled) {
-				_logger.error( _name, message, params);
+				_logger.error( _name, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -104,7 +110,7 @@ package org.as3commons.logging {
 		 */
 		public function fatal(message:String = null, ... params:*):void {
 			if (_fatalEnabled) {
-				_logger.fatal( _name, message, params);
+				_logger.fatal( _name, _startTime+getTimer(), message, params);
 			}
 		}
 		
