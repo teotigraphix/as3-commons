@@ -91,11 +91,11 @@ package org.as3commons.logging.impl
 			try {
 				_socket.close();
 			} catch( e: Error ) {
-				_socket = null;
-				_ready = false;
-				if( !_cache ) {
-					_cache = [];
-				} 
+			}
+			_socket = null;
+			_ready = false;
+			if( !_cache ) {
+				_cache = [];
 			}
 		}
 		
