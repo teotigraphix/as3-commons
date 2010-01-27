@@ -1,4 +1,5 @@
 package org.as3commons.logging.impl {
+	import org.as3commons.logging.LogManager;
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.LogLevel;
@@ -13,8 +14,11 @@ package org.as3commons.logging.impl {
 	 */
 	public class AirFileLogTarget extends AbstractLogTarget implements ILogTargetFactory, ILogTarget{
 		
-		private static const DEFAULT_FILE_PATTERN: String = File.applicationDirectory.resolvePath("out-{date}.log").nativePath;
+		public static const DEFAULT_FORMAT: String = "{time} {name}: {message}";
+		public static const DEFAULT_FILE_PATTERN: String = File.applicationDirectory.resolvePath("{file}.{date}.log").nativePath;
+		
 		private static const DATE: RegExp = /{date}/g;
+		private static const FILE: RegExp = /{file}/g;
 		
 		private var _filePattern:String;
 		private var _file:File;
@@ -32,7 +36,7 @@ package org.as3commons.logging.impl {
 			if( format ) {
 				_format = format;
 			} else {
-				_format = LogMessageFormatter.DEFAULT_FORMAT;
+				_format = DEFAULT_FORMAT;
 			}
 			_stream = new FileStream();
 		}
@@ -69,11 +73,14 @@ package org.as3commons.logging.impl {
 			}
 			var dayName: String = date.dateUTC.toString();
 			var result: String =  yearName+monthName+dayName;
-			if( no != -1 )
-			{
+			if(no != -1) {
 				result += "." + no;
 			}
-			return _filePattern.replace( DATE, result );
+			var file: String = LogManager.SWF_SHORT_URL;
+			if(file == LogManager.SWF_URL_ERROR) {
+				file = "out";
+			}
+			return _filePattern.replace( DATE, result ).replace( FILE, file );
 		}
 	}
 }
