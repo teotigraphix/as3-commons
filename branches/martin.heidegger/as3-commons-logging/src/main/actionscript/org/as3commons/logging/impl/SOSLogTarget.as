@@ -61,7 +61,7 @@ package org.as3commons.logging.impl
 					_cache.push( new LogCacheStatement(name, shortName, level, timeStamp, message, params) );
 				}
 			} else {
-				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, params).replace(/<![CDATA[/gi, "").replace(/]]>/gi,"") + "]]></showMessage>\n");
+				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, params).replace(/\<\!\[CDATA\[/gi, "").replace(/]]\>/gi,"") + "]]></showMessage>\n");
 			}
 		}
 		
