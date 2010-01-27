@@ -66,6 +66,22 @@ package org.as3commons.logging.util
 			if( format.match(MESSAGE_DOUBLE_QUOTE_ENCODED ) ) {
 				result = result.replace( MESSAGE_DOUBLE_QUOTE_ENCODED, encodeDoubleQuote( message ) ); 
 			}
+			if( result.match( LOG_TIME ) ) {
+				NOW.time = timeMs;
+				var hrs: String = NOW.hoursUTC.toString();
+				if( hrs.length == 1 ) {
+					hrs = "0"+hrs;
+				}
+				var mins: String = NOW.minutesUTC.toString();
+				if( mins.length == 1 ) {
+					mins = "0"+mins;
+				}
+				var secs: String = NOW.secondsUTC.toString();
+				if( secs.length == 1 ) {
+					secs = "0"+secs;
+				}
+				result = result.replace( LOG_TIME, hrs+":"+mins+":"+secs+"."+int( NOW.millisecondsUTC / 100 ) );
+			}
 			if( result.match( DATE ) ) {
 				NOW.time = timeMs;
 				result = result.replace( DATE, NOW.toString() );
@@ -74,27 +90,9 @@ package org.as3commons.logging.util
 				NOW.time = timeMs;
 				result = result.replace( TIME, NOW.hoursUTC + ":" + NOW.minutesUTC + ":" + NOW.secondsUTC + "." + NOW.millisecondsUTC );
 			}
-			if( result.match( LOG_TIME ) ) {
-				NOW.time = timeMs;
-				result = result.replace( LOG_TIME, fillTwoDigits( NOW.hoursUTC.toString() ) + ":" + fillTwoDigits( NOW.minutesUTC.toString() ) + ":" + fillTwoDigits( NOW.secondsUTC.toString() ) + "." + msToOneDigit( NOW.millisecondsUTC ) );
-			}
 			return result;
 		}
-
-		private static function msToOneDigit( ms: Number): String 
-		{
-			return int( ms / 100 ).toString();
-		}
-
-		private static function fillTwoDigits( string: String): String 
-		{
-			if( string.length == 1 )
-			{
-				return "0"+string;
-			}
-			return string;
-		}
-
+		
 		private static function encodeDoubleQuote(message: String): String {
 			var split: Array = message.split("\"");
 			var l: int = split.length-1;
