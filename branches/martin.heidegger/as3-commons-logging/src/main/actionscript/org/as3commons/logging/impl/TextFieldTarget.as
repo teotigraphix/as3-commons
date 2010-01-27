@@ -3,7 +3,7 @@ package org.as3commons.logging.impl
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.LogLevel;
-	import org.as3commons.logging.util.MessageUtil;
+	import org.as3commons.logging.util.LogMessageFormatter;
 
 	import flash.text.TextField;
 
@@ -17,14 +17,14 @@ package org.as3commons.logging.impl
 
 		public function TextFieldTarget ( format:String = null) {
 			if (!format) {
-				_format = MessageUtil.DEFAULT_FORMAT;
+				_format = LogMessageFormatter.DEFAULT_FORMAT;
 			} else {
 				_format = format;
 			}
 		}
 		
 		public function log(name: String, level: LogLevel, timeMs: Number, message: String, parameters: Array): void {
-			this.text += MessageUtil.toString( _format, name, level, timeMs, message, parameters ) + "\n";
+			this.text += LogMessageFormatter.format( _format, name, level, timeMs, message, parameters ) + "\n";
 		}
 		
 		public function get logLevel(): LogLevel {

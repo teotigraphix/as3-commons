@@ -24,7 +24,7 @@ package org.as3commons.logging.impl
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.LogLevel;
-	import org.as3commons.logging.util.MessageUtil;
+	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
 	 * Default AS3Commons logging implementation of the ILogger interface that writes messages to the console using
@@ -41,12 +41,12 @@ package org.as3commons.logging.impl
 			if( format ) {
 				_format = format;
 			} else {
-				_format = MessageUtil.DEFAULT_FORMAT;
+				_format = LogMessageFormatter.DEFAULT_FORMAT;
 			}
 		}
 		
 		override public function log(name: String, level:LogLevel, timeMs: Number, message:String, params:Array):void {
-			trace( MessageUtil.toString( _format, name, level, timeMs, message, params) );
+			trace( LogMessageFormatter.format( _format, name, level, timeMs, message, params) );
 		}
 		
 		public function getLogTarget(name: String): ILogTarget

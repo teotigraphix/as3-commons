@@ -28,7 +28,7 @@ package org.as3commons.logging.util {
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
 	 */
-	public class MessageUtil {
+	public class LogMessageFormatter {
 		
 		public static const DEFAULT_FORMAT: String = "{date} {logLevel} - {name} - {message}";
 		
@@ -42,18 +42,21 @@ package org.as3commons.logging.util {
 		/**
 		 * Returns a string with the parameters replaced.
 		 */
-		public static function toString( format: String, name: String, level: LogLevel, timeMs: Number, message:String, params:Array ):String {
+		public static function format( format: String, name: String, level: LogLevel, timeMs: Number, message:String, params:Array ):String {
 			var numParams:int = params.length;
 			for (var i:int = 0; i < numParams; ++i) {
 				var param: * = params[i];
 				message = message.replace( "{"+i+"}", param );
 			}
-			DATE_INSTANCE.time = timeMs;
-			return format.
+			format = format.
 				replace( MESSAGE, message ).
-				replace( NAME, name ).
-				replace( DATE, DATE_INSTANCE.toString() ).
-				replace( LOG_LEVEL, level.name );
+				replace( NAME, name ? name : "" ).
+				replace( LOG_LEVEL, level ? level.name : "" );
+			if( timeMs != -1 ) {
+				DATE_INSTANCE.time = timeMs;
+				format = format.replace( DATE, DATE_INSTANCE.toString() );
+			}
+			return format;
 		}
 	}
 }
