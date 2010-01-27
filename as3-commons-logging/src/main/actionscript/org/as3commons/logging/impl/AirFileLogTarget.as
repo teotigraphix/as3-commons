@@ -2,7 +2,7 @@ package org.as3commons.logging.impl {
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.LogLevel;
-	import org.as3commons.logging.util.MessageUtil;
+	import org.as3commons.logging.util.LogMessageFormatter;
 
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
@@ -32,7 +32,7 @@ package org.as3commons.logging.impl {
 			if( format ) {
 				_format = format;
 			} else {
-				_format = MessageUtil.DEFAULT_FORMAT;
+				_format = LogMessageFormatter.DEFAULT_FORMAT;
 			}
 			_stream = new FileStream();
 		}
@@ -58,7 +58,7 @@ package org.as3commons.logging.impl {
 				}
 				_stream.openAsync( _file, FileMode.APPEND );
 			}
-			_stream.writeUTFBytes( MessageUtil.toString( _format, name, level, timeMs, message, params ) + "\n" );
+			_stream.writeUTFBytes( LogMessageFormatter.format( _format, name, level, timeMs, message, params ) + "\n" );
 		}
 		
 		private function createFileName(date:Date, no: int = -1):String {

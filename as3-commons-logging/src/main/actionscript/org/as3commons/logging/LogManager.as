@@ -19,12 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging 
+{
 	import org.as3commons.logging.impl.TraceLogTargetFactory;
 
-	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 
+	
 	/**
 	 * Use the LoggerFactory to obtain a logger. This is the main class used when working with the as3commons-logging
 	 * library.
@@ -57,15 +58,14 @@ package org.as3commons.logging {
 		private var _loggerFactory:ILogTargetFactory = new TraceLogTargetFactory();
 
 		/** A cache of loggers */
-		private var _loggers:Dictionary /* <String, ILogger> */  = new Dictionary();
+		private var _loggers:Object /* <String, ILogger> */  = {};
 		private var _nullLogger:ILogger;
 		private var _undefinedLogger:ILogger;
 
 		/**
 		 * Constructs a new LoggerFactory.
 		 */
-		public function LogManager() {
-		}
+		public function LogManager() {}
 
 		/**
 		 * Returns a logger for the given name.
