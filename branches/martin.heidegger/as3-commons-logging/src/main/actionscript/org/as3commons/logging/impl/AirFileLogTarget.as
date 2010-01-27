@@ -28,7 +28,7 @@ package org.as3commons.logging.impl
 		private var _formerDate:*;
 		
 		// Not customizable since the log-file header would need to adapt
-		private var _format:String = "{time} {name} \"{message_dqt}\"";
+		private var _format:String = "{logTime} {logLevel} {name} \"{message_dqt}\"";
 
 		public function AirFileLogTarget( filePattern: String = null ) {
 			if( filePattern ) {
@@ -61,7 +61,7 @@ package org.as3commons.logging.impl
 				_stream.writeUTFBytes( "#Version: 1.0\n" +
 									   "#Software: " + LogManager.SWF_SHORT_URL + "(running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ")\n" +
 									   "#Date: "+date.dateUTC+"-"+getMonth(date.monthUTC)+"-"+date.fullYearUTC+" "+date.hoursUTC+":"+date.minutesUTC+":"+date.secondsUTC+"."+date.millisecondsUTC+"\n"+
-									   "#Fields: time name comment\n");
+									   "#Fields: time x-method x-name x-comment\n");
 			}
 			_stream.writeUTFBytes( LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, params ) + "\n" );
 		}
