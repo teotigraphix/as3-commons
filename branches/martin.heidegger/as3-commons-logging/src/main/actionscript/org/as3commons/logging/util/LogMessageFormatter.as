@@ -19,11 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.util {
-	import org.as3commons.logging.LogManager;
-	import flash.system.System;
+package org.as3commons.logging.util 
+{
 	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.LogManager;
 
+	
 	/**
 	 * Utilities for working with log messages.
 	 *
