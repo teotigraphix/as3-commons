@@ -14,11 +14,13 @@ package org.as3commons.logging.impl
 	 */
 	public class TextFieldTarget extends TextField implements ILogTarget, ILogTargetFactory
 	{
+		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
+		
 		private var _format: String;
 
 		public function TextFieldTarget ( format:String = null) {
 			if (!format) {
-				_format = LogMessageFormatter.DEFAULT_FORMAT;
+				_format = DEFAULT_FORMAT;
 			} else {
 				_format = format;
 			}

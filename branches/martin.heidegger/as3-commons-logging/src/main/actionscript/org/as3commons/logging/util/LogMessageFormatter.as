@@ -33,8 +33,6 @@ package org.as3commons.logging.util
 	 */
 	public class LogMessageFormatter {
 		
-		public static const DEFAULT_FORMAT: String = "{date} {logLevel} - {name} - {message}";
-		
 		private static const NAME: RegExp = /{name}/g;
 		private static const SHORT_NAME: RegExp = /{shortName}/g;
 		private static const TIME: RegExp = /{time}/g;
@@ -57,9 +55,9 @@ package org.as3commons.logging.util
 			}
 			var result: String = format.
 				replace( MESSAGE, message ).
-				replace( NAME, name ? name : "" ).
-				replace( SHORT_NAME, shortName ? shortName : "" ).
-				replace( LOG_LEVEL, level ? level.name : "" ).
+				replace( NAME, name ).
+				replace( SHORT_NAME, shortName ).
+				replace( LOG_LEVEL, level.name ).
 				replace( SWF, LogManager.SWF_URL ).
 				replace( SHORT_SWF, LogManager.SWF_SHORT_URL );
 				
@@ -69,18 +67,9 @@ package org.as3commons.logging.util
 			}
 			if( timeMs != -1 && result.match( TIME ) ) {
 				NOW.time = timeMs;
-				result = result.replace( TIME, NOW.hoursUTC + ":" + fill( NOW.minutesUTC.toString(), 2 ) + "." + fill( NOW.millisecondsUTC.toString(), 3 ) );
+				result = result.replace( TIME, NOW.hoursUTC + ":" + NOW.minutesUTC + "." + NOW.millisecondsUTC );
 			}
 			return result;
-		}
-
-		private static function fill( value: String, length: int): String 
-		{
-			while( value.length < length )
-			{
-				value = "0"+value;
-			}
-			return value;
 		}
 	}
 }

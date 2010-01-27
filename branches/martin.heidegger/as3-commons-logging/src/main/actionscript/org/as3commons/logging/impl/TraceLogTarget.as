@@ -35,13 +35,15 @@ package org.as3commons.logging.impl
 	 */
 	public class TraceLogTarget extends AbstractLogTarget implements ILogTargetFactory {
 		
+		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
+		
 		private var _format:String;
 
 		public function TraceLogTarget( format: String = null ) {
 			if( format ) {
 				_format = format;
 			} else {
-				_format = LogMessageFormatter.DEFAULT_FORMAT;
+				_format = DEFAULT_FORMAT;
 			}
 		}
 		
@@ -49,8 +51,7 @@ package org.as3commons.logging.impl
 			trace( LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, params) );
 		}
 		
-		public function getLogTarget(name: String): ILogTarget
-		{
+		public function getLogTarget(name: String): ILogTarget {
 			return this;
 		}
 	}

@@ -15,7 +15,8 @@ package org.as3commons.logging.impl
 	 */
 	public class SOSLogTarget extends AbstractLogTarget implements ILogTargetFactory
 	{
-		private static const DEFAULT_HOST: String = "localhost";
+		public static const DEFAULT_HOST: String = "localhost";
+		public static const DEFAULT_FORMAT: String = "{shortSWF}({time}) {shortName}: {message}";
 		
 		private var _host: String;
 		private var _port: uint;
@@ -27,7 +28,7 @@ package org.as3commons.logging.impl
 
 		public function SOSLogTarget( format: String = null, host: String = null, port: uint = 4444 ) {
 			if( !format ) {
-				_format = LogMessageFormatter.DEFAULT_FORMAT;
+				_format = DEFAULT_FORMAT;
 			} else {
 				_format = format;
 			}
@@ -58,7 +59,7 @@ package org.as3commons.logging.impl
 					_cache.push( new LogCacheStatement(name, shortName, level, timeMs, message, params) );
 				}
 			} else {
-				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + LogMessageFormatter.format( _format, name, shortName, null, timeMs, message, params) + "]]></showMessage>\n");
+				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, params) + "]]></showMessage>\n");
 			}
 		}
 
