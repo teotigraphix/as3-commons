@@ -75,19 +75,30 @@ package org.as3commons.logging
 		/**
 		 * Returns a logger for the given name.
 		 */
-		public static function getLogger(name:String):ILogger {
+		public static function getLoggerByName(name:String):ILogger {
 			return _instance.getLogger(name);
 		}
-
+		
+		public static function getLogger(input:*): ILogger {
+			if( input is String ) {
+				return getLoggerByName( String( input ) );
+			} else {
+				return getLoggerByInstance( Class( input ) );
+			}
+		}
+		
+		public static function getLoggerByInstance(obj:*): ILogger {
+			// replace the colons (::) in the name since this is not allowed in the Flex logging API
+			var name:String = getQualifiedClassName(obj);
+			return getLoggerByName(name.replace("::", "."));
+		}
+		
 		/**
 		 * Returns a logger for the given class, using the fully qualified name of the class as the name of the
 		 * logger.
 		 */
-		public static function getClassLogger(clazz:Class):ILogger {
-			// replace the colons (::) in the name since this is not allowed in the Flex logging API
-			var name:String = getQualifiedClassName(clazz);
-			name = name.replace("::", ".");
-			return _instance.getLogger(name);
+		public static function getLoggerByClass(clazz:Class):ILogger {
+			return getLoggerByInstance(clazz);
 		}
 
 		/**
