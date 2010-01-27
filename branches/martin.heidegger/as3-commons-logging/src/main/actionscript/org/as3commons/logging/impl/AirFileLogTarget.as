@@ -1,14 +1,16 @@
-package org.as3commons.logging.impl {
-	import org.as3commons.logging.LogManager;
+package org.as3commons.logging.impl 
+{
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.LogManager;
 	import org.as3commons.logging.util.LogMessageFormatter;
 
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 
+	
 	/**
 	 * @author mh
 	 */
@@ -56,15 +58,23 @@ package org.as3commons.logging.impl {
 				}
 				_formerDate = date.dateUTC;
 				_file = new File( createFileName( date ) );
-				var i: int = 0;
-				while( _file.exists ) {
-					_file = new File( createFileName( date, ++i ) );
+				if( _file.exists ) {
+					renameOldFile( _file, date, 1 );
 				}
 				_stream.openAsync( _file, FileMode.APPEND );
 			}
 			_stream.writeUTFBytes( LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, params ) + "\n" );
 		}
-		
+
+		private function renameOldFile(file: File, date: Date, no: int): void {
+			var newName: String = createFileName( date, no );
+			var newFile: File = new File( newName );
+			if( newFile.exists ) {
+				renameOldFile( newFile, date, no+1 );
+			}
+			file.moveTo( newFile );
+		}
+
 		private function createFileName(date:Date, no: int = -1):String {
 			var yearName: String = date.fullYearUTC.toString();
 			var monthName: String = (date.monthUTC+1).toString();
