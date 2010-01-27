@@ -45,8 +45,8 @@ package org.as3commons.logging.impl
 			}
 		}
 		
-		override public function log(name: String, level:LogLevel, timeMs: Number, message:String, params:Array):void {
-			trace( LogMessageFormatter.format( _format, name, level, timeMs, message, params) );
+		override public function log( name: String, shortName:String, level:LogLevel, timeMs: Number, message:String, params:Array ):void {
+			trace( LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, params) );
 		}
 		
 		public function getLogTarget(name: String): ILogTarget

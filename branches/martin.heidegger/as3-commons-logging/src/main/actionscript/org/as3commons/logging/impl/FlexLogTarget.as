@@ -21,6 +21,7 @@
  */
 package org.as3commons.logging.impl 
 {
+	import org.as3commons.logging.LogTargetLevel;
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.LogLevel;
 
@@ -37,35 +38,29 @@ package org.as3commons.logging.impl
 		
 		/** The decorated flex framework logger */
 		private var _logger:mx.logging.ILogger;
-		private var _logLevel: LogLevel;
+		private var _logLevel:LogTargetLevel;
 
 		/**
 		 * Creates a new FlexLogger
 		 */
 		public function FlexLogTarget(logger:mx.logging.ILogger) {
 			_logger = logger;
-			var value: int = 0;
-			if( Log.isDebug() )
-			{
-				value |= LogLevel.DEBUG_ONLY.value;
+			_logLevel = LogTargetLevel.NONE;
+			if( Log.isDebug() ) {
+				_logLevel = _logLevel.or( LogTargetLevel.DEBUG_ONLY );
 			}
-			if( Log.isError() )
-			{
-				value |= LogLevel.ERROR_ONLY.value;
+			if( Log.isError() ) {
+				_logLevel = _logLevel.or( LogTargetLevel.DEBUG_ONLY );
 			}
-			if( Log.isInfo() )
-			{
-				value |= LogLevel.INFO_ONLY.value;
+			if( Log.isInfo() ) {
+				_logLevel = _logLevel.or( LogTargetLevel.DEBUG_ONLY );
 			}
-			if( Log.isWarn() )
-			{
-				value |= LogLevel.WARN_ONLY.value;
+			if( Log.isWarn() ) {
+				_logLevel = _logLevel.or( LogTargetLevel.DEBUG_ONLY );
 			}
-			if( Log.isFatal() )
-			{
-				value |= LogLevel.FATAL_ONLY.value;
+			if( Log.isFatal() ) {
+				_logLevel = _logLevel.or( LogTargetLevel.DEBUG_ONLY );
 			}
-			_logLevel = LogLevel.createLogLevel( "Custom Flex Level", value );
 		}
 		
 		public function log( name: String, level:LogLevel, timeMs: Number, message:String, params:Array ):void {
@@ -84,7 +79,7 @@ package org.as3commons.logging.impl
 			}
 		}
 		
-		public function get logLevel(): LogLevel
+		public function get logTargetLevel(): LogTargetLevel
 		{
 			return _logLevel;
 		}

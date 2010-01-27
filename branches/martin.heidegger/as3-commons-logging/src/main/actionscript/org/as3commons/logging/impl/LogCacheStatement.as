@@ -13,10 +13,12 @@ package org.as3commons.logging.impl
 		public var timeMs: Number;
 		public var message: String;
 		public var params: Array;
-	
-		public function LogCacheStatement( name: String, level: LogLevel, timeMs: Number, message: String, params: Array ) 
+		public var shortName: String;
+
+		public function LogCacheStatement( name: String, shortName: String, level: LogLevel, timeMs: Number, message: String, params: Array ) 
 		{
 			this.name = name;
+			this.shortName = shortName;
 			this.level = level;
 			this.timeMs = timeMs;
 			this.message = message;

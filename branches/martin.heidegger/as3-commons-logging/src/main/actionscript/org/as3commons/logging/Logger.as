@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging {
+	import flash.system.System;
 	import flash.utils.getTimer;
 
 	/**
@@ -32,25 +33,25 @@ package org.as3commons.logging {
 	 * @author Martin Heidegger
 	 * @author Christophe Herreman
 	 */
-	public class Log implements ILogger {
+	public class Logger implements ILogger {
 		
 		/** The proxied logger. */
 		private var _logTarget:ILogTarget;
 		
 		private var _name:String;
+		private var _shortName: String;
 		private var _debugEnabled:Boolean = false;
 		private var _infoEnabled:Boolean = false;
 		private var _warnEnabled:Boolean = false;
 		private var _errorEnabled:Boolean = false;
 		private var _fatalEnabled:Boolean = false;
-		
-		private static const _startTime: Number = new Date().getTime() - getTimer();
-		
+
 		/**
 		 * Creates a new LoggerProxy.
 		 */
-		public function Log(name:String, logger:ILogTarget = null) {
+		public function Logger(name:String, shortName: String, logger:ILogTarget = null) {
 			_name = name;
+			_shortName = shortName;
 			this.logTarget = logger;
 		}
 		
@@ -59,11 +60,11 @@ package org.as3commons.logging {
 		 */
 		public function set logTarget(target:ILogTarget):void {
 			_logTarget = target;
-			_debugEnabled = _logTarget && _logTarget.logLevel.matches( LogLevel.DEBUG_ONLY );
-			_infoEnabled = _logTarget && _logTarget.logLevel.matches( LogLevel.INFO_ONLY );
-			_warnEnabled = _logTarget && _logTarget.logLevel.matches( LogLevel.WARN_ONLY );
-			_errorEnabled = _logTarget && _logTarget.logLevel.matches( LogLevel.ERROR_ONLY );
-			_fatalEnabled = _logTarget && _logTarget.logLevel.matches( LogLevel.FATAL_ONLY );
+			_debugEnabled = _logTarget && _logTarget.logTargetLevel.matches( LogLevel.DEBUG );
+			_infoEnabled  = _logTarget && _logTarget.logTargetLevel.matches( LogLevel.INFO );
+			_warnEnabled  = _logTarget && _logTarget.logTargetLevel.matches( LogLevel.WARN );
+			_errorEnabled = _logTarget && _logTarget.logTargetLevel.matches( LogLevel.ERROR );
+			_fatalEnabled = _logTarget && _logTarget.logTargetLevel.matches( LogLevel.FATAL );
 		}
 
 		/**
@@ -71,7 +72,7 @@ package org.as3commons.logging {
 		 */
 		public function debug(message:String = null, ... params:*):void {
 			if (_debugEnabled) {
-				_logTarget.log( _name, LogLevel.DEBUG_ONLY, _startTime+getTimer(), message, params );
+				_logTarget.log( _name, _shortName, LogLevel.DEBUG, System.precise_startupTime+getTimer(), message, params );
 			}
 		}
 		
@@ -80,7 +81,7 @@ package org.as3commons.logging {
 		 */
 		public function info(message:String = null, ... params:*):void {
 			if (_infoEnabled) {
-				_logTarget.log( _name, LogLevel.INFO_ONLY, _startTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, LogLevel.INFO, System.precise_startupTime+getTimer(), message, params);
 			}
 		}
 		
@@ -89,7 +90,7 @@ package org.as3commons.logging {
 		 */
 		public function warn(message:String = null, ... params:*):void {
 			if (_warnEnabled) {
-				_logTarget.log( _name, LogLevel.WARN_ONLY, _startTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, LogLevel.WARN, System.precise_startupTime+getTimer(), message, params);
 			}
 		}
 		
@@ -98,7 +99,7 @@ package org.as3commons.logging {
 		 */
 		public function error(message:String = null, ... params:*):void {
 			if (_errorEnabled) {
-				_logTarget.log( _name, LogLevel.ERROR_ONLY, _startTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, LogLevel.ERROR, System.precise_startupTime+getTimer(), message, params);
 			}
 		}
 		
@@ -107,7 +108,7 @@ package org.as3commons.logging {
 		 */
 		public function fatal(message:String = null, ... params:*):void {
 			if (_fatalEnabled) {
-				_logTarget.log( _name, LogLevel.FATAL_ONLY, _startTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, LogLevel.FATAL, System.precise_startupTime+getTimer(), message, params);
 			}
 		}
 		

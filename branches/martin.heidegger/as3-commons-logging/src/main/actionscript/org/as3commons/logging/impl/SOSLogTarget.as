@@ -41,7 +41,7 @@ package org.as3commons.logging.impl
 			_ready = false;
 		}
 
-		override public function log( name: String, level: LogLevel, timeMs: Number, message: String, params: Array ): void {
+		override public function log( name: String, shortName: String, level: LogLevel, timeMs: Number, message: String, params: Array ): void {
 			if( !_ready ) {
 				if( !_broken ) {
 					if( !_socket ) {
@@ -55,10 +55,10 @@ package org.as3commons.logging.impl
 							markAsBroken( "Connection to SOS was not allowed due to Security Error: " + e.message );
 						}
 					}
-					_cache.push( new LogCacheStatement(name, level, timeMs, message, params) );
+					_cache.push( new LogCacheStatement(name, shortName, level, timeMs, message, params) );
 				}
 			} else {
-				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + LogMessageFormatter.format( _format, name, null, timeMs, message, params) + "]]></showMessage>\n");
+				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + LogMessageFormatter.format( _format, name, shortName, null, timeMs, message, params) + "]]></showMessage>\n");
 			}
 		}
 
@@ -80,7 +80,7 @@ package org.as3commons.logging.impl
 			var i: int = _cache.length;
 			while( --i-(-1) ) {
 				var statement: LogCacheStatement = _cache.shift();
-				log( statement.name, statement.level, statement.timeMs, statement.message, statement.params );
+				log( statement.name, statement.shortName, statement.level, statement.timeMs, statement.message, statement.params );
 			}
 			_cache = null;
 		}
