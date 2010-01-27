@@ -37,6 +37,7 @@ package org.as3commons.logging.util
 		private static const SHORT_NAME: RegExp = /{shortName}/g;
 		private static const TIME: RegExp = /{time}/g;
 		private static const MESSAGE: RegExp = /{message}/g;
+		private static const MESSAGE_DOUBLE_QUOTE_ENCODED: RegExp = /{message_dqt}/g;
 		private static const DATE: RegExp = /{date}/g;
 		private static const LOG_LEVEL: RegExp = /{logLevel}/g;
 		private static const SWF: RegExp = /{swf}/g;
@@ -61,15 +62,28 @@ package org.as3commons.logging.util
 				replace( SWF, LogManager.SWF_URL ).
 				replace( SHORT_SWF, LogManager.SWF_SHORT_URL );
 				
+			if( format.match(MESSAGE_DOUBLE_QUOTE_ENCODED ) ) {
+				result = result.replace( MESSAGE_DOUBLE_QUOTE_ENCODED, encodeDoubleQuote( message ) ); 
+			}
 			if( timeMs != -1 && result.match( DATE ) ) {
 				NOW.time = timeMs;
 				result = result.replace( DATE, NOW.toString() );
 			}
 			if( timeMs != -1 && result.match( TIME ) ) {
 				NOW.time = timeMs;
-				result = result.replace( TIME, NOW.hoursUTC + ":" + NOW.minutesUTC + "." + NOW.millisecondsUTC );
+				result = result.replace( TIME, NOW.hoursUTC + ":" + NOW.minutesUTC + ":" + NOW.secondsUTC + "." + NOW.millisecondsUTC );
 			}
 			return result;
+		}
+
+		private static function encodeDoubleQuote(message: String): String 
+		{
+			var split: Array = message.split("\"");
+			var l: int = split.length-1;
+			for( var i: int = 0; i<l; ++i ) {
+				split[i] = split[i]+"\\";
+			}
+			return split.join("\"");
 		}
 	}
 }

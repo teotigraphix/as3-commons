@@ -1,5 +1,6 @@
 package org.as3commons.logging.impl 
 {
+	import flash.desktop.NativeApplication;
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.LogLevel;
@@ -16,7 +17,6 @@ package org.as3commons.logging.impl
 	 */
 	public class AirFileLogTarget extends AbstractLogTarget implements ILogTargetFactory, ILogTarget{
 		
-		public static const DEFAULT_FORMAT: String = "{time} {name}: {message}";
 		public static const DEFAULT_FILE_PATTERN: String = File.applicationDirectory.resolvePath("{file}.{date}.log").nativePath;
 		
 		private static const DATE: RegExp = /{date}/g;
@@ -26,19 +26,15 @@ package org.as3commons.logging.impl
 		private var _file:File;
 		private var _stream:FileStream;
 		private var _formerDate:*;
-		private var _format:String;
+		
+		// Not customizable since the log-file header would need to adapt
+		private var _format:String = "{time} {name} \"{message_dqt}\"";
 
-		public function AirFileLogTarget( filePattern: String = null, format: String = null ) {
-			
+		public function AirFileLogTarget( filePattern: String = null ) {
 			if( filePattern ) {
 				_filePattern = filePattern;
 			} else {
 				_filePattern = DEFAULT_FILE_PATTERN;
-			}
-			if( format ) {
-				_format = format;
-			} else {
-				_format = DEFAULT_FORMAT;
 			}
 			_stream = new FileStream();
 		}
@@ -62,8 +58,31 @@ package org.as3commons.logging.impl
 					renameOldFile( _file, date, 1 );
 				}
 				_stream.openAsync( _file, FileMode.APPEND );
+				_stream.writeUTFBytes( "#Version: 1.0\n" +
+									   "#Software: " + LogManager.SWF_SHORT_URL + "(running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ")\n" +
+									   "#Date: "+date.dateUTC+"-"+getMonth(date.monthUTC)+"-"+date.fullYearUTC+" "+date.hoursUTC+":"+date.minutesUTC+":"+date.secondsUTC+"."+date.millisecondsUTC+"\n"+
+									   "#Fields: time name comment\n");
 			}
 			_stream.writeUTFBytes( LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, params ) + "\n" );
+		}
+
+		private function getMonth(monthUTC: Number): String 
+		{
+			switch( monthUTC ) {
+				case 0: return "JAN";
+				case 1: return "FEB";
+				case 2: return "MAR";
+				case 3: return "APR";
+				case 4: return "MAY";
+				case 5: return "JUN";
+				case 6: return "JUL";
+				case 7: return "AUG";
+				case 8: return "SEP";
+				case 9: return "OCT";
+				case 10: return "NOV";
+				case 11: return "DEC";
+			}
+			return "";
 		}
 
 		private function renameOldFile(file: File, date: Date, no: int): void {
@@ -78,7 +97,7 @@ package org.as3commons.logging.impl
 		private function createFileName(date:Date, no: int = -1):String {
 			var yearName: String = date.fullYearUTC.toString();
 			var monthName: String = (date.monthUTC+1).toString();
-			if( monthName.length == 1 ) {
+			if(monthName.length == 1) {
 				monthName = "0"+monthName;
 			}
 			var dayName: String = date.dateUTC.toString();
