@@ -48,6 +48,7 @@ package org.as3commons.logging.impl
 				if( !_broken ) {
 					if( !_socket ) {
 						_socket = new XMLSocket();
+						_socket.addEventListener( Event.CLOSE, onConnectionClosed );
 						_socket.addEventListener( Event.CONNECT, onConnectionToSOSestablished );
 						_socket.addEventListener( IOErrorEvent.IO_ERROR, onIOError );
 						_socket.addEventListener( SecurityErrorEvent.SECURITY_ERROR, onSecurityError );
@@ -63,12 +64,13 @@ package org.as3commons.logging.impl
 				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, params) + "]]></showMessage>\n");
 			}
 		}
-		
+
 		private function markAsBroken( string: String): void {
 			// Give the least of help for the developer
 			trace( string );
 			_broken = true;
 			_ready = false;
+			_socket.removeEventListener( Event.CLOSE, onConnectionClosed );
 			_socket.removeEventListener( Event.CONNECT, onConnectionToSOSestablished );
 			_socket.removeEventListener( IOErrorEvent.IO_ERROR, onIOError );
 			_socket.removeEventListener( SecurityErrorEvent.SECURITY_ERROR, onSecurityError );
@@ -86,20 +88,26 @@ package org.as3commons.logging.impl
 			}
 			_cache = null;
 		}
+
+		private function onConnectionClosed(event: Event): void {
+			close();
+		}
 		
 		private function onIOError(event: IOErrorEvent): void {
+			close();
+		}
+
+		private function close(): void {
 			try {
 				_socket.close();
-			} catch( e: Error ) {
-			}
+			} catch( e: Error ) {}
 			_socket = null;
 			_ready = false;
 			if( !_cache ) {
 				_cache = [];
 			}
 		}
-		
-		
+
 		private function onSecurityError(event: SecurityErrorEvent): void {
 			markAsBroken( "A security error prevented the connection to SOS" );
 		}
