@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging {
-	import flash.system.System;
 	import flash.utils.getTimer;
 
 	/**
@@ -45,6 +44,8 @@ package org.as3commons.logging {
 		private var _warnEnabled:Boolean = false;
 		private var _errorEnabled:Boolean = false;
 		private var _fatalEnabled:Boolean = false;
+		
+		private static const _startTime: Number = new Date().getTime() - getTimer( );
 
 		/**
 		 * Creates a new LoggerProxy.
@@ -72,7 +73,7 @@ package org.as3commons.logging {
 		 */
 		public function debug(message:String = null, ... params:*):void {
 			if (_debugEnabled) {
-				_logTarget.log( _name, _shortName, LogLevel.DEBUG, System.precise_startupTime+getTimer(), message, params );
+				_logTarget.log( _name, _shortName, LogLevel.DEBUG, _startTime+getTimer(), message, params );
 			}
 		}
 		
@@ -81,7 +82,7 @@ package org.as3commons.logging {
 		 */
 		public function info(message:String = null, ... params:*):void {
 			if (_infoEnabled) {
-				_logTarget.log( _name, _shortName, LogLevel.INFO, System.precise_startupTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, LogLevel.INFO, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -90,7 +91,7 @@ package org.as3commons.logging {
 		 */
 		public function warn(message:String = null, ... params:*):void {
 			if (_warnEnabled) {
-				_logTarget.log( _name, _shortName, LogLevel.WARN, System.precise_startupTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, LogLevel.WARN, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -99,7 +100,7 @@ package org.as3commons.logging {
 		 */
 		public function error(message:String = null, ... params:*):void {
 			if (_errorEnabled) {
-				_logTarget.log( _name, _shortName, LogLevel.ERROR, System.precise_startupTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, LogLevel.ERROR, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -108,7 +109,7 @@ package org.as3commons.logging {
 		 */
 		public function fatal(message:String = null, ... params:*):void {
 			if (_fatalEnabled) {
-				_logTarget.log( _name, _shortName, LogLevel.FATAL, System.precise_startupTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, LogLevel.FATAL, _startTime+getTimer(), message, params);
 			}
 		}
 		
