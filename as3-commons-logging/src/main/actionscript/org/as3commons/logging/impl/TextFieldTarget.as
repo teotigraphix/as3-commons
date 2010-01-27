@@ -15,6 +15,7 @@ package org.as3commons.logging.impl
 	public class TextFieldTarget extends TextField implements ILogTarget, ILogTargetFactory
 	{
 		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
+		public static const INSTANCE: TextFieldTarget = new TextFieldTarget();
 		
 		private var _format: String;
 
@@ -26,8 +27,8 @@ package org.as3commons.logging.impl
 			}
 		}
 		
-		public function log(name: String, shortName: String, level: LogLevel, timeMs: Number, message: String, parameters: Array): void {
-			this.text += LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, parameters ) + "\n";
+		public function log(name: String, shortName: String, level: LogLevel, timeStamp: Number, message: String, parameters: Array): void {
+			this.text += LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, parameters ) + "\n";
 		}
 		
 		public function get logTargetLevel(): LogTargetLevel {

@@ -17,7 +17,7 @@ package org.as3commons.logging.impl {
 		/**
 		 * Subclasses must override this method and provide a concrete log implementation.
 		 */
-		public function log(name: String, shortName: String, level:LogLevel, timeMs: Number, message:String, params:Array):void {
+		public function log(name: String, shortName: String, level:LogLevel, timeStamp: Number, message:String, params:Array):void {
 			throw new IllegalOperationError("The 'log' method is abstract and must be overridden in '" + this + "'" );
 		}
 		

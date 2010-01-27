@@ -8,22 +8,22 @@ package org.as3commons.logging.impl
 	/**
 	 * @author martin.heidegger
 	 */
-	public class CacheLogTarget extends AbstractLogTarget implements ILogTarget, ILogTargetFactory 
+	public class LogCacheTarget extends AbstractLogTarget implements ILogTarget, ILogTargetFactory 
 	{
+		public static const INSTANCE: LogCacheTarget = new LogCacheTarget();
+		
 		private var _logStatements: Array /* <LogStatement> */ = new Array();
 
-		override public function log(name: String, shortName: String, level: LogLevel, timeMs: Number, message: String, params: Array): void {
-			_logStatements.push( new LogCacheStatement( name, shortName, level, timeMs, message, params ) );
+		override public function log(name: String, shortName: String, level: LogLevel, timeStamp: Number, message: String, params: Array): void {
+			_logStatements.push( new LogCacheStatement( name, shortName, level, timeStamp, message, params ) );
 		}
 
 		public function flushTo( factory: ILogTargetFactory ): void {
 			var i: int = _logStatements.length;
-			while( --i-(-1) )
-			{
+			while( --i-(-1) ) {
 				var statement: LogCacheStatement = LogCacheStatement( _logStatements.shift() );
 				var target: ILogTarget = factory.getLogTarget( statement.name );
-				if( target && target.logTargetLevel.matches( statement.level ) )
-				{
+				if( target && target.logTargetLevel.matches( statement.level ) ) {
 					target.log( statement.name, statement.shortName, statement.level, statement.timeMs, statement.message, statement.params );
 				}
 			}
