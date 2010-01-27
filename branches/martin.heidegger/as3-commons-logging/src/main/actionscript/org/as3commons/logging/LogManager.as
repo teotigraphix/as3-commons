@@ -21,7 +21,7 @@
  */
 package org.as3commons.logging 
 {
-	import org.as3commons.logging.impl.TraceLogTargetFactory;
+	import org.as3commons.logging.impl.TraceLogTarget;
 
 	import flash.display.Stage;
 	import flash.utils.getQualifiedClassName;
@@ -60,7 +60,7 @@ package org.as3commons.logging
 		private static var _instance:LogManager = LogManager.getInstance( );
 		
 		/** The logger factory that creates loggers */
-		private var _loggerFactory:ILogTargetFactory = new TraceLogTargetFactory();
+		private var _loggerFactory:ILogTargetFactory = TraceLogTarget.INSTANCE;
 
 		/** A cache of loggers */
 		private var _loggers:Object /* <String, ILogger> */  = {};

@@ -18,6 +18,7 @@ package org.as3commons.logging.impl
 	public class AirFileLogTarget extends AbstractLogTarget implements ILogTargetFactory, ILogTarget{
 		
 		public static const DEFAULT_FILE_PATTERN: String = File.applicationDirectory.resolvePath("{file}.{date}.log").nativePath;
+		public static const INSTANCE: AirFileLogTarget = new AirFileLogTarget();
 		
 		private static const DATE: RegExp = /{date}/g;
 		private static const FILE: RegExp = /{file}/g;
@@ -43,7 +44,7 @@ package org.as3commons.logging.impl
 			return this;
 		}
 		
-		override public function log(name:String, shortName:String, level:LogLevel, timeMs: Number,message:String, params:Array):void {
+		override public function log(name:String, shortName:String, level:LogLevel, timeStamp: Number,message:String, params:Array):void {
 			var date: Date = new Date();
 			if( date.dateUTC != _formerDate || !_file.exists ) {
 				if( _file ) {
@@ -63,7 +64,7 @@ package org.as3commons.logging.impl
 									   "#Date: "+date.dateUTC+"-"+getMonth(date.monthUTC)+"-"+date.fullYearUTC+" "+date.hoursUTC+":"+date.minutesUTC+":"+date.secondsUTC+"."+date.millisecondsUTC+"\n"+
 									   "#Fields: time x-method x-name x-comment\n");
 			}
-			_stream.writeUTFBytes( LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, params ) + "\n" );
+			_stream.writeUTFBytes( LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, params ) + "\n" );
 		}
 
 		private function getMonth(monthUTC: Number): String 
@@ -94,7 +95,7 @@ package org.as3commons.logging.impl
 			file.moveTo( newFile );
 		}
 
-		private function createFileName(date:Date, no: int = -1):String {
+		private function createFileName(date:Date, no: int = -1): String {
 			var yearName: String = date.fullYearUTC.toString();
 			var monthName: String = (date.monthUTC+1).toString();
 			if(monthName.length == 1) {

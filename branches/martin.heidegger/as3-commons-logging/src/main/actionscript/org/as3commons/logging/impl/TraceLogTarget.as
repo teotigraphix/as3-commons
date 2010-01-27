@@ -36,6 +36,7 @@ package org.as3commons.logging.impl
 	public class TraceLogTarget extends AbstractLogTarget implements ILogTargetFactory {
 		
 		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
+		public static const INSTANCE: TraceLogTarget = new TraceLogTarget();
 		
 		private var _format:String;
 
@@ -47,8 +48,8 @@ package org.as3commons.logging.impl
 			}
 		}
 		
-		override public function log( name: String, shortName:String, level:LogLevel, timeMs: Number, message:String, params:Array ):void {
-			trace( LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, params) );
+		override public function log( name: String, shortName:String, level:LogLevel, timeStamp: Number, message:String, params:Array ):void {
+			trace( LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, params) );
 		}
 		
 		public function getLogTarget(name: String): ILogTarget {

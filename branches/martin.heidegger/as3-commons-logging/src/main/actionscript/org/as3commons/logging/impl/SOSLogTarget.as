@@ -17,6 +17,7 @@ package org.as3commons.logging.impl
 	{
 		public static const DEFAULT_HOST: String = "localhost";
 		public static const DEFAULT_FORMAT: String = "{shortSWF}({time}) {shortName}: {message}";
+		public static const INSTANCE: SOSLogTarget = new SOSLogTarget();
 		
 		private var _host: String;
 		private var _port: uint;
@@ -25,7 +26,7 @@ package org.as3commons.logging.impl
 		private var _ready: Boolean;
 		private var _format: String;
 		private var _broken: Boolean;
-
+		
 		public function SOSLogTarget( format: String = null, host: String = null, port: uint = 4444 ) {
 			if( !format ) {
 				_format = DEFAULT_FORMAT;
@@ -41,8 +42,8 @@ package org.as3commons.logging.impl
 			_cache = [];
 			_ready = false;
 		}
-
-		override public function log( name: String, shortName: String, level: LogLevel, timeMs: Number, message: String, params: Array ): void {
+		
+		override public function log( name: String, shortName: String, level: LogLevel, timeStamp: Number, message: String, params: Array ): void {
 			if( !_ready ) {
 				if( !_broken ) {
 					if( !_socket ) {
@@ -56,13 +57,13 @@ package org.as3commons.logging.impl
 							markAsBroken( "Connection to SOS was not allowed due to Security Error: " + e.message );
 						}
 					}
-					_cache.push( new LogCacheStatement(name, shortName, level, timeMs, message, params) );
+					_cache.push( new LogCacheStatement(name, shortName, level, timeStamp, message, params) );
 				}
 			} else {
-				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, params) + "]]></showMessage>\n");
+				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, params) + "]]></showMessage>\n");
 			}
 		}
-
+		
 		private function markAsBroken( string: String): void {
 			// Give the least of help for the developer
 			trace( string );

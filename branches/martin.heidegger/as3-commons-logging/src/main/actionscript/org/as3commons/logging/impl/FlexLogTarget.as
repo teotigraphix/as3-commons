@@ -50,20 +50,20 @@ package org.as3commons.logging.impl
 				_logLevel = _logLevel.or( LogTargetLevel.DEBUG_ONLY );
 			}
 			if( Log.isError() ) {
-				_logLevel = _logLevel.or( LogTargetLevel.DEBUG_ONLY );
+				_logLevel = _logLevel.or( LogTargetLevel.ERROR_ONLY );
 			}
 			if( Log.isInfo() ) {
-				_logLevel = _logLevel.or( LogTargetLevel.DEBUG_ONLY );
+				_logLevel = _logLevel.or( LogTargetLevel.INFO_ONLY );
 			}
 			if( Log.isWarn() ) {
-				_logLevel = _logLevel.or( LogTargetLevel.DEBUG_ONLY );
+				_logLevel = _logLevel.or( LogTargetLevel.WARN_ONLY );
 			}
 			if( Log.isFatal() ) {
-				_logLevel = _logLevel.or( LogTargetLevel.DEBUG_ONLY );
+				_logLevel = _logLevel.or( LogTargetLevel.FATAL_ONLY );
 			}
 		}
 		
-		public function log( name: String, level:LogLevel, timeMs: Number, message:String, params:Array ):void {
+		public function log( name: String, level:LogLevel, timeStamp: Number, message:String, params:Array ):void {
 			var args:Array = params.concat();
 			args.unshift(message);
 			if( level == LogLevel.DEBUG ) {

@@ -36,10 +36,12 @@ package org.as3commons.logging.util
 		private static const NAME: RegExp = /{name}/g;
 		private static const SHORT_NAME: RegExp = /{shortName}/g;
 		private static const TIME: RegExp = /{time}/g;
+		private static const TIME_UTC: RegExp = /{timeUTC}/g;
 		private static const LOG_TIME: RegExp = /{logTime}/g;
 		private static const MESSAGE: RegExp = /{message}/g;
 		private static const MESSAGE_DOUBLE_QUOTE_ENCODED: RegExp = /{message_dqt}/g;
 		private static const DATE: RegExp = /{date}/g;
+		private static const DATE_UTC: RegExp = /{dateUTC}/g;
 		private static const LOG_LEVEL: RegExp = /{logLevel}/g;
 		private static const SWF: RegExp = /{swf}/g;
 		private static const SHORT_SWF: RegExp = /{shortSWF}/g;
@@ -86,9 +88,17 @@ package org.as3commons.logging.util
 				NOW.time = timeMs;
 				result = result.replace( DATE, NOW.toString() );
 			}
+			if( result.match( DATE_UTC ) ) {
+				NOW.time = timeMs;
+				result = result.replace( DATE_UTC, NOW.toUTCString() );
+			}
+			if( result.match( TIME_UTC ) ) {
+				NOW.time = timeMs;
+				result = result.replace( TIME_UTC, NOW.hoursUTC + ":" + NOW.minutesUTC + ":" + NOW.secondsUTC + "." + NOW.millisecondsUTC );
+			}
 			if( result.match( TIME ) ) {
 				NOW.time = timeMs;
-				result = result.replace( TIME, NOW.hoursUTC + ":" + NOW.minutesUTC + ":" + NOW.secondsUTC + "." + NOW.millisecondsUTC );
+				result = result.replace( TIME, NOW.hours + ":" + NOW.minutes + ":" + NOW.seconds + "." + NOW.milliseconds );
 			}
 			return result;
 		}
