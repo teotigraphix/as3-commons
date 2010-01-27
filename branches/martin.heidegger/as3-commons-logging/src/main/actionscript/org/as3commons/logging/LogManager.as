@@ -52,8 +52,8 @@ package org.as3commons.logging
 	 */
 	public class LogManager {
 
-		public static var SWF_URL: String = "";
-		public static var SWF_SHORT_URL: String = "";
+		public static var SWF_URL: String = "SWF url not initialized. Please call LogManager.initSWFURLs(stage)";
+		public static var SWF_SHORT_URL: String = SWF_URL;
 		
 		/** The singleton instance, eagerly instantiated. */
 		private static var _instance:LogManager = LogManager.getInstance( );
