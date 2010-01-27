@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.util {
+	import org.as3commons.logging.LogManager;
+	import flash.system.System;
 	import org.as3commons.logging.LogLevel;
 
 	/**
@@ -33,30 +35,51 @@ package org.as3commons.logging.util {
 		public static const DEFAULT_FORMAT: String = "{date} {logLevel} - {name} - {message}";
 		
 		private static const NAME: RegExp = /{name}/g;
+		private static const SHORT_NAME: RegExp = /{shortName}/g;
+		private static const TIME: RegExp = /{time}/g;
 		private static const MESSAGE: RegExp = /{message}/g;
 		private static const DATE: RegExp = /{date}/g;
 		private static const LOG_LEVEL: RegExp = /{logLevel}/g;
+		private static const SWF: RegExp = /{swf}/g;
+		private static const SHORT_SWF: RegExp = /{shortSWF}/g;
 		
-		private static const DATE_INSTANCE: Date = new Date();
+		private static const NOW: Date = new Date();
 		
 		/**
 		 * Returns a string with the parameters replaced.
 		 */
-		public static function format( format: String, name: String, level: LogLevel, timeMs: Number, message:String, params:Array ):String {
+		public static function format( format:String, name:String, shortName:String, level:LogLevel, timeMs:Number, message:String, params:Array ):String {
 			var numParams:int = params.length;
 			for (var i:int = 0; i < numParams; ++i) {
 				var param: * = params[i];
 				message = message.replace( "{"+i+"}", param );
 			}
-			format = format.
+			var result: String = format.
 				replace( MESSAGE, message ).
 				replace( NAME, name ? name : "" ).
-				replace( LOG_LEVEL, level ? level.name : "" );
-			if( timeMs != -1 ) {
-				DATE_INSTANCE.time = timeMs;
-				format = format.replace( DATE, DATE_INSTANCE.toString() );
+				replace( SHORT_NAME, shortName ? shortName : "" ).
+				replace( LOG_LEVEL, level ? level.name : "" ).
+				replace( SWF, LogManager.SWF_URL ).
+				replace( SHORT_SWF, LogManager.SWF_SHORT_URL );
+				
+			if( timeMs != -1 && result.match( DATE ) ) {
+				NOW.time = timeMs;
+				result = result.replace( DATE, NOW.toString() );
 			}
-			return format;
+			if( timeMs != -1 && result.match( TIME ) ) {
+				NOW.time = timeMs;
+				result = result.replace( TIME, NOW.hoursUTC + ":" + fill( NOW.minutesUTC.toString(), 2 ) + "." + fill( NOW.millisecondsUTC.toString(), 3 ) );
+			}
+			return result;
+		}
+
+		private static function fill( value: String, length: int): String 
+		{
+			while( value.length < length )
+			{
+				value = "0"+value;
+			}
+			return value;
 		}
 	}
 }

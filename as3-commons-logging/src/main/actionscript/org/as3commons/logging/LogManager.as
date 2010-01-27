@@ -23,6 +23,7 @@ package org.as3commons.logging
 {
 	import org.as3commons.logging.impl.TraceLogTargetFactory;
 
+	import flash.display.Stage;
 	import flash.utils.getQualifiedClassName;
 
 	
@@ -51,9 +52,12 @@ package org.as3commons.logging
 	 */
 	public class LogManager {
 
+		public static var SWF_URL: String = "";
+		public static var SWF_SHORT_URL: String = "";
+		
 		/** The singleton instance, eagerly instantiated. */
-		private static var _instance:LogManager = LogManager.getInstance();
-
+		private static var _instance:LogManager = LogManager.getInstance( );
+		
 		/** The logger factory that creates loggers */
 		private var _loggerFactory:ILogTargetFactory = new TraceLogTargetFactory();
 
@@ -91,6 +95,12 @@ package org.as3commons.logging
 		public static function set loggerFactory(value:ILogTargetFactory):void {
 			_instance.loggerFactory = value;
 		}
+		
+		public static function initSWFURLs(stage:Stage):void {
+			var url:String=stage.loaderInfo.loaderURL;
+			SWF_URL=url;
+			SWF_SHORT_URL=url.substring( url.lastIndexOf("/") + 1 );
+		}
 
 		/**
 		 * Returns the singleton instance of the logger factory.
@@ -120,10 +130,11 @@ package org.as3commons.logging
 			}
 			
 			if (!result) {
+				var shortName: String = name.substring( name.lastIndexOf(".")+1 );
 				if (_loggerFactory) {
-					result = new Log(name, _loggerFactory.getLogTarget(name));
+					result = new Logger(name, shortName, _loggerFactory.getLogTarget(name));
 				} else {
-					result = new Log(name);
+					result = new Logger(name, shortName);
 				}
 				
 				if ( compileSafeName === null) {
@@ -150,11 +161,11 @@ package org.as3commons.logging
 			
 			if ( _loggerFactory ) {
 				for (var name1:String in _loggers) {
-					Log(_loggers[name1]).logTarget = _loggerFactory.getLogTarget(name1);
+					Logger(_loggers[name1]).logTarget = _loggerFactory.getLogTarget(name1);
 				}
 			} else {
 				for (var name2:String in _loggers) {
-					Log(_loggers[name2]).logTarget = null;
+					Logger(_loggers[name2]).logTarget = null;
 				}
 			}
 		}

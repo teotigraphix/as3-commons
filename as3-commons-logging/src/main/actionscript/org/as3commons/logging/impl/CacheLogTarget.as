@@ -12,8 +12,8 @@ package org.as3commons.logging.impl
 	{
 		private var _logStatements: Array /* <LogStatement> */ = new Array();
 
-		override public function log(name: String, level: LogLevel, timeMs: Number, message: String, params: Array): void {
-			_logStatements.push( new LogCacheStatement( name, level, timeMs, message, params ) );
+		override public function log(name: String, shortName: String, level: LogLevel, timeMs: Number, message: String, params: Array): void {
+			_logStatements.push( new LogCacheStatement( name, shortName, level, timeMs, message, params ) );
 		}
 
 		public function flushTo( factory: ILogTargetFactory ): void {
@@ -22,9 +22,9 @@ package org.as3commons.logging.impl
 			{
 				var statement: LogCacheStatement = LogCacheStatement( _logStatements.shift() );
 				var target: ILogTarget = factory.getLogTarget( statement.name );
-				if( target && target.logLevel.matches( statement.level ) )
+				if( target && target.logTargetLevel.matches( statement.level ) )
 				{
-					target.log( statement.name, statement.level, statement.timeMs, statement.message, statement.params );
+					target.log( statement.name, statement.shortName, statement.level, statement.timeMs, statement.message, statement.params );
 				}
 			}
 		}

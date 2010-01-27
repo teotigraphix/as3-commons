@@ -1,8 +1,10 @@
-package org.as3commons.logging.impl {
-	import org.as3commons.logging.LogLevel;
+package org.as3commons.logging.impl 
+{
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
+	import org.as3commons.logging.LogTargetLevel;
 
+	
 	/**
 	 * @author mh
 	 */
@@ -20,7 +22,7 @@ package org.as3commons.logging.impl {
 			for( var i: int = 0; i<l; ++i )
 			{
 				var target: ILogTarget = ILogTargetFactory( _factories[i] ).getLogTarget(name);
-				if( target && target.logLevel != LogLevel.NONE )
+				if( target && target.logTargetLevel != LogTargetLevel.NONE )
 				{
 					if( result ) {
 						target = new MultipleLoggerFactoryNode( result, target );
@@ -33,37 +35,38 @@ package org.as3commons.logging.impl {
 	}
 }
 
-import org.as3commons.logging.LogLevel;
 import org.as3commons.logging.ILogTarget;
+import org.as3commons.logging.LogLevel;
+import org.as3commons.logging.LogTargetLevel;
 
 class MultipleLoggerFactoryNode implements ILogTarget {
 
 	private var _logTargetA:ILogTarget;
 	private var _logTargetB:ILogTarget;
-	private var _logLevel: LogLevel;
+	private var _logTargetLevel: LogTargetLevel;
 
 	public function MultipleLoggerFactoryNode( logTargetA: ILogTarget, logTargetB: ILogTarget ) {
 		_logTargetA = logTargetA;
 		_logTargetB = logTargetB;
-		_logLevel = logTargetA.logLevel.or( logTargetB.logLevel );
+		_logTargetLevel = logTargetA.logTargetLevel.or( logTargetB.logTargetLevel );
 	}
 
 	
 	
-	public function get logLevel(): LogLevel
+	public function get logTargetLevel(): LogTargetLevel
 	{
-		return _logLevel;
+		return _logTargetLevel;
 	}
 	
-	public function log(name: String, level: LogLevel, timeMs: Number, message: String, parameters: Array): void
+	public function log(name: String, shortName: String, level: LogLevel, timeMs: Number, message: String, parameters: Array): void
 	{
-		if( _logTargetA.logLevel.matches( level ) )
+		if( _logTargetA.logTargetLevel.matches( level ) )
 		{
-			_logTargetA.log(name, level, timeMs, message, parameters);
+			_logTargetA.log(name, shortName, level, timeMs, message, parameters);
 		}
-		if( _logTargetB.logLevel.matches( level ) )
+		if( _logTargetB.logTargetLevel.matches( level ) )
 		{
-			_logTargetB.log(name, level, timeMs, message, parameters);
+			_logTargetB.log(name, shortName, level, timeMs, message, parameters);
 		}
 	}
 }

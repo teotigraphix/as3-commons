@@ -3,6 +3,7 @@ package org.as3commons.logging.impl
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.LogTargetLevel;
 	import org.as3commons.logging.util.LogMessageFormatter;
 
 	import flash.text.TextField;
@@ -23,12 +24,12 @@ package org.as3commons.logging.impl
 			}
 		}
 		
-		public function log(name: String, level: LogLevel, timeMs: Number, message: String, parameters: Array): void {
-			this.text += LogMessageFormatter.format( _format, name, level, timeMs, message, parameters ) + "\n";
+		public function log(name: String, shortName: String, level: LogLevel, timeMs: Number, message: String, parameters: Array): void {
+			this.text += LogMessageFormatter.format( _format, name, shortName, level, timeMs, message, parameters ) + "\n";
 		}
 		
-		public function get logLevel(): LogLevel {
-			return LogLevel.ALL;
+		public function get logTargetLevel(): LogTargetLevel {
+			return LogTargetLevel.ALL;
 		}
 
 		public function getLogTarget(name: String): ILogTarget {
