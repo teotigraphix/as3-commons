@@ -83,7 +83,7 @@ package org.as3commons.logging
 			if( input is String ) {
 				return getLoggerByName( String( input ) );
 			} else {
-				return getLoggerByInstance( Class( input ) );
+				return getLoggerByInstance( input );
 			}
 		}
 		
