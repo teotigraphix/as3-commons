@@ -102,6 +102,9 @@ package org.as3commons.logging.impl
 				monthName = "0"+monthName;
 			}
 			var dayName: String = date.dateUTC.toString();
+			if(dayName.length == 1 ) {
+				dayName = "0"+dayName;
+			}
 			var result: String =  yearName+monthName+dayName;
 			if(no != -1) {
 				result += "." + no;

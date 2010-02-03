@@ -109,7 +109,7 @@ package org.as3commons.logging.util
 			for( var i: int = 0; i<l; ++i ) {
 				split[i] = split[i]+"\\";
 			}
-			return split.join("\"");
+			return split.join("\"").split("\n").join("\\n");
 		}
 	}
 }
