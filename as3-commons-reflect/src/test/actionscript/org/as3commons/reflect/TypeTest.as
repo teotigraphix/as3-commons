@@ -22,16 +22,17 @@
 package org.as3commons.reflect {
 
 	import flash.events.IEventDispatcher;
+	import flash.net.registerClassAlias;
 	import flash.utils.describeType;
-
-	import flexunit.framework.TestCase;
-
+	
 	import mx.logging.LogEventLevel;
-
+	
 	import org.as3commons.reflect.testclasses.ComplexClass;
 	import org.as3commons.reflect.testclasses.ConstructorRecursionHazardClass;
 	import org.as3commons.reflect.testclasses.PublicClass;
 	import org.as3commons.reflect.testclasses.PublicSubClass;
+	
+	import flexunit.framework.TestCase;
 
 	/**
 	 * @author Christophe Herreman
@@ -52,6 +53,13 @@ package org.as3commons.reflect {
 			assertEquals(4, type.variables.length);
 			assertEquals("PublicClass", type.name);
 			assertEquals("org.as3commons.reflect.testclasses::PublicClass", type.fullName);
+		}
+		
+		public function testClassAlias():void {
+			Type.clearCache();
+			registerClassAlias("this_is_an_alias",PublicClass);
+			var type:Type = Type.forClass(PublicClass);
+			assertEquals("this_is_an_alias", type.alias);
 		}
 
 		public function testForInstanceWithStringInstance():void {
