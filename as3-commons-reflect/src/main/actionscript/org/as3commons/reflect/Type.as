@@ -161,6 +161,7 @@ package org.as3commons.reflect {
 				result.constants = TypeXmlParser.parseMembers(Constant, description.factory.constant, fullyQualifiedClassName, false);
 				result.staticVariables = TypeXmlParser.parseMembers(Variable, description.variable, fullyQualifiedClassName, true);
 				result.variables = TypeXmlParser.parseMembers(Variable, description.factory.variable, fullyQualifiedClassName, false);
+				result.extendsClasses = TypeXmlParser.parseExtendsClasses(description.factory.extendsClass, result.applicationDomain);
 				TypeXmlParser.parseMetaData(description.factory[0].metadata, result);
 				
 				// Combine metadata from implemented interfaces
@@ -263,12 +264,20 @@ package org.as3commons.reflect {
 		 */
 		public function Type(applicationDomain:ApplicationDomain) {
 			super();
+			initType(applicationDomain);
+		}
+		
+		/**
+		 * Initializes the current <code>Type</code> instance.
+		 */
+		protected function initType(applicationDomain:ApplicationDomain):void {
 			_methods = [];
 			_accessors = [];
 			_staticConstants = [];
 			_constants = [];
 			_staticVariables = [];
 			_variables = [];
+			_extendsClasses = [];
 			_applicationDomain = applicationDomain;
 		}
 		
@@ -576,6 +585,25 @@ package org.as3commons.reflect {
 		}
 		
 		// ----------------------------
+		// extendsClass
+		// ----------------------------
+		
+		private var _extendsClasses:Array;
+		/**
+		 * @return An <code>Array</code> of <code>Class</code> instances that represents the inheritance order of the current <code>Type</code>. 
+		 * <p>The first item in the <code>Array</code> is the super class of the current <code>Type</code>.</p>
+		 */
+		public function get extendsClasses():Array {
+			return _extendsClasses;
+		} 
+		/**
+		 * @private
+		 */
+		public function set extendsClasses(value:Array):void {
+			_extendsClasses = value;
+		} 
+
+		// ----------------------------
 		// variables
 		// ----------------------------
 		
@@ -660,9 +688,10 @@ package org.as3commons.reflect {
 			}
 			return result;
 		}
-	
+		
 	}
 }
+import flash.system.ApplicationDomain;
 import org.as3commons.reflect.Type;
 import org.as3commons.reflect.IMetaDataContainer;
 import org.as3commons.reflect.AccessorAccess;
@@ -673,7 +702,7 @@ import org.as3commons.reflect.MetaDataArgument;
 import org.as3commons.reflect.MetaData;
 import org.as3commons.reflect.IMember;
 import org.as3commons.reflect.Constructor;
-import flash.system.ApplicationDomain;
+import org.as3commons.lang.ClassUtils;
 
 /**
  * Internal xml parser
@@ -707,6 +736,14 @@ internal class TypeXmlParser {
 			var member:IMember = new memberClass(m.@name, m.@type.toString(), declaringType, isStatic);
 			parseMetaData(m.metadata, member);
 			result.push(member);
+		}
+		return result;
+	}
+	
+	public static function parseExtendsClasses(extendedClasses:XMLList, applicationDomain:ApplicationDomain):Array {
+		var result:Array = [];
+		for each(var node:XML in extendedClasses) {
+			result[result.length] = org.as3commons.lang.ClassUtils.forName(node.@type.toString());
 		}
 		return result;
 	}

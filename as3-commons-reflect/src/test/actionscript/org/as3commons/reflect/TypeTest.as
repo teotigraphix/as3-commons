@@ -27,6 +27,7 @@ package org.as3commons.reflect {
 	
 	import mx.logging.LogEventLevel;
 	
+	import org.as3commons.reflect.testclasses.ComplexerClass;
 	import org.as3commons.reflect.testclasses.ComplexClass;
 	import org.as3commons.reflect.testclasses.ConstructorRecursionHazardClass;
 	import org.as3commons.reflect.testclasses.PublicClass;
@@ -60,6 +61,12 @@ package org.as3commons.reflect {
 			registerClassAlias("this_is_an_alias",PublicClass);
 			var type:Type = Type.forClass(PublicClass);
 			assertEquals("this_is_an_alias", type.alias);
+		}
+
+		public function testExtendsClasses():void {
+			var type:Type = Type.forClass(ComplexerClass);
+			assertEquals(2, type.extendsClasses.length);
+			assertStrictlyEquals(ComplexClass, type.extendsClasses[0]);
 		}
 
 		public function testForInstanceWithStringInstance():void {
