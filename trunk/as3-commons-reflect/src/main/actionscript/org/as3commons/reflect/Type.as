@@ -268,8 +268,7 @@ package org.as3commons.reflect {
 			_constants = [];
 			_staticVariables = [];
 			_variables = [];
-			_applicationDomain = new SoftReference()
-			_applicationDomain.value = applicationDomain;
+			_applicationDomain = applicationDomain;
 		}
 		
 		// --------------------------------------------------------------------
@@ -282,19 +281,19 @@ package org.as3commons.reflect {
 		// applicationDomain
 		// ----------------------------
 		
-		private var _applicationDomain:SoftReference;
+		private var _applicationDomain:ApplicationDomain;
 		/**
 		 * The ApplicationDomain which is able to retrieve the object definition for this type. The definition does not
-		 * necessarily have to be part of this <code>ApplicationDomain</code>, it could possible be present in the parent domain as well.
+		 * necessarily have to be part of this <code>ApplicationDomain</code>, it could possibly be present in the parent domain as well.
 		 */
 		public function get applicationDomain():ApplicationDomain {
-			return _applicationDomain.value as ApplicationDomain;
+			return _applicationDomain;
 		}
 		/**
 		 * @private
 		 */		
 		public function set applicationDomain(value:ApplicationDomain):void {
-			_applicationDomain.value = value;
+			_applicationDomain = value;
 		}
 		
 		// ----------------------------
