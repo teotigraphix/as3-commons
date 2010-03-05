@@ -152,6 +152,7 @@ package org.as3commons.reflect {
 				result.isDynamic = description.@isDynamic;
 				result.isFinal = description.@isFinal;
 				result.isStatic = description.@isStatic;
+				result.alias = description.@alias;
 				result.isInterface = (clazz === Object) ? false : (description.factory.extendsClass.length() == 0);
 				result.constructor = TypeXmlParser.parseConstructor(result, description.factory.constructor, applicationDomain);
 				result.accessors = TypeXmlParser.parseAccessors(result, description);
@@ -294,6 +295,18 @@ package org.as3commons.reflect {
 		 */		
 		public function set applicationDomain(value:ApplicationDomain):void {
 			_applicationDomain = value;
+		}
+		
+		// ----------------------------
+		// name
+		// ----------------------------
+
+		private var _alias:String;
+		public function get alias():String {
+			return _alias;
+		}
+		public function set alias(value:String):void {
+			_alias = value;
 		}
 		
 		// ----------------------------
@@ -650,7 +663,6 @@ package org.as3commons.reflect {
 	
 	}
 }
-
 import org.as3commons.reflect.Type;
 import org.as3commons.reflect.IMetaDataContainer;
 import org.as3commons.reflect.AccessorAccess;
@@ -662,10 +674,11 @@ import org.as3commons.reflect.MetaData;
 import org.as3commons.reflect.IMember;
 import org.as3commons.reflect.Constructor;
 import flash.system.ApplicationDomain;
+
 /**
  * Internal xml parser
  */
-class TypeXmlParser {
+internal class TypeXmlParser {
 	public static function parseConstructor(type:Type, constructorXML:XMLList, applicationDomain:ApplicationDomain):Constructor {
 		if (constructorXML.length() > 0) {
 			var params:Array = parseParameters(constructorXML[0].parameter, applicationDomain);
