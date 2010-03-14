@@ -743,7 +743,7 @@ internal class TypeXmlParser {
 	public static function parseExtendsClasses(extendedClasses:XMLList, applicationDomain:ApplicationDomain):Array {
 		var result:Array = [];
 		for each(var node:XML in extendedClasses) {
-			result[result.length] = org.as3commons.lang.ClassUtils.forName(node.@type.toString());
+			result[result.length] = org.as3commons.lang.ClassUtils.forName(node.@type.toString(), applicationDomain);
 		}
 		return result;
 	}
