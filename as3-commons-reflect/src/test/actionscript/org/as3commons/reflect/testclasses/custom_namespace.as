@@ -19,22 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.reflect.testclasses {
-
-	public class ComplexerClass extends ComplexClass {
-
-		public function ComplexerClass(name:String, number:Number, otherParameters:Array = null) {
-			super(name, number, otherParameters);
-			this.otherParameters = otherParameters;
-		}
-		
-		public var otherParameters:Array;
-		public var anotherProperty:String;
-		
-		private var _hiddenProperty:String = "CustomNamespace";
-		
-		custom_namespace function getHiddenProperty():String {
-			return _hiddenProperty;
-		}
-	}
+package org.as3commons.reflect.testclasses
+{
+	public namespace custom_namespace = "http://ns.as3commons.org/custom_namespace";
 }
+

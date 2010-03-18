@@ -28,7 +28,7 @@ package org.as3commons.reflect {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class AbstractMember extends MetaDataContainer implements IMember {
+	public class AbstractMember extends MetaDataContainer implements IMember, INamespaceOwner {
 
 		private var _name:String;
 		private var _type:String;
@@ -53,6 +53,18 @@ package org.as3commons.reflect {
 			_isStatic = isStatic;
 		}
 
+		// ----------------------------
+		// namespaceURI
+		// ----------------------------
+		
+		private var _namespaceURI:String;
+		public function get namespaceURI():String {
+			return _namespaceURI;
+		}
+		public function set namespaceURI(value:String):void {
+			_namespaceURI = value;
+		}
+		
 		public function get declaringType():Type {
 			return Type.forName(_declaringType);
 		}

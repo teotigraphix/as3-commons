@@ -23,6 +23,8 @@ package org.as3commons.reflect {
 	
 	import org.as3commons.reflect.testclasses.ProxiedClass;
 	
+	import org.as3commons.reflect.testclasses.ComplexerClass;
+	
 	import flexunit.framework.TestCase;
 	
 	/**
@@ -59,6 +61,15 @@ package org.as3commons.reflect {
 			assertEquals(8, result);
 		}
 		
+		public function testInvoke_forMethodInCustomNamespace():void	{
+			var m:MethodInvoker = new MethodInvoker();
+			m.target = new ComplexerClass("name",64);
+			m.method = "getHiddenProperty";
+			m.namespaceURI = "http://ns.as3commons.org/custom_namespace";
+			var result:String = m.invoke();
+			assertEquals("CustomNamespace", result);
+		}
+
 		public function testInvoke_shouldInvokePublicMethodOnProxy():void {
 			var proxy:ProxiedClass = new ProxiedClass();
 			var m:MethodInvoker = new MethodInvoker();

@@ -28,7 +28,7 @@ package org.as3commons.reflect {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class Method extends MetaDataContainer {
+	public class Method extends MetaDataContainer implements INamespaceOwner {
 
 		/**
 		 * Creates a new <code>Method</code> instance.
@@ -76,6 +76,18 @@ package org.as3commons.reflect {
 			}
 			result += "):" + returnType.name;
 			return result;
+		}
+		
+		// ----------------------------
+		// namespaceURI
+		// ----------------------------
+		
+		private var _namespaceURI:String;
+		public function get namespaceURI():String {
+			return _namespaceURI;
+		}
+		public function set namespaceURI(value:String):void {
+			_namespaceURI = value;
 		}
 
 		public function toString():String {
