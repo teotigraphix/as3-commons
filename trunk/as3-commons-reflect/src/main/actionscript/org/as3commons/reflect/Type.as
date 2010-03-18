@@ -692,17 +692,19 @@ package org.as3commons.reflect {
 	}
 }
 import flash.system.ApplicationDomain;
-import org.as3commons.reflect.Type;
-import org.as3commons.reflect.IMetaDataContainer;
+
+import org.as3commons.lang.ClassUtils;
+import org.as3commons.reflect.Accessor;
 import org.as3commons.reflect.AccessorAccess;
+import org.as3commons.reflect.Constructor;
+import org.as3commons.reflect.IMember;
+import org.as3commons.reflect.IMetaDataContainer;
+import org.as3commons.reflect.INamespaceOwner;
+import org.as3commons.reflect.MetaData;
+import org.as3commons.reflect.MetaDataArgument;
 import org.as3commons.reflect.Method;
 import org.as3commons.reflect.Parameter;
-import org.as3commons.reflect.Accessor;
-import org.as3commons.reflect.MetaDataArgument;
-import org.as3commons.reflect.MetaData;
-import org.as3commons.reflect.IMember;
-import org.as3commons.reflect.Constructor;
-import org.as3commons.lang.ClassUtils;
+import org.as3commons.reflect.Type;
 
 /**
  * Internal xml parser
@@ -734,6 +736,9 @@ internal class TypeXmlParser {
 		
 		for each (var m:XML in members) {
 			var member:IMember = new memberClass(m.@name, m.@type.toString(), declaringType, isStatic);
+			if (member is INamespaceOwner) {
+				INamespaceOwner(member).namespaceURI = m.@uri;
+			}
 			parseMetaData(m.metadata, member);
 			result.push(member);
 		}
@@ -754,6 +759,7 @@ internal class TypeXmlParser {
 		for each (var methodXML:XML in methodsXML) {
 			var params:Array = parseParameters(methodXML.parameter, applicationDomain);
 			var method:Method = new Method(type, methodXML.@name, isStatic, params, Type.forName(methodXML.@returnType,applicationDomain));
+			method.namespaceURI = methodXML.@uri;
 			parseMetaData(methodXML.metadata, method);
 			result.push(method);
 		}
@@ -777,6 +783,7 @@ internal class TypeXmlParser {
 		
 		for each (var accessorXML:XML in accessorsXML) {
 			var accessor:Accessor = new Accessor(accessorXML.@name, AccessorAccess.fromString(accessorXML.@access), accessorXML.@type.toString(), accessorXML.@declaredBy.toString(), isStatic);
+			accessor.namespaceURI = accessorXML.@uri;
 			parseMetaData(accessorXML.metadata, accessor);
 			result.push(accessor);
 		}

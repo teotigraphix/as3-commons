@@ -36,13 +36,15 @@ package org.as3commons.reflect {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class MethodInvoker {
+	public class MethodInvoker implements INamespaceOwner {
 		
 		private var _target:*;
 		
 		private var _method:String = "";
 		
 		private var _arguments:Array;
+		
+		private var _namespaceURI:String;
 		
 		/**
 		 * Creates a new MethodInvoker object.
@@ -95,12 +97,29 @@ package org.as3commons.reflect {
 			_arguments = value;
 		}
 		
+		// ----------------------------
+		// namespaceURI
+		// ----------------------------
+		
+		public function get namespaceURI():String {
+			return _namespaceURI;
+		}
+		public function set namespaceURI(value:String):void {
+			_namespaceURI = value;
+		}
+		
 		/**
 		 * Executes this MethodInvoker.
 		 */
 		public function invoke():* {
 			var result:*;
-			var f:Function = target[method];
+			var f:Function;
+			if ((_namespaceURI != null)&&(_namespaceURI.length > 0)) {
+				var qn:QName = new QName(_namespaceURI, method);
+				f = target[qn];
+			} else {
+				f = target[method];
+			}
 			
 			if (f != null) {
 				result = f.apply(target, this.arguments);
