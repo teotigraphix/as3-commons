@@ -112,7 +112,7 @@ package org.as3commons.reflect {
 						if (_cache[name]) {
 							result = _cache[name];
 						} else {
-							result = Type.forClass(org.as3commons.lang.ClassUtils.forName(name, applicationDomain));
+							result = Type.forClass(org.as3commons.lang.ClassUtils.forName(name, applicationDomain), applicationDomain);
 						}
 					} catch (e:ReferenceError) {
 						logger.warn("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
