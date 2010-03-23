@@ -159,19 +159,20 @@ package org.as3commons.reflect {
 		 * @param metadataName the name of the metadata for which to look
 		 * @return the metadata tag if found, or <code>null</code> if none is found
 		 */
-		public static function findClassMetadata(clazz:Class, metadataName:String):MetaData {
+		public static function findClassMetadata(clazz:Class, metadataName:String, applicationDomain:ApplicationDomain = null):MetaData {
 			Assert.notNull(clazz, "clazz must not be null.");
-			Assert.notNull(metadataName, "metadataName must not be null.");
+			Assert.hasText(metadataName, "metadataName must not be empty or null.");
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 
 			var declaringClass:Class = clazz;
 
 			while (declaringClass != null) {
-				var type:Type = Type.forClass(declaringClass);
+				var type:Type = Type.forClass(declaringClass, applicationDomain);
 				if (type.hasMetaData(metadataName)) {
 					return type.getMetaData(metadataName)[0];
 				}
 
-				var interfaces:Array = org.as3commons.lang.ClassUtils.getImplementedInterfaces(declaringClass);
+				var interfaces:Array = org.as3commons.lang.ClassUtils.getImplementedInterfaces(declaringClass, applicationDomain);
 				for each (var interfaze:Class in interfaces) {
 					type = Type.forClass(interfaze);
 
@@ -180,7 +181,7 @@ package org.as3commons.reflect {
 					}
 				}
 
-				declaringClass = org.as3commons.lang.ClassUtils.getSuperClass(declaringClass);
+				declaringClass = org.as3commons.lang.ClassUtils.getSuperClass(declaringClass, applicationDomain);
 			}
 
 			return null;
@@ -206,12 +207,13 @@ package org.as3commons.reflect {
 		 * 	clazz which declares an annotation for the specified metadataName,
 		 * 	or null if not found.
 		 */
-		public static function findMetadataDeclaringClass(metadataName:String, clazz:Class):Class {
+		public static function findMetadataDeclaringClass(metadataName:String, clazz:Class, applicationDomain:ApplicationDomain = null):Class {
 			if (clazz == null) {
 				return null;
 			}
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 
-			var type:Type = Type.forClass(clazz);
+			var type:Type = Type.forClass(clazz, applicationDomain);
 
 			if (type.isInterface) {
 				if (type.hasMetaData(metadataName)) {
@@ -224,13 +226,13 @@ package org.as3commons.reflect {
 			var declaringClass:Class = clazz
 
 			while (declaringClass != null) {
-				type = Type.forClass(declaringClass);
+				type = Type.forClass(declaringClass, applicationDomain);
 
 				if (type.hasMetaData(metadataName)) {
 					return declaringClass;
 				}
 
-				declaringClass = org.as3commons.lang.ClassUtils.getSuperClass(declaringClass);
+				declaringClass = org.as3commons.lang.ClassUtils.getSuperClass(declaringClass, applicationDomain);
 			}
 
 			return null;
