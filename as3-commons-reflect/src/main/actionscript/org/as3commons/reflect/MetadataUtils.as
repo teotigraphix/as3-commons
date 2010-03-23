@@ -7,10 +7,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,122 +21,219 @@
  */
 package org.as3commons.reflect {
 
-  import flash.events.TimerEvent;
-  import flash.system.ApplicationDomain;
-  import flash.utils.Timer;
-  import flash.utils.describeType;
-  import flash.utils.getQualifiedClassName;
-  
-  import org.as3commons.lang.ClassUtils;
+	import flash.events.TimerEvent;
+	import flash.system.ApplicationDomain;
+	import flash.utils.Timer;
+	import flash.utils.describeType;
+	import flash.utils.getQualifiedClassName;
 
-  /**
-   * This class provides utility methods concerning metadata. Retrieved metadata is cached and cleared with the
-   * set interval.
-   *
-   * @author Erik Westra, Christophe Herreman
-   *
-   * @see #CLEAR_CACHE_INTERVAL
-   */
-  public class MetadataUtils {
+	import org.as3commons.lang.ClassUtils;
 
-    /**
-     * The interval (in miliseconds) at which the cache will be cleared. Note that this value is only used
-     * on the first call to getFromObject.
-     *
-     * @default 60000 (one minute)
-     */
-    static public var CLEAR_CACHE_INTERVAL:uint = 60000;
+	/**
+	 * This class provides utility methods concerning metadata. Retrieved metadata is cached and cleared with the
+	 * set interval.
+	 *
+	 * @author Erik Westra, Christophe Herreman
+	 *
+	 * @see #CLEAR_CACHE_INTERVAL
+	 */
+	public class MetadataUtils {
 
-    static private var _cache:Object = new Object();
-    static private var _timer:Timer;
+		/**
+		 * The interval (in miliseconds) at which the cache will be cleared. Note that this value is only used
+		 * on the first call to getFromObject.
+		 *
+		 * @default 60000 (one minute)
+		 */
+		static public var CLEAR_CACHE_INTERVAL:uint = 60000;
 
-    static private function _timerHandler(e:TimerEvent):void {
-      clearCache();
-    }
+		static private var _cache:Object = new Object();
+		static private var _timer:Timer;
 
-    /**
-     * Will return the metadata for the given object or class. If metadata has already been requested for
-     * this type, it will be retrieved from cache. Note that the metadata will allways be that of the class,
-     * even if you pass an instance.
-     * <p />
-     * In order to get instance specific metadata, use the 'factory' property.
-     * <p />
-     * The reason we do not allow retrieval of instance metadata is because then we would need to cache the
-     * metadata double. Metadata takes up a significant amount of memory.
-     *
-     * @param object  The object from which you want to grab the metadata
-     *
-     * @return The class metadata of the given object.
-     */
-    static public function getFromObject(object:Object):XML {
-      var className:String = getQualifiedClassName(object);
-      var metadata:XML;
+		static private function _timerHandler(e:TimerEvent):void {
+			clearCache();
+		}
 
-      if (_cache.hasOwnProperty(className)) {
-        metadata = _cache[className];
-      }
-      else {
-        if (!_timer) {
-          /*
-            Only run the timer once to prevent unneeded overhead. This also prevents
-            this class from falling for the bug described here:
+		/**
+		 * Will return the metadata for the given object or class. If metadata has already been requested for
+		 * this type, it will be retrieved from cache. Note that the metadata will allways be that of the class,
+		 * even if you pass an instance.
+		 * <p />
+		 * In order to get instance specific metadata, use the 'factory' property.
+		 * <p />
+		 * The reason we do not allow retrieval of instance metadata is because then we would need to cache the
+		 * metadata double. Metadata takes up a significant amount of memory.
+		 *
+		 * @param object  The object from which you want to grab the metadata
+		 *
+		 * @return The class metadata of the given object.
+		 */
+		static public function getFromObject(object:Object):XML {
+			var className:String = getQualifiedClassName(object);
+			var metadata:XML;
 
-            http://www.gskinner.com/blog/archives/2008/04/failure_to_unlo.html
-          */
-          _timer = new Timer(CLEAR_CACHE_INTERVAL, 1);
-          _timer.addEventListener(TimerEvent.TIMER, _timerHandler);
-        }
+			if (_cache.hasOwnProperty(className)) {
+				metadata = _cache[className];
+			} else {
+				if (!_timer) {
+					/*
+					   Only run the timer once to prevent unneeded overhead. This also prevents
+					   this class from falling for the bug described here:
 
-        if (!(object is Class)) {
-          object = object.constructor;
-        }
+					   http://www.gskinner.com/blog/archives/2008/04/failure_to_unlo.html
+					 */
+					_timer = new Timer(CLEAR_CACHE_INTERVAL, 1);
+					_timer.addEventListener(TimerEvent.TIMER, _timerHandler);
+				}
 
-        metadata = describeType(object);
+				if (!(object is Class)) {
+					object = object.constructor;
+				}
 
-        _cache[className] = metadata;
+				metadata = describeType(object);
 
-        if (!_timer.running) {
-          /*
-            Only run the timer if it is not already running.
-          */
-          _timer.start();
-        }
-      }
+				_cache[className] = metadata;
 
-      return metadata;
-    }
+				if (!_timer.running) {
+					/*
+					   Only run the timer if it is not already running.
+					 */
+					_timer.start();
+				}
+			}
 
-    /**
-     * Will retrieve the metadata for the given class. Note that in order to access properties and
-     * methods you need to grab the 'factory' part of the metadata.
-     *
-     * @param className    The name of the class that you want to retrieve metadata from. The className
-     *             may be in the following forms: package.Class or package::Class
-     */
-    static public function getFromString(className:String, applicationDomain:ApplicationDomain=null):XML {
-		applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
-		var classDefinition:Class = org.as3commons.lang.ClassUtils.forName(className, applicationDomain);
+			return metadata;
+		}
 
-      /*
-        Calling getFromObject seems double, as it results in the getObjectMethod getting
-        the class name using getQualifiedClassName. It however saves us a check on the
-        given className which might be in two forms.
+		/**
+		 * Will retrieve the metadata for the given class. Note that in order to access properties and
+		 * methods you need to grab the 'factory' part of the metadata.
+		 *
+		 * @param className    The name of the class that you want to retrieve metadata from. The className
+		 *             may be in the following forms: package.Class or package::Class
+		 */
+		static public function getFromString(className:String, applicationDomain:ApplicationDomain = null):XML {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			var classDefinition:Class = org.as3commons.lang.ClassUtils.forName(className, applicationDomain);
 
-        getQualifiedClassName(getDefinitionByName(className)) is faster then converting the
-        string using conventional methods.
-      */
-      return getFromObject(classDefinition);
-    }
+			/*
+			   Calling getFromObject seems double, as it results in the getObjectMethod getting
+			   the class name using getQualifiedClassName. It however saves us a check on the
+			   given className which might be in two forms.
 
-    /**
-     * Allows you to clear the internal cache.
-     */
-    static public function clearCache():void {
-      _cache = new Object();
+			   getQualifiedClassName(getDefinitionByName(className)) is faster then converting the
+			   string using conventional methods.
+			 */
+			return getFromObject(classDefinition);
+		}
 
-      if (_timer && _timer.running) {
-        _timer.stop();
-      }
-    }
-  }
+		/**
+		 * Allows you to clear the internal cache.
+		 */
+		static public function clearCache():void {
+			_cache = new Object();
+
+			if (_timer && _timer.running) {
+				_timer.stop();
+			}
+		}
+
+		/**
+		 * Find a single MetaData of <code>metadataName</code> from the
+		 * supplied Class, traversing its interfaces and super classes
+		 * if no annotation can be found on the given class itself.
+		 *
+		 * <p>
+		 * The algorithm operates as follows: Searches for an annotation
+		 * on the given class and returns it if found. Else searches all
+		 * interfaces that the given class declares, returning the annotation
+		 * from the first matching candidate, if any. Else proceeds with
+		 * introspection of the superclass of the given class, checking the
+		 * superclass itself; if no annotation found there, proceeds with the
+		 * interfaces that the superclass declares. Recursing up through the
+		 * entire superclass hierarchy if no match is found.
+		 * </p>
+		 *
+		 * @param clazz the class on which to look for the metadata
+		 * @param metadataName the name of the metadata for which to look
+		 * @return the metadata tag if found, or <code>null</code> if none is found
+		 */
+		public static function findClassMetadata(clazz:Class, metadataName:String):MetaData {
+			Assert.notNull(clazz, "clazz must not be null.");
+			Assert.notNull(metadataName, "metadataName must not be null.");
+
+			var declaringClass:Class = clazz;
+
+			while (declaringClass != null) {
+				var type:Type = Type.forClass(declaringClass);
+				if (type.hasMetaData(metadataName)) {
+					return type.getMetaData(metadataName)[0];
+				}
+
+				var interfaces:Array = org.as3commons.lang.ClassUtils.getImplementedInterfaces(declaringClass);
+				for each (var interfaze:Class in interfaces) {
+					type = Type.forClass(interfaze);
+
+					if (type.hasMetaData(metadataName)) {
+						return type.getMetaData(metadataName)[0];
+					}
+				}
+
+				declaringClass = org.as3commons.lang.ClassUtils.getSuperClass(declaringClass);
+			}
+
+			return null;
+		}
+
+		/**
+		 * Find the first Class in the inheritance hierarchy of the specified
+		 * <code>clazz</code> (including the specified clazz itself) that
+		 * declares metdata for the specified <code>metadataName</code>, or
+		 * <code>null</code> if not found. If the supplied <code>clazz</code>
+		 * is <code>null</code>, <code>null</code> will be returned.
+		 *
+		 * <p>
+		 * If the supplied <code>clazz</code> is an interface, only the interface
+		 * itself will be checked; the inheritance hierarchy for interfaces will
+		 * not be traversed.
+		 * </p>
+		 *
+		 * @param metadataName the name corresponding to the metadata tag
+		 * @param clazz the Class object corresponding to the class on which to
+		 * 	check for the annotation, or null.
+		 * @return the first Class in the inheritance hierarchy of the specified
+		 * 	clazz which declares an annotation for the specified metadataName,
+		 * 	or null if not found.
+		 */
+		public static function findMetadataDeclaringClass(metadataName:String, clazz:Class):Class {
+			if (clazz == null) {
+				return null;
+			}
+
+			var type:Type = Type.forClass(clazz);
+
+			if (type.isInterface) {
+				if (type.hasMetaData(metadataName)) {
+					return clazz;
+				} else {
+					return null;
+				}
+			}
+
+			var declaringClass:Class = clazz
+
+			while (declaringClass != null) {
+				type = Type.forClass(declaringClass);
+
+				if (type.hasMetaData(metadataName)) {
+					return declaringClass;
+				}
+
+				declaringClass = org.as3commons.lang.ClassUtils.getSuperClass(declaringClass);
+			}
+
+			return null;
+		}
+
+	}
 }
