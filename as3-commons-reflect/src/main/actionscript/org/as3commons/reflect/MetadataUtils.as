@@ -27,6 +27,7 @@ package org.as3commons.reflect {
 	import flash.utils.describeType;
 	import flash.utils.getQualifiedClassName;
 
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 
 	/**
