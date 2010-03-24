@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2009-2010 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,8 +160,7 @@ package org.as3commons.lang {
 		public static function getDateForOffset(date:Date, offsetMinutes:int):Date {
 			Assert.notNull(date, NOT_NULL_ASSERTION_MESSAGE);
 			var offsetMilliseconds:Number=offsetMinutes * MILLIS_PER_MINUTE;
-			var result:Date=new Date(date.getTime() + offsetMilliseconds);
-			return result;
+			return new Date(date.getTime() + offsetMilliseconds);
 		}
 
 
@@ -300,10 +299,10 @@ package org.as3commons.lang {
 			var result:Date=newDate;
 			var originalHours:int=originalDate.hours;
 			if (originalHours != result.hours)
-				result=addHours(result, -(result.hours - originalHours))
+				result=addHours(result, -(result.hours - originalHours));
 			var originalMinutes:int=originalDate.minutes;
 			if (originalMinutes != result.minutes)
-				result=addMinutes(result, -(result.minutes - originalMinutes))
+				result=addMinutes(result, -(result.minutes - originalMinutes));
 
 			return result;
 
