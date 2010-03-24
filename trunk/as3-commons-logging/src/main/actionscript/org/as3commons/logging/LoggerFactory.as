@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009 the original author or authors
+ * Copyright (c) 2008-2009-2010 the original author or authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@ package org.as3commons.logging {
 	import flash.utils.getQualifiedClassName;
 	
 	import org.as3commons.logging.impl.DefaultLoggerFactory;
-	import org.as3commons.logging.impl.NullLogger;
 	
 	/**
 	 * Use the LoggerFactory to obtain a logger. This is the main class used when working with the as3commons-logging
@@ -53,26 +52,20 @@ package org.as3commons.logging {
 		
 		/** The singleton instance, eagerly instantiated. */
 		private static var _instance:LoggerFactory = LoggerFactory.getInstance();
-		
-		/** The logger factory that creates loggers */
-		private var _loggerFactory:ILoggerFactory = new DefaultLoggerFactory();
-		
-		/** A cache of loggers */
-		private var _loggers:Object /* <String, ILogger> */  = {};
-		
-		/**
-		 * Constructs a new LoggerFactory.
-		 */
-		public function LoggerFactory() {
-		}
-		
+
+		// --------------------------------------------------------------------
+		//
+		// Public Static Methods
+		//
+		// --------------------------------------------------------------------
+
 		/**
 		 * Returns a logger for the given name.
 		 */
 		public static function getLogger(name:String):ILogger {
 			return _instance.getLogger(name);
 		}
-		
+
 		/**
 		 * Returns a logger for the given class, using the fully qualified name of the class as the name of the
 		 * logger.
@@ -83,14 +76,20 @@ package org.as3commons.logging {
 			name = name.replace("::", ".");
 			return _instance.getLogger(name);
 		}
-		
+
 		/**
 		 * Sets the logger factory for the logging system.
 		 */
 		public static function set loggerFactory(value:ILoggerFactory):void {
 			_instance.loggerFactory = value;
 		}
-		
+
+		// --------------------------------------------------------------------
+		//
+		// Private Static Methods
+		//
+		// --------------------------------------------------------------------
+
 		/**
 		 * Returns the singleton instance of the logger factory.
 		 */
@@ -100,30 +99,37 @@ package org.as3commons.logging {
 			}
 			return _instance;
 		}
-		
+
+		// --------------------------------------------------------------------
+		//
+		// Private Variables
+		//
+		// --------------------------------------------------------------------
+
+		/** The logger factory that creates loggers */
+		private var _loggerFactory:ILoggerFactory = new DefaultLoggerFactory();
+
+		/** A cache of loggers */
+		private var _loggers:Object /* <String, ILogger> */  = {};
+
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
+
 		/**
-		 * Returns a logger for the given name.
-		 *
-		 * @param name the name of the logger
-		 * @return a logger with the given name
+		 * Constructs a new LoggerFactory.
 		 */
-		public function getLogger(name:String):ILogger {
-			var result:ILogger = _loggers[name];
-			
-			if (!result) {
-				if (_loggerFactory) {
-					result = new LoggerProxy(name, _loggerFactory.getLogger(name));
-				} else {
-					result = new LoggerProxy(name);
-				}
-				
-				// cache the logger
-				_loggers[name] = result;
-			}
-			
-			return result;
+		public function LoggerFactory() {
 		}
-		
+
+		// --------------------------------------------------------------------
+		//
+		// Private Properties
+		//
+		// --------------------------------------------------------------------
+
 		/**
 		 * Sets the factory used to generate loggers. A new logger, created by the given factory, will
 		 * be set on each LoggerProxy in the cache.
@@ -136,6 +142,29 @@ package org.as3commons.logging {
 			for (var name:String in _loggers) {
 				LoggerProxy(_loggers[name]).logger = (_loggerFactory ? _loggerFactory.getLogger(name) : null);
 			}
+		}
+
+		/**
+		 * Returns a logger for the given name.
+		 *
+		 * @param name the name of the logger
+		 * @return a logger with the given name
+		 */
+		public function getLogger(name:String):ILogger {
+			var result:ILogger = _loggers[name];
+
+			if (!result) {
+				if (_loggerFactory) {
+					result = new LoggerProxy(name, _loggerFactory.getLogger(name));
+				} else {
+					result = new LoggerProxy(name);
+				}
+
+				// cache the logger
+				_loggers[name] = result;
+			}
+
+			return result;
 		}
 	
 	}

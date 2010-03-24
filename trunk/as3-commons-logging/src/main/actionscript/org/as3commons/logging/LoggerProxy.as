@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009 the original author or authors
+ * Copyright (c) 2008-2009-2010 the original author or authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:String, ... params:*):void {
+		public function debug(message:String, ... params):void {
 			if (_logger && debugEnabled) {
 				var args:Array = params.concat();
 				args.unshift(message);
@@ -67,7 +67,7 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:String, ... params:*):void {
+		public function info(message:String, ... params):void {
 			if (_logger && infoEnabled) {
 				var args:Array = params.concat();
 				args.unshift(message);
@@ -78,7 +78,7 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:String, ... params:*):void {
+		public function warn(message:String, ... params):void {
 			if (_logger && warnEnabled) {
 				var args:Array = params.concat();
 				args.unshift(message);
@@ -89,7 +89,7 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:String, ... params:*):void {
+		public function error(message:String, ... params):void {
 			if (_logger && errorEnabled) {
 				var args:Array = params.concat();
 				args.unshift(message);
@@ -100,7 +100,7 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal(message:String, ... params:*):void {
+		public function fatal(message:String, ... params):void {
 			if (_logger && fatalEnabled) {
 				var args:Array = params.concat();
 				args.unshift(message);
