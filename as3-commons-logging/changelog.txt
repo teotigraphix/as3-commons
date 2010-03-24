@@ -4,6 +4,16 @@ AS3COMMONS LOGGING CHANGELOG
 Note: dates are in DD.MM.YYYY format
 
 
+Changes in version 1.1.1 (24.03.2010)
+-------------------------------------
+
+Package org.as3commons.logging.impl
+* performance update: FlexLogger logs directly to LogLogger
+
+Package org.as3commons.logging.util
+* performance update: MessageUtil.toString() now caches regular expressions
+
+
 Changes in version 1.1 (27.07.2009)
 -----------------------------------
 
