@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009 the original author or authors
+ * Copyright (c) 2008-2009-2010 the original author or authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,34 +23,69 @@ package org.as3commons.logging.impl {
 	
 	import mx.logging.ILogger;
 	import mx.logging.Log;
-	
+
+	import mx.logging.LogEvent;
+	import mx.logging.LogEventLevel;
+	import mx.logging.LogLogger;
+
 	import org.as3commons.logging.ILogger;
-	
+	import org.as3commons.logging.util.MessageUtil;
+
 	/**
 	 * Logger decorator for the logging API in the Flex framework.
 	 *
 	 * @author Christophe Herreman
 	 */
 	public class FlexLogger implements org.as3commons.logging.ILogger {
-		
+
 		/** The decorated flex framework logger */
 		private var _logger:mx.logging.ILogger;
-		
+
+		private var _logLogger:LogLogger;
+
+		// --------------------------------------------------------------------
+		//
+		// Private Static Methods
+		//
+		// --------------------------------------------------------------------
+
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
+
 		/**
 		 * Creates a new FlexLogger
 		 */
 		public function FlexLogger(logger:mx.logging.ILogger) {
 			_logger = logger;
+
+			// if the logger is a LogLogger (it is in most cases), save a reference so we can directly use it for
+			// logging instead of delegating to the mx.log.ILogger with apply(), which is slower
+			if (_logger is LogLogger) {
+				_logLogger = LogLogger(_logger);
+			}
 		}
-		
+
+		// --------------------------------------------------------------------
+		//
+		// Implementation: ILogger
+		//
+		// --------------------------------------------------------------------
+
 		/**
 		 * @inheritDoc
 		 */
 		public function debug(message:String, ... params):void {
-			if (debugEnabled) {
-				var args:Array = params.concat();
-				args.unshift(message);
-				_logger.debug.apply(_logger, args);
+			if (Log.isDebug()) {
+				if (_logLogger) {
+					log(_logLogger, message, params, LogEventLevel.DEBUG);
+				} else {
+					var args:Array = params.concat();
+					args.unshift(message);
+					_logger.debug.apply(_logger, args);
+				}
 			}
 		}
 		
@@ -58,10 +93,14 @@ package org.as3commons.logging.impl {
 		 * @inheritDoc
 		 */
 		public function info(message:String, ... params):void {
-			if (infoEnabled) {
-				var args:Array = params.concat();
-				args.unshift(message);
-				_logger.info.apply(_logger, args);
+			if (Log.isInfo()) {
+				if (_logLogger) {
+					log(_logLogger, message, params, LogEventLevel.INFO);
+				} else {
+					var args:Array = params.concat();
+					args.unshift(message);
+					_logger.info.apply(_logger, args);
+				}
 			}
 		}
 		
@@ -69,10 +108,14 @@ package org.as3commons.logging.impl {
 		 * @inheritDoc
 		 */
 		public function warn(message:String, ... params):void {
-			if (warnEnabled) {
-				var args:Array = params.concat();
-				args.unshift(message);
-				_logger.warn.apply(_logger, args);
+			if (Log.isWarn()) {
+				if (_logLogger) {
+					log(_logLogger, message, params, LogEventLevel.WARN);
+				} else {
+					var args:Array = params.concat();
+					args.unshift(message);
+					_logger.warn.apply(_logger, args);
+				}
 			}
 		}
 		
@@ -80,10 +123,14 @@ package org.as3commons.logging.impl {
 		 * @inheritDoc
 		 */
 		public function error(message:String, ... params):void {
-			if (errorEnabled) {
-				var args:Array = params.concat();
-				args.unshift(message);
-				_logger.error.apply(_logger, args);
+			if (Log.isError()) {
+				if (_logLogger) {
+					log(_logLogger, message, params, LogEventLevel.ERROR);
+				} else {
+					var args:Array = params.concat();
+					args.unshift(message);
+					_logger.error.apply(_logger, args);
+				}
 			}
 		}
 		
@@ -91,10 +138,14 @@ package org.as3commons.logging.impl {
 		 * @inheritDoc
 		 */
 		public function fatal(message:String, ... params):void {
-			if (fatalEnabled) {
-				var args:Array = params.concat();
-				args.unshift(message);
-				_logger.fatal.apply(_logger, args);
+			if (Log.isFatal()) {
+				if (_logLogger) {
+					log(_logLogger, message, params, LogEventLevel.FATAL);
+				} else {
+					var args:Array = params.concat();
+					args.unshift(message);
+					_logger.fatal.apply(_logger, args);
+				}
 			}
 		}
 		
@@ -132,5 +183,27 @@ package org.as3commons.logging.impl {
 		public function get fatalEnabled():Boolean {
 			return Log.isFatal();
 		}
+
+		// --------------------------------------------------------------------
+		//
+		// Private Methods
+		//
+		// --------------------------------------------------------------------
+
+		/**
+		 * Logs a message on the logLogger directly.
+		 *
+		 * @param logLogger
+		 * @param message
+		 * @param parameters
+		 * @param logEventLevel
+		 */
+		private function log(logLogger:LogLogger, message:String, parameters:Array, logEventLevel:int):void {
+			if (logLogger.hasEventListener(LogEvent.LOG)) {
+				message = MessageUtil.toString(message, parameters);
+				logLogger.dispatchEvent(new LogEvent(message, logEventLevel));
+			}
+		}
+
 	}
 }
