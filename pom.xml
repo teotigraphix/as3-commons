@@ -59,6 +59,14 @@
 			<organizationUrl>http://www.yoolab.com/</organizationUrl>
 			<timezone>+1</timezone>
 		</developer>
+		<developer>
+			<id>roland.zwaga</id>
+			<name>Roland Zwaga</name>
+			<email>scab [at] dds.nl</email>
+			<organization>Uitgeverij Deviant</organization>
+			<organizationUrl>http://www.uitgeverij-deviant.nl/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
 	</developers>
 
 	<modules>
