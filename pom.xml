@@ -11,7 +11,7 @@
 	<description>AS3Commons project</description>
 
 	<properties>
-		<flex-mojos.version>3.5.0</flex-mojos.version>
+		<flex-mojos.version>3.6</flex-mojos.version>
 		<flex-sdk.version>3.5.0.12683</flex-sdk.version>
 
 		<!-- Flash Player -->
