@@ -68,7 +68,7 @@
 				format message string, e.g.
 				<div class="source">
 					var logger:ILogger = LoggerFactory.getClassLogger(MyClass);<br />
-					logger.info("Some logging message from {1}", "myApp");<br />
+					logger.info("Some logging message from {0}", "myApp");<br />
 					// Default logger will trace:<br />
 					// my.package.MyClass 12:10:34 [INFO] Some logging message from myApp
 				</div>
