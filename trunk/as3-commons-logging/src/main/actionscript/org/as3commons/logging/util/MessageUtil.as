@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009 the original author or authors
+ * Copyright (c) 2008-2009-2010 the original author or authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,30 +21,67 @@
  */
 package org.as3commons.logging.util {
 	
-	import org.as3commons.logging.LogLevel;
-	
 	/**
 	 * Utilities for working with log messages.
 	 *
 	 * @author Christophe Herreman
 	 */
 	public class MessageUtil {
-		
-		public function MessageUtil() {
-		}
+
+		// --------------------------------------------------------------------
+		//
+		// Private Static Variables
+		//
+		// --------------------------------------------------------------------
+
+		private static var _regExps:Array = [];
+
+		// --------------------------------------------------------------------
+		//
+		// Public Static Methods
+		//
+		// --------------------------------------------------------------------
 		
 		/**
 		 * Returns a string with the parameters replaced.
 		 */
 		public static function toString(message:String, params:Array):String {
 			var result:String = message;
-			var numParams:int = params.length;
+			const numParams:int = params.length;
 			
 			for (var i:int = 0; i < numParams; i++) {
-				result = result.replace(new RegExp("\\{" + i + "\\}", "g"), params[i]);
+				result = result.replace(getRegExp(i), params[i]);
 			}
 			
 			return result;
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Private Static Methods
+		//
+		// --------------------------------------------------------------------
+
+		/**
+		 * Returns (and caches) a regular expression to replace the placeholder with the given index.
+		 *
+		 * @param index
+		 * @return
+		 */
+		private static function getRegExp(index:uint):RegExp {
+			if (!_regExps[index]) {
+				_regExps[index] = new RegExp("\\{" + index + "\\}", "g");
+			}
+			return _regExps[index];
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
+
+		public function MessageUtil() {
 		}
 	}
 }
