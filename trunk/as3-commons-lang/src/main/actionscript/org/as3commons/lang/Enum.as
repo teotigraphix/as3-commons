@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-	
+
 	import flash.utils.getQualifiedClassName;
-	
+
 	import org.as3commons.lang.builder.EqualsBuilder;
-	
+
 	/**
 	 * Base class for enumerations.
 	 *
@@ -34,7 +34,7 @@ package org.as3commons.lang {
 	 * @author Christophe Herreman
 	 */
 	public class Enum implements IEquals {
-		
+
 		/**
 		 * A map with the enum values of all Enum types in memory.
 		 * As its keys, the fully qualified name of the enum class is used.
@@ -59,7 +59,7 @@ package org.as3commons.lang {
 		 *	}
 		 */
 		private static var _values:Object /* <String, Object> */ = {};
-		
+
 		/**
 		 * A map with the value arrays of the Enum types in memory.
 		 * As its keys, the fully qualified name of the enum class is used.
@@ -72,13 +72,13 @@ package org.as3commons.lang {
 		 * 	}
 		 */
 		private static var _valueArrays:Object /* <String, Array> */ = {};
-		
+
 		private var _name:String;
-		
+
 		private var _index:int = -1;
-		
+
 		private var _declaringClassName:String;
-		
+
 		/**
 		 * Creates a new Enum object.
 		 *
@@ -92,7 +92,7 @@ package org.as3commons.lang {
 		public function Enum(name:String = "") {
 			this.name = name;
 		}
-		
+
 		/**
 		 * Returns the values of the enumeration of the given Class.
 		 *
@@ -101,14 +101,14 @@ package org.as3commons.lang {
 		 */
 		public static function getValues(clazz:Class):Array {
 			Assert.subclassOf(clazz, Enum, "Can not get enum values for class [" + clazz + "] because it is not a subclass of Enum.");
-			
+
 			var className:String = getQualifiedClassName(clazz);
-			
+
 			Assert.notNull(_valueArrays[className], "Enum values for the class '" + clazz + "' do not exist");
-			
+
 			return _valueArrays[className];
 		}
-		
+
 		/**
 		 * Returns the enum entry for the given class by its name.
 		 *
@@ -118,15 +118,15 @@ package org.as3commons.lang {
 		public static function getEnum(clazz:Class, name:String):Enum {
 			Assert.notNull(clazz, "The class must not be null");
 			Assert.hasText(name, "The name must have text");
-			
+
 			var className:String = ClassUtils.getFullyQualifiedName(clazz);
-			
+
 			Assert.notNull(_values[className], "Enum values for the class '" + clazz + "' do not exist");
 			Assert.notNull(_values[className][name], "An enum for type '" + clazz + "' and name '" + name + "' was not found.");
-			
+
 			return _values[className][name];
 		}
-		
+
 		/**
 		 * Returns the index of the given enum, based on equality using the equals method.
 		 *
@@ -134,46 +134,46 @@ package org.as3commons.lang {
 		 */
 		public static function getIndex(enum:Enum):int {
 			Assert.notNull(enum, "The enum must not be null");
-			
+
 			var className:String = getQualifiedClassName(enum);
 			var values:Array = _valueArrays[className];
-			
+
 			Assert.notNull(values, "Enum values for the class name '" + className + "' do not exist");
-			
+
 			for each (var e:Enum in values) {
 				if (e.equals(enum)) {
 					return e.index;
 				}
 			}
-			
+
 			return -1;
 		}
-		
+
 		/**
 		 * Returns the name of this enum.
 		 */
 		final public function get name():String {
 			return _name;
 		}
-		
+
 		/**
 		 * Sets the name for this enum.
 		 */
 		final public function set name(value:String):void {
-			Assert.state(name == null || name == "", "The name of an enum value can only be set once.");
-			
+			Assert.state(name == null || name.length == 0, "The name of an enum value can only be set once.");
+
 			_name = StringUtils.trim(value);
-			
+
 			initializeEnum(name);
 		}
-		
+
 		/**
 		 *
 		 */
 		final public function get index():int {
 			return _index;
 		}
-		
+
 		/**
 		 * Returns the class name of this enum.
 		 */
@@ -183,7 +183,7 @@ package org.as3commons.lang {
 			}
 			return _declaringClassName;
 		}
-		
+
 		/**
 		 * Checks if this enum is equal to the other passed in enum.
 		 *
@@ -196,23 +196,20 @@ package org.as3commons.lang {
 			if (this == other) {
 				return true;
 			}
-			
+
 			if (!(other is Enum)) {
 				return false;
 			}
-			
+
 			// types do not match?
 			/*if (!(other is ClassUtils.forInstance(this))) {
 			   return false;
 			 }*/
-			
+
 			var that:Enum = Enum(other);
-			return new EqualsBuilder()
-				.append(declaringClassName, that.declaringClassName)
-				.append(name, that.name)
-				.equals;
+			return new EqualsBuilder().append(declaringClassName, that.declaringClassName).append(name, that.name).equals;
 		}
-		
+
 		/**
 		 * Returns a string representation of this enum.
 		 */
@@ -221,7 +218,7 @@ package org.as3commons.lang {
 			var className:String = ClassUtils.getName(clazz);
 			return ("[" + className + "(" + name + ")]");
 		}
-		
+
 		/**
 		 * Initiliazes the enum value.
 		 */
@@ -234,15 +231,15 @@ package org.as3commons.lang {
 					_values[declaringClassName] = {};
 					_valueArrays[declaringClassName] = [];
 				}
-				
+
 				var equalityIndex:int = Enum.getIndex(this);
-				
+
 				// if this is a new enum, set its index to the number of same enum types
 				// and add it to the lookup maps
 				if (equalityIndex == -1) {
 					// set the index on the enum
 					_index = _valueArrays[declaringClassName].length;
-					
+
 					// add the enum to the values array
 					_values[declaringClassName][name] = this;
 					_valueArrays[declaringClassName].push(this);
@@ -252,7 +249,7 @@ package org.as3commons.lang {
 				}
 			}
 		}
-	
-	
+
+
 	}
 }
