@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-	
+
 	/**
 	 * <p>Methods in this class give sample code to explain their operation.
 	 * The symbol <code>*</code> is used to indicate any input
@@ -24,27 +24,27 @@ package org.as3commons.lang {
 	 * @author Christophe Herreman
 	 */
 	public class StringUtils {
-		
+
 		/**
 		 * The empty String <code>""</code>
 		 */
 		private static const EMPTY:String = '';
-		
+
 		/**
 		 * Represents a failed index search.
 		 */
 		private static const INDEX_NOT_FOUND:int = -1;
-		
+
 		/**
 		 * The control character code
 		 */
 		private static const WHITE:uint = 32;
-		
+
 		/**
 		 * <p>The maximum size to which the padding constant(s) can expand.</p>
 		 */
 		private static const PAD_LIMIT:uint = 8192;
-		
+
 		/**
 		 * <p>Returns a simple Initials like string.</p>
 		 *
@@ -58,7 +58,7 @@ package org.as3commons.lang {
 			}
 			return str.match(/[A-Z]/g).join('').toLowerCase();
 		}
-		
+
 		/**
 		 * <p>Removes one newline from end of a String if it's there,
 		 * otherwise leave it alone.  A newline is &quot;<code>\n</code>&quot;,
@@ -84,7 +84,7 @@ package org.as3commons.lang {
 		public static function chomp(str:String):String {
 			return chompString(str, '(\r\n|\r|\n)');
 		}
-		
+
 		/**
 		 * <p>Removes <code>separator</code> from the end of
 		 * <code>str</code> if it's there, otherwise leave it alone.</p>
@@ -116,7 +116,7 @@ package org.as3commons.lang {
 			}
 			return str.replace(new RegExp(separator + '$', ''), '')
 		}
-		
+
 		/**
 		 * <p>Removes control characters(char &lt;= 32) from both
 		 * ends of this String, handling <code>null</code> by returning
@@ -145,7 +145,7 @@ package org.as3commons.lang {
 			}
 			return str.replace(/^\s*/, '').replace(/\s*$/, '');
 		}
-		
+
 		/**
 		 * <p>Deletes all 'space' characters from a String as defined by
 		 *
@@ -166,7 +166,7 @@ package org.as3commons.lang {
 		public static function deleteSpaces(str:String):String {
 			return deleteFromString(str, /\t|\r|\n|\b/g);
 		}
-		
+
 		/**
 		 * <p>Deletes all whitespaces from a String.</p>
 		 *
@@ -183,14 +183,14 @@ package org.as3commons.lang {
 		public static function deleteWhitespace(str:String):String {
 			return deleteFromString(str, /\s/g);
 		}
-		
+
 		private static function deleteFromString(str:String, pattern:RegExp):String {
 			if (isEmpty(str)) {
 				return str;
 			}
 			return str.replace(pattern, '');
 		}
-		
+
 		/**
 		 * <p>Gets the leftmost <code>len</code> characters of a String.</p>
 		 *
@@ -215,17 +215,17 @@ package org.as3commons.lang {
 			if (str == null) {
 				return null;
 			}
-			
+
 			if (len < 0) {
 				return EMPTY;
 			}
-			
+
 			if (str.length <= len) {
 				return str;
 			}
 			return str.substring(0, len);
 		}
-		
+
 		/**
 		 * <p>Centers a String in a larger String of size <code>size</code>.
 		 * Uses a supplied String as the value to pad the String with.</p>
@@ -255,22 +255,22 @@ package org.as3commons.lang {
 			if (str == null || size <= 0) {
 				return str;
 			}
-			
+
 			if (isEmpty(padStr)) {
 				padStr = " ";
 			}
 			var strLen:int = str.length;
 			var pads:int = size - strLen;
-			
+
 			if (pads <= 0) {
 				return str;
 			}
 			str = leftPad(str, strLen + pads / 2, padStr);
 			str = rightPad(str, size, padStr);
-			
+
 			return str;
 		}
-		
+
 		/**
 		 * <p>Left pad a String with a specified String.</p>
 		 *
@@ -298,22 +298,22 @@ package org.as3commons.lang {
 			if (str == null) {
 				return null;
 			}
-			
+
 			if (isEmpty(padStr)) {
 				padStr = " ";
 			}
 			var padLen:int = padStr.length;
 			var strLen:int = str.length;
 			var pads:int = size - strLen;
-			
+
 			if (pads <= 0) {
 				return str; // returns original String when possible
 			}
-			
+
 			if (padLen == 1 && pads <= PAD_LIMIT) {
 				return leftPadChar(str, size, padStr.charAt(0));
 			}
-			
+
 			if (pads == padLen) {
 				return padStr.concat(str);
 			} else if (pads < padLen) {
@@ -321,14 +321,14 @@ package org.as3commons.lang {
 			} else {
 				var padding:Array = [];
 				var padChars:Array = padStr.split("");
-				
+
 				for (var i:int = 0; i < pads; i++) {
 					padding[i] = padChars[i % padLen];
 				}
 				return padding.join("").concat(str);
 			}
 		}
-		
+
 		/**
 		 * <p>Left pad a String with a specified character.</p>
 		 *
@@ -354,17 +354,17 @@ package org.as3commons.lang {
 				return null;
 			}
 			var pads:int = size - str.length;
-			
+
 			if (pads <= 0) {
 				return str; // returns original String when possible
 			}
-			
+
 			if (pads > PAD_LIMIT) {
 				return leftPad(str, size, padChar);
 			}
 			return padding(pads, padChar).concat(str);
 		}
-		
+
 		/**
 		 * <p>Right pad a String with a specified String.</p>
 		 *
@@ -392,22 +392,22 @@ package org.as3commons.lang {
 			if (str == null) {
 				return null;
 			}
-			
+
 			if (isEmpty(padStr)) {
 				padStr = " ";
 			}
 			var padLen:int = padStr.length;
 			var strLen:int = str.length;
 			var pads:int = size - strLen;
-			
+
 			if (pads <= 0) {
 				return str; // returns original String when possible
 			}
-			
+
 			if (padLen == 1 && pads <= PAD_LIMIT) {
 				return rightPadChar(str, size, padStr.charAt(0));
 			}
-			
+
 			if (pads == padLen) {
 				return str.concat(padStr);
 			} else if (pads < padLen) {
@@ -415,14 +415,14 @@ package org.as3commons.lang {
 			} else {
 				var padding:Array = [];
 				var padChars:Array = padStr.split("");
-				
+
 				for (var i:int = 0; i < pads; i++) {
 					padding[i] = padChars[i % padLen];
 				}
 				return str.concat(padding.join(""));
 			}
 		}
-		
+
 		/**
 		 * <p>Right pad a String with a specified character.</p>
 		 *
@@ -448,17 +448,17 @@ package org.as3commons.lang {
 				return null;
 			}
 			var pads:int = size - str.length;
-			
+
 			if (pads <= 0) {
 				return str; // returns original String when possible
 			}
-			
+
 			if (pads > PAD_LIMIT) {
 				return rightPad(str, size, padChar);
 			}
 			return str.concat(padding(pads, padChar));
 		}
-		
+
 		/**
 		 * <p>Returns padding using the specified delimiter repeated
 		 * to a given length.</p>
@@ -475,13 +475,13 @@ package org.as3commons.lang {
 		 */
 		private static function padding(repeat:int, padChar:String):String {
 			var buffer:String = '';
-			
+
 			for (var i:int = 0; i < repeat; i++) {
 				buffer += padChar;
 			}
 			return buffer;
 		}
-		
+
 		/**
 		 * <p>Replaces all occurrences of a String within another String.</p>
 		 *
@@ -510,7 +510,7 @@ package org.as3commons.lang {
 			}
 			return text.replace(new RegExp(pattern, 'g'), repl);
 		}
-		
+
 		/**
 		 * <p>Replaces a String with another String inside a larger String,
 		 * for the first <code>max</code> values of the search String.</p>
@@ -543,22 +543,22 @@ package org.as3commons.lang {
 			if (text == null || isEmpty(pattern) || repl == null || max == 0) {
 				return text;
 			}
-			
+
 			var buf:String = "";
 			var start:int = 0;
 			var end:int = 0;
-			
+
 			while ((end = text.indexOf(pattern, start)) != -1) {
 				buf += text.substring(start, end) + repl;
 				start = end + pattern.length;
-				
+
 				if (--max == 0) {
 					break;
 				}
 			}
 			return buf += text.substring(start);
 		}
-		
+
 		/**
 		 * <p>Replaces a String with another String inside a larger String, once.</p>
 		 *
@@ -588,7 +588,7 @@ package org.as3commons.lang {
 			}
 			return text.replace(new RegExp(pattern, ''), repl);
 		}
-		
+
 		/**
 		 * <p>Returns either the passed in String, or if the String is
 		 * empty or <code>null</code>, the value of <code>defaultStr</code>.</p>
@@ -607,7 +607,7 @@ package org.as3commons.lang {
 		public static function defaultIfEmpty(str:String, defaultStr:String):String {
 			return isEmpty(str) ? defaultStr : str;
 		}
-		
+
 		/**
 		 * <p>Checks if a String is empty("") or null.</p>
 		 *
@@ -632,7 +632,7 @@ package org.as3commons.lang {
 			}
 			return str.length == 0;
 		}
-		
+
 		/**
 		 * <p>Checks if a String is not empty("") and not null.</p>
 		 *
@@ -650,7 +650,7 @@ package org.as3commons.lang {
 		public static function isNotEmpty(str:String):Boolean {
 			return !isEmpty(str);
 		}
-		
+
 		/**
 		 * <p>Checks if a String is whitespace, empty("") or null.</p>
 		 *
@@ -668,7 +668,7 @@ package org.as3commons.lang {
 		public static function isBlank(str:String):Boolean {
 			return isEmpty(trimToEmpty(str));
 		}
-		
+
 		/**
 		 * <p>Checks if a String is not empty(""), not <code>null</code>
 		 * and not whitespace only.</p>
@@ -688,7 +688,7 @@ package org.as3commons.lang {
 		public static function isNotBlank(str:String):Boolean {
 			return !isBlank(str);
 		}
-		
+
 		/**
 		 * <p>Removes control characters (char &lt;= 32) from both
 		 * ends of this String returning <code>null</code> if the String is
@@ -713,7 +713,7 @@ package org.as3commons.lang {
 			var ts:String = trim(str);
 			return isEmpty(ts) ? null : ts;
 		}
-		
+
 		/**
 		 * <p>Removes control characters (char &lt;= 32) from both
 		 * ends of this String returning an empty String ("") if the String
@@ -737,7 +737,7 @@ package org.as3commons.lang {
 		public static function trimToEmpty(str:String):String {
 			return str == null ? EMPTY : trim(str);
 		}
-		
+
 		/**
 		 * <p>Capitalizes a String changing the first letter to title case.
 		 * No other letters are changed.</p>
@@ -762,7 +762,7 @@ package org.as3commons.lang {
 			}
 			return str.charAt(0).toUpperCase() + str.substring(1);
 		}
-		
+
 		/**
 		 * <p>Uncapitalizes a String changing the first letter to title case.
 		 * No other letters are changed.</p>
@@ -784,7 +784,7 @@ package org.as3commons.lang {
 			}
 			return str.charAt(0).toLowerCase() + str.substring(1);
 		}
-		
+
 		/**
 		 * <p>Capitalizes all the words and replaces some characters in
 		 * the string to create a nicer looking title.
@@ -806,13 +806,13 @@ package org.as3commons.lang {
 				return str;
 			}
 			var words:Array = str.toLowerCase().split(' ');
-			
+
 			for (var i:int = 0; i < words.length; i++) {
 				words[i] = capitalize(words[i]);
 			}
 			return words.join(' ');
 		}
-		
+
 		/**
 		 * <p>Gets the substring after the first occurrence of a separator.
 		 * The separator is not returned.</p>
@@ -842,18 +842,18 @@ package org.as3commons.lang {
 			if (isEmpty(str)) {
 				return str;
 			}
-			
+
 			if (separator == null) {
 				return EMPTY;
 			}
 			var pos:int = str.indexOf(separator);
-			
+
 			if (pos == INDEX_NOT_FOUND) {
 				return EMPTY;
 			}
 			return str.substring(pos + separator.length);
 		}
-		
+
 		/**
 		 * <p>Gets the substring after the last occurrence of a separator.
 		 * The separator is not returned.</p>
@@ -884,18 +884,18 @@ package org.as3commons.lang {
 			if (isEmpty(str)) {
 				return str;
 			}
-			
+
 			if (isEmpty(separator)) {
 				return EMPTY;
 			}
 			var pos:int = str.lastIndexOf(separator);
-			
+
 			if (pos == INDEX_NOT_FOUND || pos == (str.length - separator.length)) {
 				return EMPTY;
 			}
 			return str.substring(pos + separator.length);
 		}
-		
+
 		/**
 		 * <p>Gets the substring before the first occurrence of a separator.
 		 * The separator is not returned.</p>
@@ -924,18 +924,18 @@ package org.as3commons.lang {
 			if (isEmpty(str) || separator == null) {
 				return str;
 			}
-			
+
 			if (separator.length == 0) {
 				return EMPTY;
 			}
 			var pos:int = str.indexOf(separator);
-			
+
 			if (pos == INDEX_NOT_FOUND) {
 				return str;
 			}
 			return str.substring(0, pos);
 		}
-		
+
 		/**
 		 * <p>Gets the substring before the last occurrence of a separator.
 		 * The separator is not returned.</p>
@@ -965,13 +965,13 @@ package org.as3commons.lang {
 				return str;
 			}
 			var pos:int = str.lastIndexOf(separator);
-			
+
 			if (pos == INDEX_NOT_FOUND) {
 				return str;
 			}
 			return str.substring(0, pos);
 		}
-		
+
 		/**
 		 * <p>Gets the String that is nested in between two Strings.
 		 * Only the first match is returned.</p>
@@ -1001,17 +1001,17 @@ package org.as3commons.lang {
 				return null;
 			}
 			var start:int = str.indexOf(open);
-			
+
 			if (start != INDEX_NOT_FOUND) {
 				var end:int = str.indexOf(close, start + open.length);
-				
+
 				if (end != INDEX_NOT_FOUND) {
 					return str.substring(start + open.length, end);
 				}
 			}
 			return null;
 		}
-		
+
 		/**
 		 * <p>Strips any of a set of characters from the start and end of a String.
 		 * This is similar to #trim() but allows the characters
@@ -1040,7 +1040,7 @@ package org.as3commons.lang {
 			}
 			return stripEnd(stripStart(str, stripChars), stripChars);
 		}
-		
+
 		/**
 		 * <p>Strips any of a set of characters from the start of a String.</p>
 		 *
@@ -1069,7 +1069,7 @@ package org.as3commons.lang {
 			var p:RegExp = new RegExp('^[' + (stripChars != null ? stripChars : ' ') + ']*', '');
 			return str.replace(p, '');
 		}
-		
+
 		/**
 		 * <p>Strips any of a set of characters from the end of a String.</p>
 		 *
@@ -1101,7 +1101,7 @@ package org.as3commons.lang {
 			var p:RegExp = new RegExp('[' + (stripChars != null ? stripChars : ' ') + ']*$', '');
 			return str.replace(p, '');
 		}
-		
+
 		/**
 		 * <p>Abbreviates a String using ellipses. This will turn
 		 * "Now is the time for all good men" into "...is the time for..."</p>
@@ -1140,37 +1140,37 @@ package org.as3commons.lang {
 			if (str == null) {
 				return str;
 			}
-			
+
 			if (maxWidth < 4) {
 				throw new IllegalArgumentError("Minimum abbreviation width is 4");
 			}
-			
+
 			if (str.length <= maxWidth) {
 				return str;
 			}
-			
+
 			if (offset > str.length) {
 				offset = str.length;
 			}
-			
+
 			if ((str.length - offset) < (maxWidth - 3)) {
 				offset = str.length - (maxWidth - 3);
 			}
-			
+
 			if (offset <= 4) {
 				return str.substring(0, maxWidth - 3) + "...";
 			}
-			
+
 			if (maxWidth < 7) {
 				throw new IllegalArgumentError("Minimum abbreviation width with offset is 7");
 			}
-			
+
 			if ((offset + (maxWidth - 3)) < str.length) {
 				return "..." + abbreviate(str.substring(offset), 0, maxWidth - 3);
 			}
 			return "..." + str.substring(str.length - (maxWidth - 3));
 		}
-		
+
 		/**
 		 * <p>Finds the n-th index within a String, handling <code>null</code>.
 		 * This method uses String#indexOf(String).</p>
@@ -1201,16 +1201,16 @@ package org.as3commons.lang {
 			if (str == null || searchStr == null || ordinal <= 0) {
 				return INDEX_NOT_FOUND;
 			}
-			
+
 			if (searchStr.length == 0) {
 				return 0;
 			}
 			var found:int = 0;
 			var index:int = INDEX_NOT_FOUND;
-			
+
 			do {
 				index = str.indexOf(searchStr, index + 1);
-				
+
 				if (index < 0) {
 					return index;
 				}
@@ -1218,7 +1218,7 @@ package org.as3commons.lang {
 			} while (found < ordinal);
 			return index;
 		}
-		
+
 		/**
 		 * <p>Counts how many times the substring appears in the larger String.</p>
 		 *
@@ -1244,7 +1244,7 @@ package org.as3commons.lang {
 			}
 			return str.match(new RegExp('(' + sub + ')', 'g')).length;
 		}
-		
+
 		/**
 		 * <p>Checks if String contains a search String, handling <code>null</code>.
 		 *
@@ -1270,7 +1270,7 @@ package org.as3commons.lang {
 			}
 			return new RegExp('(' + searchStr + ')', 'g').test(str);
 		}
-		
+
 		/**
 		 * <p>Checks that the String does not contain certain characters.</p>
 		 *
@@ -1298,7 +1298,7 @@ package org.as3commons.lang {
 			}
 			return new RegExp('^[^' + invalidChars + ']*$', '').test(str);
 		}
-		
+
 		/**
 		 * <p>Checks if the String contains only certain characters.</p>
 		 *
@@ -1324,13 +1324,13 @@ package org.as3commons.lang {
 			if (str == null || isEmpty(validChars)) {
 				return false;
 			}
-			
+
 			if (str.length == 0) {
 				return true;
 			}
 			return new RegExp('^[' + validChars + ']*$', 'g').test(str);
 		}
-		
+
 		/**
 		 * <p>Search a String to find the first index of any
 		 * character in the given set of characters.</p>
@@ -1358,7 +1358,7 @@ package org.as3commons.lang {
 			}
 			return str.search(new RegExp('[' + searchChars + ']', ''));
 		}
-		
+
 		/**
 		 * <p>Search a String to find the first index of any
 		 * character not in the given set of characters.</p>
@@ -1385,7 +1385,7 @@ package org.as3commons.lang {
 			}
 			return str.search(new RegExp('[^' + searchChars + ']', ''));
 		}
-		
+
 		/**
 		 * <p>Compares two Strings, and returns the portion where they differ.
 		 *(More precisely, return the remainder of the second String,
@@ -1414,18 +1414,18 @@ package org.as3commons.lang {
 			if (str1 == null) {
 				return str2;
 			}
-			
+
 			if (str2 == null) {
 				return str1;
 			}
 			var at:int = indexOfDifference(str1, str2);
-			
+
 			if (at == -1) {
 				return EMPTY;
 			}
 			return str2.substring(at);
 		}
-		
+
 		/**
 		 * <p>Compares two Strings, and returns the index at which the
 		 * Strings begin to differ.</p>
@@ -1452,24 +1452,24 @@ package org.as3commons.lang {
 			if (str1 == str2) {
 				return INDEX_NOT_FOUND;
 			}
-			
+
 			if (isEmpty(str1) || isEmpty(str2)) {
 				return 0;
 			}
 			var i:int;
-			
+
 			for (i = 0; i < str1.length && i < str2.length; ++i) {
 				if (str1.charAt(i) != str2.charAt(i)) {
 					break;
 				}
 			}
-			
+
 			if (i < str2.length || i < str1.length) {
 				return i;
 			}
 			return INDEX_NOT_FOUND;
 		}
-		
+
 		/**
 		 * <p>Compares two Strings, returning <code>true</code> if they are equal.</p>
 		 *
@@ -1492,7 +1492,7 @@ package org.as3commons.lang {
 		public static function equals(str1:String, str2:String):Boolean {
 			return (str1 === str2);
 		}
-		
+
 		/**
 		 * <p>Compares two Strings, returning <code>true</code> if they are equal ignoring
 		 * the case.</p>
@@ -1521,7 +1521,7 @@ package org.as3commons.lang {
 			}
 			return equals(str1.toLowerCase(), str2.toLowerCase());
 		}
-		
+
 		/**
 		 * <p>Checks if the String contains only unicode letters.</p>
 		 *
@@ -1543,7 +1543,7 @@ package org.as3commons.lang {
 		public static function isAlpha(str:String):Boolean {
 			return testString(str, /^[a-zA-Z]*$/);
 		}
-		
+
 		/**
 		 * <p>Checks if the String contains only unicode letters and
 		 * space(' ').</p>
@@ -1568,7 +1568,7 @@ package org.as3commons.lang {
 		public static function isAlphaSpace(str:String):Boolean {
 			return testString(str, /^[a-zA-Z\s]*$/);
 		}
-		
+
 		/**
 		 * <p>Checks if the String contains only unicode letters or digits.</p>
 		 *
@@ -1592,7 +1592,7 @@ package org.as3commons.lang {
 		public static function isAlphanumeric(str:String):Boolean {
 			return testString(str, /^[a-zA-Z0-9]*$/);
 		}
-		
+
 		/**
 		 * <p>Checks if the String contains only unicode letters, digits
 		 * or space(<code>' '</code>).</p>
@@ -1617,7 +1617,7 @@ package org.as3commons.lang {
 		public static function isAlphanumericSpace(str:String):Boolean {
 			return testString(str, /^[a-zA-Z0-9\s]*$/);
 		}
-		
+
 		/**
 		 * <p>Checks if the String contains only unicode digits.
 		 * A decimal point is not a unicode digit and returns false.</p>
@@ -1642,7 +1642,7 @@ package org.as3commons.lang {
 		public static function isNumeric(str:String):Boolean {
 			return testString(str, /^[0-9]*$/);
 		}
-		
+
 		/**
 		 * <p>Checks if the String contains only unicode digits or space
 		 *(<code>' '</code>).
@@ -1669,7 +1669,7 @@ package org.as3commons.lang {
 		public static function isNumericSpace(str:String):Boolean {
 			return testString(str, /^[0-9\s]*$/);
 		}
-		
+
 		/**
 		 * <p>Checks if the String contains only whitespace.</p>
 		 *
@@ -1691,11 +1691,11 @@ package org.as3commons.lang {
 		public static function isWhitespace(str:String):Boolean {
 			return testString(str, /^[\s]*$/);
 		}
-		
+
 		private static function testString(str:String, pattern:RegExp):Boolean {
 			return str != null && pattern.test(str);
 		}
-		
+
 		/**
 		 * <p>Overlays part of a String with another String.</p>
 		 *
@@ -1728,28 +1728,28 @@ package org.as3commons.lang {
 			if (str == null) {
 				return null;
 			}
-			
+
 			if (overlay == null) {
 				overlay = EMPTY;
 			}
 			var len:int = str.length;
-			
+
 			if (start < 0) {
 				start = 0;
 			}
-			
+
 			if (start > len) {
 				start = len;
 			}
-			
+
 			if (end < 0) {
 				end = 0;
 			}
-			
+
 			if (end > len) {
 				end = len;
 			}
-			
+
 			if (start > end) {
 				var temp:int = start;
 				start = end;
@@ -1757,7 +1757,7 @@ package org.as3commons.lang {
 			}
 			return str.substring(0, start).concat(overlay).concat(str.substring(end));
 		}
-		
+
 		/**
 		 * <p>Removes all occurances of a substring from within the source string.</p>
 		 *
@@ -1783,7 +1783,7 @@ package org.as3commons.lang {
 		public static function remove(str:String, remove:String):String {
 			return safeRemove(str, new RegExp(remove, 'g'));
 		}
-		
+
 		/**
 		 * <p>Removes a substring only if it is at the end of a source string,
 		 * otherwise returns the source string.</p>
@@ -1809,7 +1809,7 @@ package org.as3commons.lang {
 		public static function removeEnd(str:String, remove:String):String {
 			return safeRemove(str, new RegExp(remove + '$', ''));
 		}
-		
+
 		/**
 		 * <p>Removes a substring only if it is at the begining of a source string,
 		 * otherwise returns the source string.</p>
@@ -1836,14 +1836,14 @@ package org.as3commons.lang {
 		public static function removeStart(str:String, remove:String):String {
 			return safeRemove(str, new RegExp('^' + remove, ''));
 		}
-		
+
 		private static function safeRemove(str:String, pattern:RegExp):String {
 			if (isEmpty(str)) {
 				return str;
 			}
 			return str.replace(pattern, '');
 		}
-		
+
 		/**
 		 * <p>Checks if the String end characters match the given end string.</p>
 		 *
@@ -1863,7 +1863,7 @@ package org.as3commons.lang {
 		public static function endsWith(str:String, end:String):Boolean {
 			return testString(str, new RegExp(end + '$', ''));
 		}
-		
+
 		/**
 		 * <p>Checks if the String start characters match the given start string.</p>
 		 *
@@ -1883,7 +1883,7 @@ package org.as3commons.lang {
 		public static function startsWith(str:String, start:String):Boolean {
 			return testString(str, new RegExp('^' + start, ''));
 		}
-		
+
 		/**
 		 * Compares two strings lexicographically, ignoring case
 		 * differences. This method returns an integer whose sign is that of
@@ -1903,14 +1903,14 @@ package org.as3commons.lang {
 			if (str1 == null) {
 				str1 = "";
 			}
-			
+
 			if (str2 == null) {
 				str2 = "";
 			}
-			
+
 			return compareTo(str1.toLowerCase(), str2.toLowerCase());
 		}
-		
+
 		/**
 		 * Compares two strings lexicographically.
 		 * The comparison is based on the Unicode value of each character in
@@ -1956,13 +1956,13 @@ package org.as3commons.lang {
 			if (str1 == null) {
 				str1 = "";
 			}
-			
+
 			if (str2 == null) {
 				str2 = "";
 			}
 			return str1.localeCompare(str2);
 		}
-		
+
 		/**
 		 * Adds/inserts a new string at a certain position in the source string.
 		 */
@@ -1974,7 +1974,7 @@ package org.as3commons.lang {
 			var secondPart:String = string.substring(position, string.length);
 			return (firstPart + value + secondPart);
 		}
-		
+
 		/**
 		 * Replaces a part of the text between 2 positions.
 		 */
@@ -1985,21 +1985,21 @@ package org.as3commons.lang {
 			var secondPart:String = string.substr(endIndex, string.length);
 			return (firstPart + value + secondPart);
 		}
-		
+
 		/**
 		 * Removes a part of the text between 2 positions.
 		 */
 		public static function removeAt(string:String, beginIndex:int, endIndex:int):String {
 			return StringUtils.replaceAt(string, "", beginIndex, endIndex);
 		}
-		
+
 		/**
 		 * Fixes double newlines in a text.
 		 */
 		public static function fixNewlines(string:String):String {
 			return string.replace(/\r\n/gm, "\n");
 		}
-		
+
 		/**
 		 * Checks if the given string has actual text.
 		 */
@@ -2008,7 +2008,7 @@ package org.as3commons.lang {
 				return false;
 			return (StringUtils.trim(string).length > 0);
 		}
-		
+
 		/**
 		 * Removes all empty characters at the beginning of a string.
 		 *
@@ -2021,7 +2021,7 @@ package org.as3commons.lang {
 		public static function leftTrim(string:String):String {
 			return leftTrimForChars(string, "\n\t\n ");
 		}
-		
+
 		/**
 		 * Removes all empty characters at the end of a string.
 		 *
@@ -2034,7 +2034,7 @@ package org.as3commons.lang {
 		public static function rightTrim(string:String):String {
 			return rightTrimForChars(string, "\n\t\n ");
 		}
-		
+
 		/**
 		 * Removes all characters at the beginning of the {@code string} that match to the
 		 * set of {@code chars}.
@@ -2055,13 +2055,13 @@ package org.as3commons.lang {
 		public static function leftTrimForChars(string:String, chars:String):String {
 			var from:Number = 0;
 			var to:Number = string.length;
-			
+
 			while (from < to && chars.indexOf(string.charAt(from)) >= 0) {
 				from++;
 			}
 			return (from > 0 ? string.substr(from, to) : string);
 		}
-		
+
 		/**
 		 * Removes all characters at the end of the {@code string} that match to the set of
 		 * {@code chars}.
@@ -2082,13 +2082,13 @@ package org.as3commons.lang {
 		public static function rightTrimForChars(string:String, chars:String):String {
 			var from:Number = 0;
 			var to:Number = string.length - 1;
-			
+
 			while (from < to && chars.indexOf(string.charAt(to)) >= 0) {
 				to--;
 			}
 			return (to >= 0 ? string.substr(from, to + 1) : string);
 		}
-		
+
 		/**
 		 * Removes all characters at the beginning of the {@code string} that matches the
 		 * {@code char}.
@@ -2109,7 +2109,7 @@ package org.as3commons.lang {
 			}
 			return leftTrimForChars(string, char);
 		}
-		
+
 		/**
 		 * Removes all characters at the end of the {@code string} that matches the passed-in
 		 * {@code char}.
@@ -2130,7 +2130,7 @@ package org.as3commons.lang {
 			}
 			return rightTrimForChars(string, char);
 		}
-		
+
 		/**
 		 * Extended String::indexOf
 		 *
@@ -2144,24 +2144,24 @@ package org.as3commons.lang {
 		 */
 		public static function nthIndexOf(haystack:String, n:uint, needle:String, startIndex:Number = 0):int {
 			var result:int = startIndex;
-			
+
 			if (n >= 1) {
 				result = haystack.indexOf(needle, result);
-				
+
 				for (var i:int = 1; result != -1 && i < n; i++) {
 					result = haystack.indexOf(needle, result + 1);
 				}
 			}
 			return result;
 		}
-		
+
 		/**
 		 * Returns if the given character is a white space or not.
 		 */
 		public static function characterIsWhitespace(a:String):Boolean {
 			return (a.charCodeAt(0) <= 32);
 		}
-		
+
 		/**
 		 * Returns if the given character is a digit or not.
 		 */
@@ -2169,7 +2169,7 @@ package org.as3commons.lang {
 			var charCode:Number = a.charCodeAt(0);
 			return (charCode >= 48 && charCode <= 57);
 		}
-		
+
 		/**
 		 * Natural sort order compare function.
 		 *
@@ -2182,35 +2182,35 @@ package org.as3commons.lang {
 			var ca:String, cb:String;
 			var result:int;
 			var lowerCaseBeforeUpperCase:Boolean = true; // used to be a method argument, keep this
-			
+
 			// replace null values with empty strings
 			if (!a)
 				a = "";
-			
+
 			if (!b)
 				b = "";
-			
+
 			/*if (!caseSensitive) {
 			   a = a.toLowerCase();
 			   b = b.toLowerCase();
 			 }*/
-			
+
 			var stringsAreCaseInsensitiveEqual:Boolean = false;
-			
+
 			if (a.toLocaleLowerCase() == b.toLocaleLowerCase()) {
 				stringsAreCaseInsensitiveEqual = true;
 			} else {
 				a = a.toLowerCase();
 				b = b.toLowerCase();
 			}
-			
+
 			while (true) {
 				// only count the number of zeroes leading the last number compared
 				nza = nzb = 0;
-				
+
 				ca = a.charAt(ia);
 				cb = b.charAt(ib);
-				
+
 				// skip over leading spaces or zeros
 				while (StringUtils.characterIsWhitespace(ca) || ca == "0") {
 					if (ca == "0") {
@@ -2219,10 +2219,10 @@ package org.as3commons.lang {
 						// only count consecutive zeroes
 						nza = 0;
 					}
-					
+
 					ca = a.charAt(++ia);
 				}
-				
+
 				while (StringUtils.characterIsWhitespace(cb) || cb == "0") {
 					if (cb == "0") {
 						nzb++;
@@ -2230,23 +2230,23 @@ package org.as3commons.lang {
 						// only count consecutive zeroes
 						nzb = 0;
 					}
-					
+
 					cb = b.charAt(++ib);
 				}
-				
+
 				// process run of digits
 				if (StringUtils.characterIsDigit(ca) && StringUtils.characterIsDigit(cb)) {
 					if ((result = compareRight(a.substring(ia), b.substring(ib))) != 0) {
 						return result;
 					}
 				}
-				
-				if (ca == "" && cb == "") {
+
+				if (ca.length == 0 && cb.length == 0) {
 					// The strings compare the same.  Perhaps the caller
 					// will want to call strcmp to break the tie.
 					return nza - nzb;
 				}
-				
+
 				if (stringsAreCaseInsensitiveEqual) {
 					// If the characters are in another case (upper or lower)
 					if (ca != cb) {
@@ -2257,20 +2257,20 @@ package org.as3commons.lang {
 						}
 					}
 				}
-				
+
 				if (ca < cb) {
 					return -1;
 				} else if (ca > cb) {
 					return +1;
 				}
-				
+
 				++ia;
 				++ib;
 			}
-			
+
 			return 0;
 		}
-		
+
 		/**
 		 * Helper function used by the naturalCompare method.
 		 */
@@ -2280,7 +2280,7 @@ package org.as3commons.lang {
 			var ib:int = 0;
 			var ca:String;
 			var cb:String;
-			
+
 			// The longest run of digits wins.  That aside, the greatest
 			// value wins, but we can't know that it will until we've scanned
 			// both numbers to know that they have the same magnitude, so we
@@ -2288,7 +2288,7 @@ package org.as3commons.lang {
 			for (; ; ia++, ib++) {
 				ca = a.charAt(ia);
 				cb = b.charAt(ib);
-				
+
 				if (!StringUtils.characterIsDigit(ca) && !StringUtils.characterIsDigit(cb)) {
 					return bias;
 				} else if (!StringUtils.characterIsDigit(ca)) {
@@ -2302,14 +2302,14 @@ package org.as3commons.lang {
 				} else if (ca > cb) {
 					if (bias == 0)
 						bias = +1;
-				} else if (ca == "" && cb == "") {
+				} else if (ca.length == 0 && cb.length == 0) {
 					return bias;
 				}
 			}
-			
+
 			return 0;
 		}
-		
+
 		/**
 		 * Tokenizes a string to an array using the given delimiters.
 		 */
@@ -2318,23 +2318,23 @@ package org.as3commons.lang {
 			var numCharacters:int = string.length;
 			var delimiterFound:Boolean = false;
 			var token:String = "";
-			
+
 			for (var i:int = 0; i < numCharacters; i++) {
 				var character:String = string.charAt(i);
-				
+
 				if (delimiters.indexOf(character) == -1) {
 					token += character;
 				} else {
 					result.push(token);
 					token = "";
 				}
-				
+
 				// add the last token if we reached the end of the string
 				if (i == numCharacters - 1) {
 					result.push(token);
 				}
 			}
-			
+
 			return result;
 		}
 	}
