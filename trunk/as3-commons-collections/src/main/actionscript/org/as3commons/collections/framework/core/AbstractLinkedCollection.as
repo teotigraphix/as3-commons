@@ -383,8 +383,8 @@ package org.as3commons.collections.framework.core {
 				}
 				insize <<= 1;
 			}
-			_last = tail;
 			_first = h;
+			_last = tail;
 		}
 		
 		/**
