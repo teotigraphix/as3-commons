@@ -67,9 +67,18 @@
 			<organizationUrl>http://www.uitgeverij-deviant.nl/</organizationUrl>
 			<timezone>+1</timezone>
 		</developer>
+		<developer>
+			<id>jes</id>
+			<name>Jens Struwe</name>
+			<email>jens [at] struwe.net</email>
+			<organization>Russischer Bär Software</organization>
+			<organizationUrl>http://sibirjak.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
 	</developers>
 
 	<modules>
+		<module>as3-commons-collections</module>
 		<module>as3-commons-concurrency</module>
 		<module>as3-commons-lang</module>
 		<module>as3-commons-logging</module>
