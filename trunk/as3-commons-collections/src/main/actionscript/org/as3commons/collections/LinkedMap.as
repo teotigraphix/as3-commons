@@ -237,6 +237,13 @@ package org.as3commons.collections {
 		/**
 		 * @inheritDoc
 		 */
+		public function keyIterator() : IIterator {
+			return new KeyIterator(this);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
 		public function removeKey(key : *) : * {
 			var node : LinkedNode;
 			
@@ -346,4 +353,32 @@ package org.as3commons.collections {
 			}
 		}
 	}
+}
+
+import org.as3commons.collections.LinkedMap;
+import org.as3commons.collections.framework.IIterator;
+import org.as3commons.collections.framework.core.LinkedMapNode;
+import org.as3commons.collections.framework.core.LinkedNode;
+import org.as3commons.collections.framework.core.as3commons_collections;
+
+internal class KeyIterator implements IIterator {
+
+	use namespace as3commons_collections;
+
+	private var _next : LinkedNode;
+
+	public function KeyIterator(map : LinkedMap) {
+		_next = map.firstNode_internal;
+	}
+
+	public function hasNext() : Boolean{
+		return _next != null;
+	}
+
+	public function next() : * {
+		if (!_next) return undefined;
+		var next : LinkedNode = _next;
+		_next = _next.right;
+		return LinkedMapNode(next).key;
+	}	
 }
