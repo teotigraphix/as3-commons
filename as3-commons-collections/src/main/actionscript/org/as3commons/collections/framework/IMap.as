@@ -82,11 +82,18 @@ package org.as3commons.collections.framework {
 		 * 
 		 * <p>The order of keys in the array is the same as in the particular collection.</p>
 		 * 
-		 * <p>The order of the keys of the <code>Map</code> collection is not predictable.</p>
-		 * 
 		 * @return An array of the keys of the map.
 		 */
 		function keysToArray() : Array;
+
+		/**
+		 * Returns an iterator over the keys of the map.
+		 * 
+		 * <p>The order of keys returned by the iterator is the same as in the particular collection.</p>
+		 * 
+		 * @return An iterator over the map keys.
+		 */
+		function keyIterator() : IIterator;
 
 		/**
 		 * Removes the given key and its associated item from the map.

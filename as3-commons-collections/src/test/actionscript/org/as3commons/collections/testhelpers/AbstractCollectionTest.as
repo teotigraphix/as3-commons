@@ -3,6 +3,7 @@ package org.as3commons.collections.testhelpers {
 
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.framework.ICollectionIterator;
+	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.framework.IMap;
 	import org.as3commons.collections.framework.IMapIterator;
 	import org.as3commons.collections.framework.core.LinkedMapNode;
@@ -55,13 +56,15 @@ package org.as3commons.collections.testhelpers {
 			return items;
 		}
 
-		public function allKeys(iterator : IMapIterator) : Array {
+		public function allKeys(iterator : IIterator) : Array {
 			var keys : Array = new Array();
+			var current : *;
 			while (iterator.hasNext()) {
-				iterator.next();
-				keys.push(iterator.key);
+				current = iterator.next();
+				if (iterator is IMapIterator) keys.push(IMapIterator(iterator).key);
+				else keys.push(current); // key iterator
 			}
-			iterator.start();
+			if (iterator is ICollectionIterator) ICollectionIterator(iterator).start();
 			return keys;
 		}
 

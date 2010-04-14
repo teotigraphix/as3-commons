@@ -2,6 +2,7 @@ package org.as3commons.collections {
 	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.framework.IMap;
 	import org.as3commons.collections.framework.core.MapIterator;
+	import org.as3commons.collections.iterators.ArrayIterator;
 
 	import flash.utils.Dictionary;
 
@@ -167,6 +168,13 @@ package org.as3commons.collections {
 				keys.push(key);
 			}
 			return keys;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function keyIterator() : IIterator {
+			return new ArrayIterator(keysToArray());
 		}
 		
 		/**

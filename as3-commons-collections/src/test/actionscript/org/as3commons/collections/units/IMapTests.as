@@ -522,6 +522,39 @@ package org.as3commons.collections.units {
 		}
 
 		/*
+		 * Test key iterator
+		 */
+
+		public function test_keyIterator(): void {
+			assertTrue(_map.add(TestItems.object1Key, TestItems.object1));
+			assertTrue(_map.add(TestItems.object2Key, TestItems.object2));
+			assertTrue(_map.add(TestItems.object3Key, TestItems.object3));
+			
+			assertTrue(_test.validateTestKeys([1, 2, 3], _test.allKeys(_map.keyIterator())));
+		}
+
+		public function test_keyIterator_objectKeys(): void {
+			assertTrue(_map.add(TestItems.object1, TestItems.object1));
+			assertTrue(_map.add(TestItems.object2, TestItems.object2));
+			assertTrue(_map.add(TestItems.object3, TestItems.object3));
+			
+			assertTrue(_test.validateKeys([TestItems.object1, TestItems.object2, TestItems.object3], _test.allKeys(_map.keyIterator())));
+		}
+
+		public function test_keyIterator_mixedKeys(): void {
+			assertTrue(_map.add(null, TestItems.object1));
+			assertTrue(_map.add(-1, TestItems.object2));
+			assertTrue(_map.add(1, TestItems.object3));
+			assertTrue(_map.add("-1", TestItems.object4));
+			assertTrue(_map.add("1", TestItems.object5));
+			assertTrue(_map.add("true", TestItems.object6));
+			assertTrue(_map.add(true, TestItems.object7));
+			assertTrue(_map.add(TestItems.object8, TestItems.object8));
+			
+			assertTrue(_test.validateKeys([null, -1, 1, "-1", "1", "true", true, TestItems.object8], _test.allKeys(_map.keyIterator())));
+		}
+
+		/*
 		 * Test removeKey
 		 */
 

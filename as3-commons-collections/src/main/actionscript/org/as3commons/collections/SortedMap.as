@@ -206,6 +206,13 @@ package org.as3commons.collections {
 		/**
 		 * @inheritDoc
 		 */
+		public function keyIterator() : IIterator {
+			return new KeyIterator(this);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
 		public function removeKey(key : *) : * {
 			var node : SortedMapNode;
 			
@@ -303,6 +310,35 @@ package org.as3commons.collections {
 				delete _items[key];
 			}
 		}
-
 	}
+}
+
+import org.as3commons.collections.SortedMap;
+import org.as3commons.collections.framework.IIterator;
+import org.as3commons.collections.framework.core.SortedMapNode;
+import org.as3commons.collections.framework.core.SortedNode;
+import org.as3commons.collections.framework.core.as3commons_collections;
+
+internal class KeyIterator implements IIterator {
+
+	use namespace as3commons_collections;
+
+	private var _map : SortedMap;
+	private var _next : SortedNode;
+
+	public function KeyIterator(map : SortedMap) {
+		_map = map;
+		_next = map.mostLeftNode_internal();
+	}
+
+	public function hasNext() : Boolean{
+		return _next != null;
+	}
+
+	public function next() : * {
+		if (!_next) return undefined;
+		var next : SortedNode = _next;
+		_next = _map.nextNode_internal(_next);
+		return SortedMapNode(next).key;
+	}	
 }
