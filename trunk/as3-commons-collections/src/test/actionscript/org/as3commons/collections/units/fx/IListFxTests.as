@@ -5,7 +5,7 @@ package org.as3commons.collections.units.fx {
 	import org.as3commons.collections.framework.IListIterator;
 	import org.as3commons.collections.fx.events.CollectionEvent;
 	import org.as3commons.collections.fx.events.ListEvent;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.CollectionEventListener;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.ITestInsertionOrder;
@@ -16,7 +16,7 @@ package org.as3commons.collections.units.fx {
 	 */
 	public class IListFxTests extends ICollectionFxTests {
 
-		public function IListFxTests(test : AbstractCollectionTest) {
+		public function IListFxTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 		

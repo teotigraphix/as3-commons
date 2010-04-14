@@ -1,7 +1,7 @@
 package org.as3commons.collections.units.iterators {
 	import org.as3commons.collections.framework.IMap;
 	import org.as3commons.collections.framework.IMapIterator;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 
 	/**
@@ -9,7 +9,7 @@ package org.as3commons.collections.units.iterators {
 	 */
 	public class IMapIteratorTests extends ICollectionIteratorTests {
 
-		public function IMapIteratorTests(test : AbstractIteratorTest) {
+		public function IMapIteratorTests(test : AbstractIteratorTestCase) {
 			super(test);
 		}
 

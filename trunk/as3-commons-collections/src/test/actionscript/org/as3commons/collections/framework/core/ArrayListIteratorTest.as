@@ -3,7 +3,7 @@ package org.as3commons.collections.framework.core {
 	import org.as3commons.collections.framework.IOrderedList;
 	import org.as3commons.collections.framework.IOrderedListIterator;
 	import org.as3commons.collections.mocks.ArrayListMock;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.iterators.IIteratorInsertionOrderTests;
 	import org.as3commons.collections.units.iterators.IListIteratorTests;
@@ -11,7 +11,7 @@ package org.as3commons.collections.framework.core {
 	/**
 	 * @author jes 19.03.2010
 	 */
-	public class ArrayListIteratorTest extends AbstractIteratorTest {
+	public class ArrayListIteratorTest extends AbstractIteratorTestCase {
 
 		/*
 		 * AbstractIteratorTest

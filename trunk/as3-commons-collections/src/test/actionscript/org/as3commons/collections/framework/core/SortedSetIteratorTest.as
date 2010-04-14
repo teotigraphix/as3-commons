@@ -6,7 +6,7 @@ package org.as3commons.collections.framework.core {
 	import org.as3commons.collections.framework.core.SortedNode;
 	import org.as3commons.collections.framework.core.as3commons_collections;
 	import org.as3commons.collections.mocks.SortedSetMock;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.testhelpers.TestComparator;
 	import org.as3commons.collections.units.iterators.ICollectionIteratorStartIndexTests;
 	import org.as3commons.collections.units.iterators.ISetIteratorTests;
@@ -14,7 +14,7 @@ package org.as3commons.collections.framework.core {
 	/**
 	 * @author jes 30.03.2010
 	 */
-	public class SortedSetIteratorTest extends AbstractIteratorTest {
+	public class SortedSetIteratorTest extends AbstractIteratorTestCase {
 
 		use namespace as3commons_collections;
 

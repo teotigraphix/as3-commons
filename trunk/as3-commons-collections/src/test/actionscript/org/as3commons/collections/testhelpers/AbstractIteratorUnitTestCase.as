@@ -6,10 +6,10 @@ package org.as3commons.collections.testhelpers {
 	/**
 	 * @author jes 18.03.2010
 	 */
-	public class AbstractIteratorUnitTest extends TestCase {
-		protected var _test : AbstractIteratorTest;
+	public class AbstractIteratorUnitTestCase extends TestCase {
+		protected var _test : AbstractIteratorTestCase;
 		
-		public function AbstractIteratorUnitTest(test : AbstractIteratorTest) {
+		public function AbstractIteratorUnitTestCase(test : AbstractIteratorTestCase) {
 			_test = test;
 		}
 		

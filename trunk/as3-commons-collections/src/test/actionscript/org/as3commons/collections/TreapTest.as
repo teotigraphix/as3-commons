@@ -1,7 +1,7 @@
 package org.as3commons.collections {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.mocks.TreapMock;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestComparator;
 	import org.as3commons.collections.units.ICollectionTests;
 	import org.as3commons.collections.units.ISortOrderTests;
@@ -9,7 +9,7 @@ package org.as3commons.collections {
 	/**
 	 * @author jes 29.03.2010
 	 */
-	public class TreapTest extends AbstractCollectionTest {
+	public class TreapTest extends AbstractCollectionTestCase {
 
 		/*
 		 * AbstractCollectionTest

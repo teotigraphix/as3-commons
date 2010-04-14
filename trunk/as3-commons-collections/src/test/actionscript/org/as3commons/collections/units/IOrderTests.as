@@ -1,15 +1,15 @@
 package org.as3commons.collections.units {
 	import org.as3commons.collections.framework.IOrder;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
-	import org.as3commons.collections.testhelpers.AbstractCollectionUnitTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
+	import org.as3commons.collections.testhelpers.AbstractCollectionUnitTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 
 	/**
 	 * @author jes 18.03.2010
 	 */
-	public class IOrderTests extends AbstractCollectionUnitTest {
+	public class IOrderTests extends AbstractCollectionUnitTestCase {
 
-		public function IOrderTests(test : AbstractCollectionTest) {
+		public function IOrderTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 		

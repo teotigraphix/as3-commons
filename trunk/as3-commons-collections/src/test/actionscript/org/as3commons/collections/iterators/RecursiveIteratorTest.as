@@ -1,14 +1,14 @@
 package org.as3commons.collections.iterators {
 	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.framework.IRecursiveIterator;
-	import org.as3commons.collections.testhelpers.AbstractSpecialIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractSpecialIteratorTestCase;
 	import org.as3commons.collections.units.iterators.IIteratorTests;
 	import org.as3commons.collections.units.iterators.RecursiveIteratorTests;
 
 	/**
 	 * @author jes 19.03.2010
 	 */
-	public class RecursiveIteratorTest extends AbstractSpecialIteratorTest {
+	public class RecursiveIteratorTest extends AbstractSpecialIteratorTestCase {
 
 		/*
 		 * AbstractIteratorTest

@@ -2,7 +2,7 @@ package org.as3commons.collections.units.fx {
 	import org.as3commons.collections.framework.ICollectionFx;
 	import org.as3commons.collections.framework.ICollectionIterator;
 	import org.as3commons.collections.fx.events.CollectionEvent;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.CollectionEventListener;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.ITestSortOrder;
@@ -12,7 +12,7 @@ package org.as3commons.collections.units.fx {
 	 */
 	public class ISortOrderFxTests extends IOrderBaseFxTests {
 
-		public function ISortOrderFxTests(test : AbstractCollectionTest) {
+		public function ISortOrderFxTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 		

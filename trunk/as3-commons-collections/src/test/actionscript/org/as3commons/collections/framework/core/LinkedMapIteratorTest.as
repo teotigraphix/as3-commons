@@ -7,7 +7,7 @@ package org.as3commons.collections.framework.core {
 	import org.as3commons.collections.framework.core.LinkedNode;
 	import org.as3commons.collections.framework.core.as3commons_collections;
 	import org.as3commons.collections.mocks.LinkedMapMock;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.testhelpers.UniqueMapKey;
 	import org.as3commons.collections.units.iterators.ICollectionIteratorStartIndexTests;
@@ -17,7 +17,7 @@ package org.as3commons.collections.framework.core {
 	/**
 	 * @author jes 23.03.2010
 	 */
-	public class LinkedMapIteratorTest extends AbstractIteratorTest {
+	public class LinkedMapIteratorTest extends AbstractIteratorTestCase {
 		
 		use namespace as3commons_collections;
 

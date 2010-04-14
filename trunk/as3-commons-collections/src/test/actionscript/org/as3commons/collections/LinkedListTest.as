@@ -2,7 +2,7 @@ package org.as3commons.collections {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.framework.ILinkedList;
 	import org.as3commons.collections.mocks.LinkedListMock;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.units.ICollectionTests;
 	import org.as3commons.collections.units.IDuplicatesTests;
 	import org.as3commons.collections.units.IInsertionOrderDuplicatesTests;
@@ -10,7 +10,7 @@ package org.as3commons.collections {
 	/**
 	 * @author jes 25.03.2010
 	 */
-	public class LinkedListTest extends AbstractCollectionTest {
+	public class LinkedListTest extends AbstractCollectionTestCase {
 
 		/*
 		 * AbstractCollectionTest

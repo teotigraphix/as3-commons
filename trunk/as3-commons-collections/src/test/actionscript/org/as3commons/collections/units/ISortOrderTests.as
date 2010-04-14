@@ -1,6 +1,6 @@
 package org.as3commons.collections.units {
 	import org.as3commons.collections.framework.ISortOrder;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 
 	/**
@@ -8,7 +8,7 @@ package org.as3commons.collections.units {
 	 */
 	public class ISortOrderTests extends IOrderTests {
 		
-		public function ISortOrderTests(test : AbstractCollectionTest) {
+		public function ISortOrderTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 		

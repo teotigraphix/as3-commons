@@ -1,6 +1,6 @@
 package org.as3commons.collections.units.iterators {
 	import org.as3commons.collections.framework.ICollectionIterator;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 
 	/**
@@ -8,7 +8,7 @@ package org.as3commons.collections.units.iterators {
 	 */
 	public class ICollectionIteratorTests extends IIteratorTests {
 
-		public function ICollectionIteratorTests(test : AbstractIteratorTest) {
+		public function ICollectionIteratorTests(test : AbstractIteratorTestCase) {
 			super(test);
 		}
 

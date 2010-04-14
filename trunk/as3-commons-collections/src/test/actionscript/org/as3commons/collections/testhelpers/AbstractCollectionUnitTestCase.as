@@ -6,11 +6,11 @@ package org.as3commons.collections.testhelpers {
 	/**
 	 * @author jes 24.02.2010
 	 */
-	public class AbstractCollectionUnitTest extends TestCase {
+	public class AbstractCollectionUnitTestCase extends TestCase {
 		
-		protected var _test : AbstractCollectionTest;
+		protected var _test : AbstractCollectionTestCase;
 		
-		public function AbstractCollectionUnitTest(test : AbstractCollectionTest) {
+		public function AbstractCollectionUnitTestCase(test : AbstractCollectionTestCase) {
 			_test = test;
 		}
 		

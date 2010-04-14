@@ -2,13 +2,13 @@ package org.as3commons.collections {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.framework.ISet;
 	import org.as3commons.collections.mocks.SetMock;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.units.ISetTests;
 
 	/**
 	 * @author jes 26.03.2010
 	 */
-	public class SetTest extends AbstractCollectionTest {
+	public class SetTest extends AbstractCollectionTestCase {
 
 		/*
 		 * AbstractCollectionTest

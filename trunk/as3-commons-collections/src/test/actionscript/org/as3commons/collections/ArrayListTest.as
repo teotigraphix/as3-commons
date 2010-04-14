@@ -2,7 +2,7 @@ package org.as3commons.collections {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.framework.IOrderedList;
 	import org.as3commons.collections.mocks.ArrayListMock;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.IInsertionOrderDuplicatesTests;
 	import org.as3commons.collections.units.IListTests;
@@ -10,7 +10,7 @@ package org.as3commons.collections {
 	/**
 	 * @author jes 18.03.2010
 	 */
-	public class ArrayListTest extends AbstractCollectionTest {
+	public class ArrayListTest extends AbstractCollectionTestCase {
 		
 		/*
 		 * AbstractCollectionTest

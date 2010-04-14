@@ -2,7 +2,7 @@ package org.as3commons.collections {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.framework.ISortedSet;
 	import org.as3commons.collections.mocks.SortedSetMock;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestComparator;
 	import org.as3commons.collections.units.ISetTests;
 	import org.as3commons.collections.units.ISortOrderDuplicateEqualsTests;
@@ -10,7 +10,7 @@ package org.as3commons.collections {
 	/**
 	 * @author jes 30.03.2010
 	 */
-	public class SortedSetTest extends AbstractCollectionTest {
+	public class SortedSetTest extends AbstractCollectionTestCase {
 
 		/*
 		 * AbstractCollectionTest

@@ -2,14 +2,14 @@ package org.as3commons.collections.framework.core {
 	import org.as3commons.collections.Map;
 	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.mocks.MapMock;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.testhelpers.UniqueMapKey;
 	import org.as3commons.collections.units.iterators.IMapIteratorTests;
 
 	/**
 	 * @author jes 23.03.2010
 	 */
-	public class MapIteratorTest extends AbstractIteratorTest {
+	public class MapIteratorTest extends AbstractIteratorTestCase {
 
 		/*
 		 * AbstractIteratorTest

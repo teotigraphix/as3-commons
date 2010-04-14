@@ -1,7 +1,7 @@
 package org.as3commons.collections.units {
 	import org.as3commons.collections.framework.IDuplicates;
 	import org.as3commons.collections.framework.ISortOrder;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 
 	/**
@@ -9,7 +9,7 @@ package org.as3commons.collections.units {
 	 */
 	public class ISortOrderDuplicatesTests extends ISortOrderDuplicateEqualsTests {
 
-		public function ISortOrderDuplicatesTests(test : AbstractCollectionTest) {
+		public function ISortOrderDuplicatesTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 

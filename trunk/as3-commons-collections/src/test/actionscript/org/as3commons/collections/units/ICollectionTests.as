@@ -2,16 +2,16 @@ package org.as3commons.collections.units {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.framework.ICollectionIterator;
 	import org.as3commons.collections.framework.IIterator;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
-	import org.as3commons.collections.testhelpers.AbstractCollectionUnitTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
+	import org.as3commons.collections.testhelpers.AbstractCollectionUnitTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 
 	/*
 	 * @author jes 18.03.2010
 	 */
-	public class ICollectionTests extends AbstractCollectionUnitTest {
+	public class ICollectionTests extends AbstractCollectionUnitTestCase {
 
-		public function ICollectionTests(test : AbstractCollectionTest) {
+		public function ICollectionTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 		

@@ -1,15 +1,15 @@
 package org.as3commons.collections.units {
 	import org.as3commons.collections.framework.IDuplicates;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
-	import org.as3commons.collections.testhelpers.AbstractCollectionUnitTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
+	import org.as3commons.collections.testhelpers.AbstractCollectionUnitTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 
 	/**
 	 * @author jes 18.03.2010
 	 */
-	public class IDuplicatesTests extends AbstractCollectionUnitTest {
+	public class IDuplicatesTests extends AbstractCollectionUnitTestCase {
 
-		public function IDuplicatesTests(test : AbstractCollectionTest) {
+		public function IDuplicatesTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 		

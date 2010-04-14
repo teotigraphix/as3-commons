@@ -1,7 +1,7 @@
 package org.as3commons.collections.framework.core {
 	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.mocks.TreapMock;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.testhelpers.TestComparator;
 	import org.as3commons.collections.units.iterators.ICollectionIteratorTests;
 	import org.as3commons.collections.units.iterators.IIteratorNextPreviousLookupTests;
@@ -9,7 +9,7 @@ package org.as3commons.collections.framework.core {
 	/**
 	 * @author jes 30.03.2010
 	 */
-	public class TreapIteratorTest extends AbstractIteratorTest {
+	public class TreapIteratorTest extends AbstractIteratorTestCase {
 
 		/*
 		 * AbstractIteratorTest

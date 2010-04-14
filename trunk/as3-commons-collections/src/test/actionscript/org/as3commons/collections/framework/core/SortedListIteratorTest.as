@@ -2,14 +2,14 @@ package org.as3commons.collections.framework.core {
 	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.framework.ISortedList;
 	import org.as3commons.collections.mocks.SortedListMock;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.testhelpers.TestComparator;
 	import org.as3commons.collections.units.iterators.IListIteratorTests;
 
 	/**
 	 * @author jes 19.03.2010
 	 */
-	public class SortedListIteratorTest extends AbstractIteratorTest {
+	public class SortedListIteratorTest extends AbstractIteratorTestCase {
 
 		/*
 		 * AbstractIteratorTest

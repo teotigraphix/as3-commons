@@ -6,7 +6,7 @@ package org.as3commons.collections.framework.core {
 	import org.as3commons.collections.framework.core.LinkedNode;
 	import org.as3commons.collections.framework.core.as3commons_collections;
 	import org.as3commons.collections.mocks.LinkedSetMock;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.iterators.ICollectionIteratorStartIndexTests;
 	import org.as3commons.collections.units.iterators.IIteratorInsertionOrderTests;
@@ -15,7 +15,7 @@ package org.as3commons.collections.framework.core {
 	/**
 	 * @author jes 23.03.2010
 	 */
-	public class LinkedSetIteratorTest extends AbstractIteratorTest {
+	public class LinkedSetIteratorTest extends AbstractIteratorTestCase {
 		
 		use namespace as3commons_collections;
 
