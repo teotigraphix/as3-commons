@@ -1,6 +1,6 @@
 package org.as3commons.collections.units {
 	import org.as3commons.collections.framework.ISet;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.ICollectionTests;
 
@@ -9,7 +9,7 @@ package org.as3commons.collections.units {
 	 */
 	public class ISetTests extends ICollectionTests {
 
-		public function ISetTests(test : AbstractCollectionTest) {
+		public function ISetTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 

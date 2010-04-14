@@ -3,13 +3,13 @@ package org.as3commons.collections.framework.core {
 	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.framework.core.as3commons_collections;
 	import org.as3commons.collections.mocks.SetMock;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.units.iterators.ISetIteratorTests;
 
 	/**
 	 * @author jes 23.03.2010
 	 */
-	public class SetIteratorTest extends AbstractIteratorTest {
+	public class SetIteratorTest extends AbstractIteratorTestCase {
 		
 		use namespace as3commons_collections;
 

@@ -1,7 +1,7 @@
 package org.as3commons.collections.units {
 	import org.as3commons.collections.framework.IDuplicates;
 	import org.as3commons.collections.framework.IInsertionOrder;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestComparator;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.IInsertionOrderTests;
@@ -11,7 +11,7 @@ package org.as3commons.collections.units {
 	 */
 	public class IInsertionOrderDuplicatesTests extends IInsertionOrderTests {
 
-		public function IInsertionOrderDuplicatesTests(test : AbstractCollectionTest) {
+		public function IInsertionOrderDuplicatesTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 

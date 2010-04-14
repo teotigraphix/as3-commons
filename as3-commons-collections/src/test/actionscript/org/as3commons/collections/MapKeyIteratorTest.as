@@ -1,12 +1,12 @@
 package org.as3commons.collections {
 	import org.as3commons.collections.framework.IIterator;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.units.iterators.IIteratorTests;
 
 	/**
 	 * @author jes 14.04.2010
 	 */
-	public class MapKeyIteratorTest extends AbstractIteratorTest {
+	public class MapKeyIteratorTest extends AbstractIteratorTestCase {
 
 		/*
 		 * AbstractIteratorTest

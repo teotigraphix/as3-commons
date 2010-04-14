@@ -7,7 +7,7 @@ package org.as3commons.collections.testhelpers {
 	/**
 	 * @author jes 19.03.2010
 	 */
-	public class AbstractSpecialIteratorTest extends AbstractIteratorTest {
+	public class AbstractSpecialIteratorTestCase extends AbstractIteratorTestCase {
 
 		/*
 		 * Test neutralisation

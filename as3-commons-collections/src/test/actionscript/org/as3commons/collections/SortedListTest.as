@@ -2,7 +2,7 @@ package org.as3commons.collections {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.framework.ISortedList;
 	import org.as3commons.collections.mocks.SortedListMock;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestComparator;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.IListTests;
@@ -11,7 +11,7 @@ package org.as3commons.collections {
 	/**
 	 * @author jes 19.03.2010
 	 */
-	public class SortedListTest extends AbstractCollectionTest {
+	public class SortedListTest extends AbstractCollectionTestCase {
 
 		/*
 		 * AbstractCollectionTest

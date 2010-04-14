@@ -4,7 +4,7 @@ package org.as3commons.collections.units.fx {
 	import org.as3commons.collections.framework.IMapIterator;
 	import org.as3commons.collections.fx.events.CollectionEvent;
 	import org.as3commons.collections.fx.events.MapEvent;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.ITestOrder;
 	import org.as3commons.collections.units.ITestSortOrder;
@@ -16,7 +16,7 @@ package org.as3commons.collections.units.fx {
 	 */
 	public class IMapFxTests extends ICollectionFxTests {
 
-		public function IMapFxTests(test : AbstractCollectionTest) {
+		public function IMapFxTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 		

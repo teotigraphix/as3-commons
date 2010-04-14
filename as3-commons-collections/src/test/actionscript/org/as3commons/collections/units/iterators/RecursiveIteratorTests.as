@@ -2,16 +2,16 @@ package org.as3commons.collections.units.iterators {
 	import org.as3commons.collections.ArrayList;
 	import org.as3commons.collections.framework.IList;
 	import org.as3commons.collections.framework.IRecursiveIterator;
-	import org.as3commons.collections.testhelpers.AbstractSpecialIteratorTest;
-	import org.as3commons.collections.testhelpers.AbstractSpecialIteratorUnitTest;
+	import org.as3commons.collections.testhelpers.AbstractSpecialIteratorTestCase;
+	import org.as3commons.collections.testhelpers.AbstractSpecialIteratorUnitTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 
 	/**
 	 * @author jes 19.03.2010
 	 */
-	public class RecursiveIteratorTests extends AbstractSpecialIteratorUnitTest {
+	public class RecursiveIteratorTests extends AbstractSpecialIteratorUnitTestCase {
 
-		public function RecursiveIteratorTests(test : AbstractSpecialIteratorTest) {
+		public function RecursiveIteratorTests(test : AbstractSpecialIteratorTestCase) {
 			super(test);
 		}
 

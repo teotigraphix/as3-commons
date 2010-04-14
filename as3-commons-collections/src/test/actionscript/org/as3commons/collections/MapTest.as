@@ -1,14 +1,14 @@
 package org.as3commons.collections {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.mocks.MapMock;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.UniqueMapKey;
 	import org.as3commons.collections.units.IMapTests;
 
 	/**
 	 * @author jes 23.03.2010
 	 */
-	public class MapTest extends AbstractCollectionTest {
+	public class MapTest extends AbstractCollectionTestCase {
 
 		/*
 		 * AbstractCollectionTest

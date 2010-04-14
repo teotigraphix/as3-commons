@@ -3,7 +3,7 @@ package org.as3commons.collections.framework.core {
 	import org.as3commons.collections.framework.ILinkedList;
 	import org.as3commons.collections.framework.ILinkedListIterator;
 	import org.as3commons.collections.mocks.LinkedListMock;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.units.iterators.ICollectionIteratorTests;
 	import org.as3commons.collections.units.iterators.IIteratorInsertionOrderTests;
 	import org.as3commons.collections.units.iterators.IIteratorNextPreviousLookupTests;
@@ -11,7 +11,7 @@ package org.as3commons.collections.framework.core {
 	/**
 	 * @author jes 19.03.2010
 	 */
-	public class LinkedListIteratorTest extends AbstractIteratorTest {
+	public class LinkedListIteratorTest extends AbstractIteratorTestCase {
 
 		/*
 		 * AbstractIteratorTest

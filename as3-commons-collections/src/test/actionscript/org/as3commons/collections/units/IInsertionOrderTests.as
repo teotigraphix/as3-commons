@@ -1,6 +1,6 @@
 package org.as3commons.collections.units {
 	import org.as3commons.collections.framework.IInsertionOrder;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.NullComparator;
 	import org.as3commons.collections.testhelpers.TestComparator;
 	import org.as3commons.collections.testhelpers.TestItems;
@@ -10,7 +10,7 @@ package org.as3commons.collections.units {
 	 */
 	public class IInsertionOrderTests extends IOrderTests {
 
-		public function IInsertionOrderTests(test : AbstractCollectionTest) {
+		public function IInsertionOrderTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 		

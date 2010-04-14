@@ -1,8 +1,8 @@
 package org.as3commons.collections.units.fx {
 	import org.as3commons.collections.framework.ICollectionFx;
 	import org.as3commons.collections.fx.events.CollectionEvent;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
-	import org.as3commons.collections.testhelpers.AbstractCollectionUnitTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
+	import org.as3commons.collections.testhelpers.AbstractCollectionUnitTestCase;
 	import org.as3commons.collections.testhelpers.CollectionEventListener;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.ITestDuplicates;
@@ -10,9 +10,9 @@ package org.as3commons.collections.units.fx {
 	/**
 	 * @author jes 22.03.2010
 	 */
-	public class IDuplicatesFxTests extends AbstractCollectionUnitTest {
+	public class IDuplicatesFxTests extends AbstractCollectionUnitTestCase {
 
-		public function IDuplicatesFxTests(test : AbstractCollectionTest) {
+		public function IDuplicatesFxTests(test : AbstractCollectionTestCase) {
 			super(test);
 		}
 

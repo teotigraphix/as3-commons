@@ -1,13 +1,13 @@
 package org.as3commons.collections.iterators {
 	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.mocks.ArrayIteratorMock;
-	import org.as3commons.collections.testhelpers.AbstractIteratorTest;
+	import org.as3commons.collections.testhelpers.AbstractIteratorTestCase;
 	import org.as3commons.collections.units.iterators.IListIteratorTests;
 
 	/**
 	 * @author jes 19.03.2010
 	 */
-	public class ArrayIteratorTest extends AbstractIteratorTest {
+	public class ArrayIteratorTest extends AbstractIteratorTestCase {
 
 		/*
 		 * AbstractIteratorTest

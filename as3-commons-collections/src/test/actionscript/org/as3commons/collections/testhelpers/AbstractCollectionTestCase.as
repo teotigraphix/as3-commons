@@ -15,7 +15,7 @@ package org.as3commons.collections.testhelpers {
 	/**
 	 * @author jes 18.03.2010
 	 */
-	public class AbstractCollectionTest extends TestCase {
+	public class AbstractCollectionTestCase extends TestCase {
 		
 		/*
 		 * Test to override

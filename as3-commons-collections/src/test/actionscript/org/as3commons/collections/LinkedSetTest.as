@@ -2,7 +2,7 @@ package org.as3commons.collections {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.framework.IOrderedSet;
 	import org.as3commons.collections.mocks.LinkedSetMock;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.units.IInsertionOrderTests;
 	import org.as3commons.collections.units.ISetTests;
@@ -10,7 +10,7 @@ package org.as3commons.collections {
 	/**
 	 * @author jes 19.03.2010
 	 */
-	public class LinkedSetTest extends AbstractCollectionTest {
+	public class LinkedSetTest extends AbstractCollectionTestCase {
 
 		/*
 		 * AbstractCollectionTest

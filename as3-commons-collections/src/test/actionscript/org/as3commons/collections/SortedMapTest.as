@@ -2,7 +2,7 @@ package org.as3commons.collections {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.framework.ISortedMap;
 	import org.as3commons.collections.mocks.SortedMapMock;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestComparator;
 	import org.as3commons.collections.testhelpers.UniqueMapKey;
 	import org.as3commons.collections.units.IMapTests;
@@ -11,7 +11,7 @@ package org.as3commons.collections {
 	/**
 	 * @author jes 30.03.2010
 	 */
-	public class SortedMapTest extends AbstractCollectionTest {
+	public class SortedMapTest extends AbstractCollectionTestCase {
 
 		/*
 		 * AbstractCollectionTest

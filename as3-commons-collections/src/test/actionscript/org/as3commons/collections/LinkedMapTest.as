@@ -2,7 +2,7 @@ package org.as3commons.collections {
 	import org.as3commons.collections.framework.ICollection;
 	import org.as3commons.collections.framework.IOrderedMap;
 	import org.as3commons.collections.mocks.LinkedMapMock;
-	import org.as3commons.collections.testhelpers.AbstractCollectionTest;
+	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.TestItems;
 	import org.as3commons.collections.testhelpers.UniqueMapKey;
 	import org.as3commons.collections.units.IInsertionOrderDuplicatesTests;
@@ -11,7 +11,7 @@ package org.as3commons.collections {
 	/**
 	 * @author jes 25.03.2010
 	 */
-	public class LinkedMapTest extends AbstractCollectionTest {
+	public class LinkedMapTest extends AbstractCollectionTestCase {
 
 		/*
 		 * AbstractCollectionTest
