@@ -27,7 +27,7 @@ package org.as3commons.serialization.xml
 		public static function registerConverter(converter:Class,type:String,priority:Number=.5):void{
 			
 			if ( hasConverterForTypeName(type) ){
-				trace("Converter already registered with this type: "+type);
+				//trace("Converter already registered with this type: "+type);
 				return;
 			}
 			

@@ -34,7 +34,7 @@ package org.as3commons.serialization.xml
 		 * @param type Class to map XML values to. Be sure to register Aliases for all child types.
 		 * 
 		 */		
-		public function register(nodeName:String,type:Class):void{
+		public function registerAlias(nodeName:String,type:Class):void{
 			XMLAlias.registerClassForNodeName(nodeName,type);
 		}
 		
@@ -48,6 +48,7 @@ package org.as3commons.serialization.xml
 			ConverterRegistery.registerConverter(NumberConverter,"Number",.5);
 			ConverterRegistery.registerConverter(StringConverter,"String",.5);
 			ConverterRegistery.registerConverter(UintConverter,"uint",.5);
+			ConverterRegistery.registerConverter(DateConverter,"Date",.5);
 			
 			//Register reflective converters
 			ConverterRegistery.registerConverter(ReflectionConverter,"*",.2);
@@ -71,11 +72,14 @@ package org.as3commons.serialization.xml
 		
 		
 		//Load and parse convenience functions		
-		private static var _urlLoader:URLLoader;
-		private static var _request:URLRequest;
-		private static var _callbackFunction:Function;
+		private var _urlLoader:URLLoader;
+		private var _request:URLRequest;
+		private var _callbackFunction:Function;
+		private var _urlToLoad:String;
 		
-		public static function loadAndParse(url:String,callbackFunction:Function):void{
+		public function loadAndParse(url:String,callbackFunction:Function):void{
+			
+			_urlToLoad = url;
 			
 			_callbackFunction = callbackFunction;
 			
@@ -84,11 +88,13 @@ package org.as3commons.serialization.xml
 			_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, loadFailHandler);
 			_urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loadFailHandler);
 			
-			_urlLoader.load( new URLRequest(url) );
+			_request =  new URLRequest(_urlToLoad);
+			
+			_urlLoader.load( _request );
 			
 		}
 		
-		private static function loadSuccessHandler(event:Event):void{
+		private function loadSuccessHandler(event:Event):void{
 			
 			var xml:XML = new XML( event.target.data );
 			var converter:XMLConverter = new XMLConverter();		
@@ -99,12 +105,12 @@ package org.as3commons.serialization.xml
 			
 		}
 		
-		private static function loadFailHandler():void{
+		private function loadFailHandler(event:Event):void{
 			cleanUpLoad();
-			trace("XMLToAS could not load data from "+_request.url)
+			trace("XMLToAS could not load data from "+_urlToLoad)
 		}
 		
-		private static function cleanUpLoad():void{
+		private function cleanUpLoad():void{
 			
 			_urlLoader.removeEventListener(Event.COMPLETE, loadSuccessHandler);
 			_urlLoader.removeEventListener(IOErrorEvent.IO_ERROR, loadFailHandler);
