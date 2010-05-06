@@ -1,11 +1,11 @@
 package org.as3commons.reflect {
 import flash.utils.getQualifiedClassName;
 
+import flexunit.framework.Assert;
 import flexunit.framework.TestCase;
 
 import org.as3commons.reflect.testclasses.ComplexClass;
 import org.as3commons.reflect.testclasses.PublicClass;
-import org.flexunit.Assert;
 
 public class TypeCacheTest extends TestCase {
 	

@@ -1,8 +1,8 @@
 package org.as3commons.reflect {
+import flexunit.framework.Assert;
 import flexunit.framework.TestCase;
 
 import org.as3commons.reflect.as3commons_reflect;
-import org.flexunit.Assert;
 
 public class FieldTest extends TestCase {		
 	
