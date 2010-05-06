@@ -72,9 +72,17 @@
 			<id>jes</id>
 			<name>Jens Struwe</name>
 			<email>jens [at] struwe.net</email>
-			<organization>Russischer Bär Software</organization>
+			<organization>Russischer Bï¿½r Software</organization>
 			<organizationUrl>http://sibirjak.com/</organizationUrl>
 			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>alewisohn</id>
+			<name>Andrew Lewisohn</name>
+			<email>alewisohn [at] gmail.com</email>
+			<organization>Arc90, Inc.</organization>
+			<organizationUrl>http://www.arc90.com/</organizationUrl>
+			<timezone>-5</timezone>
 		</developer>
 	</developers>
 
