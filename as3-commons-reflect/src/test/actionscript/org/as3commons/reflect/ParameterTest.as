@@ -38,6 +38,21 @@ package org.as3commons.reflect {
 			assertNull(p.type);
 			assertFalse(p.isOptional);
 		}
-
+		
+		// --------------------------------------------------------------------
+		//
+		// as3commons_reflect
+		//
+		// --------------------------------------------------------------------
+		
+		public function testSetProperties():void {
+			var p:Parameter = new Parameter(1, null, false);
+			p.as3commons_reflect::setIndex(2);
+			p.as3commons_reflect::setIsOptional(true);
+			p.as3commons_reflect::setType(Type.forClass(String));
+			assertEquals(2, p.index);
+			assertEquals(true, p.isOptional);
+			assertEquals(Type.forClass(String), p.type);
+		}
 	}
 }

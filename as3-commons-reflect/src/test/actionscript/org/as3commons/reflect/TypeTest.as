@@ -57,7 +57,7 @@ package org.as3commons.reflect {
 		}
 		
 		public function testClassAlias():void {
-			Type.clearCache();
+			Type.getTypeProvider().clearCache();
 			registerClassAlias("this_is_an_alias",PublicClass);
 			var type:Type = Type.forClass(PublicClass);
 			assertEquals("this_is_an_alias", type.alias);

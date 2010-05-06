@@ -21,40 +21,85 @@
  */
 package org.as3commons.reflect {
 
+/**
+ * Provides information of a parameter passed to a method.
+ *
+ * @author Christophe Herreman
+ * @author Andrew Lewisohn
+ */
+public class Parameter {
+
+	// -------------------------------------------------------------------------
+	//
+	//  Constructor
+	//
+	// -------------------------------------------------------------------------
+	
 	/**
-	 * Provides information of a parameter passed to a method.
+	 * Creates a new <code>Parameter</code> object.
 	 *
-	 * @author Christophe Herreman
+	 * @param index the index of the parameter
+	 * @param type the class type of the parameter
+	 * @param isOptional whether the parameter is optional or not
 	 */
-	public class Parameter {
-		
-		private var _index:int;
-		private var _type:Type;
-		private var _isOptional:Boolean;
-		
-		/**
-		 * Creates a new <code>Parameter</code> object.
-		 *
-		 * @param index the index of the parameter
-		 * @param type the class type of the parameter
-		 * @param isOptional whether the parameter is optional or not
-		 */
-		public function Parameter(index:int, type:Type, isOptional:Boolean = false) {
-			_index = index;
-			_type = type;
-			_isOptional = isOptional;
-		}
-
-		public function get index():int {
-			return _index;
-		}
-
-		public function get type():Type {
-			return _type;
-		}
-
-		public function get isOptional():Boolean {
-			return _isOptional;
-		}
+	public function Parameter(index:int, type:Type, isOptional:Boolean = false) {
+		_index = index;
+		_type = type;
+		_isOptional = isOptional;
 	}
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Properties
+	//
+	// -------------------------------------------------------------------------
+	
+	// ----------------------------
+	// index
+	// ----------------------------
+	
+	private var _index:int;
+	
+	public function get index():int {
+		return _index;
+	}
+	
+	// ----------------------------
+	// isOptional
+	// ----------------------------
+	
+	private var _isOptional:Boolean;
+	
+	public function get isOptional():Boolean {
+		return _isOptional;
+	}
+	
+	// ----------------------------
+	// type
+	// ----------------------------
+	
+	private var _type:Type;
+	
+	public function get type():Type {
+		return _type;
+	}
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Methods: AS3Commons Reflect Internal Use
+	//
+	// -------------------------------------------------------------------------
+	
+	as3commons_reflect function setIndex(value:int):void {
+		_index = value;
+	}
+	
+	as3commons_reflect function setIsOptional(value:Boolean):void {
+		_isOptional = value;
+	}
+	
+	as3commons_reflect function setType(value:Type):void {
+		_type = value;
+	}
+}
 }

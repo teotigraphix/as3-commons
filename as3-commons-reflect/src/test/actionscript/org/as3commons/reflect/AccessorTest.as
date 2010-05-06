@@ -93,6 +93,19 @@ package org.as3commons.reflect {
 		
 		// --------------------------------------------------------------------
 		//
+		// as3commons_reflect
+		//
+		// --------------------------------------------------------------------
+		
+		public function testSetProperties():void {
+			var accessor:Accessor = newAccessor(AccessorAccess.READ_ONLY);
+			assertFalse(accessor.isWriteable());
+			accessor.as3commons_reflect::setAccess(AccessorAccess.READ_WRITE);
+			assertTrue(accessor.isWriteable());
+		}
+		
+		// --------------------------------------------------------------------
+		//
 		// Private Methods
 		//
 		// --------------------------------------------------------------------

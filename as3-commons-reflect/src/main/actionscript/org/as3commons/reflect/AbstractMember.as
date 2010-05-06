@@ -20,67 +20,142 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
-	import flash.system.ApplicationDomain;
+
+/**
+ * Abstract base class for members of a <code>class</object>.
+ *
+ * @author Christophe Herreman
+ * @author Andrew Lewisohn
+ */
+public class AbstractMember extends MetaDataContainer implements IMember, INamespaceOwner {
+
+	// -------------------------------------------------------------------------
+	//
+	//  Variables
+	//
+	// -------------------------------------------------------------------------
 	
-
 	/**
-	 * Abstract base class for members of a <code>class</object>.
-	 *
-	 * @author Christophe Herreman
+	 * @private
+	 * Stores the string name of the declaringType impl.
 	 */
-	public class AbstractMember extends MetaDataContainer implements IMember, INamespaceOwner {
-
-		private var _name:String;
-		private var _type:String;
-		private var _declaringType:String;
-		private var _isStatic:Boolean;
-		private var _applicationDomain:ApplicationDomain;
-
-		/**
-		 * Creates a new AbstractMember object.
-		 *
-		 * @param name the name of the member
-		 * @param type the type of the member
-		 * @param declaringType the type that declares the member
-		 * @param isStatic whether this member is static
-		 * @param metadata an array of MetaData objects describing this member
-		 */
-		public function AbstractMember(name:String, type:String, declaringType:String, isStatic:Boolean, metaData:Array = null) {
-			super(metaData);
-			_name = name;
-			_type = type;
-			_declaringType = declaringType;
-			_isStatic = isStatic;
-		}
-
-		// ----------------------------
-		// namespaceURI
-		// ----------------------------
-		
-		private var _namespaceURI:String;
-		public function get namespaceURI():String {
-			return _namespaceURI;
-		}
-		public function set namespaceURI(value:String):void {
-			_namespaceURI = value;
-		}
-		
-		public function get declaringType():Type {
-			return Type.forName(_declaringType);
-		}
-
-		public function get name():String {
-			return _name;
-		}
-
-		public function get type():Type {
-			return Type.forName(_type, declaringType.applicationDomain);
-		}
-
-		public function get isStatic():Boolean {
-			return _isStatic;
-		}
-
-		
+	private var declaringTypeName:String;
+	
+	/**
+	 * @private
+	 * Stores the string name of the type impl.
+	 */
+	private var typeName:String;
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Constructor
+	//
+	// -------------------------------------------------------------------------
+	
+	/**
+	 * Creates a new AbstractMember object.
+	 *
+	 * @param name the name of the member
+	 * @param type the type of the member
+	 * @param declaringType the type that declares the member
+	 * @param isStatic whether this member is static
+	 * @param metadata an array of MetaData objects describing this member
+	 */
+	public function AbstractMember(name:String, type:String, declaringType:String, isStatic:Boolean, metaData:Array = null) {
+		super(metaData);
+		_name = name;
+		_isStatic = isStatic;
+		typeName = type;
+		declaringTypeName = declaringType;
 	}
+
+	// -------------------------------------------------------------------------
+	//
+	//  Properties
+	//
+	// -------------------------------------------------------------------------
+	
+	// ----------------------------
+	// declaringType
+	// ----------------------------
+
+	private var _declaringType:Type;
+	
+	public function get declaringType():Type {
+		if(_declaringType == null) {
+			_declaringType = Type.forName(declaringTypeName);
+		}
+		return _declaringType;
+	}
+	
+	// ----------------------------
+	// isStatic
+	// ----------------------------
+	
+	private var _isStatic:Boolean;
+	
+	public function get isStatic():Boolean {
+		return _isStatic;
+	}
+	
+	// ----------------------------
+	// name
+	// ----------------------------
+	
+	private var _name:String;
+	
+	public function get name():String {
+		return _name;
+	}
+
+	// ----------------------------
+	// namespaceURI
+	// ----------------------------
+	
+	private var _namespaceURI:String;
+	
+	public function get namespaceURI():String {
+		return _namespaceURI;
+	}
+	
+	// ----------------------------
+	// type
+	// ----------------------------
+	
+	private var _type:Type;
+	
+	public function get type():Type {
+		if(_type == null) {
+			_type = Type.forName(typeName, declaringType.applicationDomain);
+		}
+		return _type;
+	}
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Methods: AS3Commons Reflect Internal Use
+	//
+	// -------------------------------------------------------------------------
+	
+	as3commons_reflect function setDeclaringType(value:Type):void {
+		_declaringType = value;
+	}
+	
+	as3commons_reflect function setIsStatic(value:Boolean):void {
+		_isStatic = value;
+	}
+	
+	as3commons_reflect function setName(value:String):void {
+		_name = value;
+	}
+	
+	as3commons_reflect function setNamespaceURI(value:String):void {
+		_namespaceURI = value;
+	}
+	
+	as3commons_reflect function setType(value:Type):void {
+		_type = value;
+	}
+}
 }

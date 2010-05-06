@@ -21,46 +21,73 @@
  */
 package org.as3commons.reflect {
 
-	import org.as3commons.reflect.testclasses.PublicClass;
+import flexunit.framework.TestCase;
 
-	import flexunit.framework.TestCase;
+import org.as3commons.reflect.testclasses.PublicClass;
 
-	/**
-	 * @author Christophe Herreman
-	 */
-	public class MethodTest extends TestCase {
+/**
+ * @author Christophe Herreman
+ */
+public class MethodTest extends TestCase {
 
-		public function MethodTest(methodName:String = null) {
-			super(methodName);
-		}
+	public function MethodTest(methodName:String = null) {
+		super(methodName);
+	}
 
-		public function testInvoke():void {
+	public function testInvoke():void {
 
-			/*var a = getQualifiedClassName(this);
-			var b = getQualifiedClassName(String);
-			var c = getQualifiedClassName(MethodTest);
-			var d = getQualifiedSuperclassName(this);
-			var e = getQualifiedSuperclassName(MethodTest);*/
+		/*var a = getQualifiedClassName(this);
+		var b = getQualifiedClassName(String);
+		var c = getQualifiedClassName(MethodTest);
+		var d = getQualifiedSuperclassName(this);
+		var e = getQualifiedSuperclassName(MethodTest);*/
 
-			var instance:PublicClass = new PublicClass();
-			var type:Type = Type.forInstance(instance);
+		var instance:PublicClass = new PublicClass();
+		var type:Type = Type.forInstance(instance);
 
-			for each (var method:Method in type.methods) {
-				if ("method1" == method.name) {
-					method.invoke(instance, null);
-					assertEquals(Type.VOID, method.returnType);
-				}
-				if ("method5" == method.name) {
-					method.invoke(instance, [1, 2, 3, "four", 5, true, ["a", "b"]]);
-					assertEquals(Type.UNTYPED, method.returnType);
-				}
-				if ("method6" == method.name) {
-					var m6result:uint = method.invoke(instance, ["test", 7, false]);
-					assertEquals(25, m6result);
-					assertEquals(uint, method.returnType.clazz);
-				}
+		for each (var method:Method in type.methods) {
+			if ("method1" == method.name) {
+				method.invoke(instance, null);
+				assertEquals(Type.VOID, method.returnType);
 			}
-
+			if ("method5" == method.name) {
+				method.invoke(instance, [1, 2, 3, "four", 5, true, ["a", "b"]]);
+				assertEquals(Type.UNTYPED, method.returnType);
+			}
+			if ("method6" == method.name) {
+				var m6result:uint = method.invoke(instance, ["test", 7, false]);
+				assertEquals(25, m6result);
+				assertEquals(uint, method.returnType.clazz);
+			}
 		}
 	}
+	
+	// --------------------------------------------------------------------
+	//
+	// as3commons_reflect
+	//
+	// --------------------------------------------------------------------
+	
+	public function testSetProperties():void {
+		var instance:PublicClass = new PublicClass();
+		var type:Type = Type.forInstance(instance);
+		var method:Method = type.methods[0];
+		
+		method.as3commons_reflect::setDeclaringType(Type.forClass(Number));
+		method.as3commons_reflect::setIsStatic(true);
+		method.as3commons_reflect::setName("renamed");
+		method.as3commons_reflect::setNamespaceURI("org.as3commons.reflect.testclasses");
+		method.as3commons_reflect::setParameters([]);
+		method.as3commons_reflect::setReturnType(Type.VOID);
+		method.as3commons_reflect::setFullName("org.as3commons.reflect.testclasses.PublicClass:renamed");
+		
+		assertEquals(Type.forClass(Number), method.declaringType);
+		assertTrue(method.isStatic);
+		assertEquals("renamed", method.name);
+		assertEquals("org.as3commons.reflect.testclasses", method.namespaceURI);
+		assertTrue(method.parameters.length == 0);
+		assertEquals(Type.VOID, method.returnType);
+		assertEquals("org.as3commons.reflect.testclasses.PublicClass:renamed", method.fullName);
+	}
+}
 }

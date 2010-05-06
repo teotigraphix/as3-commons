@@ -21,84 +21,195 @@
  */
 package org.as3commons.reflect {
 
+/**
+ * Provides information about a single method of a class or interface.
+ *
+ * @author Christophe Herreman
+ * @author Andrew Lewisohn
+ */
+public class Method extends MetaDataContainer implements INamespaceOwner {
+
+	// -------------------------------------------------------------------------
+	//
+	//  Variables
+	//
+	// -------------------------------------------------------------------------
 	
-
 	/**
-	 * Provides information about a single method of a class or interface.
-	 *
-	 * @author Christophe Herreman
+	 * If <code>true</code>, the value of fullName should be regenerated.
 	 */
-	public class Method extends MetaDataContainer implements INamespaceOwner {
+	private var updateFullName:Boolean = true;
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Constructor
+	//
+	// -------------------------------------------------------------------------
+	
+	/**
+	 * Creates a new <code>Method</code> instance.
+	 */
+	public function Method(declaringType:Type, name:String, isStatic:Boolean, parameters:Array, returnType:*, metaData:Array = null) {
+		super(metaData);
+		_declaringType = declaringType;
+		_name = name;
+		_isStatic = isStatic;
+		_parameters = parameters;
+		_returnType = returnType;
+	}
 
-		/**
-		 * Creates a new <code>Method</code> instance.
-		 */
-		public function Method(declaringType:Type, name:String, isStatic:Boolean, parameters:Array, returnType:*, metaData:Array = null) {
-			super(metaData);
-			_declaringType = declaringType;
-			_name = name;
-			_isStatic = isStatic;
-			_parameters = parameters;
-			_returnType = returnType;
-		}
-
-		/**
-		 * Invokes (calls) the method represented by this <code>Method</code>
-		 * instance of the given <code>target</code> object with the passed in
-		 * arguments.
-		 *
-		 * @param target the object on which to invoke the method
-		 * @param args the arguments that will be passed along the method call
-		 * @return the result of the method invocation, if any
-		 */
-		public function invoke(target:*, args:Array):* {
-			var invoker:MethodInvoker = new MethodInvoker();
-			invoker.target = target;
-			invoker.method = name;
-			invoker.arguments = args;
-			return invoker.invoke();
-		}
-
-		public function get declaringType():Type { return _declaringType; };
-		public function get name():String { return _name; };
-		public function get isStatic():Boolean { return _isStatic; };
-		public function get parameters():Array { return _parameters; };
-		public function get returnType():Type { return _returnType; };
-
-		public function get fullName():String {
-			var result:String = "public ";
-			if (isStatic) result += "static ";
-			result += name + "(";
+	// -------------------------------------------------------------------------
+	//
+	//  Properties
+	//
+	// -------------------------------------------------------------------------
+	
+	// ----------------------------
+	// declaringType
+	// ----------------------------
+	
+	private var _declaringType:Type;
+	
+	public function get declaringType():Type { 
+		return _declaringType; 
+	}
+	
+	// ----------------------------
+	// fullName
+	// ----------------------------
+	
+	private var _fullName:String;
+	
+	public function get fullName():String {
+		if(updateFullName) {
+			_fullName = "public ";
+			if (isStatic) _fullName += "static ";
+			_fullName += name + "(";
 			for (var i:int=0; i<parameters.length; i++) {
 				var p:Parameter = parameters[i] as Parameter;
-				result += p.type.name;
-				result += (i < (parameters.length-1)) ? ", " : "";
+				_fullName += p.type.name;
+				_fullName += (i < (parameters.length-1)) ? ", " : "";
 			}
-			result += "):" + returnType.name;
-			return result;
+			_fullName += "):" + returnType.name;
+			updateFullName = false;
 		}
-		
-		// ----------------------------
-		// namespaceURI
-		// ----------------------------
-		
-		private var _namespaceURI:String;
-		public function get namespaceURI():String {
-			return _namespaceURI;
-		}
-		public function set namespaceURI(value:String):void {
-			_namespaceURI = value;
-		}
-
-		public function toString():String {
-			return "[Method(name:'" + name + "', isStatic:" + isStatic + ")]";
-		}
-
-		private var _declaringType:Type;
-		private var _name:String;
-		private var _isStatic:Boolean;
-		private var _parameters:Array;
-		private var _returnType:Type;
-
+		return _fullName;
 	}
+	
+	// ----------------------------
+	// isStatic
+	// ----------------------------
+	
+	private var _isStatic:Boolean;
+	
+	public function get isStatic():Boolean { 
+		return _isStatic; 
+	}
+	
+	// ----------------------------
+	// name
+	// ----------------------------
+	
+	private var _name:String;
+	
+	public function get name():String { 
+		return _name; 
+	}
+	
+	// ----------------------------
+	// namespaceURI
+	// ----------------------------
+	
+	private var _namespaceURI:String;
+	
+	public function get namespaceURI():String {
+		return _namespaceURI;
+	}
+	
+	// ----------------------------
+	// parameters
+	// ----------------------------
+	
+	private var _parameters:Array;
+	
+	public function get parameters():Array { 
+		return _parameters; 
+	}
+	
+	// ----------------------------
+	// returnType
+	// ----------------------------
+	
+	private var _returnType:Type;
+	
+	public function get returnType():Type { 
+		return _returnType; 
+	}
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Methods
+	//
+	// -------------------------------------------------------------------------
+	
+	/**
+	 * Invokes (calls) the method represented by this <code>Method</code>
+	 * instance of the given <code>target</code> object with the passed in
+	 * arguments.
+	 *
+	 * @param target the object on which to invoke the method
+	 * @param args the arguments that will be passed along the method call
+	 * @return the result of the method invocation, if any
+	 */
+	public function invoke(target:*, args:Array):* {
+		var invoker:MethodInvoker = new MethodInvoker();
+		invoker.target = target;
+		invoker.method = name;
+		invoker.arguments = args;
+		return invoker.invoke();
+	}
+	
+	public function toString():String {
+		return "[Method(name:'" + name + "', isStatic:" + isStatic + ")]";
+	}
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Methods: AS3Commons Reflect Internal Use
+	//
+	// -------------------------------------------------------------------------
+	
+	as3commons_reflect function setDeclaringType(value:Type):void {
+		_declaringType = value;
+	}
+	
+	as3commons_reflect function setFullName(value:String):void {
+		_fullName = value;
+		updateFullName = false;
+	}
+	
+	as3commons_reflect function setIsStatic(value:Boolean):void {
+		_isStatic = value;
+	}
+	
+	as3commons_reflect function setName(value:String):void {
+		_name = value;
+		updateFullName = true;
+	}
+	
+	as3commons_reflect function setNamespaceURI(value:String):void {
+		_namespaceURI = value;
+	}
+	
+	as3commons_reflect function setParameters(value:Array):void {
+		_parameters = value;
+		updateFullName = true;
+	}
+	
+	as3commons_reflect function setReturnType(value:Type):void {
+		_returnType = value;
+		updateFullName = true;
+	}
+	
+}
 }
