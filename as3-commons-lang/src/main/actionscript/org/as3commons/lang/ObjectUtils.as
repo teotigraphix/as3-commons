@@ -190,5 +190,22 @@ package org.as3commons.lang {
 		public static function getFullyQualifiedClassName(object:Object, replaceColons:Boolean = false):String {
 			return ClassUtils.getFullyQualifiedName(ClassUtils.forInstance(object), replaceColons);
 		}
+		
+		/**
+		 * Returns an object iterator
+		 */
+		public static function getIterator(instance:Object):IIterator {
+			var name:String = getFullyQualifiedClassName(instance);
+			var keys:XMLList; 
+			
+			if((keys = ObjectIterator.getDescription(name)) == null) {
+				var description:XML = describeType(instance);
+				keys = description.descendants("variable").@name 
+					+ description.descendants("accessor").(@access == "readwrite").@name;
+				ObjectIterator.setDescription(name, keys);
+			}
+			
+			return new ObjectIterator(instance, keys);;
+		}
 	}
 }
