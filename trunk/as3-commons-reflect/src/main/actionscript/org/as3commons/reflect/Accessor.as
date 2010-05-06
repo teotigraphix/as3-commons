@@ -20,67 +20,107 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+
+/**
+ * A member defined by getter and setter functions.
+ *
+ * @author Christophe Herreman
+ * @author Andrew Lewisohn
+ *
+ * @see AccessorAccess
+ */
+public class Accessor extends Field {
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Constructor
+	//
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Creates a new <code>Accessor</code> instance.
+	 *
+	 * @param name the name of the variable
+	 * @param access the access of the accessor
+	 * @param type the data type of the variable
+	 * @param declaringType the type that declares the variable
+	 * @param isStatic whether or not this member is static (class member)
+	 */
+	public function Accessor(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, metaData:Array = null) {
+		super(name, type, declaringType, isStatic, metaData);
+		_access = access;
+	}
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Properties
+	//
+	// -------------------------------------------------------------------------
+	
+	// ----------------------------
+	// access
+	// ----------------------------
+	
+	private var _access:AccessorAccess;
+	
+	public function get access():AccessorAccess {
+		return _access;
+	}
+	
+	// ----------------------------
+	// readable
+	// ----------------------------
 	
 	/**
-	 * A member defined by getter and setter functions.
-	 *
-	 * @author Christophe Herreman
-	 *
-	 * @see AccessorAccess
+	 * @return <code>true</code> if the accessor can be used to read the value (the "get" accessor is present),
+	 * <code>false</code> otherwise. This property is the same as the isReadable method.
 	 */
-	public class Accessor extends Field {
-		
-		private var _access:AccessorAccess;
-		
-		/**
-		 * Creates a new <code>Accessor</code> instance.
-		 *
-		 * @param name the name of the variable
-		 * @param access the access of the accessor
-		 * @param type the data type of the variable
-		 * @param declaringType the type that declares the variable
-		 * @param isStatic whether or not this member is static (class member)
-		 */
-		public function Accessor(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, metaData:Array = null) {
-			super(name, type, declaringType, isStatic, metaData);
-			_access = access;
-		}
-		
-		public function get access():AccessorAccess {
-			return _access;
-		}
-		
-		/**
-		 * @return <code>true</code> if the accessor can be used to read the value (the "get" accessor is present),
-		 * <code>false</code> otherwise. This property is the same as the isReadable method.
-		 */
-		public function get readable():Boolean {
-			return isReadable();
-		}
-		
-		/**
-		 * @return <code>true</code> if the accessor can be used to read the value (the "set" accessor is present),
-		 * <code>false</code> otherwise. This property is the same as the isWriteable method.
-		 */
-		public function get writeable():Boolean {
-			return isWriteable();
-		}
-		
-		/**
-		 * @return <code>true</code> if the accessor can be used to read the value (the "get" accessor is present),
-		 * <code>false</code> otherwise.
-		 */
-		public function isReadable():Boolean {
-			return (_access == AccessorAccess.READ_ONLY || _access == AccessorAccess.READ_WRITE);
-		}
-		
-		/**
-		 * @return <code>true</code> if the accessor can be used to read the value (the "set" accessor is present),
-		 * <code>false</code> otherwise.
-		 */
-		public function isWriteable():Boolean {
-			return (_access == AccessorAccess.WRITE_ONLY || _access == AccessorAccess.READ_WRITE);
-		}
-	
+	public function get readable():Boolean {
+		return isReadable();
 	}
+	
+	// ----------------------------
+	// writeable
+	// ----------------------------
+	
+	/**
+	 * @return <code>true</code> if the accessor can be used to read the value (the "set" accessor is present),
+	 * <code>false</code> otherwise. This property is the same as the isWriteable method.
+	 */
+	public function get writeable():Boolean {
+		return isWriteable();
+	}
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Methods
+	//
+	// -------------------------------------------------------------------------
+	
+	/**
+	 * @return <code>true</code> if the accessor can be used to read the value (the "get" accessor is present),
+	 * <code>false</code> otherwise.
+	 */
+	public function isReadable():Boolean {
+		return (_access == AccessorAccess.READ_ONLY || _access == AccessorAccess.READ_WRITE);
+	}
+	
+	/**
+	 * @return <code>true</code> if the accessor can be used to read the value (the "set" accessor is present),
+	 * <code>false</code> otherwise.
+	 */
+	public function isWriteable():Boolean {
+		return (_access == AccessorAccess.WRITE_ONLY || _access == AccessorAccess.READ_WRITE);
+	}
+	
+	// -------------------------------------------------------------------------
+	//
+	//  Methods: AS3Commons Reflect Internal Use
+	//
+	// -------------------------------------------------------------------------
+	
+	as3commons_reflect function setAccess(value:AccessorAccess):void {
+		_access = value;
+	}
+}
 }

@@ -22,11 +22,9 @@
 package org.as3commons.reflect {
 	
 	import flash.system.ApplicationDomain;
-	import flash.utils.describeType;
 	
 	import org.as3commons.lang.ClassNotFoundError;
 	import org.as3commons.lang.ClassUtils;
-	import org.as3commons.lang.SoftReference;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
 	
@@ -53,6 +51,7 @@ package org.as3commons.reflect {
 	 *
 	 * @author Christophe Herreman
 	 * @author Martino Piccinato
+	 * @author Andrew Lewisohn
 	 */
 	public class Type extends MetaDataContainer {
 		
@@ -62,9 +61,9 @@ package org.as3commons.reflect {
 		
 		public static const PRIVATE:Type = new Type(ApplicationDomain.currentDomain);
 		
-		private static var _cache:Object = {};
-		
 		private static var logger:ILogger = LoggerFactory.getClassLogger(Type);
+		
+		private static var typeProvider:ITypeProvider;
 		
 		// --------------------------------------------------------------------
 		//
@@ -109,8 +108,8 @@ package org.as3commons.reflect {
 					break;
 				default:
 					try {
-						if (_cache[name]) {
-							result = _cache[name];
+						if (getTypeProvider().getTypeCache().contains(name)) {
+							result = getTypeProvider().getTypeCache().get(name);
 						} else {
 							result = Type.forClass(org.as3commons.lang.ClassUtils.forName(name, applicationDomain), applicationDomain);
 						}
@@ -133,124 +132,23 @@ package org.as3commons.reflect {
 			var result:Type;
 			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(clazz);
 			
-			if (_cache[fullyQualifiedClassName]) {
-				result = _cache[fullyQualifiedClassName];
+			if (getTypeProvider().getTypeCache().contains(fullyQualifiedClassName)) {
+				result = getTypeProvider().getTypeCache().get(fullyQualifiedClassName);
 			} else {
-				result = new Type(applicationDomain);
-				
-				// Add the Type to the cache before assigning any values to prevent looping.
-				// Due to the work-around implemented for constructor argument types
-				// in getTypeDescription(), an instance is created, which could also
-				// lead to infinite recursion if the constructor uses Type.forName().
-				// Therefore it is important to seed the cache before calling
-				// getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
-				_cache[fullyQualifiedClassName] = result;
-				var description:XML = getTypeDescription(clazz);
-				result.fullName = fullyQualifiedClassName;
-				result.name = org.as3commons.lang.ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
-				result.clazz = clazz;
-				result.isDynamic = description.@isDynamic;
-				result.isFinal = description.@isFinal;
-				result.isStatic = description.@isStatic;
-				result.alias = description.@alias;
-				result.isInterface = (clazz === Object) ? false : (description.factory.extendsClass.length() == 0);
-				result.constructor = TypeXmlParser.parseConstructor(result, description.factory.constructor, applicationDomain);
-				result.accessors = TypeXmlParser.parseAccessors(result, description);
-				result.methods = TypeXmlParser.parseMethods(result, description, applicationDomain);
-				result.staticConstants = TypeXmlParser.parseMembers(Constant, description.constant, fullyQualifiedClassName, true);
-				result.constants = TypeXmlParser.parseMembers(Constant, description.factory.constant, fullyQualifiedClassName, false);
-				result.staticVariables = TypeXmlParser.parseMembers(Variable, description.variable, fullyQualifiedClassName, true);
-				result.variables = TypeXmlParser.parseMembers(Variable, description.factory.variable, fullyQualifiedClassName, false);
-				result.extendsClasses = TypeXmlParser.parseExtendsClasses(description.factory.extendsClass, result.applicationDomain);
-				TypeXmlParser.parseMetaData(description.factory[0].metadata, result);
-				
-				// Combine metadata from implemented interfaces
-				var interfaces:Array = org.as3commons.lang.ClassUtils.getImplementedInterfaces(result.clazz, applicationDomain);
-				var numInterfaces:int = interfaces.length;
-				
-				for (var i:int = 0; i < numInterfaces; i++) {
-					var interfaze:Type = Type.forClass(interfaces[i], applicationDomain);
-					concatMetadata(result, interfaze.methods, "methods");
-					concatMetadata(result, interfaze.accessors, "accessors");
-					var interfaceMetaData:Array = interfaze.metaData;
-					var numMetaData:int = interfaceMetaData.length;
-					
-					for (var j:int = 0; j < numMetaData; j++) {
-						result.addMetaData(interfaceMetaData[j]);
-					}
-				}
+				result = getTypeProvider().getType(clazz, applicationDomain);
 			}
 			
 			return result;
 		}
-
-		/**
-		 * Clears the cache of Type objects.
-		 */
-		public static function clearCache():void {
-			_cache = {};
-		}
-
-		/**
-		 *
-		 */
-		private static function concatMetadata(type:Type, metaDataContainers:Array, propertyName:String):void {
-			for each (var container:IMetaDataContainer in metaDataContainers) {
-				type[propertyName].some(function(item:Object, index:int, arr:Array):Boolean {
-						if (item.name == Object(container).name) {
-							var metaDataList:Array = container.metaData;
-							var numMetaData:int = metaDataList.length;
-							
-							for (var j:int = 0; j < numMetaData; j++) {
-								item.addMetaData(metaDataList[j]);
-							}
-							return true;
-						}
-						return false;
-					});
-			}
-		}
 		
 		/**
-		 * Get XML clazz description as given by flash.utils.describeType
-		 * using a workaround for bug http://bugs.adobe.com/jira/browse/FP-183
-		 * that in certain cases do not allow to retrieve complete constructor
-		 * description.
+		 *  
 		 */
-		private static function getTypeDescription(clazz:Class):XML {
-			var description:XML = describeType(clazz);
-
-			// Workaround for bug http://bugs.adobe.com/jira/browse/FP-183
-			var constructorXML:XMLList = description.factory.constructor;
-			
-			if (constructorXML && constructorXML.length() > 0) {
-				var parametersXML:XMLList = constructorXML[0].parameter;
-				
-				if (parametersXML && parametersXML.length() > 0) {
-					// Instantiate class with all null arguments.
-					var args:Array = [];
-					
-					for (var n:int = 0; n < parametersXML.length(); n++) {
-						args.push(null);
-					}
-					
-					// As the constructor may throw Errors on null arguments arguments 
-					// surround it with a try/catch block
-					try {
-						org.as3commons.lang.ClassUtils.newInstance(clazz, args);
-					} catch (e:Error) {
-						// Logging is set to debug level as any Error ocurring here shouldn't 
-						// cause any problem to the application
-						// CH: not sure if we should log this as it seems be causing confusion to users, disabling for now
-						/*logger.debug("Error while instantiating class {0} with null arguments in order to retrieve constructor argument types: {1}, {2}" +
-									 "\nMessage: {3}" + "\nStack trace: {4}", clazz, e.name, e.errorID, e.message, e.getStackTrace());*/
-					}
-					
-					description = describeType(clazz);
-				}
+		public static function getTypeProvider():ITypeProvider {
+			if(typeProvider == null) {
+				typeProvider = new TypeXmlParser();
 			}
-			
-			return description;
+			return typeProvider;
 		}
 		
 		// --------------------------------------------------------------------
@@ -696,21 +594,110 @@ import flash.system.ApplicationDomain;
 import org.as3commons.lang.ClassUtils;
 import org.as3commons.reflect.Accessor;
 import org.as3commons.reflect.AccessorAccess;
+import org.as3commons.reflect.Constant;
 import org.as3commons.reflect.Constructor;
 import org.as3commons.reflect.IMember;
 import org.as3commons.reflect.IMetaDataContainer;
 import org.as3commons.reflect.INamespaceOwner;
+import org.as3commons.reflect.ITypeProvider;
 import org.as3commons.reflect.MetaData;
 import org.as3commons.reflect.MetaDataArgument;
 import org.as3commons.reflect.Method;
 import org.as3commons.reflect.Parameter;
+import org.as3commons.reflect.ReflectionUtils;
 import org.as3commons.reflect.Type;
+import org.as3commons.reflect.TypeCache;
+import org.as3commons.reflect.Variable;
+import org.as3commons.reflect.as3commons_reflect;
 
 /**
  * Internal xml parser
  */
-internal class TypeXmlParser {
-	public static function parseConstructor(type:Type, constructorXML:XMLList, applicationDomain:ApplicationDomain):Constructor {
+internal class TypeXmlParser implements ITypeProvider {
+
+	private static var typeCache:TypeCache = new TypeCache();
+	
+	public function getTypeCache():TypeCache {
+		return typeCache;
+	}
+	
+	public function clearCache():void {
+		typeCache.clear();
+	}
+	
+	/**
+	 *
+	 */
+	private function concatMetadata(type:Type, metaDataContainers:Array, propertyName:String):void {
+		for each (var container:IMetaDataContainer in metaDataContainers) {
+			type[propertyName].some(function(item:Object, index:int, arr:Array):Boolean {
+				if (item.name == Object(container).name) {
+					var metaDataList:Array = container.metaData;
+					var numMetaData:int = metaDataList.length;
+					
+					for (var j:int = 0; j < numMetaData; j++) {
+						item.addMetaData(metaDataList[j]);
+					}
+					return true;
+				}
+				return false;
+			});
+		}
+	}
+	
+	public function getType(cls:Class, applicationDomain:ApplicationDomain):Type {
+		var type:Type = new Type(applicationDomain);
+		var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(cls);
+		
+		// Add the Type to the cache before assigning any values to prevent looping.
+		// Due to the work-around implemented for constructor argument types
+		// in getTypeDescription(), an instance is created, which could also
+		// lead to infinite recursion if the constructor uses Type.forName().
+		// Therefore it is important to seed the cache before calling
+		// getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
+		typeCache.put(fullyQualifiedClassName, type);
+		var description:XML = ReflectionUtils.getTypeDescription(cls);
+		type.fullName = fullyQualifiedClassName;
+		type.name = ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
+		type.clazz = cls;
+		type.isDynamic = description.@isDynamic;
+		type.isFinal = description.@isFinal;
+		type.isStatic = description.@isStatic;
+		type.alias = description.@alias;
+		type.isInterface = (cls === Object) ? false : (description.factory.extendsClass.length() == 0);
+		type.constructor = parseConstructor(type, description.factory.constructor, applicationDomain);
+		type.accessors = parseAccessors(type, description);
+		type.methods = parseMethods(type, description, applicationDomain);
+		type.staticConstants = parseMembers(Constant, description.constant, fullyQualifiedClassName, true);
+		type.constants = parseMembers(Constant, description.factory.constant, fullyQualifiedClassName, false);
+		type.staticVariables = parseMembers(Variable, description.variable, fullyQualifiedClassName, true);
+		type.variables = parseMembers(Variable, description.factory.variable, fullyQualifiedClassName, false);
+		type.extendsClasses = parseExtendsClasses(description.factory.extendsClass, type.applicationDomain);
+		parseMetaData(description.factory[0].metadata, type);
+		
+		// Combine metadata from implemented interfaces
+		var interfaces:Array = org.as3commons.lang.ClassUtils.getImplementedInterfaces(type.clazz, applicationDomain);
+		var numInterfaces:int = interfaces.length;
+		
+		for (var i:int = 0; i < numInterfaces; i++) {
+			var interfaze:Type = Type.forClass(interfaces[i], applicationDomain);
+			concatMetadata(type, interfaze.methods, "methods");
+			concatMetadata(type, interfaze.accessors, "accessors");
+			var interfaceMetaData:Array = interfaze.metaData;
+			var numMetaData:int = interfaceMetaData.length;
+			
+			for (var j:int = 0; j < numMetaData; j++) {
+				type.addMetaData(interfaceMetaData[j]);
+			}
+		}
+		
+		return type;
+	}
+	
+	/**
+	 *
+	 */
+	private function parseConstructor(type:Type, constructorXML:XMLList, applicationDomain:ApplicationDomain):Constructor {
 		if (constructorXML.length() > 0) {
 			var params:Array = parseParameters(constructorXML[0].parameter, applicationDomain);
 			return new Constructor(type, params);
@@ -719,25 +706,34 @@ internal class TypeXmlParser {
 		}
 	}
 	
-	public static function parseMethods(type:Type, xml:XML, applicationDomain:ApplicationDomain):Array {
+	/**
+	 *
+	 */
+	private function parseMethods(type:Type, xml:XML, applicationDomain:ApplicationDomain):Array {
 		var classMethods:Array = parseMethodsByModifier(type, xml.method, true, applicationDomain);
 		var instanceMethods:Array = parseMethodsByModifier(type, xml.factory.method, false, applicationDomain);
 		return classMethods.concat(instanceMethods);
 	}
 	
-	public static function parseAccessors(type:Type, xml:XML):Array {
+	/**
+	 *
+	 */
+	private function parseAccessors(type:Type, xml:XML):Array {
 		var classAccessors:Array = parseAccessorsByModifier(type, xml.accessor, true);
 		var instanceAccessors:Array = parseAccessorsByModifier(type, xml.factory.accessor, false);
 		return classAccessors.concat(instanceAccessors);
 	}
 	
-	public static function parseMembers(memberClass:Class, members:XMLList, declaringType:String, isStatic:Boolean):Array {
+	/**
+	 *
+	 */
+	private function parseMembers(memberClass:Class, members:XMLList, declaringType:String, isStatic:Boolean):Array {
 		var result:Array = [];
 		
 		for each (var m:XML in members) {
 			var member:IMember = new memberClass(m.@name, m.@type.toString(), declaringType, isStatic);
 			if (member is INamespaceOwner) {
-				INamespaceOwner(member).namespaceURI = m.@uri;
+				INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.@uri);
 			}
 			parseMetaData(m.metadata, member);
 			result.push(member);
@@ -745,7 +741,10 @@ internal class TypeXmlParser {
 		return result;
 	}
 	
-	public static function parseExtendsClasses(extendedClasses:XMLList, applicationDomain:ApplicationDomain):Array {
+	/**
+	 *
+	 */
+	private function parseExtendsClasses(extendedClasses:XMLList, applicationDomain:ApplicationDomain):Array {
 		var result:Array = [];
 		for each(var node:XML in extendedClasses) {
 			result[result.length] = org.as3commons.lang.ClassUtils.forName(node.@type.toString(), applicationDomain);
@@ -753,20 +752,20 @@ internal class TypeXmlParser {
 		return result;
 	}
 	
-	private static function parseMethodsByModifier(type:Type, methodsXML:XMLList, isStatic:Boolean, applicationDomain:ApplicationDomain):Array {
+	private function parseMethodsByModifier(type:Type, methodsXML:XMLList, isStatic:Boolean, applicationDomain:ApplicationDomain):Array {
 		var result:Array = [];
 		
 		for each (var methodXML:XML in methodsXML) {
 			var params:Array = parseParameters(methodXML.parameter, applicationDomain);
 			var method:Method = new Method(type, methodXML.@name, isStatic, params, Type.forName(methodXML.@returnType,applicationDomain));
-			method.namespaceURI = methodXML.@uri;
+			method.as3commons_reflect::setNamespaceURI(methodXML.@uri);
 			parseMetaData(methodXML.metadata, method);
 			result.push(method);
 		}
 		return result;
 	}
 	
-	private static function parseParameters(paramsXML:XMLList, applicationDomain:ApplicationDomain):Array {
+	private function parseParameters(paramsXML:XMLList, applicationDomain:ApplicationDomain):Array {
 		var params:Array = [];
 		
 		for each (var paramXML:XML in paramsXML) {
@@ -778,12 +777,12 @@ internal class TypeXmlParser {
 		return params;
 	}
 	
-	private static function parseAccessorsByModifier(type:Type, accessorsXML:XMLList, isStatic:Boolean):Array {
+	private function parseAccessorsByModifier(type:Type, accessorsXML:XMLList, isStatic:Boolean):Array {
 		var result:Array = [];
 		
 		for each (var accessorXML:XML in accessorsXML) {
 			var accessor:Accessor = new Accessor(accessorXML.@name, AccessorAccess.fromString(accessorXML.@access), accessorXML.@type.toString(), accessorXML.@declaredBy.toString(), isStatic);
-			accessor.namespaceURI = accessorXML.@uri;
+			accessor.as3commons_reflect::setNamespaceURI(accessorXML.@uri);
 			parseMetaData(accessorXML.metadata, accessor);
 			result.push(accessor);
 		}
@@ -793,7 +792,7 @@ internal class TypeXmlParser {
 	/**
 	 * Parses MetaData objects from the given metaDataNodes XML data and adds them to the given metaData array.
 	 */
-	public static function parseMetaData(metaDataNodes:XMLList, metaData:IMetaDataContainer):void {
+	private function parseMetaData(metaDataNodes:XMLList, metaData:IMetaDataContainer):void {
 		for each (var metaDataXML:XML in metaDataNodes) {
 			var metaDataArgs:Array = [];
 			
