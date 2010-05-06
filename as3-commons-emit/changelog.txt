@@ -1,0 +1,11 @@
+AS3COMMONS-EMIT CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+
+Changes in version VERSION (DD.MM.YYYY)
+--------------------------------------
+
+General
+* initial release
