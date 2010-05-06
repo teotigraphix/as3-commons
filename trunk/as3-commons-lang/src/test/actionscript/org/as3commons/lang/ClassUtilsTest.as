@@ -15,6 +15,8 @@
  */
 package org.as3commons.lang {
 	
+	import flash.utils.getQualifiedClassName;
+	
 	import flexunit.framework.Reflective;
 	import flexunit.framework.Test;
 	import flexunit.framework.TestCase;
@@ -82,6 +84,13 @@ package org.as3commons.lang {
 			}
 		}
 		
+		public function testIsPrivateClass():void {
+			assertTrue(ClassUtils.isPrivateClass(PrivateClass));
+			assertTrue(ClassUtils.isPrivateClass(getQualifiedClassName(PrivateClass)));
+			assertFalse(ClassUtils.isPrivateClass(ClassUtilsTest));
+			assertFalse(ClassUtils.isPrivateClass(getQualifiedClassName(ClassUtilsTest)));
+		}
+		
 		public function testIsSubclassOf():void {
 			var result:Boolean = ClassUtils.isSubclassOf(ClassUtilsTest, TestCase);
 			assertTrue(result);
@@ -144,6 +153,11 @@ package org.as3commons.lang {
 		public function testGetNameFromFullyQualifiedName_forArray():void {
 			var result:String = ClassUtils.getNameFromFullyQualifiedName("Array");
 			assertEquals("Array", result);
+		}
+		
+		public function testNewInstance():void {
+			var result:PublicClass = ClassUtils.newInstance(PublicClass, []);
+			assertNotNull(result);
 		}
 		
 		// interface methods
@@ -279,5 +293,11 @@ package org.as3commons.lang {
 			assertFalse(ClassUtils.isInterface(SubInterfaceImplementation));
 		}
 	
+	}
+}
+
+class PrivateClass {
+	
+	public function PrivateClass() {
 	}
 }

@@ -147,6 +147,32 @@ package org.as3commons.lang {
 		}
 		
 		/**
+		 * Determines if the namespace of the class is private.
+		 * 
+		 * @return A boolean value indicating the visibility of the class.
+		 */
+		public static function isPrivateClass(object:*):Boolean {
+			var ns:String;
+			var className:String;
+			
+			if(object is Class) {
+				className = getQualifiedClassName(object);
+				ns = className.substr(0, className.indexOf("::"));
+			} else if(object is String) {
+				className = object.toString();
+				var index:int = className.indexOf("::");
+				
+				if(index > 0) {
+					ns = className.substr(0, index);
+				} else {
+					ns = className;
+				}
+			} 
+			
+			return (ns.indexOf(".as$") > -1);
+		}
+		
+		/**
 		 * Returns whether the passed in Class object is a subclass of the
 		 * passed in parent Class. To check if an interface extends another interface, use the isImplementationOf()
 		 * method instead.

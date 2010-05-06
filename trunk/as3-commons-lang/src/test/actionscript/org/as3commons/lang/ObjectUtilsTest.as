@@ -17,6 +17,8 @@ package org.as3commons.lang {
 	
 	import flexunit.framework.TestCase;
 	
+	import org.as3commons.lang.testclasses.PublicClass;
+	
 	/**
 	 * @author Christophe Herreman
 	 */
@@ -33,6 +35,12 @@ package org.as3commons.lang {
 		
 		public function testIsExplicitInstanceOf_withString():void {
 			assertTrue(ObjectUtils.isExplicitInstanceOf("test", String));
+		}
+		
+		public function testGetIterator():void {
+			var iterator:IIterator = ObjectUtils.getIterator(new PublicClass());
+			assertNotNull(iterator);
+			assertNotNull(iterator.next());
 		}
 	}
 }
