@@ -29,9 +29,5 @@ public class DynamicMethod {
 		
 		_instructionSet = instructions;
 	}
-	
-	public function initialize():void {
-		
-	}
 }
 }

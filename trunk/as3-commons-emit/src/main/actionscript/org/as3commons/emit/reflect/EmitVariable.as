@@ -1,11 +1,10 @@
 package org.as3commons.emit.reflect {
 import org.as3commons.emit.bytecode.QualifiedName;
-import org.as3commons.reflect.Accessor;
-import org.as3commons.reflect.AccessorAccess;
 import org.as3commons.reflect.Type;
+import org.as3commons.reflect.Variable;
 import org.as3commons.reflect.as3commons_reflect;
 
-public class EmitAccessor extends Accessor implements IEmitMember, IEmitProperty {
+public class EmitVariable extends Variable implements IEmitMember, IEmitProperty {
 	
 	//--------------------------------------------------------------------------
 	//
@@ -16,8 +15,8 @@ public class EmitAccessor extends Accessor implements IEmitMember, IEmitProperty
 	/**
 	 * Constructor.
 	 */
-	public function EmitAccessor(declaringType:EmitType, name:String, fullName:String, access:AccessorAccess, type:EmitType, visibility:uint, isStatic:Boolean, isOverride:Boolean, metaData:Array=null, ns:String=null) {
-		super(name, access, type.name, declaringType.name, isStatic, metaData);
+	public function EmitVariable(declaringType:EmitType, name:String, fullName:String, type:EmitType, visibility:uint, isStatic:Boolean, isOverride:Boolean, metaData:Array=null, ns:String=null) {
+		super(name, type.name, declaringType.name, isStatic);
 		
 		_visibility = visibility;
 		_isOverride = isOverride;
@@ -54,23 +53,6 @@ public class EmitAccessor extends Accessor implements IEmitMember, IEmitProperty
 	
 	public function set fullName(value:String):void {
 		_fullName = value;
-	}
-	
-	//----------------------------------
-	//  getMethod
-	//----------------------------------
-	
-	private var _getMethod:EmitMethod;
-	
-	public function get getMethod():EmitMethod {
-		if(_getMethod == null) {
-			_getMethod = new EmitMethod(declaringType as EmitType, "get", fullName + "/get", visibility, isStatic, isOverride, [], type);
-		}
-		return _getMethod;
-	}
-	
-	public function set getMethod(value:EmitMethod):void {
-		_getMethod = value;
 	}
 	
 	//----------------------------------
@@ -112,20 +94,25 @@ public class EmitAccessor extends Accessor implements IEmitMember, IEmitProperty
 	}
 	
 	//----------------------------------
-	//  setMethod
+	//  qname
 	//----------------------------------
 	
-	private var _setMethod:EmitMethod;
+	private var _qname:QualifiedName;
 	
-	public function get setMethod():EmitMethod {
-		if(_setMethod == null) {
-			_setMethod = new EmitMethod(declaringType as EmitType, "set", fullName + "/set", visibility, isStatic, isOverride, [new EmitParameter("value", 0, EmitType(type), false)], EmitTypeUtils.VOID);
-		}
-		return _setMethod;
+	public function get qname():QualifiedName {
+		return _qname;
 	}
 	
-	public function set setMethod(value:EmitMethod):void {
-		_setMethod = value;
+	public function set qname(value:QualifiedName):void {
+		_qname = value;
+	}
+	
+	//----------------------------------
+	//  readable
+	//----------------------------------
+	
+	public function get readable():Boolean {
+		return true;
 	}
 	
 	//----------------------------------
@@ -151,17 +138,11 @@ public class EmitAccessor extends Accessor implements IEmitMember, IEmitProperty
 	}
 	
 	//----------------------------------
-	//  qname
+	//  writeable
 	//----------------------------------
 	
-	private var _qname:QualifiedName;
-	
-	public function get qname():QualifiedName {
-		return _qname;
-	}
-	
-	public function set qname(value:QualifiedName):void {
-		_qname = value;
+	public function get writeable():Boolean {
+		return true;
 	}
 }
 }
