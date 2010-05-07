@@ -68,7 +68,7 @@ package org.as3commons.emit.bytecode
 					
 					//if (dynamicClass != null)
 					{
-						for each (var methodBody : DynamicMethod in dynamicClass.methodBodies)
+						for each (var methodBody : DynamicMethod in dynamicClass.getMethodBodies())
 						{
 							layout.registerMethodBody(methodBody.method, methodBody);
 						}

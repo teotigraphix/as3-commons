@@ -26,7 +26,7 @@ public class EmitTypeTest {
 	public function testForClass():void {
 		var type:EmitType = EmitType.forClass(ReflectedObject);
 		Assert.assertNotNull(type);
-		Assert.assertEquals("org.as3commons.emit.reflect.mock:ReflectedObject", type.qname.toString());
+		Assert.assertEquals("org.as3commons.emit.reflect.objects:ReflectedObject", type.qname.toString());
 	}
 	
 	[Test]
