@@ -22,12 +22,14 @@
 			<artifactId>as3commons-lang</artifactId>
 			<version>0.2.1</version>
 			<type>swc</type>
+			<scope>external</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-logging</artifactId>
 			<version>1.1.1</version>
 			<type>swc</type>
+			<scope>external</scope>
 		</dependency>
 	</dependencies>
 
