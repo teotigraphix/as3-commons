@@ -20,12 +20,12 @@
  * THE SOFTWARE.
  */
 package org.as3commons.lang {
-	
+
 	import flash.utils.Dictionary;
 
 	/**
 	 * Class that fakes a soft (or weak) reference to an object by internally using
-	 * a Dictionary object with weak keys to hold the object reference. 
+	 * a <code>Dictionary</code> object with weak keys to hold the object reference.
 	 * @author Roland Zwaga
 	 */
 	public class SoftReference {
@@ -35,24 +35,25 @@ package org.as3commons.lang {
 		 * Creates a new <code>SoftReference</code> instance.
 		 * @param value Optional object instance to be used as the current <code>SoftReference</code> value.
 		 */
-		public function SoftReference(value:Object=null) {
+		public function SoftReference(value:Object = null) {
 			super();
 			if (value != null) {
 				this.value = value;
 			}
 		}
-		
+
 		/**
 		 * The instance for which a soft reference is held by the current <code>SoftReference</code>.
 		 */
 		public function get value():Object {
-			if (_dict != null){
-				for(var obj:Object in _dict){
+			if (_dict != null) {
+				for (var obj:Object in _dict) {
 					return obj;
 				}
 			}
 			return null;
 		}
+
 		/**
 		 * @private
 		 */

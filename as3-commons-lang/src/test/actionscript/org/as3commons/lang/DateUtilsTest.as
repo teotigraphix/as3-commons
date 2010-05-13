@@ -96,7 +96,8 @@ package org.as3commons.lang {
 			assertTrue(DateUtils.isSameInstant(CONTROL_DATE, CONTROL_DATE));
 			assertFalse(DateUtils.isSameInstant(CONTROL_DATE, new Date()));
 			assertTrue(DateUtils.isSameInstant(date, cloneDate(date)));
-			assertTrue(DateUtils.isSameInstant(date, new Date()));
+			//removed this test because it is unreliable, it sometimes passes, sometimes fails
+			//assertTrue(DateUtils.isSameInstant(date, new Date()));
 		}
 
 
