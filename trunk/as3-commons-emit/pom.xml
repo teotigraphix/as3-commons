@@ -52,6 +52,17 @@
 		<plugins>
 
 			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flex-mojos.version}</version>
+				<configuration>
+					<warnings>
+						<noConstructor>false</noConstructor>
+					</warnings>
+				</configuration>
+			</plugin>
+			
+			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptor>
