@@ -21,7 +21,7 @@
  */
 package org.as3commons.emit.bytecode {
 
-	public class InstructionArgumentType {
+	public final class InstructionArgumentType {
 		public static const Class:uint = 1;
 		public static const Method:uint = 2;
 		public static const Multiname:uint = 3;

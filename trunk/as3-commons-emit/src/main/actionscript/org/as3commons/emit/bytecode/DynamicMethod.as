@@ -21,14 +21,16 @@
  */
 package org.as3commons.emit.bytecode {
 	import org.as3commons.emit.reflect.EmitMethod;
+	import org.as3commons.lang.Assert;
 
 	public class DynamicMethod {
+
 		private var _method:EmitMethod;
 		private var _maxStack:uint = 0;
 		private var _minScope:uint = 0;
 		private var _maxScope:uint = 0;
 		private var _maxLocal:uint = 0;
-		private var _instructionSet:Array = new Array();
+		private var _instructionSet:Array = [];
 
 		public function get instructionSet():Array {
 			return _instructionSet;
@@ -55,12 +57,18 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function DynamicMethod(method:EmitMethod, maxStack:uint, maxLocal:uint, minScope:uint, maxScope:uint, instructions:Array) {
+			super();
+			initDynamicMethod(method, maxStack, maxLocal, minScope, maxScope, instructions);
+		}
+
+		protected function initDynamicMethod(method:EmitMethod, maxStack:uint, maxLocal:uint, minScope:uint, maxScope:uint, instructions:Array):void {
+			Assert.notNull(method, "method argument must not be null");
+			Assert.notNull(instructions, "instructions argument must not be null");
 			_method = method;
 			_minScope = minScope;
 			_maxScope = maxScope;
 			_maxLocal = maxLocal;
 			_maxStack = maxStack;
-
 			_instructionSet = instructions;
 		}
 	}

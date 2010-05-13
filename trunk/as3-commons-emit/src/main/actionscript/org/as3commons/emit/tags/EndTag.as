@@ -22,8 +22,10 @@
 package org.as3commons.emit.tags {
 
 	import org.as3commons.emit.ISWFOutput;
+	import org.as3commons.lang.Assert;
 
 	public class EndTag extends AbstractTag {
+
 		public static const TAG_ID:int = 0x0;
 
 		public function EndTag() {
@@ -31,6 +33,7 @@ package org.as3commons.emit.tags {
 		}
 
 		public override function writeData(output:ISWFOutput):void {
+			Assert.notNull(output, "output argument must not be null");
 		}
 
 	}

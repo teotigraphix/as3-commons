@@ -21,7 +21,7 @@
  */
 package org.as3commons.emit.bytecode {
 
-	public class Instructions {
+	public final class Instructions {
 		public static const Add:uint = 0xa0;
 		public static const AddInteger:uint = 0xc5;
 		public static const AsType:uint = 0x86; // u30 (type_index)

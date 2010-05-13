@@ -25,6 +25,8 @@ package org.as3commons.emit {
 	import flash.utils.Endian;
 	import flash.utils.IDataOutput;
 
+	import org.as3commons.lang.Assert;
+
 	public class SWFOutput implements ISWFOutput {
 		private var _output:IDataOutput;
 
@@ -34,12 +36,16 @@ package org.as3commons.emit {
 		private var _dataBuffer:ByteArray;
 
 		public function SWFOutput(output:IDataOutput) {
+			super();
+			initSWFOutput(output);
+		}
+
+		protected function initSWFOutput(output:IDataOutput):void {
+			Assert.notNull(output, "output argument must not be null");
 			_output = output;
 			_output.endian = Endian.LITTLE_ENDIAN;
-
 			_dataBuffer = new ByteArray();
 			_dataBuffer.endian = Endian.LITTLE_ENDIAN;
-
 			_currentByte = 0;
 		}
 
@@ -105,10 +111,11 @@ package org.as3commons.emit {
 		}
 
 		public function writeBit(bit:Boolean):void {
-			if (bit)
+			if (bit) {
 				_currentByte |= (1 << (7 - _bitOffset));
-			else
+			} else {
 				_currentByte &= ~(1 << (7 - _bitOffset));
+			}
 
 			_bitOffset++;
 
@@ -123,7 +130,6 @@ package org.as3commons.emit {
 		public function align():void {
 			if (_bitOffset > 0) {
 				_output.writeByte(_currentByte);
-
 				_currentByte = 0;
 				_bitOffset = 0;
 			}

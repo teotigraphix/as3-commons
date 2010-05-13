@@ -26,23 +26,25 @@ package org.as3commons.emit {
 	import flash.utils.IDataInput;
 
 	import org.as3commons.emit.util.BitReader;
+	import org.as3commons.lang.Assert;
 
 	public class SWFReader {
-		private static const PRE_HEADER_SIZE:int = 8; // FWS[VERSION][FILESIZE]
 
 		public function SWFReader() {
+			super();
 		}
 
 		public function read(input:IDataInput):SWF {
+			Assert.notNull(input, "input argument must not be null");
 			var swfIdentifier:String = input.readUTFBytes(3);
-			var compressed:Boolean = (swfIdentifier.charAt(0) == 'C');
+			var compressed:Boolean = (swfIdentifier.charAt(0) == SWFConstant.COMPRESSED_SWF_IDENTIFIER);
 			var version:int = input.readUnsignedByte();
 			var filesize:int = input.readUnsignedInt();
 
 			var data:ByteArray = new ByteArray();
 			data.endian = input.endian;
 
-			input.readBytes(data, 0, filesize - PRE_HEADER_SIZE);
+			input.readBytes(data, 0, filesize - SWFConstant.PRE_HEADER_SIZE);
 
 			if (compressed) {
 				data.uncompress();
@@ -56,6 +58,7 @@ package org.as3commons.emit {
 		}
 
 		private function readHeader(input:IDataInput, compressed:Boolean, version:int, filesize:int):SWFHeader {
+			Assert.notNull(input, "input argument must not be null");
 			var frameSize:Rectangle = readRectangle(input);
 
 			var width:Number = (frameSize.width - frameSize.x) / 15;
@@ -72,6 +75,7 @@ package org.as3commons.emit {
 		}
 
 		private function readRectangle(input:IDataInput):Rectangle {
+			Assert.notNull(input, "input argument must not be null");
 			var bitReader:BitReader = new BitReader(input);
 
 			var numBits:uint = bitReader.readUnsignedInteger(5);
@@ -85,6 +89,7 @@ package org.as3commons.emit {
 		}
 
 		private function readAsciiChars(input:IDataInput, count:uint):String {
+			Assert.notNull(input, "input argument must not be null");
 			var charCodes:Array = new Array(count);
 
 			for (var i:int = 0; i < count; i++) {

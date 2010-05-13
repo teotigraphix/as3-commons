@@ -20,9 +20,12 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.reflect {
+
+	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.BCNamespace;
 	import org.as3commons.emit.bytecode.NamespaceKind;
 	import org.as3commons.emit.bytecode.QualifiedName;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.INamespaceOwner;
 
 	/**
@@ -35,13 +38,14 @@ package org.as3commons.emit.reflect {
 		 *
 		 */
 		public static function getMemberFullName(declaringType:EmitType, name:String):String {
-			return (declaringType.isInterface) ? declaringType.fullName.concat("/", declaringType.fullName, ":", name) : declaringType.fullName.concat("/", name);
+			return (declaringType.isInterface) ? declaringType.fullName.concat(SWFConstant.FORWARD_SLASH, declaringType.fullName, SWFConstant.COLON, name) : declaringType.fullName.concat(SWFConstant.FORWARD_SLASH, name);
 		}
 
 		/**
 		 *
 		 */
 		public static function getMemberQualifiedName(member:IEmitMember):QualifiedName {
+			Assert.notNull(member, "member argument must not be null");
 			var namespaceURI:String = INamespaceOwner(member).namespaceURI;
 			var packageName:String = EmitType(member.declaringType).packageName;
 
@@ -52,6 +56,7 @@ package org.as3commons.emit.reflect {
 		 *
 		 */
 		public static function getRequiredArgumentCount(method:EmitMethod):uint {
+			Assert.notNull(method, "method argument must not be null");
 			var i:uint = 0;
 
 			for (; i < method.parameters.length; i++) {

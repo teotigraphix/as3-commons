@@ -20,13 +20,20 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.reflect {
+	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.QualifiedName;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
 
 	public class EmitAccessor extends Accessor implements IEmitMember, IEmitProperty {
+
+		private static const GET_IDENTIFIER:String = "get";
+		private static const GET_FULLNAME_IDENTIFIER:String = "/get";
+		private static const SET_IDENTIFIER:String = "set";
+		private static const SET_FULLNAME_IDENTIFIER:String = "/set";
 
 		//--------------------------------------------------------------------------
 		//
@@ -39,15 +46,23 @@ package org.as3commons.emit.reflect {
 		 */
 		public function EmitAccessor(declaringType:EmitType, name:String, fullName:String, access:AccessorAccess, type:EmitType, visibility:uint, isStatic:Boolean, isOverride:Boolean, metaData:Array = null, ns:String = null) {
 			super(name, access, type.name, declaringType.name, isStatic, metaData);
+			initEmitAccesor(visibility, isOverride, declaringType, type, ns, fullName, name);
+		}
 
+		protected function initEmitAccesor(visibility:uint, isOverride:Boolean, declaringType:EmitType, type:EmitType, ns:String, fullName:String, name:String):void {
+			Assert.notNull(declaringType, "declaringType argument must not be null");
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(fullName, "fullName argument must not be null");
+			Assert.notNull(name, "name argument must not be null");
 			_visibility = visibility;
 			_isOverride = isOverride;
 			as3commons_reflect::setDeclaringType(declaringType);
 			as3commons_reflect::setType(type);
-			as3commons_reflect::setNamespaceURI(ns || "");
+			as3commons_reflect::setNamespaceURI(ns || SWFConstant.EMPTY_STRING);
 			_qname = EmitReflectionUtils.getMemberQualifiedName(this);
 			_fullName = (fullName || EmitReflectionUtils.getMemberFullName(declaringType, name));
 		}
+
 
 		//--------------------------------------------------------------------------
 		//
@@ -85,7 +100,7 @@ package org.as3commons.emit.reflect {
 
 		public function get getMethod():EmitMethod {
 			if (_getMethod == null) {
-				_getMethod = new EmitMethod(declaringType as EmitType, "get", fullName + "/get", visibility, isStatic, isOverride, [], type);
+				_getMethod = new EmitMethod(declaringType as EmitType, GET_IDENTIFIER, fullName + GET_FULLNAME_IDENTIFIER, visibility, isStatic, isOverride, [], type);
 			}
 			return _getMethod;
 		}
@@ -140,7 +155,7 @@ package org.as3commons.emit.reflect {
 
 		public function get setMethod():EmitMethod {
 			if (_setMethod == null) {
-				_setMethod = new EmitMethod(declaringType as EmitType, "set", fullName + "/set", visibility, isStatic, isOverride, [new EmitParameter("value", 0, EmitType(type), false)], EmitTypeUtils.VOID);
+				_setMethod = new EmitMethod(declaringType as EmitType, SET_IDENTIFIER, fullName + SET_FULLNAME_IDENTIFIER, visibility, isStatic, isOverride, [new EmitParameter("value", 0, EmitType(type), false)], EmitTypeUtils.VOID);
 			}
 			return _setMethod;
 		}

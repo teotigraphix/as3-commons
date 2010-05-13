@@ -21,7 +21,7 @@
  */
 package org.as3commons.emit.bytecode {
 
-	public class TraitAttribute {
+	public final class TraitAttribute {
 		public static const FINAL:int = 0x1;
 		public static const OVERRIDE:int = 0x2;
 		public static const METADATA:int = 0x4;

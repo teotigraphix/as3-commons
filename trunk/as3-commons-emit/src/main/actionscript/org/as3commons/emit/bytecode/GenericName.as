@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.bytecode {
+	import org.as3commons.lang.Assert;
 
 	public class GenericName extends AbstractMultiname {
 		private var _typeDefinition:AbstractMultiname;
@@ -27,9 +28,15 @@ package org.as3commons.emit.bytecode {
 
 		public function GenericName(typeDefinition:AbstractMultiname, genericParameters:Array, kind:uint = 0x1D) {
 			super(kind);
+			initGenericName(typeDefinition, genericParameters);
+			initGenericName(typeDefinition, genericParameters);
+		}
 
+		protected function initGenericName(typeDefinition:AbstractMultiname, genericParameters:Array):void {
+			Assert.notNull(typeDefinition, "typeDefinition argument must not be null");
+			Assert.notNull(genericParameters, "genericParameters argument must not be null");
 			_typeDefinition = typeDefinition;
-			_genericParameters = new Array().concat(genericParameters);
+			_genericParameters = [].concat(genericParameters);
 		}
 
 		public function get typeDefinition():AbstractMultiname {

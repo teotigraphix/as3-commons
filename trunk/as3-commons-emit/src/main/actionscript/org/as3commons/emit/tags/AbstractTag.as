@@ -40,9 +40,15 @@ package org.as3commons.emit.tags {
 		 * @param tagId the id of the tag
 		 */
 		public function AbstractTag(tagId:uint) {
+			super();
+			initAbstractTag(tagId);
+		}
+
+		protected function initAbstractTag(tagId:uint):void {
 			Assert.notAbstract(this, AbstractTag);
 			_tagId = tagId;
 		}
+
 
 		//--------------------------------------------------------------------------
 		//

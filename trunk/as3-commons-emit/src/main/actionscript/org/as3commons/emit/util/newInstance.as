@@ -21,6 +21,7 @@
  */
 package org.as3commons.emit.util {
 
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IllegalArgumentError;
 
 	/**
@@ -34,6 +35,8 @@ package org.as3commons.emit.util {
 	 * @author Richard Szalay
 	 */
 	public function newInstance(cls:Class, args:Array):Object {
+		Assert.notNull(cls, "cls argument must not be null");
+		Assert.notNull(args, "args argument must not be null");
 		if (args.length > ConstructorDelegateMap.MAX_ARG_COUNT) {
 			throw new IllegalArgumentError("Argument count is greater than supported (" + ConstructorDelegateMap.MAX_ARG_COUNT + ")");
 		}
@@ -42,6 +45,7 @@ package org.as3commons.emit.util {
 		return func.apply(null, args);
 	}
 }
+import org.as3commons.lang.Assert;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -91,206 +95,257 @@ class ConstructorDelegateMap {
 	}
 
 	private static function createClass0(cls:Class):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls();
 	}
 
 	private static function createClass1(cls:Class, p1:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1);
 	}
 
 	private static function createClass2(cls:Class, p1:*, p2:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2);
 	}
 
 	private static function createClass3(cls:Class, p1:*, p2:*, p3:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3);
 	}
 
 	private static function createClass4(cls:Class, p1:*, p2:*, p3:*, p4:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4);
 	}
 
 	private static function createClass5(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5);
 	}
 
 	private static function createClass6(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6);
 	}
 
 	private static function createClass7(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7);
 	}
 
 	private static function createClass8(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8);
 	}
 
 	private static function createClass9(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9);
 	}
 
 	private static function createClass10(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10);
 	}
 
 	private static function createClass11(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11);
 	}
 
 	private static function createClass12(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12);
 	}
 
 	private static function createClass13(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13);
 	}
 
 	private static function createClass14(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
 	}
 
 	private static function createClass15(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15);
 	}
 
 	private static function createClass16(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16);
 	}
 
 	private static function createClass17(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17);
 	}
 
 	private static function createClass18(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18);
 	}
 
 	private static function createClass19(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19);
 	}
 
 	private static function createClass20(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20);
 	}
 
 	private static function createClass21(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21);
 	}
 
 	private static function createClass22(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22);
 	}
 
 	private static function createClass23(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23);
 	}
 
 	private static function createClass24(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24);
 	}
 
 	private static function createClass25(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25);
 	}
 
 	private static function createClass26(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26);
 	}
 
 	private static function createClass27(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27);
 	}
 
 	private static function createClass28(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28);
 	}
 
 	private static function createClass29(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29);
 	}
 
 	private static function createClass30(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30);
 	}
 
 	private static function createClass31(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31);
 	}
 
 	private static function createClass32(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32);
 	}
 
 	private static function createClass33(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33);
 	}
 
 	private static function createClass34(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34);
 	}
 
 	private static function createClass35(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35);
 	}
 
 	private static function createClass36(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36);
 	}
 
 	private static function createClass37(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37);
 	}
 
 	private static function createClass38(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38);
 	}
 
 	private static function createClass39(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39);
 	}
 
 	private static function createClass40(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40);
 	}
 
 	private static function createClass41(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*, p41:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41);
 	}
 
 	private static function createClass42(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*, p41:*, p42:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42);
 	}
 
 	private static function createClass43(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*, p41:*, p42:*, p43:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43);
 	}
 
 	private static function createClass44(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*, p41:*, p42:*, p43:*, p44:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44);
 	}
 
 	private static function createClass45(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*, p41:*, p42:*, p43:*, p44:*, p45:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44, p45);
 	}
 
 	private static function createClass46(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*, p41:*, p42:*, p43:*, p44:*, p45:*, p46:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44, p45, p46);
 	}
 
 	private static function createClass47(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*, p41:*, p42:*, p43:*, p44:*, p45:*, p46:*, p47:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44, p45, p46, p47);
 	}
 
 	private static function createClass48(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*, p41:*, p42:*, p43:*, p44:*, p45:*, p46:*, p47:*, p48:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44, p45, p46, p47, p48);
 	}
 
 	private static function createClass49(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*, p41:*, p42:*, p43:*, p44:*, p45:*, p46:*, p47:*, p48:*, p49:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44, p45, p46, p47, p48, p49);
 	}
 
 	private static function createClass50(cls:Class, p1:*, p2:*, p3:*, p4:*, p5:*, p6:*, p7:*, p8:*, p9:*, p10:*, p11:*, p12:*, p13:*, p14:*, p15:*, p16:*, p17:*, p18:*, p19:*, p20:*, p21:*, p22:*, p23:*, p24:*, p25:*, p26:*, p27:*, p28:*, p29:*, p30:*, p31:*, p32:*, p33:*, p34:*, p35:*, p36:*, p37:*, p38:*, p39:*, p40:*, p41:*, p42:*, p43:*, p44:*, p45:*, p46:*, p47:*, p48:*, p49:*, p50:*):Object {
+		Assert.notNull(cls, "cls argument must not be null");
 		return new cls(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44, p45, p46, p47, p48, p49, p50);
 	}
 }

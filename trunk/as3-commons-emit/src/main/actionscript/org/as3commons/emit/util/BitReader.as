@@ -25,6 +25,8 @@ package org.as3commons.emit.util {
 	import flash.utils.ByteArray;
 	import flash.utils.IDataInput;
 
+	import org.as3commons.lang.Assert;
+
 	public class BitReader {
 		private var _input:IDataInput;
 
@@ -34,14 +36,18 @@ package org.as3commons.emit.util {
 		private var _dataBuffer:ByteArray;
 
 		public function BitReader(input:IDataInput) {
-			if (input == null) {
-				throw new ArgumentError("input must be specified");
-			}
+			super();
+			initBitReader(input, endian);
+		}
 
+		protected function initBitReader(input:IDataInput, endian:String):void {
+			Assert.notNull(input, "input argument must not be null");
+			Assert.notNull(endian, "endian argument must not be null");
 			this._input = input;
 			this._dataBuffer = new ByteArray();
 			this._dataBuffer.endian = input.endian;
 		}
+
 
 		private function ensureBits(numBits:uint):void {
 			if (bitsAvailable < numBits) {

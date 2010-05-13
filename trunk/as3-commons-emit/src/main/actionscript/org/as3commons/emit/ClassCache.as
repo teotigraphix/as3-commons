@@ -46,7 +46,7 @@ package org.as3commons.emit {
 		 * @private
 		 * Map of class definitions to class definitions.
 		 */
-		private var cache:Dictionary = new Dictionary();
+		private var _cache:Dictionary = new Dictionary();
 
 		//--------------------------------------------------------------------------
 		//
@@ -58,6 +58,7 @@ package org.as3commons.emit {
 		 * Constructor.
 		 */
 		public function ClassCache() {
+			super();
 		}
 
 		//--------------------------------------------------------------------------
@@ -70,7 +71,7 @@ package org.as3commons.emit {
 		 * Clears all classes from the cache.
 		 */
 		internal function clear():void {
-			cache = new Dictionary();
+			_cache = new Dictionary();
 		}
 
 		/**
@@ -81,7 +82,7 @@ package org.as3commons.emit {
 		 */
 		internal function contains(key:Class):Boolean {
 			Assert.notNull(key, "argument 'key' must not be null");
-			return (cache[key] != null);
+			return (_cache[key] != null);
 		}
 
 		/**
@@ -95,7 +96,7 @@ package org.as3commons.emit {
 		 */
 		internal function get(key:Class):Class {
 			Assert.notNull(key, "argument 'key' must not be null");
-			return cache[key];
+			return _cache[key];
 		}
 
 		/**
@@ -108,7 +109,7 @@ package org.as3commons.emit {
 		internal function put(key:Class, cls:Class):void {
 			Assert.notNull(key, "argument 'key' must not be null");
 			Assert.notNull(cls, "argument 'cls' must not be null");
-			cache[key] = cls;
+			_cache[key] = cls;
 		}
 
 		/**
@@ -121,8 +122,8 @@ package org.as3commons.emit {
 		 */
 		internal function remove(key:Class):Class {
 			Assert.notNull(key, "argument 'key' must not be null");
-			var cls:Class = cache[key];
-			delete cache[key];
+			var cls:Class = _cache[key];
+			delete _cache[key];
 			return cls;
 		}
 
@@ -132,7 +133,7 @@ package org.as3commons.emit {
 		 * <tt>Number.MAX_VALUE</tt>.
 		 */
 		internal function size():int {
-			return DictionaryUtils.getKeys(cache).length;
+			return DictionaryUtils.getKeys(_cache).length;
 		}
 
 		/**

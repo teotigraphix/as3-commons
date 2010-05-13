@@ -20,7 +20,9 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.tags {
+
 	import org.as3commons.emit.ISWFOutput;
+	import org.as3commons.lang.Assert;
 
 	public class ShowFrameTag extends AbstractTag {
 
@@ -33,6 +35,7 @@ package org.as3commons.emit.tags {
 		}
 
 		public override function writeData(output:ISWFOutput):void {
+			Assert.notNull(output, "output argument must not be null");
 		}
 	}
 }

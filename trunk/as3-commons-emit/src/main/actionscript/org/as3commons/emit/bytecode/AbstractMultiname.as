@@ -44,7 +44,6 @@ package org.as3commons.emit.bytecode {
 		 */
 		public function AbstractMultiname(kind:uint) {
 			super();
-
 			Assert.notAbstract(this, AbstractMultiname);
 			_kind = kind;
 		}

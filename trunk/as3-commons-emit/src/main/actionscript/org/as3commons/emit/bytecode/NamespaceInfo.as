@@ -22,13 +22,23 @@
 package org.as3commons.emit.bytecode {
 
 	public class NamespaceInfo {
+
 		public function NamespaceInfo(kind:uint, name:uint) {
-			this.kind = kind;
-			this.name = name;
+			super();
+			_kind = kind;
+			_name = name;
 		}
 
-		public var kind:uint;
-		public var name:uint;
+		private var _kind:uint;
+		private var _name:uint;
+
+		public function get kind():uint {
+			return _kind;
+		}
+
+		public function get name():uint {
+			return _name;
+		}
 
 	}
 }

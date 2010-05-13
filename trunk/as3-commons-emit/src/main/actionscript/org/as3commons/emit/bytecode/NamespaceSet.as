@@ -21,14 +21,23 @@
  */
 package org.as3commons.emit.bytecode {
 
+	import org.as3commons.emit.SWFConstant;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IEquals;
 
 	public class NamespaceSet implements IEquals {
 		private var _namespaces:Array;
 
 		public function NamespaceSet(namespaces:Array) {
+			super();
+			initNamespaceSet(namespaces);
+		}
+
+		protected function initNamespaceSet(namespaces:Array):void {
+			Assert.notNull(namespaces, "namespaces argument must not be null");
 			_namespaces = [].concat(namespaces);
 		}
+
 
 		public function get namespaces():Array {
 			return _namespaces;
@@ -52,7 +61,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function toString():String {
-			return '[' + _namespaces.join(',') + ']';
+			return SWFConstant.SQUARE_BRACKET_OPEN + _namespaces.join(SWFConstant.COMMA) + SWFConstant.SQUARE_BRACKET_CLOSE;
 		}
 	}
 }

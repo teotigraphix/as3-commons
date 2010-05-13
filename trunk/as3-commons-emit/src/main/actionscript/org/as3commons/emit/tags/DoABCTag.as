@@ -24,6 +24,7 @@ package org.as3commons.emit.tags {
 
 	import org.as3commons.emit.*;
 	import org.as3commons.emit.bytecode.IByteCodeLayout;
+	import org.as3commons.lang.Assert;
 
 	/**
 	 * Represents an AVM2 bytecode tag
@@ -37,13 +38,20 @@ package org.as3commons.emit.tags {
 
 		public function DoABCTag(lazy:Boolean, name:String, layout:IByteCodeLayout) {
 			super(TAG_ID);
+			initDoABCTag(layout, name, lazy);
+		}
 
+		protected function initDoABCTag(layout:IByteCodeLayout, name:String, lazy:Boolean):void {
+			Assert.notNull(layout, "layout argument must not be null");
+			Assert.notNull(name, "name argument must not be null");
 			_layout = layout;
 			_name = name;
 			_lazy = lazy;
 		}
 
+
 		public override function writeData(output:ISWFOutput):void {
+			Assert.notNull(output, "output argument must not be null");
 			var flags:uint = getFlags();
 
 			// flags
@@ -61,6 +69,7 @@ package org.as3commons.emit.tags {
 		}
 
 		public override function readData(input:ISWFInput):void {
+			Assert.notNull(input, "input argument must not be null");
 			_lazy = (input.readUI8() == 0x01);
 			_name = input.readString();
 

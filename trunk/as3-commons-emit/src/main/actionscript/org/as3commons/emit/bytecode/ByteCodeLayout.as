@@ -26,17 +26,19 @@ package org.as3commons.emit.bytecode {
 	import flash.utils.Dictionary;
 	import flash.utils.IDataOutput;
 
+	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.reflect.EmitAccessor;
 	import org.as3commons.emit.reflect.EmitMethod;
 	import org.as3commons.emit.reflect.EmitParameter;
 	import org.as3commons.emit.reflect.EmitType;
 	import org.as3commons.emit.reflect.EmitTypeUtils;
 	import org.as3commons.emit.reflect.EmitVariable;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IEquals;
 
 	public class ByteCodeLayout implements IByteCodeLayout {
-		private var _readOnly:Boolean = false;
 
+		private var _readOnly:Boolean = false;
 		private var _integers:Array;
 		private var _uintegers:Array;
 		private var _doubles:Array;
@@ -48,26 +50,29 @@ package org.as3commons.emit.bytecode {
 		private var _metadata:Array;
 		private var _types:Array;
 		private var _methodBodies:Array;
-
 		private var _methodBodiesBuffer:ByteArray;
 		private var _methodBodiesWriter:IByteCodeWriter;
-
 		private var _majorVersion:uint = 46;
 		private var _minorVersion:uint = 16;
 
 		public function ByteCodeLayout() {
+			super();
+			initByteCodeLayout();
+		}
+
+		protected function initByteCodeLayout():void {
 			_integers = [0];
 			_uintegers = [0];
 			_doubles = [0];
-			_strings = ['*'];
+			_strings = [SWFConstant.ASTERISK];
 			_namespaces = [];
-			_namespaceSets = new Array();
-			_multinames = new Array();
-			_methods = new Array();
-			_metadata = new Array();
+			_namespaceSets = [];
+			_multinames = [];
+			_methods = [];
+			_metadata = [];
 
-			_types = new Array();
-			_methodBodies = new Array();
+			_types = [];
+			_methodBodies = [];
 
 			_methodBodiesBuffer = new ByteArray();
 			_methodBodiesWriter = new ByteCodeWriter(_methodBodiesBuffer);
@@ -77,6 +82,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function write(output:IDataOutput):void {
+			Assert.notNull(output, "output argument must not be null");
 			_readOnly = true;
 
 			//try
@@ -104,6 +110,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function writeConstantPool(output:IByteCodeWriter):void {
+			Assert.notNull(output, "output argument must not be null");
 			writeArray(_integers, output, output.writeS32, 1);
 			writeArray(_uintegers, output, output.writeU32, 1);
 			writeArray(_doubles, output, output.writeD64, 1);
@@ -129,42 +136,52 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function writeArray(array:Array, output:IByteCodeWriter, writeFunc:Function, startIndex:int = 0):void {
-			output.writeU30(array.length);
+			Assert.notNull(array, "array argument must not be null");
+			Assert.notNull(output, "output argument must not be null");
+			Assert.notNull(writeFunc, "writeFunc argument must not be null");
 
+			output.writeU30(array.length);
 			for (var i:int = startIndex; i < array.length; i++) {
 				writeFunc(array[i]);
 			}
 		}
 
 		private function writeIndexedArray(array:Array, output:IByteCodeWriter, writeFunc:Function, startIndex:int = 0):void {
-			output.writeU30(array.length);
+			Assert.notNull(array, "array argument must not be null");
+			Assert.notNull(output, "output argument must not be null");
+			Assert.notNull(writeFunc, "writeFunc argument must not be null");
 
+			output.writeU30(array.length);
 			for (var i:int = startIndex; i < array.length; i++) {
 				writeFunc(array[i].Data);
 			}
 		}
 
 		private function writeNamespace(ns:NamespaceInfo, output:IByteCodeWriter):void {
+			Assert.notNull(ns, "ns argument must not be null");
+			Assert.notNull(output, "output argument must not be null");
 			output.writeU8(ns.kind);
 			output.writeU30(ns.name);
 		}
 
 		private function writeNamespaceSet(namespaceSet:Array, output:IByteCodeWriter):void {
-			output.writeU30(namespaceSet.length);
+			Assert.notNull(namespaceSet, "namespaceSet argument must not be null");
+			Assert.notNull(output, "output argument must not be null");
 
+			output.writeU30(namespaceSet.length);
 			for each (var index:uint in namespaceSet) {
 				output.writeU30(index);
 			}
 		}
 
 		private function writeMethods(output:IByteCodeWriter):void {
-			var param:EmitParameter = null;
+			Assert.notNull(output, "output argument must not be null");
 
+			var param:EmitParameter = null;
 			output.writeU30(_methods.length);
 
 			for each (var method:EmitMethod in _methods) {
-				var params:Array = new Array().concat(method.parameters);
-
+				var params:Array = [].concat(method.parameters);
 				var needsRest:Boolean = this.needsRest(method);
 
 				if (needsRest) {
@@ -211,7 +228,6 @@ package org.as3commons.emit.bytecode {
 
 					for (var p:int = optionalArgsCount; p > 0; p--) {
 						// TODO: Determine optional value?
-
 						output.writeU30(0);
 						output.writeU8(0x0C); // Undefined
 					}
@@ -224,20 +240,22 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function needsRest(method:EmitMethod):Boolean {
+			Assert.notNull(method, "method argument must not be null");
 			for each (var param:EmitParameter in method.parameters) {
 				if (param.type == EmitTypeUtils.REST) {
 					return true;
 				}
 			}
-
 			return false;
 		}
 
 		private function writeMetadata(output:IByteCodeWriter):void {
+			Assert.notNull(output, "output argument must not be null");
 			output.writeU30(0);
 		}
 
 		private function writeClasses(output:IByteCodeWriter):void {
+			Assert.notNull(output, "output argument must not be null");
 			output.writeU30(_types.length);
 
 			var type:EmitType;
@@ -247,7 +265,7 @@ package org.as3commons.emit.bytecode {
 			for each (type in _types) {
 				output.writeU30(registerMultiname(type.multiname));
 
-				if (type.superClassType == null || type.superClassType.fullName == "Object") {
+				if (type.superClassType == null || type.superClassType.fullName == SWFConstant.OBJECT_TYPE_NAME) {
 					// No base type - 4.3 Instance / super_name
 					output.writeU30(0);
 				} else {
@@ -367,6 +385,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function getClassFlags(type:EmitType):uint {
+			Assert.notNull(type, "type argument must not be null");
 			var flags:uint = 0;
 
 			if (type.typeNamespace.kind == NamespaceKind.PROTECTED_NAMESPACE) {
@@ -389,6 +408,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function getTraitCount(type:EmitType, staticMembers:Boolean):uint {
+			Assert.notNull(type, "type argument must not be null");
 			var traitCount:uint = 0;
 
 			traitCount += type.getFields(staticMembers, !staticMembers).length;
@@ -408,6 +428,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function getMethodTraitAttributes(method:EmitMethod):int {
+			Assert.notNull(method, "method argument must not be null");
 			var attributes:int = 0;
 
 			if (method.isOverride) {
@@ -418,6 +439,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function writeMethodBodies(output:IByteCodeWriter):void {
+			Assert.notNull(output, "output argument must not be null");
 			output.writeU30(_methodBodies.length);
 
 			_methodBodiesBuffer.position = 0;
@@ -441,6 +463,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function registerClass(value:EmitType):uint {
+			Assert.notNull(value, "value argument must not be null");
 			var index:uint = assertArrayIndex(_types, value);
 
 			registerTypeMultiname(value);
@@ -481,6 +504,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function registerMethod(value:EmitMethod):uint {
+			Assert.notNull(value, "value argument must not be null");
 			registerString(value.name);
 			registerString(value.fullName);
 			registerMultiname(value.qname);
@@ -495,6 +519,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function registerTypeMultiname(type:EmitType):void {
+			Assert.notNull(type, "type argument must not be null");
 			if (type.isGeneric) {
 				registerMultiname(type.genericTypeDefinition.multiname);
 			}
@@ -503,6 +528,8 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function registerMethodBody(method:EmitMethod, value:DynamicMethod):uint {
+			Assert.notNull(method, "method argument must not be null");
+			Assert.notNull(value, "value argument must not be null");
 			var index:int = _methodBodies.indexOf(value);
 
 			if (index == -1) {
@@ -590,6 +617,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function registerMultiname(value:AbstractMultiname):uint {
+			Assert.notNull(value, "value argument must not be null");
 			return assertEqArrayIndex(_multinames, value, function():Array {
 					switch (value.kind) {
 						case MultinameKind.QUALIFIED_NAME:
@@ -634,14 +662,16 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function registerNamespace(value:BCNamespace):uint {
+			Assert.notNull(value, "value argument must not be null");
 			return assertEqArrayIndex(_namespaces, value, function():Array {
 					return [value.kind, registerString(value.name)];
 				});
 		}
 
 		public function registerNamespaceSet(value:NamespaceSet):uint {
+			Assert.notNull(value, "value argument must not be null");
 			return assertEqArrayIndex(_namespaceSets, value, function():Array {
-					var indexValues:Array = new Array();
+					var indexValues:Array = [];
 
 					for each (var ns:BCNamespace in value.namespaces) {
 						indexValues.push(registerNamespace(ns));
@@ -652,6 +682,9 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function assertEqArrayIndex(array:Array, value:IEquals, dataCallback:Function):uint {
+			Assert.notNull(array, "array argument must not be null");
+			Assert.notNull(value, "value argument must not be null");
+			Assert.notNull(dataCallback, "dataCallback argument must not be null");
 			for (var i:uint = 0; i < array.length; i++) {
 				if (value.equals(array[i].Object))
 					return i;
@@ -669,6 +702,8 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function assertArrayIndex(array:Array, value:Object):uint {
+			Assert.notNull(array, "array argument must not be null");
+			Assert.notNull(value, "value argument must not be null");
 			var index:int = array.indexOf(value);
 
 			if (index == -1) {
@@ -683,6 +718,8 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private static function notSupportedInstructionHandler(instruction:Array, writer:IByteCodeWriter):void {
+			Assert.notNull(instruction, "instruction argument must not be null");
+			Assert.notNull(writer, "writer argument must not be null");
 			var instructionName:String = Instructions[instruction[0]];
 
 			throw new IllegalOperationError("Operation (" + instructionName + ") not supported");
@@ -776,7 +813,6 @@ package org.as3commons.emit.bytecode {
 	}
 }
 
-import org.as3commons.emit.bytecode.BCNamespace;
 import org.as3commons.lang.IEquals;
 
 class IndexedObject {

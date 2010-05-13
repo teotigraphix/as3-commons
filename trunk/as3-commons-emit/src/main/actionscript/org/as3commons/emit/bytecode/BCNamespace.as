@@ -21,13 +21,16 @@
  */
 package org.as3commons.emit.bytecode {
 
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IEquals;
 
 	public class BCNamespace implements IEquals {
+
 		private var _name:String;
 		private var _kind:uint;
 
 		public function BCNamespace(name:String, kind:uint) {
+			super();
 			_name = name;
 			_kind = kind;
 		}
@@ -55,6 +58,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public static function packageNS(name:String):BCNamespace {
+			Assert.hasText(name, "name argument must not be empty or null");
 			return new BCNamespace(name, NamespaceKind.PACKAGE_NAMESPACE);
 		}
 	}
