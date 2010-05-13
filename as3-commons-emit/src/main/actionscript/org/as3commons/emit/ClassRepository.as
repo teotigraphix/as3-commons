@@ -30,7 +30,7 @@ package org.as3commons.emit {
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.emit.bytecode.ByteCodeLayoutBuilder;
 	import org.as3commons.emit.bytecode.DynamicClass;
 	import org.as3commons.emit.bytecode.IByteCodeLayout;
@@ -52,10 +52,10 @@ package org.as3commons.emit {
 
 		public function ClassRepository(classGenerator:IClassGenerator = null) {
 			super();
-			initClassRepository();
+			initClassRepository(classGenerator);
 		}
 
-		protected function initClassRepository():void {
+		protected function initClassRepository(classGenerator:IClassGenerator):void {
 			_classCache = new ClassCache();
 			_classGenerator = classGenerator;
 		}

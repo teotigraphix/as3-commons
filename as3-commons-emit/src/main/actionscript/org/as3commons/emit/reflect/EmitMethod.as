@@ -46,7 +46,6 @@ package org.as3commons.emit.reflect {
 		}
 
 		protected function initEmitMethod(isOverride:Boolean, visibility:uint, ns:String, fullName:String, declaringType:EmitType, name:String):void {
-			Assert.notNull(fullName, "fullName argument must not be null");
 			Assert.notNull(declaringType, "declaringType argument must not be null");
 			Assert.notNull(name, "name argument must not be null");
 			_isOverride = isOverride;
