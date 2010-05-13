@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.reflect {
+	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Parameter;
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
@@ -37,9 +38,14 @@ package org.as3commons.emit.reflect {
 		 */
 		public function EmitParameter(name:String, index:int, type:EmitType, isOptional:Boolean = false) {
 			super(index, type, isOptional);
+			initEmitParameter(name);
+		}
 
+		protected function initEmitParameter(name:String):void {
+			Assert.hasText(name, "name argument must not be empty or null");
 			_name = name;
 		}
+
 
 		//--------------------------------------------------------------------------
 		//

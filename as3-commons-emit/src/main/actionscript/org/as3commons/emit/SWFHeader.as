@@ -22,6 +22,7 @@
 package org.as3commons.emit {
 
 	public class SWFHeader {
+
 		private var _version:uint;
 		private var _compressed:Boolean;
 		private var _filesize:int;
@@ -31,6 +32,7 @@ package org.as3commons.emit {
 		private var _frameCount:uint;
 
 		public function SWFHeader(version:uint = 9, compressed:Boolean = false, filesize:Number = -1, width:Number = 100, height:Number = 100, frameRate:Number = 25, frameCount:int = 1) {
+			super();
 			_version = version;
 			_compressed = compressed;
 			_filesize = filesize;

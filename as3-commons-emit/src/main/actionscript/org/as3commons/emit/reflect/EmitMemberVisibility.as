@@ -21,7 +21,7 @@
  */
 package org.as3commons.emit.reflect {
 
-	public class EmitMemberVisibility {
+	public final class EmitMemberVisibility {
 
 		//--------------------------------------------------------------------------
 		//

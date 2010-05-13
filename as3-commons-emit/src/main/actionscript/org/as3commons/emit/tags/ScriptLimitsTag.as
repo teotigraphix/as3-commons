@@ -22,6 +22,7 @@
 package org.as3commons.emit.tags {
 
 	import org.as3commons.emit.ISWFOutput;
+	import org.as3commons.lang.Assert;
 
 	public class ScriptLimitsTag extends AbstractTag {
 		public static const TAG_ID:int = 0x41;
@@ -34,6 +35,7 @@ package org.as3commons.emit.tags {
 		}
 
 		public override function writeData(output:ISWFOutput):void {
+			Assert.notNull(output, "output argument must not be null");
 			output.writeUI16(_maxRecursionDepth);
 			output.writeUI16(_scriptTimeoutSeconds);
 		}

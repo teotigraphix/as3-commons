@@ -25,6 +25,8 @@ package org.as3commons.emit {
 	import flash.utils.ByteArray;
 	import flash.utils.IDataInput;
 
+	import org.as3commons.lang.Assert;
+
 	public class SWFInput implements ISWFInput {
 		private var _input:IDataInput;
 
@@ -34,8 +36,13 @@ package org.as3commons.emit {
 		private var _dataBuffer:ByteArray;
 
 		public function SWFInput(input:IDataInput) {
-			_input = input;
+			super();
+			initSWFInput(input);
+		}
 
+		protected function initSWFInput(input:IDataInput):void {
+			Assert.notNull(input, "input argument must not be null");
+			_input = input;
 			_dataBuffer = new ByteArray();
 			_dataBuffer.endian = input.endian;
 		}
@@ -43,7 +50,7 @@ package org.as3commons.emit {
 		public function readString():String {
 			align();
 
-			var codes:Array = new Array();
+			var codes:Array = [];
 
 			var code:int;
 
@@ -106,7 +113,7 @@ package org.as3commons.emit {
 		 * Aligns to the next available byte if not currently byte aligned
 		 */
 		public function align():void {
-			throw new IllegalOperationError();
+			throw new IllegalOperationError("Not implemented");
 		}
 
 	}

@@ -22,8 +22,10 @@
 package org.as3commons.emit.tags {
 
 	import org.as3commons.emit.ISWFOutput;
+	import org.as3commons.lang.Assert;
 
 	public class SetBackgroundColorTag extends AbstractTag {
+
 		public static const TAG_ID:int = 0x9;
 
 		private var _red:uint;
@@ -32,13 +34,13 @@ package org.as3commons.emit.tags {
 
 		public function SetBackgroundColorTag(red:uint = 0, green:uint = 0, blue:uint = 0) {
 			super(TAG_ID);
-
 			_red = red;
 			_green = green;
 			_blue = blue;
 		}
 
 		public override function writeData(output:ISWFOutput):void {
+			Assert.notNull(output, "output argument must not be null");
 			output.writeUI8(_red);
 			output.writeUI8(_green);
 			output.writeUI8(_blue);

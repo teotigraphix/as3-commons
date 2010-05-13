@@ -36,6 +36,7 @@ package org.as3commons.emit {
 		 * @param tags an array of ABC tags
 		 */
 		public function SWF(header:SWFHeader, tags:Array) {
+			super();
 			_header = header;
 			_tags = tags;
 		}

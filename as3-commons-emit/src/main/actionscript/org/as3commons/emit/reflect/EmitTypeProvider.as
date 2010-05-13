@@ -23,8 +23,10 @@ package org.as3commons.emit.reflect {
 	import flash.system.ApplicationDomain;
 	import flash.utils.getQualifiedClassName;
 
+	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.AbstractMultiname;
 	import org.as3commons.emit.bytecode.QualifiedName;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Constructor;
@@ -42,17 +44,22 @@ package org.as3commons.emit.reflect {
 	 */
 	internal class EmitTypeProvider implements ITypeProvider {
 
-		private static var typeCache:TypeCache;
+		private static const METHODS_COLLECTION_NAME:String = "methods";
+		private static const ACCESSORS_COLLECTION_NAME:String = "accessors";
+		private static const TRUE:String = "true";
+		private static const ARG:String = "arg";
+		private static var _typeCache:TypeCache;
 
 		public function EmitTypeProvider() {
-			typeCache = new TypeCache();
+			_typeCache = new TypeCache();
 		}
 
 		public function clearCache():void {
-			typeCache.clear();
+			_typeCache.clear();
 		}
 
 		public function getType(cls:Class, applicationDomain:ApplicationDomain):Type {
+			Assert.notNull(cls, "cls argument must not be null");
 			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(cls);
 			var description:XML = ReflectionUtils.getTypeDescription(cls);
 			var typeName:String = description.@name.toString();
@@ -73,14 +80,14 @@ package org.as3commons.emit.reflect {
 			// lead to infinite recursion if the constructor uses Type.forName().
 			// Therefore it is important to seed the cache before calling
 			// getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
-			typeCache.put(fullyQualifiedClassName, type);
+			_typeCache.put(fullyQualifiedClassName, type);
 
 			type.alias = description.@alias;
 			type.clazz = cls;
-			type.isDynamic = (description.@isDynamic.toString() == "true");
-			type.isFinal = (description.@isFinal.toString() == "true");
+			type.isDynamic = (description.@isDynamic.toString() == TRUE);
+			type.isFinal = (description.@isFinal.toString() == TRUE);
 			type.isInterface = (cls === Object) ? false : (description.factory.extendsClass.length() == 0);
-			type.isStatic = (description.@isStatic.toString() == "true");
+			type.isStatic = (description.@isStatic.toString() == TRUE);
 			type.extendsClasses = parseExtendsClasses(description.factory.extendsClass, type.applicationDomain);
 			type.superClassType = (type.extendsClasses.length > 0 && !type.isInterface && type.clazz !== Object) ? EmitType.forName(getQualifiedClassName(type.extendsClasses[0]), applicationDomain) : null;
 
@@ -101,8 +108,8 @@ package org.as3commons.emit.reflect {
 
 			for (var i:int = 0; i < numInterfaces; i++) {
 				var interfaze:EmitType = EmitType.forClass(interfaces[i], applicationDomain);
-				ReflectionUtils.concatTypeMetadata(type, interfaze.methods, "methods");
-				ReflectionUtils.concatTypeMetadata(type, interfaze.accessors, "accessors");
+				ReflectionUtils.concatTypeMetadata(type, interfaze.methods, METHODS_COLLECTION_NAME);
+				ReflectionUtils.concatTypeMetadata(type, interfaze.accessors, ACCESSORS_COLLECTION_NAME);
 				var interfaceMetaData:Array = interfaze.metaData;
 				var numMetaData:int = interfaceMetaData.length;
 
@@ -115,13 +122,15 @@ package org.as3commons.emit.reflect {
 		}
 
 		public function getTypeCache():TypeCache {
-			return typeCache;
+			return _typeCache;
 		}
 
 		/**
 		 *
 		 */
 		private function parseConstructor(type:EmitType, constructorXML:XMLList, applicationDomain:ApplicationDomain):Constructor {
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(constructorXML, "constructorXML argument must not be null");
 			if (constructorXML.length() > 0) {
 				var params:Array = parseParameters(constructorXML[0].parameter, applicationDomain);
 				return new Constructor(type, params);
@@ -134,6 +143,8 @@ package org.as3commons.emit.reflect {
 		 *
 		 */
 		private function parseMethods(type:EmitType, xml:XML, applicationDomain:ApplicationDomain):Array {
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(xml, "xml argument must not be null");
 			var classMethods:Array = parseMethodsByModifier(type, xml.method, true, applicationDomain);
 			var instanceMethods:Array = parseMethodsByModifier(type, xml.factory.method, false, applicationDomain);
 			return classMethods.concat(instanceMethods);
@@ -143,6 +154,8 @@ package org.as3commons.emit.reflect {
 		 *
 		 */
 		private function parseAccessors(type:EmitType, xml:XML):Array {
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(xml, "xml argument must not be null");
 			var classAccessors:Array = parseAccessorsByModifier(type, xml.accessor, true);
 			var instanceAccessors:Array = parseAccessorsByModifier(type, xml.factory.accessor, false);
 			return classAccessors.concat(instanceAccessors);
@@ -152,6 +165,9 @@ package org.as3commons.emit.reflect {
 		 *
 		 */
 		private function parseMembers(memberClass:Class, members:XMLList, declaringType:EmitType, isStatic:Boolean):Array {
+			Assert.notNull(memberClass, "memberClass argument must not be null");
+			Assert.notNull(members, "members argument must not be null");
+			Assert.notNull(declaringType, "declaringType argument must not be null");
 			var result:Array = [];
 
 			for each (var m:XML in members) {
@@ -170,6 +186,7 @@ package org.as3commons.emit.reflect {
 		 *
 		 */
 		private function parseExtendsClasses(extendedClasses:XMLList, applicationDomain:ApplicationDomain):Array {
+			Assert.notNull(extendedClasses, "extendedClasses argument must not be null");
 			var result:Array = [];
 			for each (var node:XML in extendedClasses) {
 				var cls:Class = ClassUtils.forName(node.@type.toString(), applicationDomain);
@@ -181,10 +198,12 @@ package org.as3commons.emit.reflect {
 		}
 
 		private function parseMethodsByModifier(type:EmitType, methodsXML:XMLList, isStatic:Boolean, applicationDomain:ApplicationDomain):Array {
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(methodsXML, "methodsXML argument must not be null");
 			var result:Array = [];
 
 			for each (var methodXML:XML in methodsXML) {
-				if (methodXML.@declaredBy.toString().replace('::', ':') != type.fullName) {
+				if (methodXML.@declaredBy.toString().replace(SWFConstant.DOUBLE_COLON, SWFConstant.COLON) != type.fullName) {
 					continue;
 				}
 
@@ -202,11 +221,12 @@ package org.as3commons.emit.reflect {
 		}
 
 		private function parseParameters(paramsXML:XMLList, applicationDomain:ApplicationDomain):Array {
+			Assert.notNull(paramsXML, "paramsXML argument must not be null");
 			var params:Array = [];
 			for each (var paramXML:XML in paramsXML) {
 				var index:int = parseInt(paramXML.@index);
-				var isOptional:Boolean = (paramXML.@optional == "true");
-				var name:String = "arg" + index.toString();
+				var isOptional:Boolean = (paramXML.@optional == TRUE);
+				var name:String = ARG + index.toString();
 				var type:EmitType = EmitType.forName(paramXML.@type, applicationDomain);
 				var param:EmitParameter = new EmitParameter(name, index, type, isOptional);
 				params.push(param);
@@ -215,10 +235,12 @@ package org.as3commons.emit.reflect {
 		}
 
 		private function parseAccessorsByModifier(type:EmitType, accessorsXML:XMLList, isStatic:Boolean):Array {
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(accessorsXML, "accessorsXML argument must not be null");
 			var result:Array = [];
 
 			for each (var accessorXML:XML in accessorsXML) {
-				if (accessorXML.@declaredBy.toString().replace('::', ':') != type.fullName) {
+				if (accessorXML.@declaredBy.toString().replace(SWFConstant.DOUBLE_COLON, SWFConstant.COLON) != type.fullName) {
 					continue;
 				}
 
@@ -239,6 +261,8 @@ package org.as3commons.emit.reflect {
 		 * Parses MetaData objects from the given metaDataNodes XML data and adds them to the given metaData array.
 		 */
 		private function parseMetaData(metaDataNodes:XMLList, metaData:IMetaDataContainer):void {
+			Assert.notNull(metaDataNodes, "metaDataNodes argument must not be null");
+			Assert.notNull(metaData, "metaData argument must not be null");
 			for each (var metaDataXML:XML in metaDataNodes) {
 				var metaDataArgs:Array = [];
 

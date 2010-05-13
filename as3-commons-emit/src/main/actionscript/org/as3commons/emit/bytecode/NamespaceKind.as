@@ -21,7 +21,7 @@
  */
 package org.as3commons.emit.bytecode {
 
-	public class NamespaceKind {
+	public final class NamespaceKind {
 		public static const NAMESPACE:uint = 0x08;
 		public static const PACKAGE_NAMESPACE:uint = 0x16;
 		public static const PACKAGE_INTERNAL_NS:uint = 0x17;

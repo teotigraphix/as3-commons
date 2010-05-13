@@ -21,7 +21,7 @@
  */
 package org.as3commons.emit.bytecode {
 
-	public class MethodFlags {
+	public final class MethodFlags {
 		public static var NEED_ARGUMENTS:uint = 0x01;
 		public static var NEED_ACTIVATION:uint = 0x02;
 		public static var NEED_REST:uint = 0x04;

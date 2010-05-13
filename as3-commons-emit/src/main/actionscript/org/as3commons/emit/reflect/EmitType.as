@@ -22,10 +22,12 @@
 package org.as3commons.emit.reflect {
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.AbstractMultiname;
 	import org.as3commons.emit.bytecode.BCNamespace;
 	import org.as3commons.emit.bytecode.MultipleNamespaceName;
 	import org.as3commons.emit.bytecode.QualifiedName;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
@@ -52,7 +54,7 @@ package org.as3commons.emit.reflect {
 		//
 		//--------------------------------------------------------------------------
 
-		private static var typeProvider:ITypeProvider;
+		private static var _typeProvider:ITypeProvider;
 
 		//--------------------------------------------------------------------------
 		//
@@ -66,6 +68,7 @@ package org.as3commons.emit.reflect {
 		 * @param instance the instance from which to get a type description
 		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):EmitType {
+			Assert.notNull(instance, "instance argument must not be null");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:EmitType;
 			var clazz:Class = ClassUtils.forInstance(instance, applicationDomain);
@@ -82,13 +85,14 @@ package org.as3commons.emit.reflect {
 		 * @param name the classname from which to get a type description
 		 */
 		public static function forName(name:String, applicationDomain:ApplicationDomain = null):EmitType {
+			Assert.hasText(name, "name argument must not be empty or null");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:EmitType;
 			switch (name) {
-				case "void":
+				case SWFConstant.VOID_IDENTIFIER:
 					result = EmitTypeUtils.VOID;
 					break;
-				case "*":
+				case SWFConstant.ASTERISK:
 					result = EmitTypeUtils.UNTYPED;
 					break;
 				default:
@@ -113,6 +117,7 @@ package org.as3commons.emit.reflect {
 		 * @param clazz the class from which to get a type description
 		 */
 		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain = null):EmitType {
+			Assert.notNull(clazz, "clazz argument must not be null");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:EmitType;
 			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz);
@@ -130,10 +135,10 @@ package org.as3commons.emit.reflect {
 		 *
 		 */
 		public static function getTypeProvider():ITypeProvider {
-			if (typeProvider == null) {
-				typeProvider = new EmitTypeProvider();
+			if (_typeProvider == null) {
+				_typeProvider = new EmitTypeProvider();
 			}
-			return typeProvider;
+			return _typeProvider;
 		}
 
 		//--------------------------------------------------------------------------
@@ -153,13 +158,18 @@ package org.as3commons.emit.reflect {
 		 */
 		public function EmitType(applicationDomain:ApplicationDomain, qname:QualifiedName, multiname:AbstractMultiname = null, cls:Class = null) {
 			super(applicationDomain);
+			initEmitType(cls, qname, multiname);
+		}
 
+		protected function initEmitType(cls:Class, qname:QualifiedName, multiname:AbstractMultiname):void {
+			Assert.notNull(qname, "qname argument must not be null");
 			clazz = cls;
 			_qname = qname;
 			_multiname = multiname || qname;
 			_multiNamespaceName = EmitTypeUtils.getMultiNamespaceName(qname);
 			_typeNamespace = EmitTypeUtils.getTypeNamespace(qname);
 		}
+
 
 		//--------------------------------------------------------------------------
 		//
@@ -424,7 +434,7 @@ package org.as3commons.emit.reflect {
 		 */
 		public function get scriptInitializer():EmitMethod {
 			if (_scriptInitializer == null) {
-				_scriptInitializer = new EmitMethod(this, "", "", EmitMemberVisibility.PUBLIC, true, false, [], EmitTypeUtils.UNTYPED);
+				_scriptInitializer = new EmitMethod(this, SWFConstant.EMPTY_STRING, SWFConstant.EMPTY_STRING, EmitMemberVisibility.PUBLIC, true, false, [], EmitTypeUtils.UNTYPED);
 			}
 			return _scriptInitializer;
 		}
@@ -450,7 +460,7 @@ package org.as3commons.emit.reflect {
 		 */
 		public function get staticInitializer():EmitMethod {
 			if (_staticInitializer == null) {
-				_staticInitializer = new EmitMethod(this, "", "", EmitMemberVisibility.PUBLIC, true, false, [], EmitTypeUtils.UNTYPED);
+				_staticInitializer = new EmitMethod(this, SWFConstant.EMPTY_STRING, SWFConstant.EMPTY_STRING, EmitMemberVisibility.PUBLIC, true, false, [], EmitTypeUtils.UNTYPED);
 			}
 			return _staticInitializer;
 		}
@@ -529,6 +539,7 @@ package org.as3commons.emit.reflect {
 		//--------------------------------------------------------------------------
 
 		private function findMember(members:Array, name:String):IEmitMember {
+			Assert.notNull(members, "members argument must not be null");
 			for each (var member:IEmitMember in members) {
 				if (member.name == name) {
 					return member;

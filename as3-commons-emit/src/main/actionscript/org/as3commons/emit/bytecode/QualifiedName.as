@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.bytecode {
+	import org.as3commons.emit.SWFConstant;
+	import org.as3commons.lang.Assert;
 
 	public class QualifiedName extends AbstractMultiname {
 		private var _name:String;
@@ -27,10 +29,16 @@ package org.as3commons.emit.bytecode {
 
 		public function QualifiedName(ns:BCNamespace, name:String, kind:uint = 0x07) {
 			super(kind);
+			initQualifiedName(ns, name);
+		}
 
+		protected function initQualifiedName(ns:BCNamespace, name:String):void {
+			Assert.notNull(ns, "ns argument must not be null");
+			Assert.notNull(name, "name argument must not be null");
 			_ns = ns;
 			_name = name;
 		}
+
 
 		public function get ns():BCNamespace {
 			return _ns;
@@ -52,8 +60,7 @@ package org.as3commons.emit.bytecode {
 
 		public function toString():String {
 			var nsString:String = ns.toString();
-			var sepChar:String = (nsString.indexOf(':') == -1) ? ':' : '/';
-
+			var sepChar:String = (nsString.indexOf(SWFConstant.COLON) == -1) ? SWFConstant.COLON : SWFConstant.FORWARD_SLASH;
 			return nsString.concat(sepChar, name);
 		}
 	}

@@ -25,19 +25,23 @@ package org.as3commons.emit.bytecode {
 
 	import org.as3commons.emit.reflect.EmitMethod;
 	import org.as3commons.emit.reflect.EmitType;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IEquals;
 
 
 	public class ByteCodeLayoutBuilder implements IByteCodeLayoutBuilder {
-		private var _types:Array = new Array();
+
+		private var _types:Array = [];
 		private var _methods:Dictionary = new Dictionary();
 
 		private var _ignoredPackages:Array = ["flash.*", "mx.*", "fl.*", ":Object"];
 
 		public function ByteCodeLayoutBuilder() {
+			super();
 		}
 
 		public function registerType(type:EmitType):void {
+			Assert.notNull(type, "type argument must not be null");
 			if (_types.indexOf(type) == -1) {
 				/* if (type.isGeneric)
 				   {
@@ -58,6 +62,8 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function registerMethodBody(method:EmitMethod, methodBody:DynamicMethod):void {
+			Assert.notNull(method, "method argument must not be null");
+			Assert.notNull(methodBody, "methodBody argument must not be null");
 			_methods[method] = methodBody;
 		}
 
@@ -86,6 +92,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function isIgnored(type:EmitType):Boolean {
+			Assert.notNull(type, "type argument must not be null");
 			for each (var ignoredPackage:String in _ignoredPackages) {
 				if (ByteCodeUtils.packagesMatch(ignoredPackage, type.fullName)) {
 					return true;
@@ -96,12 +103,14 @@ package org.as3commons.emit.bytecode {
 		}
 
 		private function pushUniqueValue(array:Array, value:IEquals):uint {
+			Assert.notNull(array, "array argument must not be null");
+			Assert.notNull(value, "value argument must not be null");
 			for (var i:uint = 0; i < array.length; i++) {
 				if (value.equals(array[i]))
 					return i;
 			}
 
-			array.push(value);
+			array[array.length] = value;
 
 			return array.length - 1;
 		}

@@ -22,6 +22,7 @@
 package org.as3commons.emit.bytecode {
 	import flash.utils.Dictionary;
 
+	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.reflect.EmitAccessor;
 	import org.as3commons.emit.reflect.EmitConstant;
 	import org.as3commons.emit.reflect.EmitMemberVisibility;
@@ -30,6 +31,7 @@ package org.as3commons.emit.bytecode {
 	import org.as3commons.emit.reflect.EmitTypeUtils;
 	import org.as3commons.emit.reflect.EmitVariable;
 	import org.as3commons.emit.reflect.IEmitMember;
+	import org.as3commons.lang.Assert;
 
 	public class DynamicClass extends EmitType {
 
@@ -39,7 +41,7 @@ package org.as3commons.emit.bytecode {
 		//
 		//--------------------------------------------------------------------------
 
-		private var methodBodies:Dictionary = new Dictionary();
+		private var _methodBodies:Dictionary = new Dictionary();
 
 		//--------------------------------------------------------------------------
 		//
@@ -51,9 +53,13 @@ package org.as3commons.emit.bytecode {
 		 * Constructor.
 		 */
 		public function DynamicClass(qname:QualifiedName, superClassType:EmitType, interfaces:Array, autoGenerateInitializers:Boolean = false) {
-
 			super(superClassType.applicationDomain, qname);
+			initDynamicClass(superClassType, interfaces, autoGenerateInitializers);
+		}
 
+		protected function initDynamicClass(superClassType:EmitType, interfaces:Array, autoGenerateInitializers:Boolean):void {
+			Assert.notNull(superClassType, "superClassType argument must not be null");
+			Assert.notNull(interfaces, "interfaces argument must not be null");
 			this.superClassType = superClassType;
 			this.interfaces.concat(interfaces);
 			if (autoGenerateInitializers) {
@@ -68,6 +74,7 @@ package org.as3commons.emit.bytecode {
 		//--------------------------------------------------------------------------
 
 		public function addField(field:IEmitMember):DynamicClass {
+			Assert.notNull(field, "field argument must not be null");
 			if (field is EmitConstant) {
 				if (field.isStatic) {
 					staticConstants.push(field);
@@ -85,29 +92,32 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function addMethod(method:EmitMethod):DynamicClass {
-			methods.push(method);
+			Assert.notNull(method, "method argument must not be null");
+			methods[methods.length] = method;
 			return this;
 		}
 
 		public function addMethodBody(methodBody:DynamicMethod):DynamicClass {
-			methodBodies[methodBody.method] = methodBody;
+			Assert.notNull(methodBody, "methodBody argument must not be null");
+			_methodBodies[methodBody.method] = methodBody;
 			return this;
 		}
 
 		public function addProperty(property:EmitAccessor):DynamicClass {
-			accessors.push(property);
+			Assert.notNull(property, "property argument must not be null");
+			accessors[accessors.length] = property;
 			return this;
 		}
 
 		public function getMethodBodies():Dictionary {
-			return methodBodies;
+			return _methodBodies;
 		}
 
 		/**
 		 * @private
 		 */
 		private function generateConstructor():EmitMethod {
-			return new EmitMethod(this, "ctor", null, EmitMemberVisibility.PUBLIC, false, false, superClassType.constructorMethod.parameters, EmitTypeUtils.UNTYPED);
+			return new EmitMethod(this, SWFConstant.CONSTRUCTOR_IDENTIFIER, null, EmitMemberVisibility.PUBLIC, false, false, superClassType.constructorMethod.parameters, EmitTypeUtils.UNTYPED);
 		}
 
 		public function generateInitializerMethods():void {
@@ -135,7 +145,7 @@ package org.as3commons.emit.bytecode {
 			   instructions.push([Instructions.SetProperty, field.qname]);
 			 }*/
 
-			instructions.push([Instructions.ReturnVoid]);
+			instructions[instructions.length] = [Instructions.ReturnVoid];
 
 			return new DynamicMethod(constructorMethod, 6 + argCount, 3 + argCount, 4, 5, instructions);
 		}
@@ -162,7 +172,7 @@ package org.as3commons.emit.bytecode {
 			for (var a:int = 0; a < length; a++) {
 				var field:IEmitMember = fields[a];
 				instructions.push([Instructions.FindProperty, field.qname]);
-				instructions.push([Instructions.PushString, ""]);
+				instructions.push([Instructions.PushString, SWFConstant.EMPTY_STRING]);
 				instructions.push([Instructions.InitProperty, field.qname]);
 			}
 

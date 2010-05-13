@@ -21,6 +21,7 @@
  */
 package org.as3commons.emit.bytecode {
 
+	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.ObjectUtils;
 
@@ -51,18 +52,18 @@ package org.as3commons.emit.bytecode {
 			var classString:String = null;
 
 			if (cls is String) {
-				classString = (cls as String).replace("::", ".");
+				classString = (cls as String).replace(SWFConstant.DOUBLE_COLON, SWFConstant.PERIOD);
 			} else if (cls is Class) {
 				classString = ClassUtils.getFullyQualifiedName(cls, true);
 			} else {
 				classString = ObjectUtils.getFullyQualifiedClassName(cls, true);
 			}
 
-			var packageParts:Array = pkg.split('.');
-			var classParts:Array = classString.split('.');
+			var packageParts:Array = pkg.split(SWFConstant.PERIOD);
+			var classParts:Array = classString.split(SWFConstant.PERIOD);
 
 			for (var i:uint = 0; i < packageParts.length && i < classParts.length; i++) {
-				if (packageParts[i] == '*') {
+				if (packageParts[i] == SWFConstant.ASTERISK) {
 					return true;
 				}
 

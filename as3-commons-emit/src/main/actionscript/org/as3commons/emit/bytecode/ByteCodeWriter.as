@@ -24,12 +24,21 @@ package org.as3commons.emit.bytecode {
 	import flash.utils.Endian;
 	import flash.utils.IDataOutput;
 
+	import org.as3commons.lang.Assert;
+
 
 	public class ByteCodeWriter implements IByteCodeWriter {
+
 		private var _buffer:ByteArray;
 		private var _output:IDataOutput;
 
 		public function ByteCodeWriter(output:IDataOutput) {
+			super();
+			initByteCodeWriter(output);
+		}
+
+		protected function initByteCodeWriter(output:IDataOutput):void {
+			Assert.notNull(output, "output argument must not be null");
 			_output = output;
 			_output.endian = Endian.LITTLE_ENDIAN;
 
@@ -38,6 +47,7 @@ package org.as3commons.emit.bytecode {
 		}
 
 		public function writeString(value:String):void {
+			Assert.notNull(value, "value argument must not be null");
 			this.writeU30(value.length);
 
 			_output.writeUTFBytes(value);

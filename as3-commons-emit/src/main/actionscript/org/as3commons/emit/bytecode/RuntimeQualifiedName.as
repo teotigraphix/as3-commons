@@ -20,15 +20,22 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.bytecode {
+	import org.as3commons.lang.Assert;
+
 
 	public class RuntimeQualifiedName extends AbstractMultiname {
 		private var _name:String;
 
 		public function RuntimeQualifiedName(name:String, kind:uint = 0x0F) {
 			super(kind);
+			initRuntimeQualifiedName(name);
+		}
 
+		protected function initRuntimeQualifiedName(name:String):void {
+			Assert.notNull(name, "name argument must not be null");
 			_name = name;
 		}
+
 
 		public function get name():String {
 			return _name;

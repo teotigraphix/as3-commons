@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.reflect {
+
+	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.AbstractMultiname;
 	import org.as3commons.emit.bytecode.BCNamespace;
 	import org.as3commons.emit.bytecode.GenericName;
@@ -27,6 +29,8 @@ package org.as3commons.emit.reflect {
 	import org.as3commons.emit.bytecode.NamespaceKind;
 	import org.as3commons.emit.bytecode.NamespaceSet;
 	import org.as3commons.emit.bytecode.QualifiedName;
+	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.ClassUtils;
 
 	public class EmitTypeUtils {
 
@@ -40,7 +44,7 @@ package org.as3commons.emit.reflect {
 
 		public static function get REST():EmitType {
 			if (_rest == null) {
-				_rest = new EmitType(null, new QualifiedName(BCNamespace.packageNS(""), "..."));
+				_rest = new EmitType(null, new QualifiedName(BCNamespace.packageNS(SWFConstant.EMPTY_STRING), SWFConstant.PARAMS_IDENTIFIER));
 			}
 			return _rest;
 		}
@@ -49,16 +53,19 @@ package org.as3commons.emit.reflect {
 
 		public static function get UNTYPED():EmitType {
 			if (_untyped == null) {
-				_untyped = new EmitType(null, new QualifiedName(BCNamespace.packageNS("*"), "*"));
+				_untyped = new EmitType(null, new QualifiedName(BCNamespace.packageNS(SWFConstant.ASTERISK), SWFConstant.ASTERISK));
 			}
 			return _untyped;
 		}
 
 		public static var _void:EmitType;
+		private static const genericExpr:RegExp = /^([^\<]+)\.\<.+\>$/;
+		private static const paramsExpr:RegExp = /\<(.+)\>$/;
+		private static const paramTypeNamesDelimiter:RegExp = /\s*,\s*/;
 
 		public static function get VOID():EmitType {
 			if (_void == null) {
-				_void = new EmitType(null, new QualifiedName(BCNamespace.packageNS(""), "void"));
+				_void = new EmitType(null, new QualifiedName(BCNamespace.packageNS(SWFConstant.EMPTY_STRING), SWFConstant.VOID_IDENTIFIER));
 			}
 			return _void;
 		}
@@ -70,6 +77,8 @@ package org.as3commons.emit.reflect {
 		//--------------------------------------------------------------------------
 
 		public static function getGenericName(genericTypeDefinition:EmitType, genericParams:Array):GenericName {
+			Assert.notNull(genericTypeDefinition, "genericTypeDefinition argument must not be null");
+			Assert.notNull(genericParams, "genericParams argument must not be null");
 			genericParams = genericParams.map(function(type:EmitType, ... args):AbstractMultiname {
 					return type.multiname;
 				});
@@ -78,20 +87,20 @@ package org.as3commons.emit.reflect {
 		}
 
 		public static function getGenericTypeDefinition(typeName:String):EmitType {
-			var genericExpr:RegExp = /^([^\<]+)\.\<.+\>$/;
+			Assert.notNull(typeName, "typeName argument must not be null");
 			var genericTypeName:String = genericExpr.exec(typeName)[1].toString();
 
 			return EmitType.forName(genericTypeName);
 		}
 
 		public static function getGenericParameters(typeName:String):Array {
-			var genericParameters:Array = new Array();
-			var paramsExpr:RegExp = /\<(.+)\>$/;
+			Assert.notNull(typeName, "typeName argument must not be null");
+			var genericParameters:Array = [];
 			var result:Object = paramsExpr.exec(typeName);
 
 			if (result != null) {
-				// TODO: Update with correct delmiter
-				var paramTypeNames:Array = result[1].toString().split(', ');
+				// TODO: Update with correct delimiter
+				var paramTypeNames:Array = result[1].toString().split(paramTypeNamesDelimiter);
 
 				for each (var paramTypeName:String in paramTypeNames) {
 					genericParameters.push(EmitType.forName(paramTypeName));
@@ -102,30 +111,33 @@ package org.as3commons.emit.reflect {
 		}
 
 		public static function getMultiNamespaceName(qname:QualifiedName):MultipleNamespaceName {
+			Assert.notNull(qname, "qname argument must not be null");
 			return new MultipleNamespaceName(qname.name, new NamespaceSet([qname.ns]));
 		}
 
 		public static function getQualifiedName(typeName:String):QualifiedName {
+			Assert.notNull(typeName, "typeName argument must not be null");
 			var ns:String;
 			var nsKind:uint;
 			var name:String;
 
-			if (typeName.indexOf('::') == -1) {
-				ns = "";
+			if (typeName.indexOf(SWFConstant.DOUBLE_COLON) == -1) {
+				ns = SWFConstant.EMPTY_STRING;
 				nsKind = NamespaceKind.PACKAGE_NAMESPACE;
 				name = typeName;
 			} else {
-				ns = typeName.substr(0, typeName.indexOf('::'));
-				name = typeName.substr(typeName.indexOf('::') + 2);
-				nsKind = org.as3commons.lang.ClassUtils.isPrivateClass(ns) ? NamespaceKind.PRIVATE_NS : NamespaceKind.PACKAGE_NAMESPACE;
+				ns = typeName.substr(0, typeName.indexOf(SWFConstant.DOUBLE_COLON));
+				name = typeName.substr(typeName.indexOf(SWFConstant.DOUBLE_COLON) + 2);
+				nsKind = ClassUtils.isPrivateClass(ns) ? NamespaceKind.PRIVATE_NS : NamespaceKind.PACKAGE_NAMESPACE;
 			}
 
 			return new QualifiedName(new BCNamespace(ns, nsKind), name);
 		}
 
 		public static function getTypeNamespace(qname:QualifiedName):BCNamespace {
+			Assert.notNull(qname, "qname argument must not be null");
 			var typeNamespaceKind:uint = (qname.ns.kind == NamespaceKind.PACKAGE_NAMESPACE) ? NamespaceKind.NAMESPACE : NamespaceKind.PROTECTED_NAMESPACE;
-			return new BCNamespace(qname.ns.name.concat(':', qname.name), typeNamespaceKind);
+			return new BCNamespace(qname.ns.name.concat(SWFConstant.COLON, qname.name), typeNamespaceKind);
 		}
 	}
 }

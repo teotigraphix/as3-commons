@@ -21,7 +21,7 @@
  */
 package org.as3commons.emit.bytecode {
 
-	public class TraitKind {
+	public final class TraitKind {
 		public static const SLOT:int = 0x0;
 		public static const METHOD:int = 0x1;
 		public static const GETTER:int = 0x2;

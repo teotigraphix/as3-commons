@@ -21,7 +21,7 @@
  */
 package org.as3commons.emit.bytecode {
 
-	public class MultinameKind {
+	public final class MultinameKind {
 		public static const QUALIFIED_NAME:uint = 0x07;
 		public static const QUALIFIED_NAME_ATTRIBUTE:uint = 0x0D;
 		public static const RUNTIME_QUALIFIED_NAME:uint = 0x0F;

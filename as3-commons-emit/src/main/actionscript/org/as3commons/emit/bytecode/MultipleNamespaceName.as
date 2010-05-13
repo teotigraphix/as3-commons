@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.bytecode {
+	import org.as3commons.emit.SWFConstant;
+	import org.as3commons.lang.Assert;
 
 	public class MultipleNamespaceName extends AbstractMultiname {
 		private var _name:String;
@@ -27,10 +29,16 @@ package org.as3commons.emit.bytecode {
 
 		public function MultipleNamespaceName(name:String, namespaceSet:NamespaceSet, kind:uint = 0x09) {
 			super(kind);
+			initMultipleNamespaceName(name, namespaceSet);
+		}
 
+		protected function initMultipleNamespaceName(name:String, namespaceSet:NamespaceSet):void {
+			Assert.notNull(name, "name argument must not be null");
+			Assert.notNull(namespaceSet, "namespaceSet argument must not be null");
 			_name = name;
 			_namespaceSet = namespaceSet;
 		}
+
 
 		public function get name():String {
 			return _name;
@@ -52,7 +60,7 @@ package org.as3commons.emit.bytecode {
 
 		public function toString():String {
 			var nsString:String = namespaceSet.toString();
-			var sepChar:String = (nsString.indexOf(':') == -1) ? ':' : '/';
+			var sepChar:String = (nsString.indexOf(SWFConstant.COLON) == -1) ? SWFConstant.COLON : SWFConstant.FORWARD_SLASH;
 
 			return nsString.concat(sepChar, name);
 		}

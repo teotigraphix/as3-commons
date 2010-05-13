@@ -31,8 +31,6 @@ package org.as3commons.emit {
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 
-	import mx.controls.SWFLoader;
-
 	import org.as3commons.emit.bytecode.ByteCodeLayoutBuilder;
 	import org.as3commons.emit.bytecode.DynamicClass;
 	import org.as3commons.emit.bytecode.IByteCodeLayout;
@@ -50,10 +48,15 @@ package org.as3commons.emit {
 	 */
 	public class ClassRepository {
 
-		private var classCache:ClassCache;
+		private var _classCache:ClassCache;
 
 		public function ClassRepository(classGenerator:IClassGenerator = null) {
-			classCache = new ClassCache();
+			super();
+			initClassRepository();
+		}
+
+		protected function initClassRepository():void {
+			_classCache = new ClassCache();
 			_classGenerator = classGenerator;
 		}
 
@@ -68,13 +71,13 @@ package org.as3commons.emit {
 		}
 
 		public function contains(cls:Class):Boolean {
-			return classCache.contains(cls);
+			return _classCache.contains(cls);
 		}
 
 		public function create(cls:Class, args:Array = null):Object {
 			args = args || [];
 
-			var newClass:Class = classCache.get(cls);
+			var newClass:Class = _classCache.get(cls);
 			if (newClass == null) {
 				throw new IllegalArgumentError("A class definition for " + ClassUtils.getFullyQualifiedName(cls) + " has not been prepared yet");
 			}
@@ -92,7 +95,7 @@ package org.as3commons.emit {
 		public function prepare(classes:Array, applicationDomain:ApplicationDomain = null):IEventDispatcher {
 			applicationDomain = applicationDomain || ApplicationDomain.currentDomain;
 			classes = classes.filter(function(cls:Class, index:int, array:Array):Boolean {
-					return !classCache.contains(cls);
+					return !_classCache.contains(cls);
 				});
 
 			if (classes.length == 0) {
@@ -130,10 +133,10 @@ package org.as3commons.emit {
 			function classesLoaded(event:Event):void {
 				for each (var cls:Class in classes) {
 					var qname:QualifiedName = generatedNames[cls];
-					var fullName:String = qname.ns.name.concat("::", qname.name);
+					var fullName:String = qname.ns.name.concat(SWFConstant.DOUBLE_COLON, qname.name);
 					var generatedClass:Class = loader.contentLoaderInfo.applicationDomain.getDefinition(fullName) as Class;
 					EmitType.forClass(generatedClass);
-					classCache.put(cls, generatedClass);
+					_classCache.put(cls, generatedClass);
 				}
 
 				dispatcher.dispatchEvent(new Event(Event.COMPLETE));
@@ -182,7 +185,10 @@ class CompleteEventDispatcher extends EventDispatcher {
 
 class SWFLoader extends Loader {
 
+	public static const ALLOW_LOAD_BYTES_CODE_EXECUTION_METHOD_NAME:String = "allowLoadBytesCodeExecution";
+
 	public function SWFLoader() {
+		super();
 	}
 
 	public function loadClasses(layout:IByteCodeLayout, applicationDomain:ApplicationDomain):void {
@@ -196,8 +202,8 @@ class SWFLoader extends Loader {
 		buffer.position = 0;
 
 		var loaderContext:LoaderContext = new LoaderContext(false, applicationDomain);
-		if (loaderContext.hasOwnProperty("allowLoadBytesCodeExecution")) {
-			loaderContext["allowLoadBytesCodeExecution"] = true;
+		if (loaderContext.hasOwnProperty(ALLOW_LOAD_BYTES_CODE_EXECUTION_METHOD_NAME)) {
+			loaderContext[ALLOW_LOAD_BYTES_CODE_EXECUTION_METHOD_NAME] = true;
 		}
 
 		loadBytes(buffer, loaderContext);

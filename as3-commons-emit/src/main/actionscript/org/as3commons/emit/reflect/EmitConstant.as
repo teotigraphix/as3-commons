@@ -20,7 +20,10 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.reflect {
+
+	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.QualifiedName;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Constant;
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
@@ -38,15 +41,23 @@ package org.as3commons.emit.reflect {
 		 */
 		public function EmitConstant(declaringType:EmitType, name:String, fullName:String, type:EmitType, visibility:uint, isStatic:Boolean, isOverride:Boolean, metaData:Array = null, ns:String = null) {
 			super(name, type.name, declaringType.name, isStatic);
+			initEmitConstant(visibility, isOverride, declaringType, type, ns, fullName, name);
+		}
 
+		protected function initEmitConstant(visibility:uint, isOverride:Boolean, declaringType:EmitType, type:EmitType, ns:String, fullName:String, name:String):void {
+			Assert.notNull(declaringType, "declaringType argument must not be null");
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(fullName, "fullName argument must not be null");
+			Assert.notNull(name, "name argument must not be null");
 			_visibility = visibility;
 			_isOverride = isOverride;
 			as3commons_reflect::setDeclaringType(declaringType);
 			as3commons_reflect::setType(type);
-			as3commons_reflect::setNamespaceURI(ns || "");
+			as3commons_reflect::setNamespaceURI(ns || SWFConstant.EMPTY_STRING);
 			_qname = EmitReflectionUtils.getMemberQualifiedName(this);
 			_fullName = (fullName || EmitReflectionUtils.getMemberFullName(declaringType, name));
 		}
+
 
 		//--------------------------------------------------------------------------
 		//

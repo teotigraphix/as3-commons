@@ -22,9 +22,12 @@
 package org.as3commons.emit.tags {
 
 	import org.as3commons.emit.ISWFOutput;
+	import org.as3commons.lang.Assert;
 
 	public class FrameLabelTag extends AbstractTag {
+
 		public static const TAG_ID:int = 0x2B;
+		private static const NAMED_ANCHOR_FLAG:Number = 0x1; // Named Anchor flag - always 1
 
 		private var _name:String;
 
@@ -35,9 +38,10 @@ package org.as3commons.emit.tags {
 		}
 
 		public override function writeData(output:ISWFOutput):void {
+			Assert.notNull(output, "output argument must not be null");
 			output.writeString(_name);
 
-			output.writeUI8(0x1); // Named Anchor flag - always 1
+			output.writeUI8(NAMED_ANCHOR_FLAG);
 		}
 
 		public function get name():String {
