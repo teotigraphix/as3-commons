@@ -12,13 +12,13 @@
 	<description>AS3Commons project</description>
 
 	<properties>
-		<flex-mojos.version>3.6</flex-mojos.version>
+		<flex-mojos.version>3.6.1</flex-mojos.version>
 		<flex-sdk.version>3.5.0.12683</flex-sdk.version>
 
 		<!-- Flash Player -->
 		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}
 		</flashplayer.version>
-		<flashplayer.version.major>10</flashplayer.version.major>
+		<flashplayer.version.major>9</flashplayer.version.major>
 		<flashplayer.version.minor>0</flashplayer.version.minor>
 		<flashplayer.version.revision>0</flashplayer.version.revision>
 	</properties>
@@ -86,21 +86,30 @@
 		</developer>
 	</developers>
 
-	<modules>
+	<modules>  
 		<module>as3-commons-collections</module>
 		<module>as3-commons-concurrency</module>
 		<module>as3-commons-emit</module>
 		<module>as3-commons-lang</module>
 		<module>as3-commons-logging</module>
-		<module>as3-commons-reflect</module>
+		<module>as3-commons-reflect</module><!-- 
 		<module>as3-commons-serialization</module>
+		-->
 	</modules>
 
 	<dependencies>
 		<!-- ================== -->
 		<!-- Flex dependencies -->
 		<!-- ================== -->
-
+      
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>flex</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>swc</type>
+            <scope>external</scope>
+        </dependency>
+        
 		<dependency>
 			<groupId>com.adobe.flex.framework</groupId>
 			<artifactId>framework</artifactId>
@@ -108,6 +117,15 @@
 			<scope>external</scope>
 			<type>swc</type>
 		</dependency>
+		
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>framework</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>zip</type>
+            <classifier>configs</classifier>
+        </dependency>
+        
 		<dependency>
 			<groupId>com.adobe.flex.framework</groupId>
 			<artifactId>rpc</artifactId>
@@ -115,6 +133,31 @@
 			<scope>external</scope>
 			<type>swc</type>
 		</dependency>
+		
+		<dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>utilities</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>swc</type>
+            <scope>external</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>framework</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>rb.swc</type>
+            <scope>external</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>rpc</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>rb.swc</type>
+            <scope>external</scope>
+        </dependency>
+	
 		<dependency>
 			<groupId>com.adobe.flex.framework</groupId>
 			<artifactId>playerglobal</artifactId>
@@ -123,34 +166,33 @@
 			<type>swc</type>
 			<classifier>${flashplayer.version.major}</classifier>
 		</dependency>
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>framework</artifactId>
-			<version>${flex-sdk.version}</version>
-			<scope>external</scope>
-			<type>rb.swc</type>
-		</dependency>
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>rpc</artifactId>
-			<version>${flex-sdk.version}</version>
-			<scope>external</scope>
-			<type>rb.swc</type>
-		</dependency>
+		
+        <dependency>
+            <groupId>com.adobe.flexunit</groupId>
+            <artifactId>flexunit</artifactId>
+            <version>0.90</version>
+            <type>swc</type>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>com.adobe.flexunit</groupId>
-			<artifactId>flexunit</artifactId>
-			<version>0.90</version>
-			<type>swc</type>
-		</dependency>
 		<dependency>
 			<groupId>org.sonatype.flexmojos</groupId>
 			<artifactId>flexmojos-unittest-support</artifactId>
 			<version>${flex-mojos.version}</version>
 			<type>swc</type>
 			<scope>test</scope>
+			<exclusions>
+                <exclusion>
+                    <groupId>com.adobe.flex.framework</groupId>
+                    <artifactId>framework</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.adobe.flex.framework</groupId>
+                    <artifactId>playerglobal</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -160,7 +202,7 @@
 		<defaultGoal>install</defaultGoal>
 
 		<plugins>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -181,19 +223,32 @@
 						<version>${flex-sdk.version}</version>
 						<type>pom</type>
 					</dependency>
+					<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>adt</artifactId>
+						<version>${flex-sdk.version}</version>
+						<scope>compile</scope>
+					</dependency>
 				</dependencies>
 				<configuration>
+				    <configurationReport>true</configurationReport>
 					<targetPlayer>${flashplayer.version}</targetPlayer>
 					<locales>
 						<param>en_US</param>
 					</locales>
 					<updateSecuritySandbox>true</updateSecuritySandbox>
+					<includeAsClasses>
+                        <source>
+                            <directory>src/main/actionscript</directory>
+                        </source>
+                    </includeAsClasses>
 				</configuration>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
+				<version>2.1</version>
 			</plugin>
 
 		</plugins>
@@ -210,13 +265,24 @@
 				<groupId>org.sonatype.flexmojos</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<version>${flex-mojos.version}</version>
-				<configuration>
-					<locales>
-						<param>en_US</param>
-					</locales>
-					<reportOutputDirectory>target/site/docs</reportOutputDirectory>
-				</configuration>
+				<inherited>true</inherited>
+				   <reportSets>
+                    <reportSet>
+                        <id>flex-reports</id>
+                        <reports>
+                            <report>asdoc-report</report>
+                        </reports>
+                        <configuration>
+                            <reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
+                            <description>API documentation</description>
+                            <mainTitle>API documentation</mainTitle>
+                            <windowTitle>API documentation</windowTitle>
+                            <name>SpringASDocs</name>
+                        </configuration>
+                    </reportSet>
+                </reportSets>
 			</plugin>
+			
 		</plugins>
 	</reporting>
 
@@ -234,32 +300,53 @@
 		</snapshotRepository>
 		<site>
 			<id>yoolab.org-as3commons</id>
-			<url>scp://www.as3commons.org/srv/www/www.as3commons.org/public_html</url>
+			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html</url>
 		</site>
 	</distributionManagement>
 
-	<repositories>
-		<repository>
-			<id>flexmojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
-		</repository>
-		<repository>
-			<id>fna-repository</id>
-			<url>http://fna.googlecode.com/svn/trunk/fna/fna_m2_repository</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>flex-mojos-repository</id>
+            <url>http://repository.sonatype.org/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>yoolab.org-releases</id>
+            <url>http://projects.yoolab.org/maven/content/repositories/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>yoolab.org-snapshots</id>
+            <url>http://projects.yoolab.org/maven/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>flexmojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/public</url>
-		</pluginRepository>
-	</pluginRepositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>flexmojos-repository</id>
+            <url>http://repository.sonatype.org/content/groups/public</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>flexpmd.opensource.adobe</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <name>FlexPMD repository on opensource.adobe.com</name>
+            <url>http://opensource.adobe.com/svn/opensource/flexpmd/maven-repository/release</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>

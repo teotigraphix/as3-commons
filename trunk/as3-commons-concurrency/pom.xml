@@ -78,7 +78,7 @@
 	<distributionManagement>
 		<site>
 			<id>yoolab.org-as3commons</id>
-			<url>scp://www.as3commons.org/srv/www/www.as3commons.org/public_html/as3-commons-concurrency</url>
+			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-concurrency</url>
 		</site>
 	</distributionManagement>
 

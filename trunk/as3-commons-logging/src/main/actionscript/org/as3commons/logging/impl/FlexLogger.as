@@ -198,7 +198,7 @@ package org.as3commons.logging.impl {
 		 * @param parameters
 		 * @param logEventLevel
 		 */
-		private function log(logLogger:LogLogger, message:String, parameters:Array, logEventLevel:int):void {
+		private function log(logLogger:mx.logging.LogLogger, message:String, parameters:Array, logEventLevel:int):void {
 			if (logLogger.hasEventListener(LogEvent.LOG)) {
 				message = MessageUtil.toString(message, parameters);
 				logLogger.dispatchEvent(new LogEvent(message, logEventLevel));

@@ -27,7 +27,7 @@
 			
 		</section>
 		
-		<section name="PseudoThread & IRunnable">
+		<section name="PseudoThread &quot; IRunnable">
 
 			<p>
 			   PseudoThread represents a "thread" in ActionScript. The basic concept is that an instance of 
