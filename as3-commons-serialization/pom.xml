@@ -22,12 +22,14 @@
 			<artifactId>as3commons-lang</artifactId>
 			<version>0.2.1</version>
 			<type>swc</type>
+			<scope>external</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-reflect</artifactId>
 			<version>1.3</version>
 			<type>swc</type>
+			<scope>external</scope>
 		</dependency>
 	</dependencies>
 	
@@ -89,7 +91,7 @@
 	<distributionManagement>
 		<site>
 			<id>yoolab.org-as3commons</id>
-			<url>scp://www.as3commons.org/srv/www/www.as3commons.org/public_html/as3-commons-serialization</url>
+			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-serialization</url>
 		</site>
 	</distributionManagement>
 

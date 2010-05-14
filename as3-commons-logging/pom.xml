@@ -76,7 +76,7 @@
 	<distributionManagement>
 		<site>
 			<id>yoolab.org-as3commons</id>
-			<url>scp://www.as3commons.org/srv/www/www.as3commons.org/public_html/as3-commons-logging</url>
+			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-logging</url>
 		</site>
 	</distributionManagement>
 

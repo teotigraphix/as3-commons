@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AS3 Commons Collections">
+<project name="AS3 Commons Concurrency">
  
     <skin>
         <groupId>org.apache.tapestry</groupId>
