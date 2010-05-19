@@ -29,7 +29,6 @@ package org.as3commons.emit.bytecode {
 		public function GenericName(typeDefinition:AbstractMultiname, genericParameters:Array, kind:uint = 0x1D) {
 			super(kind);
 			initGenericName(typeDefinition, genericParameters);
-			initGenericName(typeDefinition, genericParameters);
 		}
 
 		protected function initGenericName(typeDefinition:AbstractMultiname, genericParameters:Array):void {

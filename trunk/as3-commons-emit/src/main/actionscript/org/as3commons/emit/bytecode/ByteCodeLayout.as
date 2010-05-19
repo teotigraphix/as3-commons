@@ -650,7 +650,7 @@ package org.as3commons.emit.bytecode {
 							//arr = arr.concat(gen.genericParameters);
 
 							for each (var mn:AbstractMultiname in gen.genericParameters) {
-								arr.push(registerMultiname(mn));
+								arr[arr.length] = registerMultiname(mn);
 							}
 
 							return arr;

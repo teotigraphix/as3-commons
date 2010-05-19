@@ -37,14 +37,15 @@ package org.as3commons.emit {
 		public function read(input:IDataInput):SWF {
 			Assert.notNull(input, "input argument must not be null");
 			var swfIdentifier:String = input.readUTFBytes(3);
-			var compressed:Boolean = (swfIdentifier.charAt(0) == SWFConstant.COMPRESSED_SWF_IDENTIFIER);
-			var version:int = input.readUnsignedByte();
-			var filesize:int = input.readUnsignedInt();
+			var compressed:Boolean = (swfIdentifier == SWFConstant.COMPRESSED_SWF_IDENTIFIER);
+			var version:uint = input.readUnsignedByte();
+			var filesize:uint = input.readUnsignedInt();
 
 			var data:ByteArray = new ByteArray();
 			data.endian = input.endian;
 
-			input.readBytes(data, 0, filesize - SWFConstant.PRE_HEADER_SIZE);
+			//input.readBytes(data, 0, filesize - SWFConstant.PRE_HEADER_SIZE);
+			input.readBytes(data, 0, 0);
 
 			if (compressed) {
 				data.uncompress();
@@ -54,10 +55,14 @@ package org.as3commons.emit {
 
 			var swfInput:SWFInput = new SWFInput(input);
 
-			return new SWF(header, []);
+			return new SWF(header, readTags(data));
 		}
 
-		private function readHeader(input:IDataInput, compressed:Boolean, version:int, filesize:int):SWFHeader {
+		private function readTags(input:IDataInput):Array {
+			return [];
+		}
+
+		private function readHeader(input:IDataInput, compressed:Boolean, version:uint, filesize:uint):SWFHeader {
 			Assert.notNull(input, "input argument must not be null");
 			var frameSize:Rectangle = readRectangle(input);
 
@@ -67,7 +72,7 @@ package org.as3commons.emit {
 			var frameRateA:Number = input.readUnsignedByte();
 			var frameRateB:Number = input.readUnsignedByte();
 
-			var frameRate:Number = parseFloat(frameRateB.toString() + "." + frameRateA.toString());
+			var frameRate:Number = parseFloat(frameRateB.toString() + SWFConstant.PERIOD + frameRateA.toString());
 
 			var frameCount:uint = input.readUnsignedShort();
 
