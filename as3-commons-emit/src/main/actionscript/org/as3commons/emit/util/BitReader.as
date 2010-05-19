@@ -37,15 +37,14 @@ package org.as3commons.emit.util {
 
 		public function BitReader(input:IDataInput) {
 			super();
-			initBitReader(input, endian);
+			initBitReader(input);
 		}
 
-		protected function initBitReader(input:IDataInput, endian:String):void {
-			Assert.notNull(input, "input argument must not be null");
-			Assert.notNull(endian, "endian argument must not be null");
-			this._input = input;
+		protected function initBitReader(dataInput:IDataInput):void {
+			Assert.notNull(dataInput, "input argument must not be null");
+			this._input = dataInput;
 			this._dataBuffer = new ByteArray();
-			this._dataBuffer.endian = input.endian;
+			this._dataBuffer.endian = dataInput.endian;
 		}
 
 

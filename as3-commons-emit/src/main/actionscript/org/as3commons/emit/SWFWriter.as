@@ -82,8 +82,8 @@ package org.as3commons.emit {
 				swfOutput.writeUI8(SWFConstant.UNCOMPRESSED_SWF_IDENTIFIER.charCodeAt(0));
 			}
 
-			swfOutput.writeUI8("W".charCodeAt(0));
-			swfOutput.writeUI8("S".charCodeAt(0));
+			swfOutput.writeUI8(SWFConstant.UNCOMPRESSED_SWF_IDENTIFIER.charCodeAt(1));
+			swfOutput.writeUI8(SWFConstant.UNCOMPRESSED_SWF_IDENTIFIER.charCodeAt(2));
 			swfOutput.writeUI8(header.version);
 
 			swfOutput.writeUI32(fileSize);

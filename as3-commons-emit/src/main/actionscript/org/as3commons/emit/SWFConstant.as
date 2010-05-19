@@ -16,9 +16,9 @@
 package org.as3commons.emit {
 
 	public final class SWFConstant {
-		public static const PRE_HEADER_SIZE:int = 8; // FWS[VERSION][FILESIZE]
-		public static const COMPRESSED_SWF_IDENTIFIER:String = 'C';
-		public static const UNCOMPRESSED_SWF_IDENTIFIER:String = 'F';
+		public static const PRE_HEADER_SIZE:uint = 8; // FWS[VERSION][FILESIZE]
+		public static const COMPRESSED_SWF_IDENTIFIER:String = 'CWS';
+		public static const UNCOMPRESSED_SWF_IDENTIFIER:String = 'FWS';
 		public static const ASTERISK:String = '*';
 		public static const OBJECT_TYPE_NAME:String = "Object";
 		public static const DOUBLE_COLON:String = "::";
