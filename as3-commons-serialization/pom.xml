@@ -41,7 +41,7 @@
 					<descriptor>
 						src/main/assembly/package.xml
 					</descriptor>
-					<finalName>as3commons-lang-latest-snapshot</finalName>
+					<finalName>as3commons-serialization-latest-snapshot</finalName>
 					<outputDirectory>target/site/downloads</outputDirectory>
 					<workDirectory>target/assembly/work</workDirectory>
 				</configuration>
