@@ -1,5 +1,5 @@
-package org.as3commons.logging.impl 
-{
+package org.as3commons.logging.impl {
+	
 	import flash.desktop.NativeApplication;
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
@@ -10,7 +10,6 @@ package org.as3commons.logging.impl
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
-
 	
 	/**
 	 * @author mh
@@ -22,6 +21,7 @@ package org.as3commons.logging.impl
 		
 		private static const DATE: RegExp = /{date}/g;
 		private static const FILE: RegExp = /{file}/g;
+		private static const MONTHS: Array = [ "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC" ];
 		
 		private var _filePattern:String;
 		private var _file:File;
@@ -30,13 +30,9 @@ package org.as3commons.logging.impl
 		
 		// Not customizable since the log-file header would need to adapt
 		private var _format:String = "{logTime} {logLevel} {name} \"{message_dqt}\"";
-
+		
 		public function AirFileLogTarget( filePattern: String = null ) {
-			if( filePattern ) {
-				_filePattern = filePattern;
-			} else {
-				_filePattern = DEFAULT_FILE_PATTERN;
-			}
+			_filePattern = filePattern || DEFAULT_FILE_PATTERN;
 			_stream = new FileStream();
 		}
 		
@@ -60,30 +56,11 @@ package org.as3commons.logging.impl
 				}
 				_stream.openAsync( _file, FileMode.APPEND );
 				_stream.writeUTFBytes( "#Version: 1.0\n" +
-									   "#Software: " + LogManager.SWF_SHORT_URL + "(running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ")\n" +
-									   "#Date: "+date.dateUTC+"-"+getMonth(date.monthUTC)+"-"+date.fullYearUTC+" "+date.hoursUTC+":"+date.minutesUTC+":"+date.secondsUTC+"."+date.millisecondsUTC+"\n"+
+									   "#Software: " + LogManager.SWF_SHORT_URL + "(running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ", publisherID: " + NativeApplication.nativeApplication.publisherID + ")\n" +
+									   "#Date: " + date.dateUTC + "-" + MONTHS[ date.monthUTC ] + "-" + date.fullYearUTC + " " + date.hoursUTC + ":" + date.minutesUTC + ":" + date.secondsUTC + "." + date.millisecondsUTC + "\n"+
 									   "#Fields: time x-method x-name x-comment\n");
 			}
 			_stream.writeUTFBytes( LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, params ) + "\n" );
-		}
-
-		private function getMonth(monthUTC: Number): String 
-		{
-			switch( monthUTC ) {
-				case 0: return "JAN";
-				case 1: return "FEB";
-				case 2: return "MAR";
-				case 3: return "APR";
-				case 4: return "MAY";
-				case 5: return "JUN";
-				case 6: return "JUL";
-				case 7: return "AUG";
-				case 8: return "SEP";
-				case 9: return "OCT";
-				case 10: return "NOV";
-				case 11: return "DEC";
-			}
-			return "";
 		}
 
 		private function renameOldFile(file: File, date: Date, no: int): void {

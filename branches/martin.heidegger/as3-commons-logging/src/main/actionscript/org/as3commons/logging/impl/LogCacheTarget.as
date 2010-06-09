@@ -1,9 +1,8 @@
-package org.as3commons.logging.impl 
-{
+package org.as3commons.logging.impl {
+	
 	import org.as3commons.logging.LogLevel;
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
-
 	
 	/**
 	 * @author martin.heidegger
@@ -13,11 +12,11 @@ package org.as3commons.logging.impl
 		public static const INSTANCE: LogCacheTarget = new LogCacheTarget();
 		
 		private var _logStatements: Array /* <LogStatement> */ = new Array();
-
+		
 		override public function log(name: String, shortName: String, level: LogLevel, timeStamp: Number, message: String, params: Array): void {
 			_logStatements.push( new LogCacheStatement( name, shortName, level, timeStamp, message, params ) );
 		}
-
+		
 		public function flushTo( factory: ILogTargetFactory ): void {
 			var i: int = _logStatements.length;
 			while( --i-(-1) ) {

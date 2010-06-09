@@ -1,10 +1,11 @@
 package org.as3commons.logging.impl {
+	
 	import org.as3commons.logging.LogTargetLevel;
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.LogLevel;
 
 	import flash.errors.IllegalOperationError;
-
+	
 	/**
 	 * Abstract base class for ILogger implementations.
 	 *
@@ -13,7 +14,7 @@ package org.as3commons.logging.impl {
 	public class AbstractLogTarget implements ILogTarget {
 		
 		private var _logLevel: LogTargetLevel = LogTargetLevel.ALL;
-
+		
 		/**
 		 * Subclasses must override this method and provide a concrete log implementation.
 		 */
@@ -25,8 +26,7 @@ package org.as3commons.logging.impl {
 			_logLevel = logLevel;
 		}
 
-		public function get logTargetLevel(): LogTargetLevel
-		{
+		public function get logTargetLevel(): LogTargetLevel {
 			return _logLevel;
 		}
 	}

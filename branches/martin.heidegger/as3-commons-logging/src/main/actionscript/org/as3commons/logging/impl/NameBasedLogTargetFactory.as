@@ -1,7 +1,8 @@
 package org.as3commons.logging.impl {
+	
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
-
+	
 	/**
 	 * @author Martin
 	 */

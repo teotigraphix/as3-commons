@@ -1,5 +1,5 @@
-package org.as3commons.logging.impl 
-{
+package org.as3commons.logging.impl {
+	
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.util.LogMessageFormatter;
@@ -13,8 +13,8 @@ package org.as3commons.logging.impl
 	/**
 	 * @author martin.heidegger
 	 */
-	public class SOSLogTarget extends AbstractLogTarget implements ILogTargetFactory
-	{
+	public class SOSLogTarget extends AbstractLogTarget implements ILogTargetFactory {
+		
 		public static const DEFAULT_HOST: String = "localhost";
 		public static const DEFAULT_FORMAT: String = "{shortSWF}({time}) {shortName}: {message}";
 		public static const INSTANCE: SOSLogTarget = new SOSLogTarget();
@@ -28,16 +28,8 @@ package org.as3commons.logging.impl
 		private var _broken: Boolean;
 		
 		public function SOSLogTarget( format: String = null, host: String = null, port: uint = 4444 ) {
-			if( !format ) {
-				_format = DEFAULT_FORMAT;
-			} else {
-				_format = format;
-			}
-			if( !host ) {
-				_host = DEFAULT_HOST;
-			} else {
-				_host = host;
-			}
+			_format = format || DEFAULT_FORMAT;
+			_host = host || DEFAULT_HOST;
 			_port = port;
 			_cache = [];
 			_ready = false;
