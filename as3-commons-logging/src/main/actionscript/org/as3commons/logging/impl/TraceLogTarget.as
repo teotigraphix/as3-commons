@@ -19,8 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.impl 
-{
+package org.as3commons.logging.impl {
+	
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.LogLevel;
@@ -38,14 +38,10 @@ package org.as3commons.logging.impl
 		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
 		public static const INSTANCE: TraceLogTarget = new TraceLogTarget();
 		
-		private var _format:String;
-
+		private var _format: String;
+		
 		public function TraceLogTarget( format: String = null ) {
-			if( format ) {
-				_format = format;
-			} else {
-				_format = DEFAULT_FORMAT;
-			}
+			_format = format || DEFAULT_FORMAT;
 		}
 		
 		override public function log( name: String, shortName:String, level:LogLevel, timeStamp: Number, message:String, params:Array ):void {

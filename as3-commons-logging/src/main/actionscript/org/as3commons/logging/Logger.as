@@ -113,6 +113,19 @@ package org.as3commons.logging {
 			}
 		}
 		
+		public function custom(level: LogLevel, message:String = null, ...params:*):void {
+			if (_logTarget && _logTarget.logTargetLevel.matches( level ) ) {
+				_logTarget.log( _name, _shortName, level, _startTime+getTimer(), message, params);
+			}
+		}
+		
+		public function isCustomLevelActive(level: LogLevel): Boolean {
+			if (_logTarget && _logTarget.logTargetLevel.matches( level ) ) {
+				return true;
+			}
+			return false;
+		}
+		
 		/**
 		 * @inheritDoc
 		 */

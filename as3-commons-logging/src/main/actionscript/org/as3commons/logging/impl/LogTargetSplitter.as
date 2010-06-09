@@ -1,9 +1,8 @@
-package org.as3commons.logging.impl 
-{
+package org.as3commons.logging.impl {
+	
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.LogTargetLevel;
-
 	
 	/**
 	 * @author mh
@@ -40,11 +39,11 @@ import org.as3commons.logging.LogLevel;
 import org.as3commons.logging.LogTargetLevel;
 
 class SplitterNode implements ILogTarget {
-
+	
 	private var _logTargetA:ILogTarget;
 	private var _logTargetB:ILogTarget;
 	private var _logTargetLevel: LogTargetLevel;
-
+	
 	public function SplitterNode( logTargetA: ILogTarget, logTargetB: ILogTarget ) {
 		_logTargetA = logTargetA;
 		_logTargetB = logTargetB;
