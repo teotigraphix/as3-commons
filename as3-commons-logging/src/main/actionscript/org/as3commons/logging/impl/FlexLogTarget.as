@@ -63,9 +63,9 @@ package org.as3commons.logging.impl
 			}
 		}
 		
-		public function log( name: String, level:LogLevel, timeStamp: Number, message:String, params:Array ):void {
+		public function log( name: String, shortName: String, level:LogLevel, timeStamp: Number, message:String, params:Array ):void {
 			var args:Array = params.concat();
-			args.unshift(message);
+			args.unshift( message );
 			if( level == LogLevel.DEBUG ) {
 				_logger.debug.apply(_logger, args );
 			} else if( level == LogLevel.INFO ) {
