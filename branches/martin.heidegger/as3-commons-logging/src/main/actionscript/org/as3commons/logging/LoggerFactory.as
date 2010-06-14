@@ -52,7 +52,7 @@ package org.as3commons.logging
 	 */
 	public class LoggerFactory {
 		
-		public static const SWF_URL_ERROR: String = "<SWF url not initialized. Please call 'LogManager.initSWFURLs(stage)'.>";
+		public static const SWF_URL_ERROR: String = "<SWF url not initialized. Please call 'LoggerFactory.initSWFURLs(stage)'.>";
 		public static var SWF_URL: String = SWF_URL_ERROR;
 		public static var SWF_SHORT_URL: String = SWF_URL;
 		
