@@ -50,14 +50,14 @@ package org.as3commons.logging
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
 	 */
-	public class LogManager {
+	public class LoggerFactory {
 		
 		public static const SWF_URL_ERROR: String = "<SWF url not initialized. Please call 'LogManager.initSWFURLs(stage)'.>";
 		public static var SWF_URL: String = SWF_URL_ERROR;
 		public static var SWF_SHORT_URL: String = SWF_URL;
 		
 		/** The singleton instance, eagerly instantiated. */
-		private static var _instance:LogManager = LogManager.getInstance( );
+		private static var _instance:LoggerFactory = LoggerFactory.getInstance( );
 		
 		/** The logger factory that creates loggers */
 		private var _loggerFactory:ILogTargetFactory = TraceLogTarget.INSTANCE;
@@ -70,35 +70,35 @@ package org.as3commons.logging
 		/**
 		 * Constructs a new LoggerFactory.
 		 */
-		public function LogManager() {}
+		public function LoggerFactory() {}
 
 		/**
 		 * Returns a logger for the given name.
 		 */
-		public static function getLoggerByName(name:String):ILogger {
+		public static function getNamedLogger(name:String):ILogger {
 			return _instance.getLogger(name);
 		}
 		
 		public static function getLogger(input:*): ILogger {
 			if( input is String ) {
-				return getLoggerByName( String( input ) );
+				return getNamedLogger( String( input ) );
 			} else {
-				return getLoggerByInstance( input );
+				return getInstanceLogger( input );
 			}
 		}
 		
-		public static function getLoggerByInstance(obj:*): ILogger {
+		public static function getInstanceLogger(obj:*): ILogger {
 			// replace the colons (::) in the name since this is not allowed in the Flex logging API
 			var name:String = getQualifiedClassName(obj);
-			return getLoggerByName(name.replace("::", "."));
+			return getNamedLogger(name.replace("::", "."));
 		}
 		
 		/**
 		 * Returns a logger for the given class, using the fully qualified name of the class as the name of the
 		 * logger.
 		 */
-		public static function getLoggerByClass(clazz:Class):ILogger {
-			return getLoggerByInstance(clazz);
+		public static function getClassLogger(clazz:Class):ILogger {
+			return getInstanceLogger(clazz);
 		}
 
 		/**
@@ -117,9 +117,9 @@ package org.as3commons.logging
 		/**
 		 * Returns the singleton instance of the logger factory.
 		 */
-		private static function getInstance():LogManager {
+		private static function getInstance():LoggerFactory {
 			if (!_instance) {
-				_instance = new LogManager();
+				_instance = new LoggerFactory();
 			}
 			return _instance;
 		}

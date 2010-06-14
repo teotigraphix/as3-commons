@@ -4,7 +4,7 @@ package org.as3commons.logging.impl {
 	import org.as3commons.logging.ILogTarget;
 	import org.as3commons.logging.ILogTargetFactory;
 	import org.as3commons.logging.LogLevel;
-	import org.as3commons.logging.LogManager;
+	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.logging.util.LogMessageFormatter;
 
 	import flash.filesystem.File;
@@ -56,7 +56,7 @@ package org.as3commons.logging.impl {
 				}
 				_stream.openAsync( _file, FileMode.APPEND );
 				_stream.writeUTFBytes( "#Version: 1.0\n" +
-									   "#Software: " + LogManager.SWF_SHORT_URL + "(running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ", publisherID: " + NativeApplication.nativeApplication.publisherID + ")\n" +
+									   "#Software: " + LoggerFactory.SWF_SHORT_URL + "(running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ", publisherID: " + NativeApplication.nativeApplication.publisherID + ")\n" +
 									   "#Date: " + date.dateUTC + "-" + MONTHS[ date.monthUTC ] + "-" + date.fullYearUTC + " " + date.hoursUTC + ":" + date.minutesUTC + ":" + date.secondsUTC + "." + date.millisecondsUTC + "\n"+
 									   "#Fields: time x-method x-name x-comment\n");
 			}
@@ -86,8 +86,8 @@ package org.as3commons.logging.impl {
 			if(no != -1) {
 				result += "." + no;
 			}
-			var file: String = LogManager.SWF_SHORT_URL;
-			if(file == LogManager.SWF_URL_ERROR) {
+			var file: String = LoggerFactory.SWF_SHORT_URL;
+			if(file == LoggerFactory.SWF_URL_ERROR) {
 				file = "out";
 			}
 			return _filePattern.replace( DATE, result ).replace( FILE, file );

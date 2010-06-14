@@ -22,7 +22,7 @@
 package org.as3commons.logging.util 
 {
 	import org.as3commons.logging.LogLevel;
-	import org.as3commons.logging.LogManager;
+	import org.as3commons.logging.LoggerFactory;
 
 	
 	/**
@@ -62,8 +62,8 @@ package org.as3commons.logging.util
 				replace( NAME, name ).
 				replace( SHORT_NAME, shortName ).
 				replace( LOG_LEVEL, level.name ).
-				replace( SWF, LogManager.SWF_URL ).
-				replace( SHORT_SWF, LogManager.SWF_SHORT_URL );
+				replace( SWF, LoggerFactory.SWF_URL ).
+				replace( SHORT_SWF, LoggerFactory.SWF_SHORT_URL );
 				
 			if( format.match(MESSAGE_DOUBLE_QUOTE_ENCODED ) ) {
 				result = result.replace( MESSAGE_DOUBLE_QUOTE_ENCODED, encodeDoubleQuote( message ) ); 
