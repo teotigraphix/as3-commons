@@ -2337,5 +2337,33 @@ package org.as3commons.lang {
 
 			return result;
 		}
+
+		/**
+		 * Replace all of the parameters in the str argument. Placeholders are defined like {0},{1},etc
+		 * @param str
+		 * @param rest
+		 * @return
+		 */
+		public static function substitute(str:String, ... rest):String {
+			if (str == null) {
+				return '';
+			}
+
+			var len:uint = rest.length;
+			var args:Array;
+			if (len == 1 && rest[0] is Array) {
+				args = rest[0] as Array;
+				len = args.length;
+			} else {
+				args = rest;
+			}
+
+			for (var i:int = 0; i < len; i++) {
+				str = str.split('{' + i.toString() + '}').join(args[i].toString());
+			}
+
+			return str;
+		}
+
 	}
 }

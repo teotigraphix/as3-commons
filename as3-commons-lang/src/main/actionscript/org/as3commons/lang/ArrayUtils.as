@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-	
+
 	/**
 	 * Contains utility methods for working with Array objects.
 	 *
@@ -23,7 +23,7 @@ package org.as3commons.lang {
 	 * @author Martin Heidegger
 	 */
 	public class ArrayUtils {
-		
+
 		/**
 		 * Clones an array.
 		 *
@@ -33,7 +33,7 @@ package org.as3commons.lang {
 		public static function clone(array:Array):Array {
 			return array.concat();
 		}
-		
+
 		/**
 		 * Shuffles the items of the given <code>array</code>
 		 *
@@ -43,7 +43,7 @@ package org.as3commons.lang {
 			var len:Number = array.length;
 			var rand:Number;
 			var temp:*;
-			
+
 			for (var i:Number = len - 1; i >= 0; i--) {
 				rand = Math.floor(Math.random() * len);
 				temp = array[i];
@@ -51,7 +51,7 @@ package org.as3commons.lang {
 				array[rand] = temp;
 			}
 		}
-		
+
 		/**
 		 * Removes all occurances of a the given <code>item</code> out of the passed-in
 		 * <code>array</code>.
@@ -63,7 +63,7 @@ package org.as3commons.lang {
 		public static function removeItem(array:Array, item:*):Array {
 			var i:Number = array.length;
 			var result:Array = [];
-			
+
 			while (--i - (-1)) {
 				if (array[i] === item) {
 					result.unshift(i);
@@ -72,7 +72,7 @@ package org.as3commons.lang {
 			}
 			return result;
 		}
-		
+
 		/**
 		 * Removes the last occurance of the given <code>item</code> out of the passed-in
 		 * <code>array</code>.
@@ -81,18 +81,14 @@ package org.as3commons.lang {
 		 * @param item the item to remove
 		 * @return <code>-1</code> if it could not be found, else the position where it has been deleted
 		 */
-		public static function removeLastOccurance(array:Array, item:*):Number {
-			var i:Number = array.length;
-			
-			while (--i - (-1)) {
-				if (array[i] === item) {
-					array.splice(i, 1);
-					return i;
-				}
+		public static function removeLastOccurance(array:Array, item:*):int {
+			var idx:int = array.lastIndexOf(item);
+			if (idx > -1) {
+				array.splice(idx, 1);
 			}
-			return -1;
+			return idx;
 		}
-		
+
 		/**
 		 * Removes the first occurance of the given <code>item</code> out of the passed-in
 		 * <code>array</code>.
@@ -101,20 +97,14 @@ package org.as3commons.lang {
 		 * @param item the item to remove
 		 * @return <code>-1</code> if it could not be found, else the position where it has been deleted
 		 */
-		public static function removeFirstOccurance(array:Array, item:*):Number {
-			var l:Number = array.length;
-			var i:Number = 0;
-			
-			while (i < l) {
-				if (array[i] === item) {
-					array.splice(i, 1);
-					return i;
-				}
-				i -= -1;
+		public static function removeFirstOccurance(array:Array, item:*):int {
+			var idx:int = array.indexOf(item);
+			if (idx > -1) {
+				array.splice(idx, 1);
 			}
-			return -1;
+			return idx;
 		}
-		
+
 		/**
 		 * Compares the two arrays <code>array1</code> and <code>array2</code>, whether they contain
 		 * the same values at the same positions.
@@ -126,11 +116,11 @@ package org.as3commons.lang {
 		 */
 		public static function isSame(array1:Array, array2:Array):Boolean {
 			var i:Number = array1.length;
-			
+
 			if (i != array2.length) {
 				return false;
 			}
-			
+
 			while (--i - (-1)) {
 				if (array1[i] !== array2[i]) {
 					return false;
@@ -138,7 +128,7 @@ package org.as3commons.lang {
 			}
 			return true;
 		}
-		
+
 		/**
 		 * Returns all items of the given array that of the given type.
 		 *
@@ -148,7 +138,7 @@ package org.as3commons.lang {
 		 */
 		public static function getItemsByType(items:Array, type:Class):Array {
 			var result:Array = [];
-			
+
 			for (var i:int = 0; i < items.length; i++) {
 				if (items[i] is type) {
 					result.push(items[i]);
@@ -156,7 +146,7 @@ package org.as3commons.lang {
 			}
 			return result;
 		}
-		
+
 		/**
 		 * Returns the index of the given item in the array based on equality via the equals method
 		 * of the IEquals interface.
@@ -171,9 +161,9 @@ package org.as3commons.lang {
 			if (!array || !item) {
 				return -1;
 			}
-			
+
 			var numItems:int = array.length;
-			
+
 			for (var i:int = 0; i < numItems; i++) {
 				if (item.equals(array[i])) {
 					return i;
@@ -181,7 +171,7 @@ package org.as3commons.lang {
 			}
 			return -1;
 		}
-		
+
 		/**
 		 * Returns a string from the given array, using the specified separator.
 		 *
