@@ -45,24 +45,24 @@ package org.as3commons.lang {
 		/**
 		 * Compares an instance of a class with an abstract class definition, if
 		 * they are of the exact type, the assertion fails.
-		 * 
+		 *
 		 * @param instance an instance of a class
 		 * @param abstractClass an abstract class definition
 		 * @param message the error message to use if the assertion fails
-		 l* @throws org.as3commons.lang.IllegalArgumentError if the assertion fails
+		 * @throws org.as3commons.lang.IllegalArgumentError if the assertion fails
 		 */
-		public static function notAbstract(instance:Object, abstractClass:Class, message:String=""):void {
+		public static function notAbstract(instance:Object, abstractClass:Class, message:String = ""):void {
 			var instanceName:String = getQualifiedClassName(instance);
 			var abstractName:String = getQualifiedClassName(abstractClass);
-			
-			if(instanceName == abstractName) {
+
+			if (instanceName == abstractName) {
 				if (message == null || message.length == 0) {
 					message = "[Assertion failed] - instance is an instance of an abstract class";
 				}
 				throw new IllegalArgumentError(message);
 			}
 		}
-		
+
 		/**
 		 * Assert that an object is <code>null</code>.
 		 * <pre class="code">Assert.isNull(value, "The value must be null");</pre>
