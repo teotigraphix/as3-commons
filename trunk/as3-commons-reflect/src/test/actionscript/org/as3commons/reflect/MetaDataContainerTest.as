@@ -20,33 +20,52 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
-	
+
 	import flexunit.framework.TestCase;
-	
+
 	/**
 	 * @author Christophe Herreman
 	 */
 	public class MetaDataContainerTest extends TestCase {
-	
+
 		/**
 		 * Creates a new MetaDataContainerTest.
 		 */
-		public function MetaDataContainerTest(methodName:String=null) {
+		public function MetaDataContainerTest(methodName:String = null) {
 			super(methodName);
 		}
-		
-		
+
+
 		public function testHasMetaData_shouldReturnTrueIfMetaDataWasFound():void {
 			var metaDataContainer:MetaDataContainer = new MetaDataContainer();
 			metaDataContainer.addMetaData(new MetaData("testMetaData"));
 			assertTrue(metaDataContainer.hasMetaData("testMetaData"));
 		}
-		
+
 		public function testHasMetaData_shouldReturnFalseIfNoMetaDataWasFound():void {
 			var metaDataContainer:MetaDataContainer = new MetaDataContainer();
 			metaDataContainer.addMetaData(new MetaData("testMetaData"));
 			assertFalse(metaDataContainer.hasMetaData("nonExistingMetaData"));
 		}
-		
+
+		public function testHasExactMetaData_shouldReturnTrueIfMatchingMetaDataWasFound():void {
+			var metaDataContainer:MetaDataContainer = new MetaDataContainer();
+			var tm:MetaData = new MetaData("testMetaData");
+			tm.arguments.push(new MetaDataArgument("testKey", "testValue"));
+			metaDataContainer.addMetaData(tm);
+			var tm2:MetaData = new MetaData("testMetaData");
+			tm2.arguments.push(new MetaDataArgument("testKey", "testValue"));
+			assertTrue(metaDataContainer.hasExactMetaData(tm2));
+		}
+
+		public function testHasExactMetaData_shouldReturnFalseIfNoMatchingMetaDataWasFound():void {
+			var metaDataContainer:MetaDataContainer = new MetaDataContainer();
+			metaDataContainer.addMetaData(new MetaData("testMetaData"));
+			var tm:MetaData = new MetaData("testMetaData");
+			tm.arguments.push(new MetaDataArgument("testKey", "testValue"));
+			assertFalse(metaDataContainer.hasExactMetaData(tm));
+		}
+
+
 	}
 }
