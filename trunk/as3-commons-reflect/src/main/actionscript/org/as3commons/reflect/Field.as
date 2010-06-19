@@ -20,6 +20,9 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import flash.system.ApplicationDomain;
+
+	import org.as3commons.lang.HashArray;
 
 	/**
 	 * A field of a class.
@@ -31,8 +34,8 @@ package org.as3commons.reflect {
 		/**
 		 * Creates a new Field objects.
 		 */
-		public function Field(name:String, type:String, declaringType:String, isStatic:Boolean, metaData:Array = null) {
-			super(name, type, declaringType, isStatic, metaData);
+		public function Field(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metaData:HashArray = null) {
+			super(name, type, declaringType, isStatic, applicationDomain, metaData);
 		}
 
 		/**

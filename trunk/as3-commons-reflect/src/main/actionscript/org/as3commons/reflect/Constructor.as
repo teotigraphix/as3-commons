@@ -20,52 +20,56 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import flash.system.ApplicationDomain;
 
 	/**
 	 * Provides information about a class constructor.
-	 * 
+	 *
 	 * @author Martino Piccinato
 	 */
 	public class Constructor {
-		
+
 		private var _parameters:Array = [];
-		
-		private var _declaringType:Type;
-		
+
+		private var _applicationDomain:ApplicationDomain;
+
+		private var _declaringType:String;
+
 		/**
 		 * Creates a new Constructor object.
-		 * 
+		 *
 		 * @param declaringType The Type declaring the constrcutor.
 		 * @param parameters an Array of Parameter objects being the parameters of the constructor.
 		 */
-		public function Constructor(declaringType:Type, parameters:Array = null) {
+		public function Constructor(declaringType:String, applicationDomain:ApplicationDomain, parameters:Array = null) {
 			if (parameters != null) {
-				this._parameters = parameters;
+				_parameters = parameters;
 			}
-			this._declaringType = declaringType;
+			_declaringType = declaringType;
+			_applicationDomain = applicationDomain;
 		}
-		
+
 		/**
 		 * Returns the parameters of this Constructor.
 		 */
 		public function get parameters():Array {
-			return this._parameters;
+			return _parameters;
 		}
-		
+
 		/**
 		 * Returns the declaring type of this Constructor.
 		 */
 		public function get declaringType():Type {
-			return this._declaringType;
+			return Type.forName(_declaringType, _applicationDomain);
 		}
-		
+
 		/**
 		 * @return <code>true</code> if the constructor has no arguments, <code>false</code>
 		 * otherwise.
 		 */
 		public function hasNoArguments():Boolean {
-			return (this._parameters.length == 0 ? true : false);
+			return (_parameters.length == 0 ? true : false);
 		}
-		
+
 	}
 }

@@ -20,80 +20,91 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
-import org.as3commons.reflect.as3commons_reflect;
+	import org.as3commons.lang.HashArray;
+	import org.as3commons.reflect.as3commons_reflect;
 
-use namespace as3commons_reflect;
-
-/**
- * Basic implementation of the IMetaDataContainer interface.
- *
- * @author Christophe Herreman
- */
-public class MetaDataContainer implements IMetaDataContainer {
-
-	// -------------------------------------------------------------------------
-	//
-	//  Constructor
-	//
-	// -------------------------------------------------------------------------
-	
-	/**
-	 * Constructor
-	 */
-	public function MetaDataContainer(metaData:Array = null) {
-		_metaData = (metaData == null ? [] : metaData);
-	}
-
-	// -------------------------------------------------------------------------
-	//
-	//  Properties
-	//
-	// -------------------------------------------------------------------------
-	
-	// ----------------------------
-	// metaData
-	// ----------------------------
-	
-	private var _metaData:Array;
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function get metaData():Array {
-		return _metaData.concat();
-	}
-
-	// -------------------------------------------------------------------------
-	//
-	//  Methods
-	//
-	// -------------------------------------------------------------------------
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function addMetaData(metaData:MetaData):void {
-		_metaData.push(metaData);
-	}
+	use namespace as3commons_reflect;
 
 	/**
-	 * @inheritDoc
+	 * Basic implementation of the IMetaDataContainer interface.
+	 *
+	 * @author Christophe Herreman
 	 */
-	public function getMetaData(key:String):Array {
-		var result:Array = [];
-		for (var i:int = 0; i<_metaData.length; i++) {
-			if (MetaData(_metaData[i]).name == key) {
-				result.push(_metaData[i]);
-			}
+	public class MetaDataContainer implements IMetaDataContainer {
+		private static const METADATA_NAME_PROPERTY:String = 'name';
+
+		// -------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		// -------------------------------------------------------------------------
+
+		/**
+		 * Constructor
+		 */
+		public function MetaDataContainer(metaData:HashArray = null) {
+			_metaData = (metaData == null ? new HashArray(METADATA_NAME_PROPERTY, true) : metaData);
 		}
-		return result;
+
+		// -------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		// -------------------------------------------------------------------------
+
+		// ----------------------------
+		// metaData
+		// ----------------------------
+
+		private var _metaData:HashArray;
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get metaData():Array {
+			return _metaData.getArray();
+		}
+
+		// -------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		// -------------------------------------------------------------------------
+
+		/**
+		 * @inheritDoc
+		 */
+		public function addMetaData(metaData:MetaData):void {
+			_metaData.push(metaData);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getMetaData(key:String):Array {
+			var result:* = _metaData.get(key);
+			return (result is Array) ? result : (result != null) ? [result] : result;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function hasMetaData(key:String):Boolean {
+			return (getMetaData(key) != null);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function hasExactMetaData(otherMetaData:MetaData):Boolean {
+			var metaDatas:Array = getMetaData(otherMetaData.name);
+			for each (var metaData:MetaData in metaDatas) {
+				if (metaData.equals(otherMetaData)) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function hasMetaData(key:String):Boolean {
-		return (getMetaData(key).length > 0);
-	}
-}
+
 }
