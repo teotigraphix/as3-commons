@@ -26,7 +26,7 @@ package org.as3commons.emit.tags {
 
 	public class SetBackgroundColorTag extends AbstractTag {
 
-		public static const TAG_ID:int = 0x9;
+		public static const TAG_ID:uint = 0x9;
 
 		private var _red:uint;
 		private var _green:uint;

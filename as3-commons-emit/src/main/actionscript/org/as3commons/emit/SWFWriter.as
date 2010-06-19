@@ -77,13 +77,13 @@ package org.as3commons.emit {
 
 			if (_compress) {
 				buffer.compress();
-				swfOutput.writeUI8(SWFConstant.COMPRESSED_SWF_IDENTIFIER.charCodeAt(0));
+				swfOutput.writeUI8(SWFConstant.COMPRESSED_SWF_SIGNATURE.charCodeAt(0));
 			} else {
-				swfOutput.writeUI8(SWFConstant.UNCOMPRESSED_SWF_IDENTIFIER.charCodeAt(0));
+				swfOutput.writeUI8(SWFConstant.UNCOMPRESSED_SWF_SIGNATURE.charCodeAt(0));
 			}
 
-			swfOutput.writeUI8(SWFConstant.UNCOMPRESSED_SWF_IDENTIFIER.charCodeAt(1));
-			swfOutput.writeUI8(SWFConstant.UNCOMPRESSED_SWF_IDENTIFIER.charCodeAt(2));
+			swfOutput.writeUI8(SWFConstant.UNCOMPRESSED_SWF_SIGNATURE.charCodeAt(1));
+			swfOutput.writeUI8(SWFConstant.UNCOMPRESSED_SWF_SIGNATURE.charCodeAt(2));
 			swfOutput.writeUI8(header.version);
 
 			swfOutput.writeUI32(fileSize);

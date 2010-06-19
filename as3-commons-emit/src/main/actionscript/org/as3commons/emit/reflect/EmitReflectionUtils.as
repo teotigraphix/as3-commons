@@ -21,6 +21,8 @@
  */
 package org.as3commons.emit.reflect {
 
+	import flash.system.ApplicationDomain;
+
 	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.BCNamespace;
 	import org.as3commons.emit.bytecode.NamespaceKind;
@@ -37,8 +39,9 @@ package org.as3commons.emit.reflect {
 		/**
 		 *
 		 */
-		public static function getMemberFullName(declaringType:EmitType, name:String):String {
-			return (declaringType.isInterface) ? declaringType.fullName.concat(SWFConstant.FORWARD_SLASH, declaringType.fullName, SWFConstant.COLON, name) : declaringType.fullName.concat(SWFConstant.FORWARD_SLASH, name);
+		public static function getMemberFullName(declaringType:String, name:String, applicationDomain:ApplicationDomain):String {
+			var type:EmitType = EmitType.forName(declaringType, applicationDomain);
+			return (type.isInterface) ? type.fullName.concat(SWFConstant.FORWARD_SLASH, type.fullName, SWFConstant.COLON, name) : type.fullName.concat(SWFConstant.FORWARD_SLASH, name);
 		}
 
 		/**

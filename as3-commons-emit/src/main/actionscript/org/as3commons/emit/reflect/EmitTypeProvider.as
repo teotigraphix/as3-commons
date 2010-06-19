@@ -91,15 +91,15 @@ package org.as3commons.emit.reflect {
 			type.extendsClasses = parseExtendsClasses(description.factory.extendsClass, type.applicationDomain);
 			type.superClassType = (type.extendsClasses.length > 0 && !type.isInterface && type.clazz !== Object) ? EmitType.forName(getQualifiedClassName(type.extendsClasses[0]), applicationDomain) : null;
 
-			type.accessors = parseAccessors(type, description);
-			type.constants = parseMembers(EmitConstant, description.factory.constant, type, false);
+			type.accessors = parseAccessors(type, description, applicationDomain);
+			type.constants = parseMembers(EmitConstant, description.factory.constant, type, false, applicationDomain);
 			type.constructor = parseConstructor(type, description.factory.constructor, applicationDomain);
-			type.constructorMethod = new EmitMethod(type, "ctor", null, EmitMemberVisibility.PUBLIC, false, false, type.constructor.parameters, EmitTypeUtils.UNTYPED, []);
+			type.constructorMethod = new EmitMethod(type.fullName, "ctor", null, EmitMemberVisibility.PUBLIC, false, false, type.constructor.parameters, EmitTypeUtils.UNTYPED, applicationDomain);
 			type.interfaces = ClassUtils.getImplementedInterfaces(cls, applicationDomain);
 			type.methods = parseMethods(type, description, applicationDomain);
-			type.staticConstants = parseMembers(EmitConstant, description.constant, type, true);
-			type.staticVariables = parseMembers(EmitVariable, description.variable, type, true);
-			type.variables = parseMembers(EmitVariable, description.factory.variable, type, false);
+			type.staticConstants = parseMembers(EmitConstant, description.constant, type, true, applicationDomain);
+			type.staticVariables = parseMembers(EmitVariable, description.variable, type, true, applicationDomain);
+			type.variables = parseMembers(EmitVariable, description.factory.variable, type, false, applicationDomain);
 			parseMetaData(description.factory[0].metadata, type);
 
 			// Combine metadata from implemented interfaces
@@ -114,7 +114,9 @@ package org.as3commons.emit.reflect {
 				var numMetaData:int = interfaceMetaData.length;
 
 				for (var j:int = 0; j < numMetaData; j++) {
-					type.addMetaData(interfaceMetaData[j]);
+					if (!type.hasExactMetaData(interfaceMetaData[j])) {
+						type.addMetaData(interfaceMetaData[j]);
+					}
 				}
 			}
 
@@ -133,9 +135,9 @@ package org.as3commons.emit.reflect {
 			Assert.notNull(constructorXML, "constructorXML argument must not be null");
 			if (constructorXML.length() > 0) {
 				var params:Array = parseParameters(constructorXML[0].parameter, applicationDomain);
-				return new Constructor(type, params);
+				return new Constructor(type.fullName, applicationDomain, params);
 			} else {
-				return new Constructor(type);
+				return new Constructor(type.fullName, applicationDomain);
 			}
 		}
 
@@ -153,18 +155,18 @@ package org.as3commons.emit.reflect {
 		/**
 		 *
 		 */
-		private function parseAccessors(type:EmitType, xml:XML):Array {
+		private function parseAccessors(type:EmitType, xml:XML, applicationDomain:ApplicationDomain):Array {
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(xml, "xml argument must not be null");
-			var classAccessors:Array = parseAccessorsByModifier(type, xml.accessor, true);
-			var instanceAccessors:Array = parseAccessorsByModifier(type, xml.factory.accessor, false);
+			var classAccessors:Array = parseAccessorsByModifier(type, xml.accessor, true, applicationDomain);
+			var instanceAccessors:Array = parseAccessorsByModifier(type, xml.factory.accessor, false, applicationDomain);
 			return classAccessors.concat(instanceAccessors);
 		}
 
 		/**
 		 *
 		 */
-		private function parseMembers(memberClass:Class, members:XMLList, declaringType:EmitType, isStatic:Boolean):Array {
+		private function parseMembers(memberClass:Class, members:XMLList, declaringType:EmitType, isStatic:Boolean, applicationDomain:ApplicationDomain):Array {
 			Assert.notNull(memberClass, "memberClass argument must not be null");
 			Assert.notNull(members, "members argument must not be null");
 			Assert.notNull(declaringType, "declaringType argument must not be null");
@@ -174,7 +176,7 @@ package org.as3commons.emit.reflect {
 				var uri:String = m.@uri.toString();
 				var name:String = m.@name.toString();
 				var type:EmitType = EmitType.forName(m.@type.toString());
-				var member:IMember = new memberClass(declaringType, name, EmitReflectionUtils.getMemberFullName(declaringType, name), type, EmitMemberVisibility.PUBLIC, isStatic, uri);
+				var member:IMember = new memberClass(declaringType.fullName, name, EmitReflectionUtils.getMemberFullName(declaringType.fullName, name, applicationDomain), type.fullName, EmitMemberVisibility.PUBLIC, isStatic, uri);
 
 				parseMetaData(m.metadata, member);
 				result.push(member);
@@ -212,7 +214,7 @@ package org.as3commons.emit.reflect {
 				var isOverride:Boolean = (type.superClassType != null && type.superClassType.getDeclaredMethod(name) != null);
 				var params:Array = parseParameters(methodXML.parameter, applicationDomain);
 				var returnType:EmitType = EmitType.forName(methodXML.@returnType, applicationDomain);
-				var method:EmitMethod = new EmitMethod(type, name, EmitReflectionUtils.getMemberFullName(type, name), EmitMemberVisibility.PUBLIC, isStatic, isOverride, params, returnType, [], uri);
+				var method:EmitMethod = new EmitMethod(type.fullName, name, EmitReflectionUtils.getMemberFullName(type.fullName, name, applicationDomain), EmitMemberVisibility.PUBLIC, isStatic, isOverride, params, returnType, applicationDomain, null, uri);
 
 				parseMetaData(methodXML.metadata, method);
 				result.push(method);
@@ -228,13 +230,13 @@ package org.as3commons.emit.reflect {
 				var isOptional:Boolean = (paramXML.@optional == TRUE);
 				var name:String = ARG + index.toString();
 				var type:EmitType = EmitType.forName(paramXML.@type, applicationDomain);
-				var param:EmitParameter = new EmitParameter(name, index, type, isOptional);
+				var param:EmitParameter = new EmitParameter(name, index, type, applicationDomain, isOptional);
 				params.push(param);
 			}
 			return params;
 		}
 
-		private function parseAccessorsByModifier(type:EmitType, accessorsXML:XMLList, isStatic:Boolean):Array {
+		private function parseAccessorsByModifier(type:EmitType, accessorsXML:XMLList, isStatic:Boolean, applicationDomain:ApplicationDomain):Array {
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(accessorsXML, "accessorsXML argument must not be null");
 			var result:Array = [];
@@ -249,7 +251,7 @@ package org.as3commons.emit.reflect {
 				var access:AccessorAccess = AccessorAccess.fromString(accessorXML.@access);
 				var valueType:EmitType = EmitType.forName(accessorXML.@type.toString(), type.applicationDomain);
 				var isOverride:Boolean = (type.superClassType != null && type.superClassType.getDeclaredProperty(name) != null);
-				var accessor:EmitAccessor = new EmitAccessor(type, name, EmitReflectionUtils.getMemberFullName(type, name), access, valueType, EmitMemberVisibility.PUBLIC, isStatic, isOverride, [], uri);
+				var accessor:EmitAccessor = new EmitAccessor(type.fullName, name, EmitReflectionUtils.getMemberFullName(type.fullName, name, applicationDomain), access, valueType.fullName, EmitMemberVisibility.PUBLIC, isStatic, isOverride, applicationDomain, null, uri);
 
 				parseMetaData(accessorXML.metadata, accessor);
 				result.push(accessor);

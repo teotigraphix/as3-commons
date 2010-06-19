@@ -21,6 +21,8 @@
  */
 package org.as3commons.emit.reflect {
 
+	import flash.system.ApplicationDomain;
+
 	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.QualifiedName;
 	import org.as3commons.lang.Assert;
@@ -39,8 +41,8 @@ package org.as3commons.emit.reflect {
 		/**
 		 * Constructor.
 		 */
-		public function EmitConstant(declaringType:EmitType, name:String, fullName:String, type:EmitType, visibility:uint, isStatic:Boolean, isOverride:Boolean, metaData:Array = null, ns:String = null) {
-			super(name, type.name, declaringType.name, isStatic);
+		public function EmitConstant(declaringType:EmitType, name:String, fullName:String, type:EmitType, visibility:uint, isStatic:Boolean, isOverride:Boolean, applicationDomain:ApplicationDomain, metaData:Array = null, ns:String = null) {
+			super(name, type.name, declaringType.name, isStatic, applicationDomain);
 			initEmitConstant(visibility, isOverride, declaringType, type, ns, fullName, name);
 		}
 
@@ -55,7 +57,7 @@ package org.as3commons.emit.reflect {
 			as3commons_reflect::setType(type);
 			as3commons_reflect::setNamespaceURI(ns || SWFConstant.EMPTY_STRING);
 			_qname = EmitReflectionUtils.getMemberQualifiedName(this);
-			_fullName = (fullName || EmitReflectionUtils.getMemberFullName(declaringType, name));
+			_fullName = (fullName || EmitReflectionUtils.getMemberFullName(declaringType.fullName, name, applicationDomain));
 		}
 
 

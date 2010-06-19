@@ -21,6 +21,7 @@
  */
 package org.as3commons.emit.tags {
 	import flash.errors.IllegalOperationError;
+	import flash.utils.Dictionary;
 
 	import org.as3commons.emit.ISWFInput;
 	import org.as3commons.emit.ISWFOutput;

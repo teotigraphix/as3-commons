@@ -20,9 +20,12 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.reflect {
+	import flash.system.ApplicationDomain;
+
 	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.QualifiedName;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.HashArray;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Type;
@@ -44,12 +47,12 @@ package org.as3commons.emit.reflect {
 		/**
 		 * Constructor.
 		 */
-		public function EmitAccessor(declaringType:EmitType, name:String, fullName:String, access:AccessorAccess, type:EmitType, visibility:uint, isStatic:Boolean, isOverride:Boolean, metaData:Array = null, ns:String = null) {
-			super(name, access, type.name, declaringType.name, isStatic, metaData);
-			initEmitAccesor(visibility, isOverride, declaringType, type, ns, fullName, name);
+		public function EmitAccessor(declaringType:String, name:String, fullName:String, access:AccessorAccess, type:String, visibility:uint, isStatic:Boolean, isOverride:Boolean, applicationDomain:ApplicationDomain, metaData:HashArray = null, ns:String = null) {
+			super(name, access, type, declaringType, isStatic, applicationDomain, metaData);
+			initEmitAccesor(visibility, isOverride, declaringType, type, ns, fullName, name, applicationDomain);
 		}
 
-		protected function initEmitAccesor(visibility:uint, isOverride:Boolean, declaringType:EmitType, type:EmitType, ns:String, fullName:String, name:String):void {
+		protected function initEmitAccesor(visibility:uint, isOverride:Boolean, declaringType:String, type:String, ns:String, fullName:String, name:String, applicationDomain:ApplicationDomain):void {
 			Assert.notNull(declaringType, "declaringType argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(fullName, "fullName argument must not be null");
@@ -60,7 +63,7 @@ package org.as3commons.emit.reflect {
 			as3commons_reflect::setType(type);
 			as3commons_reflect::setNamespaceURI(ns || SWFConstant.EMPTY_STRING);
 			_qname = EmitReflectionUtils.getMemberQualifiedName(this);
-			_fullName = (fullName || EmitReflectionUtils.getMemberFullName(declaringType, name));
+			_fullName = (fullName || EmitReflectionUtils.getMemberFullName(declaringType, name, applicationDomain));
 		}
 
 
@@ -100,7 +103,7 @@ package org.as3commons.emit.reflect {
 
 		public function get getMethod():EmitMethod {
 			if (_getMethod == null) {
-				_getMethod = new EmitMethod(declaringType as EmitType, GET_IDENTIFIER, fullName + GET_FULLNAME_IDENTIFIER, visibility, isStatic, isOverride, [], type);
+				_getMethod = new EmitMethod(declaringType.fullName, GET_IDENTIFIER, fullName + GET_FULLNAME_IDENTIFIER, visibility, isStatic, isOverride, [], type, applicationDomain);
 			}
 			return _getMethod;
 		}
@@ -155,7 +158,7 @@ package org.as3commons.emit.reflect {
 
 		public function get setMethod():EmitMethod {
 			if (_setMethod == null) {
-				_setMethod = new EmitMethod(declaringType as EmitType, SET_IDENTIFIER, fullName + SET_FULLNAME_IDENTIFIER, visibility, isStatic, isOverride, [new EmitParameter("value", 0, EmitType(type), false)], EmitTypeUtils.VOID);
+				_setMethod = new EmitMethod(declaringType.fullName, SET_IDENTIFIER, fullName + SET_FULLNAME_IDENTIFIER, visibility, isStatic, isOverride, [new EmitParameter("value", 0, EmitType(type), applicationDomain, false)], EmitTypeUtils.VOID, applicationDomain);
 			}
 			return _setMethod;
 		}

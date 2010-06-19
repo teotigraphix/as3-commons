@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.reflect {
+	import flash.system.ApplicationDomain;
+
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Parameter;
 	import org.as3commons.reflect.Type;
@@ -36,8 +38,8 @@ package org.as3commons.emit.reflect {
 		/**
 		 * Constructor.
 		 */
-		public function EmitParameter(name:String, index:int, type:EmitType, isOptional:Boolean = false) {
-			super(index, type, isOptional);
+		public function EmitParameter(name:String, index:int, type:EmitType, applicationDomain:ApplicationDomain, isOptional:Boolean = false) {
+			super(index, type.fullName, applicationDomain, isOptional);
 			initEmitParameter(name);
 		}
 

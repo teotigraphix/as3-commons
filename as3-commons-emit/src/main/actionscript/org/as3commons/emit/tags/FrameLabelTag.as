@@ -26,7 +26,7 @@ package org.as3commons.emit.tags {
 
 	public class FrameLabelTag extends AbstractTag {
 
-		public static const TAG_ID:int = 0x2B;
+		public static const TAG_ID:uint = 0x2B;
 		private static const NAMED_ANCHOR_FLAG:Number = 0x1; // Named Anchor flag - always 1
 
 		private var _name:String;

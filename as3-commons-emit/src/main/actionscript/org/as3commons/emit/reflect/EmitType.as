@@ -21,6 +21,7 @@
  */
 package org.as3commons.emit.reflect {
 	import flash.system.ApplicationDomain;
+	import flash.utils.getQualifiedClassName;
 
 	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.AbstractMultiname;
@@ -240,7 +241,7 @@ package org.as3commons.emit.reflect {
 
 		public function get constructorMethod():EmitMethod {
 			if (_constructorMethod == null) {
-				_constructorMethod = new EmitMethod(this, qname.name, null, EmitMemberVisibility.PUBLIC, false, false, [], EmitTypeUtils.UNTYPED);
+				_constructorMethod = new EmitMethod(getQualifiedClassName(this), qname.name, null, EmitMemberVisibility.PUBLIC, false, false, [], EmitTypeUtils.UNTYPED, applicationDomain);
 			}
 			return _constructorMethod;
 		}
@@ -293,29 +294,6 @@ package org.as3commons.emit.reflect {
 		 */
 		public function set genericTypeDefinition(value:EmitType):void {
 			_genericTypeDefinition = value;
-		}
-
-		//----------------------------------
-		//  interfaces
-		//----------------------------------
-
-		/**
-		 * Storage for the interfaces property.
-		 */
-		private var _interfaces:Array = [];
-
-		/**
-		 * An array of implemented interfaces.
-		 */
-		public function get interfaces():Array {
-			return _interfaces;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set interfaces(value:Array):void {
-			_interfaces = value;
 		}
 
 		//----------------------------------
@@ -434,7 +412,7 @@ package org.as3commons.emit.reflect {
 		 */
 		public function get scriptInitializer():EmitMethod {
 			if (_scriptInitializer == null) {
-				_scriptInitializer = new EmitMethod(this, SWFConstant.EMPTY_STRING, SWFConstant.EMPTY_STRING, EmitMemberVisibility.PUBLIC, true, false, [], EmitTypeUtils.UNTYPED);
+				_scriptInitializer = new EmitMethod(getQualifiedClassName(this), SWFConstant.EMPTY_STRING, SWFConstant.EMPTY_STRING, EmitMemberVisibility.PUBLIC, true, false, [], EmitTypeUtils.UNTYPED, applicationDomain);
 			}
 			return _scriptInitializer;
 		}
@@ -460,7 +438,7 @@ package org.as3commons.emit.reflect {
 		 */
 		public function get staticInitializer():EmitMethod {
 			if (_staticInitializer == null) {
-				_staticInitializer = new EmitMethod(this, SWFConstant.EMPTY_STRING, SWFConstant.EMPTY_STRING, EmitMemberVisibility.PUBLIC, true, false, [], EmitTypeUtils.UNTYPED);
+				_staticInitializer = new EmitMethod(getQualifiedClassName(this), SWFConstant.EMPTY_STRING, SWFConstant.EMPTY_STRING, EmitMemberVisibility.PUBLIC, true, false, [], EmitTypeUtils.UNTYPED, applicationDomain);
 			}
 			return _staticInitializer;
 		}
