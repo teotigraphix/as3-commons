@@ -667,7 +667,6 @@ package org.as3commons.reflect {
 		 * </ul>
 		 * @param name The specified <code>MetaData</code> name.
 		 * @return An Array of <code>MetadataContainer</code> instances.
-		 *
 		 */
 		public function getMetaDataContainers(name:String):Array {
 			if (_metaDataLookup != null) {
@@ -893,8 +892,7 @@ internal class TypeXmlParser implements ITypeProvider {
 		var params:Array = [];
 
 		for each (var paramXML:XML in paramsXML) {
-			var paramType:Type = Type.forName(paramXML.@type, applicationDomain);
-			var param:Parameter = new Parameter(paramXML.@index, paramType.fullName, applicationDomain, paramXML.@optional == "true" ? true : false);
+			var param:Parameter = new Parameter(paramXML.@index, paramXML.@type, applicationDomain, paramXML.@optional == "true" ? true : false);
 			params.push(param);
 		}
 
