@@ -28,6 +28,7 @@ package org.as3commons.emit {
 	import org.as3commons.lang.Assert;
 
 	public class SWFInput implements ISWFInput {
+
 		private var _input:IDataInput;
 
 		private var _currentByte:int = 0;
@@ -113,7 +114,7 @@ package org.as3commons.emit {
 		 * Aligns to the next available byte if not currently byte aligned
 		 */
 		public function align():void {
-			throw new IllegalOperationError("Not implemented");
+			//throw new IllegalOperationError("Not implemented");
 		}
 
 	}

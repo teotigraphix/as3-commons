@@ -30,20 +30,18 @@ package org.as3commons.emit.tags {
 	 * Represents an AVM2 bytecode tag
 	 */
 	public class DoABCTag extends AbstractTag {
-		public static const TAG_ID:int = 0x52;
+		public static const TAG_ID:uint = 0x52;
 
 		private var _layout:IByteCodeLayout;
 		private var _name:String;
 		private var _lazy:Boolean;
 
-		public function DoABCTag(lazy:Boolean, name:String, layout:IByteCodeLayout) {
+		public function DoABCTag(lazy:Boolean = false, name:String = "", layout:IByteCodeLayout = null) {
 			super(TAG_ID);
 			initDoABCTag(layout, name, lazy);
 		}
 
 		protected function initDoABCTag(layout:IByteCodeLayout, name:String, lazy:Boolean):void {
-			Assert.notNull(layout, "layout argument must not be null");
-			Assert.notNull(name, "name argument must not be null");
 			_layout = layout;
 			_name = name;
 			_lazy = lazy;
@@ -72,7 +70,6 @@ package org.as3commons.emit.tags {
 			Assert.notNull(input, "input argument must not be null");
 			_lazy = (input.readUI8() == 0x01);
 			_name = input.readString();
-
 		}
 
 		private function getFlags():uint {

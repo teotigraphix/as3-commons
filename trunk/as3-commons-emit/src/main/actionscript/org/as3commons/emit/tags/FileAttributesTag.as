@@ -26,7 +26,7 @@ package org.as3commons.emit.tags {
 
 	public class FileAttributesTag extends AbstractTag {
 
-		public static const TAG_ID:int = 0x45;
+		public static const TAG_ID:uint = 0x45;
 
 		private var _useDirectBlit:Boolean = false;
 		private var _useGPU:Boolean = false;

@@ -20,11 +20,14 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.reflect {
+	import flash.system.ApplicationDomain;
+
 	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.bytecode.BCNamespace;
 	import org.as3commons.emit.bytecode.NamespaceKind;
 	import org.as3commons.emit.bytecode.QualifiedName;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.HashArray;
 	import org.as3commons.reflect.Method;
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
@@ -40,19 +43,19 @@ package org.as3commons.emit.reflect {
 		/**
 		 * Constructor.
 		 */
-		public function EmitMethod(declaringType:EmitType, name:String, fullName:String, visibility:uint, isStatic:Boolean, isOverride:Boolean, parameters:Array, returnType:*, metaData:Array = null, ns:String = null) {
-			super(declaringType, name, isStatic, parameters, returnType, metaData);
+		public function EmitMethod(declaringType:String, name:String, fullName:String, visibility:uint, isStatic:Boolean, isOverride:Boolean, parameters:Array, returnType:*, applicationDomain:ApplicationDomain, metaData:HashArray = null, ns:String = null) {
+			super(declaringType, name, isStatic, parameters, returnType, applicationDomain, metaData);
 			initEmitMethod(isOverride, visibility, ns, fullName, declaringType, name);
 		}
 
-		protected function initEmitMethod(isOverride:Boolean, visibility:uint, ns:String, fullName:String, declaringType:EmitType, name:String):void {
+		protected function initEmitMethod(isOverride:Boolean, visibility:uint, ns:String, fullName:String, declaringType:String, name:String):void {
 			Assert.notNull(declaringType, "declaringType argument must not be null");
 			Assert.notNull(name, "name argument must not be null");
 			_isOverride = isOverride;
 			_visibility = visibility;
 			as3commons_reflect::setNamespaceURI(ns || SWFConstant.EMPTY_STRING);
 			_qname = EmitReflectionUtils.getMemberQualifiedName(this);
-			as3commons_reflect::setFullName(fullName || EmitReflectionUtils.getMemberFullName(declaringType, name));
+			as3commons_reflect::setFullName(fullName || EmitReflectionUtils.getMemberFullName(declaringType, name, applicationDomain));
 		}
 
 

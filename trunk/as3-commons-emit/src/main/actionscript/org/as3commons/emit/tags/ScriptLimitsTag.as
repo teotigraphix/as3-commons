@@ -25,7 +25,7 @@ package org.as3commons.emit.tags {
 	import org.as3commons.lang.Assert;
 
 	public class ScriptLimitsTag extends AbstractTag {
-		public static const TAG_ID:int = 0x41;
+		public static const TAG_ID:uint = 0x41;
 
 		private var _maxRecursionDepth:int = 1000;
 		private var _scriptTimeoutSeconds:int = 60;

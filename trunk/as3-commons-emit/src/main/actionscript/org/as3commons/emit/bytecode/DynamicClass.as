@@ -20,7 +20,9 @@
  * THE SOFTWARE.
  */
 package org.as3commons.emit.bytecode {
+	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
+	import flash.utils.getQualifiedClassName;
 
 	import org.as3commons.emit.SWFConstant;
 	import org.as3commons.emit.reflect.EmitAccessor;
@@ -52,18 +54,18 @@ package org.as3commons.emit.bytecode {
 		/**
 		 * Constructor.
 		 */
-		public function DynamicClass(qname:QualifiedName, superClassType:EmitType, interfaces:Array, autoGenerateInitializers:Boolean = false) {
+		public function DynamicClass(qname:QualifiedName, superClassType:EmitType, interfaces:Array, applicationDomain:ApplicationDomain, autoGenerateInitializers:Boolean = false) {
 			super(superClassType.applicationDomain, qname);
-			initDynamicClass(superClassType, interfaces, autoGenerateInitializers);
+			initDynamicClass(superClassType, interfaces, applicationDomain, autoGenerateInitializers);
 		}
 
-		protected function initDynamicClass(superClassType:EmitType, interfaces:Array, autoGenerateInitializers:Boolean):void {
+		protected function initDynamicClass(superClassType:EmitType, interfaces:Array, applicationDomain:ApplicationDomain, autoGenerateInitializers:Boolean):void {
 			Assert.notNull(superClassType, "superClassType argument must not be null");
 			Assert.notNull(interfaces, "interfaces argument must not be null");
 			this.superClassType = superClassType;
 			this.interfaces.concat(interfaces);
 			if (autoGenerateInitializers) {
-				generateInitializerMethods();
+				generateInitializerMethods(applicationDomain);
 			}
 		}
 
@@ -116,12 +118,13 @@ package org.as3commons.emit.bytecode {
 		/**
 		 * @private
 		 */
-		private function generateConstructor():EmitMethod {
-			return new EmitMethod(this, SWFConstant.CONSTRUCTOR_IDENTIFIER, null, EmitMemberVisibility.PUBLIC, false, false, superClassType.constructorMethod.parameters, EmitTypeUtils.UNTYPED);
+		private function generateConstructor(applicationDomain:ApplicationDomain):EmitMethod {
+			var typeName:String = getQualifiedClassName(this);
+			return new EmitMethod(typeName, SWFConstant.CONSTRUCTOR_IDENTIFIER, null, EmitMemberVisibility.PUBLIC, false, false, superClassType.constructorMethod.parameters, EmitTypeUtils.UNTYPED, applicationDomain);
 		}
 
-		public function generateInitializerMethods():void {
-			generateConstructor();
+		public function generateInitializerMethods(applicationDomain:ApplicationDomain):void {
+			generateConstructor(applicationDomain);
 			addMethodBody(generateScriptInitializer());
 			addMethodBody(generateStaticInitializer());
 			addMethodBody(generateInitializer());

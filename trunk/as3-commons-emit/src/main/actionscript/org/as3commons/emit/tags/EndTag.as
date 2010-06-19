@@ -26,7 +26,7 @@ package org.as3commons.emit.tags {
 
 	public class EndTag extends AbstractTag {
 
-		public static const TAG_ID:int = 0x0;
+		public static const TAG_ID:uint = 0x0;
 
 		public function EndTag() {
 			super(TAG_ID);

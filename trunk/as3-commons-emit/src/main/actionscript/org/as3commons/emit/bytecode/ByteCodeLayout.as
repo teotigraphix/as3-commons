@@ -681,6 +681,10 @@ package org.as3commons.emit.bytecode {
 				});
 		}
 
+		public function read(input:IDataOutput):void {
+
+		}
+
 		private function assertEqArrayIndex(array:Array, value:IEquals, dataCallback:Function):uint {
 			Assert.notNull(array, "array argument must not be null");
 			Assert.notNull(value, "value argument must not be null");

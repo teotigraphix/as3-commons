@@ -25,5 +25,6 @@ package org.as3commons.emit.bytecode {
 
 	public interface IByteCodeLayout {
 		function write(output:IDataOutput):void;
+		function read(input:IDataOutput):void;
 	}
 }
