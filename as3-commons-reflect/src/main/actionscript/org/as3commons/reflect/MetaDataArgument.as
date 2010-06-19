@@ -20,13 +20,15 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.IEquals;
 
 	/**
 	 * Holds a key/value pair of metadata information.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class MetaDataArgument {
+	public class MetaDataArgument implements IEquals {
 
 		public var key:String;
 		public var value:String;
@@ -40,6 +42,12 @@ package org.as3commons.reflect {
 		public function MetaDataArgument(key:String, value:String) {
 			this.key = key;
 			this.value = value;
+		}
+
+		public function equals(other:Object):Boolean {
+			Assert.state(other is MetaDataArgument, "other argument must be of type MetaDataArgument");
+			var otherArgument:MetaDataArgument = MetaDataArgument(other);
+			return ((otherArgument.key == this.key) && (otherArgument.value == this.value));
 		}
 
 	}

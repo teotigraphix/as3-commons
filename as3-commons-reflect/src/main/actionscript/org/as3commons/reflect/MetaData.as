@@ -20,13 +20,15 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.IEquals;
 
 	/**
 	 * A MetaData object contains information about a metadata element placed above a member of a class or instance.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class MetaData {
+	public class MetaData implements IEquals {
 
 		public static const TRANSIENT:String = "Transient";
 		public static const BINDABLE:String = "Bindable";
@@ -74,7 +76,7 @@ package org.as3commons.reflect {
 		public function getArgument(key:String):MetaDataArgument {
 			var result:MetaDataArgument;
 
-			for (var i:int = 0; i<_arguments.length; i++) {
+			for (var i:int = 0; i < _arguments.length; i++) {
 				if (_arguments[i].key == key) {
 					result = _arguments[i];
 					break;
@@ -84,8 +86,38 @@ package org.as3commons.reflect {
 			return result;
 		}
 
+		public function equals(other:Object):Boolean {
+			Assert.state(other is MetaData, "other argument must be of type MetaData");
+			var otherMetaData:MetaData = MetaData(other);
+			if (otherMetaData.name == this.name) {
+				if (otherMetaData.arguments.length != this.arguments.length) {
+					return false;
+				}
+				if (this.arguments.length > 0) {
+					for each (var arg:MetaDataArgument in this.arguments) {
+						var otherArg:MetaDataArgument = otherMetaData.getArgument(arg.key);
+						if (otherArg != null) {
+							if (!arg.equals(otherArg)) {
+								return false;
+							}
+						} else {
+							return false;
+						}
+					}
+					return true;
+				} else {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public function toString():String {
-			return "[MetaData(" + name + ", " + arguments +")]";
+			return "[MetaData(" + name + ", " + arguments + ")]";
+		}
+
+		as3commons_reflect function setName(value:String):void {
+			_name = value;
 		}
 
 	}

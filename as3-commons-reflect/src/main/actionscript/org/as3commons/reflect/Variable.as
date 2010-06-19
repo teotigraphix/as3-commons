@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import flash.system.ApplicationDomain;
 
 	/**
 	 * A property defined with the <code>var</code> keyword.
@@ -36,8 +37,8 @@ package org.as3commons.reflect {
 		 * @param declaringType the type that declares the variable
 		 * @param isStatic whether or not this member is static (class member)
 		 */
-		public function Variable(name:String, type:String, declaringType:String, isStatic:Boolean) {
-			super(name, type, declaringType, isStatic);
+		public function Variable(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain) {
+			super(name, type, declaringType, isStatic, applicationDomain);
 		}
 	}
 }

@@ -38,6 +38,8 @@ package org.as3commons.reflect {
 		 */
 		function hasMetaData(key:String):Boolean;
 
+		function hasExactMetaData(otherMetaData:MetaData):Boolean;
+
 		/**
 		 * Returns the array of MetaData object that corresponds to the given key. If no MetaData object was found,
 		 * an empty array is returned.

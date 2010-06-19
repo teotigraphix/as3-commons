@@ -20,86 +20,107 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import flash.system.ApplicationDomain;
 
-/**
- * Provides information of a parameter passed to a method.
- *
- * @author Christophe Herreman
- * @author Andrew Lewisohn
- */
-public class Parameter {
-
-	// -------------------------------------------------------------------------
-	//
-	//  Constructor
-	//
-	// -------------------------------------------------------------------------
-	
 	/**
-	 * Creates a new <code>Parameter</code> object.
+	 * Provides information of a parameter passed to a method.
 	 *
-	 * @param index the index of the parameter
-	 * @param type the class type of the parameter
-	 * @param isOptional whether the parameter is optional or not
+	 * @author Christophe Herreman
+	 * @author Andrew Lewisohn
 	 */
-	public function Parameter(index:int, type:Type, isOptional:Boolean = false) {
-		_index = index;
-		_type = type;
-		_isOptional = isOptional;
+	public class Parameter {
+
+		private var _applicationDomain:ApplicationDomain;
+
+		// -------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		// -------------------------------------------------------------------------
+
+		/**
+		 * Creates a new <code>Parameter</code> object.
+		 *
+		 * @param index the index of the parameter
+		 * @param type the class type of the parameter
+		 * @param isOptional whether the parameter is optional or not
+		 */
+		public function Parameter(index:int, type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false, defaultValue:* = null) {
+			_index = index;
+			_type = type;
+			_applicationDomain = applicationDomain;
+			_isOptional = isOptional;
+			_defaultValue = defaultValue;
+		}
+
+		// -------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		// -------------------------------------------------------------------------
+
+		// ----------------------------
+		// index
+		// ----------------------------
+
+		private var _index:int;
+
+		public function get index():int {
+			return _index;
+		}
+
+		// ----------------------------
+		// isOptional
+		// ----------------------------
+
+		private var _isOptional:Boolean;
+
+		public function get isOptional():Boolean {
+			return _isOptional;
+		}
+
+		// ----------------------------
+		// defaultValue
+		// ----------------------------
+
+		private var _defaultValue:*;
+
+		public function get defaultValue():* {
+			return _defaultValue;
+		}
+
+
+		// ----------------------------
+		// type
+		// ----------------------------
+
+		private var _type:String;
+
+		public function get type():Type {
+			return (_type != null) ? Type.forName(_type, _applicationDomain) : null;
+		}
+
+		// -------------------------------------------------------------------------
+		//
+		//  Methods: AS3Commons Reflect Internal Use
+		//
+		// -------------------------------------------------------------------------
+
+		as3commons_reflect function setIndex(value:int):void {
+			_index = value;
+		}
+
+		as3commons_reflect function setIsOptional(value:Boolean):void {
+			_isOptional = value;
+		}
+
+		as3commons_reflect function setType(value:String):void {
+			_type = value;
+		}
+
+		as3commons_reflect function setDefaultValue(value:*):void {
+			_defaultValue = value;
+		}
+
 	}
-	
-	// -------------------------------------------------------------------------
-	//
-	//  Properties
-	//
-	// -------------------------------------------------------------------------
-	
-	// ----------------------------
-	// index
-	// ----------------------------
-	
-	private var _index:int;
-	
-	public function get index():int {
-		return _index;
-	}
-	
-	// ----------------------------
-	// isOptional
-	// ----------------------------
-	
-	private var _isOptional:Boolean;
-	
-	public function get isOptional():Boolean {
-		return _isOptional;
-	}
-	
-	// ----------------------------
-	// type
-	// ----------------------------
-	
-	private var _type:Type;
-	
-	public function get type():Type {
-		return _type;
-	}
-	
-	// -------------------------------------------------------------------------
-	//
-	//  Methods: AS3Commons Reflect Internal Use
-	//
-	// -------------------------------------------------------------------------
-	
-	as3commons_reflect function setIndex(value:int):void {
-		_index = value;
-	}
-	
-	as3commons_reflect function setIsOptional(value:Boolean):void {
-		_isOptional = value;
-	}
-	
-	as3commons_reflect function setType(value:Type):void {
-		_type = value;
-	}
-}
 }
