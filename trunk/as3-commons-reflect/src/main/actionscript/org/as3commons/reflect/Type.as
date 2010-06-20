@@ -543,11 +543,11 @@ package org.as3commons.reflect {
 		// extendsClass
 		// ----------------------------
 
-		private var _extendsClasses:Array;
+		private var _extendsClasses:Array /* of String */;
 
 		/**
-		 * @return An <code>Array</code> of <code>Class</code> instances that represents the inheritance order of the current <code>Type</code>.
-		 * <p>The first item in the <code>Array</code> is the super class of the current <code>Type</code>.</p>
+		 * @return An <code>Array</code> of fully qualified class names that represent the inheritance order of the current <code>Type</code>.
+		 * <p>The first item in the <code>Array</code> is the fully qualified classname of the super class of the current <code>Type</code>.</p>
 		 */
 		public function get extendsClasses():Array {
 			return _extendsClasses;
