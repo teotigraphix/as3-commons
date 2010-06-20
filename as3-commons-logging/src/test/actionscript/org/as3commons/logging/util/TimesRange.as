@@ -26,21 +26,20 @@ package org.as3commons.logging.util {
 
 		override public function verify(wanted:Invocation, invocations:Invocations):void {
 			var counter:int = 0;
-
+			
 			for each (var iv:Invocation in invocations.getEncounteredInvocations()) {
 				if (wanted.matches(iv)) {
-					counter++;
+					++counter;
+					if( counter > _maxTimes )
+					{
+						throw new Error("Excuted more often than expected: "+_maxTimes+" is max, while "+counter+" times executed.", wanted.describe() );
+					}
 				}
 			}
 			
 			if( counter < _minTimes )
 			{
 				throw new Error("Not executed often enough: "+_minTimes+" is required, while "+counter+" times executed.", wanted.describe() );
-			}
-			else
-			if( counter > _maxTimes )
-			{
-				throw new Error("Excuted more often than expected: "+_maxTimes+" is max, while "+counter+" times executed.", wanted.describe() );
 			}
 		}
 	}

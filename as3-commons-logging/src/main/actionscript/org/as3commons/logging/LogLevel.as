@@ -43,10 +43,6 @@ package org.as3commons.logging {
 			_value = value;
 		}
 		
-		public function matches( toLevel:LogLevel ):Boolean {
-			return (_value & toLevel._value) == toLevel._value;
-		}
-		
 		public function get name():String {
 			return _name;
 		}

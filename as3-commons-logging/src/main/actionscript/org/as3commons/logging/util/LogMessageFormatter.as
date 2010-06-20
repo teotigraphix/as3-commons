@@ -52,16 +52,23 @@ package org.as3commons.logging.util
 		 * Returns a string with the parameters replaced.
 		 */
 		public static function format( format:String, name:String, shortName:String, level:LogLevel, timeMs:Number, message:String, params:Array ):String {
-			var numParams:int = params.length;
-			for (var i:int = 0; i < numParams; ++i) {
-				var param: * = params[i];
-				message = message.replace( "{"+i+"}", param );
+			var numParams:int = params ? params.length : 0;
+			if( message ) {
+				for (var i:int = 0; i < numParams; ++i) {
+					var param: * = params[i];
+					message = message.replace( "{"+i+"}", param );
+				}
 			}
+			
+			if( isNaN(timeMs) ) {
+				timeMs = 0;
+			}
+			
 			var result: String = format.
 				replace( MESSAGE, message ).
 				replace( NAME, name ).
 				replace( SHORT_NAME, shortName ).
-				replace( LOG_LEVEL, level.name ).
+				replace( LOG_LEVEL, level ? level.name : "" ).
 				replace( SWF, LoggerFactory.SWF_URL ).
 				replace( SHORT_SWF, LoggerFactory.SWF_SHORT_URL );
 				
@@ -82,15 +89,21 @@ package org.as3commons.logging.util
 				if( secs.length == 1 ) {
 					secs = "0"+secs;
 				}
-				result = result.replace( LOG_TIME, hrs+":"+mins+":"+secs+"."+int( NOW.millisecondsUTC / 100 ) );
+				var ms: String = NOW.millisecondsUTC.toString();
+				if( ms.length == 1 ) {
+					ms = "00"+ms;
+				} else if( ms.length == 2 ) {
+					ms = "0"+ms;
+				}
+				result = result.replace( LOG_TIME, hrs+":"+mins+":"+secs+"."+ms );
 			}
 			if( result.match( DATE ) ) {
 				NOW.time = timeMs;
-				result = result.replace( DATE, NOW.toString() );
+				result = result.replace( DATE, NOW.fullYear + "/" + (NOW.month+1) + "/" + NOW.date );
 			}
 			if( result.match( DATE_UTC ) ) {
 				NOW.time = timeMs;
-				result = result.replace( DATE_UTC, NOW.toUTCString() );
+				result = result.replace( DATE_UTC, NOW.fullYearUTC + "/" + (NOW.monthUTC+1) + "/" + NOW.dateUTC );
 			}
 			if( result.match( TIME_UTC ) ) {
 				NOW.time = timeMs;
@@ -104,12 +117,16 @@ package org.as3commons.logging.util
 		}
 		
 		private static function encodeDoubleQuote(message: String): String {
-			var split: Array = message.split("\"");
-			var l: int = split.length-1;
-			for( var i: int = 0; i<l; ++i ) {
-				split[i] = split[i]+"\\";
+			if( message ) {
+				var split: Array = message.split("\"");
+				var l: int = split.length-1;
+				for( var i: int = 0; i<l; ++i ) {
+					split[i] = split[i]+"\\";
+				}
+				return split.join("\"").split("\n").join("\\n");
+			} else {
+				return message;
 			}
-			return split.join("\"").split("\n").join("\\n");
 		}
 	}
 }

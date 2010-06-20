@@ -9,16 +9,16 @@ package org.as3commons.logging
 	{
 		private static const _levels:Array = [];
 
-		public static const NONE:LogTargetLevel       = getLevelByValue( 1 );
-		public static const FATAL_ONLY:LogTargetLevel = getLevelByValue( 2 );
+		public static const NONE:LogTargetLevel       = getLevelByValue( 0x0001 );
+		public static const FATAL_ONLY:LogTargetLevel = getLevelByValue( 0x0002 );
 		public static const FATAL:LogTargetLevel      = NONE.or( FATAL_ONLY );
-		public static const ERROR_ONLY:LogTargetLevel = getLevelByValue( 4 );
+		public static const ERROR_ONLY:LogTargetLevel = getLevelByValue( 0x0004 );
 		public static const ERROR:LogTargetLevel      = FATAL.or( ERROR_ONLY );
-		public static const WARN_ONLY:LogTargetLevel  = getLevelByValue( 8 );
+		public static const WARN_ONLY:LogTargetLevel  = getLevelByValue( 0x0008 );
 		public static const WARN:LogTargetLevel       = ERROR.or( WARN_ONLY );
-		public static const INFO_ONLY:LogTargetLevel  = getLevelByValue( 16 );
+		public static const INFO_ONLY:LogTargetLevel  = getLevelByValue( 0x0010 );
 		public static const INFO:LogTargetLevel       = WARN.or( INFO_ONLY );
-		public static const DEBUG_ONLY:LogTargetLevel = getLevelByValue( 32 );
+		public static const DEBUG_ONLY:LogTargetLevel = getLevelByValue( 0x0020 );
 		public static const DEBUG:LogTargetLevel      = INFO.or( DEBUG_ONLY );
 		public static const ALL:LogTargetLevel        = DEBUG;
 
