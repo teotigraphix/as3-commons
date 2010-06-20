@@ -66,7 +66,7 @@ package org.as3commons.reflect {
 		public function testExtendsClasses():void {
 			var type:Type = Type.forClass(ComplexerClass);
 			assertEquals(2, type.extendsClasses.length);
-			assertStrictlyEquals(ComplexClass, type.extendsClasses[0]);
+			assertEquals("org.as3commons.reflect.testclasses::ComplexClass", type.extendsClasses[0]);
 		}
 
 		public function testForInstanceWithStringInstance():void {
