@@ -374,6 +374,10 @@ package org.as3commons.reflect {
 			_isInterface = value;
 		}
 
+		// ----------------------------
+		// isProtected
+		// ----------------------------
+
 		private var _isProtected:Boolean;
 
 		public function get isProtected():Boolean {
@@ -387,6 +391,10 @@ package org.as3commons.reflect {
 			_isProtected = value;
 		}
 
+		// ----------------------------
+		// isSealed
+		// ----------------------------
+
 		private var _isSealed:Boolean;
 
 		public function get isSealed():Boolean {
@@ -399,6 +407,10 @@ package org.as3commons.reflect {
 		public function set isSealed(value:Boolean):void {
 			_isSealed = value;
 		}
+
+		// ----------------------------
+		// interfaces
+		// ----------------------------
 
 		private var _interfaces:Array;
 
