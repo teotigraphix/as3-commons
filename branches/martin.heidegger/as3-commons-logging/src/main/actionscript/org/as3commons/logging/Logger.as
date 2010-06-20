@@ -32,7 +32,7 @@ package org.as3commons.logging {
 	 * @author Martin Heidegger
 	 * @author Christophe Herreman
 	 */
-	public class Logger implements ILogger {
+	public final class Logger implements ILogger {
 		
 		/** The proxied logger. */
 		private var _logTarget:ILogTarget;
@@ -45,7 +45,8 @@ package org.as3commons.logging {
 		private var _errorEnabled:Boolean = false;
 		private var _fatalEnabled:Boolean = false;
 		
-		private static const _startTime: Number = new Date().getTime() - getTimer( );
+		private static const _startTime: Number = new Date().getTime() - getTimer();
+		private var _strigified:String;
 
 		/**
 		 * Creates a new LoggerProxy.
@@ -61,13 +62,24 @@ package org.as3commons.logging {
 		 */
 		public function set logTarget(target:ILogTarget):void {
 			_logTarget = target;
-			_debugEnabled = _logTarget && _logTarget.logTargetLevel.matches( LogLevel.DEBUG );
-			_infoEnabled  = _logTarget && _logTarget.logTargetLevel.matches( LogLevel.INFO );
-			_warnEnabled  = _logTarget && _logTarget.logTargetLevel.matches( LogLevel.WARN );
-			_errorEnabled = _logTarget && _logTarget.logTargetLevel.matches( LogLevel.ERROR );
-			_fatalEnabled = _logTarget && _logTarget.logTargetLevel.matches( LogLevel.FATAL );
+			var logTargetLevel: LogTargetLevel;
+			if( target && target.logTargetLevel ) {
+				logTargetLevel = _logTarget.logTargetLevel;
+				_debugEnabled = logTargetLevel.matches( LogLevel.DEBUG );
+				_infoEnabled  = logTargetLevel.matches( LogLevel.INFO );
+				_warnEnabled  = logTargetLevel.matches( LogLevel.WARN );
+				_errorEnabled = logTargetLevel.matches( LogLevel.ERROR );
+				_fatalEnabled = logTargetLevel.matches( LogLevel.FATAL );
+			} else {
+				_debugEnabled = false;
+				_infoEnabled = false;
+				_warnEnabled = false;
+				_errorEnabled = false;
+				_fatalEnabled = false;
+			}
+			_strigified = "[Logger for '" + _name + "', level: " + ( logTargetLevel ? logTargetLevel.value : "1" ) + ", target: " + ( target ? target : "null" ) + " ]";
 		}
-
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -163,6 +175,10 @@ package org.as3commons.logging {
 
 		public function get name():String {
 			return _name;
+		}
+		
+		public function toString(): String {
+			return _strigified;
 		}
 	}
 }

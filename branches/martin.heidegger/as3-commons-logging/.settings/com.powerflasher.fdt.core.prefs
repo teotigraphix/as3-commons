@@ -1,6 +1,15 @@
-#Tue Jan 26 00:27:45 CET 2010
+#Thu Jun 17 00:05:02 CEST 2010
+=false
+com.powerflasher.fdt.core.CompilerArguments=-target-player\={playerVersion}\n-library-path {flexSDK}/frameworks/locale/en_US
 com.powerflasher.fdt.core.DefaultOutputFolder=
 com.powerflasher.fdt.core.Language=AS3
 com.powerflasher.fdt.core.LanguageType=Flex_3_SDK_0_with_AIR
+com.powerflasher.fdt.core.PassClasspath=true
+com.powerflasher.fdt.core.PassMainclass=true
+com.powerflasher.fdt.core.PassSwcs=true
+com.powerflasher.fdt.core.PlayerVersion=10
+com.powerflasher.fdt.core.ProjectTypeHint=Flex 3 AIR
+com.powerflasher.fdt.core.Runtime=AIR
+com.powerflasher.fdt.core.SdkName=Flex 3.3
 com.powerflasher.fdt.core.useProjectFormatterSettings=true
 eclipse.preferences.version=1

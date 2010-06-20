@@ -104,14 +104,18 @@ package org.as3commons.logging
 		/**
 		 * Sets the logger factory for the logging system.
 		 */
-		public static function set loggerFactory(value:ILogTargetFactory):void {
+		public static function set targetFactory(value:ILogTargetFactory):void {
 			_instance.loggerFactory = value;
 		}
 		
 		public static function initSWFURLs(stage:Stage):void {
-			var url:String=stage.loaderInfo.loaderURL;
-			SWF_URL=url;
-			SWF_SHORT_URL=url.substring( url.lastIndexOf("/") + 1 );
+			if( stage ) {
+				var url:String=stage.loaderInfo.loaderURL;
+				SWF_URL=url;
+				SWF_SHORT_URL=url.substring( url.lastIndexOf("/") + 1 );
+			} else {
+				SWF_URL=SWF_SHORT_URL=SWF_URL_ERROR;
+			}
 		}
 
 		/**

@@ -84,5 +84,7 @@ package org.as3commons.logging {
 		function get fatalEnabled():Boolean;
 		
 		function get name(): String;
+		
+		function toString(): String;
 	}
 }
