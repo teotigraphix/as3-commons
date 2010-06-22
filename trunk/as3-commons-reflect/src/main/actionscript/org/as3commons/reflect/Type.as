@@ -190,6 +190,7 @@ package org.as3commons.reflect {
 			_staticVariables = [];
 			_variables = [];
 			_extendsClasses = [];
+			_interfaces = [];
 			_applicationDomain = applicationDomain;
 		}
 
