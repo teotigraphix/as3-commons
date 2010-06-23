@@ -29,7 +29,7 @@ package org.as3commons.logging.impl {
 		private var _formerDate:*;
 		
 		// Not customizable since the log-file header would need to adapt
-		private var _format:String = "{logTime} {logLevel} {name} \"{message_dqt}\"";
+		private var _formatter: LogMessageFormatter  = new LogMessageFormatter( "{logTime} {logLevel} {name} \"{message_dqt}\"" );
 		
 		public function AirFileLogTarget( filePattern: String = null ) {
 			_filePattern = filePattern || DEFAULT_FILE_PATTERN;
@@ -60,7 +60,7 @@ package org.as3commons.logging.impl {
 									   "#Date: " + date.dateUTC + "-" + MONTHS[ date.monthUTC ] + "-" + date.fullYearUTC + " " + date.hoursUTC + ":" + date.minutesUTC + ":" + date.secondsUTC + "." + date.millisecondsUTC + "\n"+
 									   "#Fields: time x-method x-name x-comment\n");
 			}
-			_stream.writeUTFBytes( LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, params ) + "\n" );
+			_stream.writeUTFBytes( _formatter.format( name, shortName, level, timeStamp, message, params ) + "\n" );
 		}
 
 		private function renameOldFile(file: File, date: Date, no: int): void {

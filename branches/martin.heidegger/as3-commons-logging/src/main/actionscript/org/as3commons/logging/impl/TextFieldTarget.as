@@ -17,14 +17,14 @@ package org.as3commons.logging.impl {
 		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
 		public static const INSTANCE: TextFieldTarget = new TextFieldTarget();
 		
-		private var _format: String;
+		private var _formatter: LogMessageFormatter;
 		
 		public function TextFieldTarget ( format:String = null) {
-			_format = format || DEFAULT_FORMAT;
+			_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
 		}
 		
 		public function log(name: String, shortName: String, level: LogLevel, timeStamp: Number, message: String, parameters: Array): void {
-			this.text += LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, parameters ) + "\n";
+			this.text += _formatter.format( name, shortName, level, timeStamp, message, parameters ) + "\n";
 		}
 		
 		public function get logTargetLevel(): LogTargetLevel {

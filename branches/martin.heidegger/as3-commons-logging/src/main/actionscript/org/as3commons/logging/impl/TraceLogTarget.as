@@ -38,14 +38,14 @@ package org.as3commons.logging.impl {
 		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
 		public static const INSTANCE: TraceLogTarget = new TraceLogTarget();
 		
-		private var _format: String;
+		private var _formatter: LogMessageFormatter;
 		
 		public function TraceLogTarget( format: String = null ) {
-			_format = format || DEFAULT_FORMAT;
+			_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
 		}
 		
 		override public function log( name: String, shortName:String, level:LogLevel, timeStamp: Number, message:String, params:Array ):void {
-			trace( LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, params) );
+			trace( _formatter.format( name, shortName, level, timeStamp, message, params) );
 		}
 		
 		public function getLogTarget(name: String): ILogTarget {
