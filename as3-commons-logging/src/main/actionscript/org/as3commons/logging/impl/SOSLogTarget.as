@@ -24,11 +24,11 @@ package org.as3commons.logging.impl {
 		private var _cache: Array;
 		private var _socket: XMLSocket;
 		private var _ready: Boolean;
-		private var _format: String;
+		private var _formatter: LogMessageFormatter;
 		private var _broken: Boolean;
 		
 		public function SOSLogTarget( format: String = null, host: String = null, port: uint = 4444 ) {
-			_format = format || DEFAULT_FORMAT;
+			_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
 			_host = host || DEFAULT_HOST;
 			_port = port;
 			_cache = [];
@@ -53,7 +53,7 @@ package org.as3commons.logging.impl {
 					_cache.push( new LogCacheStatement(name, shortName, level, timeStamp, message, params) );
 				}
 			} else {
-				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, params).replace(/\<\!\[CDATA\[/gi, "").replace(/]]\>/gi,"") + "]]></showMessage>\n");
+				_socket.send("!SOS<showMessage key=\"" + level.name + "\"><![CDATA[" + _formatter.format( name, shortName, level, timeStamp, message, params).replace(/\<\!\[CDATA\[/gi, "").replace(/]]\>/gi,"") + "]]></showMessage>\n");
 			}
 		}
 		

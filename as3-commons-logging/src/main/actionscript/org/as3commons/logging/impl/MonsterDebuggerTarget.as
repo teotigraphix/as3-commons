@@ -25,18 +25,18 @@ package org.as3commons.logging.impl
 			DEFAULT_COLORS[ LogLevel.INFO ] = MonsterDebugger.COLOR_NORMAL;
 			DEFAULT_COLORS[ LogLevel.WARN ] = MonsterDebugger.COLOR_WARNING;
 		}
-		private var _format: String;
+		private var _formatter: LogMessageFormatter;
 		private var _colors: Dictionary;
 
 		public function MonsterDebuggerTarget( format: String = null, colors: Dictionary = null )
 		{
-			_format = format || DEFAULT_FORMAT;
+			_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
 			_colors = colors || DEFAULT_COLORS;
 		}
 		
 		override public function log(name: String, shortName: String, level: LogLevel, timeStamp: Number, message: String, parameters: Array): void
 		{
-			MonsterDebugger.trace( name, LogMessageFormatter.format( _format, name, shortName, level, timeStamp, message, parameters), _colors[ level ] );
+			MonsterDebugger.trace( name, _formatter.format( name, shortName, level, timeStamp, message, parameters), _colors[ level ] );
 		}
 		
 		public function getLogTarget(name: String): ILogTarget
