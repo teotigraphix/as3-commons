@@ -23,43 +23,117 @@ package org.as3commons.emit {
 
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
+	import flash.utils.Endian;
 	import flash.utils.IDataInput;
 
+	import loom.abc.AbcFile;
+	import loom.util.AbcDeserializer;
+
+	import org.as3commons.emit.tags.AbstractTag;
+	import org.as3commons.emit.tags.DoABCTag;
+	import org.as3commons.emit.tags.EndTag;
+	import org.as3commons.emit.tags.FileAttributesTag;
+	import org.as3commons.emit.tags.FrameLabelTag;
+	import org.as3commons.emit.tags.RecordHeader;
+	import org.as3commons.emit.tags.ScriptLimitsTag;
+	import org.as3commons.emit.tags.SetBackgroundColorTag;
+	import org.as3commons.emit.tags.ShowFrameTag;
 	import org.as3commons.emit.util.BitReader;
 	import org.as3commons.lang.Assert;
 
 	public class SWFReader {
 
+		private var tagIDLookup:Dictionary;
+
 		public function SWFReader() {
 			super();
+			initSWFReader();
 		}
 
-		public function read(input:IDataInput):SWF {
+		protected function initSWFReader():void {
+			tagIDLookup = new Dictionary();
+			tagIDLookup[DoABCTag.TAG_ID] = DoABCTag;
+			tagIDLookup[EndTag.TAG_ID] = EndTag;
+			tagIDLookup[FileAttributesTag.TAG_ID] = FileAttributesTag;
+			tagIDLookup[FrameLabelTag.TAG_ID] = FrameLabelTag;
+			tagIDLookup[ScriptLimitsTag.TAG_ID] = ScriptLimitsTag;
+			tagIDLookup[SetBackgroundColorTag.TAG_ID] = SetBackgroundColorTag;
+			tagIDLookup[ShowFrameTag.TAG_ID] = ShowFrameTag;
+		}
+
+		public function read(input:ByteArray):SWF {
 			Assert.notNull(input, "input argument must not be null");
+			input.endian = Endian.LITTLE_ENDIAN;
 			var swfIdentifier:String = input.readUTFBytes(3);
-			var compressed:Boolean = (swfIdentifier == SWFConstant.COMPRESSED_SWF_IDENTIFIER);
-			var version:uint = input.readUnsignedByte();
+			var compressed:Boolean = (swfIdentifier == SWFConstant.COMPRESSED_SWF_SIGNATURE);
+			var version:uint = input.readByte();
 			var filesize:uint = input.readUnsignedInt();
 
-			var data:ByteArray = new ByteArray();
-			data.endian = input.endian;
-
 			//input.readBytes(data, 0, filesize - SWFConstant.PRE_HEADER_SIZE);
-			input.readBytes(data, 0, 0);
+			input.readBytes(input);
+			input.length -= 8;
 
 			if (compressed) {
-				data.uncompress();
+				input.uncompress();
 			}
+			input.position = 0;
 
-			var header:SWFHeader = readHeader(data, compressed, version, filesize);
+			var header:SWFHeader = readHeader(input, compressed, version, filesize);
 
-			var swfInput:SWFInput = new SWFInput(input);
-
-			return new SWF(header, readTags(data));
+			return new SWF(header, readTags(input));
 		}
 
-		private function readTags(input:IDataInput):Array {
-			return [];
+		private function readTags(input:ByteArray):Array {
+			var tag:AbstractTag = readTag(input);
+			var result:Array = [];
+			if (tag != null) {
+				result[result.length] = tag;
+			}
+			while (input.bytesAvailable) {
+				tag = readTag(input);
+				if (tag != null) {
+					result[result.length] = tag;
+				}
+			}
+			return result;
+		}
+
+		private function readTag(input:ByteArray):AbstractTag {
+			Assert.notNull(input, "input argument must not be null");
+			var header:RecordHeader = readRecordHeader(input);
+			var cls:Class = tagIDLookup[header.id];
+			var tag:AbstractTag = null;
+			if (cls != null) {
+				if (cls === DoABCTag) {
+					tag = new cls();
+					var swfInput:SWFInput = new SWFInput(input);
+					tag.readData(swfInput);
+					var b:ByteArray = new ByteArray();
+					input.readBytes(b, input.position);
+					var deserializer:AbcDeserializer = new AbcDeserializer(b);
+					var abc:AbcFile = deserializer.deserialize();
+					var f:int = 0;
+				} else {
+					input.position += header.length;
+				}
+			} else {
+				input.position += header.length;
+			}
+			return tag;
+		}
+
+		private function readRecordHeader(input:IDataInput):RecordHeader {
+			Assert.notNull(input, "input argument must not be null");
+			var tagCL:uint = input.readUnsignedShort();
+			var tagId:uint = tagCL >> 6;
+			var tagLength:uint = tagCL & 0x3F;
+			var longTag:Boolean = false;
+			if (tagLength == 0x3f) {
+				tagLength = input.readUnsignedInt();
+				longTag = (tagLength <= 127);
+			}
+			return new RecordHeader(tagId, tagLength, longTag);
 		}
 
 		private function readHeader(input:IDataInput, compressed:Boolean, version:uint, filesize:uint):SWFHeader {
@@ -81,16 +155,17 @@ package org.as3commons.emit {
 
 		private function readRectangle(input:IDataInput):Rectangle {
 			Assert.notNull(input, "input argument must not be null");
-			var bitReader:BitReader = new BitReader(input);
-
-			var numBits:uint = bitReader.readUnsignedInteger(5);
-
-			var xMin:int = bitReader.readInteger(numBits);
-			var xMax:int = bitReader.readInteger(numBits);
-			var yMin:int = bitReader.readInteger(numBits);
-			var yMax:int = bitReader.readInteger(numBits);
-
-			return new Rectangle(xMin, xMax, yMin, yMax);
+			var current:uint = input.readUnsignedByte();
+			var size:uint = current >> 3;
+			var off:int = 3;
+			for (var i:int = 0; i < 4; i += 1) {
+				off -= size;
+				while (off < 0) {
+					current = input.readUnsignedByte();
+					off += 8;
+				}
+			}
+			return new Rectangle();
 		}
 
 		private function readAsciiChars(input:IDataInput, count:uint):String {
