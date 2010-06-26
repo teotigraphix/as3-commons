@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-	
+
 	import flash.xml.XMLNode;
 	import flash.xml.XMLNodeType;
-	
+
 	/**
 	 * Contains utilities for working with XML objects.
 	 *
 	 * @author Christophe Herreman
 	 */
 	public class XMLUtils {
-		
+
 		public static const ELEMENT_NODE_KIND:String = "element";
-		
+
 		public static const TEXT_NODE_KIND:String = "text";
-		
+
 		public static const COMMENT_NODE_KIND:String = "comment";
-		
+
 		public static const ATTRIBUTE_NODE_KIND:String = "attribute";
-		
+
 		public static const PROCESSING_INSTRUCTION_NODE_KIND:String = "processing-instruction";
-		
+
 		/**
 		 * Creates a CDATA section for the given data string.
 		 * Use this method if you need to create a CDATA section with a binding
@@ -47,7 +47,7 @@ package org.as3commons.lang {
 			var result:XML = new XML("<![CDATA[" + data + "]]>");
 			return result;
 		}
-		
+
 		/**
 		 * Returns if the given xml node is an element node.
 		 */
@@ -55,7 +55,7 @@ package org.as3commons.lang {
 			Assert.notNull(xml, "The xml must not be null");
 			return (ELEMENT_NODE_KIND == xml.nodeKind());
 		}
-		
+
 		/**
 		 * Returns if the given xml node is a text node.
 		 */
@@ -63,7 +63,7 @@ package org.as3commons.lang {
 			Assert.notNull(xml, "The xml must not be null");
 			return (TEXT_NODE_KIND == xml.nodeKind());
 		}
-		
+
 		/**
 		 * Returns if the given xml node is a comment node.
 		 */
@@ -71,7 +71,7 @@ package org.as3commons.lang {
 			Assert.notNull(xml, "The xml must not be null");
 			return (COMMENT_NODE_KIND == xml.nodeKind());
 		}
-		
+
 		/**
 		 * Returns if the given xml node is a processing instruction node.
 		 */
@@ -79,7 +79,7 @@ package org.as3commons.lang {
 			Assert.notNull(xml, "The xml must not be null");
 			return (PROCESSING_INSTRUCTION_NODE_KIND == xml.nodeKind());
 		}
-		
+
 		/**
 		 * Returns if the given xml node is an attribute node.
 		 */
@@ -87,7 +87,7 @@ package org.as3commons.lang {
 			Assert.notNull(xml, "The xml must not be null");
 			return (ATTRIBUTE_NODE_KIND == xml.nodeKind());
 		}
-		
+
 		/**
 		 * Converts an attribute to a node.
 		 *
@@ -97,7 +97,7 @@ package org.as3commons.lang {
 		 */
 		public static function convertAttributeToNode(xml:XML, attribute:String):XML {
 			var attributes:XMLList = xml.attribute(attribute);
-			
+
 			if (attributes) {
 				if (attributes[0] != undefined) {
 					var node:XMLNode = new XMLNode(XMLNodeType.ELEMENT_NODE, attribute);
@@ -110,6 +110,6 @@ package org.as3commons.lang {
 			}
 			return xml;
 		}
-	
+
 	}
 }
