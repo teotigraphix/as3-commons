@@ -2359,7 +2359,8 @@ package org.as3commons.lang {
 			}
 
 			for (var i:int = 0; i < len; i++) {
-				str = str.split('{' + i.toString() + '}').join(args[i].toString());
+				var item:* = args[i];
+				str = str.split('{' + i.toString() + '}').join((item != null) ? item.toString() : "[null]");
 			}
 
 			return str;

@@ -19,6 +19,9 @@ package org.as3commons.lang {
 
 	public class HashArray {
 
+		//These are all the properties and method names of Object, these are illegal names to be used as a key in a Dictionary:
+		private static const illegalKeys:Array = ['hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'setPropertyIsEnumerable', 'toLocaleString', 'toString', 'valueOf', 'prototype', 'constructor'];
+
 		private var _list:Array;
 		private var _lookup:Dictionary;
 		private var _lookUpPropertyName:String;
@@ -30,7 +33,7 @@ package org.as3commons.lang {
 
 		protected function init(lookUpPropertyName:String, allowDuplicates:Boolean, items:Array):void {
 			_lookup = new Dictionary();
-			_lookUpPropertyName = lookUpPropertyName;
+			_lookUpPropertyName = makeValidKey(lookUpPropertyName);
 			_allowDuplicates = allowDuplicates;
 			_list = [];
 			add(items);
@@ -74,11 +77,12 @@ package org.as3commons.lang {
 		}
 
 		protected function addToLookup(newItem:*):void {
+			var validKey:* = makeValidKey(newItem[_lookUpPropertyName]);
 			if (_allowDuplicates) {
-				var items:* = _lookup[newItem[_lookUpPropertyName]];
+				var items:* = _lookup[validKey];
 				var arr:Array;
 				if (items == null) {
-					_lookup[newItem[_lookUpPropertyName]] = [newItem];
+					_lookup[validKey] = [newItem];
 				} else if (items is Array) {
 					arr = (items as Array);
 					arr[arr.length] = newItem;
@@ -86,18 +90,28 @@ package org.as3commons.lang {
 					arr = [];
 					arr[arr.length] = items;
 					arr[arr.length] = newItem;
-					_lookup[newItem[_lookUpPropertyName]] = arr;
+					_lookup[validKey] = arr;
 				}
 			} else {
-				var oldItem:* = _lookup[newItem[_lookUpPropertyName]];
+				var oldItem:* = _lookup[validKey];
 				if (oldItem != null) {
 					ArrayUtils.removeFirstOccurance(_list, oldItem);
 				}
-				_lookup[newItem[_lookUpPropertyName]] = newItem;
+				_lookup[validKey] = newItem;
 			}
 		}
 
+		protected function makeValidKey(propertyValue:*):* {
+			if (!(propertyValue is String)) {
+				return propertyValue;
+			} else if (illegalKeys.indexOf(String(propertyValue)) > -1) {
+				return String(propertyValue) + '_';
+			}
+			return propertyValue;
+		}
+
 		public function get(lookupPropertyValue:String):* {
+			lookupPropertyValue = makeValidKey(lookupPropertyValue);
 			return _lookup[lookupPropertyValue];
 		}
 
