@@ -24,6 +24,7 @@ package org.as3commons.emit.bytecode {
 	import org.as3commons.lang.Assert;
 
 	public class QualifiedName extends AbstractMultiname {
+
 		private var _name:String;
 		private var _ns:BCNamespace;
 

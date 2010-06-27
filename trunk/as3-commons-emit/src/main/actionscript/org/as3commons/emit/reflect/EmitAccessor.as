@@ -113,20 +113,6 @@ package org.as3commons.emit.reflect {
 		}
 
 		//----------------------------------
-		//  isOverride
-		//----------------------------------
-
-		private var _isOverride:Boolean = false;
-
-		public function get isOverride():Boolean {
-			return _isOverride;
-		}
-
-		public function set isOverride(value:Boolean):void {
-			_isOverride = value;
-		}
-
-		//----------------------------------
 		//  isStatic
 		//----------------------------------
 
@@ -187,6 +173,16 @@ package org.as3commons.emit.reflect {
 
 		public function set visibility(value:uint):void {
 			_visibility = value;
+		}
+
+		//----------------------------------
+		//  isOverride
+		//----------------------------------
+
+		private var _isOverride:Boolean;
+
+		public function get isOverride():Boolean {
+			return _isOverride;
 		}
 
 		//----------------------------------
