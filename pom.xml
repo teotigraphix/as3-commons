@@ -18,7 +18,7 @@
 		<!-- Flash Player -->
 		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}
 		</flashplayer.version>
-		<flashplayer.version.major>9</flashplayer.version.major>
+		<flashplayer.version.major>10</flashplayer.version.major>
 		<flashplayer.version.minor>0</flashplayer.version.minor>
 		<flashplayer.version.revision>0</flashplayer.version.revision>
 	</properties>
@@ -86,7 +86,8 @@
 		</developer>
 	</developers>
 
-	<modules>  
+	<modules>
+		<!-- module>as3-commons-bytecode</module -->
 		<module>as3-commons-collections</module>
 		<module>as3-commons-concurrency</module>
 		<module>as3-commons-emit</module>

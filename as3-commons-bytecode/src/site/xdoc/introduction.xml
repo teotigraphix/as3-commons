@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Introduction to as3commons-bytecode</title>
+		<author email="scab@dds.nl">Roland Zwaga</author>
+	</properties>
+	<body>
+
+		<section name="Introduction">
+		
+			<p>The most important class in this library is <code>ByteCodeType</code> which will parse
+			the currently loaded bytecode and populate its cache with <code>ByteCodeType</code> instances
+			for each class that was parsed.</p>
+			
+			<p>There are two static methods on the <code>ByteCodeType</code>:<br/>
+			<code>ByteCodeType.fromLoader(loader:LoaderInfo)</code><br/>
+			and
+			<code>ByteCodeType.fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain = null)</code></p>
+			
+			<p>Both methods have the same end result, they just start off with a different parameter.<br/>
+			When using <code>fromLoader()</code> simply pass a valid <code>LoaderInfo</code> instance to it and it will
+			pass its <code>.bytes</code> and <code>.applicationDomain</code> to the <code>fromByteArray()</code> method.</p>
+			
+			<p>For example like this:
+				<div class="source">
+					ByteCodeType.fromLoader(Application.loaderInfo);
+				</div>
+			Or in Flex 4:
+				<div class="source">
+					ByteCodeType.fromLoader(FlexGlobals.topLevelApplication.loaderInfo);
+				</div>
+			When RSL's have been loaded, use the <code>systemManager.preloadedRSLs</code> property to loop through
+			the loaderInfo instances of each RSL:
+				<div class="source">
+					for (var info:* in systemManager.preloadedRSLs) {
+						ByteCodeType.fromLoader(info);
+					}
+				</div>
+			</p>
+
+			<p>When a SWF has been loaded manually, pass it as a <code>ByteArray</code> to the <code>fromByteArray()</code>
+			method along with an associated <code>ApplicationDomain</code>.
+				<div class="source">
+					[Embed(source="someswf.swf", mimeType="application/octet-stream")]
+					private var swfInput:Class;
+					
+					function parseSWF():void {
+						var ba:ByteArray = new swfInput() as ByteArray;
+						ByteCodeType.fromByteArray(ba, ApplicationDomain.currentDomain);
+					}
+				</div>
+			</p>
+			
+			<p>After parsing <code>ByteCodeTypes</code> can be retrieved by calling these static methods:
+			<ul>
+				<li>forInstance(instance:*, applicationDomain:ApplicationDomain = null)</li>
+				<li>forClass(clazz:Class, applicationDomain:ApplicationDomain = null)</li>
+				<li>forName(name:String, applicationDomain:ApplicationDomain = null)</li>
+			</ul>
+			</p>
+			
+			<p>To loop through all the generated <code>ByteCodeTypes</code> use the <code>getKeys()</code> method
+			on the <code>TypeCache</code> instance:
+				<div class="source">
+					var typeCache:TypeCache = ByteCodeType.getTypeProvider().getTypeCache();
+					for each (var key:String in keys) {
+						var type:ByteCodeType = typeCache.get(key) as ByteCodeType;
+						/* ... do something... */
+					}
+				</div>
+			</p>
+			
+		</section>
+
+	</body>
+</document>
+
