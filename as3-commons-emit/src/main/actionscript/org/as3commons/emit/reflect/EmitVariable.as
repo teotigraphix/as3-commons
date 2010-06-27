@@ -51,7 +51,7 @@ package org.as3commons.emit.reflect {
 			Assert.notNull(fullName, "fullName argument must not be null");
 			Assert.notNull(name, "name argument must not be null");
 			_visibility = visibility;
-			_isOverride = isOverride;
+			as3commons_reflect::setIsOverride(isOverride);
 			as3commons_reflect::setDeclaringType(declaringType);
 			as3commons_reflect::setType(type);
 			as3commons_reflect::setNamespaceURI(ns || SWFConstant.EMPTY_STRING);
@@ -86,20 +86,6 @@ package org.as3commons.emit.reflect {
 
 		public function set fullName(value:String):void {
 			_fullName = value;
-		}
-
-		//----------------------------------
-		//  isOverride
-		//----------------------------------
-
-		private var _isOverride:Boolean = false;
-
-		public function get isOverride():Boolean {
-			return _isOverride;
-		}
-
-		public function set isOverride(value:Boolean):void {
-			_isOverride = value;
 		}
 
 		//----------------------------------

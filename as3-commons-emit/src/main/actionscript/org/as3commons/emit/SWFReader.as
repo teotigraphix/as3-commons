@@ -37,6 +37,7 @@ package org.as3commons.emit {
 		public function read(input:IDataInput):SWF {
 			Assert.notNull(input, "input argument must not be null");
 			var swfIdentifier:String = input.readUTFBytes(3);
+
 			var compressed:Boolean = (swfIdentifier == SWFConstant.COMPRESSED_SWF_SIGNATURE);
 			var version:uint = input.readUnsignedByte();
 			var filesize:uint = input.readUnsignedInt();

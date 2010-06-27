@@ -54,14 +54,6 @@ package org.as3commons.emit.reflect {
 		function set fullName(value:String):void;
 
 		//----------------------------------
-		//  isOverride
-		//----------------------------------
-
-		function get isOverride():Boolean;
-
-		function set isOverride(value:Boolean):void;
-
-		//----------------------------------
 		//  isStatic
 		//----------------------------------
 
