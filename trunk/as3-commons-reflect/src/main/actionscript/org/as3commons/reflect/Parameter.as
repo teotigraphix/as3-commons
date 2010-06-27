@@ -45,12 +45,11 @@ package org.as3commons.reflect {
 		 * @param type the class type of the parameter
 		 * @param isOptional whether the parameter is optional or not
 		 */
-		public function Parameter(index:int, type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false, defaultValue:* = null) {
+		public function Parameter(index:int, type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false) {
 			_index = index;
-			_type = type;
+			typeName = type;
 			_applicationDomain = applicationDomain;
 			_isOptional = isOptional;
-			_defaultValue = defaultValue;
 		}
 
 		// -------------------------------------------------------------------------
@@ -80,24 +79,13 @@ package org.as3commons.reflect {
 		}
 
 		// ----------------------------
-		// defaultValue
-		// ----------------------------
-
-		private var _defaultValue:*;
-
-		public function get defaultValue():* {
-			return _defaultValue;
-		}
-
-
-		// ----------------------------
 		// type
 		// ----------------------------
 
-		private var _type:String;
+		protected var typeName:String;
 
 		public function get type():Type {
-			return (_type != null) ? Type.forName(_type, _applicationDomain) : null;
+			return (typeName != null) ? Type.forName(typeName, _applicationDomain) : null;
 		}
 
 		// -------------------------------------------------------------------------
@@ -115,11 +103,7 @@ package org.as3commons.reflect {
 		}
 
 		as3commons_reflect function setType(value:String):void {
-			_type = value;
-		}
-
-		as3commons_reflect function setDefaultValue(value:*):void {
-			_defaultValue = value;
+			typeName = value;
 		}
 
 	}

@@ -20,6 +20,9 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import flash.utils.Dictionary;
+
+	import org.as3commons.lang.Assert;
 
 	/**
 	 * Enum of an accessor's access properties.
@@ -29,6 +32,9 @@ package org.as3commons.reflect {
 	 * @see Accessor
 	 */
 	public final class AccessorAccess {
+
+		private static const _lookup:Dictionary = new Dictionary();
+		private static var _enumCreated:Boolean = false;
 
 		public static const READ_ONLY:AccessorAccess = new AccessorAccess(READ_ONLY_VALUE);
 		public static const WRITE_ONLY:AccessorAccess = new AccessorAccess(WRITE_ONLY_VALUE);
@@ -40,29 +46,23 @@ package org.as3commons.reflect {
 
 		private var _name:String;
 
+		{
+			_enumCreated = true;
+		}
+
 		/**
 		 * Creates a new <code>AccessorAccess</code> instance.
 		 *
 		 * @param name the name of the accessor access
 		 */
 		public function AccessorAccess(name:String) {
+			Assert.state(!_enumCreated, "AccessorAccess enum was already created");
 			_name = name;
+			_lookup[_name] = this;
 		}
 
 		public static function fromString(access:String):AccessorAccess {
-			var result:AccessorAccess;
-			switch (access) {
-				case READ_ONLY_VALUE:
-					result = READ_ONLY;
-					break;
-				case WRITE_ONLY_VALUE:
-					result = WRITE_ONLY;
-					break;
-				case READ_WRITE_VALUE:
-					result = READ_WRITE;
-					break;
-			}
-			return result;
+			return _lookup[access] as AccessorAccess;
 		}
 
 		/**

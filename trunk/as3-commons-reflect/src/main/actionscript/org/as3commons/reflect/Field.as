@@ -47,5 +47,6 @@ package org.as3commons.reflect {
 			}
 			return target[name];
 		}
+
 	}
 }
