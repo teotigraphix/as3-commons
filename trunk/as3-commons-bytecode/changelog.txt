@@ -1,0 +1,11 @@
+AS3COMMONS-BYTECODE CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+
+Changes in version 0.5 (27.06.2010)
+-----------------------------------
+
+General
+* initial commit, only bytecode based reflection functional
