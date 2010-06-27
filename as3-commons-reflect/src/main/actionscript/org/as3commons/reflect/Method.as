@@ -157,6 +157,10 @@ package org.as3commons.reflect {
 			return Type.forName(_returnTypeName, applicationDomain);
 		}
 
+		as3commons_reflect function get returnTypeName():String {
+			return _returnTypeName;
+		}
+
 		// -------------------------------------------------------------------------
 		//
 		//  Methods

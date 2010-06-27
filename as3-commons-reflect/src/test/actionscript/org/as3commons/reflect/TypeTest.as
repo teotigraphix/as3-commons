@@ -24,15 +24,15 @@ package org.as3commons.reflect {
 	import flash.events.IEventDispatcher;
 	import flash.net.registerClassAlias;
 	import flash.utils.describeType;
-	
+
 	import mx.logging.LogEventLevel;
-	
+
 	import org.as3commons.reflect.testclasses.ComplexerClass;
 	import org.as3commons.reflect.testclasses.ComplexClass;
 	import org.as3commons.reflect.testclasses.ConstructorRecursionHazardClass;
 	import org.as3commons.reflect.testclasses.PublicClass;
 	import org.as3commons.reflect.testclasses.PublicSubClass;
-	
+
 	import flexunit.framework.TestCase;
 
 	/**
@@ -55,10 +55,10 @@ package org.as3commons.reflect {
 			assertEquals("PublicClass", type.name);
 			assertEquals("org.as3commons.reflect.testclasses::PublicClass", type.fullName);
 		}
-		
+
 		public function testClassAlias():void {
 			Type.getTypeProvider().clearCache();
-			registerClassAlias("this_is_an_alias",PublicClass);
+			registerClassAlias("this_is_an_alias", PublicClass);
 			var type:Type = Type.forClass(PublicClass);
 			assertEquals("this_is_an_alias", type.alias);
 		}
@@ -98,11 +98,9 @@ package org.as3commons.reflect {
 				// all other accessors are defined in PublicClass
 				if (accessor.name == "acc4") {
 					assertEquals("PublicSubClass", accessor.declaringType.name);
-				}
-				else if (accessor.name == "prototype") {
+				} else if (accessor.name == "prototype") {
 					assertEquals("Class", accessor.declaringType.name);
-				}
-				else {
+				} else {
 					assertEquals("PublicClass", accessor.declaringType.name);
 				}
 			}

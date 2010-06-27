@@ -27,7 +27,7 @@ package org.as3commons.reflect {
 	 *
 	 * @author Andrew Lewisohn
 	 */
-	public final class TypeCache {
+	public class TypeCache {
 
 		//--------------------------------------------------------------------------
 		//
@@ -38,7 +38,7 @@ package org.as3commons.reflect {
 		/**
 		 * Object used to internally store FullyQualifiedName/Type key/value pairs.
 		 */
-		private var cache:Object = {};
+		protected var cache:Object = {};
 
 		//--------------------------------------------------------------------------
 		//
@@ -75,6 +75,19 @@ package org.as3commons.reflect {
 			Assert.hasText(key, "argument 'key' cannot be empty");
 
 			return (cache[key] != null);
+		}
+
+		/**
+		 * @return An <code>Array</code> of <code>Strings</code> representing the keys in the current <code>TypeCache</code>.
+		 */
+		public function getKeys():Array {
+			var keys:Array = [];
+			if (cache != null) {
+				for (var key:String in cache) {
+					keys[keys.length] = key;
+				}
+			}
+			return keys;
 		}
 
 		/**
