@@ -93,7 +93,7 @@ package org.as3commons.bytecode.reflect {
 		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain = null):ByteCodeType {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:ByteCodeType;
-			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz);
+			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz, true);
 
 			result = getTypeProvider().getTypeCache().get(fullyQualifiedClassName) as ByteCodeType;
 
@@ -178,40 +178,22 @@ package org.as3commons.bytecode.reflect {
 			_initialized = true;
 			if (extendsClasses.length > 0) {
 				var tempMethods:Array = methods;
-				var parentByteCodeType:ByteCodeType = forName(this.extendsClasses[0], this.applicationDomain);
+				var parentByteCodeType:Type = forName(this.extendsClasses[0], this.applicationDomain);
 				if (parentByteCodeType != null) {
-					for each (var method:ByteCodeMethod in parentByteCodeType.methods) {
+					for each (var method:Method in parentByteCodeType.methods) {
 						tempMethods[tempMethods.length] = method;
 					}
-					for each (var variable:ByteCodeVariable in parentByteCodeType.variables) {
+					for each (var variable:Variable in parentByteCodeType.variables) {
 						this.variables[this.variables.length] = variable;
 					}
-					for each (var acc:ByteCodeAccessor in parentByteCodeType.accessors) {
+					for each (var acc:Accessor in parentByteCodeType.accessors) {
 						this.accessors[this.accessors.length] = acc;
 					}
-					for each (var constant:ByteCodeConstant in parentByteCodeType.constants) {
+					for each (var constant:Constant in parentByteCodeType.constants) {
 						this.constants[this.constants.length] = constant;
 					}
 					this.methods = tempMethods;
 					this.createMetaDataLookup();
-				} else {
-					var parentType:Type = Type.forName(this.extendsClasses[0], this.applicationDomain);
-					if (parentType != null) {
-						for each (var typeMethod:Method in parentType.methods) {
-							tempMethods[tempMethods.length] = typeMethod;
-						}
-						for each (var typeVariable:Variable in parentType.variables) {
-							this.variables[this.variables.length] = typeVariable;
-						}
-						for each (var typeAcc:Accessor in parentType.accessors) {
-							this.accessors[this.accessors.length] = typeAcc;
-						}
-						for each (var typeConstant:Constant in parentType.constants) {
-							this.constants[this.constants.length] = typeConstant;
-						}
-						this.methods = tempMethods;
-						this.createMetaDataLookup();
-					}
 				}
 			}
 		}
