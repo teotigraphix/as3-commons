@@ -32,6 +32,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.util.AbcDeserializerBase;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Constructor;
 	import org.as3commons.reflect.MetaData;
@@ -308,7 +309,6 @@ package org.as3commons.bytecode.reflect {
 				var qualifiedName:QualifiedName = convertToQualifiedName(classMultiname);
 				instanceInfo.fullName = qualifiedName.fullName;
 				instanceInfo.name = qualifiedName.name;
-				instanceInfo.clazz = getDefinitionByName(qualifiedName.fullName) as Class;
 				typeCache.put(instanceInfo.fullName, instanceInfo);
 				instances[instances.length] = instanceInfo;
 

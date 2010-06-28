@@ -99,6 +99,17 @@ package org.as3commons.bytecode.reflect {
 			return result;
 		}
 
+		override public function get clazz():Class {
+			if (super.clazz == null) {
+				try {
+					clazz = ClassUtils.forName(fullName, applicationDomain);
+				} catch (e:*) {
+					clazz = null;
+				}
+			}
+			return super.clazz;
+		}
+
 		// ----------------------------
 		// staticConstructor
 		// ----------------------------
