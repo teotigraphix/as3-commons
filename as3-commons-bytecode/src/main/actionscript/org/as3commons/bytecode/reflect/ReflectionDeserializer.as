@@ -17,6 +17,7 @@ package org.as3commons.bytecode.reflect {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
+	import flash.utils.getDefinitionByName;
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ConstantPool;
@@ -307,6 +308,7 @@ package org.as3commons.bytecode.reflect {
 				var qualifiedName:QualifiedName = convertToQualifiedName(classMultiname);
 				instanceInfo.fullName = qualifiedName.fullName;
 				instanceInfo.name = qualifiedName.name;
+				instanceInfo.clazz = getDefinitionByName(qualifiedName.fullName) as Class;
 				typeCache.put(instanceInfo.fullName, instanceInfo);
 				instances[instances.length] = instanceInfo;
 
