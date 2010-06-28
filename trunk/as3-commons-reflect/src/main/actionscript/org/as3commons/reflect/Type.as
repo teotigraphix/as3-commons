@@ -79,7 +79,7 @@ package org.as3commons.reflect {
 
 		private static var logger:ILogger = LoggerFactory.getClassLogger(Type);
 
-		protected static var typeProvider:ITypeProvider;
+		private static var typeProvider:ITypeProvider;
 
 		// --------------------------------------------------------------------
 		//

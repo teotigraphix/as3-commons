@@ -43,6 +43,11 @@ package org.as3commons.reflect {
 	 */
 	public class XmlTypeProvider extends AbstractTypeProvider {
 
+
+		public function XmlTypeProvider() {
+			super();
+		}
+
 		/**
 		 *
 		 */

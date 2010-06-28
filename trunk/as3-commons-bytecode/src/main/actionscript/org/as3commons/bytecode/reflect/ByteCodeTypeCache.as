@@ -28,7 +28,7 @@ package org.as3commons.bytecode.reflect {
 		override public function get(key:String):Type {
 			Assert.hasText(key, "argument 'key' cannot be empty");
 
-			var type:ByteCodeType = cache[key];
+			var type:Type = cache[key];
 			if ((type != null) && (!type.as3commons_reflect::initialized)) {
 				type.as3commons_reflect::initialize();
 			}

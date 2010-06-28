@@ -30,15 +30,16 @@ package org.as3commons.bytecode.reflect {
 
 	public class ByteCodeType extends Type {
 
-		{
-			typeProvider = new ByteCodeTypeProvider();
-		}
+		private static var typeProvider:ITypeProvider;
 
 		public function ByteCodeType(applicationDomain:ApplicationDomain) {
 			super(applicationDomain);
 		}
 
 		public static function getTypeProvider():ITypeProvider {
+			if (typeProvider == null) {
+				typeProvider = new ByteCodeTypeProvider();
+			}
 			return typeProvider;
 		}
 

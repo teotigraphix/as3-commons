@@ -26,7 +26,7 @@ package org.as3commons.reflect {
 			}
 		}
 
-		protected static var typeCache:TypeCache;
+		protected var typeCache:TypeCache;
 
 		public function getTypeCache():TypeCache {
 			return typeCache;
