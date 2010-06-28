@@ -31,6 +31,8 @@ package org.as3commons.bytecode.reflect {
 			var type:Type = cache[key];
 			if ((type != null) && (!type.as3commons_reflect::initialized)) {
 				type.as3commons_reflect::initialize();
+			} else if (type == null){
+				return Type.forName(key);
 			}
 			return type;
 		}
