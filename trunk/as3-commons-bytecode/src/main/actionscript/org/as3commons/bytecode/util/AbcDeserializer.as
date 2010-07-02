@@ -265,7 +265,6 @@ package org.as3commons.bytecode.util {
 				var classMultiname:BaseMultiname = pool.multinamePool[readU30()];
 
 				instanceInfo.classMultiname = convertToQualifiedName(classMultiname);
-				trace(instanceInfo.classMultiname);
 				instanceInfo.superclassMultiname = pool.multinamePool[readU30()];
 				var instanceInfoFlags:int = readU8();
 				instanceInfo.isFinal = ClassConstant.FINAL.present(instanceInfoFlags);

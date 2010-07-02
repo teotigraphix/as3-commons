@@ -21,8 +21,16 @@ package org.as3commons.bytecode.reflect {
 
 	public class ByteCodeTypeCache extends TypeCache {
 
+		private var _metaDataLookup:Object;
+
+
 		public function ByteCodeTypeCache() {
 			super();
+			_metaDataLookup = {};
+		}
+
+		public function get metaDataLookup():Object {
+			return _metaDataLookup;
 		}
 
 		override public function get(key:String):Type {
@@ -31,10 +39,30 @@ package org.as3commons.bytecode.reflect {
 			var type:Type = cache[key];
 			if ((type != null) && (!type.as3commons_reflect::initialized)) {
 				type.as3commons_reflect::initialize();
-			} else if (type == null){
+			} else if (type == null) {
 				return Type.forName(key);
 			}
 			return type;
+		}
+
+		as3commons_reflect function addToMetaDataCache(metaDataName:String, classname:String):void {
+			Assert.hasText(metaDataName, "metaDataName argument must not be empty or null");
+			Assert.hasText(classname, "classname argument must not be empty or null");
+			if (!_metaDataLookup.hasOwnProperty(metaDataName)) {
+				_metaDataLookup[metaDataName] = [];
+			}
+			var arr:Array = _metaDataLookup[metaDataName];
+			if (arr.indexOf(classname) < 0) {
+				arr[arr.length] = classname;
+			}
+		}
+
+		public function getClassesWithMetaData(metaDataName:String):Array {
+			Assert.hasText(metaDataName, "metaDataName argument must not be empty or null");
+			if (_metaDataLookup.hasOwnProperty(metaDataName)) {
+				return _metaDataLookup[metaDataName];
+			}
+			return [];
 		}
 
 	}
