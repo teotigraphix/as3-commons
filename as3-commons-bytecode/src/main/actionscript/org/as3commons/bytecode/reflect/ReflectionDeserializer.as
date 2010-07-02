@@ -149,8 +149,12 @@ package org.as3commons.bytecode.reflect {
 			var methods:Array = readMethods(input, constantPool, _applicationDomain);
 			var metaData:Array = readMetaData(input, constantPool, _applicationDomain);
 			readTypes(input, constantPool, _applicationDomain, methods, metaData, typeCache);
-			methods.length = 0;
-			metaData.length = 0;
+			if (methods != null) {
+				methods.length = 0;
+			}
+			if (metaData != null) {
+				metaData.length = 0;
+			}
 			methods = null;
 			metaData = null;
 		}
@@ -333,7 +337,7 @@ package org.as3commons.bytecode.reflect {
 				var method:ByteCodeMethod = methods[constructorIndex];
 				var constr:Constructor = new Constructor(instanceInfo.fullName, applicationDomain, method.parameters);
 				instanceInfo.constructor = constr;
-				instanceInfo.methods = readTraitsInfo(instanceInfo, byteStream, constantPool, methods, metadatas, false, typeCache);
+				instanceInfo.methods = readTraitsInfo(instances, instanceInfo, constantPool, methods, metadatas, false, typeCache, applicationDomain);
 			}
 
 			for (var classIndex:int = 0; classIndex < classCount; classIndex++) {
@@ -345,14 +349,19 @@ package org.as3commons.bytecode.reflect {
 				// }
 				var classInfo:ByteCodeType = instances[classIndex];
 				classInfo.as3commons_reflect::setStaticConstructor(methods[readU30()]);
-				classInfo.methods = classInfo.methods.concat(readTraitsInfo(classInfo, byteStream, constantPool, methods, metadatas, true, typeCache));
+				classInfo.methods = classInfo.methods.concat(readTraitsInfo(instances, classInfo, constantPool, methods, metadatas, true, typeCache, applicationDomain));
+			}
+
+			var scriptCount:int = readU30();
+			for (var scriptIndex:int = 0; scriptIndex < scriptCount; scriptIndex++) {
+				readU30();
+				readTraitsInfo(instances, null, constantPool, methods, metadatas, true, typeCache, applicationDomain);
 			}
 
 		}
 
-		public function readTraitsInfo(instanceInfo:ByteCodeType, byteStream:ByteArray, pool:ConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache):Array {
+		public function readTraitsInfo(instanceInfos:Array, instanceInfo:ByteCodeType, pool:ConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache, applicationDomain:ApplicationDomain):Array {
 			var traitCount:int = readU30();
-			trace("traits count:" + traitCount);
 			var methods:Array = [];
 			for (var traitIndex:int = 0; traitIndex < traitCount; traitIndex++) {
 				var trait:TraitInfo;
@@ -368,19 +377,18 @@ package org.as3commons.bytecode.reflect {
 				var traitMultiname:QualifiedName = convertToQualifiedName(traitName);
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
-				var slotId:uint = 0;
 				var namedMultiname:BaseMultiname = null;
 				var vindex:uint = 0;
 				var vkind:uint = 0;
 				var metaDataContainer:MetaDataContainer;
 				var qualifiedName:QualifiedName;
-				trace("trait kind:" + traitKind);
+				var fullName:String = ((instanceInfo != null)) ? instanceInfo.fullName : "";
 				switch (traitKind) {
 					case TraitKind.SLOT:
-						slotId = readU30();
+						readU30();
 						namedMultiname = pool.multinamePool[readU30()];
 						qualifiedName = convertToQualifiedName(namedMultiname);
-						var variable:ByteCodeVariable = new ByteCodeVariable(traitMultiname.name, qualifiedName.fullName, instanceInfo.fullName, false, instanceInfo.applicationDomain);
+						var variable:ByteCodeVariable = new ByteCodeVariable(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
 						variable.as3commons_reflect::setIsStatic(isStatic);
 						metaDataContainer = variable;
 						instanceInfo.variables[instanceInfo.variables.length] = variable;
@@ -398,13 +406,15 @@ package org.as3commons.bytecode.reflect {
 						//  u30 vindex 
 						//  u8  vkind  
 						// }
-						slotId = readU30();
+						readU30();
 						namedMultiname = pool.multinamePool[readU30()];
 						qualifiedName = convertToQualifiedName(namedMultiname);
-						var constant:ByteCodeConstant = new ByteCodeConstant(traitMultiname.name, qualifiedName.fullName, instanceInfo.fullName, false, instanceInfo.applicationDomain);
+						var constant:ByteCodeConstant = new ByteCodeConstant(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
 						constant.as3commons_reflect::setIsStatic(isStatic);
 						metaDataContainer = constant;
-						instanceInfo.constants[instanceInfo.constants.length] = constant;
+						if (instanceInfo != null) {
+							instanceInfo.constants[instanceInfo.constants.length] = constant;
+						}
 						vindex = readU30();
 						if (vindex != 0) {
 							vkind = ConstantKind.determineKind(readU8()).value;
@@ -429,7 +439,9 @@ package org.as3commons.bytecode.reflect {
 						// }
 						readU30(); //skip disp_id
 						var accessorMethod:Method = methodInfos[readU30()];
-						metaDataContainer = addAccessor(instanceInfo, accessorMethod, isStatic);
+						if (instanceInfo != null) {
+							metaDataContainer = addAccessor(instanceInfo, accessorMethod, isStatic);
+						}
 						break;
 
 					case TraitKind.CLASS:
@@ -438,10 +450,10 @@ package org.as3commons.bytecode.reflect {
 						//  u30 slot_id 
 						//  u30 classi 
 						// }
-						slotId = readU30();
 						readU30();
+						//readU30();
 						//classTrait.classIndex = readU30();
-						metaDataContainer = instanceInfo;
+						metaDataContainer = instanceInfos[readU30()];
 						break;
 				}
 
@@ -457,10 +469,7 @@ package org.as3commons.bytecode.reflect {
 				// The value of the metadata_count field is the number of entries in the metadata array. That array 
 				// contains indices into the metadata array of the abcFile." 
 				if (traitKindValue & (TraitAttributes.METADATA.bitMask << 4)) {
-					var numberOfTraitMetadataItems:int = readU30();
-					for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; traitMetadataIndex++) {
-						metaDataContainer.addMetaData(metadata[readU30()]);
-					}
+					addMetaData(metadata, metaDataContainer, typeCache);
 				}
 
 				setNameSpaceAndVisibility(metaDataContainer as IVisibleMember, traitMultiname);
@@ -472,6 +481,17 @@ package org.as3commons.bytecode.reflect {
 				}
 			}
 			return methods;
+		}
+
+		private function addMetaData(metadata:Array, container:MetaDataContainer, typeCache:ByteCodeTypeCache):void {
+			var numberOfTraitMetadataItems:int = readU30();
+			for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; traitMetadataIndex++) {
+				var md:MetaData = metadata[readU30()];
+				container.addMetaData(md);
+				if (container is ByteCodeType) {
+					typeCache.as3commons_reflect::addToMetaDataCache(md.name, ByteCodeType(container).fullName);
+				}
+			}
 		}
 
 		private function setNameSpaceAndVisibility(visibleMember:IVisibleMember, qualifiedName:QualifiedName):void {
@@ -503,8 +523,6 @@ package org.as3commons.bytecode.reflect {
 			} else {
 				if (method.parameters.length > 0) {
 					accessorType = Parameter(method.parameters[0]).as3commons_reflect::typeName;
-				} else {
-					trace(method.name);
 				}
 			}
 			var result:ByteCodeAccessor = new ByteCodeAccessor(methodName, accAccess, accessorType, instanceInfo.fullName, false, instanceInfo.applicationDomain);

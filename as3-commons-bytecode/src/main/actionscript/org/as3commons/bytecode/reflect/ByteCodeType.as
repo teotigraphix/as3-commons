@@ -43,6 +43,16 @@ package org.as3commons.bytecode.reflect {
 			return typeProvider;
 		}
 
+		public static function metaDataLookupFromLoader(loader:LoaderInfo):Object {
+			Assert.notNull(loader, "loader argument must not be null");
+			return (getTypeProvider() as ByteCodeTypeProvider).metaDataLookupFromLoader(loader);
+		}
+
+		public static function metaDataLookupFromByteArray(input:ByteArray):Object {
+			Assert.notNull(input, "input argument must not be null");
+			return (getTypeProvider() as ByteCodeTypeProvider).metaDataLookupFromByteArray(input);
+		}
+
 		public static function fromLoader(loader:LoaderInfo):void {
 			Assert.notNull(loader, "loader argument must not be null");
 			var loaderBytesPosition:uint = loader.bytes.position;
