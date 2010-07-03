@@ -313,6 +313,7 @@ package org.as3commons.bytecode.reflect {
 
 				var qualifiedName:QualifiedName = convertToQualifiedName(classMultiname);
 				instanceInfo.fullName = qualifiedName.fullName;
+				typeCache.as3commons_reflect::addDefinitionName(instanceInfo.fullName);
 				instanceInfo.name = qualifiedName.name;
 				typeCache.put(instanceInfo.fullName, instanceInfo);
 				instances[instances.length] = instanceInfo;

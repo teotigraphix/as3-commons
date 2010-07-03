@@ -22,11 +22,17 @@ package org.as3commons.bytecode.reflect {
 	public class ByteCodeTypeCache extends TypeCache {
 
 		private var _metaDataLookup:Object;
-
+		private var _definitionNames:Array;
 
 		public function ByteCodeTypeCache() {
 			super();
 			_metaDataLookup = {};
+			_definitionNames = [];
+		}
+
+
+		public function get definitionNames():Array {
+			return _definitionNames;
 		}
 
 		public function get metaDataLookup():Object {
@@ -54,6 +60,12 @@ package org.as3commons.bytecode.reflect {
 			var arr:Array = _metaDataLookup[metaDataName];
 			if (arr.indexOf(classname) < 0) {
 				arr[arr.length] = classname;
+			}
+		}
+
+		as3commons_reflect function addDefinitionName(className:String):void {
+			if (_definitionNames.indexOf(className) < 0) {
+				_definitionNames[_definitionNames.length] = className;
 			}
 		}
 
