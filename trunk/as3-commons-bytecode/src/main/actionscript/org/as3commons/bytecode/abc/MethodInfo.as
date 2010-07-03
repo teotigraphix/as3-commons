@@ -19,7 +19,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.lang.StringUtils;
 
 	/**
-	 * Loom representation of <code>method_info</code> in the ABC file format. This is actually the method's signature, and combined
+	 * as3commons-bytecode representation of <code>method_info</code> in the ABC file format. This is actually the method's signature, and combined
 	 * with the method traits provides you everything you need to know about a method declaration.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Method signature" in the AVM Spec (page 24)
@@ -43,13 +43,13 @@ package org.as3commons.bytecode.abc {
 		 *
 		 * @see QualifiedName
 		 */
-		public var loomName:*;
+		public var as3commonsBytecodeName:*;
 
 		/**
 		 * Association of this instance with its <code>MethodTrait</code>. The ABC file format never directly links these elements,
-		 * but Loom classes do so for convenience when accessing related information about a method.
+		 * but as3commons-bytecode classes do so for convenience when accessing related information about a method.
 		 */
-		public var loomAssignedMethodTrait:MethodTrait;
+		public var as3commonsByteCodeAssignedMethodTrait:MethodTrait;
 		public var flags:uint;
 		public var methodBody:MethodBody;
 
@@ -82,21 +82,21 @@ package org.as3commons.bytecode.abc {
 		public function toString():String {
 			var nameString:String;
 			var namespaceString:String;
-			if (loomName != null) {
-				if (loomName is QualifiedName) {
-					namespaceString = loomName.nameSpace.kind.description;
-					nameString = loomName.name;
-					if (loomName.nameSpace.kind == NamespaceKind.NAMESPACE) {
-						namespaceString = loomName.nameSpace.name;
+			if (as3commonsBytecodeName != null) {
+				if (as3commonsBytecodeName is QualifiedName) {
+					namespaceString = as3commonsBytecodeName.nameSpace.kind.description;
+					nameString = as3commonsBytecodeName.name;
+					if (as3commonsBytecodeName.nameSpace.kind == NamespaceKind.NAMESPACE) {
+						namespaceString = as3commonsBytecodeName.nameSpace.name;
 					}
 				}
 
-				if (loomName is String) {
-					nameString = loomName;
+				if (as3commonsBytecodeName is String) {
+					nameString = as3commonsBytecodeName;
 				}
 			}
 
-			return StringUtils.substitute("{0} function {1}({2}) : {3}", (namespaceString) ? namespaceString : "(no namespace)", loomName, argumentCollection.join(", "), returnType);
+			return StringUtils.substitute("{0} function {1}({2}) : {3}", (namespaceString) ? namespaceString : "(no namespace)", as3commonsBytecodeName, argumentCollection.join(", "), returnType);
 		}
 	}
 }

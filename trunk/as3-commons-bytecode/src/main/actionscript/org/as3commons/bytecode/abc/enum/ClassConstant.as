@@ -17,7 +17,7 @@ package org.as3commons.bytecode.abc.enum {
 	import org.as3commons.lang.Assert;
 
 	/**
-	 * Loom representation of possible values for the instance <code>flags</code> in the ABC file format.
+	 * as3commons-bytecode representation of possible values for the instance <code>flags</code> in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "flags" in the AVM Spec (page 28)
 	 */

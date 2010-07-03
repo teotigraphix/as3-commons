@@ -17,7 +17,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 
 	/**
-	 * Loom representation of <code>namespace_info</code> in the ABC file format.
+	 * as3commons-bytecode representation of <code>namespace_info</code> in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Namespace" in the AVM Spec (page 22)
 	 */

@@ -24,6 +24,10 @@ package org.as3commons.bytecode.reflect {
 		private var _metaDataLookup:Object;
 		private var _definitionNames:Array;
 
+		/**
+		 * Creates a new <code>ByteCodeTypeCache</code> instance.
+		 *
+		 */
 		public function ByteCodeTypeCache() {
 			super();
 			_metaDataLookup = {};

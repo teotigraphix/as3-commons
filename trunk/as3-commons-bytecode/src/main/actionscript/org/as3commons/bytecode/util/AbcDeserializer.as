@@ -43,7 +43,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.lang.StringUtils;
 
 	/**
-	 * Takes an ABC bytecode block as a stream of bytes and converts it in to a Loom representation of the ABC file format. This
+	 * Takes an ABC bytecode block as a stream of bytes and converts it in to an as3commons-bytecode representation of the ABC file format. This
 	 * class is the symmetric opposite of <code>AbcSerializer</code>.
 	 *
 	 * <p>
@@ -280,7 +280,7 @@ package org.as3commons.bytecode.util {
 					instanceInfo.interfaceMultinames.push(pool.multinamePool[readU30()]);
 				}
 				instanceInfo.instanceInitializer = abcFile.methodInfo[readU30()];
-				instanceInfo.instanceInitializer.loomName = "constructor";
+				instanceInfo.instanceInitializer.as3commonsBytecodeName = "constructor";
 				instanceInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
 				abcFile.addInstanceInfo(instanceInfo);
 			}
@@ -296,7 +296,7 @@ package org.as3commons.bytecode.util {
 				// }
 				var classInfo:ClassInfo = new ClassInfo();
 				classInfo.staticInitializer = abcFile.methodInfo[readU30()];
-				classInfo.staticInitializer.loomName = "staticInitializer";
+				classInfo.staticInitializer.as3commonsBytecodeName = "staticInitializer";
 				classInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
 				abcFile.addClassInfo(classInfo);
 			}
@@ -314,7 +314,7 @@ package org.as3commons.bytecode.util {
 			for (var scriptIndex:int = 0; scriptIndex < scriptCount; scriptIndex++) {
 				var scriptInfo:ScriptInfo = new ScriptInfo();
 				scriptInfo.scriptInitializer = abcFile.methodInfo[readU30()];
-				scriptInfo.scriptInitializer.loomName = "scriptInitializer";
+				scriptInfo.scriptInitializer.as3commonsBytecodeName = "scriptInitializer";
 				scriptInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
 				abcFile.addScriptInfo(scriptInfo);
 			}
@@ -445,8 +445,8 @@ package org.as3commons.bytecode.util {
 						// reference to its traits and vice versa 
 						var associatedMethodInfo:MethodInfo = methodInfos[readU30()]
 						methodTrait.traitMethod = associatedMethodInfo;
-						associatedMethodInfo.loomAssignedMethodTrait = methodTrait;
-						methodTrait.traitMethod.loomName = traitMultiname;
+						associatedMethodInfo.as3commonsByteCodeAssignedMethodTrait = methodTrait;
+						methodTrait.traitMethod.as3commonsBytecodeName = traitMultiname;
 
 						trait = methodTrait;
 						break;

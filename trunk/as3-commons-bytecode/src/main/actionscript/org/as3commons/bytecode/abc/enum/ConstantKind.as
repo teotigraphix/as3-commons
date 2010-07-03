@@ -17,7 +17,7 @@ package org.as3commons.bytecode.abc.enum {
 	import flash.utils.Dictionary;
 
 	/**
-	 * Loom representation of possible values for the kinds of optional arguments to methods in the ABC file format.
+	 * as3commons-bytecode representation of possible values for the kinds of optional arguments to methods in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Optional parameters" in the AVM Spec (page 25)
 	 */

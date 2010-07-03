@@ -53,7 +53,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.lang.StringUtils;
 
 	/**
-	 * Takes an ABC bytecode block as a stream of bytes and converts it in to a Loom representation of the ABC file format. This
+	 * Takes an ABC bytecode block as a stream of bytes and converts it in to a as3commons-bytecode representation of the ABC file format. This
 	 * class is the symmetric opposite of <code>AbcSerializer</code>.
 	 *
 	 * <p>

@@ -19,7 +19,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.typeinfo.Annotatable;
 
 	/**
-	 * Loom representation of <code>traits_info</code> in the ABC file format, which is the base type for all kinds of object traits
+	 * as3commons-bytecode representation of <code>traits_info</code> in the ABC file format, which is the base type for all kinds of object traits
 	 * (both class and instance traits).
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Trait" in the AVM Spec (page 29)

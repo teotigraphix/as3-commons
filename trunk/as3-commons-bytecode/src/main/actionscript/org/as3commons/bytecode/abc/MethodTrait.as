@@ -18,7 +18,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.lang.StringUtils;
 
 	/**
-	 * Loom representation of <code>Trait_Method</code> in the ABC file format. Also represents <code>Trait_Getter</code> and
+	 * as3commons-bytecode representation of <code>Trait_Method</code> in the ABC file format. Also represents <code>Trait_Getter</code> and
 	 * <code>Trait_Setter</code> (differentiated in the spec by the <code>kind</code> of the trait.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Method, getter, and setter traits" in the AVM Spec (page 31)

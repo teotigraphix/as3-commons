@@ -28,7 +28,7 @@ package org.as3commons.bytecode.abc.enum {
 	import org.as3commons.lang.StringUtils;
 
 	/**
-	 * Loom representation of possible values for the kinds of opcodes in the ABC file format.
+	 * as3commons-bytecode representation of possible values for the kinds of opcodes in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "AVM2 instructions" in the AVM Spec (page 35)
 	 */
