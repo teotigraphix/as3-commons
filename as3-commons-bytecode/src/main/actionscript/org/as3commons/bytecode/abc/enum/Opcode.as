@@ -42,22 +42,22 @@ package org.as3commons.bytecode.abc.enum {
 		public static const add:Opcode = new Opcode(0xa0, "add");
 		public static const add_d:Opcode = new Opcode(0x9B, "add_d"); //Added
 		public static const add_i:Opcode = new Opcode(0xC5, "add_i"); //Added
-		public static const applytype:Opcode = new Opcode(0x53, "applytype"); //Added
+		public static const applytype:Opcode = new Opcode(0x53, "applytype", [int, AbcSpec.U30]); //Added
 		public static const astype:Opcode = new Opcode(0x86, "astype", [BaseMultiname, AbcSpec.U30]);
 		public static const astypelate:Opcode = new Opcode(0x87, "astypelate");
 		public static const bitand:Opcode = new Opcode(0xa8, "bitand");
 		public static const bitnot:Opcode = new Opcode(0x97, "bitnot");
 		public static const bitor:Opcode = new Opcode(0xa9, "bitor"); //Added
 		public static const bitxor:Opcode = new Opcode(0xAA, "bitxor"); //Added
-		public static const bkpt:Opcode = new Opcode(0x01, "bkpt", [null, AbcSpec.U30]); //Added
-		public static const bkptline:Opcode = new Opcode(0xF2, "bkptline");
+		public static const bkpt:Opcode = new Opcode(0x01, "bkpt"); //Added
+		public static const bkptline:Opcode = new Opcode(0xF2, "bkptline", [int, AbcSpec.U30]);
 		public static const call:Opcode = new Opcode(0x41, "call", [int, AbcSpec.U30]);
 		public static const callinterface:Opcode = new Opcode(0x4D, "callinterface", [BaseMultiname, AbcSpec.U30], [int, AbcSpec.U30]); //Added
 		public static const callmethod:Opcode = new Opcode(0x43, "callmethod", [int, AbcSpec.U30], [int, AbcSpec.U30]); //Added
 		public static const callproperty:Opcode = new Opcode(0x46, "callproperty", [BaseMultiname, AbcSpec.U30], [int, AbcSpec.U30]);
 		public static const callproplex:Opcode = new Opcode(0x4C, "callproplex", [BaseMultiname, AbcSpec.U30], [int, AbcSpec.U30]); //Added
 		public static const callpropvoid:Opcode = new Opcode(0x4f, "callpropvoid", [BaseMultiname, AbcSpec.U30], [int, AbcSpec.U30]);
-		public static const callstatic:Opcode = new Opcode(0x44, "callstatic", [BaseMultiname, AbcSpec.U30], [int, AbcSpec.U30]); //Added
+		public static const callstatic:Opcode = new Opcode(0x44, "callstatic", [int, AbcSpec.U30], [int, AbcSpec.U30]); //Added
 		public static const callsuper:Opcode = new Opcode(0x45, "callsuper", [BaseMultiname, AbcSpec.U30], [int, AbcSpec.U30]);
 		public static const callsuperid:Opcode = new Opcode(0x4B, "callsuperid"); //Added
 		public static const callsupervoid:Opcode = new Opcode(0x4e, "callsupervoid", [BaseMultiname, AbcSpec.U30], [int, AbcSpec.U30]);
@@ -81,17 +81,17 @@ package org.as3commons.bytecode.abc.enum {
 		public static const convert_s:Opcode = new Opcode(0x70, "convert_s");
 		public static const convert_u:Opcode = new Opcode(0x74, "convert_u");
 		public static const debug:Opcode = new Opcode(0xEF, "debug", [uint, AbcSpec.U8], [int, AbcSpec.U30], [uint, AbcSpec.U8], [int, AbcSpec.U30]); //Added
-		public static const debugfile:Opcode = new Opcode(0xF1, "debugfile", [uint, AbcSpec.U30]); //Added
+		public static const debugfile:Opcode = new Opcode(0xF1, "debugfile", [String, AbcSpec.U30]); //Added
 		public static const debugline:Opcode = new Opcode(0xF0, "debugline", [int, AbcSpec.U30]); //Added
 		public static const declocal:Opcode = new Opcode(0x94, "declocal", [int, AbcSpec.U30]); //Added
 		public static const declocal_i:Opcode = new Opcode(0xC3, "declocal_i", [int, AbcSpec.U30]); //Added
-		public static const decrement:Opcode = new Opcode(0x93, "decrement", [int, AbcSpec.U30]);
+		public static const decrement:Opcode = new Opcode(0x93, "decrement");
 		public static const decrement_i:Opcode = new Opcode(0xc1, "decrement_i");
 		public static const deleteproperty:Opcode = new Opcode(0x6a, "deleteproperty", [BaseMultiname, AbcSpec.U30]);
 		public static const deletepropertylate:Opcode = new Opcode(0x6B, "deletepropertylate"); //Added
 		public static const divide:Opcode = new Opcode(0xa3, "divide");
 		public static const dup:Opcode = new Opcode(0x2a, "dup");
-		public static const dxns:Opcode = new Opcode(0x06, "dxns", [int, AbcSpec.U30]); //Added
+		public static const dxns:Opcode = new Opcode(0x06, "dxns", [String, AbcSpec.U30]); //Added
 		public static const dxnslate:Opcode = new Opcode(0x07, "dxnslate"); //Added
 		public static const equals:Opcode = new Opcode(0xab, "equals");
 		public static const esc_xattr:Opcode = new Opcode(0x72, "esc_xattr"); //Added
@@ -140,7 +140,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static const increment_i:Opcode = new Opcode(0xc0, "increment_i");
 		public static const initproperty:Opcode = new Opcode(0x68, "initproperty", [BaseMultiname, AbcSpec.U30]);
 		public static const instance_of:Opcode = new Opcode(0xB1, "instance_of"); //Added
-		public static const istype:Opcode = new Opcode(0xB2, "istype", [int, AbcSpec.U30]); //Added
+		public static const istype:Opcode = new Opcode(0xB2, "istype", [BaseMultiname, AbcSpec.U30]); //Added
 		public static const istypelate:Opcode = new Opcode(0xb3, "istypelate");
 		public static const jump:Opcode = new Opcode(0x10, "jump", [int, AbcSpec.S24]);
 		public static const kill:Opcode = new Opcode(0x08, "kill", [int, AbcSpec.U30]);
@@ -167,11 +167,11 @@ package org.as3commons.bytecode.abc.enum {
 		public static const pop:Opcode = new Opcode(0x29, "pop");
 		public static const popscope:Opcode = new Opcode(0x1d, "popscope");
 		public static const pushbyte:Opcode = new Opcode(0x24, "pushbyte", [int, AbcSpec.UNSIGNED_BYTE]); // unsigned byte... however, this was writing out too many bytes (4 bytes for the value instead of 1)
-		public static const pushconstant:Opcode = new Opcode(0x22, "pushconstant", [int, AbcSpec.U30]); //Added
+		public static const pushconstant:Opcode = new Opcode(0x22, "pushconstant", [String, AbcSpec.U30]); //Added
 		public static const pushdouble:Opcode = new Opcode(0x2f, "pushdouble", [Number, AbcSpec.U30]);
 		public static const pushfalse:Opcode = new Opcode(0x27, "pushfalse");
 		public static const pushint:Opcode = new Opcode(0x2d, "pushint", [Integer, AbcSpec.U30]);
-		public static const pushnamespace:Opcode = new Opcode(0x31, "pushnamespace", [int, AbcSpec.U30]); //Added
+		public static const pushnamespace:Opcode = new Opcode(0x31, "pushnamespace", [Namespace, AbcSpec.U30]); //Added
 		public static const pushnan:Opcode = new Opcode(0x28, "pushnan");
 		public static const pushnull:Opcode = new Opcode(0x20, "pushnull");
 		public static const pushscope:Opcode = new Opcode(0x30, "pushscope");
@@ -184,7 +184,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static const returnvalue:Opcode = new Opcode(0x48, "returnvalue");
 		public static const returnvoid:Opcode = new Opcode(0x47, "returnvoid");
 		public static const rshift:Opcode = new Opcode(0xa6, "rshift");
-		public static const setglobalslot:Opcode = new Opcode(0x6F, "setglobalslot", [uint, AbcSpec.U30]); //Added
+		public static const setglobalslot:Opcode = new Opcode(0x6F, "setglobalslot", [int, AbcSpec.U30]); //Added
 		public static const setlocal:Opcode = new Opcode(0x63, "setlocal", [int, AbcSpec.U30]);
 		public static const setlocal_0:Opcode = new Opcode(0xD4, "setlocal_0");
 		public static const setlocal_1:Opcode = new Opcode(0xD5, "setlocal_1");
@@ -263,6 +263,11 @@ package org.as3commons.bytecode.abc.enum {
 //                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
 							break;
 
+						case Namespace:
+							abcCompatibleValue = abcFile.constantPool.addInt(rawValue);
+							//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
+							break;
+
 						case ExceptionInfo:
 							throw new Error("ExceptionInfo output is not yet implemented.");
 							break;
@@ -326,6 +331,10 @@ package org.as3commons.bytecode.abc.enum {
 
 						case String:
 							argumentValues.push(abcFile.constantPool.stringPool[byteCodeValue]);
+							break;
+
+						case Namespace:
+							argumentValues.push(abcFile.constantPool.namespacePool[byteCodeValue]);
 							break;
 
 						case Array:
