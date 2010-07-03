@@ -39,7 +39,7 @@
 
             <p>
             	The library provides clean, easy and complete introspection on class variables,
-            	accessors, methods, metadata etc. etc. by parsing the bytecode returned by 
+            	accessors, methods, metadata and more, by parsing the bytecode returned by 
             	<code>loaderInfo.bytes</code>. By parsing the bytecode directly it is possible to
             	gain complete class insight, which means private members and methods, default values
             	for optional parameters, etc. 
