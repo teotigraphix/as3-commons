@@ -71,6 +71,41 @@
 			</p>
 			
 		</section>
+		
+		<section name="Metadata scan">
+			<p>Having the full bytecode reflection data is not always useful and the time it takes to parse and
+			extract the data might not always be worth the loading time.</p>
+			<p>There is also a more lightweight way of extracting just some bits and pieces from the bytecode that
+			normally isn't available through <code>describeType()</code>.</p>
+			<p>Here is a way to generate a lookup for class-level metadata annotations and their corresponding class names:
+				<div class="source">
+					var metaDataLookup:Object = ByteCodeType.metaDataLookupFromLoader(loader);
+					var definitionNames:Array = metaDataLookup['Mixin'];
+					for(var i:uint=0; i &lt; definitionNames.length;i++){
+						var type:Type = Type.forName(definitionNames[i]);
+						/* ... do something... */
+					}
+				</div>
+			</p>
+			<p>Generating this list using <code>metaDataLookupFromLoader(loader)</code> is much, much faster than reading
+			all of the reflection data.</p>
+			<p>This will also populate a full list of definition names contained within the specified bytecode,
+			to retrieve this list use this ByteCodeTypeCache property:
+				<div class="source">
+					var typeCache:ByteCodeTypeCache = ByteCodeType.getTypeProvider().getTypeCache() as ByteCodeTypeCache;
+					var definitionNames:Array = typeCache.definitionNames;
+					for(var i:uint=0; i &lt; definitionNames.length;i++){
+						var type:Type = Type.forName(definitionNames[i]);
+						/* ... do something... */
+					}
+					
+				</div>
+			</p>
+			<p>Notice that to retrieve the type information the regular as3commons-reflect Type is used. Combing as3commons-bytecode
+			and -reflect can yield the most efficient result in this way.</p>
+			<p>Note: the definitionNames list and metadata lookup property are of course also generated when the full bytecode
+			reflection data is generated.</p>
+		</section>
 
 	</body>
 </document>

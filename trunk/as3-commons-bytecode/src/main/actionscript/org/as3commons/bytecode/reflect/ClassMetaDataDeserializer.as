@@ -72,6 +72,7 @@ package org.as3commons.bytecode.reflect {
 				var classMultiname:BaseMultiname = constantPool.multinamePool[readU30()];
 				var qualifiedName:QualifiedName = convertToQualifiedName(classMultiname);
 				classNames[classNames.length] = qualifiedName.fullName;
+				typeCache.as3commons_reflect::addDefinitionName(qualifiedName.fullName);
 
 				readU30(); //superName
 				var instanceInfoFlags:uint = readU8(); //instanceInfoFlags
