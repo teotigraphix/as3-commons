@@ -17,7 +17,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 
 	/**
-	 * Loom representation of a multiname. Although I hate using the word "base" in classes, I was required to since there
+	 * as3commons-bytecode representation of a multiname. Although I hate using the word "base" in classes, I was required to since there
 	 * is a multiname type called <code>Multiname</code>.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Names" in the AVM Spec (page 8)

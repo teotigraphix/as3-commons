@@ -18,7 +18,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.lang.StringUtils;
 
 	/**
-	 * Loom representation of <code>QName</code> in the ABC file format.
+	 * as3commons-bytecode representation of <code>QName</code> in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "QName" in the AVM Spec (page 23)
 	 */

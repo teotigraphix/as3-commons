@@ -140,10 +140,9 @@ package org.as3commons.bytecode.reflect {
 		public function readABCTag(typeCache:ByteCodeTypeCache, input:ByteArray):void {
 			var minorVersion:uint = readU16();
 			var majorVersion:uint = readU16();
-			//Any other version than this we are not prepared to try to parse
-			if (minorVersion != 16 || majorVersion != 46) {
-				return;
-			}
+			/*if (minorVersion != 16 || majorVersion != 46) {
+			   return;
+			 }*/
 			var constantPool:ConstantPool = new ConstantPool();
 			deserializeConstantPool(constantPool);
 			var methods:Array = readMethods(input, constantPool, _applicationDomain);

@@ -18,7 +18,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 
 	/**
-	 * Utility class offering assertions to be used within the test suite and the Loom project code.
+	 * Utility class offering assertions to be used within the test suite and the as3commons-bytecode project code.
 	 */
 	public class Assertions {
 		/**
@@ -26,7 +26,7 @@ package org.as3commons.bytecode.util {
 		 * of items within the arrays, only that the contents all match.
 		 *
 		 * <p>
-		 * This is a Loom-specific utility and has a few hacks in it, so don't get excited about using it
+		 * This is a as3commons-bytecode-specific utility and has a few hacks in it, so don't get excited about using it
 		 * for general array comparison. For example, even though private namespaces must match as object
 		 * references in the AVM2 spec, this method is forgiving in this regard in order to allow array
 		 * contents to be checked for semantic equivalence.
@@ -49,7 +49,7 @@ package org.as3commons.bytecode.util {
 								matchFound = true;
 								break;
 							} else {
-								// Loom-specific exception for private LNamespaces. Allow value equality so that
+								// as3commons-bytecode-specific exception for private LNamespaces. Allow value equality so that
 								// sample LNamespaces can be provided for comparison in tests  
 								if (current is LNamespace) {
 									if (LNamespace(current).kind == NamespaceKind.PRIVATE_NAMESPACE) {

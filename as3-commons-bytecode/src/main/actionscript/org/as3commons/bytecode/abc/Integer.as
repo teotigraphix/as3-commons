@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.abc {
 
 	/**
-	 * Loom type representing an Int stored in the constant pool. Used for parsing/serailizing opcodes.
+	 * as3commons-bytecode type representing an Int stored in the constant pool. Used for parsing/serailizing opcodes.
 	 */
 	public class Integer {
 		public function Integer() {

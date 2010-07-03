@@ -23,7 +23,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.typeinfo.Method;
 
 	/**
-	 * Loom representation of the ABC file format.
+	 * as3commons-bytecode representation of the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "abcFile" in the AVM Spec (page 19)
 	 */

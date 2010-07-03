@@ -37,17 +37,17 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.typeinfo.Argument;
 
 	/**
-	 * Generates runtime subclasses with Loom enhancements for method interception.
+	 * Generates runtime subclasses with as3commons-bytecode enhancements for method interception.
 	 */
 	//TODO: What about intercepting superclass methods? If this is necessary, you'd have to walk the entire class hierarchy to find all the MethodInfos and MethodTraits
 	//TODO: Refactor serialization so that constantpool is serialized last - this will make adding items late in the game work. Currently items added during opcode serialization get added to the pool too late, resulting in "CPool X out of range X" errors 
 	public class DynamicProxyFactory {
-		public static const LOOM_NAMESPACE_NAME:String = "http://org.as3commons.bytecode.abc.ninjitsoft.com";
-		public static const LOOM_NAMESPACE:LNamespace = new LNamespace(NamespaceKind.NAMESPACE, LOOM_NAMESPACE_NAME); // Namespace[namespace::http://org.as3commons.bytecode.abc.ninjitsoft.com]
-		public static const LOOM_PKG_INTERNAL_NAMESPACE:LNamespace = new LNamespace(NamespaceKind.PACKAGE_INTERNAL_NAMESPACE, LOOM_NAMESPACE_NAME); // Namespace[namespace::http://org.as3commons.bytecode.abc.ninjitsoft.com]
-		public static const HANDLER_MAPPINGS_QNAME:QualifiedName = new QualifiedName("handlerMappings", LOOM_NAMESPACE);
-		public static const SET_HANDLER_QNAME:QualifiedName = new QualifiedName("setHandler", LOOM_NAMESPACE);
-		public static const PROXY_INVOCATION_QNAME:QualifiedName = new QualifiedName("proxyInvocation", LOOM_NAMESPACE);
+		public static const AS3COMMONS_BYTECODE_NAMESPACE_NAME:String = "http://org.as3commons.bytecode.abc.ninjitsoft.com";
+		public static const AS3COMMONS_BYTECODE_NAMESPACE:LNamespace = new LNamespace(NamespaceKind.NAMESPACE, AS3COMMONS_BYTECODE_NAMESPACE_NAME); // Namespace[namespace::http://org.as3commons.bytecode.abc.ninjitsoft.com]
+		public static const AS3COMMONS_BYTECODE_PKG_INTERNAL_NAMESPACE:LNamespace = new LNamespace(NamespaceKind.PACKAGE_INTERNAL_NAMESPACE, AS3COMMONS_BYTECODE_NAMESPACE_NAME); // Namespace[namespace::http://org.as3commons.bytecode.abc.ninjitsoft.com]
+		public static const HANDLER_MAPPINGS_QNAME:QualifiedName = new QualifiedName("handlerMappings", AS3COMMONS_BYTECODE_NAMESPACE);
+		public static const SET_HANDLER_QNAME:QualifiedName = new QualifiedName("setHandler", AS3COMMONS_BYTECODE_NAMESPACE);
+		public static const PROXY_INVOCATION_QNAME:QualifiedName = new QualifiedName("proxyInvocation", AS3COMMONS_BYTECODE_NAMESPACE);
 		public static const METHOD_INVOCATION_QNAME:QualifiedName = new QualifiedName("MethodInvocation", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.abc.template"));
 
 		private var _abcFile:AbcFile;
@@ -67,7 +67,7 @@ package org.as3commons.bytecode.util {
 		 * </p>
 		 *
 		 * @param abcFile     The <code>AbcFile</code> to enhance
-		 * @param dynamicSubclassName     The name to give to the dynamic subclass. If no name is specified, Loom assigns the name <code>[original class name]_EnhancedByLoom</code>.
+		 * @param dynamicSubclassName     The name to give to the dynamic subclass. If no name is specified, as3commons-bytecode assigns the name <code>[original class name]_EnhancedByAs3commonsBytecode</code>.
 		 * @param classIndex  The index in to the <code>AbcFile</code> pointing to the class/instance definition that the caller wishes to be enhanced. Defaults to 0, which indicates the first entry (and is usually sufficient for <code>AbcFiles</code> containing only a single class definition).
 		 */
 		public function createProxy(subClassName:String = null, classIndex:int = 0):void {
@@ -78,7 +78,7 @@ package org.as3commons.bytecode.util {
 			var superClassName:String = instance.classMultiname.name;
 			// If a name has not been specified, make one up
 			if (subClassName == null) {
-				subClassName = superClassName + "_EnhancedByLoom";
+				subClassName = superClassName + "_EnhancedByAs3commonsBytecode";
 			}
 			var fullyQualifiedSubclassName:String = packageName + ":" + subClassName;
 			var fullyQualifiedSuperclassName:String = packageName + ":" + superClassName;
@@ -87,11 +87,11 @@ package org.as3commons.bytecode.util {
 
 			var dynamicSubclassProtectedNamespace:LNamespace = addNamespace(NamespaceKind.PROTECTED_NAMESPACE, fullyQualifiedSubclassName); //  Namespace[protectedNamespace::org.as3commons.bytecode.abc.template:DynamicSubClass]
 			_abcFile.constantPool.addNamespace(LNamespace.FLASH_UTILS);
-			_abcFile.constantPool.addNamespace(LOOM_NAMESPACE);
+			_abcFile.constantPool.addNamespace(AS3COMMONS_BYTECODE_NAMESPACE);
 
-			var loomRequiredMultinames:Array = [HANDLER_MAPPINGS_QNAME, SET_HANDLER_QNAME, PROXY_INVOCATION_QNAME, METHOD_INVOCATION_QNAME, BuiltIns.DICTIONARY, BuiltIns.FUNCTION, BuiltIns.VOID];
-			for each (var loomRequiredMultiname:BaseMultiname in loomRequiredMultinames) {
-				_abcFile.constantPool.addMultiname(loomRequiredMultiname);
+			var as3commonsByteCodeRequiredMultinames:Array = [HANDLER_MAPPINGS_QNAME, SET_HANDLER_QNAME, PROXY_INVOCATION_QNAME, METHOD_INVOCATION_QNAME, BuiltIns.DICTIONARY, BuiltIns.FUNCTION, BuiltIns.VOID];
+			for each (var requiredMultiname:BaseMultiname in as3commonsByteCodeRequiredMultinames) {
+				_abcFile.constantPool.addMultiname(requiredMultiname);
 			}
 
 			addHandlerMappingsSlot(instance);
@@ -99,11 +99,11 @@ package org.as3commons.bytecode.util {
 			weaveHandlerMappingsCreationInToConstructor(instance);
 			addProxyInvocation(instance);
 
-			var superClassMethodImplementationNamespaceSet:NamespaceSet = new NamespaceSet([new LNamespace(NamespaceKind.PRIVATE_NAMESPACE, packageName + ":" + subClassName), // such as "org.as3commons.bytecode.abc.template:BaseClass_EnhancedByLoom"
+			var superClassMethodImplementationNamespaceSet:NamespaceSet = new NamespaceSet([new LNamespace(NamespaceKind.PRIVATE_NAMESPACE, packageName + ":" + subClassName), // such as "org.as3commons.bytecode.abc.template:BaseClass_EnhancedByAs3CommonsByteCode"
 				new LNamespace(NamespaceKind.PRIVATE_NAMESPACE, subClassName + ".as$1"), // such as "BaseClass_EnhancedByorg.as3commons.bytecode.abc.as$1"
 				LNamespace.PUBLIC, new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, packageName), // such as "org.as3commons.bytecode.abc.template"
 				new LNamespace(NamespaceKind.PACKAGE_INTERNAL_NAMESPACE, packageName), // such as "org.as3commons.bytecode.abc.template"
-				new LNamespace(NamespaceKind.STATIC_PROTECTED_NAMESPACE, packageName + ":" + subClassName), // such as "org.as3commons.bytecode.abc.template:BaseClass_EnhancedByLoom"
+				new LNamespace(NamespaceKind.STATIC_PROTECTED_NAMESPACE, packageName + ":" + subClassName), // such as "org.as3commons.bytecode.abc.template:BaseClass_EnhancedByAs3CommonsByteCode"
 				new LNamespace(NamespaceKind.STATIC_PROTECTED_NAMESPACE, packageName + ":" + superClassName), // such as "org.as3commons.bytecode.abc.template:BaseClass"
 				new LNamespace(NamespaceKind.STATIC_PROTECTED_NAMESPACE, "Object"), new LNamespace(NamespaceKind.PROTECTED_NAMESPACE, packageName + ":" + superClassName) // such as "org.as3commons.bytecode.abc.template:BaseClass"
 				]);
@@ -224,7 +224,7 @@ package org.as3commons.bytecode.util {
 			// If there are getters, weave in a method for calling the superclass for the property values. This may be used by MethodInvocation.proceed()
 			var getterTraits:Array = instance.getterTraits;
 			if (getterTraits.length > 0) {
-				var methodInvocationGetterHelperQName:QualifiedName = addQualifiedName("getProperty", LOOM_NAMESPACE);
+				var methodInvocationGetterHelperQName:QualifiedName = addQualifiedName("getProperty", AS3COMMONS_BYTECODE_NAMESPACE);
 				var methodInvocationGetter:MethodInfo = addMethod(instance, methodInvocationGetterHelperQName, [new Argument(BuiltIns.STRING)], BuiltIns.ANY);
 
 				// Weave opcodes for getter to invoke the superclass's implementation
@@ -269,7 +269,7 @@ package org.as3commons.bytecode.util {
 			// If there are setters, also weave in a method helper for potential use by MethodInvocation.proceed()
 			var setterTraits:Array = instance.setterTraits;
 			if (setterTraits.length > 0) {
-				var setterHelperMethodName:QualifiedName = addQualifiedName("setProperty", LOOM_NAMESPACE);
+				var setterHelperMethodName:QualifiedName = addQualifiedName("setProperty", AS3COMMONS_BYTECODE_NAMESPACE);
 				var setterHelper:MethodInfo = addMethod(instance, setterHelperMethodName, [new Argument(BuiltIns.STRING), new Argument(BuiltIns.STRING)], BuiltIns.VOID);
 
 				// Weave opcodes for the setter to invoke the superclass's implementation
@@ -319,9 +319,9 @@ package org.as3commons.bytecode.util {
 		}
 
 		public function overrideMethods(instance:InstanceInfo, superClassMethodImplementationNSSet:NamespaceSet /*, packageName : String, subClassName : String, superClassName : String*/):void {
-			// Replace opcodes in all non-Loom method bodies
+			// Replace opcodes in all non-as3commons-bytecode method bodies
 			for each (var methodTrait:MethodTrait in instance.methodTraits) {
-				if (!methodTrait.traitMultiname.nameSpace.equals(LOOM_NAMESPACE)) {
+				if (!methodTrait.traitMultiname.nameSpace.equals(AS3COMMONS_BYTECODE_NAMESPACE)) {
 					var instanceMethodBody:MethodBody = methodTrait.traitMethod.methodBody;
 					methodTrait.isOverride = true;
 
@@ -557,7 +557,7 @@ package org.as3commons.bytecode.util {
 
 			// Create the method signature
 			var methodInfo:MethodInfo = new MethodInfo();
-			methodInfo.loomName = methodName;
+			methodInfo.as3commonsBytecodeName = methodName;
 			methodInfo.methodName = "";
 			methodInfo.returnType = returnType;
 			for each (var argument:Argument in args) {
@@ -603,7 +603,7 @@ package org.as3commons.bytecode.util {
 
 // How to trace (just for shits 'n giggles)
 //            var traceMultinamePosition : int = abcFile.constantPool.getMultinamePositionByName("trace");
-//            var message : String = "This is a message woven in by Loom!";
+//            var message : String = "This is a message woven in by as3commons-bytecode!";
 //            abcFile.constantPool.addString(message);
 //            setHandlerBody.opcodes = [
 //                Opcode.getlocal_0.op(),
