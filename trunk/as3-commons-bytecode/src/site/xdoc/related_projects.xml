@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
     <properties>
-        <title>Projects using as3commons-reflect</title>
-        <author email="mp@yoolab.com">Martino Piccinato</author>
+        <title>Projects using as3commons-bytecode</title>
+        <author email="scab@dds.nl">Roland Zwaga</author>
     </properties>
     <body>
  
-        <section name="Other projects using as3commons-reflect">
+        <section name="Other projects using as3commons-bytecode">
 
             <p>
-                Here is a list of other projects using As3commons-reflect.
+                Here is a list of other projects using As3commons-bytecode.
             </p>
 
             <table>
@@ -26,13 +26,13 @@
                         Christophe Herreman
                     </td>
                     <td>
-                        An Inversion Of Control framework for Actionscript based application.
+                        An Inversion Of Control framework for Actionscript based applications.
                     </td>
                 </tr>
 
             </table>
 			
-			<p>Please report to us if your project is using as3commons-reflect.</p>
+		<p>Please report to us if your project is using as3commons-bytecode.</p>
         </section>
         
     </body>

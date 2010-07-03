@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AS3 Commons Reflect">
+<project name="AS3 Commons Bytecode">
  
     <skin>
         <groupId>org.apache.tapestry</groupId>
         <artifactId>maven-skin</artifactId>
-        <version>0.5</version>
+        <version>1.2</version>
     </skin>
 
     <publishDate format="dd MMM yyyy"/>
