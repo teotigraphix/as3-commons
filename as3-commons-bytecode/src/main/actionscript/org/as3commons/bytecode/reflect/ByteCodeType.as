@@ -43,16 +43,31 @@ package org.as3commons.bytecode.reflect {
 			return typeProvider;
 		}
 
+		/**
+		 * Generates a lookup of metadata name -&gt; <code>Array</code> of class names.
+		 * @param loader The loader whose bytecode will be used to generate the lookup
+		 * @return A lookup of metadata name -&gt; <code>Array</code> of class names.
+		 */
 		public static function metaDataLookupFromLoader(loader:LoaderInfo):Object {
 			Assert.notNull(loader, "loader argument must not be null");
 			return (getTypeProvider() as ByteCodeTypeProvider).metaDataLookupFromLoader(loader);
 		}
 
+		/**
+		 * Generates a lookup of metadata name -&gt; <code>Array</code> of class names.
+		 * @param input The <code>ByteArray</code> will be used to generate the lookup
+		 * @return A lookup of metadata name -&gt; <code>Array</code> of class names.
+		 */
 		public static function metaDataLookupFromByteArray(input:ByteArray):Object {
 			Assert.notNull(input, "input argument must not be null");
 			return (getTypeProvider() as ByteCodeTypeProvider).metaDataLookupFromByteArray(input);
 		}
 
+		/**
+		 * Generates <code>ByteCodeType</code> instances for all classes found in the specified <code>LoaderInfo</code>'s
+		 * bytecode.
+		 * @param loader The specified <code>LoaderInfo</code>.
+		 */
 		public static function fromLoader(loader:LoaderInfo):void {
 			Assert.notNull(loader, "loader argument must not be null");
 			var loaderBytesPosition:uint = loader.bytes.position;
@@ -64,12 +79,21 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
+		/**
+		 * Generates <code>ByteCodeType</code> instances for all classes found in the specified <code>ByteArray</code>.
+		 * @param input The specified <code>ByteArray</code>.
+		 * @param applicationDomain The <code>ApplicationDomain</code> that is associated with the specified <code>ByteArray</code>.
+		 */
 		public static function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain = null):void {
 			Assert.notNull(input, "input argument must not be null");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(input, applicationDomain);
 		}
 
+		/**
+		 * Returns a <code>ByteCodeType</code> object that describes the given instance.
+		 * @param instance the instance from which to get a type description
+		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):ByteCodeType {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:ByteCodeType;
@@ -82,7 +106,7 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		/**
-		 * Returns a <code>Type</code> object that describes the given classname.
+		 * Returns a <code>ByteCodeType</code> object that describes the given classname.
 		 *
 		 * @param name the classname from which to get a type description
 		 */
@@ -96,7 +120,7 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		/**
-		 * Returns a <code>Type</code> object that describes the given class.
+		 * Returns a <code>ByteCodeType</code> object that describes the given class.
 		 *
 		 * @param clazz the class from which to get a type description
 		 */
@@ -125,9 +149,9 @@ package org.as3commons.bytecode.reflect {
 		// staticConstructor
 		// ----------------------------
 
-		private var _staticConstructor:Method;
+		private var _staticConstructor:ByteCodeMethod;
 
-		public function get staticConstructor():Method {
+		public function get staticConstructor():ByteCodeMethod {
 			return _staticConstructor;
 		}
 
@@ -174,7 +198,7 @@ package org.as3commons.bytecode.reflect {
 			_protectedNamespace = value;
 		}
 
-		as3commons_reflect function setStaticConstructor(value:Method):void {
+		as3commons_reflect function setStaticConstructor(value:ByteCodeMethod):void {
 			_staticConstructor = value;
 		}
 
@@ -188,18 +212,21 @@ package org.as3commons.bytecode.reflect {
 			_initialized = true;
 			if (extendsClasses.length > 0) {
 				var tempMethods:Array = methods;
-				var parentByteCodeType:Type = forName(this.extendsClasses[0], this.applicationDomain);
-				if (parentByteCodeType != null) {
-					for each (var method:Method in parentByteCodeType.methods) {
+				var parentType:Type = forName(this.extendsClasses[0], this.applicationDomain);
+				if (parentType == null) {
+					parentType = Type.forName(this.extendsClasses[0], this.applicationDomain);
+				}
+				if (parentType != null) {
+					for each (var method:Method in parentType.methods) {
 						tempMethods[tempMethods.length] = method;
 					}
-					for each (var variable:Variable in parentByteCodeType.variables) {
+					for each (var variable:Variable in parentType.variables) {
 						this.variables[this.variables.length] = variable;
 					}
-					for each (var acc:Accessor in parentByteCodeType.accessors) {
+					for each (var acc:Accessor in parentType.accessors) {
 						this.accessors[this.accessors.length] = acc;
 					}
-					for each (var constant:Constant in parentByteCodeType.constants) {
+					for each (var constant:Constant in parentType.constants) {
 						this.constants[this.constants.length] = constant;
 					}
 					this.methods = tempMethods;

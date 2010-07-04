@@ -379,7 +379,7 @@ package org.as3commons.bytecode.abc.enum {
 			if (!matchingOpcode) {
 				throw new Error("No match for Opcode: 0x" + opcodeByte.toString(16) + " (" + opcodeByte + ")");
 			}
-			trace(matchingOpcode);
+			//trace(matchingOpcode);
 			return matchingOpcode;
 		}
 

@@ -74,8 +74,13 @@ package org.as3commons.bytecode.reflect {
 		public function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain = null):void {
 			Assert.notNull(input, "input argument must not be null");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
-			var deserializer:ReflectionDeserializer = new ReflectionDeserializer();
-			deserializer.read(getTypeCache() as ByteCodeTypeCache, input, applicationDomain);
+			var initialPosition:int = input.position;
+			try {
+				var deserializer:ReflectionDeserializer = new ReflectionDeserializer();
+				deserializer.read(getTypeCache() as ByteCodeTypeCache, input, applicationDomain);
+			} finally {
+				input.position = initialPosition;
+			}
 		}
 
 	}
