@@ -129,7 +129,7 @@ package org.as3commons.bytecode.util {
 					//  u8  kind 
 					// }
 					var optionInfoCount:int = readU30();
-					trace("optioninfo count:" + optionInfoCount);
+					//trace("optioninfo count:" + optionInfoCount);
 					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; optionInfoIndex++) {
 						var valueIndexInConstantPool:int = readU30();
 						var optionalValueKind:int = readU8();

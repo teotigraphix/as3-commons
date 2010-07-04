@@ -19,6 +19,11 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.TypeCache;
 	import org.as3commons.reflect.as3commons_reflect;
 
+	/**
+	 * Extension of <code>TypeCache</code> that adds a few extra functions that are
+	 * enabled by the bytecode based reflection system.
+	 * @author Roland Zwaga
+	 */
 	public class ByteCodeTypeCache extends TypeCache {
 
 		private var _metaDataLookup:Object;
@@ -35,14 +40,26 @@ package org.as3commons.bytecode.reflect {
 		}
 
 
+		/**
+		 * List of all fully qualified definition names that have been encountered in all
+		 * the bytecode that was scanned.
+		 */
 		public function get definitionNames():Array {
-			return _definitionNames;
+			return _definitionNames.concat();
 		}
 
+		/**
+		 * A lookup of metadata name -&gt; <code>Array</code> of class names.
+		 * <p>For example, to retrieve all the names of classes that are annotated with the [Mixin] metadata:</p>
+		 * <p>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().getClassesWithMetaData('Mixin');</p>
+		 */
 		public function get metaDataLookup():Object {
 			return _metaDataLookup;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		override public function get(key:String):Type {
 			Assert.hasText(key, "argument 'key' cannot be empty");
 
@@ -55,28 +72,46 @@ package org.as3commons.bytecode.reflect {
 			return type;
 		}
 
+		/**
+		 *
+		 * @param metaDataName
+		 * @param classname
+		 *
+		 */
 		as3commons_reflect function addToMetaDataCache(metaDataName:String, classname:String):void {
 			Assert.hasText(metaDataName, "metaDataName argument must not be empty or null");
 			Assert.hasText(classname, "classname argument must not be empty or null");
+			metaDataName = metaDataName.toLowerCase();
 			if (!_metaDataLookup.hasOwnProperty(metaDataName)) {
 				_metaDataLookup[metaDataName] = [];
 			}
-			var arr:Array = _metaDataLookup[metaDataName];
+			var arr:Array = _metaDataLookup[metaDataName] as Array;
 			if (arr.indexOf(classname) < 0) {
 				arr[arr.length] = classname;
 			}
 		}
 
+		/**
+		 *
+		 * @param className
+		 *
+		 */
 		as3commons_reflect function addDefinitionName(className:String):void {
 			if (_definitionNames.indexOf(className) < 0) {
 				_definitionNames[_definitionNames.length] = className;
 			}
 		}
 
+		/**
+		 * Returns an <code>Array</code> of class names that have been annotated with the specified metadata name.
+		 * @param metaDataName The specified metadata name.
+		 * @return an <code>Array</code> of class names.
+		 */
 		public function getClassesWithMetaData(metaDataName:String):Array {
 			Assert.hasText(metaDataName, "metaDataName argument must not be empty or null");
+			metaDataName = metaDataName.toLowerCase();
 			if (_metaDataLookup.hasOwnProperty(metaDataName)) {
-				return _metaDataLookup[metaDataName];
+				return _metaDataLookup[metaDataName] as Array;
 			}
 			return [];
 		}
