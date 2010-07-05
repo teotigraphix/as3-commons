@@ -20,8 +20,10 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging {
-	import flash.utils.getTimer;
+	import org.as3commons.logging.setup.ILogTarget;
 
+	import flash.utils.getTimer;
+	
 	/**
 	 * Proxy for an ILogger implementation. This class is used internally by the LoggerFactory and
 	 * should not be used directly.
@@ -34,37 +36,31 @@ package org.as3commons.logging {
 	 */
 	public final class Logger implements ILogger {
 		
+		private static const _startTime: Number = new Date().getTime() - getTimer();
+		
 		/** The proxied logger. */
 		private var _logTarget:ILogTarget;
 		
 		private var _name:String;
-		private var _shortName: String;
+		private var _shortName:String;
 		private var _debugEnabled:Boolean = false;
 		private var _infoEnabled:Boolean = false;
 		private var _warnEnabled:Boolean = false;
 		private var _errorEnabled:Boolean = false;
 		private var _fatalEnabled:Boolean = false;
 		
-		private static const _startTime: Number = new Date().getTime() - getTimer();
-		private var _strigified:String;
-
 		/**
 		 * Creates a new LoggerProxy.
 		 */
-		public function Logger(name:String, shortName: String, logger:ILogTarget = null) {
+		public function Logger(name:String, shortName: String, logger:ILogTarget, logTargetLevel: LogTargetLevel ) {
 			_name = name;
 			_shortName = shortName;
 			this.logTarget = logger;
+			this.logTargetLevel = logTargetLevel;
 		}
 		
-		/**
-		 * Sets the proxied logger.
-		 */
-		public function set logTarget(target:ILogTarget):void {
-			_logTarget = target;
-			var logTargetLevel: LogTargetLevel;
-			if( target && target.logTargetLevel ) {
-				logTargetLevel = _logTarget.logTargetLevel;
+		public function set logTargetLevel(logTargetLevel:LogTargetLevel):void {
+			if( logTargetLevel ) {
 				_debugEnabled = logTargetLevel.matches( LogLevel.DEBUG );
 				_infoEnabled  = logTargetLevel.matches( LogLevel.INFO );
 				_warnEnabled  = logTargetLevel.matches( LogLevel.WARN );
@@ -72,12 +68,18 @@ package org.as3commons.logging {
 				_fatalEnabled = logTargetLevel.matches( LogLevel.FATAL );
 			} else {
 				_debugEnabled = false;
-				_infoEnabled = false;
-				_warnEnabled = false;
+				_infoEnabled  = false;
+				_warnEnabled  = false;
 				_errorEnabled = false;
 				_fatalEnabled = false;
 			}
-			_strigified = "[Logger for '" + _name + "', level: " + ( logTargetLevel ? logTargetLevel.value : "1" ) + ", target: " + ( target ? target : "null" ) + " ]";
+		}
+		
+		/**
+		 * Sets the proxied logger.
+		 */
+		public function set logTarget(logTarget:ILogTarget):void {
+			_logTarget = logTarget;
 		}
 		
 		/**
@@ -125,19 +127,6 @@ package org.as3commons.logging {
 			}
 		}
 		
-		public function custom(level: LogLevel, message:String = null, ...params:*):void {
-			if (_logTarget && _logTarget.logTargetLevel.matches( level ) ) {
-				_logTarget.log( _name, _shortName, level, _startTime+getTimer(), message, params);
-			}
-		}
-		
-		public function isCustomLevelActive(level: LogLevel): Boolean {
-			if (_logTarget && _logTarget.logTargetLevel.matches( level ) ) {
-				return true;
-			}
-			return false;
-		}
-		
 		/**
 		 * @inheritDoc
 		 */
@@ -151,34 +140,38 @@ package org.as3commons.logging {
 		public function get infoEnabled():Boolean {
 			return _infoEnabled;
 		}
-
+		
 		/**
 		 * @inheritDoc
 		 */
 		public function get warnEnabled():Boolean {
 			return _warnEnabled;
 		}
-
+		
 		/**
 		 * @inheritDoc
 		 */
 		public function get errorEnabled():Boolean {
 			return _errorEnabled;
 		}
-
+		
 		/**
 		 * @inheritDoc
 		 */
 		public function get fatalEnabled():Boolean {
 			return _fatalEnabled;
 		}
-
+		
 		public function get name():String {
 			return _name;
 		}
 		
+		public function get shortName():String {
+			return _shortName;
+		}
+
 		public function toString(): String {
-			return _strigified;
+			return "[Logger for '" + _name + "', target: " + ( _logTarget ? _logTarget : "null" ) + " ]";
 		}
 	}
 }

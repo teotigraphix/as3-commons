@@ -5,7 +5,7 @@ package org.as3commons.logging
 	/**
 	 * @author martin.heidegger
 	 */
-	public class LogTargetLevel 
+	public final class LogTargetLevel 
 	{
 		private static const _levels:Array = [];
 
@@ -21,17 +21,13 @@ package org.as3commons.logging
 		public static const DEBUG_ONLY:LogTargetLevel = getLevelByValue( 0x0020 );
 		public static const DEBUG:LogTargetLevel      = INFO.or( DEBUG_ONLY );
 		public static const ALL:LogTargetLevel        = DEBUG;
-
+		
 		public static function getLevelByValue(value:int):LogTargetLevel {
-			var result:LogTargetLevel = _levels[value];
-			if( !result ) {
-				result = new LogTargetLevel(value);
-			}
-			return result;
+			return _levels[value] || new LogTargetLevel(value);
 		}
-
+		
 		private var _value:int;
-
+		
 		public function LogTargetLevel(value:int) {
 			if( _levels[value] ) {
 				throw Error( "LogTargetLevel exists already!" );
@@ -39,11 +35,11 @@ package org.as3commons.logging
 			_levels[value] = this;
 			_value = value;
 		}
-
+		
 		public function matches(toLevel:LogLevel):Boolean {
 			return (_value & toLevel.value) == toLevel.value;
 		}
-
+		
 		public function or( otherLevel:LogTargetLevel ):LogTargetLevel {
 			return getLevelByValue( _value | otherLevel.value );
 		}

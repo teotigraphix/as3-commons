@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flexLibProperties version="1">
+<includeClasses>
+<classEntry path="org.mockito.Mockito"/>
+<classEntry path="org.mockito.MockitoTestCase"/>
+<classEntry path="org.mockito.api.Answer"/>
+<classEntry path="org.mockito.api.Invocation"/>
+<classEntry path="org.mockito.api.Invocations"/>
+<classEntry path="org.mockito.api.Matcher"/>
+<classEntry path="org.mockito.api.MethodSelector"/>
+<classEntry path="org.mockito.api.MockCreator"/>
+<classEntry path="org.mockito.api.MockInterceptor"/>
+<classEntry path="org.mockito.api.MockeryProvider"/>
+<classEntry path="org.mockito.api.MockitoVerificationError"/>
+<classEntry path="org.mockito.api.Stubber"/>
+<classEntry path="org.mockito.api.Verifier"/>
+<classEntry path="org.mockito.impl.ActualNumberOfInvocationsIsDifferent"/>
+<classEntry path="org.mockito.impl.Arguments"/>
+<classEntry path="org.mockito.impl.AsmockMockery"/>
+<classEntry path="org.mockito.impl.AsmockMockeryProvider"/>
+<classEntry path="org.mockito.impl.GenericAnswer"/>
+<classEntry path="org.mockito.impl.InvocationImpl"/>
+<classEntry path="org.mockito.impl.InvocationsImpl"/>
+<classEntry path="org.mockito.impl.MatcherRequiredForEveryArgument"/>
+<classEntry path="org.mockito.impl.MissingMethodCallToStub"/>
+<classEntry path="org.mockito.impl.MockInterceptorImpl"/>
+<classEntry path="org.mockito.impl.NeverWantedButInvoked"/>
+<classEntry path="org.mockito.impl.ReturningAnswer"/>
+<classEntry path="org.mockito.impl.StubberImpl"/>
+<classEntry path="org.mockito.impl.ThrowingAnswer"/>
+<classEntry path="org.mockito.impl.Times"/>
+<classEntry path="org.mockito.impl.WantedButNotInvoked"/>
+<classEntry path="org.mockito.impl.matchers.GenericMatcher"/>
+<classEntry path="org.mockito.impl.matchers.MatcherFunctions"/>
+<classEntry path="org.mockito.impl.matchers.Matchers"/>
+<classEntry path="org.mockito.impl.matchers.PropertyMatcher"/>
+</includeClasses>
+<includeResources/>
+<namespaceManifests/>
+</flexLibProperties>

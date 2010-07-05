@@ -49,11 +49,9 @@ package org.as3commons.logging.util
 		
 		private const _now: Date = new Date();
 		private const _braceRegexp: RegExp = /{(?P<field>[a-zA-Z_]+)}/g;
-		
 		private var _firstNode: FormatNode;
 		
 		public function LogMessageFormatter( format:String ) {
-			
 			var pos: int = 0;
 			var parseResult: Object;
 			var lastNode: FormatNode;
@@ -132,7 +130,12 @@ package org.as3commons.logging.util
 			var node: FormatNode = _firstNode;
 			
 			if( message ) {
-				// TODO: Optimize this!
+				// While it would be theoretically possible to preparse this
+				// in order to have a faster statement. But if you would change
+				// it to the a preparsed approach you might run into user problems"
+				// log.debug( "a" + getTimer() ); would require new parsing for
+				// every call - we would soon run into a memory problem which we
+				// could only avoid with proper stacking, which costs time as well.
 				const numParams:int = params ? params.length: 0;
 				for (var i:int = 0; i < numParams; ++i) {
 					var param: * = params[i];
@@ -222,14 +225,8 @@ package org.as3commons.logging.util
 					}
 				}
 				// 12
-				else if( type == SHORT_NAME_TYPE) {
+				else { // SHORT_NAME_TYPE
 					result += shortName;
-				}
-				// 13
-				else { // PARAM_TYPE
-					if( params && params.length > node.param ) {
-						result += params[ node.param ];
-					}
 				}
 				node = node.next;
 			}
@@ -237,7 +234,8 @@ package org.as3commons.logging.util
 		}
 	}
 }
-final class FormatNode {
+
+internal final class FormatNode {
 	public var next: FormatNode;
 	public var content: String;
 	public var param: int;
