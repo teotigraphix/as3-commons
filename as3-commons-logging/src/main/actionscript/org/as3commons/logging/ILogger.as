@@ -31,7 +31,9 @@ package org.as3commons.logging {
 		/**
 		 * Returns the name of this logger.
 		 */
-		//function get name():String;
+		function get name():String;
+		
+		function get shortName():String
 		
 		/**
 		 * Logs a message with a "debug" level.
@@ -82,8 +84,6 @@ package org.as3commons.logging {
 		 * Is fatal logging currently enabled?
 		 */
 		function get fatalEnabled():Boolean;
-		
-		function get name(): String;
 		
 		function toString(): String;
 	}

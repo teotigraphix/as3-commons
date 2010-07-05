@@ -27,7 +27,7 @@ package org.as3commons.logging {
 	 * @author Martin Heidegger
 	 * @version 1.0
 	 */
-	public class LogLevel {
+	public final class LogLevel {
 		
 		public static const FATAL:LogLevel = new LogLevel("FATAL", LogTargetLevel.FATAL_ONLY.value );
 		public static const ERROR:LogLevel = new LogLevel("ERROR", LogTargetLevel.ERROR_ONLY.value);
@@ -50,6 +50,10 @@ package org.as3commons.logging {
 		internal function get value(): int
 		{
 			return _value;
+		}
+		
+		public function toString() : String {
+			return "[LogLevel." + _name + "]";
 		}
 	}
 }

@@ -19,14 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging 
-{
-	import org.as3commons.logging.impl.TraceLogTarget;
+package org.as3commons.logging {
+	import org.as3commons.logging.setup.TargetSetup;
+	import org.as3commons.logging.setup.target.TraceTarget;
 
 	import flash.display.Stage;
 	import flash.utils.getQualifiedClassName;
 
-	
 	/**
 	 * Use the LoggerFactory to obtain a logger. This is the main class used when working with the as3commons-logging
 	 * library.
@@ -56,17 +55,19 @@ package org.as3commons.logging
 		public static var SWF_URL: String = SWF_URL_ERROR;
 		public static var SWF_SHORT_URL: String = SWF_URL;
 		
+		public static const DEFAULT_SETUP: ILogSetup = new TargetSetup( TraceTarget.INSTANCE );
+		
 		/** The singleton instance, eagerly instantiated. */
-		private static var _instance:LoggerFactory = LoggerFactory.getInstance( );
+		private static var _instance:LoggerFactory = LoggerFactory.getInstance();
 		
 		/** The logger factory that creates loggers */
-		private var _loggerFactory:ILogTargetFactory = TraceLogTarget.INSTANCE;
+		private var _logSetup:ILogSetup = DEFAULT_SETUP;
 
 		/** A cache of loggers */
 		private var _loggers:Object /* <String, ILogger> */  = {};
 		private var _nullLogger:ILogger;
 		private var _undefinedLogger:ILogger;
-
+		
 		/**
 		 * Constructs a new LoggerFactory.
 		 */
@@ -104,8 +105,8 @@ package org.as3commons.logging
 		/**
 		 * Sets the logger factory for the logging system.
 		 */
-		public static function set targetFactory(value:ILogTargetFactory):void {
-			_instance.loggerFactory = value;
+		public static function set setup(setup:ILogSetup):void {
+			_instance.setup = setup;
 		}
 		
 		public static function initSWFURLs(stage:Stage):void {
@@ -117,7 +118,7 @@ package org.as3commons.logging
 				SWF_URL=SWF_SHORT_URL=SWF_URL_ERROR;
 			}
 		}
-
+		
 		/**
 		 * Returns the singleton instance of the logger factory.
 		 */
@@ -127,7 +128,7 @@ package org.as3commons.logging
 			}
 			return _instance;
 		}
-
+		
 		/**
 		 * Returns a logger for the given name.
 		 *
@@ -147,10 +148,10 @@ package org.as3commons.logging
 			
 			if (!result) {
 				var shortName: String = name.substring( name.lastIndexOf(".")+1 );
-				if (_loggerFactory) {
-					result = new Logger(name, shortName, _loggerFactory.getLogTarget(name));
+				if (_logSetup) {
+					result = new Logger(name, shortName, _logSetup.getTarget(name), _logSetup.getLevel(name) );
 				} else {
-					result = new Logger(name, shortName);
+					result = new Logger(name, shortName, null, null );
 				}
 				
 				if ( compileSafeName === null) {
@@ -165,23 +166,29 @@ package org.as3commons.logging
 			
 			return result;
 		}
-
+		
 		/**
 		 * Sets the factory used to generate loggers. A new logger, created by the given factory, will
 		 * be set on each LoggerProxy in the cache.
 		 *
 		 * @param value the new logger factory or null
 		 */
-		private function set loggerFactory(value:ILogTargetFactory):void {
-			_loggerFactory = value;
+		private function set setup(setup:ILogSetup):void {
+			_logSetup = setup;
+			var logger: Logger;
+			var name: String;
 			
-			if ( _loggerFactory ) {
-				for (var name1:String in _loggers) {
-					Logger(_loggers[name1]).logTarget = _loggerFactory.getLogTarget(name1);
+			if ( _logSetup ) {
+				for ( name in _loggers) {
+					logger = Logger(_loggers[name]);
+					logger.logTarget = _logSetup.getTarget(name);
+					logger.logTargetLevel = _logSetup.getLevel(name);
 				}
 			} else {
-				for (var name2:String in _loggers) {
-					Logger(_loggers[name2]).logTarget = null;
+				for ( name in _loggers) {
+					logger = Logger(_loggers[name]);
+					logger.logTarget = null;
+					logger.logTargetLevel = null;
 				}
 			}
 		}
