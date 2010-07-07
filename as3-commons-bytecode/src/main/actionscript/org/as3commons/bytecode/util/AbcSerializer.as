@@ -109,7 +109,7 @@ package org.as3commons.bytecode.util {
 				writeU30(body.maxScopeDepth);
 
 //        		trace("====> " + body.methodSignature.loomName);
-				var opcodesAsByteArray:ByteArray = Opcode.serialize(body.opcodes, abcFile);
+				var opcodesAsByteArray:ByteArray = Opcode.serialize(body.opcodes, body, abcFile);
 //        		trace(opcodesAsByteArray.length + ": " + body.methodSignature.loomName);
 				writeU30(opcodesAsByteArray.length);
 				for (var opcodeBytePosition:int = 0; opcodeBytePosition < opcodesAsByteArray.length; opcodeBytePosition++) {

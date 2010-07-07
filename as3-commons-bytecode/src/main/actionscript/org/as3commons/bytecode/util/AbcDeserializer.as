@@ -349,7 +349,7 @@ package org.as3commons.bytecode.util {
 				//TODO: Not parsing opcodes by skipping ahead halves the parsing time for SWFLoader tests... might be a useful optimization flag
 				var parseOpcodes:Boolean = true;
 				if (parseOpcodes) {
-					methodBody.opcodes = Opcode.parse(byteStream, codeLength, abcFile);
+					methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile);
 //                    trace("\t" + methodBody.opcodes.join("\n\t"));
 				} else {
 //		            for (var codeIndex : int = 0; codeIndex < codeLength; codeIndex++)
