@@ -22,7 +22,10 @@ package org.as3commons.bytecode.abc.enum {
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.Integer;
+	import org.as3commons.bytecode.abc.MethodBody;
+	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.abc.UnsignedInteger;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.ReadWritePair;
 	import org.as3commons.lang.StringUtils;
@@ -178,7 +181,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static const pushshort:Opcode = new Opcode(0x25, "pushshort", [int, AbcSpec.U30]);
 		public static const pushstring:Opcode = new Opcode(0x2c, "pushstring", [String, AbcSpec.U30]);
 		public static const pushtrue:Opcode = new Opcode(0x26, "pushtrue");
-		public static const pushuint:Opcode = new Opcode(0x2E, "pushuint", [uint, AbcSpec.U30]); //Added
+		public static const pushuint:Opcode = new Opcode(0x2E, "pushuint", [UnsignedInteger, AbcSpec.U30]); //Added
 		public static const pushundefined:Opcode = new Opcode(0x21, "pushundefined");
 		public static const pushwith:Opcode = new Opcode(0x1c, "pushwith");
 		public static const returnvalue:Opcode = new Opcode(0x48, "returnvalue");
@@ -221,7 +224,7 @@ package org.as3commons.bytecode.abc.enum {
 		/**
 		 * Serializes an array of Ops, returning a ByteArray with the opcode output block.
 		 */
-		public static function serialize(ops:Array, abcFile:AbcFile):ByteArray {
+		public static function serialize(ops:Array, methodBody:MethodBody, abcFile:AbcFile):ByteArray {
 			var serializedOpcodes:ByteArray = AbcSpec.byteArray();
 			for each (var op:Op in ops) {
 				AbcSpec.writeU8(op.opcode._value, serializedOpcodes);
@@ -232,44 +235,57 @@ package org.as3commons.bytecode.abc.enum {
 					var readWritePair:ReadWritePair = typeAndReadWritePair[1];
 					var rawValue:* = op.parameters[serializedArgumentCount++];
 
-					var abcCompatibleValue:*;
+					var abcCompatibleValue:* = rawValue;
+
 					switch (argumentType) {
 						case int:
 							abcCompatibleValue = rawValue;
-//                            trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
+							//                            trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
 							break;
 
 						case Integer:
-							abcCompatibleValue = abcFile.constantPool.addInt(rawValue);
+							abcCompatibleValue = abcFile.constantPool.getIntPosition(rawValue);
+							break;
+
+						case UnsignedInteger:
+							abcCompatibleValue = abcFile.constantPool.getUintPosition(rawValue);
 							break;
 
 						case Number:
-							abcCompatibleValue = abcFile.constantPool.addDouble(rawValue);
-//                            trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
+							abcCompatibleValue = abcFile.constantPool.getDoublePosition(rawValue);
+							//                            trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
 							break;
 
 						case BaseMultiname:
-							abcCompatibleValue = abcFile.constantPool.addMultiname(rawValue);
-//                            trace("\tMultiname: " + abcCompatibleValue + "(" + rawValue + ")");
+							abcCompatibleValue = rawValue;
+							//                            trace("\tMultiname: " + abcCompatibleValue + "(" + rawValue + ")");
 							break;
 
 						case ClassInfo:
 							abcCompatibleValue = abcFile.classInfo.indexOf(rawValue);
-//                            trace("\tClassInfo: " + abcCompatibleValue + "(" + rawValue + ")");
+							//                            trace("\tClassInfo: " + abcCompatibleValue + "(" + rawValue + ")");
 							break;
 
 						case String:
-							abcCompatibleValue = abcFile.constantPool.addString(rawValue);
-//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
+							abcCompatibleValue = abcFile.constantPool.getStringPosition(rawValue);
+							//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
 							break;
 
 						case Namespace:
-							abcCompatibleValue = abcFile.constantPool.addInt(rawValue);
+							abcCompatibleValue = abcFile.constantPool.getNamespacePosition(rawValue);
 							//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
 							break;
 
 						case ExceptionInfo:
-							throw new Error("ExceptionInfo output is not yet implemented.");
+							abcCompatibleValue = rawValue;
+							break;
+
+						case Array:
+							var caseCount:int = op.opcode.argumentTypes[1];
+							var arr:Array = argumentType as Array;
+							for (var i:int = 0; i < caseCount; i++) {
+								AbcSpec.writeS24(arr[i], serializedOpcodes);
+							}
 							break;
 
 						default:
@@ -294,7 +310,7 @@ package org.as3commons.bytecode.abc.enum {
 		 * bytecode in the Ops. This method assumes that the ByteArray is positioned at the top of an
 		 * opcode block.
 		 */
-		public static function parse(byteArray:ByteArray, opcodeByteCount:int, abcFile:AbcFile):Array {
+		public static function parse(byteArray:ByteArray, opcodeByteCount:int, methodBody:MethodBody, abcFile:AbcFile):Array {
 			var ops:Array = [];
 
 			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCount);
@@ -315,6 +331,10 @@ package org.as3commons.bytecode.abc.enum {
 
 						case Integer:
 							argumentValues.push(abcFile.constantPool.integerPool[byteCodeValue]);
+							break;
+
+						case UnsignedInteger:
+							argumentValues.push(abcFile.constantPool.uintPool[byteCodeValue]);
 							break;
 
 						case Number:
@@ -356,8 +376,8 @@ package org.as3commons.bytecode.abc.enum {
 						case ExceptionInfo:
 							//TODO: Currently ExceptionInfo objects are stored on the MethodInfo with which they are associated. Might
 							//      need to store them in a pool somewhere for lookup in these opcode I/O methods. For now we just
-							//      push an empty ExceptionInfo on to the argumemtvalues
-							argumentValues.push(new ExceptionInfo());
+							//      push an empty ExceptionInfo on to the argumentvalues
+							argumentValues.push(byteCodeValue);
 							break;
 
 						default:
