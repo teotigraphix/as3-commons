@@ -1,11 +1,12 @@
-#Thu Jun 17 00:05:02 CEST 2010
+#Sat Jul 10 17:27:30 CEST 2010
 =false
-com.powerflasher.fdt.core.CompilerArguments=-target-player\={playerVersion}\n-library-path {flexSDK}/frameworks/locale/en_US
+com.powerflasher.fdt.core.CompilerArguments=-target-player\={playerVersion}\n\n-library-path {flexSDK}/frameworks/locale/en_US\n\n-static-link-runtime-shared-libraries
 com.powerflasher.fdt.core.DefaultOutputFolder=
 com.powerflasher.fdt.core.Language=AS3
 com.powerflasher.fdt.core.LanguageType=Flex_3_SDK_0_with_AIR
 com.powerflasher.fdt.core.PassClasspath=true
 com.powerflasher.fdt.core.PassMainclass=true
+com.powerflasher.fdt.core.PassRsls=true
 com.powerflasher.fdt.core.PassSwcs=true
 com.powerflasher.fdt.core.PlayerVersion=10
 com.powerflasher.fdt.core.ProjectTypeHint=Flex 3 AIR
