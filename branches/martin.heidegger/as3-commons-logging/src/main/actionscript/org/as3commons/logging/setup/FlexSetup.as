@@ -27,7 +27,7 @@ package org.as3commons.logging.setup {
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	import mx.logging.LogEventLevel;
-	
+
 	/**
 	 * Logger factory that creates a logger from the Flex mx.logging.* package.
 	 *
@@ -48,10 +48,10 @@ package org.as3commons.logging.setup {
 			try {
 				return fromFlexLevel( target["level"] );
 			} catch( error: Error ) {
-				// It might be possible to guess the logLevel with Log. methods
-				// but this doesn't apply to the ILogger instance.
-				return LogTargetLevel.ALL;
 			}
+			// It might be possible to guess the logLevel with Log. methods
+			// but this doesn't apply to the ILogger instance.
+			return LogTargetLevel.ALL;
 		}
 		
 		private function fromFlexLevel(flexLevel:int):LogTargetLevel {

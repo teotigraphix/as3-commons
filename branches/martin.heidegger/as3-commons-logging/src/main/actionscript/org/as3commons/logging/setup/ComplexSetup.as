@@ -26,7 +26,7 @@ package org.as3commons.logging.setup {
 		}
 		
 		public function addNoLogRule(regExp:RegExp): ComplexSetup {
-			return addSetupRule(regExp,new TargetSetup(null,LogTargetLevel.NONE));
+			return addSetupRule(regExp,new TargetSetup(null,null));
 		}
 		
 		public function getTarget(name:String):ILogTarget {
@@ -43,11 +43,19 @@ package org.as3commons.logging.setup {
 			if( setup ) {
 				return setup.getLevel(name);
 			} else {
-				return LogTargetLevel.NONE;
+				return null;
 			}
 		}
 		
-		public function getSetup( name: String ): ILogSetup {
+		public function dispose(): void {
+			var current: ComplexRule = _firstRule;
+			while( current ) {
+				current = current.dispose();
+			}
+			_firstRule = null;
+		}
+		
+		private function getSetup( name: String ): ILogSetup {
 			var current: ComplexRule = _firstRule;
 			var lastMatch: ComplexRule = null;
 			while( current ) {
@@ -60,13 +68,6 @@ package org.as3commons.logging.setup {
 				return lastMatch.setup;
 			} else {
 				return null;
-			}
-		}
-		
-		public function dispose(): void {
-			var current: ComplexRule = _firstRule;
-			while( current ) {
-				current = current.dispose();
 			}
 		}
 	}
