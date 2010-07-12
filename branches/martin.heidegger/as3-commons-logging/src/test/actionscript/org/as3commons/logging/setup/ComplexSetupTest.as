@@ -1,6 +1,6 @@
 package org.as3commons.logging.setup {
 	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.LogTargetLevel;
+	import org.as3commons.logging.LogSetupLevel;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.integrations.any;
 	import org.mockito.integrations.eq;
@@ -37,9 +37,9 @@ package org.as3commons.logging.setup {
 			assertStrictlyEquals( setup.getTarget( null ), dummy );
 			assertStrictlyEquals( setup.getTarget( undefined ), dummy );
 			
-			assertEquals( setup.getLevel( "" ), LogTargetLevel.ALL );
-			assertStrictlyEquals( setup.getLevel( null ), LogTargetLevel.ALL );
-			assertStrictlyEquals( setup.getLevel( undefined ), LogTargetLevel.ALL );
+			assertEquals( setup.getLevel( "" ), LogSetupLevel.ALL );
+			assertStrictlyEquals( setup.getLevel( null ), LogSetupLevel.ALL );
+			assertStrictlyEquals( setup.getLevel( undefined ), LogSetupLevel.ALL );
 			
 			setup.addTargetRule( /.*/, null );
 			
@@ -58,7 +58,7 @@ package org.as3commons.logging.setup {
 			assertEquals( setup.getTarget("test"), dummy );
 			assertEquals( setup.getTarget("test,tommy"), dummy );
 			assertEquals( setup.getLevel("something"), null );
-			assertEquals( setup.getLevel("test"), LogTargetLevel.ALL );
+			assertEquals( setup.getLevel("test"), LogSetupLevel.ALL );
 			
 			setup.addTargetRule( /test,tommy/, null );
 			assertEquals( setup.getTarget("something"), null );
@@ -91,12 +91,12 @@ package org.as3commons.logging.setup {
 			setup.addSetupRule( /^adf.*$/, targetSetup );
 			
 			given( targetSetup.getTarget( any() ) ).willReturn( dummyTarget );
-			given( targetSetup.getLevel( any() ) ).willReturn( LogTargetLevel.INFO );
+			given( targetSetup.getLevel( any() ) ).willReturn( LogSetupLevel.INFO );
 			
 			assertStrictlyEquals( setup.getTarget( "mouse" ), null );
 			assertStrictlyEquals( setup.getLevel( "mouse" ), null );
 			assertEquals( setup.getTarget("adf"), dummyTarget );
-			assertEquals( setup.getLevel("adf"), LogTargetLevel.INFO );
+			assertEquals( setup.getLevel("adf"), LogSetupLevel.INFO );
 			
 			inOrder().verify().that( targetSetup.getTarget( eq("adf") ) );
 			inOrder().verify().that( targetSetup.getLevel( eq("adf") ) );

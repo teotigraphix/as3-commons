@@ -22,69 +22,103 @@
 package org.as3commons.logging {
 	
 	/**
-	 * The main logging interface to abstract logger implementations.
-	 *
+	 * A <code>ILogger</code> defines the public access for any kind of logging
+	 * request.
+	 * 
+	 * <p><code>ILogger</code> offers the common methods to log your traces like
+	 * <code>debug</code>, <code>info</code>, <code>warning</code>, <code>error</code>,
+	 * <code>fatal</code>. Each of these methods gets treatened seperatly by the
+	 * logging framework.</p>
+	 * 
 	 * @author Christophe Herreman
+	 * @author Martin Heidegger <mh@leichtgewicht.at>
+	 * @see LoggerFactory
 	 */
 	public interface ILogger {
 		
 		/**
-		 * Returns the name of this logger.
+		 * Getter for the name this 
+		 * 
+		 * @return name of the instance.
 		 */
 		function get name():String;
 		
+		/**
+		 * Returns the short form of the name.
+		 * 
+		 * <p>The name of a <code>ILogger</code> is usually [package].[class]. The
+		 * short name contains only the name of [class], in other words: the content
+		 * after the last ".".</p>
+		 * 
+		 * @example If the name is <code>com.some.MyClass</code> then the short
+		 *          name is <code>MyClass</code>
+		 * 
+		 * @return short form of the name.
+		 * @see #name 
+		 */
 		function get shortName():String
 		
 		/**
-		 * Logs a message with a "debug" level.
+		 * Logs a message for debug purposes.
+		 * 
+		 * <p>Debug messages should be messages that are just necessary for
+		 * the debugging of a application.</p>
+		 * 
+		 * @example 
+		 * 
+		 * @param message Message that should be logged.
+		 * @param params List of parameters 
 		 */
-		function debug(message:String = null, ... params):void;
+		function debug(message:String, ... params):void;
 		
 		/**
 		 * Logs a message with a "info" level.
 		 */
-		function info(message:String = null, ... params):void;
+		function info(message:String, ... params):void;
 		
 		/**
 		 * Logs a message with a "warn" level.
 		 */
-		function warn(message:String = null, ... params):void;
+		function warn(message:String, ... params):void;
 		
 		/**
 		 * Logs a message with a "error" level.
 		 */
-		function error(message:String = null, ... params):void;
+		function error(message:String, ... params):void;
 		
 		/**
 		 * Logs a message with a "fatal" level.
 		 */
-		function fatal(message:String = null, ... params):void;
+		function fatal(message:String, ... params):void;
 		
 		/**
-		 * Is debug logging currently enabled?
+		 * @return <code>true</code> if <code>debug</code> actually does something.
+		 * @see #debug
 		 */
 		function get debugEnabled():Boolean;
 		
 		/**
-		 * Is info logging currently enabled?
+		 * @return <code>true</code> if <code>info</code> actually does something.
+		 * @see #info
 		 */
 		function get infoEnabled():Boolean;
 		
 		/**
-		 * Is warn logging currently enabled?
+		 * @return <code>true</code> if <code>warn</code> actually does something.
+		 * @see #warn
 		 */
 		function get warnEnabled():Boolean;
 		
 		/**
-		 * Is error logging currently enabled?
+		 * @return <code>true</code> if <code>error</code> actually does something.
+		 * @see #error
 		 */
 		function get errorEnabled():Boolean;
 		
 		/**
-		 * Is fatal logging currently enabled?
+		 * @return <code>true</code> if <code>fatal</code> works.
+		 * @see #fatal
 		 */
 		function get fatalEnabled():Boolean;
-		
-		function toString(): String;
 	}
 }

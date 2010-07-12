@@ -29,12 +29,6 @@ package org.as3commons.logging {
 	 */
 	public final class LogLevel {
 		
-		public static const FATAL:LogLevel = new LogLevel("FATAL", LogTargetLevel.FATAL_ONLY.value );
-		public static const ERROR:LogLevel = new LogLevel("ERROR", LogTargetLevel.ERROR_ONLY.value);
-		public static const WARN:LogLevel = new LogLevel("WARN", LogTargetLevel.WARN_ONLY.value);
-		public static const INFO:LogLevel = new LogLevel("INFO", LogTargetLevel.INFO_ONLY.value);
-		public static const DEBUG:LogLevel = new LogLevel("DEBUG", LogTargetLevel.DEBUG_ONLY.value);
-		
 		private var _value:int;
 		private var _name:String;
 		

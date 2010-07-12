@@ -1,5 +1,5 @@
 package org.as3commons.logging.setup.target {
-	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.integrations.eq;
@@ -32,12 +32,12 @@ package org.as3commons.logging.setup.target {
 			var arr1: Array = [1,2,"a"];
 			_arr2 = [];
 			
-			buffer.log( "name", "shortName", LogLevel.DEBUG, 12345, "Sample", arr1 );
-			buffer.log( "name2", "shortName", LogLevel.DEBUG, 12467, "Test", _arr2 );
-			buffer.log( "hose", "shortName", LogLevel.DEBUG, 12467, "Demo", _arr2 );
+			buffer.log( "name", "shortName", DEBUG, 12345, "Sample", arr1 );
+			buffer.log( "name2", "shortName", DEBUG, 12467, "Test", _arr2 );
+			buffer.log( "hose", "shortName", DEBUG, 12467, "Demo", _arr2 );
 			
-			inOrder().verify().that( _targetMock.log( eq("name"), eq("shortName"), eq(LogLevel.DEBUG), eq(12345), eq("Sample"), eq(arr1) ) );
-			inOrder().verify().that( _targetMock.log( eq("name2"), eq("shortName"), eq(LogLevel.DEBUG), eq(12467), eq("Test"), eq(_arr2) ) );
+			inOrder().verify().that( _targetMock.log( eq("name"), eq("shortName"), eq(DEBUG), eq(12345), eq("Sample"), eq(arr1) ) );
+			inOrder().verify().that( _targetMock.log( eq("name2"), eq("shortName"), eq(DEBUG), eq(12467), eq("Test"), eq(_arr2) ) );
 			
 			verifyNothingCalled(_targetMock );
 			
@@ -48,7 +48,7 @@ package org.as3commons.logging.setup.target {
 		
 		private function enterframe( e: Event ):void {
 			_shape.removeEventListener( Event.EXIT_FRAME, enterframe );
-			inOrder().verify().that( _targetMock.log( eq("name2"), eq("shortName"), eq(LogLevel.DEBUG), eq(12467), eq("Test"), eq(_arr2) ) );
+			inOrder().verify().that( _targetMock.log( eq("name2"), eq("shortName"), eq(DEBUG), eq(12467), eq("Test"), eq(_arr2) ) );
 			_async( new Event( Event.ADDED ) );
 		}
 	}

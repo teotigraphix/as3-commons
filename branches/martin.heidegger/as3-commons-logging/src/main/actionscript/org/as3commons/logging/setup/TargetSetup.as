@@ -1,6 +1,6 @@
 package org.as3commons.logging.setup {
 	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.LogTargetLevel;
+	import org.as3commons.logging.LogSetupLevel;
 	
 
 	/**
@@ -8,19 +8,19 @@ package org.as3commons.logging.setup {
 	 */
 	public class TargetSetup implements ILogSetup {
 		
-		private var _level:LogTargetLevel;
+		private var _level:LogSetupLevel;
 		private var _target:ILogTarget;
 		
-		public function TargetSetup( target: ILogTarget, level: LogTargetLevel = null ) {
+		public function TargetSetup( target: ILogTarget, level: LogSetupLevel = null ) {
 			_target = target;
-			_level = _target ? level || LogTargetLevel.ALL : null;
+			_level = _target ? level || LogSetupLevel.ALL : null;
 		}
 		
 		public function getTarget(name:String):ILogTarget {
 			return _target;
 		}
 		
-		public function getLevel(name:String):LogTargetLevel {
+		public function getLevel(name:String):LogSetupLevel {
 			return _level;
 		}
 	}

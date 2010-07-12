@@ -1,6 +1,6 @@
 package org.as3commons.logging.setup {
 	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.LogTargetLevel;
+	import org.as3commons.logging.LogSetupLevel;
 
 	/**
 	 * @author Martin
@@ -10,7 +10,7 @@ package org.as3commons.logging.setup {
 		private var _firstRule: ComplexRule;
 		private var _lastRule: ComplexRule;
 		
-		public function addTargetRule( rule:RegExp,target:ILogTarget, level:LogTargetLevel = null): ComplexSetup {
+		public function addTargetRule( rule:RegExp,target:ILogTarget, level:LogSetupLevel = null): ComplexSetup {
 			return addSetupRule( rule, new TargetSetup(target, level) );
 		}
 		
@@ -38,7 +38,7 @@ package org.as3commons.logging.setup {
 			}
 		}
 		
-		public function getLevel(name:String):LogTargetLevel {
+		public function getLevel(name:String):LogSetupLevel {
 			var setup: ILogSetup = getSetup(name);
 			if( setup ) {
 				return setup.getLevel(name);
