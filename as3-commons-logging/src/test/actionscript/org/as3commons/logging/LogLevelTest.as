@@ -1,6 +1,12 @@
 package org.as3commons.logging {
 	import flexunit.framework.Assert;
 
+	import org.as3commons.logging.level.DEBUG;
+	import org.as3commons.logging.level.ERROR;
+	import org.as3commons.logging.level.FATAL;
+	import org.as3commons.logging.level.INFO;
+	import org.as3commons.logging.level.WARN;
+
 	/**
 	 * @author Martin
 	 */
@@ -8,35 +14,35 @@ package org.as3commons.logging {
 		
 		[Test]
 		public function testDebug():void {
-			var level: LogLevel = LogLevel.DEBUG;
+			var level: LogLevel = DEBUG;
 			assertEquals( level.name, "DEBUG" );
 			assertEquals( level.value, 0x20 );
 		}
 		
 		[Test]
 		public function testInfo():void {
-			var level: LogLevel = LogLevel.INFO;
+			var level: LogLevel = INFO;
 			assertEquals( level.name, "INFO" );
 			assertEquals( level.value, 0x10 );
 		}
 		
 		[Test]
 		public function testWarn():void {
-			var level: LogLevel = LogLevel.WARN;
+			var level: LogLevel = WARN;
 			assertEquals( level.name, "WARN" );
 			assertEquals( level.value, 0x08 );
 		}
 		
 		[Test]
 		public function testError():void {
-			var level: LogLevel = LogLevel.ERROR;
+			var level: LogLevel = ERROR;
 			assertEquals( level.name, "ERROR" );
 			assertEquals( level.value, 0x04 );
 		}
 		
 		[Test]
 		public function testFatal():void {
-			var level: LogLevel = LogLevel.FATAL;
+			var level: LogLevel = FATAL;
 			assertEquals( level.name, "FATAL" );
 			assertEquals( level.value, 0x02 );
 		}

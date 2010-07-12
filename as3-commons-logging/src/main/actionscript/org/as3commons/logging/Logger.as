@@ -20,10 +20,15 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging {
+	import org.as3commons.logging.level.DEBUG;
+	import org.as3commons.logging.level.ERROR;
+	import org.as3commons.logging.level.FATAL;
+	import org.as3commons.logging.level.INFO;
+	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ILogTarget;
 
 	import flash.utils.getTimer;
-	
+
 	/**
 	 * Proxy for an ILogger implementation. This class is used internally by the LoggerFactory and
 	 * should not be used directly.
@@ -31,7 +36,7 @@ package org.as3commons.logging {
 	 * <p>A LoggerProxy is created for each logger requested from the factory. This allows us to replace
 	 * the ILogger implementations in the global logger factory when its internal factory changes.</p>
 	 *
-	 * @author Martin Heidegger
+	 * @author Martin Heidegger mh@leichtgewicht.at
 	 * @author Christophe Herreman
 	 */
 	public final class Logger implements ILogger {
@@ -43,6 +48,7 @@ package org.as3commons.logging {
 		
 		private var _name:String;
 		private var _shortName:String;
+		
 		private var _debugEnabled:Boolean = false;
 		private var _infoEnabled:Boolean = false;
 		private var _warnEnabled:Boolean = false;
@@ -52,25 +58,25 @@ package org.as3commons.logging {
 		/**
 		 * Creates a new LoggerProxy.
 		 */
-		public function Logger(name:String, shortName: String, logger:ILogTarget, logTargetLevel: LogTargetLevel ) {
+		public function Logger(name:String, logger:ILogTarget=null, logTargetLevel: LogSetupLevel=null) {
 			_name = name;
-			_shortName = shortName;
+			_shortName = name.substr( name.lastIndexOf(".")+1 );
 			this.logTarget = logger;
 			this.logTargetLevel = logTargetLevel;
 		}
 		
-		public function set logTargetLevel(logTargetLevel:LogTargetLevel):void {
+		public function set logTargetLevel(logTargetLevel:LogSetupLevel):void {
 			if( logTargetLevel ) {
-				_debugEnabled = logTargetLevel.matches( LogLevel.DEBUG );
-				_infoEnabled  = logTargetLevel.matches( LogLevel.INFO );
-				_warnEnabled  = logTargetLevel.matches( LogLevel.WARN );
-				_errorEnabled = logTargetLevel.matches( LogLevel.ERROR );
-				_fatalEnabled = logTargetLevel.matches( LogLevel.FATAL );
+				_debugEnabled = logTargetLevel.matches( DEBUG );
+				_infoEnabled  = logTargetLevel.matches( INFO );
+				_warnEnabled  = logTargetLevel.matches( WARN );
+				_errorEnabled = logTargetLevel.matches( ERROR );
+				_fatalEnabled = logTargetLevel.matches( FATAL );
 			} else {
-				_debugEnabled = false;
-				_infoEnabled  = false;
-				_warnEnabled  = false;
-				_errorEnabled = false;
+				_debugEnabled =
+				_infoEnabled  =
+				_warnEnabled  =
+				_errorEnabled =
 				_fatalEnabled = false;
 			}
 		}
@@ -85,45 +91,45 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:String = null, ... params:*):void {
+		public function debug(message:String, ... params:*):void {
 			if (_debugEnabled) {
-				_logTarget.log( _name, _shortName, LogLevel.DEBUG, _startTime+getTimer(), message, params );
+				_logTarget.log( _name, _shortName, DEBUG, _startTime+getTimer(), message, params );
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:String = null, ... params:*):void {
+		public function info(message:String, ... params:*):void {
 			if (_infoEnabled) {
-				_logTarget.log( _name, _shortName, LogLevel.INFO, _startTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, INFO, _startTime+getTimer(), message, params);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:String = null, ... params:*):void {
+		public function warn(message:String, ... params:*):void {
 			if (_warnEnabled) {
-				_logTarget.log( _name, _shortName, LogLevel.WARN, _startTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, WARN, _startTime+getTimer(), message, params);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:String = null, ... params:*):void {
+		public function error(message:String, ... params:*):void {
 			if (_errorEnabled) {
-				_logTarget.log( _name, _shortName, LogLevel.ERROR, _startTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, ERROR, _startTime+getTimer(), message, params);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal(message:String = null, ... params:*):void {
+		public function fatal(message:String, ... params:*):void {
 			if (_fatalEnabled) {
-				_logTarget.log( _name, _shortName, LogLevel.FATAL, _startTime+getTimer(), message, params);
+				_logTarget.log( _name, _shortName, FATAL, _startTime+getTimer(), message, params);
 			}
 		}
 		

@@ -3,6 +3,7 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
+	import org.as3commons.logging.util.SWFInfo;
 
 	import flash.desktop.NativeApplication;
 	import flash.filesystem.File;
@@ -50,7 +51,7 @@ package org.as3commons.logging.setup.target {
 				}
 				_stream.openAsync( _file, FileMode.APPEND );
 				_stream.writeUTFBytes( "#Version: 1.0\n" +
-									   "#Software: " + LoggerFactory.SWF_SHORT_URL + "(running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ", publisherID: " + NativeApplication.nativeApplication.publisherID + ")\n" +
+									   "#Software: " + SWFInfo.SHORT_URL + "(running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ", publisherID: " + NativeApplication.nativeApplication.publisherID + ")\n" +
 									   "#Date: " + date.dateUTC + "-" + MONTHS[ date.monthUTC ] + "-" + date.fullYearUTC + " " + date.hoursUTC + ":" + date.minutesUTC + ":" + date.secondsUTC + "." + date.millisecondsUTC + "\n"+
 									   "#Fields: time x-method x-name x-comment\n");
 			}
@@ -80,8 +81,8 @@ package org.as3commons.logging.setup.target {
 			if(no != -1) {
 				dateString += "." + no;
 			}
-			var file: String = LoggerFactory.SWF_SHORT_URL;
-			if(file == LoggerFactory.SWF_URL_ERROR) {
+			var file: String = SWFInfo.SHORT_URL;
+			if(file == SWFInfo.URL_ERROR) {
 				file = "out";
 			}
 			return _filePattern.replace( DATE, dateString ).replace( FILE, file);

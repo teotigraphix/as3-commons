@@ -1,7 +1,7 @@
 package org.as3commons.logging.util {
-	import org.as3commons.logging.LogTests;
-	import org.as3commons.logging.LoggerFactory;
 	import flexunit.framework.TestCase;
+
+	import org.as3commons.logging.LogTests;
 
 	/**
 	 * @author mh
@@ -68,13 +68,13 @@ package org.as3commons.logging.util {
 			assertEquals( "{0}", new LogMessageFormatter( "{0}" ).format( null, null, null, null, null, ["a"] ) );
 			assertEquals( "a", new LogMessageFormatter( "{message}" ).format( null, null, null, null, "{0}", ["a"] ) );
 			assertEquals( "f", new LogMessageFormatter( "{message}" ).format( null, null, null, null, "{5}", ["a","b","c","d","e","f"] ) );
-			assertEquals( LoggerFactory.SWF_URL_ERROR, new LogMessageFormatter( "{swf}" ).format( null, null, null, null, null, null ) );
-			assertEquals( LoggerFactory.SWF_URL_ERROR, new LogMessageFormatter( "{shortSWF}" ).format( null, null, null, null, null, null ) );
+			assertEquals( SWFInfo.URL_ERROR, new LogMessageFormatter( "{swf}" ).format( null, null, null, null, null, null ) );
+			assertEquals( SWFInfo.URL_ERROR, new LogMessageFormatter( "{shortSWF}" ).format( null, null, null, null, null, null ) );
 			
-			LoggerFactory.initSWFURLs( LogTests.STAGE );
-			assertEquals( LoggerFactory.SWF_URL, new LogMessageFormatter( "{swf}" ).format( null, null, null, null, null, null ) );
-			assertEquals( LoggerFactory.SWF_SHORT_URL, new LogMessageFormatter( "{shortSWF}" ).format( null, null, null, null, null, null ) );
-			LoggerFactory.initSWFURLs( null );
+			SWFInfo.init( LogTests.STAGE );
+			assertEquals( SWFInfo.URL, new LogMessageFormatter( "{swf}" ).format( null, null, null, null, null, null ) );
+			assertEquals( SWFInfo.SHORT_URL, new LogMessageFormatter( "{shortSWF}" ).format( null, null, null, null, null, null ) );
+			SWFInfo.init( null );
 		}
 	}
 }

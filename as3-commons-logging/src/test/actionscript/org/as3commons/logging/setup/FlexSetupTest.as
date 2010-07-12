@@ -1,12 +1,16 @@
 package org.as3commons.logging.setup {
-	import mx.logging.LogLogger;
-	import mx.logging.LogEventLevel;
-	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.level.DEBUG;
+	import org.as3commons.logging.level.ERROR;
+	import org.as3commons.logging.level.FATAL;
+	import org.as3commons.logging.level.INFO;
+	import org.as3commons.logging.level.WARN;
 	import org.mockito.integrations.flexunit3.MockitoTestCase;
 
 	import mx.logging.ILoggingTarget;
 	import mx.logging.Log;
 	import mx.logging.LogEvent;
+	import mx.logging.LogEventLevel;
+	import mx.logging.LogLogger;
 
 	/**
 	 * @author mh
@@ -23,11 +27,11 @@ package org.as3commons.logging.setup {
 			Log.addTarget( flexTarget );
 			
 			var setup: FlexSetup = new FlexSetup();
-			setup.getTarget( "com.mux" ).log( "pah", "pax", LogLevel.DEBUG, 123, "hello {0}", ["world"] );
-			setup.getTarget( "com.me.Example" ).log( "pah", "pax", LogLevel.INFO, 123, "{0} {1}", ["hello","world"] );
-			setup.getTarget( "com.ma.rup" ).log( "pah", "pax", LogLevel.WARN, 123, "{0} world", ["hello"] );
-			setup.getTarget( "com.ma.sup" ).log( "pah", "pax", LogLevel.ERROR, 123, "{1} {0}", ["world","hello"] );
-			setup.getTarget( "com.ma.rup" ).log( "pah", "pax", LogLevel.FATAL, 123, "hello world", [] );
+			setup.getTarget( "com.mux" ).log( "pah", "pax", DEBUG, 123, "hello {0}", ["world"] );
+			setup.getTarget( "com.me.Example" ).log( "pah", "pax", INFO, 123, "{0} {1}", ["hello","world"] );
+			setup.getTarget( "com.ma.rup" ).log( "pah", "pax", WARN, 123, "{0} world", ["hello"] );
+			setup.getTarget( "com.ma.sup" ).log( "pah", "pax", ERROR, 123, "{1} {0}", ["world","hello"] );
+			setup.getTarget( "com.ma.rup" ).log( "pah", "pax", FATAL, 123, "hello world", [] );
 			
 			var event: LogEvent;
 			

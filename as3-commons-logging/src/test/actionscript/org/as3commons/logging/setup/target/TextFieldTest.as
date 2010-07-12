@@ -1,7 +1,7 @@
 package org.as3commons.logging.setup.target {
 	import flexunit.framework.TestCase;
 
-	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.level.DEBUG;
 
 	import flash.text.TextField;
 
@@ -24,7 +24,7 @@ package org.as3commons.logging.setup.target {
 		public function testDefaultFormat(): void {
 			target = new TextFieldTarget();
 			
-			target.log( "longName", "shortName", LogLevel.DEBUG, 123, "Hello World {0} {1}", ["my","dear"] );
+			target.log( "longName", "shortName", DEBUG, 123, "Hello World {0} {1}", ["my","dear"] );
 			
 			assertEquals( target.text, "1:0:0.123 DEBUG - shortName - Hello World my dear" + lineEnd );
 		}
@@ -33,17 +33,16 @@ package org.as3commons.logging.setup.target {
 			var field: TextField = new TextField();
 			target = new TextFieldTarget( null, field );
 			
-			target.log( "longName", "shortName", LogLevel.DEBUG, 123, "Hello World", [] );
+			target.log( "longName", "shortName", DEBUG, 123, "Hello World", [] );
 			
 			assertEquals( target.text, "" );
 			assertEquals( field.text, "1:0:0.123 DEBUG - shortName - Hello World" + lineEnd );
 		}
 		
-		
 		public function testCustomFormat(): void {
 			target = new TextFieldTarget( "{shortName}" );
 			
-			target.log( "longName", "shortName", LogLevel.DEBUG, 123, "Hello World", [] );
+			target.log( "longName", "shortName", DEBUG, 123, "Hello World", [] );
 			
 			assertEquals( target.text, "shortName" + lineEnd );
 		}

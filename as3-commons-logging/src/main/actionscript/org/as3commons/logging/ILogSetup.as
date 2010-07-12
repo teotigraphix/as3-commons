@@ -6,7 +6,7 @@ package org.as3commons.logging {
 	 * @author mh
 	 */
 	public interface ILogSetup {
-		function getTarget(name:String): ILogTarget;
-		function getLevel(name:String): LogTargetLevel;
+		function getTarget(name:String):ILogTarget;
+		function getLevel(name:String):LogSetupLevel;
 	}
 }

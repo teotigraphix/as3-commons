@@ -19,11 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.util 
-{
+package org.as3commons.logging.util {
+	
 	import org.as3commons.logging.LogLevel;
-	import org.as3commons.logging.LoggerFactory;
-
 	
 	/**
 	 * Utilities for working with log messages.
@@ -213,11 +211,11 @@ package org.as3commons.logging.util
 					}
 					// 9
 					else if( type == SWF_TYPE ) {
-						result += LoggerFactory.SWF_URL;
+						result += SWFInfo.URL;
 					}
 					// 10
 					else if( type == SHORT_SWF_TYPE ) {
-						result += LoggerFactory.SWF_SHORT_URL;
+						result += SWFInfo.SHORT_URL;
 					}
 					// 11
 					else { // NAME_TYPE

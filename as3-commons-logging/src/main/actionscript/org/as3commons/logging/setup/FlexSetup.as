@@ -21,7 +21,7 @@
  */
 package org.as3commons.logging.setup {
 	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.LogTargetLevel;
+	import org.as3commons.logging.LogSetupLevel;
 	import org.as3commons.logging.setup.target.FlexLogTarget;
 
 	import mx.logging.ILogger;
@@ -43,7 +43,7 @@ package org.as3commons.logging.setup {
 			return _cache[name] || ( _cache[name] = new FlexLogTarget( Log.getLogger(name) ) );
 		}
 		
-		public function getLevel(name:String):LogTargetLevel {
+		public function getLevel(name:String):LogSetupLevel {
 			var target: ILogger = Log.getLogger(name);
 			try {
 				return fromFlexLevel( target["level"] );
@@ -51,25 +51,25 @@ package org.as3commons.logging.setup {
 			}
 			// It might be possible to guess the logLevel with Log. methods
 			// but this doesn't apply to the ILogger instance.
-			return LogTargetLevel.ALL;
+			return LogSetupLevel.ALL;
 		}
 		
-		private function fromFlexLevel(flexLevel:int):LogTargetLevel {
-			var result: LogTargetLevel = LogTargetLevel.NONE;
+		private function fromFlexLevel(flexLevel:int):LogSetupLevel {
+			var result: LogSetupLevel = LogSetupLevel.NONE;
 			if( flexLevel & LogEventLevel.DEBUG == LogEventLevel.DEBUG ) {
-				result = result.or( LogTargetLevel.DEBUG );
+				result = result.or( LogSetupLevel.DEBUG );
 			}
 			if( flexLevel & LogEventLevel.INFO == LogEventLevel.INFO ) {
-				result = result.or( LogTargetLevel.INFO );
+				result = result.or( LogSetupLevel.INFO );
 			}
 			if( flexLevel & LogEventLevel.WARN == LogEventLevel.WARN ) {
-				result = result.or( LogTargetLevel.WARN );
+				result = result.or( LogSetupLevel.WARN );
 			}
 			if( flexLevel & LogEventLevel.ERROR == LogEventLevel.ERROR ) {
-				result = result.or( LogTargetLevel.ERROR );
+				result = result.or( LogSetupLevel.ERROR );
 			}
 			if( flexLevel & LogEventLevel.FATAL == LogEventLevel.FATAL ) {
-				result = result.or( LogTargetLevel.FATAL );
+				result = result.or( LogSetupLevel.FATAL );
 			}
 			return result;
 		}
