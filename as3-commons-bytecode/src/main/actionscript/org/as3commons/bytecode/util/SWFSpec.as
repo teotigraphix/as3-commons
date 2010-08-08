@@ -25,6 +25,7 @@ package org.as3commons.bytecode.util {
 		public static const FLOAT16_EXPONENT_BASE:Number = 15;
 		private static const FIXED_DIVISION:Number = 65536;
 		private static const FIXED8_DIVISION:Number = 256;
+		private static const THIRTY_TWO:Number = 32;
 
 		public static function flushBits():void {
 			_bitbuff = _bitleft = 0;
@@ -158,6 +159,10 @@ package org.as3commons.bytecode.util {
 			return (readUB(input) == 1);
 		}
 
+		public static function writeBoolean(input:ByteArray, value:Boolean):void {
+			return writeUB(input, 1, (value ? 1 : 0));
+		}
+
 		public static function readUB(input:ByteArray, bits:uint = 1):uint {
 			if (bits > 64 || bits == 0)
 				return 0;
@@ -191,11 +196,34 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function writeUB(input:ByteArray, bits:uint, value:uint):void {
-			throw new Error("Not implemented yet");
+			if (bits == 0) {
+				return;
+			}
+
+			if (_bitleft == 0) {
+				writeUI8(input, 0x00);
+				_bitbuff = 0;
+				_bitleft = 8;
+			}
+
+			for (; ; ) {
+				if (bits > _bitleft) {
+					input[input.position - 1] = (_bitbuff | ((value << (THIRTY_TWO - bits)) >>> (THIRTY_TWO - _bitleft))) & 0xff;
+					bits -= _bitleft;
+					writeUI8(input, 0x00);
+					_bitbuff = 0;
+					_bitleft = 8;
+				} else {
+					input[input.position - 1] = (_bitbuff |= ((value << (THIRTY_TWO - bits)) >>> (THIRTY_TWO - _bitleft))) & 0xff;
+					_bitleft -= bits;
+					break;
+				}
+			}
+
 		}
 
 		public static function readSB(input:ByteArray, bits:uint):int {
-			var shift:uint = 32 - bits;
+			var shift:uint = THIRTY_TWO - bits;
 			return int(readUB(input, bits) << shift) >> shift;
 		}
 
