@@ -49,6 +49,7 @@ package org.as3commons.bytecode.swf {
 	public class SWFFileSerializer {
 
 		public static const SWF_SIGNATURE_COMPRESSED:String = "CWS";
+		public static const SWF_SIGNATURE_UNCOMPRESSED:String = "FWS";
 
 		private var _tagSerializers:Dictionary;
 		private var _serializerInstances:Dictionary;
@@ -99,7 +100,6 @@ package org.as3commons.bytecode.swf {
 			swfFile.fileLength = SWFSpec.readUI32(input);
 			input.readBytes(bytes);
 			bytes.endian = Endian.LITTLE_ENDIAN;
-			//bytes.length -= 8;
 			bytes.position = 0;
 
 			if (compressed) {
@@ -115,7 +115,22 @@ package org.as3commons.bytecode.swf {
 		}
 
 		public function write(output:ByteArray, swf:SWFFile):void {
-			throw new Error("Not implemented yet!");
+			output.endian = Endian.LITTLE_ENDIAN;
+			output.position = 0;
+			output.writeUTFBytes(swf.signature);
+			SWFSpec.writeSI8(output, swf.version);
+			writeHeader(output, swf);
+			var ba:ByteArray = new ByteArray();
+			ba.endian = Endian.LITTLE_ENDIAN;
+			for each (var tag:ISWFTag in swf.tags) {
+				writeTag(ba, tag);
+			}
+			if (swf.signature == SWF_SIGNATURE_COMPRESSED) {
+				ba.compress();
+			}
+			ba.position = 0;
+			SWFSpec.writeUI32(output, ba.length);
+			output.writeBytes(ba);
 		}
 
 		protected function readTag(input:ByteArray):ISWFTag {
@@ -124,11 +139,28 @@ package org.as3commons.bytecode.swf {
 			return serializer.read(input);
 		}
 
+		protected function writeTag(output:ByteArray, tag:ISWFTag):void {
+			var serializer:ITagSerializer = createTagSerializer(tag.id);
+			var ba:ByteArray = new ByteArray();
+			ba.endian = Endian.LITTLE_ENDIAN;
+			serializer.write(ba, tag);
+			ba.position = 0;
+
+			var recordHeader:RecordHeader = new RecordHeader(tag.id, ba.length, (ba.length > 62));
+			_recordHeaderSerializer.write(output, recordHeader);
+			output.writeBytes(ba);
+		}
+
 		protected function readHeader(input:ByteArray, swf:SWFFile):void {
 			swf.frameSize = SWFSpec.readBitRect(input);
 			swf.frameRate = SWFSpec.readUI16(input);
 			swf.frameCount = SWFSpec.readUI16(input);
 		}
 
+		protected function writeHeader(output:ByteArray, swf:SWFFile):void {
+			SWFSpec.writeBitRect(output, swf.frameSize);
+			SWFSpec.writeUI16(output, swf.frameRate);
+			SWFSpec.writeUI16(output, swf.frameCount);
+		}
 	}
 }
