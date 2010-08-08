@@ -37,18 +37,20 @@ package org.as3commons.bytecode.swf {
 	 * @see http://eval.hurlant.com/
 	 */
 	public class AbcClassLoader extends EventDispatcher {
-		private static const SWF_HEADER:Array=[0x46, 0x57, 0x53, 0x10, // FWS, Version 9
+		private static const SWF_HEADER:Array = [0x46, 0x57, 0x53, 0x10, // FWS, Version 9
 			0xff, 0xff, 0xff, 0xff, // File length
 			0x78, 0x00, 0x03, 0xe8, 0x00, 0x00, 0x0b, 0xb8, 0x00, // size [Rect 0 0 8000 6000] 
 			0x00, 0x0c, 0x01, 0x00, // 16bit le frame rate 12, 16bit be frame count 1 
 			0x44, 0x11, // Tag type=69 (FileAttributes), length=4  
 			0x08, 0x00, 0x00, 0x00];
 
-		private static var ABC_HEADER:Array=[0x3f, 0x12, // Tag type=72 (DoABC), length=next.
+		private static var ABC_HEADER:Array = [0x3f, 0x12, // Tag type=72 (DoABC), length=next.
 			//0xff, 0xff, 0xff, 0xff                                // ABC length, not included in the copy. 
 			];
 
-		private static var SWF_FOOTER:Array=[0x40, 0x00]; // Tag type=1 (ShowFrame), length=0
+		private static var SWF_FOOTER:Array = [0x40, 0x00]; // Tag type=1 (ShowFrame), length=0
+
+		private static var ALLOW_BYTECODE_PROPERTY_NAME:String = "allowLoadBytesCodeExecution";
 
 		public function AbcClassLoader() {
 		}
@@ -62,8 +64,9 @@ package org.as3commons.bytecode.swf {
 		 *
 		 */
 		public function wrapBytecodeInSWF(arrayOfAbcByteCodeBlocks:Array):ByteArray {
-			var outputStream:ByteArray=new ByteArray();
-			outputStream.endian=Endian.LITTLE_ENDIAN;
+			var outputStream:ByteArray = new ByteArray();
+			outputStream.endian = Endian.LITTLE_ENDIAN;
+
 			for each (var swfHeaderByte:int in SWF_HEADER) {
 				outputStream.writeByte(swfHeaderByte);
 			}
@@ -83,13 +86,13 @@ package org.as3commons.bytecode.swf {
 			}
 
 			// set the length of the total SWF
-			outputStream.position=4;
+			outputStream.position = 4;
 			outputStream.writeInt(outputStream.length);
 
 			outputStream.deflate();
 			//outputStream.uncompress();
 			// reset the output bytestream before returning
-			outputStream.position=0;
+			outputStream.position = 0;
 			return outputStream;
 		}
 
@@ -104,19 +107,18 @@ package org.as3commons.bytecode.swf {
 		public function loadClassDefinitionsFromBytecode(bytes:*):void {
 			if (bytes is Array || (getType(bytes) == 2)) {
 				if (!(bytes is Array)) {
-					bytes=[bytes];
+					bytes = [bytes];
 				}
-				bytes=wrapBytecodeInSWF(bytes);
+				bytes = wrapBytecodeInSWF(bytes);
 			}
 
 			// allowLoadBytesCodeExecution is only available in AIR, so we have to flip it dynamically
-			var c:LoaderContext=new LoaderContext(false, ApplicationDomain.currentDomain, null);
-			var allowByteCodePropertyName:String="allowLoadBytesCodeExecution";
-			if (c.hasOwnProperty(allowByteCodePropertyName)) {
-				c[allowByteCodePropertyName]=true;
+			var c:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain, null);
+			if (c.hasOwnProperty(ALLOW_BYTECODE_PROPERTY_NAME)) {
+				c[ALLOW_BYTECODE_PROPERTY_NAME] = true;
 			}
 
-			var l:Loader=new Loader;
+			var l:Loader = new Loader;
 			l.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
 					dispatchEvent(event);
 				});
@@ -131,9 +133,9 @@ package org.as3commons.bytecode.swf {
 		 * @see #loadClassDefinitionsFromBytecode()
 		 */
 		public function getType(data:ByteArray):int {
-			data.endian=Endian.LITTLE_ENDIAN;
+			data.endian = Endian.LITTLE_ENDIAN;
 
-			var version:uint=data.readUnsignedInt();
+			var version:uint = data.readUnsignedInt();
 			switch (version) {
 				case 46 << 16 | 14:
 				case 46 << 16 | 15:

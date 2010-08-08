@@ -30,7 +30,11 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.bytecode.swf.SWFFileSerializer;
+	import org.as3commons.bytecode.tags.serialization.RecordHeaderSerializer;
+	import org.as3commons.bytecode.tags.struct.RecordHeader;
 	import org.as3commons.bytecode.util.AbcDeserializerBase;
+	import org.as3commons.bytecode.util.SWFSpec;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.reflect.AccessorAccess;
@@ -44,16 +48,18 @@ package org.as3commons.bytecode.reflect {
 
 	public class ReflectionDeserializer extends AbcDeserializerBase {
 
-		private static const SWF_SIGNATURE_COMPRESSED:String = "CWS";
 		private static const GETTER_SIGNATURE:String = "get";
 		private static const FORWARD_SLASH:String = '/';
 		private static const DOUBLE_COLON:String = ':';
 		private static const HTTP_PREFIX:String = 'http:';
 
+		private var _recordHeaderSerializer:RecordHeaderSerializer;
+
 		private var _applicationDomain:ApplicationDomain;
 
 		public function ReflectionDeserializer() {
 			super();
+			_recordHeaderSerializer = new RecordHeaderSerializer();
 		}
 
 		public function read(typeCache:ByteCodeTypeCache, input:ByteArray, applicationDomain:ApplicationDomain = null):void {
@@ -61,7 +67,7 @@ package org.as3commons.bytecode.reflect {
 			_byteStream = new ByteArray();
 			input.endian = Endian.LITTLE_ENDIAN;
 			var swfIdentifier:String = input.readUTFBytes(3);
-			var compressed:Boolean = (swfIdentifier == SWF_SIGNATURE_COMPRESSED);
+			var compressed:Boolean = (swfIdentifier == SWFFileSerializer.SWF_SIGNATURE_COMPRESSED);
 			var version:uint = input.readByte();
 			var filesize:uint = input.readUnsignedInt();
 
@@ -80,37 +86,20 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		private function readTags(typeCache:ByteCodeTypeCache, input:ByteArray):void {
-			var tag:uint = input.readUnsignedShort();
-			var id:int = tag >> 6;
-			var size:int = tag & 0x3F;
-			if (size == 0x3F) {
-				size = input.readUnsignedInt();
-			}
-			if ((size > 0) && ((id == 82) || (id == 72))) { //Only parse DoABCTag
-				var endpos:int = input.position + size;
-				if (id == 82) {
+			var recordHeader:RecordHeader = _recordHeaderSerializer.read(input) as RecordHeader;
+			if ((recordHeader.length > 0) && ((recordHeader.id == 82) || (recordHeader.id == 72))) { //Only parse DoABCTag
+				var endpos:int = input.position + recordHeader.length;
+				if (recordHeader.id == 82) {
 					input.readInt(); //skip flags
-					readString(input); //skip name
+					SWFSpec.readString(input); //skip name
 				}
 				readABCTag(typeCache, input);
 				if (input.position < endpos) {
 					input.position = endpos;
 				}
 			} else {
-				input.position += size;
+				input.position += recordHeader.length;
 			}
-		}
-
-		public function readString(dataInput:ByteArray):String {
-			var str:String = "";
-
-			var chr:uint = dataInput.readUnsignedByte();
-			while (chr > 0) {
-				str += String.fromCharCode(chr);
-				chr = dataInput.readUnsignedByte();
-			}
-
-			return str;
 		}
 
 		private function readHeader(input:ByteArray):void {

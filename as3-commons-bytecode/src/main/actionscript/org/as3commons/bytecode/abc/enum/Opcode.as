@@ -374,9 +374,6 @@ package org.as3commons.bytecode.abc.enum {
 							break;
 
 						case ExceptionInfo:
-							//TODO: Currently ExceptionInfo objects are stored on the MethodInfo with which they are associated. Might
-							//      need to store them in a pool somewhere for lookup in these opcode I/O methods. For now we just
-							//      push an empty ExceptionInfo on to the argumentvalues
 							argumentValues.push(byteCodeValue);
 							break;
 
