@@ -33,7 +33,9 @@ package org.as3commons.bytecode.tags.serialization {
 		}
 
 		override public function write(output:ByteArray, tag:ISWFTag):void {
-			throw new Error("Method not implemented in abstract base class");
+			var scriptTag:ScriptLimitsTag = ScriptLimitsTag(tag);
+			SWFSpec.writeUI16(output, scriptTag.maxRecursionDepth);
+			SWFSpec.writeUI16(output, scriptTag.scriptTimeoutSeconds);
 		}
 
 	}

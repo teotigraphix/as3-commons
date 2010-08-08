@@ -33,7 +33,8 @@ package org.as3commons.bytecode.tags.serialization {
 		}
 
 		override public function write(output:ByteArray, tag:ISWFTag):void {
-			throw new Error("Method not implemented in abstract base class");
+			var frameTag:FrameLabelTag = FrameLabelTag(tag);
+			SWFSpec.writeString(output, frameTag.frameLabelName);
 		}
 
 	}

@@ -40,7 +40,15 @@ package org.as3commons.bytecode.tags.serialization {
 		}
 
 		override public function write(output:ByteArray, tag:ISWFTag):void {
-			throw new Error("Method not implemented in abstract base class");
+			var faTag:FileAttributesTag = FileAttributesTag(tag);
+			SWFSpec.writeUB(output, 1, 0);
+			SWFSpec.writeBoolean(output, faTag.useDirectBlit);
+			SWFSpec.writeBoolean(output, faTag.useGPU);
+			SWFSpec.writeBoolean(output, faTag.hasMetadata);
+			SWFSpec.writeBoolean(output, faTag.actionScript3);
+			SWFSpec.writeUB(output, 2, 0);
+			SWFSpec.writeBoolean(output, faTag.useNetwork);
+			SWFSpec.writeUB(output, 24, 0);
 		}
 
 	}
