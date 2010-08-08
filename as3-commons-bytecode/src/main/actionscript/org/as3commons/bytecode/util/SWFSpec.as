@@ -42,6 +42,9 @@ package org.as3commons.bytecode.util {
 			return r;
 		}
 
+		public static function writeBitRect(output:ByteArray, rect:Rectangle):void {
+		}
+
 		public static function readSI8(input:ByteArray):int {
 			flushBits();
 			return input.readByte();

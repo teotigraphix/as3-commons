@@ -36,7 +36,7 @@ package org.as3commons.bytecode.tags.serialization {
 		override public function write(output:ByteArray, tag:ISWFTag):void {
 			var bgTag:SetBackgroundColorTag = SetBackgroundColorTag(tag);
 			var rgb:IStructSerializer = structSerializerFactory.createSerializer(RGB);
-			rgb.write(tag.backgroundColor);
+			rgb.write(output, bgTag.backgroundColor);
 		}
 
 	}

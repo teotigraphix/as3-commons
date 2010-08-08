@@ -41,7 +41,7 @@ package org.as3commons.bytecode.tags.serialization {
 		}
 
 		override public function write(output:ByteArray, struct:Object):void {
-			var recordHeader:RecordHeader = struct as RecordHeader;
+			var recordHeader:RecordHeader = RecordHeader(struct);
 			if (recordHeader.length < LONG_TAG) {
 				SWFSpec.writeUI16(output, (recordHeader.id << ID_SHIFT) | recordHeader.length);
 			} else {
