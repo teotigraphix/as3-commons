@@ -27,7 +27,7 @@ package org.as3commons.bytecode.util {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Primitive data types" in the AVM Spec (page 18)
 	 */
-	public class AbcSpec {
+	public final class AbcSpec {
 		/**
 		 * Pair for reading/writing <code>u30</code>s.
 		 */
