@@ -102,6 +102,7 @@ package org.as3commons.bytecode.reflect {
 			if (clazz != null) {
 				result = ByteCodeType.forClass(clazz, applicationDomain);
 			}
+
 			return result;
 		}
 

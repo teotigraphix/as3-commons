@@ -22,7 +22,7 @@ package org.as3commons.bytecode.tags.serialization {
 	public class RecordHeaderSerializer extends AbstractStructSerializer {
 
 		private static const ID_SHIFT:uint = 6;
-		private static const LONG_TAG:uint = 0x3F;
+		public static const LONG_TAG:uint = 0x3F;
 
 		public function RecordHeaderSerializer() {
 			super();
@@ -42,7 +42,7 @@ package org.as3commons.bytecode.tags.serialization {
 
 		override public function write(output:ByteArray, struct:Object):void {
 			var recordHeader:RecordHeader = RecordHeader(struct);
-			if (recordHeader.length < LONG_TAG) {
+			if (!recordHeader.isLongTag) {
 				SWFSpec.writeUI16(output, (recordHeader.id << ID_SHIFT) | recordHeader.length);
 			} else {
 				SWFSpec.writeUI16(output, (recordHeader.id << ID_SHIFT) | LONG_TAG);

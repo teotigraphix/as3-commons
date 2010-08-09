@@ -17,10 +17,9 @@ package org.as3commons.bytecode.abc {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.util.Assertions;
 	import org.as3commons.lang.StringUtils;
-
-
 
 	/**
 	 * Wrapper to babysit the Constant Pool.
@@ -113,6 +112,10 @@ package org.as3commons.bytecode.abc {
 			return _integerPool;
 		}
 
+		as3commons_bytecode function setIntegerPool(value:Array):void {
+			_integerPool = value;
+		}
+
 		/**
 		 * Gets a direct reference to the underlying uint pool. NEVER USE THIS FOR ASSIGNMENTS - use <code>addUint()</code> instead.
 		 *
@@ -120,6 +123,10 @@ package org.as3commons.bytecode.abc {
 		 */
 		public function get uintPool():Array {
 			return _uintPool;
+		}
+
+		as3commons_bytecode function setUintPool(value:Array):void {
+			_uintPool = value;
 		}
 
 		/**
@@ -131,6 +138,10 @@ package org.as3commons.bytecode.abc {
 			return _doublePool;
 		}
 
+		as3commons_bytecode function setDoublePool(value:Array):void {
+			_doublePool = value;
+		}
+
 		/**
 		 * Gets a direct reference to the underlying <code>String</code> pool. NEVER USE THIS FOR ASSIGNMENTS - use <code>addString()</code> instead.
 		 *
@@ -138,6 +149,10 @@ package org.as3commons.bytecode.abc {
 		 */
 		public function get stringPool():Array {
 			return _stringPool;
+		}
+
+		as3commons_bytecode function setStringPool(value:Array):void {
+			_stringPool = value;
 		}
 
 		/**
@@ -150,6 +165,10 @@ package org.as3commons.bytecode.abc {
 			return _namespacePool;
 		}
 
+		as3commons_bytecode function setNamespacePool(value:Array):void {
+			_namespacePool = value;
+		}
+
 		/**
 		 * Gets a direct reference to the underlying <code>NamespaceSet</code> pool. NEVER USE THIS FOR ASSIGNMENTS - use <code>addNamespaceSet()</code> instead.
 		 *
@@ -160,6 +179,10 @@ package org.as3commons.bytecode.abc {
 			return _namespaceSetPool;
 		}
 
+		as3commons_bytecode function setNamespaceSetPool(value:Array):void {
+			_namespaceSetPool = value;
+		}
+
 		/**
 		 * Gets a direct reference to the underlying <code>BaseMultiname</code> pool. NEVER USE THIS FOR ASSIGNMENTS - use <code>addMultiname()</code> instead.
 		 *
@@ -168,6 +191,10 @@ package org.as3commons.bytecode.abc {
 		 */
 		public function get multinamePool():Array {
 			return _multinamePool;
+		}
+
+		as3commons_bytecode function setMultinamePool(value:Array):void {
+			_multinamePool = value;
 		}
 
 		/**
@@ -191,13 +218,13 @@ package org.as3commons.bytecode.abc {
 
 			var multinameIndex:int = -1;
 			_multinamePool.every(function(element:BaseMultiname, index:int, array:Array):Boolean {
-					if (element.equals(multiname)) {
-						multinameIndex = index;
-						return false;
-					} else {
-						return true;
-					}
-				});
+				if (element.equals(multiname)) {
+					multinameIndex = index;
+					return false;
+				} else {
+					return true;
+				}
+			});
 
 			if (multinameIndex == -1) {
 				multinameIndex = _multinamePool.push(multiname);
@@ -217,13 +244,13 @@ package org.as3commons.bytecode.abc {
 
 			var matchingIndex:int = -1;
 			pool.every(function(element:Object, index:int, array:Array):Boolean {
-					if (element.equals(object)) {
-						matchingIndex = index;
-						return false;
-					} else {
-						return true;
-					}
-				});
+				if (element.equals(object)) {
+					matchingIndex = index;
+					return false;
+				} else {
+					return true;
+				}
+			});
 
 			if (matchingIndex == -1) {
 				matchingIndex = pool.push(object) - 1;
