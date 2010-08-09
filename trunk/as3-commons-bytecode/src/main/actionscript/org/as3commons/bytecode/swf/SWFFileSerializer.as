@@ -146,9 +146,10 @@ package org.as3commons.bytecode.swf {
 			serializer.write(ba, tag);
 			ba.position = 0;
 
-			var recordHeader:RecordHeader = new RecordHeader(tag.id, ba.length, (ba.length > 62));
+			var recordHeader:RecordHeader = new RecordHeader(tag.id, ba.length, (ba.length > RecordHeaderSerializer.LONG_TAG));
 			_recordHeaderSerializer.write(output, recordHeader);
 			output.writeBytes(ba);
+			ba = null;
 		}
 
 		protected function readHeader(input:ByteArray, swf:SWFFile):void {

@@ -17,6 +17,7 @@ package org.as3commons.bytecode.abc {
 
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.typeinfo.ClassDefinition;
 	import org.as3commons.bytecode.typeinfo.Metadata;
@@ -100,24 +101,48 @@ package org.as3commons.bytecode.abc {
 			return _metadataInfo;
 		}
 
+		as3commons_bytecode function setMetadataInfo(value:Array):void {
+			_metadataInfo = value;
+		}
+
 		public function get methodInfo():Array {
 			return _methodInfo;
+		}
+
+		as3commons_bytecode function setMethodInfo(value:Array):void {
+			_methodInfo = value;
 		}
 
 		public function get instanceInfo():Array {
 			return _instanceInfo;
 		}
 
+		as3commons_bytecode function setInstanceInfo(value:Array):void {
+			_instanceInfo = value;
+		}
+
 		public function get classInfo():Array {
 			return _classInfo;
+		}
+
+		as3commons_bytecode function setClassInfo(value:Array):void {
+			_classInfo = value;
 		}
 
 		public function get scriptInfo():Array {
 			return _scriptInfo;
 		}
 
+		as3commons_bytecode function setScriptInfo(value:Array):void {
+			_scriptInfo = value;
+		}
+
 		public function get methodBodies():Array {
 			return _methodBodies;
+		}
+
+		as3commons_bytecode function setMethodBodies(value:Array):void {
+			_methodBodies = value;
 		}
 
 		//TODO: This would do better in a utility class that converts AbcFiles to ClassDefinitions
