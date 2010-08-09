@@ -70,18 +70,30 @@
 					type.isDynamic<br />
 					type.isFinal<br />
 					type.isStatic<br />
+					type.isInterface<br />
 					type.methods<br />
 					type.name<br />
 					type.staticConstants<br />
 					type.staticVariables<br />
 					type.variables<br />
+					<br />
 					method:Method = type.methods[0];<br />
 					retType:Type = method.getReturnType();<br />
 					method.invoke(object, [arg1, arg2]);<br />
+					<br />
 					accessor:Accessor = type.accessors[0];<br />
 					metadata:Metadata = accessor.getMetadata("myMetadata");<br />
 					arg:MetadataArgument = metadata.getArgument("myArg");<br />
-					...
+					<br />
+					var containers:Array = type.getMetaDataContainers("Bindable");<br />
+					for each(var metadataContainer:IMetaContainer in containers){<br />
+					&nbsp;&nbsp;if (metadataContainer is Method){<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;//do something...<br />
+					&nbsp;&nbsp;} else if (metadataContainer is Field){<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;//do something else...<br />
+					&nbsp;&nbsp;}<br />
+					&nbsp;&nbsp;...<br />
+					}<br />
 				</div>
 			</p>
 
