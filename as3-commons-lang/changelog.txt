@@ -4,6 +4,20 @@ AS3COMMONS LANG CHANGELOG
 Note: dates are in DD.MM.YYYY format
 
 
+Changes in version 0.2.2 (10.08.2010)
+-------------------------------------
+
+Package org.as3commons.lang
+
+* added static ClassUtils.isPrivateClass() method and associated unit tests
+* added static Assert.notAbstract() method and associated unit tests
+* added IIterator interface
+* added ObjectIterator implementation
+* added static ObjectUtils.getIterator() method and associated unit tests
+* added INamed interface
+* added HashArray class
+
+
 Changes in version 0.2.1 (24.03.2010)
 -------------------------------------
 
