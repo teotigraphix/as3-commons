@@ -418,7 +418,9 @@ package org.as3commons.bytecode.util {
 				//  param_info param_names
 				// This entry is only made if MethodFlag.HAS_PARAM_NAMES is present 
 				if (MethodFlag.flagPresent(methodInfo.flags, MethodFlag.HAS_PARAM_NAMES)) {
-					throw new Error("Param names is not yet supported");
+					for each (var arg:Argument in methodInfo.argumentCollection) {
+						writeU30(pool.addString(arg.name));
+					}
 				}
 			}
 		}
@@ -651,31 +653,57 @@ package org.as3commons.bytecode.util {
 					AbcSpec.writeU30(_pool.addMultiname(argument.type), buffer); // u30 param_type[param_count]
 				}
 				AbcSpec.writeU30(_pool.addString(method.methodName.name), buffer); // u30 name
-					//TODO: Assemble method flags based upon opcode/parameter info
-					//            NEED_ARGUMENTS 0x01 Suggests to the run-time that an “arguments” object (as specified by the ActionScript 3.0 Language Reference) be created. Must not be used together with NEED_REST. See Chapter 3. 
-					//            NEED_ACTIVATION 0x02 Must be set if this method uses the newactivation opcode. 
-					//            NEED_REST 0x04 This flag creates an ActionScript 3.0 rest arguments array.  Must not be used with NEED_ARGUMENTS. See Chapter 3. 
-					//            HAS_OPTIONAL 0x08 Must be set if this method has optional parameters and the options field is present in this method_info structure. 
-					//            SET_DXNS 0x40 Must be set if this method uses the dxns or dxnslate opcodes. 
-					//            HAS_PARAM_NAMES 0x80 Must be set when the param_names field is present in this method_info structure.
 
-					//TODO: Optional arguments
-					// option_info  
-					// { 
-					// u30 option_count 
-					// option_detail option[option_count] 
-					// }
-					// option_detail 
-					// { 
-					//  u30 val 
-					//  u8  kind 
-					// }
+				var flags:uint = 0;
+				if ((method.methodArguments.length > 0) && (method.hasRestArguments == false)) {
+					flags |= MethodFlag.NEED_ARGUMENTS.value;
+				}
+				if ((method.methodArguments.length < 1) && (method.hasRestArguments == true)) {
+					flags |= MethodFlag.NEED_REST.value;
+				}
+				if (method.hasOpcode(Opcode.newactivation)) {
+					flags |= MethodFlag.NEED_ACTIVATION.value;
+				}
+				if ((method.hasOpcode(Opcode.dxns) || (method.hasOpcode(Opcode.dxnslate)))) {
+					flags |= MethodFlag.SET_DXNS.value;
+				}
 
-					//TODO: param_info param_names 
-					// param_info  
-					// { 
-					//  u30 param_name[param_count] 
-					// }
+				var numberOfOptionalArguments:uint = 0;
+				for each (var arg:Argument in method.methodArguments) {
+					if (arg.isOptional) {
+						numberOfOptionalArguments++;
+					}
+				}
+				if (numberOfOptionalArguments > 0) {
+					flags |= MethodFlag.HAS_OPTIONAL.value;
+				}
+
+				for each (arg in method.methodArguments) {
+					if (StringUtils.hasText(arg.name)) {
+						flags |= MethodFlag.HAS_PARAM_NAMES.value;
+						break;
+					}
+				}
+
+				AbcSpec.writeU8(flags, buffer);
+
+				if (numberOfOptionalArguments > 0) {
+					AbcSpec.writeU30(numberOfOptionalArguments, buffer);
+					for (var i:int = (method.methodArguments.length - numberOfOptionalArguments); i < method.methodArguments.length; i++) {
+						arg = method.methodArguments[i];
+						var defaultValueIndex:int = 0;
+						defaultValueIndex = _pool.getConstantPoolItemIndex(arg.kind, arg.defaultValue);
+						AbcSpec.writeU30(defaultValueIndex, buffer);
+						AbcSpec.writeU8(arg.kind.value, buffer);
+					}
+				}
+
+				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_PARAM_NAMES)) {
+					for each (arg in method.methodArguments) {
+						AbcSpec.writeU30(_pool.addString(arg.name), buffer);
+					}
+				}
+
 			}
 
 			return buffer;
