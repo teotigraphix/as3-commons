@@ -277,7 +277,7 @@ package org.as3commons.bytecode.abc.enum {
 							break;
 
 						case ExceptionInfo:
-							abcCompatibleValue = rawValue;
+							abcCompatibleValue = methodBody.exceptionInfos.indexOf(rawValue);
 							break;
 
 						case Array:
