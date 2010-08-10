@@ -16,7 +16,9 @@
 package org.as3commons.bytecode.typeinfo {
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.MethodBody;
+	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -34,10 +36,11 @@ package org.as3commons.bytecode.typeinfo {
 		private var _returnType:BaseMultiname;
 		private var _isStatic:Boolean;
 		private var _isFinal:Boolean;
+		private var _hasRestArguments:Boolean;
 		private var _isOverride:Boolean;
 		private var _methodBody:MethodBody;
 
-		public function Method(methodName:QualifiedName, returnType:BaseMultiname, isStatic:Boolean = false, isOverride:Boolean = false, isFinal:Boolean = false) {
+		public function Method(methodName:QualifiedName, returnType:BaseMultiname, isStatic:Boolean = false, isOverride:Boolean = false, isFinal:Boolean = false, hasRestArguments:Boolean = false) {
 			_methodName = methodName;
 			_returnType = returnType;
 
@@ -46,6 +49,12 @@ package org.as3commons.bytecode.typeinfo {
 			_isStatic = isStatic;
 			_isOverride = isOverride;
 			_isFinal = isFinal;
+			_hasRestArguments = hasRestArguments;
+		}
+
+
+		public function get hasRestArguments():Boolean {
+			return _hasRestArguments;
 		}
 
 		public function get methodArguments():Array {
@@ -63,6 +72,18 @@ package org.as3commons.bytecode.typeinfo {
 		//TODO: Is it possible to derive the scope/stack depth based upon the bytecodes? This would be bad ass
 		public function setMethodBody(body:MethodBody):void {
 			_methodBody = body;
+		}
+
+		public function hasOpcode(opcode:Opcode):Boolean {
+			if ((!_methodBody) || (!_methodBody.opcodes)) {
+				return false;
+			}
+			for each (var op:Op in _methodBody.opcodes) {
+				if (op.opcode === opcode) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public function get methodName():QualifiedName {
@@ -92,9 +113,9 @@ package org.as3commons.bytecode.typeinfo {
 
 			var argumentsArray:Array = [];
 			methodArguments.every(function(item:Argument, index:int, array:Array):Boolean {
-					argumentsArray.push(item.type.name);
-					return true;
-				});
+				argumentsArray.push(item.type.name);
+				return true;
+			});
 
 			return StringUtils.substitute("{0}{1}{2} function {3}{4} ({5}) : {6}\n\t{\n\t\topcode count: {7}\n\t}", methodName.nameSpace.kind.description, (isStatic) ? " static" : "", (isOverride) ? " override" : "", methodName.name, methodType, argumentsArray.join(", "), returnType, (_methodBody) ? _methodBody.opcodes.length : "[nyi]");
 		}

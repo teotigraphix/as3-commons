@@ -103,6 +103,11 @@ package org.as3commons.bytecode.abc {
 			return (retVal is Array) ? retVal[poolIndex] : retVal;
 		}
 
+		public function getConstantPoolItemIndex(constantKindValue:ConstantKind, item:*):int {
+			var retVal:* = _lookup[constantKindValue];
+			return (retVal is Array) ? (retVal as Array).indexOf(item) : -1;
+		}
+
 		/**
 		 * Gets a direct reference to the underlying integer pool. NEVER USE THIS FOR ASSIGNMENTS - use <code>addInt()</code> instead.
 		 *
