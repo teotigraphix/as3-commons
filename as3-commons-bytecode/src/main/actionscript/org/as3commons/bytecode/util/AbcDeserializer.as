@@ -382,7 +382,8 @@ package org.as3commons.bytecode.util {
 				for each (var op:Op in methodBody.opcodes) {
 					var idx:int = getExceptionInfoArgumentIndex(op);
 					if (idx > -1) {
-						op.parameters[idx] = methodBody.exceptionInfos[op.parameters[idx]];
+						var exceptionIndex:int = op.parameters[idx];
+						op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
 					}
 				}
 
@@ -398,11 +399,8 @@ package org.as3commons.bytecode.util {
 		}
 
 		protected function getExceptionInfoArgumentIndex(op:Op):int {
-			for (var i:int = 0; i < op.opcode.argumentTypes.length; i++) {
-				var arr:Array = op.opcode.argumentTypes;
-				if (arr[0] is ExceptionInfo) {
-					return i;
-				}
+			if (op.opcode === Opcode.newcatch) {
+				return 0;
 			}
 			return -1;
 		}
