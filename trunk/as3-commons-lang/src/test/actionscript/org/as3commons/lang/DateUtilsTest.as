@@ -572,6 +572,12 @@ package org.as3commons.lang {
 			} catch (iae:IllegalArgumentError) {
 				assertTrue(true);
 			}
+			
+			// Issue 27
+			var start:Date = new Date(2010, 10, 7);
+			var end:Date = new Date(2010, 10, 8);
+			assertEquals(1, DateUtils.getDaysDiff(start, end));			
+			
 		}
 
 		public function testGetHoursDiff():void {
