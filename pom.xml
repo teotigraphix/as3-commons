@@ -12,7 +12,7 @@
 	<description>AS3Commons project</description>
 
 	<properties>
-		<flex-mojos.version>3.6.1</flex-mojos.version>
+		<flex-mojos.version>3.7.1</flex-mojos.version>
 		<flex-sdk.version>3.5.0.12683</flex-sdk.version>
 
 		<!-- Flash Player -->
@@ -84,6 +84,14 @@
 			<organizationUrl>http://www.arc90.com/</organizationUrl>
 			<timezone>-5</timezone>
 		</developer>
+		<developer>
+			<id>jghandour</id>
+			<name>James Ghandour</name>
+			<email>jamesghandour [at] gmail.com</email>
+			<organization>JAG's ITS Inc.</organization>
+			<organizationUrl>http://www.jagsits.com/</organizationUrl>
+			<timezone>-5</timezone>
+		</developer>	
 	</developers>
 
 	<modules>
@@ -302,7 +310,7 @@
     <repositories>
         <repository>
             <id>flex-mojos-repository</id>
-            <url>http://repository.sonatype.org/content/groups/public</url>
+            <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -329,7 +337,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>flexmojos-repository</id>
-            <url>http://repository.sonatype.org/content/groups/public</url>
+            <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
         </pluginRepository>
         <pluginRepository>
             <id>flexpmd.opensource.adobe</id>
