@@ -225,21 +225,24 @@ package org.as3commons.lang {
 		 * Diff functions
 		 */
 		public static function getDaysDiff(startDate:Date, endDate:Date):int {
-			Assert.notNull(startDate, NOT_NULL_ASSERTION_MESSAGE);
-			Assert.notNull(endDate, NOT_NULL_ASSERTION_MESSAGE);
-			return Math.ceil((endDate.getTime() - startDate.getTime()) / MILLIS_PER_DAY);
+			return getVariableDiff(startDate, endDate, MILLIS_PER_DAY);
 		}
 
 		public static function getHoursDiff(startDate:Date, endDate:Date):int {
-			Assert.notNull(startDate, NOT_NULL_ASSERTION_MESSAGE);
-			Assert.notNull(endDate, NOT_NULL_ASSERTION_MESSAGE);
-			return Math.ceil((endDate.getTime() - startDate.getTime()) / MILLIS_PER_HOUR);
+			return getVariableDiff(startDate, endDate, MILLIS_PER_HOUR);
 		}
 
 		public static function getMinutesDiff(startDate:Date, endDate:Date):int {
+			return getVariableDiff(startDate, endDate, MILLIS_PER_MINUTE);
+		}
+		
+		private static function getVariableDiff (startDate:Date, endDate:Date, millsPer:int) : int {
 			Assert.notNull(startDate, NOT_NULL_ASSERTION_MESSAGE);
 			Assert.notNull(endDate, NOT_NULL_ASSERTION_MESSAGE);
-			return Math.ceil((endDate.getTime() - startDate.getTime()) / MILLIS_PER_MINUTE);
+			var startMillis:Number = startDate.getTime();
+			var endMillis:Number = endDate.getTime();
+			var dstOffset:Number = (startDate.getTimezoneOffset() - endDate.getTimezoneOffset()) * MILLIS_PER_MINUTE;
+			return Math.ceil((endMillis - startMillis + dstOffset) / millsPer);
 		}
 
 
@@ -305,7 +308,6 @@ package org.as3commons.lang {
 				result=addMinutes(result, -(result.minutes - originalMinutes));
 
 			return result;
-
 		}
 
 	}
