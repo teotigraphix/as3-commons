@@ -44,13 +44,13 @@
 
 	<developers>
 		<developer>
-			<id>cherreman</id>
-			<name>Christophe Herreman</name>
-			<email>christophe.herreman [at] gmail.com</email>
-			<url>http://www.herrodius.com</url>
-			<organization>Boulevart</organization>
-			<organizationUrl>http://www.boulevart.be</organizationUrl>
-			<timezone>+1</timezone>
+		    <id>cherreman</id>
+		    <name>Christophe Herreman</name>
+		    <email>christophe.herreman [at] stackandheap.com</email>
+		    <url>http://www.herrodius.com</url>
+		    <organization>Stack &amp; Heap</organization>
+		    <organizationUrl>http://www.stackandheap.com</organizationUrl>
+		    <timezone>+1</timezone>
 		</developer>
 		<developer>
 			<id>martino.piccinato</id>
@@ -61,12 +61,13 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>roland.zwaga</id>
-			<name>Roland Zwaga</name>
-			<email>scab [at] dds.nl</email>
-			<organization>Uitgeverij Deviant</organization>
-			<organizationUrl>http://www.uitgeverij-deviant.nl/</organizationUrl>
-			<timezone>+1</timezone>
+		    <id>rzwaga</id>
+		    <name>Roland Zwaga</name>
+		    <email>roland.zwaga [at] stackandheap.com</email>
+		    <url>http://zwaga.blogspot.com/</url>
+		    <organization>Stack &amp; Heap</organization>
+		    <organizationUrl>http://www.stackandheap.com</organizationUrl>
+		    <timezone>+1</timezone>
 		</developer>
 		<developer>
 			<id>jes</id>
