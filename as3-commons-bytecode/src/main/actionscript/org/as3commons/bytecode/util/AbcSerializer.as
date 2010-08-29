@@ -72,7 +72,7 @@ package org.as3commons.bytecode.util {
 		private var _outputStream:ByteArray;
 
 		public function AbcSerializer() {
-
+			super();
 		}
 
 		/**
@@ -85,12 +85,25 @@ package org.as3commons.bytecode.util {
 			_outputStream = AbcSpec.byteArray();
 			writeU16(MINOR_VERSION);
 			writeU16(MAJOR_VERSION);
-			serializeConstantPool(abcFile.constantPool, _outputStream);
+
+			var tempOutputStream:ByteArray = _outputStream;
+
+			_outputStream = AbcSpec.byteArray();
+
 			serializeMethodInfo(abcFile);
 			serializeMetadataInfo(abcFile);
 			serializeClassAndInstanceInfo(abcFile);
 			serializeScriptInfo(abcFile);
 			serializeMethodBodies(abcFile);
+
+			_outputStream.position = 0;
+			var trailingOutputStream:ByteArray = _outputStream;
+
+			_outputStream = tempOutputStream;
+
+			serializeConstantPool(abcFile.constantPool, _outputStream);
+
+			_outputStream.writeBytes(trailingOutputStream);
 
 			_outputStream.position = 0;
 			return _outputStream;
