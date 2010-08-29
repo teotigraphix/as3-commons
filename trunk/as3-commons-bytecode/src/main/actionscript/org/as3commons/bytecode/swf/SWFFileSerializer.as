@@ -44,6 +44,7 @@ package org.as3commons.bytecode.swf {
 	import org.as3commons.bytecode.tags.serialization.StructSerializerFactory;
 	import org.as3commons.bytecode.tags.serialization.SymbolClassSerializer;
 	import org.as3commons.bytecode.tags.struct.RecordHeader;
+	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.SWFSpec;
 
 	public class SWFFileSerializer {
@@ -92,14 +93,13 @@ package org.as3commons.bytecode.swf {
 
 		public function read(input:ByteArray):SWFFile {
 			var swfFile:SWFFile = new SWFFile();
-			var bytes:ByteArray = new ByteArray();
+			var bytes:ByteArray = AbcSpec.byteArray();
 			input.endian = Endian.LITTLE_ENDIAN;
 			swfFile.signature = input.readUTFBytes(3);
 			var compressed:Boolean = (swfFile.signature == SWF_SIGNATURE_COMPRESSED);
 			swfFile.version = SWFSpec.readSI8(input);
 			swfFile.fileLength = SWFSpec.readUI32(input);
 			input.readBytes(bytes);
-			bytes.endian = Endian.LITTLE_ENDIAN;
 			bytes.position = 0;
 
 			if (compressed) {
@@ -119,13 +119,13 @@ package org.as3commons.bytecode.swf {
 			output.position = 0;
 			output.writeUTFBytes(swf.signature);
 			SWFSpec.writeSI8(output, swf.version);
-			writeHeader(output, swf);
-			var ba:ByteArray = new ByteArray();
-			ba.endian = Endian.LITTLE_ENDIAN;
+			var ba:ByteArray = AbcSpec.byteArray();
+			writeHeader(ba, swf);
 			for each (var tag:ISWFTag in swf.tags) {
 				writeTag(ba, tag);
 			}
 			if (swf.signature == SWF_SIGNATURE_COMPRESSED) {
+				ba.position = 0;
 				ba.compress();
 			}
 			ba.position = 0;

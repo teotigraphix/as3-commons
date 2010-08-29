@@ -18,6 +18,7 @@ package org.as3commons.bytecode.swf {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 
+	import flexunit.framework.Assert;
 	import flexunit.framework.TestCase;
 
 	import org.as3commons.bytecode.abc.AbcFile;

@@ -23,6 +23,7 @@ package org.as3commons.bytecode.assets.abc {
 	import org.as3commons.bytecode.template.MethodInvocation;
 
 	use namespace as3commons_bytecode;
+
 	use namespace custom_namespace;
 
 	//TODO: Come up with crafty ways around the setter/getter problem
@@ -41,17 +42,17 @@ package org.as3commons.bytecode.assets.abc {
 
 		public function testMethodWithOptionalArguments():void {
 			_fixture.as3commons_bytecode::setHandler("methodWithOptionalArguments", function(invocation:MethodInvocation):void {
-					assertEquals(3, invocation.args.length);
-				});
+				assertEquals(3, invocation.args.length);
+			});
 			_fixture.methodWithOptionalArguments("Required");
 		}
 
 		public function testMethodWithRestArguments():void {
 			_fixture.as3commons_bytecode::setHandler("methodWithRestArguments", function(invocation:MethodInvocation):void {
-					assertTrue(invocation.args[0] is String);
-					assertTrue(invocation.args[1] is Array);
-					assertEquals(2, invocation.args[1].length);
-				});
+				assertTrue(invocation.args[0] is String);
+				assertTrue(invocation.args[1] is Array);
+				assertEquals(2, invocation.args[1].length);
+			});
 			_fixture.methodWithRestArguments("arg1", "arg2", "arg3");
 		}
 
@@ -62,9 +63,9 @@ package org.as3commons.bytecode.assets.abc {
 
 		public function testSetterWithHandler():void {
 			_fixture.as3commons_bytecode::setHandler("setterForInternalValue", function(invocation:MethodInvocation):* {
-					assertNull(invocation.originalMethodReference);
-					return true;
-				});
+				assertNull(invocation.originalMethodReference);
+				return true;
+			});
 			_fixture.setterForInternalValue = "newValue";
 		}
 
@@ -74,8 +75,8 @@ package org.as3commons.bytecode.assets.abc {
 
 		public function testCustomNamespaceFunction():void {
 			_fixture.as3commons_bytecode::setHandler("customNamespaceFunction", function(invocation:MethodInvocation):void {
-					assertEquals("customNamespaceFunction", invocation.methodName);
-				});
+				assertEquals("customNamespaceFunction", invocation.methodName);
+			});
 			_fixture.custom_namespace::customNamespaceFunction();
 		}
 	}

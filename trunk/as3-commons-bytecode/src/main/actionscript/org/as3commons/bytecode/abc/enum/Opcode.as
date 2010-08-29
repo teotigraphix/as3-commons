@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc.enum {
+	import flash.errors.IllegalOperationError;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
@@ -28,6 +29,7 @@ package org.as3commons.bytecode.abc.enum {
 	import org.as3commons.bytecode.abc.UnsignedInteger;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.ReadWritePair;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -38,6 +40,8 @@ package org.as3commons.bytecode.abc.enum {
 	//TODO: Implement output of opcode using ExceptionInfo pool for ops like newcatch
 	//TODO: Derive local_count etc. from opcodes. Page 15 of the AVM2 spec covers this in more detail.
 	public class Opcode {
+
+		private static var _enumCreated:Boolean = false;
 
 		private static const _ALL_OPCODES:Dictionary = new Dictionary();
 
@@ -209,7 +213,12 @@ package org.as3commons.bytecode.abc.enum {
 		private var _value:int;
 		private var _argumentTypes:Array;
 
+		{
+			_enumCreated = true;
+		}
+
 		public function Opcode(opcodeValue:int, opcodeName:String, ... typeAndReadWritePairs) {
+			Assert.state((!_enumCreated), "Opcode enum has already been created");
 			_value = opcodeValue;
 			_opcodeName = opcodeName;
 			_argumentTypes = typeAndReadWritePairs;
@@ -217,7 +226,7 @@ package org.as3commons.bytecode.abc.enum {
 			if (_ALL_OPCODES[_value] == null) {
 				_ALL_OPCODES[_value] = this;
 			} else {
-				throw new Error("duplicate! " + opcodeName + " : " + Opcode(_ALL_OPCODES[_value]).opcodeName);
+				throw new IllegalOperationError("duplicate! " + opcodeName + " : " + Opcode(_ALL_OPCODES[_value]).opcodeName);
 			}
 		}
 
@@ -229,81 +238,93 @@ package org.as3commons.bytecode.abc.enum {
 			for each (var op:Op in ops) {
 				AbcSpec.writeU8(op.opcode._value, serializedOpcodes);
 
-				var serializedArgumentCount:int = 0;
-				for each (var typeAndReadWritePair:Array in op.opcode.argumentTypes) {
-					var argumentType:* = typeAndReadWritePair[0];
-					var readWritePair:ReadWritePair = typeAndReadWritePair[1];
-					var rawValue:* = op.parameters[serializedArgumentCount++];
-
-					var abcCompatibleValue:* = rawValue;
-
-					switch (argumentType) {
-						case int:
-							abcCompatibleValue = rawValue;
-							//                            trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
-							break;
-
-						case Integer:
-							abcCompatibleValue = abcFile.constantPool.getIntPosition(rawValue);
-							break;
-
-						case UnsignedInteger:
-							abcCompatibleValue = abcFile.constantPool.getUintPosition(rawValue);
-							break;
-
-						case Number:
-							abcCompatibleValue = abcFile.constantPool.getDoublePosition(rawValue);
-							//                            trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
-							break;
-
-						case BaseMultiname:
-							abcCompatibleValue = rawValue;
-							//                            trace("\tMultiname: " + abcCompatibleValue + "(" + rawValue + ")");
-							break;
-
-						case ClassInfo:
-							abcCompatibleValue = abcFile.classInfo.indexOf(rawValue);
-							//                            trace("\tClassInfo: " + abcCompatibleValue + "(" + rawValue + ")");
-							break;
-
-						case String:
-							abcCompatibleValue = abcFile.constantPool.getStringPosition(rawValue);
-							//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
-							break;
-
-						case Namespace:
-							abcCompatibleValue = abcFile.constantPool.getNamespacePosition(rawValue);
-							//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
-							break;
-
-						case ExceptionInfo:
-							abcCompatibleValue = methodBody.exceptionInfos.indexOf(rawValue);
-							break;
-
-						case Array:
-							var caseCount:int = op.opcode.argumentTypes[1];
-							var arr:Array = argumentType as Array;
-							for (var i:int = 0; i < caseCount; i++) {
-								AbcSpec.writeS24(arr[i], serializedOpcodes);
-							}
-							break;
-
-						default:
-							throw new Error("Unknown Opcode argument type.");
-					}
-
-					try {
-						readWritePair.write(abcCompatibleValue, serializedOpcodes);
-					} catch (e:Error) {
-						trace(e);
-					}
-				}
+				serializeOpcodeArguments(op, abcFile, methodBody, serializedOpcodes);
 //				trace(serializedOpcodes.position + "\t" + op); 
 			}
 
 			serializedOpcodes.position = 0;
 			return serializedOpcodes;
 		}
+
+		public static function serializeOpcodeArguments(op:Op, abcFile:AbcFile, methodBody:MethodBody, serializedOpcodes:ByteArray):void {
+			var serializedArgumentCount:int = 0;
+			for each (var typeAndReadWritePair:Array in op.opcode.argumentTypes) {
+				var argumentType:* = typeAndReadWritePair[0];
+				var readWritePair:ReadWritePair = typeAndReadWritePair[1];
+				var rawValue:* = op.parameters[serializedArgumentCount++];
+				serializeOpcode(rawValue, argumentType, abcFile, methodBody, op, serializedOpcodes, readWritePair);
+			}
+		}
+
+		public static function serializeOpcode(rawValue:*, argumentType:*, abcFile:AbcFile, methodBody:MethodBody, op:Op, serializedOpcodes:ByteArray, readWritePair:ReadWritePair):void {
+			var abcCompatibleValue:* = rawValue;
+
+			switch (argumentType) {
+				case int:
+					abcCompatibleValue = rawValue;
+					//trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
+					break;
+
+				case Integer:
+					abcCompatibleValue = abcFile.constantPool.addInt(rawValue);
+					break;
+
+				case uint:
+					abcCompatibleValue = rawValue;
+					break;
+
+				case UnsignedInteger:
+					abcCompatibleValue = abcFile.constantPool.addUint(rawValue);
+					break;
+
+				case Number:
+					abcCompatibleValue = abcFile.constantPool.addDouble(rawValue);
+					//                            trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
+					break;
+
+				case BaseMultiname:
+					abcCompatibleValue = rawValue;
+					//                            trace("\tMultiname: " + abcCompatibleValue + "(" + rawValue + ")");
+					break;
+
+				case ClassInfo:
+					abcCompatibleValue = abcFile.addClassInfo(rawValue);
+					//                            trace("\tClassInfo: " + abcCompatibleValue + "(" + rawValue + ")");
+					break;
+
+				case String:
+					abcCompatibleValue = abcFile.constantPool.addString(rawValue);
+					//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
+					break;
+
+				case Namespace:
+					abcCompatibleValue = abcFile.constantPool.addNamespace(rawValue);
+					//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
+					break;
+
+				case ExceptionInfo:
+					abcCompatibleValue = methodBody.addExceptionInfo(rawValue);
+					break;
+
+				case Array:
+					var caseCount:int = op.parameters[1];
+					var arr:Array = rawValue as Array;
+					for (var i:int = 0; i < caseCount; i++) {
+						AbcSpec.writeS24(arr[i], serializedOpcodes);
+					}
+					break;
+
+				default:
+					throw new Error("Unknown Opcode argument type." + argumentType.toString());
+			}
+
+			try {
+				readWritePair.write(abcCompatibleValue, serializedOpcodes);
+			} catch (e:Error) {
+				trace(e);
+			}
+		}
+
 
 		/**
 		 * Parses the bytecode block out of the given ByteArray, returning an array of Ops representing the
@@ -315,79 +336,87 @@ package org.as3commons.bytecode.abc.enum {
 
 			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCount);
 			while (byteArray.position != positionAtEndOfBytecode) {
-				var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
-
-				var argumentValues:Array = [];
-				for each (var argument:* in opcode.argumentTypes) {
-					var argumentType:* = argument[0];
-					var readWritePair:ReadWritePair = argument[1];
-					var byteCodeValue:* = readWritePair.read(byteArray);
-
-					switch (argumentType) {
-						case uint:
-						case int:
-							argumentValues.push(byteCodeValue);
-							break;
-
-						case Integer:
-							argumentValues.push(abcFile.constantPool.integerPool[byteCodeValue]);
-							break;
-
-						case UnsignedInteger:
-							argumentValues.push(abcFile.constantPool.uintPool[byteCodeValue]);
-							break;
-
-						case Number:
-							argumentValues.push(abcFile.constantPool.doublePool[byteCodeValue]);
-							break;
-
-						case BaseMultiname:
-							argumentValues.push(abcFile.constantPool.multinamePool[byteCodeValue]);
-							break;
-
-						case ClassInfo:
-							argumentValues.push(abcFile.classInfo[byteCodeValue]);
-							break;
-
-						case String:
-							argumentValues.push(abcFile.constantPool.stringPool[byteCodeValue]);
-							break;
-
-						case Namespace:
-							argumentValues.push(abcFile.constantPool.namespacePool[byteCodeValue]);
-							break;
-
-						case Array:
-							//TODO: Come back and clean this up with a different parser model. lookupswitch f'd up the clean pre-existing model
-							// Special case for lookupswitch opcode. We need to iterate the possible case
-							// values and pull their offsets from the bytestream. The first value has
-							// already been read for us by the time this switch is invoked, we just need
-							// to pull the rest of the offsets. We determine how many there are by looking at
-							// the second argument to the op, which is the case_count
-							var caseOffsets:Array = [];
-							caseOffsets.push(byteCodeValue);
-							var caseCount:int = argumentValues[1];
-							for (var i:int = 0; i < caseCount; i++) {
-								caseOffsets.push(AbcSpec.readS24(byteArray));
-							}
-							argumentValues.push(caseOffsets);
-							break;
-
-						case ExceptionInfo:
-							argumentValues.push(byteCodeValue);
-							break;
-
-						default:
-							throw new Error("Unknown Opcode argument type." + argumentType.toString());
-					}
-				}
-
-				var op:Op = opcode.op(argumentValues);
-				ops.push(op);
-//                trace(byteArray.position + "\t" + op);
+				parseOpcode(byteArray, abcFile, ops);
 			}
 
 			return ops;
+		}
+
+		public static function parseOpcode(byteArray:ByteArray, abcFile:AbcFile, ops:Array):void {
+			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
+
+			var argumentValues:Array = [];
+			for each (var argument:* in opcode.argumentTypes) {
+				parseOpcodeArguments(argument, byteArray, argumentValues, abcFile);
+			}
+
+			var op:Op = opcode.op(argumentValues);
+			ops[ops.length] = op;
+			//trace(byteArray.position + "\t" + op);
+		}
+
+		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, argumentValues:Array, abcFile:AbcFile):void {
+			var argumentType:* = argument[0];
+			var readWritePair:ReadWritePair = argument[1];
+			var byteCodeValue:* = readWritePair.read(byteArray);
+
+			switch (argumentType) {
+				case uint:
+				case int:
+					argumentValues.push(byteCodeValue);
+					break;
+
+				case Integer:
+					argumentValues.push(abcFile.constantPool.integerPool[byteCodeValue]);
+					break;
+
+				case UnsignedInteger:
+					argumentValues.push(abcFile.constantPool.uintPool[byteCodeValue]);
+					break;
+
+				case Number:
+					argumentValues.push(abcFile.constantPool.doublePool[byteCodeValue]);
+					break;
+
+				case BaseMultiname:
+					argumentValues.push(abcFile.constantPool.multinamePool[byteCodeValue]);
+					break;
+
+				case ClassInfo:
+					argumentValues.push(abcFile.classInfo[byteCodeValue]);
+					break;
+
+				case String:
+					argumentValues.push(abcFile.constantPool.stringPool[byteCodeValue]);
+					break;
+
+				case Namespace:
+					argumentValues.push(abcFile.constantPool.namespacePool[byteCodeValue]);
+					break;
+
+				case Array:
+					//TODO: Come back and clean this up with a different parser model. lookupswitch f'd up the clean pre-existing model
+					// Special case for lookupswitch opcode. We need to iterate the possible case
+					// values and pull their offsets from the bytestream. The first value has
+					// already been read for us by the time this switch is invoked, we just need
+					// to pull the rest of the offsets. We determine how many there are by looking at
+					// the second argument to the op, which is the case_count
+					var caseOffsets:Array = [];
+					caseOffsets.push(byteCodeValue);
+					var caseCount:int = argumentValues[1];
+					for (var i:int = 0; i < caseCount; i++) {
+						caseOffsets.push(AbcSpec.readS24(byteArray));
+					}
+					argumentValues.push(caseOffsets);
+					break;
+
+				case ExceptionInfo:
+					argumentValues.push(byteCodeValue);
+					break;
+
+				default:
+					throw new Error("Unknown Opcode argument type." + argumentType.toString());
+			}
 		}
 
 		public static function determineOpcode(opcodeByte:int):Opcode {
