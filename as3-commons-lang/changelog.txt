@@ -4,7 +4,7 @@ AS3COMMONS LANG CHANGELOG
 Note: dates are in DD.MM.YYYY format
 
 
-Changes in version 0.3 (10.08.2010)
+Changes in version 0.3 (29.08.2010)
 -----------------------------------
 
 Package org.as3commons.lang
