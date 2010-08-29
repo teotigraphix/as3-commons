@@ -19,6 +19,7 @@ package org.as3commons.bytecode.tags.serialization {
 	import org.as3commons.bytecode.tags.DoABCTag;
 	import org.as3commons.bytecode.tags.ISWFTag;
 	import org.as3commons.bytecode.util.AbcDeserializer;
+	import org.as3commons.bytecode.util.AbcSerializer;
 	import org.as3commons.bytecode.util.SWFSpec;
 
 	public class DoABCSerializer extends AbstractTagSerializer {
@@ -36,7 +37,12 @@ package org.as3commons.bytecode.tags.serialization {
 		}
 
 		override public function write(output:ByteArray, tag:ISWFTag):void {
-			throw new Error("Not implemented yet!");
+			var abcTag:DoABCTag = DoABCTag(tag);
+			SWFSpec.writeUI32(output, abcTag.flags);
+			SWFSpec.writeString(output, abcTag.byteCodeName);
+			var serializedTag:ByteArray = new AbcSerializer().serializeAbcFile(abcTag.abcFile);
+			serializedTag.position = 0;
+			output.writeBytes(serializedTag);
 		}
 
 	}

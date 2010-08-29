@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.util {
+	import flash.errors.IllegalOperationError;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 
@@ -34,15 +35,22 @@ package org.as3commons.bytecode.util {
 		public static function readBitRect(input:ByteArray):Rectangle {
 			var bits:uint = readUB(input, 5);
 			var r:Rectangle = new Rectangle();
-			r.x = int(readSB(input, bits));
-			r.width = int(readSB(input, bits));
-			r.y = int(readSB(input, bits));
-			r.height = int(readSB(input, bits));
+			r.x = readSB(input, bits);
+			r.width = readSB(input, bits);
+			r.y = readSB(input, bits);
+			r.height = readSB(input, bits);
 			flushBits();
 			return r;
 		}
 
 		public static function writeBitRect(output:ByteArray, rect:Rectangle):void {
+			var numBits:uint = getMinSBits(rect.x, rect.width, rect.y, rect.height);
+			flushBits();
+			writeUB(output, 5, numBits);
+			writeSB(output, numBits, rect.x);
+			writeSB(output, numBits, rect.width);
+			writeSB(output, numBits, rect.y);
+			writeSB(output, numBits, rect.height);
 		}
 
 		public static function readSI8(input:ByteArray):int {
@@ -231,7 +239,34 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function writeSB(input:ByteArray, bits:uint, value:int):void {
-			throw new Error("Not implemented yet");
+			if (bits == 0) {
+				return;
+			}
+			value &= (0xffffffff >>> (32 - bits));
+			var bitsConsumed:uint;
+			if (_bitleft > 0) {
+				if (_bitleft > bits) {
+					input[input.position - 1] |= value << (_bitleft - bits);
+					bitsConsumed = bits;
+					_bitleft -= bits;
+				} else if (_bitleft == bits) {
+					input[input.position - 1] |= value;
+					bitsConsumed = bits;
+					_bitleft = 0;
+				} else {
+					input[input.position - 1] |= value >> (bits - _bitleft);
+					bitsConsumed = _bitleft;
+					_bitleft = 0;
+				}
+			} else {
+				bitsConsumed = Math.min(8, bits);
+				_bitleft = 8 - bitsConsumed;
+				input.writeByte((value >> (bits - bitsConsumed)) << _bitleft);
+			}
+			bits -= bitsConsumed;
+			if (bits > 0) {
+				writeSB(input, bits, value);
+			}
 		}
 
 		public static function readFB(input:ByteArray, bits:uint):Number {
@@ -258,6 +293,22 @@ package org.as3commons.bytecode.util {
 				input.writeUTFBytes(value);
 			}
 			input.writeByte(0);
+		}
+
+		public static function getMinBits(a:uint, b:uint = 0, c:uint = 0, d:uint = 0):uint {
+			var val:uint = a | b | c | d;
+			var bits:uint = 1;
+
+			do {
+				val >>>= 1;
+				++bits;
+			} while (val != 0)
+
+			return bits;
+		}
+
+		public static function getMinSBits(a:int, b:int = 0, c:int = 0, d:int = 0):uint {
+			return getMinBits(Math.abs(a), Math.abs(b), Math.abs(c), Math.abs(d));
 		}
 
 	}

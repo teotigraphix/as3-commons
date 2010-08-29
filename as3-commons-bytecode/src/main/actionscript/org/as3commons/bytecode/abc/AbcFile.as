@@ -51,11 +51,11 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function addClassInfo(classInfo:ClassInfo):int {
-			return _classInfo.push(classInfo);
+			return addUniquely(classInfo, _classInfo);
 		}
 
 		public function addMetadataInfo(metadata:Metadata):int {
-			return _metadataInfo.push(metadata);
+			return addUniquely(metadata, _metadataInfo);
 		}
 
 		public function addMethodInfo(methodInfo:MethodInfo):int {
@@ -86,15 +86,15 @@ package org.as3commons.bytecode.abc {
 			constantPool.addMultiname(instanceInfo.superclassMultiname);
 			addMethodInfo(instanceInfo.instanceInitializer);
 
-			return _instanceInfo.push(instanceInfo);
+			return addUniquely(instanceInfo, _instanceInfo);
 		}
 
 		public function addScriptInfo(scriptInfo:ScriptInfo):int {
-			return _scriptInfo.push(scriptInfo);
+			return addUniquely(scriptInfo, _scriptInfo);
 		}
 
 		public function addMethodBody(methodBody:MethodBody):int {
-			return _methodBodies.push(methodBody);
+			return addUniquely(methodBody, _methodBodies);
 		}
 
 		public function get metadataInfo():Array {
@@ -198,7 +198,7 @@ package org.as3commons.bytecode.abc {
 					classDefinition.interfaces.push(interfaceMultiname);
 				}
 
-				classDefinitions.push(classDefinition);
+				classDefinitions[classDefinitions.length] = classDefinition;
 			}
 
 			return classDefinitions;

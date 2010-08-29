@@ -23,10 +23,15 @@ package org.as3commons.bytecode.abc {
 		private var _parameters:Array;
 		private var _opcode:Opcode;
 
-		public function Op(opcode:Opcode, parameters:Array) {
-			_opcode = opcode;
-			_parameters = parameters;
+		public function Op(opcode:Opcode, parameters:Array = null) {
+			initOp(opcode, parameters);
 		}
+
+		protected function initOp(opcode:Opcode, parameters:Array):void {
+			_opcode = opcode;
+			_parameters = (parameters) ? parameters : [];
+		}
+
 
 		public function get parameters():Array {
 			return _parameters;

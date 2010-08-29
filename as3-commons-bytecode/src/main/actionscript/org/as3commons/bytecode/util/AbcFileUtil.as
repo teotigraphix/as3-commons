@@ -14,11 +14,46 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.util {
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.as3commons_bytecode;
+	import org.as3commons.bytecode.swf.SWFFile;
+	import org.as3commons.bytecode.tags.DoABCTag;
 
 	public final class AbcFileUtil {
+
+		public static function mergeAbcFilesInSWFFile(swf:SWFFile):void {
+			var abcTags:Array = swf.getTagsByType(DoABCTag);
+			if (abcTags.length < 2) {
+				return;
+			}
+			for (var i:uint = 1; i < abcTags.length; i++) {
+				var idx:int = swf.tags.indexOf(abcTags[i]);
+				if (idx > -1) {
+					swf.tags.splice(idx, 1);
+				}
+			}
+			var abcFiles:Array = [];
+			for each (var tag:DoABCTag in abcTags) {
+				abcFiles[abcFiles.length] = tag.abcFile;
+			}
+			DoABCTag(abcTags[0]).abcFile = mergeMultipleAbcFiles(abcFiles);
+		}
+
+		public static function mergeMultipleAbcFiles(files:Array):AbcFile {
+			if ((!files) || (files.length == 0)) {
+				return null;
+			}
+			if (files.length == 1) {
+				return files[0];
+			}
+			var abc:AbcFile = files[0];
+			for (var i:uint = 1; i < files.length; i++) {
+				abc = mergeAbcFiles(abc, files[i]);
+			}
+			return abc;
+		}
 
 		public static function mergeAbcFiles(file1:AbcFile, file2:AbcFile):AbcFile {
 			var result:AbcFile = new AbcFile();

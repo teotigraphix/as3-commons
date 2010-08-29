@@ -38,9 +38,22 @@ package org.as3commons.bytecode.abc {
 		public var traits:Array;
 
 		public function MethodBody() {
+			initMethodBody();
+		}
+
+		protected function initMethodBody():void {
 			opcodes = [];
 			exceptionInfos = [];
 			traits = [];
+		}
+
+
+		public function addExceptionInfo(exceptionInfo:ExceptionInfo):uint {
+			var idx:int = exceptionInfos.indexOf(exceptionInfo);
+			if (idx < 0) {
+				idx = exceptionInfos.push(exceptionInfo);
+			}
+			return idx;
 		}
 
 		public function toString():String {

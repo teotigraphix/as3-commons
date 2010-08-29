@@ -379,10 +379,12 @@ package org.as3commons.bytecode.util {
 					methodBody.exceptionInfos.push(exceptionInfo);
 				}
 
+				//Add the ExceptionInfo reference to all opcodes to untill now only carried an
+				//index for the reference (this replaces the index with the actual reference in the parameter):
 				for each (var op:Op in methodBody.opcodes) {
 					var idx:int = getExceptionInfoArgumentIndex(op);
 					if (idx > -1) {
-						var exceptionIndex:int = op.parameters[idx];
+						exceptionIndex = op.parameters[idx];
 						op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
 					}
 				}
