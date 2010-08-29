@@ -7,18 +7,19 @@ Note: dates are in DD.MM.YYYY format
 Changes in version 1.3.1 (29.08.2010)
 -------------------------------------
 
+Package org.as3commons.reflect
+* added support for type.getMetaDataContainers("MetadataName") to quickly retrieve all members that are decorated with specific metadata
+* added support for Type.alias property. When registerClassAlias() has been invoked for a Class, the value of this alias will be stored in the Type.alias property. This will not work if registerClassAlias() has been called AFTER the Type has been created already. In that case, call Type.clearCache() and retrieve the Type again.
+* added findClassMetadata() and findMetadataDeclaringClass() methods to MetadataUtils (thanks Andy Lewisohn)
+* added INamespaceOwner interface that is implemented by method and member classes
+* added support to MethodInvoker to invoke methods on an object in a custom namespace
 
 
 Changes in version 1.3 (17.05.2010)
 -----------------------------------
 
 Package org.as3commons.reflect
-* added support for type.getMetaDataContainers("MetadataName") to quickly retrieve all members that are decorated with specific metadata
-* added support for Type.alias property. When registerClassAlias() has been invoked for a Class, the value of this alias will be stored in the Type.alias property. This will not work if registerClassAlias() has been called AFTER the Type has been created already. In that case, call Type.clearCache() and retrieve the Type again.
 * added extendsClasses property to Type which returns an Array of Classes that represent the inheritance order of the current Type
-* added INamespaceOwner interface that is implemented by method and member classes
-* added support to MethodInvoker to invoke methods on an object in a custom namespace
-* added findClassMetadata() and findMetadataDeclaringClass() methods to MetadataUtils (thanks Andy Lewisohn)
 * added optional applicationDomain arguments to new MetadataUtils methods
 * fixed ClassUtils.forName() call where no appropriate applicationDomain was passed in
 * fixed issue: http://code.google.com/p/as3-commons/issues/detail?id=21 (thanks Arnoud)
