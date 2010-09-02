@@ -28,6 +28,7 @@ package org.as3commons.bytecode.tags.serialization {
 
 		override public function read(input:ByteArray):ISWFTag {
 			var tag:FileAttributesTag = new FileAttributesTag();
+			SWFSpec.flushBits();
 			SWFSpec.readUB(input);
 			tag.useDirectBlit = SWFSpec.readBoolean(input);
 			tag.useGPU = SWFSpec.readBoolean(input);
@@ -41,6 +42,7 @@ package org.as3commons.bytecode.tags.serialization {
 
 		override public function write(output:ByteArray, tag:ISWFTag):void {
 			var faTag:FileAttributesTag = FileAttributesTag(tag);
+			SWFSpec.flushBits();
 			SWFSpec.writeUB(output, 1, 0);
 			SWFSpec.writeBoolean(output, faTag.useDirectBlit);
 			SWFSpec.writeBoolean(output, faTag.useGPU);

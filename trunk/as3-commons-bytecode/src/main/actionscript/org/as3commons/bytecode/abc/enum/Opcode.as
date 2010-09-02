@@ -283,7 +283,7 @@ package org.as3commons.bytecode.abc.enum {
 					break;
 
 				case BaseMultiname:
-					abcCompatibleValue = rawValue;
+					abcCompatibleValue = abcFile.constantPool.addMultiname(rawValue);
 					//                            trace("\tMultiname: " + abcCompatibleValue + "(" + rawValue + ")");
 					break;
 

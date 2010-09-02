@@ -58,5 +58,21 @@ package org.as3commons.bytecode.abc {
 		public function toString():String {
 			return StringUtils.substitute("{0}[{1}:{2}]", kind.description, nameSpace, name);
 		}
+
+		override public function equals(multiname:BaseMultiname):Boolean {
+			var matches:Boolean = false;
+			if (multiname is QualifiedName) {
+				if (_namespace.equals(QualifiedName(multiname).nameSpace)) {
+					if (NamedMultiname(multiname).name == this.name) {
+						if (super.equals(multiname)) {
+							matches = true;
+						}
+					}
+				}
+			}
+
+			return matches;
+		}
+
 	}
 }
