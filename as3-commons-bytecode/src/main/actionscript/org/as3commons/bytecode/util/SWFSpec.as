@@ -167,7 +167,8 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function readBoolean(input:ByteArray):Boolean {
-			return (readUB(input) == 1);
+			var ub:uint = readUB(input);
+			return (ub == 1);
 		}
 
 		public static function writeBoolean(input:ByteArray, value:Boolean):void {
@@ -175,35 +176,33 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function readUB(input:ByteArray, bits:uint = 1):uint {
-			if (bits > 64 || bits == 0)
+			if (bits == 0) {
 				return 0;
-
-			var r:uint = (_bitbuff >> (8 - _bitleft));
-			if (_bitleft >= bits) {
-				_bitleft -= bits;
-				_bitbuff <<= bits;
-				return (r >> (8 - bits));
 			}
 
-			bits -= _bitleft;
-			while (bits > 7) {
-				_bitbuff = input.readUnsignedByte();
-
-				r = (r << 8) | _bitbuff;
-				bits -= 8;
-				_bitleft = 0;
+			if (_bitleft == 0) {
+				_bitbuff = readUI8(input);
+				_bitleft = 8;
 			}
 
-			_bitbuff = 0;
-			if (bits) {
-				_bitbuff = input.readUnsignedByte();
-				_bitleft = 8 - bits;
-				r = (r << bits) | (_bitbuff >> _bitleft);
-				_bitbuff <<= bits;
+			var result:uint = 0;
+
+			for (; ; ) {
+				var s:int = bits - _bitleft;
+				if (s > 0) {
+					result |= _bitbuff << s;
+					bits -= _bitleft;
+					_bitbuff = readUI8(input);
+					_bitleft = 8;
+				} else {
+					result |= _bitbuff >> -s;
+					_bitleft -= bits;
+					_bitbuff = _bitbuff & (0xff >> (8 - _bitleft))
+					break;
+				}
 			}
 
-			_bitbuff &= 0xff;
-			return r;
+			return result;
 		}
 
 		public static function writeUB(input:ByteArray, bits:uint, value:uint):void {

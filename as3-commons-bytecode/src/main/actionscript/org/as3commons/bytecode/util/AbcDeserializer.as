@@ -16,6 +16,8 @@
 package org.as3commons.bytecode.util {
 	import flash.utils.ByteArray;
 
+	import mx.utils.ObjectUtil;
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -424,7 +426,8 @@ package org.as3commons.bytecode.util {
 				//  u30 metadata_count 
 				//  u30 metadata[metadata_count] 
 				// }
-				var traitName:BaseMultiname = pool.multinamePool[readU30()];
+				var multiNameIndex:uint = readU30();
+				var traitName:BaseMultiname = pool.multinamePool[multiNameIndex];
 				var traitMultiname:QualifiedName = convertToQualifiedName(traitName);
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
@@ -461,7 +464,7 @@ package org.as3commons.bytecode.util {
 
 						// It's not strictly necessary to do this, but it helps the API for the MethodInfo to have a
 						// reference to its traits and vice versa 
-						var associatedMethodInfo:MethodInfo = methodInfos[readU30()]
+						var associatedMethodInfo:MethodInfo = methodInfos[readU30()];
 						methodTrait.traitMethod = associatedMethodInfo;
 						associatedMethodInfo.as3commonsByteCodeAssignedMethodTrait = methodTrait;
 						methodTrait.traitMethod.as3commonsBytecodeName = traitMultiname;

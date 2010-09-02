@@ -17,6 +17,7 @@ package org.as3commons.bytecode.util {
 	import flash.utils.ByteArray;
 
 	import mx.formatters.SwitchSymbolFormatter;
+	import mx.utils.ObjectUtil;
 
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
@@ -99,84 +100,85 @@ package org.as3commons.bytecode.util {
 
 			// extract namespaces
 			extract(_byteStream, pool.namespacePool, function():LNamespace {
-					return new LNamespace(NamespaceKind.determineKind(readU8()), pool.stringPool[readU30()]);
-				});
+				return new LNamespace(NamespaceKind.determineKind(readU8()), pool.stringPool[readU30()]);
+			});
 
 			// extract namespace sets
 			extract(_byteStream, pool.namespaceSetPool, function():NamespaceSet {
-					var namespaceIndexRefCount:int = readU30();
-					var namespaceArray:Array = [];
-					for (var nssetNamespaceIndex:int = 0; nssetNamespaceIndex < namespaceIndexRefCount; nssetNamespaceIndex++) {
-						namespaceArray.push(pool.namespacePool[readU30()]);
-					}
-					return new NamespaceSet(namespaceArray);
-				});
+				var namespaceIndexRefCount:int = readU30();
+				var namespaceArray:Array = [];
+				for (var nssetNamespaceIndex:int = 0; nssetNamespaceIndex < namespaceIndexRefCount; nssetNamespaceIndex++) {
+					namespaceArray.push(pool.namespacePool[readU30()]);
+				}
+				return new NamespaceSet(namespaceArray);
+			});
 
 			// extract multinames
 			extract(_byteStream, pool.multinamePool, function():BaseMultiname {
-					var multiname:BaseMultiname = null;
+				var multiname:BaseMultiname = null;
 
-					var kind:MultinameKind = MultinameKind.determineKind(readU8());
-					switch (kind) {
-						case MultinameKind.QNAME:
-						case MultinameKind.QNAME_A:
-							// multiname_kind_QName 
-							// { 
-							//  u30 ns 
-							//  u30 name 
-							// }
-							var nameSpace:LNamespace = pool.namespacePool[readU30()];
-							multiname = new QualifiedName(pool.stringPool[readU30()], nameSpace, kind);
-							break;
+				var kind:MultinameKind = MultinameKind.determineKind(readU8());
+				switch (kind) {
+					case MultinameKind.QNAME:
+					case MultinameKind.QNAME_A:
+						// multiname_kind_QName 
+						// { 
+						//  u30 ns 
+						//  u30 name 
+						// }
+						var nameSpace:LNamespace = pool.namespacePool[readU30()];
+						var name:String = pool.stringPool[readU30()];
+						multiname = new QualifiedName(name, nameSpace, kind);
+						break;
 
-						case MultinameKind.MULTINAME:
-						case MultinameKind.MULTINAME_A:
-							// multiname_kind_Multiname 
-							// { 
-							//  u30 name 
-							//  u30 ns_set 
-							// }
-							multiname = new Multiname(pool.stringPool[readU30()], pool.namespaceSetPool[readU30()], kind);
-							break;
+					case MultinameKind.MULTINAME:
+					case MultinameKind.MULTINAME_A:
+						// multiname_kind_Multiname 
+						// { 
+						//  u30 name 
+						//  u30 ns_set 
+						// }
+						multiname = new Multiname(pool.stringPool[readU30()], pool.namespaceSetPool[readU30()], kind);
+						break;
 
-						case MultinameKind.MULTINAME_L:
-						case MultinameKind.MULTINAME_LA:
-							// multiname_kind_MultinameL 
-							// { 
-							//  u30 ns_set 
-							// }
-							multiname = new MultinameL(pool.namespaceSetPool[readU30()], kind);
-							break;
+					case MultinameKind.MULTINAME_L:
+					case MultinameKind.MULTINAME_LA:
+						// multiname_kind_MultinameL 
+						// { 
+						//  u30 ns_set 
+						// }
+						multiname = new MultinameL(pool.namespaceSetPool[readU30()], kind);
+						break;
 
-						case MultinameKind.RTQNAME:
-						case MultinameKind.RTQNAME_A:
-							// multiname_kind_RTQName 
-							// { 
-							//  u30 name 
-							// }
-							multiname = new RuntimeQualifiedName(pool.stringPool[readU30()], kind);
-							break;
+					case MultinameKind.RTQNAME:
+					case MultinameKind.RTQNAME_A:
+						// multiname_kind_RTQName 
+						// { 
+						//  u30 name 
+						// }
+						multiname = new RuntimeQualifiedName(pool.stringPool[readU30()], kind);
+						break;
 
-						case MultinameKind.RTQNAME_L:
-						case MultinameKind.RTQNAME_LA:
-							// multiname_kind_RTQNameL 
-							// { 
-							// }
-							multiname = new RuntimeQualifiedNameL(kind);
-							break;
-						case MultinameKind.GENERIC:
-							var qualifiedName:QualifiedName = pool.multinamePool[readU30()];
-							var paramCount:uint = readU30();
-							var params:Array = [];
-							for (var i:uint = 0; i < paramCount; i++) {
-								params[params.length] = pool.multinamePool[readU30()];
-							}
-							multiname = new MultinameG(qualifiedName, paramCount, params, kind);
-							break;
-					}
+					case MultinameKind.RTQNAME_L:
+					case MultinameKind.RTQNAME_LA:
+						// multiname_kind_RTQNameL 
+						// { 
+						// }
+						multiname = new RuntimeQualifiedNameL(kind);
+						break;
+					case MultinameKind.GENERIC:
+						var qualifiedName:QualifiedName = pool.multinamePool[readU30()];
+						var paramCount:uint = readU30();
+						var params:Array = [];
+						while (--paramCount > 0) {
+							params[params.length] = pool.multinamePool[readU30()];
+						}
+						multiname = new MultinameG(qualifiedName, paramCount, params, kind);
+						break;
+				}
 
-					return multiname;
-				});
+				return multiname;
+			});
 
 			return pool;
 		}
@@ -205,7 +207,8 @@ package org.as3commons.bytecode.util {
 
 		public function extract(byteStream:ByteArray, pool:Array, extractionMethod:Function):void {
 			var itemCount:int = readU30();
-			for (var itemIndex:int = 1; itemIndex < itemCount; itemIndex++) {
+			var itemIndex:int = itemCount;
+			while (--itemIndex > 0) {
 				var result:* = extractionMethod.apply(this);
 				pool.push(result);
 			}
