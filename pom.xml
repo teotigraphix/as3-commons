@@ -96,15 +96,14 @@
 	</developers>
 
 	<modules>
-		<module>as3-commons-bytecode</module>
+		<!-- <module>as3-commons-bytecode</module> -->
 		<module>as3-commons-collections</module>
 		<module>as3-commons-concurrency</module>
 		<!-- module>as3-commons-emit</module -->
 		<module>as3-commons-lang</module>
 		<module>as3-commons-logging</module>
-		<module>as3-commons-reflect</module><!-- 
-		<module>as3-commons-serialization</module>
-		-->
+		<module>as3-commons-reflect</module>
+		<!-- <module>as3-commons-serialization</module> -->
 	</modules>
 
 	<dependencies>
@@ -132,6 +131,7 @@
             <groupId>com.adobe.flex.framework</groupId>
             <artifactId>framework</artifactId>
             <version>${flex-sdk.version}</version>
+			<scope>external</scope>
             <type>zip</type>
             <classifier>configs</classifier>
         </dependency>
@@ -184,24 +184,6 @@
             <type>swc</type>
             <scope>test</scope>
         </dependency>
-
-		<dependency>
-			<groupId>org.sonatype.flexmojos</groupId>
-			<artifactId>flexmojos-unittest-support</artifactId>
-			<version>${flex-mojos.version}</version>
-			<type>swc</type>
-			<scope>test</scope>
-			<exclusions>
-                <exclusion>
-                    <groupId>com.adobe.flex.framework</groupId>
-                    <artifactId>framework</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.adobe.flex.framework</groupId>
-                    <artifactId>playerglobal</artifactId>
-                </exclusion>
-            </exclusions>
-		</dependency>
 		
 	</dependencies>
 
