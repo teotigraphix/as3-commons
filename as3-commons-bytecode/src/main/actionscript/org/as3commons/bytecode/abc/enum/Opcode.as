@@ -18,6 +18,8 @@ package org.as3commons.bytecode.abc.enum {
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
+	import mx.controls.Alert;
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -26,6 +28,7 @@ package org.as3commons.bytecode.abc.enum {
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.UnsignedInteger;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.ReadWritePair;
@@ -239,7 +242,7 @@ package org.as3commons.bytecode.abc.enum {
 				AbcSpec.writeU8(op.opcode._value, serializedOpcodes);
 
 				serializeOpcodeArguments(op, abcFile, methodBody, serializedOpcodes);
-//				trace(serializedOpcodes.position + "\t" + op); 
+//				trace(serializedOpcodes.position + "\t" + op);
 			}
 
 			serializedOpcodes.position = 0;

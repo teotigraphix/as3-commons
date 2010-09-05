@@ -57,7 +57,7 @@ package org.as3commons.bytecode.util {
 		 * equivalent) we get AVM errors. On the other hand, writing the values with <code>writeU30()</code>
 		 * keeps everybody happy.
 		 */
-		public static const UNSIGNED_BYTE:ReadWritePair = new ReadWritePair(readUnsigned, writeU30);
+		public static const UNSIGNED_BYTE:ReadWritePair = new ReadWritePair(readUnsigned, writeU8);
 
 		public static function readUnsigned(bytes:ByteArray):int {
 			return bytes.readUnsignedByte();
