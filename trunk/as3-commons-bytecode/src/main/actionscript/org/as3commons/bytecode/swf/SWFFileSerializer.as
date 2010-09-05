@@ -124,12 +124,13 @@ package org.as3commons.bytecode.swf {
 			for each (var tag:ISWFTag in swf.tags) {
 				writeTag(ba, tag);
 			}
+			var fileLength:int = ba.length;
 			if (swf.signature == SWF_SIGNATURE_COMPRESSED) {
 				ba.position = 0;
 				ba.compress();
 			}
 			ba.position = 0;
-			SWFSpec.writeUI32(output, ba.length);
+			SWFSpec.writeUI32(output, fileLength);
 			output.writeBytes(ba);
 		}
 
