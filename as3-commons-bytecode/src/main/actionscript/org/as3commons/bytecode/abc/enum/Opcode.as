@@ -310,8 +310,8 @@ package org.as3commons.bytecode.abc.enum {
 					break;
 
 				case Array:
-					var caseCount:int = op.parameters[1];
 					var arr:Array = rawValue as Array;
+					var caseCount:int = arr.length;
 					for (var i:int = 0; i < caseCount; i++) {
 						AbcSpec.writeS24(arr[i], serializedOpcodes);
 					}
@@ -322,7 +322,9 @@ package org.as3commons.bytecode.abc.enum {
 			}
 
 			try {
-				readWritePair.write(abcCompatibleValue, serializedOpcodes);
+				if (!(abcCompatibleValue is Array)) {
+					readWritePair.write(abcCompatibleValue, serializedOpcodes);
+				}
 			} catch (e:Error) {
 				trace(e);
 			}
