@@ -468,7 +468,7 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public function testlookupswitch():void {
-			doTestParse(Opcode.lookupswitch, [1, 2, [1, 1]]);
+			doTestParse(Opcode.lookupswitch, [1, 1, [1, 1]]);
 		}
 
 		public function testlshift():void {

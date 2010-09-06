@@ -19,14 +19,19 @@ package org.as3commons.bytecode.util {
 	import flash.utils.ByteArray;
 
 	public final class SWFSpec {
+		//Bits and pieces from have been copies from the SWF assist library:
+		//http://www.libspark.org/wiki/yossy/swfassist
+		//(Sorry, didn't feel like figuring out this low-level bitshifting stuff, just needed to get stuff working :) )
 
 		private static var _bitbuff:uint;
 		private static var _bitleft:uint;
 
-		public static const FLOAT16_EXPONENT_BASE:Number = 15;
-		private static const FIXED_DIVISION:Number = 65536;
-		private static const FIXED8_DIVISION:Number = 256;
-		private static const THIRTY_TWO:Number = 32;
+		public static const FLOAT16_EXPONENT_BASE:uint = 15;
+		private static const FIXED_DIVISION:uint = 65536;
+		private static const FIXED8_DIVISION:uint = 256;
+		private static const THIRTY_TWO:uint = 32;
+		private static const HEX_ZERO:uint = 0x00;
+		private static const SIXTEEN:uint = 16;
 
 		public static function flushBits():void {
 			_bitbuff = _bitleft = 0;
@@ -107,13 +112,13 @@ package org.as3commons.bytecode.util {
 			flushBits();
 			var loWord:uint = input.readUnsignedShort();
 			var hiByte:uint = input.readUnsignedByte();
-			return (hiByte << 16) | loWord;
+			return (hiByte << SIXTEEN) | loWord;
 		}
 
 		public static function writeUI24(input:ByteArray, value:uint):void {
 			flushBits();
 			input.writeShort(value & 0xffff);
-			input.writeByte(value >> 16);
+			input.writeByte(value >> SIXTEEN);
 		}
 
 		public static function readUI32(input:ByteArray):uint {
@@ -175,7 +180,18 @@ package org.as3commons.bytecode.util {
 			return writeUB(input, 1, (value ? 1 : 0));
 		}
 
+		/**
+		 *
+		 * @param input
+		 * @param bits
+		 * @return
+		 *
+		 */
 		public static function readUB(input:ByteArray, bits:uint = 1):uint {
+			/*
+			   I copied most of this from the SwfAssist library:
+			   http://www.libspark.org/wiki/yossy/swfassist
+			 */
 			if (bits == 0) {
 				return 0;
 			}
@@ -206,12 +222,16 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function writeUB(input:ByteArray, bits:uint, value:uint):void {
+			/*
+			   I copied most of this from the SwfAssist library:
+			   http://www.libspark.org/wiki/yossy/swfassist
+			 */
 			if (bits == 0) {
 				return;
 			}
 
 			if (_bitleft == 0) {
-				writeUI8(input, 0x00);
+				writeUI8(input, HEX_ZERO);
 				_bitbuff = 0;
 				_bitleft = 8;
 			}
@@ -220,7 +240,7 @@ package org.as3commons.bytecode.util {
 				if (bits > _bitleft) {
 					input[input.position - 1] = (_bitbuff | ((value << (THIRTY_TWO - bits)) >>> (THIRTY_TWO - _bitleft))) & 0xff;
 					bits -= _bitleft;
-					writeUI8(input, 0x00);
+					writeUI8(input, HEX_ZERO);
 					_bitbuff = 0;
 					_bitleft = 8;
 				} else {
@@ -238,34 +258,11 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function writeSB(input:ByteArray, bits:uint, value:int):void {
-			if (bits == 0) {
-				return;
-			}
-			value &= (0xffffffff >>> (32 - bits));
-			var bitsConsumed:uint;
-			if (_bitleft > 0) {
-				if (_bitleft > bits) {
-					input[input.position - 1] |= value << (_bitleft - bits);
-					bitsConsumed = bits;
-					_bitleft -= bits;
-				} else if (_bitleft == bits) {
-					input[input.position - 1] |= value;
-					bitsConsumed = bits;
-					_bitleft = 0;
-				} else {
-					input[input.position - 1] |= value >> (bits - _bitleft);
-					bitsConsumed = _bitleft;
-					_bitleft = 0;
-				}
-			} else {
-				bitsConsumed = Math.min(8, bits);
-				_bitleft = 8 - bitsConsumed;
-				input.writeByte((value >> (bits - bitsConsumed)) << _bitleft);
-			}
-			bits -= bitsConsumed;
-			if (bits > 0) {
-				writeSB(input, bits, value);
-			}
+			/*
+			   I copied most of this from the SwfAssist library:
+			   http://www.libspark.org/wiki/yossy/swfassist
+			 */
+			writeUB(input, bits, value | ((value < 0 ? 0x80000000 : 0x00000000) >> (THIRTY_TWO - bits)));
 		}
 
 		public static function readFB(input:ByteArray, bits:uint):Number {
@@ -295,6 +292,10 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function getMinBits(a:uint, b:uint = 0, c:uint = 0, d:uint = 0):uint {
+			/*
+			   I copied most of this from the SwfAssist library:
+			   http://www.libspark.org/wiki/yossy/swfassist
+			 */
 			var val:uint = a | b | c | d;
 			var bits:uint = 1;
 
@@ -307,6 +308,10 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function getMinSBits(a:int, b:int = 0, c:int = 0, d:int = 0):uint {
+			/*
+			   I copied most of this from the SwfAssist library:
+			   http://www.libspark.org/wiki/yossy/swfassist
+			 */
 			return getMinBits(Math.abs(a), Math.abs(b), Math.abs(c), Math.abs(d));
 		}
 
