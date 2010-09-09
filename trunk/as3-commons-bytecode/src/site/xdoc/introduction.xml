@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE document PUBLIC "-//Apache Software Foundation//DTD XDOC 1.0//EN"
-"http://maven.apache.org/dtd/xdoc_1_0.dtd">
 <document>
   <properties>
     <title>Introduction to as3commons-bytecode</title>
@@ -18,7 +16,7 @@
     the SWF tags that can be present in a SWF file.</p></section>
 
     <section name="Abc deserialization and serialization"><p>To deserialize a
-    DoABC tag use the AbcDeserializer class:</p><div><pre>var ds:AbcDeserializer = new AbcDeserializer(byteStream); <i>//The bytestream contains the DoAbc file and its assumed to be at the right position.</i>
+    DoABC tag use the AbcDeserializer class:</p><div class="source"><pre>var ds:AbcDeserializer = new AbcDeserializer(byteStream); <i>//The bytestream contains the DoAbc file and its assumed to be at the right position.</i>
 var abcFile:AbcFile = ds.deserialize();</pre>The AbcFile instance will contain
     a full code representation of the DoABCTag. Including: The constantpool,
     class info, method info, etc.</div></section>
@@ -26,10 +24,10 @@ var abcFile:AbcFile = ds.deserialize();</pre>The AbcFile instance will contain
     <section name="Simple SWF deserialization and serialization"><p>Simple SWF
     files that only contain code (such as class libraries or resource
     modules), so no embedded images, sounds or whatever can be directly
-    deserialized/serialized with the SWFFileSerializer class:</p><div><pre>var ds:SWFSerializer = new SWFFileSerializer();
+    deserialized/serialized with the SWFFileSerializer class:</p><div class="source"><pre>var ds:SWFSerializer = new SWFFileSerializer();
 var swfFile:SWFFile = ds.read(byteArray); <i>//Where the bytearray is a loaded SWF file (.swf, *not* .swc)</i>
 </pre><p>By using the SWFFile's getTagsByType method you can retrieve the
-    different sorts of SWF tags and examine them:</p><div></div><pre>var abcTags:Array = swfFile.getTagsByType(DoABCTag);
+    different sorts of SWF tags and examine them:</p><div class="source"></div><pre>var abcTags:Array = swfFile.getTagsByType(DoABCTag);
 for each(var tag:DoABCTag in abcTags){
   var abcFile:AbcFile = tag.abcFile;
   processAbcFile(abcFile);
