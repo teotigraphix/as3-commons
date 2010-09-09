@@ -18,6 +18,7 @@
 		</menu>
 
 		<menu name="Modules">
+			<item name="AS3Commons-bytecode" href="as3-commons-bytecode/index.html" />
 			<item name="AS3Commons-lang" href="as3-commons-lang/index.html" />
 			<item name="AS3Commons-logging" href="as3-commons-logging/index.html" />
 			<item name="AS3Commons-reflect" href="as3-commons-reflect/index.html" />

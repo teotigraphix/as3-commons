@@ -8,15 +8,15 @@
         <section name="Welcome to as3-commons-lang">
             
             <div id="downloadbox">
-                <!--<h5>Get latest stable</h5>
+                <h5>Get latest stable</h5>
                 <p>
-                    <a href="https://dev.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-lang/1.0.0/as3commons-lang-1.0.0.swc">
+                    <a href="https://dev.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-lang/0.3/as3commons-lang-0.3.swc">
                         <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
                         Download
                     </a>
-                    latest stable (1.0.0)
+                    latest stable (0.3)
                 </p>
-                <br/>-->
+                <br/>
                 <h5>Get lastest development snapshot</h5>
                 <p>
                     <a href="downloads/as3commons-lang-latest-snapshot-bin.zip">
