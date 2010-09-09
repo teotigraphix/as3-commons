@@ -15,15 +15,19 @@
  */
 package org.as3commons.bytecode.abc.enum {
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.util.AbcSpec;
+	import org.as3commons.lang.Assert;
 
 	/**
 	 * as3commons-bytecode representation of possible values for the kinds of multinames in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Multiname" in the AVM Spec (page 23)
 	 */
-	public class MultinameKind {
+	public final class MultinameKind {
+		private static var _enumCreated:Boolean = false;
+		private static const _TYPES:Dictionary = new Dictionary();
 
 		public static const QNAME:MultinameKind = new MultinameKind(0x07, "QName");
 		public static const QNAME_A:MultinameKind = new MultinameKind(0x0D, "QName_A");
@@ -40,9 +44,15 @@ package org.as3commons.bytecode.abc.enum {
 		private var _byteValue:int;
 		private var _description:String;
 
+		{
+			_enumCreated = true;
+		}
+
 		public function MultinameKind(byteValue:int, descriptionValue:String) {
+			Assert.state((!_enumCreated), "MultinameKind enum has already been created");
 			_byteValue = byteValue;
 			_description = descriptionValue;
+			_TYPES[_byteValue] = this;
 		}
 
 		public function get byteValue():int {
@@ -54,45 +64,12 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public static function determineKind(kind:int):MultinameKind {
-			switch (kind) {
-				case MultinameKind.QNAME._byteValue:
-					return MultinameKind.QNAME;
-
-				case MultinameKind.QNAME_A._byteValue:
-					return MultinameKind.QNAME_A;
-
-				case MultinameKind.RTQNAME._byteValue:
-					return MultinameKind.RTQNAME;
-
-				case MultinameKind.RTQNAME_A._byteValue:
-					return MultinameKind.RTQNAME_A;
-
-				case MultinameKind.RTQNAME_L._byteValue:
-					return MultinameKind.RTQNAME_L;
-
-				case MultinameKind.RTQNAME_LA._byteValue:
-					return MultinameKind.RTQNAME_LA;
-
-				case MultinameKind.MULTINAME._byteValue:
-					return MultinameKind.MULTINAME;
-
-				case MultinameKind.MULTINAME_A._byteValue:
-					return MultinameKind.MULTINAME_A;
-
-				case MultinameKind.MULTINAME_L._byteValue:
-					return MultinameKind.MULTINAME_L;
-
-				case MultinameKind.MULTINAME_LA._byteValue:
-					return MultinameKind.MULTINAME_LA;
-
-				case MultinameKind.GENERIC._byteValue:
-					return MultinameKind.GENERIC;
+			var result:MultinameKind = _TYPES[kind];
+			if (result) {
+				return result;
+			} else {
+				throw new Error("No match for MultinameKind: " + kind);
 			}
-
-			throw new Error("No match for MultinameKind: " + kind);
-
-			// This is to force the compiler to let me compile... technically we should never get to this return statement
-			return null;
 		}
 	}
 }

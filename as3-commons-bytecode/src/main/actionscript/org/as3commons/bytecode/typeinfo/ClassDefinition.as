@@ -27,6 +27,7 @@ package org.as3commons.bytecode.typeinfo {
 	 */
 	//TODO: Test setters/getters
 	public class ClassDefinition extends Annotatable {
+		private static const WRONG_INITIALIZER_TYPE_ERROR:String = "Instance initializer must be of type Method and not one of its subtypes.";
 		private var _constructor:Method;
 		private var _scriptInitializer:Method;
 		private var _instanceInitializer:Method;
@@ -59,7 +60,7 @@ package org.as3commons.bytecode.typeinfo {
 		}
 
 		public function addInterface(interfaceName:BaseMultiname):void {
-			_interfaces.push(interfaceName);
+			_interfaces[_interfaces.length] = interfaceName;
 		}
 
 		public function get instanceInitializer():Method {
@@ -68,7 +69,7 @@ package org.as3commons.bytecode.typeinfo {
 
 		public function set instanceInitializer(method:Method):void {
 			if (getDefinitionByName(getQualifiedClassName(method)) != Method) {
-				throw new Error("Instance initializer must be of type Method and not one of its subtypes.");
+				throw new Error(WRONG_INITIALIZER_TYPE_ERROR);
 			}
 
 			_instanceInitializer = method;
@@ -88,15 +89,15 @@ package org.as3commons.bytecode.typeinfo {
 
 		private function createMethod(clazz:Class, methodName:QualifiedName, returnType:BaseMultiname, isStatic:Boolean, isOverride:Boolean, isFinal:Boolean = false):Method {
 			var method:Method = new clazz(methodName, returnType, isStatic, isOverride, isFinal);
-			(isStatic) ? _staticMethods.push(method) : _instanceMethods.push(method);
-
+			var arr:Array = (isStatic) ? _staticMethods : _instanceMethods;
+			arr[arr.length] = method;
 			return method;
 		}
 
 		public function addField(fieldName:QualifiedName, type:QualifiedName, isStatic:Boolean = false):Field {
 			var field:Field = new Field(fieldName, type);
-			(isStatic) ? _staticFields.push(field) : _instanceFields.push(field);
-
+			var arr:Array = (isStatic) ? _staticFields : _instanceFields;
+			arr[arr.length] = field;
 			return field;
 		}
 

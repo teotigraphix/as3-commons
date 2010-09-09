@@ -35,10 +35,13 @@ package org.as3commons.bytecode.reflect {
 		 */
 		public function ByteCodeTypeCache() {
 			super();
+			initByteCodeTypeCache();
+		}
+
+		protected function initByteCodeTypeCache():void {
 			_metaDataLookup = {};
 			_definitionNames = [];
 		}
-
 
 		/**
 		 * List of all fully qualified definition names that have been encountered in all

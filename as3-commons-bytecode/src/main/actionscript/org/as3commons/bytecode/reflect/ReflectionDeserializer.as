@@ -34,6 +34,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.tags.serialization.RecordHeaderSerializer;
 	import org.as3commons.bytecode.tags.struct.RecordHeader;
 	import org.as3commons.bytecode.util.AbcDeserializerBase;
+	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.SWFSpec;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
@@ -64,7 +65,7 @@ package org.as3commons.bytecode.reflect {
 
 		public function read(typeCache:ByteCodeTypeCache, input:ByteArray, applicationDomain:ApplicationDomain = null):void {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
-			_byteStream = new ByteArray();
+			_byteStream = AbcSpec.byteArray();
 			input.endian = Endian.LITTLE_ENDIAN;
 			var swfIdentifier:String = input.readUTFBytes(3);
 			var compressed:Boolean = (swfIdentifier == SWFFileSerializer.SWF_SIGNATURE_COMPRESSED);
@@ -72,7 +73,6 @@ package org.as3commons.bytecode.reflect {
 			var filesize:uint = input.readUnsignedInt();
 
 			input.readBytes(_byteStream);
-			_byteStream.endian = Endian.LITTLE_ENDIAN;
 			_byteStream.length -= 8;
 
 			if (compressed) {
@@ -105,11 +105,9 @@ package org.as3commons.bytecode.reflect {
 		private function readHeader(input:ByteArray):void {
 			Assert.notNull(input, "input argument must not be null");
 			skipRectangle(input);
-
-			var frameRateA:Number = input.readUnsignedByte();
-			var frameRateB:Number = input.readUnsignedByte();
-
-			var frameCount:uint = input.readUnsignedShort();
+			input.readUnsignedByte();
+			input.readUnsignedByte();
+			input.readUnsignedShort();
 		}
 
 		private function skipRectangle(input:ByteArray):void {
@@ -117,7 +115,7 @@ package org.as3commons.bytecode.reflect {
 			var current:uint = input.readUnsignedByte();
 			var size:uint = current >> 3;
 			var off:int = 3;
-			for (var i:int = 0; i < 4; i++) {
+			for (var i:int = 0; i < 4; ++i) {
 				off -= size;
 				while (off < 0) {
 					current = input.readUnsignedByte();
@@ -129,9 +127,6 @@ package org.as3commons.bytecode.reflect {
 		public function readABCTag(typeCache:ByteCodeTypeCache, input:ByteArray):void {
 			var minorVersion:uint = readU16();
 			var majorVersion:uint = readU16();
-			/*if (minorVersion != 16 || majorVersion != 46) {
-			   return;
-			 }*/
 			var constantPool:ConstantPool = new ConstantPool();
 			deserializeConstantPool(constantPool);
 			var methods:Array = readMethods(input, constantPool, _applicationDomain);
@@ -151,7 +146,7 @@ package org.as3commons.bytecode.reflect {
 			var methods:Array = [];
 			var methodCount:int = readU30();
 
-			for (var methodIndex:int = 0; methodIndex < methodCount; methodIndex++) {
+			for (var methodIndex:int = 0; methodIndex < methodCount; ++methodIndex) {
 				// method_info 
 				// { 
 				//  u30 param_count 
@@ -171,7 +166,7 @@ package org.as3commons.bytecode.reflect {
 				methodInfo.as3commons_reflect::setReturnType(returnTypeQName.fullName);
 
 				var params:Array = [];
-				for (var argumentIndex:int = 0; argumentIndex < paramCount; argumentIndex++) {
+				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
 					var paramQName:QualifiedName = convertToQualifiedName(constantPool.multinamePool[readU30()]);
 					var newParam:ByteCodeParameter = new ByteCodeParameter(argumentIndex, paramQName.fullName, applicationDomain);
 					newParam.as3commons_reflect::setName("argument " + argumentIndex.toString());
@@ -195,7 +190,7 @@ package org.as3commons.bytecode.reflect {
 					//  u8  kind 
 					// }
 					var optionInfoCount:int = readU30();
-					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; optionInfoIndex++) {
+					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
 						var valueIndexInConstantconstantPool:int = readU30();
 						var optionalValueKind:int = readU8();
 						var defaultValue:Object = constantPool.getConstantPoolItem(optionalValueKind, valueIndexInConstantconstantPool);
@@ -206,7 +201,7 @@ package org.as3commons.bytecode.reflect {
 				}
 
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_PARAM_NAMES) == true) {
-					for (var nameIndex:uint = 0; nameIndex < nameCount; nameIndex++) {
+					for (var nameIndex:uint = 0; nameIndex < nameCount; ++nameIndex) {
 						var paramName:String = constantPool.stringPool[readU30()];
 						ByteCodeParameter(params[nameIndex]).as3commons_reflect::setName(paramName);
 					}
@@ -221,7 +216,7 @@ package org.as3commons.bytecode.reflect {
 		public function readMetaData(input:ByteArray, constantPool:ConstantPool, applicationDomain:ApplicationDomain):Array {
 			var metadataCount:int = readU30();
 			var metadatas:Array = [];
-			for (var metadataIndex:int = 0; metadataIndex < metadataCount; metadataIndex++) {
+			for (var metadataIndex:int = 0; metadataIndex < metadataCount; ++metadataIndex) {
 				// metadata_info  
 				// { 
 				//  u30 name 
@@ -246,7 +241,7 @@ package org.as3commons.bytecode.reflect {
 				var keys:Array = [];
 
 				// Suck out the keys first
-				for (var keyIndex:int = 0; keyIndex < keyValuePairCount; keyIndex++) {
+				for (var keyIndex:int = 0; keyIndex < keyValuePairCount; ++keyIndex) {
 					var key:String = constantPool.stringPool[readU30()];
 					keys[keys.length] = key;
 				}
@@ -263,7 +258,7 @@ package org.as3commons.bytecode.reflect {
 		public function readTypes(input:ByteArray, constantPool:ConstantPool, applicationDomain:ApplicationDomain, methods:Array, metadatas:Array, typeCache:ByteCodeTypeCache):void {
 			var classCount:int = readU30();
 			var instances:Array = [];
-			for (var instanceIndex:int = 0; instanceIndex < classCount; instanceIndex++) {
+			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
 				// instance_info  
 				// { 
 				//  u30 name 
@@ -317,7 +312,7 @@ package org.as3commons.bytecode.reflect {
 					instanceInfo.as3commons_reflect::setProtectedNamespace(LNamespace(constantPool.namespacePool[readU30()]).name);
 				}
 				var interfaceCount:int = readU30();
-				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; interfaceIndex++) {
+				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
 					var mn:BaseMultiname = constantPool.multinamePool[readU30()];
 					var qName:QualifiedName = convertToQualifiedName(mn);
 					instanceInfo.interfaces[instanceInfo.interfaces.length] = qName.fullName;
@@ -329,7 +324,7 @@ package org.as3commons.bytecode.reflect {
 				instanceInfo.methods = readTraitsInfo(instances, instanceInfo, constantPool, methods, metadatas, false, typeCache, applicationDomain);
 			}
 
-			for (var classIndex:int = 0; classIndex < classCount; classIndex++) {
+			for (var classIndex:int = 0; classIndex < classCount; ++classIndex) {
 				// class_info  
 				// { 
 				//  u30 cinit 
@@ -342,7 +337,7 @@ package org.as3commons.bytecode.reflect {
 			}
 
 			var scriptCount:int = readU30();
-			for (var scriptIndex:int = 0; scriptIndex < scriptCount; scriptIndex++) {
+			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
 				readU30();
 				readTraitsInfo(instances, null, constantPool, methods, metadatas, true, typeCache, applicationDomain);
 			}
@@ -352,7 +347,7 @@ package org.as3commons.bytecode.reflect {
 		public function readTraitsInfo(instanceInfos:Array, instanceInfo:ByteCodeType, pool:ConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache, applicationDomain:ApplicationDomain):Array {
 			var traitCount:int = readU30();
 			var methods:Array = [];
-			for (var traitIndex:int = 0; traitIndex < traitCount; traitIndex++) {
+			for (var traitIndex:int = 0; traitIndex < traitCount; ++traitIndex) {
 				var trait:TraitInfo;
 				// traits_info  
 				// { 
@@ -474,7 +469,7 @@ package org.as3commons.bytecode.reflect {
 
 		private function addMetaData(metadata:Array, container:MetaDataContainer, typeCache:ByteCodeTypeCache):void {
 			var numberOfTraitMetadataItems:int = readU30();
-			for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; traitMetadataIndex++) {
+			for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; ++traitMetadataIndex) {
 				var md:MetaData = metadata[readU30()];
 				container.addMetaData(md);
 				if (container is ByteCodeType) {

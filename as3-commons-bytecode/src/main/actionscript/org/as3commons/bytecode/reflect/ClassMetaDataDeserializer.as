@@ -37,12 +37,12 @@ package org.as3commons.bytecode.reflect {
 		override public function readMethods(input:ByteArray, constantPool:ConstantPool, applicationDomain:ApplicationDomain):Array {
 			var methodCount:int = readU30();
 
-			for (var methodIndex:int = 0; methodIndex < methodCount; methodIndex++) {
+			for (var methodIndex:int = 0; methodIndex < methodCount; ++methodIndex) {
 				var paramCount:uint = readU30(); //paramcount;
 
 				readU30(); //returnTypeQName
 
-				for (var argumentIndex:int = 0; argumentIndex < paramCount; argumentIndex++) {
+				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
 					readU30(); //paramQName
 				}
 
@@ -50,14 +50,14 @@ package org.as3commons.bytecode.reflect {
 				var flags:uint = readU8();
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_OPTIONAL) == true) {
 					var optionInfoCount:int = readU30();
-					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; optionInfoIndex++) {
+					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
 						readU30(); //valueIndexInConstantconstantPool
 						readU8(); //optionalValueKind
 					}
 				}
 
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_PARAM_NAMES) == true) {
-					for (var nameIndex:uint = 0; nameIndex < paramCount; nameIndex++) {
+					for (var nameIndex:uint = 0; nameIndex < paramCount; ++nameIndex) {
 						readU30(); //paramName
 					}
 				}
@@ -68,7 +68,7 @@ package org.as3commons.bytecode.reflect {
 		override public function readTypes(input:ByteArray, constantPool:ConstantPool, applicationDomain:ApplicationDomain, methods:Array, metadatas:Array, typeCache:ByteCodeTypeCache):void {
 			var classCount:int = readU30();
 			var classNames:Array = [];
-			for (var instanceIndex:int = 0; instanceIndex < classCount; instanceIndex++) {
+			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
 				var classMultiname:BaseMultiname = constantPool.multinamePool[readU30()];
 				var qualifiedName:QualifiedName = convertToQualifiedName(classMultiname);
 				classNames[classNames.length] = qualifiedName.fullName;
@@ -80,14 +80,14 @@ package org.as3commons.bytecode.reflect {
 					readU30(); //protectedNamespace
 				}
 				var interfaceCount:int = readU30();
-				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; interfaceIndex++) {
+				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
 					readU30(); //BaseMultiname
 				}
 				readU30(); //constructorIndex
 				gatherMetaData(classNames, constantPool, methods, metadatas, false, typeCache);
 			}
 
-			for (var classIndex:int = 0; classIndex < classCount; classIndex++) {
+			for (var classIndex:int = 0; classIndex < classCount; ++classIndex) {
 				// class_info  
 				// { 
 				//  u30 cinit 
@@ -100,7 +100,7 @@ package org.as3commons.bytecode.reflect {
 			}
 
 			var scriptCount:int = readU30();
-			for (var scriptIndex:int = 0; scriptIndex < scriptCount; scriptIndex++) {
+			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
 				readU30();
 				gatherMetaData(classNames, constantPool, methods, metadatas, true, typeCache);
 			}
@@ -109,7 +109,7 @@ package org.as3commons.bytecode.reflect {
 
 		public function gatherMetaData(classNames:Array, pool:ConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache):void {
 			var traitCount:int = readU30();
-			for (var traitIndex:int = 0; traitIndex < traitCount; traitIndex++) {
+			for (var traitIndex:int = 0; traitIndex < traitCount; ++traitIndex) {
 				var className:String = null;
 				// traits_info  
 				// { 
@@ -194,7 +194,7 @@ package org.as3commons.bytecode.reflect {
 
 		private function addMetaData(metadata:Array, className:String, typeCache:ByteCodeTypeCache):void {
 			var numberOfTraitMetadataItems:int = readU30();
-			for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; traitMetadataIndex++) {
+			for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; ++traitMetadataIndex) {
 				var md:MetaData = metadata[readU30()];
 				if (className != null) {
 					typeCache.as3commons_reflect::addToMetaDataCache(md.name, className);

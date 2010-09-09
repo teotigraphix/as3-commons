@@ -23,17 +23,22 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "QName" in the AVM Spec (page 23)
 	 */
 	public class QualifiedName extends NamedMultiname {
+		private static const ASTERISK:String = '*';
 		private var _namespace:LNamespace;
 
 		public function QualifiedName(name:String, nameSpace:LNamespace, kindValue:MultinameKind = null) {
-			_namespace = nameSpace;
 			kindValue = (kindValue) ? kindValue : MultinameKind.QNAME;
-
 			super(kindValue, name);
+			initQualifiedName(nameSpace, kindValue);
+		}
+
+		protected function initQualifiedName(nameSpace:LNamespace, kindValue:MultinameKind):void {
+			_namespace = nameSpace;
 			if (assertAppropriateMultinameKind([MultinameKind.QNAME, MultinameKind.QNAME_A], kindValue)) {
 				throw new Error("Invalid multiname kind: " + kindValue);
 			}
 		}
+
 
 		public function get nameSpace():LNamespace {
 			return _namespace;
@@ -44,14 +49,14 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function get fullName():String {
-			if (this.name != '*') {
+			if (this.name != ASTERISK) {
 				if (StringUtils.hasText(_namespace.name)) {
 					return StringUtils.substitute("{0}.{1}", _namespace.name, this.name);
 				} else {
 					return this.name;
 				}
 			} else {
-				return '*';
+				return ASTERISK;
 			}
 		}
 

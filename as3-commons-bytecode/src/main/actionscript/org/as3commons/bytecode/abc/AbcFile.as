@@ -29,6 +29,7 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "abcFile" in the AVM Spec (page 19)
 	 */
 	public class AbcFile {
+		private static const INSTANCE_INITIALIZER_QNAME:String = "{instance initializer (constructor?)}";
 		private var _methodInfo:Array;
 		private var _metadataInfo:Array;
 		private var _instanceInfo:Array;
@@ -41,6 +42,11 @@ package org.as3commons.bytecode.abc {
 		public var constantPool:ConstantPool;
 
 		public function AbcFile() {
+			super();
+			initAbcFile();
+		}
+
+		protected function initAbcFile():void {
 			constantPool = new ConstantPool();
 			_methodInfo = [];
 			_metadataInfo = [];
@@ -49,6 +55,7 @@ package org.as3commons.bytecode.abc {
 			_scriptInfo = [];
 			_methodBodies = [];
 		}
+
 
 		public function addClassInfo(classInfo:ClassInfo):int {
 			return addUniquely(classInfo, _classInfo);
@@ -159,7 +166,7 @@ package org.as3commons.bytecode.abc {
 				classDefinition.isInterface = currentInstanceInfo.isInterface;
 
 				var instanceInitializer:MethodInfo = currentInstanceInfo.instanceInitializer;
-				classDefinition.instanceInitializer = new Method(new QualifiedName("{instance initializer (constructor?)}", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "")), instanceInitializer.returnType);
+				classDefinition.instanceInitializer = new Method(new QualifiedName(INSTANCE_INITIALIZER_QNAME, new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "")), instanceInitializer.returnType);
 				classDefinition.instanceInitializer.setMethodBody(instanceInitializer.methodBody);
 
 				for each (var methodTrait:MethodTrait in currentInstanceInfo.methodTraits) {
@@ -169,17 +176,14 @@ package org.as3commons.bytecode.abc {
 						case TraitKind.GETTER:
 							method = classDefinition.addGetter(methodTrait.traitMultiname, associatedMethodInfo.returnType, false, methodTrait.isOverride, methodTrait.isFinal);
 							break;
-
 						case TraitKind.SETTER:
 							method = classDefinition.addSetter(methodTrait.traitMultiname, associatedMethodInfo.returnType, false, methodTrait.isOverride, methodTrait.isFinal);
 							break;
-
 						case TraitKind.METHOD:
 							method = classDefinition.addMethod(methodTrait.traitMultiname, associatedMethodInfo.returnType, false, methodTrait.isOverride, methodTrait.isFinal);
 							break;
-
 						default:
-							throw new Error("Unknown method trait kind");
+							throw new Error("Unknown method trait kind: " + methodTrait.traitKind);
 							break;
 					}
 
@@ -194,8 +198,9 @@ package org.as3commons.bytecode.abc {
 					classDefinition.addField(slotOrConstant.traitMultiname as QualifiedName, slotOrConstant.typeMultiname as QualifiedName);
 				}
 
+				var interfaces:Array = classDefinition.interfaces;
 				for each (var interfaceMultiname:BaseMultiname in currentInstanceInfo.interfaceMultinames) {
-					classDefinition.interfaces.push(interfaceMultiname);
+					interfaces[interfaces.length] = interfaceMultiname;
 				}
 
 				classDefinitions[classDefinitions.length] = classDefinition;

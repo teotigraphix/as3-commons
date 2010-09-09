@@ -66,6 +66,7 @@ package org.as3commons.bytecode.util {
 	 */
 	//TODO: Capture ranges for bytecode blocks so they can be checked in unit tests
 	public class AbcDeserializerBase {
+		private static const ASSERT_EXTRACTION_ERROR:String = "Expected {0} elements in {1}, actual count is {2}";
 		protected var _byteStream:ByteArray;
 
 		public function AbcDeserializerBase(byteStream:ByteArray = null) {
@@ -88,7 +89,7 @@ package org.as3commons.bytecode.util {
 			} else {
 				var collectionLength:int = elementCollection.length;
 				if (expectedCount != collectionLength) {
-					throw new Error(StringUtils.substitute("Expected {0} elements in {1}, actual count is {2}", expectedCount, collectionName, collectionLength));
+					throw new Error(StringUtils.substitute(ASSERT_EXTRACTION_ERROR, expectedCount, collectionName, collectionLength));
 				}
 			}
 		}
@@ -108,8 +109,8 @@ package org.as3commons.bytecode.util {
 			extract(_byteStream, pool.namespaceSetPool, function():NamespaceSet {
 				var namespaceIndexRefCount:int = readU30();
 				var namespaceArray:Array = [];
-				for (var nssetNamespaceIndex:int = 0; nssetNamespaceIndex < namespaceIndexRefCount; nssetNamespaceIndex++) {
-					namespaceArray.push(pool.namespacePool[readU30()]);
+				for (var nssetNamespaceIndex:int = 0; nssetNamespaceIndex < namespaceIndexRefCount; ++nssetNamespaceIndex) {
+					namespaceArray[namespaceArray.length] = pool.namespacePool[readU30()];
 				}
 				return new NamespaceSet(namespaceArray);
 			});
@@ -172,7 +173,7 @@ package org.as3commons.bytecode.util {
 						var qualifiedName:QualifiedName = pool.multinamePool[readU30()];
 						var paramCount:uint = readU30();
 						var params:Array = [];
-						for (var idx:uint = 0; idx < paramCount; idx++) {
+						for (var idx:uint = 0; idx < paramCount; ++idx) {
 							params[params.length] = pool.multinamePool[readU30()];
 						}
 						multiname = new MultinameG(qualifiedName, paramCount, params, kind);
@@ -209,9 +210,9 @@ package org.as3commons.bytecode.util {
 
 		public function extract(byteStream:ByteArray, pool:Array, extractionMethod:Function):void {
 			var itemCount:int = readU30();
-			for (var itemIndex:uint = 1; itemIndex < itemCount; itemIndex++) {
+			for (var itemIndex:uint = 1; itemIndex < itemCount; ++itemIndex) {
 				var result:* = extractionMethod.apply(this);
-				pool.push(result);
+				pool[pool.length] = result;
 			}
 			assertExtraction(itemCount, pool, "");
 		}

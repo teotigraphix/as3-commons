@@ -36,12 +36,18 @@ package org.as3commons.bytecode.abc {
 		public var isInterface:Boolean;
 
 		public function InstanceInfo() {
+			super();
+			initInstanceInfo();
+		}
+
+		private function initInstanceInfo():void {
 			interfaceMultinames = [];
 			traits = [];
 		}
 
+
 		/**
-		 * I can never rememeber that "instanceInitializer" is the constructor, so I made this convenience method.
+		 * I can never remember that "instanceInitializer" is the constructor, so I made this convenience method.
 		 */
 		public function get constructor():MethodInfo {
 			return instanceInitializer;
@@ -55,17 +61,16 @@ package org.as3commons.bytecode.abc {
 			var matchingTraits:Array = [];
 			for each (var trait:TraitInfo in traits) {
 				if (trait is SlotOrConstantTrait) {
-					matchingTraits.push(trait);
+					matchingTraits[matchingTraits.length] = trait;
 				}
 			}
-
 			return matchingTraits;
 		}
 
 		public function filterTraits(traitKind:TraitKind):Array {
 			return traits.filter(function(trait:TraitInfo, index:int, array:Array):Boolean {
-					return (trait.traitKind == traitKind);
-				});
+				return (trait.traitKind == traitKind);
+			});
 		}
 
 		public function get methodTraits():Array {

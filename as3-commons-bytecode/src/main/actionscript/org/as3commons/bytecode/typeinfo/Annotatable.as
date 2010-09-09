@@ -29,7 +29,7 @@ package org.as3commons.bytecode.typeinfo {
 		 * Adds a <code>Metadata</code> entry to this object instance.
 		 */
 		public function addMetadata(metadata:Metadata):void {
-			_metadata.push(metadata);
+			_metadata[_metadata.length] = metadata;
 		}
 
 		/**

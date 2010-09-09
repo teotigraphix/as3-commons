@@ -33,7 +33,7 @@ package org.as3commons.bytecode.tags.serialization {
 			var numSymbols:uint = SWFSpec.readUI16(input);
 			var tag:SymbolClassTag = new SymbolClassTag();
 			var serializer:IStructSerializer = structSerializerFactory.createSerializer(Symbol);
-			for (var i:uint = 0; i < numSymbols; i++) {
+			for (var i:uint = 0; i < numSymbols; ++i) {
 				tag.symbols[tag.symbols.length] = serializer.read(input);
 			}
 			return tag;
@@ -44,7 +44,7 @@ package org.as3commons.bytecode.tags.serialization {
 			var serializer:IStructSerializer = structSerializerFactory.createSerializer(Symbol);
 			var len:uint = symbolTag.symbols.length;
 			SWFSpec.writeUI16(output, len);
-			for (var i:uint = 0; i < len; i++) {
+			for (var i:uint = 0; i < len; ++i) {
 				serializer.write(output, symbolTag.symbols[i]);
 			}
 		}

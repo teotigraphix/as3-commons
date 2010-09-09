@@ -54,9 +54,15 @@ package org.as3commons.bytecode.abc {
 		public var methodBody:MethodBody;
 
 		public function MethodInfo() {
+			super();
+			initMethodInfo();
+		}
+
+		protected function initMethodInfo():void {
 			argumentCollection = [];
 			optionalParameters = [];
 		}
+
 
 		/**
 		 * Returns the total number of parameters to this method, both formal and informal
@@ -72,10 +78,9 @@ package org.as3commons.bytecode.abc {
 			var formalParams:Array = [];
 			for each (var argument:Argument in argumentCollection) {
 				if (!argument.isOptional) {
-					formalParams.push(argument);
+					formalParams[formalParams.length] = argument;
 				}
 			}
-
 			return formalParams;
 		}
 

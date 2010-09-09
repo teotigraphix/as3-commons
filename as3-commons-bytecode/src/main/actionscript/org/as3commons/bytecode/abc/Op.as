@@ -24,6 +24,7 @@ package org.as3commons.bytecode.abc {
 		private var _opcode:Opcode;
 
 		public function Op(opcode:Opcode, parameters:Array = null) {
+			super();
 			initOp(opcode, parameters);
 		}
 

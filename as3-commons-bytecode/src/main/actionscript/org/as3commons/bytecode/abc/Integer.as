@@ -20,6 +20,7 @@ package org.as3commons.bytecode.abc {
 	 */
 	public class Integer {
 		public function Integer() {
+			super();
 		}
 	}
 }
