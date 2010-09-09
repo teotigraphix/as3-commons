@@ -22,7 +22,7 @@
 package org.as3commons.reflect {
 
 	/**
-	 * Desribes an object that holds MetaData objects.
+	 * Describes an object that holds MetaData objects.
 	 *
 	 * @author Christophe Herreman
 	 */
