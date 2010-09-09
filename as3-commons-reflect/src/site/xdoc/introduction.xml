@@ -63,6 +63,7 @@
 				properties
 				of the type:
 				<div class="source">
+					type.alias<br />
 					type.accessors<br />
 					type.constants<br />
 					type.fields<br />
