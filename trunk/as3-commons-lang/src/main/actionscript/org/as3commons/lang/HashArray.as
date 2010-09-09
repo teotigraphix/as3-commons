@@ -28,6 +28,7 @@ package org.as3commons.lang {
 		private var _allowDuplicates:Boolean = false;
 
 		public function HashArray(lookUpPropertyName:String, allowDuplicates:Boolean = false, items:Array = null) {
+			super();
 			init(lookUpPropertyName, allowDuplicates, items);
 		}
 
