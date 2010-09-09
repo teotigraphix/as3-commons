@@ -16,18 +16,20 @@
     the SWF tags that can be present in a SWF file.</p></section>
 
     <section name="Abc deserialization and serialization"><p>To deserialize a
-    DoABC tag use the AbcDeserializer class:</p><div class="source"><pre>var ds:AbcDeserializer = new AbcDeserializer(byteStream); <i>//The bytestream contains the DoAbc file and its assumed to be at the right position.</i>
-var abcFile:AbcFile = ds.deserialize();</pre>The AbcFile instance will contain
+    DoABC tag use the AbcDeserializer class:</p><div class="source"><pre>var ds:AbcDeserializer = new AbcDeserializer(byteStream); <i>//The bytestream contains the DoAbc file
+    and its assumed to be at the right position.</i>
+var abcFile:AbcFile = ds.deserialize();</pre></div>
+	<p>The AbcFile instance will contain
     a full code representation of the DoABCTag. Including: The constantpool,
-    class info, method info, etc.</div></section>
+    class info, method info, etc.</p></section>
 
     <section name="Simple SWF deserialization and serialization"><p>Simple SWF
     files that only contain code (such as class libraries or resource
     modules), so no embedded images, sounds or whatever can be directly
     deserialized/serialized with the SWFFileSerializer class:</p><div class="source"><pre>var ds:SWFSerializer = new SWFFileSerializer();
 var swfFile:SWFFile = ds.read(byteArray); <i>//Where the bytearray is a loaded SWF file (.swf, *not* .swc)</i>
-</pre><p>By using the SWFFile's getTagsByType method you can retrieve the
-    different sorts of SWF tags and examine them:</p><div class="source"></div><pre>var abcTags:Array = swfFile.getTagsByType(DoABCTag);
+</pre></div><p>By using the SWFFile's getTagsByType method you can retrieve the
+    different sorts of SWF tags and examine them:</p><div class="source"><pre>var abcTags:Array = swfFile.getTagsByType(DoABCTag);
 for each(var tag:DoABCTag in abcTags){
   var abcFile:AbcFile = tag.abcFile;
   processAbcFile(abcFile);
@@ -74,15 +76,17 @@ for each(var tag:DoABCTag in abcTags){
     <code>systemManager.preloadedRSLs</code> property to loop through the
     loaderInfo instances of each RSL: <div class="source">
         <pre>for (var info:* in systemManager.preloadedRSLs) {
-        ByteCodeType.fromLoader(info); }</pre>
+  ByteCodeType.fromLoader(info);
+}</pre>
       </div> </p> <p>When a SWF has been loaded manually, pass it as a
     <code>ByteArray</code> to the <code>fromByteArray()</code> method along
     with an associated <code>ApplicationDomain</code>. <div class="source">
-        <pre>[Embed(source="someswf.swf",
-        mimeType="application/octet-stream")] private var swfInput:Class;
-        function parseSWF():void { var ba:ByteArray = new swfInput() as
-        ByteArray; ByteCodeType.fromByteArray(ba,
-        ApplicationDomain.currentDomain); }</pre>
+        <pre>[Embed(source="someswf.swf", mimeType="application/octet-stream")]
+private var swfInput:Class;
+function parseSWF():void {
+  var ba:ByteArray = new swfInput() as ByteArray;
+  ByteCodeType.fromByteArray(ba, ApplicationDomain.currentDomain);
+}</pre>
       </div> </p> <p>After parsing <code>ByteCodeTypes</code> can be retrieved
     by calling these static methods: <ul>
         <li>forInstance(instance:*, applicationDomain:ApplicationDomain =
@@ -96,10 +100,10 @@ for each(var tag:DoABCTag in abcTags){
       </ul> </p> <p>To loop through all the generated
     <code>ByteCodeTypes</code> use the <code>getKeys()</code> method on the
     <code>TypeCache</code> instance: <div class="source">
-        <pre>var typeCache:TypeCache =
-        ByteCodeType.getTypeProvider().getTypeCache(); for each (var
-        key:String in keys) { var type:ByteCodeType = typeCache.get(key) as
-        ByteCodeType; /* ... do something... */ }</pre>
+        <pre>var typeCache:TypeCache = ByteCodeType.getTypeProvider().getTypeCache();
+for each (var key:String in keys) {
+  var type:ByteCodeType = typeCache.get(key) as ByteCodeType; /* ... do something... */
+}</pre>
       </div> </p></section>
 
     <section name="Metadata scan"><p>Having the full bytecode reflection data
@@ -109,12 +113,11 @@ for each(var tag:DoABCTag in abcTags){
     that normally isn't available through <code>describeType()</code>.</p>
     <p>Here is a way to generate a lookup for class-level metadata annotations
     and their corresponding class names: <div class="source">
-        <pre>var metaDataLookup:Object =
-        ByteCodeType.metaDataLookupFromLoader(loader); var
-        definitionNames:Array = metaDataLookup['Mixin']; for(var i:uint=0; i
-        &lt; definitionNames.length;i++){ var type:Type =
-        Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
-        }</pre>
+        <pre>var metaDataLookup:Object = ByteCodeType.metaDataLookupFromLoader(loader);
+var definitionNames:Array = metaDataLookup['Mixin'];
+for(var i:uint=0; i &lt; definitionNames.length;i++){
+  var type:Type = Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
+}</pre>
       </div> </p> <p>Generating this list using
     <code>metaDataLookupFromLoader(loader)</code> is much, much faster than
     reading all of the reflection data.</p> <p>The list can later be accessed
@@ -122,17 +125,16 @@ for each(var tag:DoABCTag in abcTags){
     the <code>ByteCodeTypeCache.getClassesWithMetaData(metaDataName)</code>
     method.</p> <p>At the same time a full list of definition names contained
     within the specified bytecode will be populated.<br /> To retrieve this
-    list use this <code>ByteCodeTypeCache</code> property: <div class="source">
-        <pre>var typeCache:ByteCodeTypeCache =
-        ByteCodeType.getTypeProvider().getTypeCache() as ByteCodeTypeCache;
-        var definitionNames:Array = typeCache.definitionNames; for(var
-        i:uint=0; i &lt; definitionNames.length;i++){ var type:Type =
-        Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
-        }</pre>
+    list use this <code>ByteCodeTypeCache</code> property:
+    <div class="source"><pre>var typeCache:ByteCodeTypeCache = ByteCodeType.getTypeProvider().getTypeCache() as ByteCodeTypeCache;
+var definitionNames:Array = typeCache.definitionNames;
+for(var i:uint=0; i &lt; definitionNames.length;i++){
+  var type:Type = Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
+}</pre>
       </div> </p> <p>Notice that to retrieve the type information the regular
     as3commons-reflect <code>Type</code> is used. Combing as3commons-bytecode
     and -reflect can yield the most efficient result in this way.</p>
-    <blockquote>Note: the definitionNames list and metadata lookup property
+    <blockquote><strong>Note:</strong> the definitionNames list and metadata lookup property
     are of course also generated when the full bytecode reflection data is
     generated.</blockquote></section>
   </body>
