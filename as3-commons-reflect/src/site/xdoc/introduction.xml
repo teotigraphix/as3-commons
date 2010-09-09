@@ -66,6 +66,7 @@
 					type.alias<br />
 					type.accessors<br />
 					type.constants<br />
+					type.constructor<br />
 					type.fields<br />
 					type.fullName<br />
 					type.isDynamic<br />
@@ -77,23 +78,33 @@
 					type.staticConstants<br />
 					type.staticVariables<br />
 					type.variables<br />
+					type.extendsClasses<br />
 					<br />
+					<em>//Method and field acces:</em><br />
 					method:Method = type.methods[0];<br />
+					method:Method = type.getMethod("myMethodName");<br />
 					retType:Type = method.getReturnType();<br />
 					method.invoke(object, [arg1, arg2]);<br />
 					<br />
 					accessor:Accessor = type.accessors[0];<br />
+					accessor:Accessor = type.getField("myAccessorName") as Accessor;<br />
+					<br />
+					<em>//Metadata retrieval and querying:</em><br/>
 					metadata:Metadata = accessor.getMetadata("myMetadata");<br />
 					arg:MetadataArgument = metadata.getArgument("myArg");<br />
+					var has:Boolean = accessor.hasMetadata("myMetadata");<br />
+					var argument:MetaDataArgument = new MetaDataArgument("myArg","myValue");<br/>
+					var metaDataInstance:MetaData = new MetaData("myMetadata",[argument]);<br />
+					var hasExact:Boolean = accessor.hasExactMetadata(metaDataInstance);<br />
 					<br />
 					var containers:Array = type.getMetaDataContainers("Bindable");<br />
-					for each(var metadataContainer:IMetaContainer in containers){<br />
-					&nbsp;&nbsp;if (metadataContainer is Method){<br />
-					&nbsp;&nbsp;&nbsp;&nbsp;//do something...<br />
-					&nbsp;&nbsp;} else if (metadataContainer is Field){<br />
-					&nbsp;&nbsp;&nbsp;&nbsp;//do something else...<br />
-					&nbsp;&nbsp;}<br />
-					&nbsp;&nbsp;...<br />
+					for each(var metadataContainer:IMetaDataContainer in containers){<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;if (metadataContainer is Method){<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//do something...<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;} else if (metadataContainer is Field){<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//do something else...<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;...<br />
 					}<br />
 				</div>
 			</p>
