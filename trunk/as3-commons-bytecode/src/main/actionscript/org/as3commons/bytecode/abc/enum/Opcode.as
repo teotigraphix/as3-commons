@@ -366,35 +366,35 @@ package org.as3commons.bytecode.abc.enum {
 			switch (argumentType) {
 				case uint:
 				case int:
-					argumentValues.push(byteCodeValue);
+					argumentValues[argumentValues.length] = byteCodeValue;
 					break;
 
 				case Integer:
-					argumentValues.push(abcFile.constantPool.integerPool[byteCodeValue]);
+					argumentValues[argumentValues.length] = abcFile.constantPool.integerPool[byteCodeValue];
 					break;
 
 				case UnsignedInteger:
-					argumentValues.push(abcFile.constantPool.uintPool[byteCodeValue]);
+					argumentValues[argumentValues.length] = abcFile.constantPool.uintPool[byteCodeValue];
 					break;
 
 				case Number:
-					argumentValues.push(abcFile.constantPool.doublePool[byteCodeValue]);
+					argumentValues[argumentValues.length] = abcFile.constantPool.doublePool[byteCodeValue];
 					break;
 
 				case BaseMultiname:
-					argumentValues.push(abcFile.constantPool.multinamePool[byteCodeValue]);
+					argumentValues[argumentValues.length] = abcFile.constantPool.multinamePool[byteCodeValue];
 					break;
 
 				case ClassInfo:
-					argumentValues.push(abcFile.classInfo[byteCodeValue]);
+					argumentValues[argumentValues.length] = abcFile.classInfo[byteCodeValue];
 					break;
 
 				case String:
-					argumentValues.push(abcFile.constantPool.stringPool[byteCodeValue]);
+					argumentValues[argumentValues.length] = abcFile.constantPool.stringPool[byteCodeValue];
 					break;
 
 				case Namespace:
-					argumentValues.push(abcFile.constantPool.namespacePool[byteCodeValue]);
+					argumentValues[argumentValues.length] = abcFile.constantPool.namespacePool[byteCodeValue];
 					break;
 
 				case Array:
@@ -408,13 +408,13 @@ package org.as3commons.bytecode.abc.enum {
 					caseOffsets.push(byteCodeValue);
 					var caseCount:int = argumentValues[1];
 					for (var i:int = 0; i < caseCount; ++i) {
-						caseOffsets.push(AbcSpec.readS24(byteArray));
+						caseOffsets[caseOffsets.length] = AbcSpec.readS24(byteArray);
 					}
-					argumentValues.push(caseOffsets);
+					argumentValues[argumentValues.length] = caseOffsets;
 					break;
 
 				case ExceptionInfo:
-					argumentValues.push(byteCodeValue);
+					argumentValues[argumentValues.length] = byteCodeValue;
 					break;
 
 				default:
