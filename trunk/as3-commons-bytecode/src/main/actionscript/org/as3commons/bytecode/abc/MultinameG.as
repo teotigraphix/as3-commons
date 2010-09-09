@@ -24,11 +24,16 @@ package org.as3commons.bytecode.abc {
 
 		public function MultinameG(qName:QualifiedName, pCount:uint, params:Array, kindValue:MultinameKind) {
 			super(kindValue);
+			initMultinameG(kindValue, qName, pCount, params);
+		}
+
+		private function initMultinameG(kindValue:MultinameKind, qName:QualifiedName, pCount:uint, params:Array):void {
 			assertAppropriateMultinameKind([MultinameKind.GENERIC], kindValue);
 			_qualifiedName = qName;
 			_paramCount = pCount;
 			_parameters = params;
 		}
+
 
 
 		public function get paramCount():uint {

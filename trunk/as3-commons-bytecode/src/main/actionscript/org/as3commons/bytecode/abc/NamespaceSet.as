@@ -21,11 +21,13 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Namespace set" in the AVM Spec (page 22)
 	 */
 	public class NamespaceSet {
+
 		public static const PUBLIC_NSSET:NamespaceSet = new NamespaceSet([LNamespace.PUBLIC]);
 
 		private var _namespaces:Array;
 
 		public function NamespaceSet(namespaceArray:Array = null) {
+			super();
 			_namespaces = (namespaceArray) ? namespaceArray : [];
 		}
 
@@ -34,13 +36,13 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function addNamespace(namespaze:LNamespace):void {
-			_namespaces.push(namespaze);
+			_namespaces[_namespaces.length] = namespaze;
 		}
 
 		public function equals(namespaceSet:NamespaceSet):Boolean {
 			var matches:Boolean = (this.namespaces.length == namespaceSet.namespaces.length);
 			if (matches) {
-				for (var i:int = 0; i < namespaces.length; i++) {
+				for (var i:int = 0; i < namespaces.length; ++i) {
 					if (!namespaces[i].equals(namespaceSet.namespaces[i])) {
 						matches = false;
 						break;

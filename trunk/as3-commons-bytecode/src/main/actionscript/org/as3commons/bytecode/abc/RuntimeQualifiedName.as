@@ -25,7 +25,6 @@ package org.as3commons.bytecode.abc {
 	public class RuntimeQualifiedName extends NamedMultiname {
 		public function RuntimeQualifiedName(name:String, kindValue:MultinameKind = null) {
 			kindValue = (kindValue) ? kindValue : MultinameKind.RTQNAME;
-
 			super(kindValue, name);
 			assertAppropriateMultinameKind([MultinameKind.RTQNAME, MultinameKind.RTQNAME_A], kindValue);
 		}

@@ -29,8 +29,11 @@ package org.as3commons.bytecode.abc {
 		public function MultinameL(namespaceSet:NamespaceSet, kindValue:MultinameKind = null) {
 			kindValue = (kindValue) ? kindValue : MultinameKind.MULTINAME_L;
 			super(kindValue);
-			assertAppropriateMultinameKind([MultinameKind.MULTINAME_L, MultinameKind.MULTINAME_LA], kindValue);
+			initMultinameL(kindValue, namespaceSet);
+		}
 
+		protected function initMultinameL(kindValue:MultinameKind, namespaceSet:NamespaceSet):void {
+			assertAppropriateMultinameKind([MultinameKind.MULTINAME_L, MultinameKind.MULTINAME_LA], kindValue);
 			_namespaceSet = namespaceSet;
 		}
 

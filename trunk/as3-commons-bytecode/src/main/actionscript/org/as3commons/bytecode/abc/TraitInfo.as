@@ -31,7 +31,7 @@ package org.as3commons.bytecode.abc {
 		public var isOverride:Boolean;
 
 		public function TraitInfo() {
-
+			super();
 		}
 
 		public function get hasMetadata():Boolean {

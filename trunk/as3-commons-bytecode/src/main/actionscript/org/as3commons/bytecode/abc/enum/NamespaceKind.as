@@ -22,7 +22,9 @@ package org.as3commons.bytecode.abc.enum {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Namespace Kind" in the AVM Spec (page 22)
 	 */
 	public class NamespaceKind {
-		private static var _TYPES:Dictionary = new Dictionary();
+		private static var _enumCreated:Boolean = false;
+		private static const _TYPES:Dictionary = new Dictionary();
+		private static const _TYPELIST:Array = [];
 
 		private var _byteValue:uint;
 		private var _description:String;
@@ -35,10 +37,13 @@ package org.as3commons.bytecode.abc.enum {
 		public static const STATIC_PROTECTED_NAMESPACE:NamespaceKind = new NamespaceKind(0x1A, "staticProtectedNamespace");
 		public static const PRIVATE_NAMESPACE:NamespaceKind = new NamespaceKind(0x05, "private");
 
+		{
+			_enumCreated = true;
+		}
+
 		public function NamespaceKind(byteValue:uint, description:String) {
 			_byteValue = byteValue;
 			_description = description;
-
 			_TYPES[byteValue] = this;
 		}
 
@@ -51,12 +56,12 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public static function get types():Array {
-			var typesArray:Array = [];
-			for (var typeKey:String in _TYPES) {
-				typesArray.push(_TYPES[typeKey]);
+			if (_TYPELIST.length == 0) {
+				for (var typeKey:String in _TYPES) {
+					_TYPELIST[_TYPELIST.length] = _TYPES[typeKey];
+				}
 			}
-
-			return typesArray;
+			return _TYPELIST;
 		}
 
 		public static function determineKind(kindByte:int):NamespaceKind {
@@ -64,7 +69,6 @@ package org.as3commons.bytecode.abc.enum {
 			if (kind == null) {
 				throw new Error("Unknown NamespaceKind: " + kindByte);
 			}
-
 			return kind;
 		}
 	}

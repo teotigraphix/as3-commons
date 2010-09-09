@@ -58,6 +58,11 @@ package org.as3commons.bytecode.util {
 	//TODO: Capture ranges for bytecode blocks so they can be checked in unit tests
 	public class AbcDeserializer extends AbcDeserializerBase {
 
+		private static const __NEED_CONSTANTS_:String = "~~ need constants ~~";
+		private static const CONSTRUCTOR_BYTECODENAME:String = "constructor";
+		private static const STATIC_INITIALIZER_BYTECODENAME:String = "staticInitializer";
+		private static const SCRIPT_INITIALIZER_BYTECODENAME:String = "scriptInitializer";
+
 		public function AbcDeserializer(byteStream:ByteArray) {
 			super(byteStream);
 		}
@@ -98,7 +103,7 @@ package org.as3commons.bytecode.util {
 
 //            trace("MethodInfos: " + _byteStream.position);
 			var methodCount:int = readU30();
-			for (var methodIndex:int = 0; methodIndex < methodCount; methodIndex++) {
+			for (var methodIndex:int = 0; methodIndex < methodCount; ++methodIndex) {
 				// method_info 
 				// { 
 				//  u30 param_count 
@@ -113,7 +118,7 @@ package org.as3commons.bytecode.util {
 				abcFile.addMethodInfo(methodInfo);
 				var paramCount:int = readU30();
 				methodInfo.returnType = pool.multinamePool[readU30()];
-				for (var argumentIndex:int = 0; argumentIndex < paramCount; argumentIndex++) {
+				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
 					var mn:BaseMultiname = pool.multinamePool[readU30()];
 					var paramQName:QualifiedName = convertToQualifiedName(mn);
 					methodInfo.argumentCollection.push(new Argument(paramQName));
@@ -134,7 +139,7 @@ package org.as3commons.bytecode.util {
 					// }
 					var optionInfoCount:int = readU30();
 					//trace("optioninfo count:" + optionInfoCount);
-					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; optionInfoIndex++) {
+					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
 						var valueIndexInConstantPool:int = readU30();
 						var optionalValueKind:int = readU8();
 						var defaultValue:Object = null;
@@ -184,7 +189,7 @@ package org.as3commons.bytecode.util {
 								throw new Error("Unknown optional value kind: " + optionalValueKind);
 								break;
 						}
-						var qualifiedName:QualifiedName = new QualifiedName("~~ need constants ~~", null, MultinameKind.QNAME);
+						var qualifiedName:QualifiedName = new QualifiedName(__NEED_CONSTANTS_, null, MultinameKind.QNAME);
 						methodInfo.optionalParameters.push(new Argument(qualifiedName, true, defaultValue, ConstantKind.determineKind(optionalValueKind)));
 					}
 				}
@@ -195,7 +200,7 @@ package org.as3commons.bytecode.util {
 					//  u30 param_name[param_count] -- index in to String Pool
 					// }
 					var nameCount:uint = methodInfo.argumentCollection.length;
-					for (var nameIndex:uint = 0; nameIndex < nameCount; nameIndex++) {
+					for (var nameIndex:uint = 0; nameIndex < nameCount; ++nameIndex) {
 						var paramName:String = abcFile.constantPool.stringPool[readU30()];
 						Argument(methodInfo.argumentCollection[nameIndex]).name = paramName;
 					}
@@ -204,7 +209,7 @@ package org.as3commons.bytecode.util {
 
 //            trace("Metadata: " + _byteStream.position);
 			var metadataCount:int = readU30();
-			for (var metadataIndex:int = 0; metadataIndex < metadataCount; metadataIndex++) {
+			for (var metadataIndex:int = 0; metadataIndex < metadataCount; ++metadataIndex) {
 				// metadata_info  
 				// { 
 				//  u30 name 
@@ -227,9 +232,9 @@ package org.as3commons.bytecode.util {
 				var keys:Array = [];
 
 				// Suck out the keys first
-				for (var keyIndex:int = 0; keyIndex < keyValuePairCount; keyIndex++) {
+				for (var keyIndex:int = 0; keyIndex < keyValuePairCount; ++keyIndex) {
 					var key:String = pool.stringPool[readU30()];
-					keys.push(key);
+					keys[keys.length] = key;
 				}
 
 				// Map keys to values in another loop
@@ -242,7 +247,7 @@ package org.as3commons.bytecode.util {
 
 //            trace("Classes: " + _byteStream.position);
 			var classCount:int = readU30();
-			for (var instanceIndex:int = 0; instanceIndex < classCount; instanceIndex++) {
+			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
 				// instance_info  
 				// { 
 				//  u30 name 
@@ -280,18 +285,18 @@ package org.as3commons.bytecode.util {
 					instanceInfo.protectedNamespace = pool.namespacePool[readU30()];
 				}
 				var interfaceCount:int = readU30();
-				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; interfaceIndex++) {
+				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
 					instanceInfo.interfaceMultinames.push(pool.multinamePool[readU30()]);
 				}
 				instanceInfo.instanceInitializer = abcFile.methodInfo[readU30()];
-				instanceInfo.instanceInitializer.as3commonsBytecodeName = "constructor";
+				instanceInfo.instanceInitializer.as3commonsBytecodeName = CONSTRUCTOR_BYTECODENAME;
 				instanceInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
 				abcFile.addInstanceInfo(instanceInfo);
 			}
 
 			// class info
 //	        trace("ClassInfo: " + _byteStream.position);
-			for (var classIndex:int = 0; classIndex < classCount; classIndex++) {
+			for (var classIndex:int = 0; classIndex < classCount; ++classIndex) {
 				// class_info  
 				// { 
 				//  u30 cinit 
@@ -300,7 +305,7 @@ package org.as3commons.bytecode.util {
 				// }
 				var classInfo:ClassInfo = new ClassInfo();
 				classInfo.staticInitializer = abcFile.methodInfo[readU30()];
-				classInfo.staticInitializer.as3commonsBytecodeName = "staticInitializer";
+				classInfo.staticInitializer.as3commonsBytecodeName = STATIC_INITIALIZER_BYTECODENAME;
 				classInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
 				abcFile.addClassInfo(classInfo);
 			}
@@ -315,10 +320,10 @@ package org.as3commons.bytecode.util {
 			// }
 //            trace("Scripts: " + _byteStream.position);
 			var scriptCount:int = readU30();
-			for (var scriptIndex:int = 0; scriptIndex < scriptCount; scriptIndex++) {
+			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
 				var scriptInfo:ScriptInfo = new ScriptInfo();
 				scriptInfo.scriptInitializer = abcFile.methodInfo[readU30()];
-				scriptInfo.scriptInitializer.as3commonsBytecodeName = "scriptInitializer";
+				scriptInfo.scriptInitializer.as3commonsBytecodeName = SCRIPT_INITIALIZER_BYTECODENAME;
 				scriptInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
 				abcFile.addScriptInfo(scriptInfo);
 			}
@@ -327,7 +332,7 @@ package org.as3commons.bytecode.util {
 
 //            trace("MethodBodies: " + _byteStream.position);
 			var methodBodyCount:int = readU30();
-			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; bodyIndex++) {
+			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; ++bodyIndex) {
 				var methodBody:MethodBody = new MethodBody();
 				// method_body_info 
 				// { 
@@ -364,7 +369,8 @@ package org.as3commons.bytecode.util {
 				}
 
 				var exceptionCount:int = readU30();
-				for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; exceptionIndex++) {
+				var exceptionInfos:Array = methodBody.exceptionInfos;
+				for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
 					var exceptionInfo:ExceptionInfo = new ExceptionInfo();
 					// exception_info  
 					// { 
@@ -379,7 +385,7 @@ package org.as3commons.bytecode.util {
 					exceptionInfo.codePositionToJumpToOnException = readU30();
 					exceptionInfo.exceptionTypeName = pool.stringPool[readU30()];
 					exceptionInfo.nameOfVariableReceivingException = pool.stringPool[readU30()];
-					methodBody.exceptionInfos.push(exceptionInfo);
+					exceptionInfos[exceptionInfos.length] = exceptionInfo;
 				}
 
 				//Add the ExceptionInfo reference to all opcodes to untill now only carried an
@@ -417,7 +423,7 @@ package org.as3commons.bytecode.util {
 			var metadata:Array = abcFile.metadataInfo;
 
 			var traitCount:int = readU30();
-			for (var traitIndex:int = 0; traitIndex < traitCount; traitIndex++) {
+			for (var traitIndex:int = 0; traitIndex < traitCount; ++traitIndex) {
 				var trait:TraitInfo;
 				// traits_info  
 				// { 
@@ -511,7 +517,7 @@ package org.as3commons.bytecode.util {
 				// contains indices into the metadata array of the abcFile." 
 				if (traitKindValue & (TraitAttributes.METADATA.bitMask << 4)) {
 					var numberOfTraitMetadataItems:int = readU30();
-					for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; traitMetadataIndex++) {
+					for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; ++traitMetadataIndex) {
 						trait.addMetadata(metadata[readU30()]);
 					}
 				}
@@ -520,7 +526,7 @@ package org.as3commons.bytecode.util {
 				trait.isFinal = Boolean((traitKindValue >> 4) & TraitAttributes.FINAL.bitMask);
 				trait.isOverride = Boolean((traitKindValue >> 4) & TraitAttributes.OVERRIDE.bitMask);
 				trait.traitKind = traitKind;
-				traits.push(trait);
+				traits[traits.length] = trait;
 			}
 
 			return traits;

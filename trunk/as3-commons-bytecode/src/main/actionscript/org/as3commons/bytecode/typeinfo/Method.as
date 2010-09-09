@@ -66,7 +66,7 @@ package org.as3commons.bytecode.typeinfo {
 		}
 
 		public function addArgument(argument:Argument):void {
-			_arguments.push(argument);
+			_arguments[_arguments.length] = argument;
 		}
 
 		//TODO: Is it possible to derive the scope/stack depth based upon the bytecodes? This would be bad ass
@@ -113,7 +113,7 @@ package org.as3commons.bytecode.typeinfo {
 
 			var argumentsArray:Array = [];
 			methodArguments.every(function(item:Argument, index:int, array:Array):Boolean {
-				argumentsArray.push(item.type.name);
+				argumentsArray[argumentsArray.length] = item.type.name;
 				return true;
 			});
 

@@ -16,12 +16,15 @@
 package org.as3commons.bytecode.abc.enum {
 	import flash.utils.Dictionary;
 
+	import org.as3commons.lang.Assert;
+
 	/**
 	 * as3commons-bytecode representation of possible values for the kinds of optional arguments to methods in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Optional parameters" in the AVM Spec (page 25)
 	 */
 	public class ConstantKind {
+		private static var _enumCreated:Boolean = false;
 		private static const _TYPES:Dictionary = new Dictionary();
 
 		public static const UNKNOWN:ConstantKind = new ConstantKind(0x0, "UNKNOWN");
@@ -44,7 +47,12 @@ package org.as3commons.bytecode.abc.enum {
 		private var _kind:uint;
 		private var _description:String;
 
+		{
+			_enumCreated = true;
+		}
+
 		public function ConstantKind(optionKind:uint, optionDescription:String) {
+			Assert.state((!_enumCreated), "ConstantKind enum has already been created");
 			_kind = optionKind;
 			_description = optionDescription;
 

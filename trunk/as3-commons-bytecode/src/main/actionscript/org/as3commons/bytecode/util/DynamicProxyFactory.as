@@ -171,7 +171,7 @@ package org.as3commons.bytecode.util {
 			// The number of arguments to the superclass constructor will vary. Here, we vary the call to super()
 			// to match the number of arguments it's expecting.
 			var numberOfConstructorArgs:int = constructorMethodBody.methodSignature.argumentCollection.length;
-			for (var constructorArgIndex:int = 1; constructorArgIndex <= numberOfConstructorArgs; constructorArgIndex++) {
+			for (var constructorArgIndex:int = 1; constructorArgIndex <= numberOfConstructorArgs; ++constructorArgIndex) {
 				switch (constructorArgIndex) {
 					case 1:
 						ops.push(Opcode.getlocal_1.op());
@@ -385,7 +385,7 @@ package org.as3commons.bytecode.util {
 						// For NEED_OPTIONAL, we also all the arguments on to the stack and wrap them in an array. If we don't do this, the "arguments"
 						// array only contains the values passed in (i.e. the optional values omitted by the caller are null) which means that the
 						// default values are not available to the advice at runtime.  
-						for (var optionalArgumentIndex:int = 1; optionalArgumentIndex <= numberOfArgumentsToMethod; optionalArgumentIndex++) {
+						for (var optionalArgumentIndex:int = 1; optionalArgumentIndex <= numberOfArgumentsToMethod; ++optionalArgumentIndex) {
 							switch (optionalArgumentIndex) {
 								case 1:
 									newOpcodes.push(Opcode.getlocal_1.op());
@@ -414,7 +414,7 @@ package org.as3commons.bytecode.util {
 						// If NEED_REST is enabled, we need to push the method arguments on to the stack, add the item one index beyond the 
 						// number of arguments (which is the ...rest array), and then bundle all these items in to an Array. We do this
 						// because the "arguments" array is not available to us for this kind of method, so we are essentially simulating it.
-						for (var argumentIndex:int = 1; argumentIndex <= (numberOfArgumentsToMethod + 1); argumentIndex++) {
+						for (var argumentIndex:int = 1; argumentIndex <= (numberOfArgumentsToMethod + 1); ++argumentIndex) {
 							switch (argumentIndex) {
 								case 1:
 									newOpcodes.push(Opcode.getlocal_1.op());

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc.enum {
+	import org.as3commons.lang.Assert;
 
 	/**
 	 * as3commons-bytecode representation of possible values for the kinds of trait attributes in the ABC file format.
@@ -21,7 +22,9 @@ package org.as3commons.bytecode.abc.enum {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Trait attributes" in the AVM Spec (page 31)
 	 */
 	public class TraitAttributes {
-		private static const _TYPES:Array = new Array();
+
+		private static var _enumCreated:Boolean = false;
+		private static const _TYPES:Array = [];
 
 		public static const FINAL:TraitAttributes = new TraitAttributes(0x1, "final");
 		public static const OVERRIDE:TraitAttributes = new TraitAttributes(0x2, "override");
@@ -30,11 +33,15 @@ package org.as3commons.bytecode.abc.enum {
 		private var _bitMask:uint;
 		private var _description:String;
 
+		{
+			_enumCreated = true;
+		}
+
 		public function TraitAttributes(bitMaskValue:uint, descriptionValue:String) {
+			Assert.state((!_enumCreated), "TraitAttributes enum has already been created");
 			_bitMask = bitMaskValue;
 			_description = descriptionValue;
-
-			_TYPES.push(this);
+			_TYPES[_TYPES.length] = this;
 		}
 
 		public static function determineAttributes(traitAttributeValue:int):TraitAttributes {

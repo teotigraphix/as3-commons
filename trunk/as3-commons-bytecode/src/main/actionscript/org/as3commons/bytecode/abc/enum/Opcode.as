@@ -40,15 +40,13 @@ package org.as3commons.bytecode.abc.enum {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "AVM2 instructions" in the AVM Spec (page 35)
 	 */
-	//TODO: Implement output of opcode using ExceptionInfo pool for ops like newcatch
 	//TODO: Derive local_count etc. from opcodes. Page 15 of the AVM2 spec covers this in more detail.
 	public class Opcode {
 
 		private static var _enumCreated:Boolean = false;
-
 		private static const _ALL_OPCODES:Dictionary = new Dictionary();
 
-		// 158 total opcodes
+		// 162 total opcodes
 		public static const add:Opcode = new Opcode(0xa0, "add");
 		public static const add_d:Opcode = new Opcode(0x9B, "add_d"); //Added
 		public static const add_i:Opcode = new Opcode(0xC5, "add_i"); //Added
@@ -312,7 +310,7 @@ package org.as3commons.bytecode.abc.enum {
 				case Array:
 					var arr:Array = rawValue as Array;
 					var caseCount:int = arr.length;
-					for (var i:int = 0; i < caseCount; i++) {
+					for (var i:int = 0; i < caseCount; ++i) {
 						AbcSpec.writeS24(arr[i], serializedOpcodes);
 					}
 					break;
@@ -409,7 +407,7 @@ package org.as3commons.bytecode.abc.enum {
 					var caseOffsets:Array = [];
 					caseOffsets.push(byteCodeValue);
 					var caseCount:int = argumentValues[1];
-					for (var i:int = 0; i < caseCount; i++) {
+					for (var i:int = 0; i < caseCount; ++i) {
 						caseOffsets.push(AbcSpec.readS24(byteArray));
 					}
 					argumentValues.push(caseOffsets);
@@ -455,7 +453,8 @@ package org.as3commons.bytecode.abc.enum {
 				throw new Error(this.opcodeName + " requires " + this._argumentTypes.length + " arguments.");
 			}
 
-			for (var argIndex:int = 0; argIndex < opArguments.length; argIndex++) {
+			var opArgLen:int = opArguments.length;
+			for (var argIndex:int = 0; argIndex < opArgLen; ++argIndex) {
 				var argument:* = opArguments[argIndex];
 				var expectedArgumentType:Class = this._argumentTypes[argIndex][0];
 //            	if (!(argument is expectedArgumentType))

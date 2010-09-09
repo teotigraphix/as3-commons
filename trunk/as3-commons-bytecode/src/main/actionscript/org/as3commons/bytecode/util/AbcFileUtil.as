@@ -28,7 +28,7 @@ package org.as3commons.bytecode.util {
 			if (abcTags.length < 2) {
 				return;
 			}
-			for (var i:uint = 1; i < abcTags.length; i++) {
+			for (var i:uint = 1; i < abcTags.length; ++i) {
 				var idx:int = swf.tags.indexOf(abcTags[i]);
 				if (idx > -1) {
 					swf.tags.splice(idx, 1);
@@ -49,7 +49,7 @@ package org.as3commons.bytecode.util {
 				return files[0];
 			}
 			var abc:AbcFile = files[0];
-			for (var i:uint = 1; i < files.length; i++) {
+			for (var i:uint = 1; i < files.length; ++i) {
 				abc = mergeAbcFiles(abc, files[i]);
 			}
 			return abc;

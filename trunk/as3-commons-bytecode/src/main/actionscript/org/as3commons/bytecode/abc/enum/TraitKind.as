@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.abc.enum {
 	import flash.utils.Dictionary;
 
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -24,6 +25,7 @@ package org.as3commons.bytecode.abc.enum {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Summary of trait types" in the AVM Spec (page 29)
 	 */
 	public class TraitKind {
+		private static var _enumCreated:Boolean = false;
 		private static const _TYPES:Dictionary = new Dictionary();
 
 		public static const SLOT:TraitKind = new TraitKind(0, "slot");
@@ -33,12 +35,18 @@ package org.as3commons.bytecode.abc.enum {
 		public static const CLASS:TraitKind = new TraitKind(4, "class");
 		public static const FUNCTION:TraitKind = new TraitKind(5, "function");
 		public static const CONST:TraitKind = new TraitKind(6, "const");
+		private static const UPPER_FOUR:uint = 0xF;
 
 		private var _value:uint;
 		private var _description:String;
 		private var _associatedClass:Class;
 
+		{
+			_enumCreated = true;
+		}
+
 		public function TraitKind(bitValue:uint, descriptionValue:String) {
+			Assert.state((!_enumCreated), "TraitKind enum has already been created");
 			_value = bitValue;
 			_description = descriptionValue;
 
@@ -50,7 +58,7 @@ package org.as3commons.bytecode.abc.enum {
 			// bits are irrelevant for this comparison, we bitwise AND the given value with 0xF (15 or 00001111) to get
 			// rid of the upper four bits. After this is done we can perform strict equality to figure out the
 			// trait kind.
-			var lowerFourBitsOfBitMask:int = (traitInfoBitMask & 0xF);
+			var lowerFourBitsOfBitMask:int = (traitInfoBitMask & UPPER_FOUR);
 			var matchingKind:TraitKind = _TYPES[lowerFourBitsOfBitMask];
 
 			if (!matchingKind) {

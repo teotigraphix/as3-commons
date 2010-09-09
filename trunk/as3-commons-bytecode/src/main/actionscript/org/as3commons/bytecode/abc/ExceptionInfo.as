@@ -21,6 +21,7 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Exception" in the AVM Spec (page 34)
 	 */
 	public class ExceptionInfo {
+
 		public var exceptionEnabledFromCodePosition:int;
 		public var exceptionEnabledToCodePosition:int;
 		public var codePositionToJumpToOnException:int;
@@ -28,6 +29,7 @@ package org.as3commons.bytecode.abc {
 		public var nameOfVariableReceivingException:String;
 
 		public function ExceptionInfo() {
+			super();
 		}
 	}
 }

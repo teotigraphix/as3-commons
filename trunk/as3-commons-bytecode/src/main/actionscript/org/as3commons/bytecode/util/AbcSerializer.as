@@ -67,6 +67,8 @@ package org.as3commons.bytecode.util {
 	public class AbcSerializer {
 		public static const MINOR_VERSION:int = 16;
 		public static const MAJOR_VERSION:int = 46;
+		private static const UNKNOWN_TRAITKIND_ERROR:String = "Unknown trait kind: {0}";
+		private static const __UNABLE_TO_DETERMINE_POOL_POSITION_ERROR:String = "Unable to determine pool position.";
 
 		private var _pool:ConstantPool;
 		private var _outputStream:ByteArray;
@@ -125,7 +127,7 @@ package org.as3commons.bytecode.util {
 				var opcodesAsByteArray:ByteArray = Opcode.serialize(body.opcodes, body, abcFile);
 //        		trace(opcodesAsByteArray.length + ": " + body.methodSignature.loomName);
 				writeU30(opcodesAsByteArray.length);
-				for (var opcodeBytePosition:int = 0; opcodeBytePosition < opcodesAsByteArray.length; opcodeBytePosition++) {
+				for (var opcodeBytePosition:int = 0; opcodeBytePosition < opcodesAsByteArray.length; ++opcodeBytePosition) {
 					writeU8(opcodesAsByteArray[opcodeBytePosition]);
 				}
 //        		for each (var opcode : int in body.opcodes)
@@ -233,7 +235,7 @@ package org.as3commons.bytecode.util {
 						break;
 
 					default:
-						throw new Error("Unknown trait kind.");
+						throw new Error(StringUtils.substitute(UNKNOWN_TRAITKIND_ERROR, trait.traitKind));
 						break;
 				}
 
@@ -315,7 +317,7 @@ package org.as3commons.bytecode.util {
 				var properties:Dictionary = metadataEntry.properties;
 				var keys:Array = [];
 				for (var keyValue:String in properties) {
-					keys.push(keyValue);
+					keys[keys.length] = keyValue;
 				}
 
 				writeU30(keys.length);
@@ -415,7 +417,7 @@ package org.as3commons.bytecode.util {
 								break;
 
 							default:
-								throw new Error("Unable to determine pool position.");
+								throw new Error(__UNABLE_TO_DETERMINE_POOL_POSITION_ERROR);
 								break;
 						}
 						// option_detail 
@@ -554,8 +556,7 @@ package org.as3commons.bytecode.util {
 			// namespace sets
 			var namespaceSets:Array = pool.namespaceSetPool.slice(1, pool.namespaceSetPool.length);
 			AbcSpec.writeU30((namespaceSets.length + 1), outputStream);
-			for each (var namespaceSet:NamespaceSet in namespaceSets) // ns_set_info
-			{
+			for each (var namespaceSet:NamespaceSet in namespaceSets) { // ns_set_info
 				AbcSpec.writeU30(namespaceSet.namespaces.length, outputStream); // u30 count
 				for each (var nameSpace:LNamespace in namespaceSet.namespaces) {
 					AbcSpec.writeU30(pool.addNamespace(nameSpace), outputStream); // u30 ns[count]
@@ -646,10 +647,7 @@ package org.as3commons.bytecode.util {
 		}
 
 		private function createBuffer():ByteArray {
-			var buffer:ByteArray = new ByteArray();
-			buffer.endian = Endian.LITTLE_ENDIAN;
-
-			return buffer;
+			return AbcSpec.byteArray();
 		}
 
 		public function serializeMethods(classDefinition:ClassDefinition):ByteArray {
@@ -702,7 +700,8 @@ package org.as3commons.bytecode.util {
 
 				if (numberOfOptionalArguments > 0) {
 					AbcSpec.writeU30(numberOfOptionalArguments, buffer);
-					for (var i:int = (method.methodArguments.length - numberOfOptionalArguments); i < method.methodArguments.length; i++) {
+					var argLen:int = method.methodArguments.length;
+					for (var i:int = (method.methodArguments.length - numberOfOptionalArguments); i < argLen; ++i) {
 						arg = method.methodArguments[i];
 						var defaultValueIndex:int = 0;
 						defaultValueIndex = _pool.getConstantPoolItemIndex(arg.kind, arg.defaultValue);

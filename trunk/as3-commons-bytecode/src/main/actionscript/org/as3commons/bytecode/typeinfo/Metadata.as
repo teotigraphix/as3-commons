@@ -31,6 +31,9 @@ package org.as3commons.bytecode.typeinfo {
 	 * @see Annotatable
 	 */
 	public class Metadata {
+
+		private static const KEY_VALUE_PAIR_TOSTRING:String = "{0}=\"{1}\"";
+		private static const METADATA_TOSTRING:String = "[{0}({1})]";
 		public var name:String;
 		public var properties:Dictionary;
 
@@ -41,10 +44,9 @@ package org.as3commons.bytecode.typeinfo {
 		public function toString():String {
 			var keyValuePairs:Array = [];
 			for (var key:String in properties) {
-				keyValuePairs.push(key + "=\"" + properties[key] + "\"");
+				keyValuePairs[keyValuePairs.length] = StringUtils.substitute(KEY_VALUE_PAIR_TOSTRING, key, properties[key]);
 			}
-
-			return StringUtils.substitute("[{0}({1})]", name, keyValuePairs.join());
+			return StringUtils.substitute(METADATA_TOSTRING, name, keyValuePairs.join());
 		}
 	}
 }

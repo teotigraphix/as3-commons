@@ -19,7 +19,9 @@ package org.as3commons.bytecode.abc {
 	 * as3commons-bytecode type representing a uint stored in the constant pool. Used for parsing/serailizing opcodes.
 	 */
 	public class UnsignedInteger {
+
 		public function UnsignedInteger() {
+			super();
 		}
 	}
 }

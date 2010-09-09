@@ -20,7 +20,9 @@ package org.as3commons.bytecode.abc {
 	 * parsing the <code>lookupswitch</code> opcode.
 	 */
 	public class S24Array {
+
 		public function S24Array() {
+			super();
 		}
 	}
 }

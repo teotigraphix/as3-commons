@@ -58,6 +58,7 @@ package org.as3commons.bytecode.util {
 		 * keeps everybody happy.
 		 */
 		public static const UNSIGNED_BYTE:ReadWritePair = new ReadWritePair(readUnsigned, writeU8);
+		private static const __VALUE_OUT_OF_RANGE_ERROR:String = "Value out of range";
 
 		public static function readUnsigned(bytes:ByteArray):int {
 			return bytes.readUnsignedByte();
@@ -69,7 +70,6 @@ package org.as3commons.bytecode.util {
 		public static function byteArray():ByteArray {
 			var byteArray:ByteArray = new ByteArray();
 			byteArray.endian = Endian.LITTLE_ENDIAN;
-
 			return byteArray;
 		}
 
@@ -96,30 +96,6 @@ package org.as3commons.bytecode.util {
 		public static function readStringInfo(bytes:ByteArray):String {
 			return bytes.readUTFBytes(readU32(bytes));
 		}
-
-//        int sizeOfU30(int v)
-//        {
-//            if (v < 128 && v >= 0)
-//            {
-//                return 1;
-//            }
-//            else if (v < 16384 && v >= 0)
-//            {
-//                return 2;
-//            }
-//            else if (v < 2097152 && v >= 0)
-//            {
-//                return 3;
-//            }
-//            else if (v < 268435456 && v >= 0)
-//            {
-//                return 4;
-//            }
-//            else
-//            {
-//                return 5;
-//            }
-//        }
 
 		public static function readD64(bytes:ByteArray):Number {
 			return bytes.readDouble();
@@ -269,7 +245,7 @@ package org.as3commons.bytecode.util {
 		 */
 		public static function assertWithinRange(assertion:Boolean):void {
 			if (!assertion) {
-				throw new Error("Value out of range");
+				throw new Error(__VALUE_OUT_OF_RANGE_ERROR);
 			}
 		}
 	}

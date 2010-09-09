@@ -26,6 +26,7 @@ package org.as3commons.bytecode.abc {
 		public var traits:Array;
 
 		public function ScriptInfo() {
+			super();
 			traits = [];
 		}
 

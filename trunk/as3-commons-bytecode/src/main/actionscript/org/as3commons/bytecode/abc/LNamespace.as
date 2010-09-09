@@ -22,6 +22,7 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Namespace" in the AVM Spec (page 22)
 	 */
 	public class LNamespace {
+
 		public static const PUBLIC:LNamespace = new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, ""); // Namespace[public::*]
 		public static const ASTERISK:LNamespace = new LNamespace(NamespaceKind.NAMESPACE, "*"); //  Namespace[namespace::*]
 		public static const FLASH_UTILS:LNamespace = new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "flash.utils"); //  Namespace[public::flash.utils]
@@ -30,6 +31,7 @@ package org.as3commons.bytecode.abc {
 		public var name:String;
 
 		public function LNamespace(kindValue:NamespaceKind, nameValue:String) {
+			super();
 			kind = kindValue;
 			name = nameValue;
 		}
