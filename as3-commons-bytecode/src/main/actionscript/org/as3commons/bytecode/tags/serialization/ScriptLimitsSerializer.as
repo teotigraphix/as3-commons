@@ -18,6 +18,7 @@ package org.as3commons.bytecode.tags.serialization {
 
 	import org.as3commons.bytecode.tags.ISWFTag;
 	import org.as3commons.bytecode.tags.ScriptLimitsTag;
+	import org.as3commons.bytecode.tags.struct.RecordHeader;
 	import org.as3commons.bytecode.util.SWFSpec;
 
 	public class ScriptLimitsSerializer extends AbstractTagSerializer {
@@ -25,7 +26,7 @@ package org.as3commons.bytecode.tags.serialization {
 			super(serializerFactory);
 		}
 
-		override public function read(input:ByteArray):ISWFTag {
+		override public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
 			var tag:ScriptLimitsTag = new ScriptLimitsTag();
 			tag.maxRecursionDepth = SWFSpec.readUI16(input);
 			tag.scriptTimeoutSeconds = SWFSpec.readUI16(input);

@@ -18,7 +18,7 @@ package org.as3commons.bytecode.typeinfo {
 	import org.as3commons.bytecode.abc.QualifiedName;
 
 	/**
-	 * A specialized version of Method representing a <code>get XXX</code> property accessor.
+	 * A specialized version of Method representing a <code>getXXX</code> property accessor.
 	 */
 	public class Getter extends Method {
 		public function Getter(methodName:QualifiedName, returnType:BaseMultiname, isStatic:Boolean = false, isOverride:Boolean = false, isFinal:Boolean = false) {

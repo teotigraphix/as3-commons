@@ -18,6 +18,7 @@ package org.as3commons.bytecode.tags.serialization {
 
 	import org.as3commons.bytecode.tags.FileAttributesTag;
 	import org.as3commons.bytecode.tags.ISWFTag;
+	import org.as3commons.bytecode.tags.struct.RecordHeader;
 	import org.as3commons.bytecode.util.SWFSpec;
 
 	public class FileAttributesSerializer extends AbstractTagSerializer {
@@ -26,7 +27,7 @@ package org.as3commons.bytecode.tags.serialization {
 			super(serializerFactory);
 		}
 
-		override public function read(input:ByteArray):ISWFTag {
+		override public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
 			var tag:FileAttributesTag = new FileAttributesTag();
 			SWFSpec.flushBits();
 			SWFSpec.readUB(input);

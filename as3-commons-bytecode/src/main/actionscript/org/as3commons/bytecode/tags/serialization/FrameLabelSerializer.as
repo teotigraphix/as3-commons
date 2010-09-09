@@ -18,6 +18,7 @@ package org.as3commons.bytecode.tags.serialization {
 
 	import org.as3commons.bytecode.tags.FrameLabelTag;
 	import org.as3commons.bytecode.tags.ISWFTag;
+	import org.as3commons.bytecode.tags.struct.RecordHeader;
 	import org.as3commons.bytecode.util.SWFSpec;
 
 	public class FrameLabelSerializer extends AbstractTagSerializer {
@@ -26,7 +27,7 @@ package org.as3commons.bytecode.tags.serialization {
 			super(serializerFactory);
 		}
 
-		override public function read(input:ByteArray):ISWFTag {
+		override public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
 			var tag:FrameLabelTag = new FrameLabelTag();
 			tag.frameLabelName = SWFSpec.readString(input);
 			return tag;

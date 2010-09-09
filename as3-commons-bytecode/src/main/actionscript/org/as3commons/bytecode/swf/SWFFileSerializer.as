@@ -43,6 +43,7 @@ package org.as3commons.bytecode.swf {
 	import org.as3commons.bytecode.tags.serialization.ShowFrameSerializer;
 	import org.as3commons.bytecode.tags.serialization.StructSerializerFactory;
 	import org.as3commons.bytecode.tags.serialization.SymbolClassSerializer;
+	import org.as3commons.bytecode.tags.serialization.UnsupportedSerializer;
 	import org.as3commons.bytecode.tags.struct.RecordHeader;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.SWFSpec;
@@ -54,6 +55,7 @@ package org.as3commons.bytecode.swf {
 
 		private var _tagSerializers:Dictionary;
 		private var _serializerInstances:Dictionary;
+		private var _unsupportedTagSerializer:UnsupportedSerializer;
 
 		private var _recordHeaderSerializer:RecordHeaderSerializer;
 		private var _structSerializerFactory:StructSerializerFactory;
@@ -64,6 +66,7 @@ package org.as3commons.bytecode.swf {
 		}
 
 		protected function initSWFFileSerializer():void {
+			_unsupportedTagSerializer = new UnsupportedSerializer();
 			_recordHeaderSerializer = new RecordHeaderSerializer();
 			_structSerializerFactory = new StructSerializerFactory();
 			_tagSerializers = new Dictionary();
@@ -85,7 +88,7 @@ package org.as3commons.bytecode.swf {
 				if (_tagSerializers[tagId] != null) {
 					_serializerInstances[tagId] = new _tagSerializers[tagId](_structSerializerFactory);
 				} else {
-					throw new Error("No serializer implemented yet for tag ID " + tagId);
+					return _unsupportedTagSerializer;
 				}
 			}
 			return _serializerInstances[tagId] as ITagSerializer;
@@ -137,7 +140,12 @@ package org.as3commons.bytecode.swf {
 		protected function readTag(input:ByteArray):ISWFTag {
 			var recordHeader:RecordHeader = _recordHeaderSerializer.read(input) as RecordHeader;
 			var serializer:ITagSerializer = createTagSerializer(recordHeader.id);
-			return serializer.read(input);
+			if (serializer != null) {
+				return serializer.read(input, recordHeader);
+			} else {
+				input.position += recordHeader.length;
+				return null;
+			}
 		}
 
 		protected function writeTag(output:ByteArray, tag:ISWFTag):void {

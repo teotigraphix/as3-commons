@@ -18,35 +18,29 @@ package org.as3commons.bytecode.tags.serialization {
 	import flash.utils.ByteArray;
 
 	import org.as3commons.bytecode.tags.ISWFTag;
-	import org.as3commons.bytecode.tags.SymbolClassTag;
+	import org.as3commons.bytecode.tags.UnsupportedTag;
 	import org.as3commons.bytecode.tags.struct.RecordHeader;
-	import org.as3commons.bytecode.tags.struct.Symbol;
+	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.SWFSpec;
 
-	public class SymbolClassSerializer extends AbstractTagSerializer {
+	public class UnsupportedSerializer extends AbstractTagSerializer {
 
-		public function SymbolClassSerializer(serializerFactory:IStructSerializerFactory) {
-			super(serializerFactory);
+		public function UnsupportedSerializer() {
+			super(null);
 		}
 
 		override public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
-			var numSymbols:uint = SWFSpec.readUI16(input);
-			var tag:SymbolClassTag = new SymbolClassTag();
-			var serializer:IStructSerializer = structSerializerFactory.createSerializer(Symbol);
-			for (var i:uint = 0; i < numSymbols; i++) {
-				tag.symbols[tag.symbols.length] = serializer.read(input);
-			}
+			var tag:UnsupportedTag = new UnsupportedTag(recordHeader.id);
+			tag.tagBody = AbcSpec.byteArray();
+			input.readBytes(tag.tagBody, 0, recordHeader.length);
+			tag.tagBody.position = 0;
 			return tag;
 		}
 
 		override public function write(output:ByteArray, tag:ISWFTag):void {
-			var symbolTag:SymbolClassTag = tag as SymbolClassTag;
-			var serializer:IStructSerializer = structSerializerFactory.createSerializer(Symbol);
-			var len:uint = symbolTag.symbols.length;
-			SWFSpec.writeUI16(output, len);
-			for (var i:uint = 0; i < len; i++) {
-				serializer.write(output, symbolTag.symbols[i]);
-			}
+			var unsupportedTag:UnsupportedTag = tag as UnsupportedTag;
+			unsupportedTag.tagBody.position = 0;
+			output.writeBytes(unsupportedTag.tagBody);
 		}
 
 	}
