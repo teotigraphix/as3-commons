@@ -96,14 +96,14 @@
 	</developers>
 
 	<modules>
-		<!-- <module>as3-commons-bytecode</module> -->
+		<module>as3-commons-bytecode</module>
 		<module>as3-commons-collections</module>
 		<module>as3-commons-concurrency</module>
 		<!-- module>as3-commons-emit</module -->
 		<module>as3-commons-lang</module>
 		<module>as3-commons-logging</module>
 		<module>as3-commons-reflect</module>
-		<!-- <module>as3-commons-serialization</module> -->
+		<module>as3-commons-serialization</module>
 	</modules>
 
 	<dependencies>

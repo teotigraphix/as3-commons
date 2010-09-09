@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.as3commons.lang.builder {
-	
+
 	import flash.utils.getQualifiedClassName;
-	
+
 	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.ObjectUtils;
-	
+
 	/**
 	 * <p>Assists in implementing IEquals.equals() methods.</p>
 	 *
@@ -47,15 +47,15 @@ package org.as3commons.lang.builder {
 	 * @author Christophe Herreman
 	 */
 	public class EqualsBuilder {
-		
+
 		private var _equals:Boolean = true;
-		
+
 		/**
 		 * Creates a new EqualsBuilder
 		 */
 		public function EqualsBuilder() {
 		}
-		
+
 		/**
 		 * Returns if the objects tested for equality by this equalsbuilder are equal.
 		 *
@@ -64,7 +64,7 @@ package org.as3commons.lang.builder {
 		public function get equals():Boolean {
 			return _equals;
 		}
-		
+
 		/**
 		 * Test if two <code>Object</code>s are equal.
 		 *
@@ -76,21 +76,21 @@ package org.as3commons.lang.builder {
 			if (equals == false) {
 				return this;
 			}
-			
+
 			if (a === b) {
 				return this;
 			}
-			
+
 			if (a == null || b == null) {
 				_equals = false;
 				return this;
 			}
-			
+
 			if (getQualifiedClassName(a) != getQualifiedClassName(b)) {
 				_equals = false;
 				return this;
 			}
-			
+
 			if (ObjectUtils.isSimple(a)) {
 				if (a is Array) {
 					appendArray(a as Array, b as Array);
@@ -109,84 +109,84 @@ package org.as3commons.lang.builder {
 			} else {
 				appendObject(a, b);
 			}
-			
+
 			return this;
 		}
-		
+
 		private function appendObject(a:Object, b:Object):EqualsBuilder {
 			if (!_equals) {
 				return this;
 			}
-			
+
 			if (ObjectUtils.getNumProperties(a) != ObjectUtils.getNumProperties(b)) {
 				_equals = false;
 				return this;
 			}
-			
+
 			for (var key:* in a) {
 				append(a[key], b[key]);
 			}
-			
+
 			return this;
 		}
-		
+
 		private function appendArray(a:Array, b:Array):EqualsBuilder {
 			if (!_equals) {
 				return this;
 			}
-			
+
 			if (a.length != b.length) {
 				_equals = false;
 				return this;
 			}
-			
+
 			var numItems:uint = a.length;
-			
+
 			for (var i:uint = 0; i < numItems && _equals; i++) {
 				append(a[i], b[i]);
 			}
-			
+
 			return this;
 		}
-		
+
 		private function appendDate(a:Date, b:Date):EqualsBuilder {
 			if (!_equals) {
 				return this;
 			}
-			
+
 			if (a.getTime() != b.getTime()) {
 				_equals = false;
 			}
-			
+
 			return this;
 		}
-		
+
 		private function appendXML(a:XML, b:XML):EqualsBuilder {
 			if (!_equals) {
 				return this;
 			}
-			
+
 			if (a === b) {
 				return this;
 			}
-			
+
 			if (a.toXMLString() != b.toXMLString()) {
 				_equals = false;
 				return this;
 			}
-			
+
 			return this;
 		}
-		
+
 		private function appendEquals(a:IEquals, b:IEquals):EqualsBuilder {
 			if (!_equals) {
 				return this;
 			}
-			
+
 			if (!a.equals(b)) {
 				_equals = false;
 			}
-			
+
 			return this;
 		}
 	}
