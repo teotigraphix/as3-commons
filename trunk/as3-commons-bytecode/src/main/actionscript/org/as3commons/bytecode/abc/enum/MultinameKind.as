@@ -24,6 +24,7 @@ package org.as3commons.bytecode.abc.enum {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Multiname" in the AVM Spec (page 23)
 	 */
 	public class MultinameKind {
+
 		public static const QNAME:MultinameKind = new MultinameKind(0x07, "QName");
 		public static const QNAME_A:MultinameKind = new MultinameKind(0x0D, "QName_A");
 		public static const RTQNAME:MultinameKind = new MultinameKind(0x0F, "RTQName");

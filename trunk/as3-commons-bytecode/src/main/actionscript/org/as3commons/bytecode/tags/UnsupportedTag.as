@@ -14,33 +14,22 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.tags {
-	import org.as3commons.bytecode.as3commons_bytecode;
-	import org.as3commons.lang.Assert;
-	import org.as3commons.lang.StringUtils;
+	import flash.utils.ByteArray;
 
-	public class AbstractTag implements ISWFTag {
+	public class UnsupportedTag extends AbstractTag {
 
-		public function AbstractTag(id:uint, name:String) {
-			super();
-			initAbstractTag(id, name);
+		public function UnsupportedTag(id:uint) {
+			super(id, "unsupported");
 		}
 
-		private function initAbstractTag(id:uint, name:String):void {
-			Assert.hasText(name, "name argument must not be empty or null");
-			_id = id;
-			_name = name;
+		private var _tagBody:ByteArray;
+
+		public function get tagBody():ByteArray {
+			return _tagBody;
 		}
 
-		private var _id:uint;
-
-		public function get id():uint {
-			return _id;
-		}
-
-		private var _name:String;
-
-		public function get name():String {
-			return _name;
+		public function set tagBody(value:ByteArray):void {
+			_tagBody = value;
 		}
 
 	}

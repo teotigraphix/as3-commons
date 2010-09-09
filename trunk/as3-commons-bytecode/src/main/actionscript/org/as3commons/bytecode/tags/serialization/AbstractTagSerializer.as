@@ -17,6 +17,7 @@ package org.as3commons.bytecode.tags.serialization {
 	import flash.utils.ByteArray;
 
 	import org.as3commons.bytecode.tags.ISWFTag;
+	import org.as3commons.bytecode.tags.struct.RecordHeader;
 
 	public class AbstractTagSerializer implements ITagSerializer {
 
@@ -31,7 +32,7 @@ package org.as3commons.bytecode.tags.serialization {
 			_structSerializerFactory = serializerFactory;
 		}
 
-		public function read(input:ByteArray):ISWFTag {
+		public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
 			throw new Error("Method not implemented in abstract base class");
 		}
 

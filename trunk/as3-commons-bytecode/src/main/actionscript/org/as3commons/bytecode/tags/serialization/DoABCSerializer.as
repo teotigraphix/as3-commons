@@ -18,6 +18,7 @@ package org.as3commons.bytecode.tags.serialization {
 
 	import org.as3commons.bytecode.tags.DoABCTag;
 	import org.as3commons.bytecode.tags.ISWFTag;
+	import org.as3commons.bytecode.tags.struct.RecordHeader;
 	import org.as3commons.bytecode.util.AbcDeserializer;
 	import org.as3commons.bytecode.util.AbcSerializer;
 	import org.as3commons.bytecode.util.SWFSpec;
@@ -28,7 +29,7 @@ package org.as3commons.bytecode.tags.serialization {
 			super(serializerFactory);
 		}
 
-		override public function read(input:ByteArray):ISWFTag {
+		override public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
 			var tag:DoABCTag = new DoABCTag();
 			tag.flags = SWFSpec.readUI32(input);
 			tag.byteCodeName = SWFSpec.readString(input);

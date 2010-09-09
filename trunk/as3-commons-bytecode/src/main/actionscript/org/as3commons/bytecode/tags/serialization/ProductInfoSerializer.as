@@ -18,6 +18,7 @@ package org.as3commons.bytecode.tags.serialization {
 
 	import org.as3commons.bytecode.tags.ISWFTag;
 	import org.as3commons.bytecode.tags.ProductInfoTag;
+	import org.as3commons.bytecode.tags.struct.RecordHeader;
 	import org.as3commons.bytecode.util.SWFSpec;
 
 	public class ProductInfoSerializer extends AbstractTagSerializer {
@@ -26,7 +27,7 @@ package org.as3commons.bytecode.tags.serialization {
 			super(serializerFactory);
 		}
 
-		override public function read(input:ByteArray):ISWFTag {
+		override public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
 			var tag:ProductInfoTag = new ProductInfoTag();
 			tag.productId = SWFSpec.readUI32(input);
 			tag.edition = SWFSpec.readUI32(input);

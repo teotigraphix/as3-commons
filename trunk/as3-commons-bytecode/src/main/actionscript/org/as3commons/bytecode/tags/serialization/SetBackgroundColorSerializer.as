@@ -19,6 +19,7 @@ package org.as3commons.bytecode.tags.serialization {
 	import org.as3commons.bytecode.tags.ISWFTag;
 	import org.as3commons.bytecode.tags.SetBackgroundColorTag;
 	import org.as3commons.bytecode.tags.struct.RGB;
+	import org.as3commons.bytecode.tags.struct.RecordHeader;
 
 	public class SetBackgroundColorSerializer extends AbstractTagSerializer {
 
@@ -26,7 +27,7 @@ package org.as3commons.bytecode.tags.serialization {
 			super(serializerFactory);
 		}
 
-		override public function read(input:ByteArray):ISWFTag {
+		override public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
 			var tag:SetBackgroundColorTag = new SetBackgroundColorTag();
 			var rgb:IStructSerializer = structSerializerFactory.createSerializer(RGB);
 			tag.backgroundColor = rgb.read(input) as RGB;
