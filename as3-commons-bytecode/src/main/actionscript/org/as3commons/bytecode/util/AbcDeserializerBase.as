@@ -34,6 +34,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.MultinameG;
 	import org.as3commons.bytecode.abc.MultinameL;
+	import org.as3commons.bytecode.abc.NamedMultiname;
 	import org.as3commons.bytecode.abc.NamespaceSet;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.RuntimeQualifiedName;
@@ -119,6 +120,7 @@ package org.as3commons.bytecode.util {
 
 				var kind:MultinameKind = MultinameKind.determineKind(readU8());
 				switch (kind) {
+
 					case MultinameKind.QNAME:
 					case MultinameKind.QNAME_A:
 						// multiname_kind_QName 
@@ -170,7 +172,7 @@ package org.as3commons.bytecode.util {
 						var qualifiedName:QualifiedName = pool.multinamePool[readU30()];
 						var paramCount:uint = readU30();
 						var params:Array = [];
-						while (--paramCount > 0) {
+						for (var idx:uint = 0; idx < paramCount; idx++) {
 							params[params.length] = pool.multinamePool[readU30()];
 						}
 						multiname = new MultinameG(qualifiedName, paramCount, params, kind);
@@ -207,8 +209,7 @@ package org.as3commons.bytecode.util {
 
 		public function extract(byteStream:ByteArray, pool:Array, extractionMethod:Function):void {
 			var itemCount:int = readU30();
-			var itemIndex:int = itemCount;
-			while (--itemIndex > 0) {
+			for (var itemIndex:uint = 1; itemIndex < itemCount; itemIndex++) {
 				var result:* = extractionMethod.apply(this);
 				pool.push(result);
 			}

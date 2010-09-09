@@ -114,7 +114,8 @@ package org.as3commons.bytecode.util {
 				var paramCount:int = readU30();
 				methodInfo.returnType = pool.multinamePool[readU30()];
 				for (var argumentIndex:int = 0; argumentIndex < paramCount; argumentIndex++) {
-					var paramQName:QualifiedName = convertToQualifiedName(pool.multinamePool[readU30()]);
+					var mn:BaseMultiname = pool.multinamePool[readU30()];
+					var paramQName:QualifiedName = convertToQualifiedName(mn);
 					methodInfo.argumentCollection.push(new Argument(paramQName));
 				}
 				methodInfo.methodName = pool.stringPool[readU30()];
