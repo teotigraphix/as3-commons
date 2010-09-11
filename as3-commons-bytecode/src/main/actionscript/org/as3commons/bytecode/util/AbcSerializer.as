@@ -127,7 +127,8 @@ package org.as3commons.bytecode.util {
 				var opcodesAsByteArray:ByteArray = Opcode.serialize(body.opcodes, body, abcFile);
 //        		trace(opcodesAsByteArray.length + ": " + body.methodSignature.loomName);
 				writeU30(opcodesAsByteArray.length);
-				for (var opcodeBytePosition:int = 0; opcodeBytePosition < opcodesAsByteArray.length; ++opcodeBytePosition) {
+				var len:uint = opcodesAsByteArray.length;
+				for (var opcodeBytePosition:int = 0; opcodeBytePosition < len; ++opcodeBytePosition) {
 					writeU8(opcodesAsByteArray[opcodeBytePosition]);
 				}
 //        		for each (var opcode : int in body.opcodes)

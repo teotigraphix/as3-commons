@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.reflect {
+	import flash.utils.Dictionary;
+
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.TypeCache;

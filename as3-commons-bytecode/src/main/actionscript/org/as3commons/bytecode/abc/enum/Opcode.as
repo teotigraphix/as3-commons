@@ -209,6 +209,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static const throw_op:Opcode = new Opcode(0x03, "throw");
 		public static const typeof_op:Opcode = new Opcode(0x95, "typeof");
 		public static const urshift:Opcode = new Opcode(0xa7, "urshift");
+		private static const UNKNOWN_OPCODE_ARGUMENTTYPE:String = "Unknown Opcode argument type. {0}";
 
 		private var _opcodeName:String;
 		private var _value:int;
@@ -316,7 +317,7 @@ package org.as3commons.bytecode.abc.enum {
 					break;
 
 				default:
-					throw new Error("Unknown Opcode argument type." + argumentType.toString());
+					throw new Error(StringUtils.substitute(UNKNOWN_OPCODE_ARGUMENTTYPE, +argumentType));
 			}
 
 			try {
