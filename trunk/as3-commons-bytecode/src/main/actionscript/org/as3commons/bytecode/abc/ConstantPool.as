@@ -284,7 +284,8 @@ package org.as3commons.bytecode.abc {
 
 		public function getNamespacePosition(namespaze:LNamespace):int {
 			var index:int = -1;
-			for (var i:int = 0; i < _namespacePool.length; ++i) {
+			var len:uint = _namespacePool.length;
+			for (var i:int = 0; i < len; ++i) {
 				if (_namespacePool[i].equals(namespaze)) {
 					index = i;
 					break;
@@ -297,7 +298,8 @@ package org.as3commons.bytecode.abc {
 		//TODO: Clean up all these replicated lookup functions with an interface spec 
 		public function getNamespaceSetPosition(namespaceSet:NamespaceSet):int {
 			var index:int = -1;
-			for (var i:int = 0; i < _namespaceSetPool.length; ++i) {
+			var len:uint = _namespaceSetPool.length;
+			for (var i:int = 0; i < len; ++i) {
 				if (_namespaceSetPool[i].equals(namespaceSet)) {
 					index = i;
 					break;
@@ -309,7 +311,8 @@ package org.as3commons.bytecode.abc {
 
 		public function getMultinamePosition(multiname:BaseMultiname):int {
 			var index:int = -1;
-			for (var i:int = 0; i < _multinamePool.length; ++i) {
+			var len:uint = _multinamePool.length;
+			for (var i:int = 0; i < len; ++i) {
 				if (_multinamePool[i].equals(multiname)) {
 					index = i;
 					break;
@@ -320,7 +323,8 @@ package org.as3commons.bytecode.abc {
 
 		public function getMultinamePositionByName(multinameName:String):int {
 			var multinameIndex:int = -1;
-			for (var i:int = 0; i < _multinamePool.length; ++i) {
+			var len:uint = _multinamePool.length;
+			for (var i:int = 0; i < len; ++i) {
 				var multiname:BaseMultiname = _multinamePool[i];
 				if (multiname is NamedMultiname) {
 					if (NamedMultiname(multiname).name == multinameName) {
