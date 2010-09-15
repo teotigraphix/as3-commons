@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-	
+
 	/**
 	 * @author Christophe Herreman
 	 */
 	public class StringBuffer {
-		
-		private var _string:String;
-		
+
+		private var _string:Array;
+
 		/**
 		 * Creates a new StringBuffer.
 		 */
 		public function StringBuffer(string:String = "") {
-			_string = (string ? string : "");
+			_string = (string ? [string] : []);
 		}
-		
+
 		public function append(value:Object):StringBuffer {
-			_string += value;
+			_string[_string.length] = value;
 			return this;
 		}
-		
+
 		public function removeEnd(value:Object):StringBuffer {
-			_string = StringUtils.removeEnd(_string, value.toString());
+			_string = [StringUtils.removeEnd(toString(), value.toString())];
 			return this;
 		}
-		
+
 		public function toString():String {
-			return _string;
+			return _string.join('');
 		}
 	}
 }
