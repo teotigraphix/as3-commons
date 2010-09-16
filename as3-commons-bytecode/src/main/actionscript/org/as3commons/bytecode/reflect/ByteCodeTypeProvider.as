@@ -71,13 +71,13 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
-		public function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain = null):void {
+		public function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain = null, isLoaderBytes:Boolean = true):void {
 			Assert.notNull(input, "input argument must not be null");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var initialPosition:int = input.position;
 			try {
 				var deserializer:ReflectionDeserializer = new ReflectionDeserializer();
-				deserializer.read(getTypeCache() as ByteCodeTypeCache, input, applicationDomain);
+				deserializer.read(getTypeCache() as ByteCodeTypeCache, input, applicationDomain, isLoaderBytes);
 			} finally {
 				input.position = initialPosition;
 			}

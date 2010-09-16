@@ -29,6 +29,7 @@ package org.as3commons.bytecode.abc.enum {
 		private static var _enumCreated:Boolean = false;
 		private static const _TYPES:Dictionary = new Dictionary();
 
+
 		public static const QNAME:MultinameKind = new MultinameKind(0x07, "QName");
 		public static const QNAME_A:MultinameKind = new MultinameKind(0x0D, "QName_A");
 		public static const RTQNAME:MultinameKind = new MultinameKind(0x0F, "RTQName");
