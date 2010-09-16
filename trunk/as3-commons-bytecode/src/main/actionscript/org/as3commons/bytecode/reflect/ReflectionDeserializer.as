@@ -63,7 +63,7 @@ package org.as3commons.bytecode.reflect {
 			_recordHeaderSerializer = new RecordHeaderSerializer();
 		}
 
-		public function read(typeCache:ByteCodeTypeCache, input:ByteArray, applicationDomain:ApplicationDomain = null):void {
+		public function read(typeCache:ByteCodeTypeCache, input:ByteArray, applicationDomain:ApplicationDomain = null, isLoaderBytes:Boolean = true):void {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			_byteStream = AbcSpec.byteArray();
 			input.endian = Endian.LITTLE_ENDIAN;
@@ -73,7 +73,9 @@ package org.as3commons.bytecode.reflect {
 			var filesize:uint = input.readUnsignedInt();
 
 			input.readBytes(_byteStream);
-			_byteStream.length -= 8;
+			if (isLoaderBytes) {
+				_byteStream.length -= 8;
+			}
 
 			if (compressed) {
 				_byteStream.uncompress();

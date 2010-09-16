@@ -84,10 +84,10 @@ package org.as3commons.bytecode.reflect {
 		 * @param input The specified <code>ByteArray</code>.
 		 * @param applicationDomain The <code>ApplicationDomain</code> that is associated with the specified <code>ByteArray</code>.
 		 */
-		public static function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain = null):void {
+		public static function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain = null, isLoaderBytes:Boolean = true):void {
 			Assert.notNull(input, "input argument must not be null");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
-			(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(input, applicationDomain);
+			(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(input, applicationDomain, isLoaderBytes);
 		}
 
 		/**
@@ -96,7 +96,7 @@ package org.as3commons.bytecode.reflect {
 		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):ByteCodeType {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
-			var result:ByteCodeType;
+			var result:ByteCodeType = null;
 			var clazz:Class = ClassUtils.forInstance(instance, applicationDomain);
 
 			if (clazz != null) {
