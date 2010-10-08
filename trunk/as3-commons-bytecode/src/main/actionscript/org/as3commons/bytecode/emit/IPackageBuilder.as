@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.AbcFile;
 
-	public interface IAbcBuilder {
-		function definePackage(name:String):IPackageBuilder;
-		function build():AbcFile;
+	public interface IPackageBuilder {
+		function get name():String;
+		function defineClass():IClassBuilder;
+		function defineInterface():IInterfaceBuilder;
+		function defineMethod():IMethodBuilder;
+		function defineVariable():IVariableBuilder;
+		function build():Array;
 	}
 }

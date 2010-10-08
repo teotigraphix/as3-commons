@@ -15,8 +15,12 @@
  */
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.reflect.AccessorAccess;
 
-	public interface IAccessorBuilder {
-		function build():MethodInfo;
+	public interface IAccessorBuilder extends IVariableBuilder {
+
+		function get access():AccessorAccess;
+		function set access(value:AccessorAccess):void;
+
 	}
 }

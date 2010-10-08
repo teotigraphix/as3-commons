@@ -23,6 +23,7 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Instance" in the AVM Spec (page 28)
 	 */
 	public class InstanceInfo {
+
 		public var classMultiname:QualifiedName;
 		public var superclassMultiname:BaseMultiname;
 		public var protectedNamespace:LNamespace;

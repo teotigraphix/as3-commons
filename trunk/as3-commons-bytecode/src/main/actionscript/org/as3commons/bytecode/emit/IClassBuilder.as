@@ -16,7 +16,10 @@
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.ClassInfo;
 
-	public interface IClassBuilder {
+	public interface IClassBuilder extends IEmitObject {
+		function get superClassName():String;
+		function set superClassName(value:String):void;
+		function implementInterface(name:String):void;
 		function defineConstructor():ICtorBuilder;
 		function defineMethod():IMethodBuilder;
 		function defineAccessor():IAccessorBuilder;

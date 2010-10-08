@@ -29,7 +29,9 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "abcFile" in the AVM Spec (page 19)
 	 */
 	public class AbcFile {
+
 		private static const INSTANCE_INITIALIZER_QNAME:String = "{instance initializer (constructor?)}";
+
 		private var _methodInfo:Array;
 		private var _metadataInfo:Array;
 		private var _instanceInfo:Array;

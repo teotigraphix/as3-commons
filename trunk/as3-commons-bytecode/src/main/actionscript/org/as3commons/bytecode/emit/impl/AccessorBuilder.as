@@ -13,10 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.MethodInfo;
+package org.as3commons.bytecode.emit.impl {
 
-	public interface IMethodBuilder extends IEmitObject {
-		function build():MethodInfo;
+	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.emit.IAccessorBuilder;
+	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.reflect.AccessorAccess;
+
+	public class AccessorBuilder extends VariableBuilder implements IAccessorBuilder {
+
+		public function AccessorBuilder() {
+			super();
+		}
+
+		private var _access:AccessorAccess = AccessorAccess.READ_WRITE;
+
+		public function get access():AccessorAccess {
+			return _access;
+		}
+
+		public function set access(value:AccessorAccess):void {
+			_access = value;
+		}
+
+		override public function build():Object {
+			return null;
+		}
 	}
 }

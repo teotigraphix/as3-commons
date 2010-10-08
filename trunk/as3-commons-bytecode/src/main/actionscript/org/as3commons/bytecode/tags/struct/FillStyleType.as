@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.tags.struct {
+	import flash.utils.Dictionary;
+
 	import org.as3commons.bytecode.abc.enum.BaseEnum;
 
 	public final class FillStyleType extends BaseEnum {
+
+		private static const _items:Dictionary = new Dictionary();
 
 		private static var _enumCreated:Boolean = false;
 
@@ -35,10 +39,11 @@ package org.as3commons.bytecode.tags.struct {
 
 		public function FillStyleType(value:uint) {
 			super(value);
+			_items[value] = this;
 		}
 
 		public static function fromValue(fillStyleTypeValue:uint):FillStyleType {
-			var fillStyleType:FillStyleType = items[fillStyleTypeValue];
+			var fillStyleType:FillStyleType = _items[fillStyleTypeValue];
 			if (fillStyleType == null) {
 				throw new Error("Unable to match FillStyleType to " + fillStyleTypeValue);
 			}

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+
 	import org.as3commons.lang.StringUtils;
 
 	/**

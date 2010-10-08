@@ -13,11 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.AbcFile;
+package org.as3commons.bytecode.emit.impl {
 
-	public interface IAbcBuilder {
-		function definePackage(name:String):IPackageBuilder;
-		function build():AbcFile;
+	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
+	import org.as3commons.bytecode.emit.IVariableBuilder;
+	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+
+	public class VariableBuilder extends EmitMember implements IVariableBuilder {
+
+		public function VariableBuilder() {
+			super();
+		}
+
+		private var _type:String;
+
+		public function get type():String {
+			return _type;
+		}
+
+		public function set type(value:String):void {
+			_type = value;
+		}
+
+		public function build():Object {
+			return null;
+		}
 	}
 }

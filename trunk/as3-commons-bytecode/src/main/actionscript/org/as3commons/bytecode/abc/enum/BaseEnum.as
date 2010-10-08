@@ -19,13 +19,10 @@ package org.as3commons.bytecode.abc.enum {
 
 	public class BaseEnum {
 
-		protected static const items:Dictionary = new Dictionary();
-
 		private var _value:*;
 
 		public function BaseEnum(val:*) {
 			super();
-			items[val] = this;
 			_value = val;
 		}
 
