@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc.enum {
+	import flash.utils.Dictionary;
+
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -22,6 +24,8 @@ package org.as3commons.bytecode.abc.enum {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "flags" in the AVM Spec (page 28)
 	 */
 	public final class ClassConstant extends BaseEnum {
+
+		private static const _items:Dictionary = new Dictionary();
 
 		private static var _enumCreated:Boolean = false;
 
@@ -39,6 +43,7 @@ package org.as3commons.bytecode.abc.enum {
 		public function ClassConstant(bitMaskValue:uint, descriptionValue:String) {
 			Assert.state((false == _enumCreated), "The ClassConstant enum has already been created.");
 			super(bitMaskValue);
+			_items[bitMaskValue] = this;
 			_description = descriptionValue;
 		}
 
@@ -57,5 +62,14 @@ package org.as3commons.bytecode.abc.enum {
 		override public function toString():String {
 			return "";
 		}
+
+		public static function fromValue(bitMaskValue:uint):ClassConstant {
+			var classConstant:ClassConstant = _items[bitMaskValue];
+			if (classConstant == null) {
+				throw new Error("Unable to match ClassConstant to " + classConstant);
+			}
+			return classConstant;
+		}
+
 	}
 }

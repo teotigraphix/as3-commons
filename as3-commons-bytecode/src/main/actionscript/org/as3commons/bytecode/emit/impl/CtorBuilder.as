@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.AbcFile;
+package org.as3commons.bytecode.emit.impl {
+	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.emit.ICtorBuilder;
+	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
-	public interface IAbcBuilder {
-		function definePackage(name:String):IPackageBuilder;
-		function build():AbcFile;
+	public class CtorBuilder extends MethodBuilder implements ICtorBuilder {
+
+		public function CtorBuilder(name:String) {
+			super(name, MemberVisibility.PUBLIC);
+		}
+
 	}
 }

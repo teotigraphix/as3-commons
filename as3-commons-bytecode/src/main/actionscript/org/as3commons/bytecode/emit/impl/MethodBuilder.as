@@ -13,11 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.AbcFile;
+package org.as3commons.bytecode.emit.impl {
 
-	public interface IAbcBuilder {
-		function definePackage(name:String):IPackageBuilder;
-		function build():AbcFile;
+	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.emit.IMethodBuilder;
+	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+
+	public class MethodBuilder extends EmitMember implements IMethodBuilder {
+
+		public function MethodBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
+			super(name, visibility, nameSpace);
+		}
+
+		public function build():MethodInfo {
+			var mi:MethodInfo = new MethodInfo();
+			return mi;
+		}
 	}
 }

@@ -17,6 +17,5 @@ package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.MethodInfo;
 
 	public interface ICtorBuilder extends IMethodBuilder {
-
 	}
 }

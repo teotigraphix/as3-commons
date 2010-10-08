@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.AbcFile;
 
-	public interface IAbcBuilder {
-		function definePackage(name:String):IPackageBuilder;
-		function build():AbcFile;
+	public interface IEmitMember extends IEmitObject {
+		function get isOverride():Boolean;
+		function set isOverride(value:Boolean):void;
+
+		function get isFinal():Boolean;
+		function set isFinal(value:Boolean):void;
+
+		function get isStatic():Boolean;
+		function set isStatic(value:Boolean):void;
 	}
 }

@@ -16,7 +16,11 @@
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 
-	public interface IVariableBuilder {
-		function build():SlotOrConstantTrait;
+	public interface IVariableBuilder extends IEmitObject {
+
+		function get type():String;
+		function set type(value:String):void;
+
+		function build():Object;
 	}
 }

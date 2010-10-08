@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.enum {
+	import flash.utils.Dictionary;
+
 	import org.as3commons.bytecode.abc.enum.BaseEnum;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.lang.Assert;
 
 	public final class MemberVisibility extends BaseEnum {
+
+		private static const _items:Dictionary = new Dictionary();
 
 		private static var _enumCreated:Boolean = false;
 
@@ -41,10 +45,11 @@ package org.as3commons.bytecode.emit.enum {
 		public function MemberVisibility(val:*) {
 			Assert.state(!_enumCreated, "MemberVisibility enum has already been created");
 			super(val);
+			_items[val] = this;
 		}
 
 		public static function fromValue(value:String):MemberVisibility {
-			return items[value] as MemberVisibility;
+			return _items[value] as MemberVisibility;
 		}
 	}
 }
