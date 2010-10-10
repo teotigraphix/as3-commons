@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+import flash.errors.IllegalOperationError;
 
-	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.bytecode.emit.IMethodBuilder;
+import org.as3commons.bytecode.abc.MethodInfo;
+import org.as3commons.bytecode.emit.IMethodBodyBuilder;
+import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
 	public class MethodBuilder extends EmitMember implements IMethodBuilder {
+
+		private static const MULTIPLE_METHOD_BODIES_ERROR:String = "Only one method body can be created for a method.";
+		private static const CONSTANT_METHOD_ERROR:String = "Methods cannot be constant.";
+
+		private var _returnType:String;
+		private var _arguments:Array = [];
+		private var _methodBodyBuilder:IMethodBodyBuilder;
 
 		public function MethodBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
 			super(name, visibility, nameSpace);
@@ -28,6 +37,38 @@ package org.as3commons.bytecode.emit.impl {
 		public function build():MethodInfo {
 			var mi:MethodInfo = new MethodInfo();
 			return mi;
+		}
+
+		public function get returnType():String {
+			return _returnType;
+		}
+
+		public function set returnType(value:String):void {
+			_returnType = value;
+		}
+
+		public function get arguments():Array {
+			return _arguments;
+		}
+
+		public function set arguments(value:Array):void {
+			_arguments = value;
+		}
+
+		override public function get isConstant():Boolean {
+			return false;
+		}
+
+		override public function set isConstant(value:Boolean):void {
+			throw new IllegalOperationError(CONSTANT_METHOD_ERROR);
+		}
+
+		public function defineMethodBody():IMethodBodyBuilder {
+			if (_methodBodyBuilder != null){
+				throw new IllegalOperationError(MULTIPLE_METHOD_BODIES_ERROR);
+			}
+			_methodBodyBuilder = new MethodBodyBuilder();
+			return _methodBodyBuilder;
 		}
 	}
 }

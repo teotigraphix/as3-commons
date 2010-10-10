@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.reflect.AccessorAccess;
+import org.as3commons.bytecode.abc.ConstantPool;
+import org.as3commons.bytecode.abc.MethodBody;
 
-	public interface IAccessorBuilder extends IVariableBuilder {
-
-		function get access():AccessorAccess;
-		function set access(value:AccessorAccess):void;
-
-        function get variable():IVariableBuilder;
-        function set variable(value:IVariableBuilder):void;
-
-	}
+public interface IMethodBodyBuilder {
+	function get opcodes():Array;
+	function set opcodes(value:Array):void;
+	function get hasDXNS():Boolean;
+	function set hasDXNS(value:Boolean):void;
+	function get hasNewActivation():Boolean;
+	function set hasNewActivation(value:Boolean):void;
+	function defineExceptionInfo():IExceptionInfoBuilder;
+	function build():MethodBody;
+}
 }

@@ -46,7 +46,6 @@ package org.as3commons.bytecode.abc {
 			traits = [];
 		}
 
-
 		/**
 		 * I can never remember that "instanceInitializer" is the constructor, so I made this convenience method.
 		 */

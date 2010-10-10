@@ -45,7 +45,8 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function build():AbcFile {
-			return null;
+            var abcFile:AbcFile = new AbcFile();
+			return abcFile;
 		}
 	}
 

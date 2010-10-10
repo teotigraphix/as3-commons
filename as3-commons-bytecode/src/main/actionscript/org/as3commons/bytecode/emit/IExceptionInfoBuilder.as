@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.reflect.AccessorAccess;
+import org.as3commons.bytecode.abc.ExceptionInfo;
 
-	public interface IAccessorBuilder extends IVariableBuilder {
-
-		function get access():AccessorAccess;
-		function set access(value:AccessorAccess):void;
-
-        function get variable():IVariableBuilder;
-        function set variable(value:IVariableBuilder):void;
-
-	}
+public interface IExceptionInfoBuilder {
+	function build():ExceptionInfo;
+}
 }

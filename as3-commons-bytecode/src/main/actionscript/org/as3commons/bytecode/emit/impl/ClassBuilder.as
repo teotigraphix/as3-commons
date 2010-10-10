@@ -17,7 +17,8 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 
 	import org.as3commons.bytecode.abc.ClassInfo;
-	import org.as3commons.bytecode.emit.IAccessorBuilder;
+import org.as3commons.bytecode.abc.InstanceInfo;
+import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
@@ -34,6 +35,9 @@ package org.as3commons.bytecode.emit.impl {
 		private var _accessorBuilders:Array;
 		private var _variableBuilders:Array;
 		private var _extendsType:String = OBJECT_BASE_CLASS_NAME;
+		private var _isSealed:Boolean;
+		private var _isFinal:Boolean;
+		private var _isProtected:Boolean;
 
 		public function ClassBuilder() {
 			super();
@@ -53,6 +57,30 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set superClassName(value:String):void {
 			_extendsType = value;
+		}
+
+		public function get isSealed():Boolean {
+			return _isSealed;
+		}
+
+		public function set isSealed(value:Boolean):void {
+			_isSealed = value;
+		}
+
+		public function get isFinal():Boolean {
+			return _isFinal;
+		}
+
+		public function set isFinal(value:Boolean):void {
+			_isFinal = value;
+		}
+
+		public function get isProtected():Boolean {
+			return _isProtected;
+		}
+
+		public function set isProtected(value:Boolean):void {
+			_isProtected = value;
 		}
 
 		public function implementInterface(name:String):void {
@@ -86,9 +114,30 @@ package org.as3commons.bytecode.emit.impl {
 			return vb;
 		}
 
-		public function build():ClassInfo {
+		public function build():Array {
+			var ci:ClassInfo = createClassInfo();
+			var ii:InstanceInfo = createInstanceInfo();
+			var methods:Array = createMethods();
+			return [ci,ii,methods];
+		}
+
+		private function createMethods():Array {
+			return [];
+		}
+
+		protected function createInstanceInfo():InstanceInfo {
+			var ii:InstanceInfo = new InstanceInfo();
+			ii.isFinal = isFinal;
+			ii.isInterface = false;
+			ii.isProtected = isProtected;
+			ii.isSealed = isSealed;
+			return ii;
+		}
+
+		protected function createClassInfo():ClassInfo {
 			var ci:ClassInfo = new ClassInfo();
 			return ci;
 		}
+
 	}
 }
