@@ -25,6 +25,10 @@ import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 
 public class MethodBodyBuilder implements IMethodBodyBuilder {
 
+
+	/*
+	The stack modifier logic I spied from the excellent AS3Eval library: http://eval.hurlant.com/
+	 */
 	private static const stackModifiers:Dictionary = new Dictionary();
 	{
 		stackModifiers["dup"] = 1;
