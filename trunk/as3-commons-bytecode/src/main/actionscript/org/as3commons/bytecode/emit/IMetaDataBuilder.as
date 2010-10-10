@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.reflect.AccessorAccess;
+import org.as3commons.bytecode.emit.impl.MetaDataArgument;
 
-	public interface IAccessorBuilder extends IVariableBuilder {
-
-		function get access():AccessorAccess;
-		function set access(value:AccessorAccess):void;
-
-        function get variable():IVariableBuilder;
-        function set variable(value:IVariableBuilder):void;
-
-	}
+public interface IMetaDataBuilder {
+	function get name():String;
+	function set name(value:String):void;
+	function get arguments():Array;
+	function set argument(value:Array):void;
+	function defineArgument():MetaDataArgument;
+}
 }

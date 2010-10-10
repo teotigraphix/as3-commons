@@ -17,16 +17,18 @@ package org.as3commons.bytecode.emit.impl {
 
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
-	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+import org.as3commons.bytecode.emit.IVariableBuilder;
+import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.reflect.AccessorAccess;
 
 	public class AccessorBuilder extends VariableBuilder implements IAccessorBuilder {
 
+        private var _access:AccessorAccess = AccessorAccess.READ_WRITE;
+        private var _variable:IVariableBuilder;
+
 		public function AccessorBuilder() {
 			super();
 		}
-
-		private var _access:AccessorAccess = AccessorAccess.READ_WRITE;
 
 		public function get access():AccessorAccess {
 			return _access;
@@ -39,5 +41,13 @@ package org.as3commons.bytecode.emit.impl {
 		override public function build():Object {
 			return null;
 		}
-	}
+
+        public function get variable():IVariableBuilder {
+            return _variable;
+        }
+
+        public function set variable(value:IVariableBuilder):void {
+            _variable = value;
+        }
+    }
 }

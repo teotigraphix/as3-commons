@@ -13,17 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.reflect.AccessorAccess;
+package org.as3commons.bytecode.emit.impl {
+public class MetaDataArgument {
+	private var _key:String;
+	private var _value:String;
 
-	public interface IAccessorBuilder extends IVariableBuilder {
-
-		function get access():AccessorAccess;
-		function set access(value:AccessorAccess):void;
-
-        function get variable():IVariableBuilder;
-        function set variable(value:IVariableBuilder):void;
-
+	public function MetaDataArgument() {
+		super();
 	}
+
+	public function get key():String {
+		return _key;
+	}
+
+	public function set key(value:String):void {
+		_key = value;
+	}
+
+	public function get value():String {
+		return _value;
+	}
+
+	public function set value(v:String):void {
+		_value = v;
+	}
+}
 }

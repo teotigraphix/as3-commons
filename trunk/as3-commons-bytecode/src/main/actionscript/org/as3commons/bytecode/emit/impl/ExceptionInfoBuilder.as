@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.reflect.AccessorAccess;
+package org.as3commons.bytecode.emit.impl {
+import org.as3commons.bytecode.abc.ExceptionInfo;
+import org.as3commons.bytecode.emit.IExceptionInfoBuilder;
 
-	public interface IAccessorBuilder extends IVariableBuilder {
+public class ExceptionInfoBuilder extends ExceptionInfo implements IExceptionInfoBuilder {
 
-		function get access():AccessorAccess;
-		function set access(value:AccessorAccess):void;
-
-        function get variable():IVariableBuilder;
-        function set variable(value:IVariableBuilder):void;
-
+	public function ExceptionInfoBuilder() {
+		super();
 	}
+
+	public function build():ExceptionInfo {
+		return this;
+	}
+}
 }

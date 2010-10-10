@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
-	import org.as3commons.lang.StringUtils;
-	import org.as3commons.lang.StringUtils;
+    import org.as3commons.lang.StringUtils;
 
-	/**
-	 * as3commons-bytecode representation of <code>class_info</code> in the ABC file format.
-	 *
-	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Class" in the AVM Spec (page 32)
-	 */
-	public class ClassInfo {
-		public var staticInitializer:MethodInfo;
-		public var traits:Array;
+    /**
+     * as3commons-bytecode representation of <code>class_info</code> in the ABC file format.
+     *
+     * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Class" in the AVM Spec (page 32)
+     */
+    public class ClassInfo {
 
-		public function ClassInfo() {
-			traits = [];
-		}
+        public var staticInitializer:MethodInfo;
+        public var traits:Array;
 
-		public function toString():String {
-			return StringUtils.substitute("ClassInfo[\n\tstaticInitializer={0}\n\ttraits=[\n\t\t{1}\n\t]\n]", staticInitializer, traits.join("\n\t\t"));
-		}
-	}
+        public function ClassInfo() {
+            traits = [];
+        }
+
+        public function toString():String {
+            return StringUtils.substitute("ClassInfo[\n\tstaticInitializer={0}\n\ttraits=[\n\t\t{1}\n\t]\n]", staticInitializer, traits.join("\n\t\t"));
+        }
+    }
 }

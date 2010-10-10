@@ -14,16 +14,33 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.ClassInfo;
+public interface IClassBuilder extends IEmitObject {
+	function get superClassName():String;
 
-	public interface IClassBuilder extends IEmitObject {
-		function get superClassName():String;
-		function set superClassName(value:String):void;
-		function implementInterface(name:String):void;
-		function defineConstructor():ICtorBuilder;
-		function defineMethod():IMethodBuilder;
-		function defineAccessor():IAccessorBuilder;
-		function defineVariable():IVariableBuilder;
-		function build():ClassInfo;
-	}
+	function set superClassName(value:String):void;
+
+	function get isSealed():Boolean;
+
+	function set isSealed(value:Boolean):void;
+
+	function get isFinal():Boolean;
+
+	function set isFinal(value:Boolean):void;
+
+	function get isProtected():Boolean;
+
+	function set isProtected(value:Boolean):void;
+
+	function implementInterface(name:String):void;
+
+	function defineConstructor():ICtorBuilder;
+
+	function defineMethod():IMethodBuilder;
+
+	function defineAccessor():IAccessorBuilder;
+
+	function defineVariable():IVariableBuilder;
+
+	function build():Array;
+}
 }

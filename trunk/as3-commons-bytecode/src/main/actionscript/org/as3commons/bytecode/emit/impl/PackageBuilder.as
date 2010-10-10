@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-
-	import org.as3commons.bytecode.emit.IClassBuilder;
+import org.as3commons.bytecode.abc.MethodBody;
+import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
@@ -50,19 +50,27 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function defineClass():IClassBuilder {
-			return null;
+            var cb:ClassBuilder = new ClassBuilder();
+            _classBuilders[_classBuilders.length] = cb;
+			return cb;
 		}
 
 		public function defineInterface():IInterfaceBuilder {
-			return null;
+            var ib:InterfaceBuilder = new InterfaceBuilder();
+            _interfaceBuilders[_interfaceBuilders.length] = ib;
+			return ib;
 		}
 
 		public function defineMethod():IMethodBuilder {
-			return null;
+            var mb:MethodBuilder = new MethodBuilder();
+            _methodBuilders[_methodBuilders.length] = mb;
+			return mb;
 		}
 
 		public function defineVariable():IVariableBuilder {
-			return null;
+            var vb:VariableBuilder = new VariableBuilder();
+            _variableBuilders[_variableBuilders.length] = vb;
+			return vb;
 		}
 
 		public function build():Array {
