@@ -22,6 +22,9 @@ package org.as3commons.bytecode.swf {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 
+	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.util.AbcSerializer;
+
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
 	 */
@@ -44,7 +47,7 @@ package org.as3commons.bytecode.swf {
 			0x44, 0x11, // Tag type=69 (FileAttributes), length=4  
 			0x08, 0x00, 0x00, 0x00];
 
-		private static var ABC_HEADER:Array = [0x3f, 0x12, // Tag type=72 (DoABC), length=next.
+		private static var ABC_HEADER:Array = [0x3f, 0x12 // Tag type=72 (DoABC), length=next.
 			//0xff, 0xff, 0xff, 0xff                                // ABC length, not included in the copy. 
 			];
 
@@ -53,6 +56,7 @@ package org.as3commons.bytecode.swf {
 		private static var ALLOW_BYTECODE_PROPERTY_NAME:String = "allowLoadBytesCodeExecution";
 
 		public function AbcClassLoader() {
+			super();
 		}
 
 		/**
@@ -104,7 +108,8 @@ package org.as3commons.bytecode.swf {
 		 * @see flash.utils.ByteArray
 		 * @see flash.system.ApplicationDomain
 		 */
-		public function loadClassDefinitionsFromBytecode(bytes:*):void {
+		public function loadClassDefinitionsFromBytecode(bytes:*, applicationDomain:ApplicationDomain = null):void {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			if (bytes is Array || (getType(bytes) == 2)) {
 				if (!(bytes is Array)) {
 					bytes = [bytes];
@@ -113,16 +118,20 @@ package org.as3commons.bytecode.swf {
 			}
 
 			// allowLoadBytesCodeExecution is only available in AIR, so we have to flip it dynamically
-			var c:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain, null);
+			var c:LoaderContext = new LoaderContext(false, applicationDomain, null);
 			if (c.hasOwnProperty(ALLOW_BYTECODE_PROPERTY_NAME)) {
 				c[ALLOW_BYTECODE_PROPERTY_NAME] = true;
 			}
 
 			var l:Loader = new Loader;
 			l.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
-					dispatchEvent(event);
-				});
+				dispatchEvent(event);
+			});
 			l.loadBytes(bytes, c);
+		}
+
+		public function loadAbcFile(abcFile:AbcFile, applicationDomain:ApplicationDomain = null):void {
+			loadClassDefinitionsFromBytecode(new AbcSerializer().serializeAbcFile(abcFile), applicationDomain);
 		}
 
 		/**

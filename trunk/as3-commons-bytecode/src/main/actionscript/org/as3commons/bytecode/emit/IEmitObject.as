@@ -3,6 +3,8 @@ package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
 	public interface IEmitObject {
+		function get packageName():String;
+		function set packageName(value:String):void;
 		function get name():String;
 		function set name(value:String):void;
 		function get visibility():MemberVisibility;

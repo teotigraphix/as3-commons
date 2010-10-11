@@ -17,12 +17,18 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 
 	import org.as3commons.bytecode.abc.ClassInfo;
-import org.as3commons.bytecode.abc.InstanceInfo;
-import org.as3commons.bytecode.emit.IAccessorBuilder;
+	import org.as3commons.bytecode.abc.InstanceInfo;
+	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.enum.MultinameKind;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
+	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.lang.StringUtils;
 
 	public class ClassBuilder extends BaseBuilder implements IClassBuilder {
 
@@ -34,7 +40,7 @@ import org.as3commons.bytecode.emit.IAccessorBuilder;
 		private var _methodBuilders:Array;
 		private var _accessorBuilders:Array;
 		private var _variableBuilders:Array;
-		private var _extendsType:String = OBJECT_BASE_CLASS_NAME;
+		private var _superClassName:String = OBJECT_BASE_CLASS_NAME;
 		private var _isSealed:Boolean;
 		private var _isFinal:Boolean;
 		private var _isProtected:Boolean;
@@ -52,11 +58,11 @@ import org.as3commons.bytecode.emit.IAccessorBuilder;
 		}
 
 		public function get superClassName():String {
-			return _extendsType;
+			return _superClassName;
 		}
 
 		public function set superClassName(value:String):void {
-			_extendsType = value;
+			_superClassName = value;
 		}
 
 		public function get isSealed():Boolean {
@@ -118,7 +124,7 @@ import org.as3commons.bytecode.emit.IAccessorBuilder;
 			var ci:ClassInfo = createClassInfo();
 			var ii:InstanceInfo = createInstanceInfo();
 			var methods:Array = createMethods();
-			return [ci,ii,methods];
+			return [ci, ii, methods];
 		}
 
 		private function createMethods():Array {
@@ -131,6 +137,8 @@ import org.as3commons.bytecode.emit.IAccessorBuilder;
 			ii.isInterface = false;
 			ii.isProtected = isProtected;
 			ii.isSealed = isSealed;
+			ii.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
+			ii.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : MultinameUtil.OBJECT_NAME);
 			return ii;
 		}
 

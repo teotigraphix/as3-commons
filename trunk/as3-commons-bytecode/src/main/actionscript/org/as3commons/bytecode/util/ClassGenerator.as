@@ -76,10 +76,10 @@ package org.as3commons.bytecode.util {
 //			</type>
 
 			var className:String = typeXml.@name;
-			classDef.className = toQualifiedName(className);
+			classDef.className = MultinameUtil.toQualifiedName(className);
 
 			var superClassName:String = typeXml.factory.extendsClass.@type;
-			classDef.superClass = toQualifiedName(superClassName);
+			classDef.superClass = MultinameUtil.toQualifiedName(superClassName);
 
 			var methods:XMLList = typeXml.factory.method;
 			for each (var method:XML in methods) {
@@ -93,23 +93,5 @@ package org.as3commons.bytecode.util {
 			return classDef;
 		}
 
-		public function toQualifiedName(className:String):QualifiedName {
-			var name:QualifiedName;
-
-			switch (className) {
-				case "Object":
-					name = BuiltIns.OBJECT;
-					break;
-
-				default:
-					var portions:Array = className.split("::");
-					var namespacePortion:String = portions[0];
-					var classNamePortion:String = portions[1];
-					name = new QualifiedName(classNamePortion, new LNamespace(NamespaceKind.PROTECTED_NAMESPACE, namespacePortion));
-					break;
-			}
-
-			return name;
-		}
 	}
 }

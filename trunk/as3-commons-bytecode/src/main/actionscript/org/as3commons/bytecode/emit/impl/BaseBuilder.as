@@ -30,9 +30,18 @@ package org.as3commons.bytecode.emit.impl {
 			_visiblity = visibility;
 		}
 
+		private var _packageName:String;
 		private var _name:String;
 		private var _namespace:String;
 		private var _visiblity:MemberVisibility;
+
+		public function get packageName():String {
+			return _packageName;
+		}
+
+		public function set packageName(value:String):void {
+			_packageName = value;
+		}
 
 		public function get name():String {
 			return _name;

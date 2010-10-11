@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-import org.as3commons.bytecode.abc.MethodBody;
-import org.as3commons.bytecode.emit.IClassBuilder;
+	import org.as3commons.bytecode.abc.MethodBody;
+	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
+	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
@@ -36,45 +37,66 @@ import org.as3commons.bytecode.emit.IClassBuilder;
 
 		private function init(name:String):void {
 			Assert.hasText(name, "name argument must not be null or empty");
-			_name = name;
+			_packageName = name;
 			_classBuilders = [];
 			_interfaceBuilders = [];
 			_methodBuilders = [];
 			_variableBuilders = [];
 		}
 
-		private var _name:String;
+		private var _packageName:String;
 
-		public function get name():String {
-			return _name;
+		public function get packageName():String {
+			return _packageName;
 		}
 
-		public function defineClass():IClassBuilder {
-            var cb:ClassBuilder = new ClassBuilder();
-            _classBuilders[_classBuilders.length] = cb;
+		public function defineClass(name:String):IClassBuilder {
+			var cb:ClassBuilder = new ClassBuilder();
+			cb.name = name;
+			cb.packageName = packageName;
+			_classBuilders[_classBuilders.length] = cb;
 			return cb;
 		}
 
-		public function defineInterface():IInterfaceBuilder {
-            var ib:InterfaceBuilder = new InterfaceBuilder();
-            _interfaceBuilders[_interfaceBuilders.length] = ib;
+		public function defineInterface(name:String):IInterfaceBuilder {
+			var ib:InterfaceBuilder = new InterfaceBuilder();
+			ib.name = name;
+			ib.packageName = packageName;
+			_interfaceBuilders[_interfaceBuilders.length] = ib;
 			return ib;
 		}
 
-		public function defineMethod():IMethodBuilder {
-            var mb:MethodBuilder = new MethodBuilder();
-            _methodBuilders[_methodBuilders.length] = mb;
+		public function defineMethod(name:String):IMethodBuilder {
+			var mb:MethodBuilder = new MethodBuilder();
+			mb.name = name;
+			mb.packageName = packageName;
+			_methodBuilders[_methodBuilders.length] = mb;
 			return mb;
 		}
 
-		public function defineVariable():IVariableBuilder {
-            var vb:VariableBuilder = new VariableBuilder();
-            _variableBuilders[_variableBuilders.length] = vb;
+		public function defineVariable(name:String):IVariableBuilder {
+			var vb:VariableBuilder = new VariableBuilder();
+			vb.name = name;
+			vb.packageName = packageName;
+			_variableBuilders[_variableBuilders.length] = vb;
 			return vb;
 		}
 
 		public function build():Array {
-			return null;
+			var result:Array = [];
+			for each (var cb:IClassBuilder in _classBuilders) {
+				result = result.concat(cb.build());
+			}
+			for each (var ib:IInterfaceBuilder in _interfaceBuilders) {
+				result[result.length] = ib.build()[1];
+			}
+			for each (var mb:IMethodBuilder in _methodBuilders) {
+				result[result.length] = mb.build();
+			}
+			for each (var vb:IVariableBuilder in _variableBuilders) {
+				result[result.length] = vb.build();
+			}
+			return result;
 		}
 	}
 }
