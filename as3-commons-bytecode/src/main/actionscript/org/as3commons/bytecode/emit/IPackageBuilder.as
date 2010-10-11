@@ -16,11 +16,11 @@
 package org.as3commons.bytecode.emit {
 
 	public interface IPackageBuilder {
-		function get name():String;
-		function defineClass():IClassBuilder;
-		function defineInterface():IInterfaceBuilder;
-		function defineMethod():IMethodBuilder;
-		function defineVariable():IVariableBuilder;
+		function get packageName():String;
+		function defineClass(name:String):IClassBuilder;
+		function defineInterface(name:String):IInterfaceBuilder;
+		function defineMethod(name:String):IMethodBuilder;
+		function defineVariable(name:String):IVariableBuilder;
 		function build():Array;
 	}
 }

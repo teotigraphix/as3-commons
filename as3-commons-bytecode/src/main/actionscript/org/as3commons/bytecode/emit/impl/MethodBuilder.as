@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-import flash.errors.IllegalOperationError;
+	import flash.errors.IllegalOperationError;
 
-import org.as3commons.bytecode.abc.MethodInfo;
-import org.as3commons.bytecode.emit.IMethodBodyBuilder;
-import org.as3commons.bytecode.emit.IMethodBuilder;
+	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
+	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
 	public class MethodBuilder extends EmitMember implements IMethodBuilder {
@@ -34,6 +34,14 @@ import org.as3commons.bytecode.emit.IMethodBuilder;
 			super(name, visibility, nameSpace);
 		}
 
+		public function get arguments():Array {
+			return _arguments;
+		}
+
+		public function set arguments(value:Array):void {
+			_arguments = value;
+		}
+
 		public function build():MethodInfo {
 			var mi:MethodInfo = new MethodInfo();
 			return mi;
@@ -47,14 +55,6 @@ import org.as3commons.bytecode.emit.IMethodBuilder;
 			_returnType = value;
 		}
 
-		public function get arguments():Array {
-			return _arguments;
-		}
-
-		public function set arguments(value:Array):void {
-			_arguments = value;
-		}
-
 		override public function get isConstant():Boolean {
 			return false;
 		}
@@ -64,7 +64,7 @@ import org.as3commons.bytecode.emit.IMethodBuilder;
 		}
 
 		public function defineMethodBody():IMethodBodyBuilder {
-			if (_methodBodyBuilder != null){
+			if (_methodBodyBuilder != null) {
 				throw new IllegalOperationError(MULTIPLE_METHOD_BODIES_ERROR);
 			}
 			_methodBodyBuilder = new MethodBodyBuilder();
