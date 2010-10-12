@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.MethodInfo;
 
-	public interface IMethodBuilder extends IEmitObject {
+	public interface IMethodBuilder extends IEmitMember {
 		function get returnType():String;
 		function set returnType(value:String):void;
 		function get arguments():Array;

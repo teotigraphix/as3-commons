@@ -15,8 +15,8 @@
  */
 package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IEmitMember;
-import org.as3commons.bytecode.emit.IMetaDataBuilder;
-import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.emit.IMetaDataBuilder;
+	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
 	public class EmitMember extends BaseBuilder implements IEmitMember {
 
