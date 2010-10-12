@@ -139,6 +139,10 @@ package org.as3commons.bytecode.emit.impl {
 			ii.isSealed = isSealed;
 			ii.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
 			ii.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : MultinameUtil.OBJECT_NAME);
+			ii.instanceInitializer = _ctorBuilder.build();
+			for each (var interfaceName:String in _implementedInterfaceNames) {
+				ii.interfaceMultinames[ii.interfaceMultinames.length] = MultinameUtil.toQualifiedName(interfaceName);
+			}
 			return ii;
 		}
 

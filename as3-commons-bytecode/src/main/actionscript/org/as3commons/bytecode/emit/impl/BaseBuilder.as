@@ -34,6 +34,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _name:String;
 		private var _namespace:String;
 		private var _visiblity:MemberVisibility;
+		private var _traits:Array = [];
 
 		public function get packageName():String {
 			return _packageName;
@@ -65,6 +66,14 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set visibility(value:MemberVisibility):void {
 			_visiblity = value;
+		}
+
+		public function get traits():Array {
+			return _traits;
+		}
+
+		public function set traits(value:Array):void {
+			_traits = value;
 		}
 
 	}
