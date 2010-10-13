@@ -20,6 +20,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.emit.util.BuildUtil;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.util.MultinameUtil;
 
@@ -50,7 +51,7 @@ package org.as3commons.bytecode.emit.impl {
 				mi.methodBody = _methodBodyBuilder.build();
 			}
 			for each (var methodArg:MethodArgument in _arguments) {
-				var arg:Argument = new Argument(MultinameUtil.toQualifiedName(methodArg.type), methodArg.isOptional, methodArg.defaultValue);
+				var arg:Argument = new Argument(MultinameUtil.toQualifiedName(methodArg.type), methodArg.isOptional, methodArg.defaultValue, BuildUtil.toConstantKind(methodArg.defaultValue));
 				mi.argumentCollection[mi.argumentCollection.length] = arg;
 			}
 			return mi;
