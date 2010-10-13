@@ -19,12 +19,15 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
+	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
 	import org.as3commons.bytecode.util.MultinameUtil;
@@ -123,12 +126,29 @@ package org.as3commons.bytecode.emit.impl {
 		public function build():Array {
 			var ci:ClassInfo = createClassInfo();
 			var ii:InstanceInfo = createInstanceInfo();
-			var methods:Array = createMethods();
+			var methods:Array = createMethods(ci, ii);
 			return [ci, ii, methods];
 		}
 
-		private function createMethods():Array {
-			return [];
+		private function createMethodBodies():Array {
+			var result:Array = [];
+			for each (var mb:IMethodBuilder in _methodBuilders) {
+			}
+			return result;
+		}
+
+		private function createMethods(classInfo:ClassInfo, instanceInfo:InstanceInfo):Array {
+			var result:Array = [];
+			for each (var mb:IMethodBuilder in _methodBuilders) {
+				var mi:MethodInfo = mb.build();
+				result[result.length] = mi;
+				if (mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.kind == NamespaceKind.STATIC_PROTECTED_NAMESPACE) {
+					classInfo.traits[classInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+				} else {
+					instanceInfo.traits[instanceInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+				}
+			}
+			return result;
 		}
 
 		protected function createInstanceInfo():InstanceInfo {

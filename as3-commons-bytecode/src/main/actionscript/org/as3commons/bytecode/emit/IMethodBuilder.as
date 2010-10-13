@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.emit.impl.MethodArgument;
 
 	public interface IMethodBuilder extends IEmitMember {
 		function get returnType():String;
@@ -22,6 +23,7 @@ package org.as3commons.bytecode.emit {
 		function get arguments():Array;
 		function set arguments(value:Array):void;
 		function defineMethodBody():IMethodBodyBuilder;
+		function defineArgument(type:String = "", isOptional:Boolean = false, defaultValue:Object = null):MethodArgument;
 		function build():MethodInfo;
 	}
 }
