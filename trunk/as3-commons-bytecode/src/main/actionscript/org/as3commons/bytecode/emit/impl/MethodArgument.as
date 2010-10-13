@@ -14,46 +14,47 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-public class MethodArgument {
-	private var _name:String;
-	private var _isOptional:Boolean;
-	private var _type:String;
-	private var _defaultValue:String;
 
-	public function MethodArgument() {
-		super();
-	}
+	public class MethodArgument {
+		private var _name:String;
+		private var _isOptional:Boolean;
+		private var _type:String;
+		private var _defaultValue:Object;
 
-	public function get name():String {
-		return _name;
-	}
+		public function MethodArgument() {
+			super();
+		}
 
-	public function set name(value:String):void {
-		_name = value;
-	}
+		public function get name():String {
+			return _name;
+		}
 
-	public function get isOptional():Boolean {
-		return _isOptional;
-	}
+		public function set name(value:String):void {
+			_name = value;
+		}
 
-	public function set isOptional(value:Boolean):void {
-		_isOptional = value;
-	}
+		public function get isOptional():Boolean {
+			return _isOptional;
+		}
 
-	public function get type():String {
-		return _type;
-	}
+		public function set isOptional(value:Boolean):void {
+			_isOptional = value;
+		}
 
-	public function set type(value:String):void {
-		_type = value;
-	}
+		public function get type():String {
+			return _type;
+		}
 
-	public function get defaultValue():String {
-		return _defaultValue;
-	}
+		public function set type(value:String):void {
+			_type = value;
+		}
 
-	public function set defaultValue(value:String):void {
-		_defaultValue = value;
+		public function get defaultValue():Object {
+			return _defaultValue;
+		}
+
+		public function set defaultValue(value:Object):void {
+			_defaultValue = value;
+		}
 	}
-}
 }

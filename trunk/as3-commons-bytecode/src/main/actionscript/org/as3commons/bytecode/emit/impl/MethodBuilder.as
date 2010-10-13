@@ -20,6 +20,8 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.typeinfo.Argument;
+	import org.as3commons.bytecode.util.MultinameUtil;
 
 	public class MethodBuilder extends EmitMember implements IMethodBuilder {
 
@@ -44,6 +46,13 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function build():MethodInfo {
 			var mi:MethodInfo = new MethodInfo();
+			if (_methodBodyBuilder != null) {
+				mi.methodBody = _methodBodyBuilder.build();
+			}
+			for each (var methodArg:MethodArgument in _arguments) {
+				var arg:Argument = new Argument(MultinameUtil.toQualifiedName(methodArg.type), methodArg.isOptional, methodArg.defaultValue);
+				mi.argumentCollection[mi.argumentCollection.length] = arg;
+			}
 			return mi;
 		}
 
@@ -70,5 +79,15 @@ package org.as3commons.bytecode.emit.impl {
 			_methodBodyBuilder = new MethodBodyBuilder();
 			return _methodBodyBuilder;
 		}
+
+		public function defineArgument(type:String = "", isOptional:Boolean = false, defaultValue:Object = null):MethodArgument {
+			var arg:MethodArgument = new MethodArgument();
+			arg.type = type;
+			arg.isOptional = isOptional;
+			arg.defaultValue = defaultValue;
+			_arguments[_arguments.length] = arg;
+			return arg;
+		}
+
 	}
 }
