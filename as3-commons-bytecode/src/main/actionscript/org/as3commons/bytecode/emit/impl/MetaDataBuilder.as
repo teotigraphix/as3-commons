@@ -14,36 +14,47 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-import org.as3commons.bytecode.emit.*;
+	import org.as3commons.bytecode.emit.*;
+	import org.as3commons.bytecode.typeinfo.Metadata;
 
-public class MetaDataBuilder implements IMetaDataBuilder {
-	private var _name:String;
-	private var _arguments:Array = [];
+	public class MetaDataBuilder implements IMetaDataBuilder {
 
-	public function MetaDataBuilder() {
-		super();
+		private var _name:String = "";
+		private var _arguments:Array = [];
+
+		public function MetaDataBuilder() {
+			super();
+		}
+
+		public function get name():String {
+			return _name;
+		}
+
+		public function set name(value:String):void {
+			_name = value;
+		}
+
+		public function get arguments():Array {
+			return _arguments;
+		}
+
+		public function set argument(value:Array):void {
+			_arguments = value;
+		}
+
+		public function defineArgument():MetaDataArgument {
+			var ma:MetaDataArgument = new MetaDataArgument();
+			_arguments[_arguments.length] = ma;
+			return ma;
+		}
+
+		public function build():Metadata {
+			var md:Metadata = new Metadata();
+			md.name = _name;
+			for each (var ma:MetaDataArgument in _arguments) {
+				md.properties[ma.key] = ma.value;
+			}
+			return md;
+		}
 	}
-
-	public function get name():String {
-		return _name;
-	}
-
-	public function set name(value:String):void {
-		_name = value;
-	}
-
-	public function get arguments():Array {
-		return _arguments;
-	}
-
-	public function set argument(value:Array):void {
-		_arguments = value;
-	}
-
-	public function defineArgument():MetaDataArgument {
-		var ma:MetaDataArgument = new MetaDataArgument();
-		_arguments[_arguments.length] = ma;
-		return ma;
-	}
-}
 }

@@ -62,10 +62,26 @@ package org.as3commons.bytecode.emit.impl {
 			_isConstant = value;
 		}
 
+		public function get metadata():Array {
+			return _metadata;
+		}
+
+		public function set metadata(value:Array):void {
+			_metadata = value;
+		}
+
 		public function defineMetaData():IMetaDataBuilder {
 			var mdb:MetaDataBuilder = new MetaDataBuilder();
 			_metadata[_metadata.length] = mdb;
 			return mdb;
+		}
+
+		protected function buildMetadata():Array {
+			var result:Array = [];
+			for each (var mdb:MetaDataBuilder in _metadata) {
+				result[result.length] = mdb.build();
+			}
+			return result;
 		}
 	}
 }

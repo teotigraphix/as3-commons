@@ -49,7 +49,6 @@ package org.as3commons.bytecode.abc.enum {
 			Assert.state((!_enumCreated), "TraitKind enum has already been created");
 			_value = bitValue;
 			_description = descriptionValue;
-
 			_TYPES[_value] = this;
 		}
 

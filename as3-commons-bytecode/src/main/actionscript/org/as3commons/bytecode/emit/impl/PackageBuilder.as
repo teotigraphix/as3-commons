@@ -82,6 +82,10 @@ package org.as3commons.bytecode.emit.impl {
 			return vb;
 		}
 
+		/**
+		 * Returns An <code>Array</code> of <code>ClassInfo</code>, <code>InstanceInfo</code> and <code>MethodInfo</code> instances.
+		 * @return An <code>Array</code> of <code>ClassInfo</code>, <code>InstanceInfo</code> and <code>MethodInfo</code> instances.
+		 */
 		public function build():Array {
 			var result:Array = [];
 			for each (var cb:IClassBuilder in _classBuilders) {

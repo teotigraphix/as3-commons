@@ -16,7 +16,14 @@
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 
+	import mx.rpc.events.ResultEvent;
+
+	import org.as3commons.bytecode.abc.FunctionTrait;
 	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.abc.MethodTrait;
+	import org.as3commons.bytecode.abc.TraitInfo;
+	import org.as3commons.bytecode.abc.enum.BuiltIns;
+	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
@@ -29,7 +36,7 @@ package org.as3commons.bytecode.emit.impl {
 		private static const MULTIPLE_METHOD_BODIES_ERROR:String = "Only one method body can be created for a method.";
 		private static const CONSTANT_METHOD_ERROR:String = "Methods cannot be constant.";
 
-		private var _returnType:String;
+		private var _returnType:String = BuiltIns.VOID.fullName;
 		private var _arguments:Array = [];
 		private var _methodBodyBuilder:IMethodBodyBuilder;
 
@@ -43,18 +50,6 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set arguments(value:Array):void {
 			_arguments = value;
-		}
-
-		public function build():MethodInfo {
-			var mi:MethodInfo = new MethodInfo();
-			if (_methodBodyBuilder != null) {
-				mi.methodBody = _methodBodyBuilder.build();
-			}
-			for each (var methodArg:MethodArgument in _arguments) {
-				var arg:Argument = new Argument(MultinameUtil.toQualifiedName(methodArg.type), methodArg.isOptional, methodArg.defaultValue, BuildUtil.toConstantKind(methodArg.defaultValue));
-				mi.argumentCollection[mi.argumentCollection.length] = arg;
-			}
-			return mi;
 		}
 
 		public function get returnType():String {
@@ -89,6 +84,30 @@ package org.as3commons.bytecode.emit.impl {
 			_arguments[_arguments.length] = arg;
 			return arg;
 		}
+
+		public function build():Array {
+			var mi:MethodInfo = new MethodInfo();
+			if (_methodBodyBuilder != null) {
+				mi.methodBody = _methodBodyBuilder.build();
+			}
+			for each (var methodArg:MethodArgument in _arguments) {
+				var arg:Argument = new Argument(MultinameUtil.toQualifiedName(methodArg.type), methodArg.isOptional, methodArg.defaultValue, BuildUtil.toConstantKind(methodArg.defaultValue));
+				mi.argumentCollection[mi.argumentCollection.length] = arg;
+			}
+			trait = buildTrait();
+			MethodTrait(trait).traitMethod = mi;
+			trait.addMetadataList(buildMetadata());
+			return [mi, trait.metadata];
+		}
+
+		override protected function buildTrait():TraitInfo {
+			var trait:MethodTrait = new MethodTrait();
+			trait.traitKind = TraitKind.METHOD;
+			trait.isFinal = isFinal;
+			trait.isOverride = isOverride;
+			return trait;
+		}
+
 
 	}
 }

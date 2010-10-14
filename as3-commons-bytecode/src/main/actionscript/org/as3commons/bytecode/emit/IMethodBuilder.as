@@ -24,6 +24,6 @@ package org.as3commons.bytecode.emit {
 		function set arguments(value:Array):void;
 		function defineMethodBody():IMethodBodyBuilder;
 		function defineArgument(type:String = "", isOptional:Boolean = false, defaultValue:Object = null):MethodArgument;
-		function build():MethodInfo;
+		function build():Array;
 	}
 }

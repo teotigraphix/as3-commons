@@ -29,6 +29,8 @@ package org.as3commons.bytecode.emit.util {
 				return ConstantKind.UINT;
 			} else if (instance is Number) {
 				return ConstantKind.DOUBLE;
+			} else if (instance is String) {
+				return ConstantKind.UTF8;
 			} else if (instance is Boolean) {
 				return (instance == true) ? ConstantKind.TRUE : ConstantKind.FALSE;
 			} else if (instance == null) {

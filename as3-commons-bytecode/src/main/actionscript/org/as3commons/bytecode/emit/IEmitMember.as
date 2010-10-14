@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-public interface IEmitMember extends IEmitObject {
-	function get isOverride():Boolean;
 
-	function set isOverride(value:Boolean):void;
+	public interface IEmitMember extends IEmitObject {
+		function get isOverride():Boolean;
 
-	function get isFinal():Boolean;
+		function set isOverride(value:Boolean):void;
 
-	function set isFinal(value:Boolean):void;
+		function get isFinal():Boolean;
 
-	function get isStatic():Boolean;
+		function set isFinal(value:Boolean):void;
 
-	function set isStatic(value:Boolean):void;
+		function get isStatic():Boolean;
 
-	function defineMetaData():IMetaDataBuilder;
-}
+		function set isStatic(value:Boolean):void;
+
+		function get metadata():Array;
+
+		function set metadata(value:Array):void;
+
+		function defineMetaData():IMetaDataBuilder;
+	}
 }

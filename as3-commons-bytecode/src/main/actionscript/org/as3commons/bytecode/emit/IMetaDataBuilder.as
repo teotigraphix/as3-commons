@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-import org.as3commons.bytecode.emit.impl.MetaDataArgument;
+	import org.as3commons.bytecode.emit.impl.MetaDataArgument;
+	import org.as3commons.bytecode.typeinfo.Metadata;
 
-public interface IMetaDataBuilder {
-	function get name():String;
-	function set name(value:String):void;
-	function get arguments():Array;
-	function set argument(value:Array):void;
-	function defineArgument():MetaDataArgument;
-}
+	public interface IMetaDataBuilder {
+		function get name():String;
+		function set name(value:String):void;
+		function get arguments():Array;
+		function set argument(value:Array):void;
+		function defineArgument():MetaDataArgument;
+		function build():Metadata;
+	}
 }

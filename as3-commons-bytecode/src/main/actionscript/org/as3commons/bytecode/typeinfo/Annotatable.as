@@ -22,6 +22,7 @@ package org.as3commons.bytecode.typeinfo {
 		private var _metadata:Array;
 
 		public function Annotatable() {
+			super();
 			_metadata = [];
 		}
 
@@ -30,6 +31,13 @@ package org.as3commons.bytecode.typeinfo {
 		 */
 		public function addMetadata(metadata:Metadata):void {
 			_metadata[_metadata.length] = metadata;
+		}
+
+		/**
+		 * Adds a <code>Metadata</code> entry to this object instance.
+		 */
+		public function addMetadataList(metadataList:Array):void {
+			_metadata = metadata.concat(metadataList);
 		}
 
 		/**

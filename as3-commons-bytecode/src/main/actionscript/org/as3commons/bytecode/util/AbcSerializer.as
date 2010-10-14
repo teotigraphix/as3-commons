@@ -141,8 +141,8 @@ package org.as3commons.bytecode.util {
 					writeU30(exception.exceptionEnabledFromCodePosition);
 					writeU30(exception.exceptionEnabledToCodePosition);
 					writeU30(exception.codePositionToJumpToOnException);
-					writeU30(pool.getStringPosition(exception.exceptionTypeName));
-					writeU30(pool.getStringPosition(exception.nameOfVariableReceivingException));
+					writeU30(pool.addString(exception.exceptionTypeName));
+					writeU30(pool.addString(exception.nameOfVariableReceivingException));
 				}
 
 				serializeTraits(body.traits, abcFile);
@@ -154,7 +154,7 @@ package org.as3commons.bytecode.util {
 
 			writeU30(scriptInfo.length);
 			for each (var script:ScriptInfo in scriptInfo) {
-				writeU30(abcFile.methodInfo.indexOf(script.scriptInitializer));
+				writeU30(abcFile.addMethodInfo(script.scriptInitializer));
 				serializeTraits(script.traits, abcFile);
 			}
 		}
@@ -193,7 +193,7 @@ package org.as3commons.bytecode.util {
 						// }
 						var slotTrait:SlotOrConstantTrait = trait as SlotOrConstantTrait;
 						writeU30(slotTrait.slotId);
-						writeU30(pool.getMultinamePosition(slotTrait.typeMultiname));
+						writeU30(pool.addMultiname(slotTrait.typeMultiname));
 						writeU30(slotTrait.vindex);
 						if (slotTrait.vindex != 0) {
 							writeU8(slotTrait.vkind.value);
@@ -210,7 +210,7 @@ package org.as3commons.bytecode.util {
 						// }
 						var methodTrait:MethodTrait = trait as MethodTrait;
 						writeU30(methodTrait.dispositionId);
-						writeU30(abcFile.methodInfo.indexOf(methodTrait.traitMethod));
+						writeU30(abcFile.addMethodInfo(methodTrait.traitMethod));
 						break;
 
 					case TraitKind.CLASS:
@@ -232,7 +232,7 @@ package org.as3commons.bytecode.util {
 						// } 
 						var functionTrait:FunctionTrait = trait as FunctionTrait;
 						writeU30(functionTrait.functionSlotId);
-						writeU30(abcFile.methodInfo.indexOf(functionTrait.functionMethod));
+						writeU30(abcFile.addMethodInfo(functionTrait.functionMethod));
 						break;
 
 					default:
@@ -243,7 +243,7 @@ package org.as3commons.bytecode.util {
 				if (trait.hasMetadata) {
 					writeU30(trait.metadata.length);
 					for each (var metadataEntry:Metadata in trait.metadata) {
-						writeU30(abcFile.metadataInfo.indexOf(metadataEntry));
+						writeU30(abcFile.addMetadataInfo(metadataEntry));
 					}
 				}
 			}
@@ -350,12 +350,12 @@ package org.as3commons.bytecode.util {
 			writeU30(methodInfoArray.length); // u30 method_count
 			for each (var methodInfo:MethodInfo in methodInfoArray) {
 				writeU30(methodInfo.formalParameters.length); // u30 param_count
-				writeU30(pool.getMultinamePosition(methodInfo.returnType)); // u30 return_type
+				writeU30(pool.addMultiname(methodInfo.returnType)); // u30 return_type
 				for each (var formalParam:Argument in methodInfo.formalParameters) {
-					writeU30(pool.getMultinamePosition(formalParam.type)); // u30 param_type[param_count] 
+					writeU30(pool.addMultiname(formalParam.type)); // u30 param_type[param_count] 
 				}
 
-				writeU30(pool.getStringPosition(methodInfo.methodName));
+				writeU30(pool.addString(methodInfo.methodName));
 
 				//  NEED_ARGUMENTS 0x01 Suggests to the run-time that an “arguments” object (as specified by the
 				//                 ActionScript 3.0 Language Reference) be created. Must not be used together with
@@ -383,19 +383,19 @@ package org.as3commons.bytecode.util {
 						var positionInPool:int;
 						switch (optionalArgument.kind) {
 							case ConstantKind.INT:
-								positionInPool = pool.getIntPosition(defaultValue as int);
+								positionInPool = pool.addInt(defaultValue as int);
 								break;
 
 							case ConstantKind.UINT:
-								positionInPool = pool.getUintPosition(defaultValue as uint);
+								positionInPool = pool.addUint(defaultValue as uint);
 								break;
 
 							case ConstantKind.DOUBLE:
-								positionInPool = pool.getDoublePosition(defaultValue as Number);
+								positionInPool = pool.addDouble(defaultValue as Number);
 								break;
 
 							case ConstantKind.UTF8:
-								positionInPool = pool.getStringPosition(defaultValue as String);
+								positionInPool = pool.addString(defaultValue as String);
 								break;
 
 							case ConstantKind.TRUE:
@@ -414,7 +414,7 @@ package org.as3commons.bytecode.util {
 							case ConstantKind.EXPLICIT_NAMESPACE:
 							case ConstantKind.STATIC_PROTECTED_NAMESPACE:
 							case ConstantKind.PRIVATE_NAMESPACE:
-								positionInPool = pool.getNamespacePosition(defaultValue as LNamespace);
+								positionInPool = pool.addNamespace(defaultValue as LNamespace);
 								break;
 
 							default:
@@ -705,7 +705,7 @@ package org.as3commons.bytecode.util {
 					for (var i:int = (method.methodArguments.length - numberOfOptionalArguments); i < argLen; ++i) {
 						arg = method.methodArguments[i];
 						var defaultValueIndex:int = 0;
-						defaultValueIndex = _pool.getConstantPoolItemIndex(arg.kind, arg.defaultValue);
+						defaultValueIndex = _pool.addItemToPool(arg.kind, arg.defaultValue);
 						AbcSpec.writeU30(defaultValueIndex, buffer);
 						AbcSpec.writeU8(arg.kind.value, buffer);
 					}

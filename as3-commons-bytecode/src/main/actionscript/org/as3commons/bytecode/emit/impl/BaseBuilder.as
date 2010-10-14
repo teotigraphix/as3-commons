@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.errors.IllegalOperationError;
+
+	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.emit.IEmitObject;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
 	public class BaseBuilder implements IEmitObject {
+
+		private static const NOT_IMPLEMENTED_ERROR:String = "buildTrait is not implemented in BaseBuilder base class.";
 
 		public function BaseBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
 			super();
@@ -34,7 +39,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _name:String;
 		private var _namespace:String;
 		private var _visiblity:MemberVisibility;
-		private var _traits:Array = [];
+		private var _trait:TraitInfo;
 
 		public function get packageName():String {
 			return _packageName;
@@ -68,12 +73,16 @@ package org.as3commons.bytecode.emit.impl {
 			_visiblity = value;
 		}
 
-		public function get traits():Array {
-			return _traits;
+		public function get trait():TraitInfo {
+			return _trait;
 		}
 
-		public function set traits(value:Array):void {
-			_traits = value;
+		public function set trait(value:TraitInfo):void {
+			_trait = value;
+		}
+
+		protected function buildTrait():TraitInfo {
+			throw new IllegalOperationError(NOT_IMPLEMENTED_ERROR);
 		}
 
 	}
