@@ -49,6 +49,7 @@ package org.as3commons.bytecode.emit.impl {
 			trait.isFinal = isFinal;
 			trait.isOverride = isOverride;
 			trait.traitKind = (isConstant) ? TraitKind.CONST : TraitKind.SLOT;
+			trait.isStatic = isStatic;
 			trait.typeMultiname = MultinameUtil.toQualifiedName(_type);
 			return trait;
 		}

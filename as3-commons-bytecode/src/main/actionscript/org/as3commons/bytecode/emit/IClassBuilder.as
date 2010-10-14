@@ -19,9 +19,9 @@ public interface IClassBuilder extends IEmitObject {
 
 	function set superClassName(value:String):void;
 
-	function get isSealed():Boolean;
+	function get isDynamic():Boolean;
 
-	function set isSealed(value:Boolean):void;
+	function set isDynamic(value:Boolean):void;
 
 	function get isFinal():Boolean;
 

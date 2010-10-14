@@ -26,6 +26,7 @@ package org.as3commons.bytecode.abc {
 	public class FunctionTrait extends TraitInfo {
 		public var functionSlotId:int;
 		public var functionMethod:MethodInfo;
+		public var isStatic:Boolean = false;
 
 		public function FunctionTrait() {
 			super();

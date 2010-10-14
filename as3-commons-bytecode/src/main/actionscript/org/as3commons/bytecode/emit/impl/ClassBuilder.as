@@ -21,6 +21,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
@@ -45,7 +46,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _accessorBuilders:Array;
 		private var _variableBuilders:Array;
 		private var _superClassName:String = OBJECT_BASE_CLASS_NAME;
-		private var _isSealed:Boolean;
+		private var _isDynamic:Boolean;
 		private var _isFinal:Boolean;
 		private var _isProtected:Boolean;
 		private var _metadata:Array;
@@ -73,12 +74,12 @@ package org.as3commons.bytecode.emit.impl {
 			_superClassName = value;
 		}
 
-		public function get isSealed():Boolean {
-			return _isSealed;
+		public function get isDynamic():Boolean {
+			return _isDynamic;
 		}
 
-		public function set isSealed(value:Boolean):void {
-			_isSealed = value;
+		public function set isDynamic(value:Boolean):void {
+			_isDynamic = value;
 		}
 
 		public function get isFinal():Boolean {
@@ -154,29 +155,57 @@ package org.as3commons.bytecode.emit.impl {
 			var ci:ClassInfo = createClassInfo();
 			var ii:InstanceInfo = createInstanceInfo();
 			var metadata:Array = buildMetadata();
-			var methods:Array = createMethods(ci, ii, metadata);
-			methods = methods.concat(createAccessors(ci, ii));
+			var methods:Array = createMethods(metadata);
+			var variableTraits:Array = createVariables();
+			methods = methods.concat(createAccessors(variableTraits));
+			for each(var mi:MethodInfo in methods){
+				if (mi.as3commonsByteCodeAssignedMethodTrait.isStatic){
+					ci.traits[ci.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+				} else {
+					ii.traits[ii.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+				}
+			}
+			for each(var st:SlotOrConstantTrait in variableTraits){
+				if (st.isStatic){
+					ci.traits[ci.traits.length] = st;
+				} else {
+					ii.traits[ii.traits.length] = st;
+				}
+			}
 			return [ci, ii, methods, metadata];
 		}
 
-		private function createMethods(classInfo:ClassInfo, instanceInfo:InstanceInfo, metadata:Array):Array {
+		private function createVariables():Array {
+			var result:Array = [];
+			for each(var vb:IVariableBuilder in _variableBuilders){
+				result[result.length] = vb.build();
+			}
+			return result;
+		}
+
+		private function createMethods(metadata:Array):Array {
 			var result:Array = [];
 			for each (var mb:IMethodBuilder in _methodBuilders) {
 				var arr:Array = mb.build();
 				var mi:MethodInfo = arr[0];
 				metadata = metadata.concat(arr[1]);
 				result[result.length] = mi;
-				if (mb.isStatic) {
-					classInfo.traits[classInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
-				} else {
-					instanceInfo.traits[instanceInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
-				}
 			}
 			return result;
 		}
 
-		protected function createAccessors(classInfo:ClassInfo, instanceInfo:InstanceInfo):Array {
+		protected function createAccessors(variableTraits:Array):Array {
 			var result:Array = [];
+			for each(var ab:IAccessorBuilder in _accessorBuilders) {
+				var lst:Array = ab.build() as Array;
+				for each(var obj:Object in lst){
+					if (obj is MethodInfo){
+						result[result.length] = obj;
+					} else {
+						variableTraits[variableTraits.length] = obj;
+					}
+				}
+			}
 			return result;
 		}
 
@@ -185,13 +214,13 @@ package org.as3commons.bytecode.emit.impl {
 			ii.isFinal = isFinal;
 			ii.isInterface = false;
 			ii.isProtected = isProtected;
-			ii.isSealed = isSealed;
+			ii.isSealed = !isDynamic;
 			ii.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
 			ii.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : MultinameUtil.OBJECT_NAME);
 			ii.isFinal = isFinal;
 			ii.isInterface = false;
 			ii.isProtected = isProtected;
-			ii.isSealed = isSealed;
+			ii.isSealed = !isDynamic;
 			ii.instanceInitializer = _ctorBuilder.build()[0];
 			for each (var interfaceName:String in _implementedInterfaceNames) {
 				ii.interfaceMultinames[ii.interfaceMultinames.length] = MultinameUtil.toQualifiedName(interfaceName);

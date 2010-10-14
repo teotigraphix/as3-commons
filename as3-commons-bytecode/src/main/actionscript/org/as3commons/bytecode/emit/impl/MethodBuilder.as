@@ -97,6 +97,7 @@ package org.as3commons.bytecode.emit.impl {
 			trait = buildTrait();
 			MethodTrait(trait).traitMethod = mi;
 			trait.addMetadataList(buildMetadata());
+			mi.as3commonsByteCodeAssignedMethodTrait = MethodTrait(trait);
 			return [mi, trait.metadata];
 		}
 
