@@ -21,6 +21,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.util.MultinameUtil;
 
 	public class VariableBuilder extends EmitMember implements IVariableBuilder {
 
@@ -48,6 +49,7 @@ package org.as3commons.bytecode.emit.impl {
 			trait.isFinal = isFinal;
 			trait.isOverride = isOverride;
 			trait.traitKind = (isConstant) ? TraitKind.CONST : TraitKind.SLOT;
+			trait.typeMultiname = MultinameUtil.toQualifiedName(_type);
 			return trait;
 		}
 
