@@ -26,6 +26,7 @@ package org.as3commons.bytecode.abc {
 	public class MethodTrait extends TraitInfo {
 		public var dispositionId:int;
 		public var traitMethod:MethodInfo;
+		public var isStatic:Boolean;
 
 		public function MethodTrait() {
 			super();

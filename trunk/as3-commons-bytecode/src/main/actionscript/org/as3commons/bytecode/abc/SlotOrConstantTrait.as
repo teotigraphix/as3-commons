@@ -28,6 +28,7 @@ package org.as3commons.bytecode.abc {
 		public var typeMultiname:BaseMultiname;
 		public var vindex:int;
 		public var vkind:ConstantKind;
+		public var isStatic:Boolean;
 
 		public function SlotOrConstantTrait() {
 			super();

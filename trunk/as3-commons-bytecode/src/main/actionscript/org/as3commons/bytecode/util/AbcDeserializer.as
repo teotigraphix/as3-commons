@@ -306,7 +306,7 @@ package org.as3commons.bytecode.util {
 				var classInfo:ClassInfo = new ClassInfo();
 				classInfo.staticInitializer = abcFile.methodInfo[readU30()];
 				classInfo.staticInitializer.as3commonsBytecodeName = STATIC_INITIALIZER_BYTECODENAME;
-				classInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
+				classInfo.traits = deserializeTraitsInfo(abcFile, byteStream, true);
 				abcFile.addClassInfo(classInfo);
 			}
 
@@ -416,7 +416,7 @@ package org.as3commons.bytecode.util {
 			return -1;
 		}
 
-		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray):Array {
+		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false):Array {
 			var traits:Array = [];
 			var pool:ConstantPool = abcFile.constantPool;
 			var methodInfos:Array = abcFile.methodInfo;
@@ -452,6 +452,7 @@ package org.as3commons.bytecode.util {
 						slotOrConstantTrait.slotId = readU30();
 						slotOrConstantTrait.typeMultiname = pool.multinamePool[readU30()];
 						slotOrConstantTrait.vindex = readU30();
+						slotOrConstantTrait.isStatic = isStatic;
 						if (slotOrConstantTrait.vindex != 0) {
 							slotOrConstantTrait.vkind = ConstantKind.determineKind(readU8());
 						}
@@ -467,6 +468,7 @@ package org.as3commons.bytecode.util {
 						//  u30 method 
 						// }
 						var methodTrait:MethodTrait = new MethodTrait();
+						methodTrait.isStatic = isStatic;
 						methodTrait.dispositionId = readU30();
 
 						// It's not strictly necessary to do this, but it helps the API for the MethodInfo to have a
@@ -500,6 +502,7 @@ package org.as3commons.bytecode.util {
 						var functionTrait:FunctionTrait = new FunctionTrait();
 						functionTrait.functionSlotId = readU30();
 						functionTrait.functionMethod = methodInfos[readU30()];
+						functionTrait.isStatic = isStatic;
 						trait = functionTrait;
 						break;
 				}
