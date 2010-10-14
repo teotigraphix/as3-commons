@@ -27,6 +27,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
+	import org.as3commons.bytecode.emit.IMetaDataBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
@@ -47,6 +48,8 @@ package org.as3commons.bytecode.emit.impl {
 		private var _isSealed:Boolean;
 		private var _isFinal:Boolean;
 		private var _isProtected:Boolean;
+		private var _metadata:Array;
+		private var _traits:Array;
 
 		public function ClassBuilder() {
 			super();
@@ -58,6 +61,8 @@ package org.as3commons.bytecode.emit.impl {
 			_accessorBuilders = [];
 			_variableBuilders = [];
 			_implementedInterfaceNames = [];
+			_metadata = [];
+			_traits = [];
 		}
 
 		public function get superClassName():String {
@@ -90,6 +95,28 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set isProtected(value:Boolean):void {
 			_isProtected = value;
+		}
+
+		public function get metadata():Array {
+			return _metadata;
+		}
+
+		public function set metadata(value:Array):void {
+			_metadata = value;
+		}
+
+		public function defineMetaData():IMetaDataBuilder {
+			var mdb:MetaDataBuilder = new MetaDataBuilder();
+			_metadata[_metadata.length] = mdb;
+			return mdb;
+		}
+
+		protected function buildMetadata():Array {
+			var result:Array = [];
+			for each (var mdb:MetaDataBuilder in _metadata) {
+				result[result.length] = mdb.build();
+			}
+			return result;
 		}
 
 		public function implementInterface(name:String):void {
@@ -126,28 +153,30 @@ package org.as3commons.bytecode.emit.impl {
 		public function build():Array {
 			var ci:ClassInfo = createClassInfo();
 			var ii:InstanceInfo = createInstanceInfo();
-			var methods:Array = createMethods(ci, ii);
-			return [ci, ii, methods];
+			var metadata:Array = buildMetadata();
+			var methods:Array = createMethods(ci, ii, metadata);
+			methods = methods.concat(createAccessors(ci, ii));
+			return [ci, ii, methods, metadata];
 		}
 
-		private function createMethodBodies():Array {
+		private function createMethods(classInfo:ClassInfo, instanceInfo:InstanceInfo, metadata:Array):Array {
 			var result:Array = [];
 			for each (var mb:IMethodBuilder in _methodBuilders) {
-			}
-			return result;
-		}
-
-		private function createMethods(classInfo:ClassInfo, instanceInfo:InstanceInfo):Array {
-			var result:Array = [];
-			for each (var mb:IMethodBuilder in _methodBuilders) {
-				var mi:MethodInfo = mb.build();
+				var arr:Array = mb.build();
+				var mi:MethodInfo = arr[0];
+				metadata = metadata.concat(arr[1]);
 				result[result.length] = mi;
-				if (mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.kind == NamespaceKind.STATIC_PROTECTED_NAMESPACE) {
+				if (mb.isStatic) {
 					classInfo.traits[classInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
 				} else {
 					instanceInfo.traits[instanceInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
 				}
 			}
+			return result;
+		}
+
+		protected function createAccessors(classInfo:ClassInfo, instanceInfo:InstanceInfo):Array {
+			var result:Array = [];
 			return result;
 		}
 
@@ -159,7 +188,11 @@ package org.as3commons.bytecode.emit.impl {
 			ii.isSealed = isSealed;
 			ii.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
 			ii.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : MultinameUtil.OBJECT_NAME);
-			ii.instanceInitializer = _ctorBuilder.build();
+			ii.isFinal = isFinal;
+			ii.isInterface = false;
+			ii.isProtected = isProtected;
+			ii.isSealed = isSealed;
+			ii.instanceInitializer = _ctorBuilder.build()[0];
 			for each (var interfaceName:String in _implementedInterfaceNames) {
 				ii.interfaceMultinames[ii.interfaceMultinames.length] = MultinameUtil.toQualifiedName(interfaceName);
 			}

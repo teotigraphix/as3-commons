@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
 	public interface IEmitObject {
@@ -26,7 +27,7 @@ package org.as3commons.bytecode.emit {
 		function set visibility(value:MemberVisibility):void;
 		function get namespace():String;
 		function set namespace(value:String):void;
-		function get traits():Array;
-		function set traits(value:Array):void;
+		function get trait():TraitInfo;
+		function set trait(value:TraitInfo):void;
 	}
 }

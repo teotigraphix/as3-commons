@@ -110,6 +110,15 @@ package org.as3commons.bytecode.abc {
 			return (retVal is Array) ? (retVal as Array).indexOf(item) : -1;
 		}
 
+		public function addItemToPool(constantKindValue:ConstantKind, item:*):int {
+			var pool:* = _lookup[constantKindValue];
+			if (pool is Array) {
+				return addToPool(pool as Array, item);
+			} else {
+				return -1;
+			}
+		}
+
 		/**
 		 * Gets a direct reference to the underlying integer pool. NEVER USE THIS FOR ASSIGNMENTS - use <code>addInt()</code> instead.
 		 *

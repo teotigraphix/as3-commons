@@ -16,6 +16,9 @@
 package org.as3commons.bytecode.emit.impl {
 
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
+	import org.as3commons.bytecode.abc.TraitInfo;
+	import org.as3commons.bytecode.abc.enum.ConstantKind;
+	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
@@ -36,7 +39,17 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function build():Object {
-			return null;
+			return buildTrait();
 		}
+
+		override protected function buildTrait():TraitInfo {
+			var trait:SlotOrConstantTrait = new SlotOrConstantTrait();
+			trait.addMetadataList(buildMetadata());
+			trait.isFinal = isFinal;
+			trait.isOverride = isOverride;
+			trait.traitKind = (isConstant) ? TraitKind.CONST : TraitKind.SLOT;
+			return trait;
+		}
+
 	}
 }
