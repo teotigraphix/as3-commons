@@ -19,8 +19,10 @@ package org.as3commons.bytecode.emit.impl {
 	import mx.rpc.events.ResultEvent;
 
 	import org.as3commons.bytecode.abc.FunctionTrait;
+	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
@@ -30,6 +32,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.util.BuildUtil;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.lang.StringUtils;
 
 	public class MethodBuilder extends EmitMember implements IMethodBuilder {
 
@@ -106,6 +109,8 @@ package org.as3commons.bytecode.emit.impl {
 			trait.traitKind = TraitKind.METHOD;
 			trait.isFinal = isFinal;
 			trait.isOverride = isOverride;
+			var ns:LNamespace = new LNamespace(NAMESPACEKIND_LOOKUP[visibility],StringUtils.substitute("{0}{1}{2}.{3}",VISIBILITY_LOOKUP[visibility], TRAIT_MULTINAME_DIVIDER,packageName,name));
+			trait.traitMultiname = new QualifiedName(name, ns);
 			return trait;
 		}
 
