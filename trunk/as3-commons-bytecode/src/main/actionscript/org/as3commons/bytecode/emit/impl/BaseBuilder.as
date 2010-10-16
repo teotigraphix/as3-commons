@@ -16,13 +16,36 @@
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 
+	import flash.utils.Dictionary;
+
 	import org.as3commons.bytecode.abc.TraitInfo;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.emit.IEmitObject;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
 	public class BaseBuilder implements IEmitObject {
 
 		private static const NOT_IMPLEMENTED_ERROR:String = "buildTrait is not implemented in BaseBuilder base class.";
+
+		private static const PUBLIC_NAMESPACE_NAME:String = "";
+		private static const PROTECTED_NAMESPACE_NAME:String = "";
+		private static const PRIVATE_NAMESPACE_NAME:String = "private"
+		private static const INTERNAL_NAMESPACE_NAME:String = "";
+		protected static const TRAIT_MULTINAME_DIVIDER:String = ":";
+		protected static const VISIBILITY_LOOKUP:Dictionary = new Dictionary();
+		{
+			VISIBILITY_LOOKUP[MemberVisibility.PUBLIC] = PUBLIC_NAMESPACE_NAME;
+			VISIBILITY_LOOKUP[MemberVisibility.PRIVATE] = PRIVATE_NAMESPACE_NAME;
+			VISIBILITY_LOOKUP[MemberVisibility.INTERNAL] = INTERNAL_NAMESPACE_NAME;
+			VISIBILITY_LOOKUP[MemberVisibility.PROTECTED] = PROTECTED_NAMESPACE_NAME;
+		}
+		protected static const NAMESPACEKIND_LOOKUP:Dictionary = new Dictionary();
+		{
+			NAMESPACEKIND_LOOKUP[MemberVisibility.PUBLIC] = NamespaceKind.PACKAGE_NAMESPACE;
+			NAMESPACEKIND_LOOKUP[MemberVisibility.PRIVATE] = NamespaceKind.PRIVATE_NAMESPACE;
+			NAMESPACEKIND_LOOKUP[MemberVisibility.INTERNAL] = NamespaceKind.PACKAGE_INTERNAL_NAMESPACE;
+			NAMESPACEKIND_LOOKUP[MemberVisibility.PROTECTED] = NamespaceKind.PROTECTED_NAMESPACE;
+		}
 
 		public function BaseBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
 			super();

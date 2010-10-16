@@ -20,6 +20,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
+	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.emit.IExceptionInfoBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 
@@ -31,93 +32,91 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		private static const stackModifiers:Dictionary = new Dictionary();
 		{
-			stackModifiers["dup"] = 1;
-			stackModifiers["getglobalscope"] = 1;
-			stackModifiers["getlocal_0"] = 1;
-			stackModifiers["getlocal_1"] = 1;
-			stackModifiers["getlocal_2"] = 1;
-			stackModifiers["getlocal_3"] = 1;
-			stackModifiers["newactivation"] = 1;
-			stackModifiers["pushfalse"] = 1;
-			stackModifiers["pushnan"] = 1;
-			stackModifiers["pushnull"] = 1;
-			stackModifiers["pushtrue"] = 1;
-			stackModifiers["pushundefined"] = 1;
-			stackModifiers["newcatch"] = 1;
-			stackModifiers["getglobalslot"] = 1;
-			stackModifiers["getlex"] = 1;
-			stackModifiers["getscopeobject"] = 1;
-			stackModifiers["newfunction"] = 1;
-			stackModifiers["pushdouble"] = 1;
-			stackModifiers["pushint"] = 1;
-			stackModifiers["pushnamespace"] = 1;
-			stackModifiers["pushshort"] = 1;
-			stackModifiers["pushstring"] = 1;
-			stackModifiers["pushuint"] = 1;
-			stackModifiers["hasnext2"] = 1;
-			stackModifiers["pushbyte"] = 1;
+			stackModifiers[Opcode.dup] = 1;
+			stackModifiers[Opcode.getglobalscope] = 1;
+			stackModifiers[Opcode.getlocal_0] = 1;
+			stackModifiers[Opcode.getlocal_1] = 1;
+			stackModifiers[Opcode.getlocal_2] = 1;
+			stackModifiers[Opcode.getlocal_3] = 1;
+			stackModifiers[Opcode.newactivation] = 1;
+			stackModifiers[Opcode.pushfalse] = 1;
+			stackModifiers[Opcode.pushnan] = 1;
+			stackModifiers[Opcode.pushnull] = 1;
+			stackModifiers[Opcode.pushtrue] = 1;
+			stackModifiers[Opcode.pushundefined] = 1;
+			stackModifiers[Opcode.newcatch] = 1;
+			stackModifiers[Opcode.getglobalslot] = 1;
+			stackModifiers[Opcode.getlex] = 1;
+			stackModifiers[Opcode.getscopeobject] = 1;
+			stackModifiers[Opcode.newfunction] = 1;
+			stackModifiers[Opcode.pushdouble] = 1;
+			stackModifiers[Opcode.pushint] = 1;
+			stackModifiers[Opcode.pushnamespace] = 1;
+			stackModifiers[Opcode.pushshort] = 1;
+			stackModifiers[Opcode.pushstring] = 1;
+			stackModifiers[Opcode.pushuint] = 1;
+			stackModifiers[Opcode.hasnext2] = 1;
+			stackModifiers[Opcode.pushbyte] = 1;
 
-			stackModifiers["add"] = -1;
-			stackModifiers["add_i"] = -1;
-			stackModifiers["astypelate"] = -1;
-			stackModifiers["bitand"] = -1;
-			stackModifiers["bitor"] = -1;
-			stackModifiers["bitxor"] = -1;
-			stackModifiers["divide"] = -1;
-			stackModifiers["dxnslate"] = -1;
-			stackModifiers["Equals"] = -1;
-			stackModifiers["greaterequals"] = -1;
-			stackModifiers["greaterthan"] = -1;
-			stackModifiers["hasnext"] = -1;
-			stackModifiers["in"] = -1;
-			stackModifiers["instanceof"] = -1;
-			stackModifiers["istypelate"] = -1;
-			stackModifiers["lessequals"] = -1;
-			stackModifiers["lessthan"] = -1;
-			stackModifiers["lshift"] = -1;
-			stackModifiers["modulo"] = -1;
-			stackModifiers["multiply"] = -1;
-			stackModifiers["multiply_i"] = -1;
-			stackModifiers["nextname"] = -1;
-			stackModifiers["nextvalue"] = -1;
-			stackModifiers["pop"] = -1;
-			stackModifiers["pushscope"] = -1;
-			stackModifiers["pushwith"] = -1;
-			stackModifiers["returnvalue"] = -1;
-			stackModifiers["rshift"] = -1;
-			stackModifiers["setlocal_0"] = -1;
-			stackModifiers["setlocal_1"] = -1;
-			stackModifiers["setlocal_2"] = -1;
-			stackModifiers["setlocal_3"] = -1;
-			stackModifiers["strictequals"] = -1;
-			stackModifiers["subtract"] = -1;
-			stackModifiers["subtract_i"] = -1;
-			stackModifiers["throw"] = -1;
-			stackModifiers["urshift"] = -1;
-			stackModifiers["setglobalslot"] = -1;
-			stackModifiers["iffalse"] = -1;
-			stackModifiers["iftrue"] = -1;
+			stackModifiers[Opcode.add] = -1;
+			stackModifiers[Opcode.add_i] = -1;
+			stackModifiers[Opcode.astypelate] = -1;
+			stackModifiers[Opcode.bitand] = -1;
+			stackModifiers[Opcode.bitor] = -1;
+			stackModifiers[Opcode.bitxor] = -1;
+			stackModifiers[Opcode.divide] = -1;
+			stackModifiers[Opcode.dxnslate] = -1;
+			stackModifiers[Opcode.equals] = -1;
+			stackModifiers[Opcode.greaterequals] = -1;
+			stackModifiers[Opcode.greaterthan] = -1;
+			stackModifiers[Opcode.hasnext] = -1;
+			stackModifiers[Opcode.in_op] = -1;
+			stackModifiers[Opcode.instance_of] = -1;
+			stackModifiers[Opcode.istypelate] = -1;
+			stackModifiers[Opcode.lessequals] = -1;
+			stackModifiers[Opcode.lessthan] = -1;
+			stackModifiers[Opcode.lshift] = -1;
+			stackModifiers[Opcode.modulo] = -1;
+			stackModifiers[Opcode.multiply] = -1;
+			stackModifiers[Opcode.multiply_i] = -1;
+			stackModifiers[Opcode.nextname] = -1;
+			stackModifiers[Opcode.nextvalue] = -1;
+			stackModifiers[Opcode.pop] = -1;
+			stackModifiers[Opcode.pushscope] = -1;
+			stackModifiers[Opcode.pushwith] = -1;
+			stackModifiers[Opcode.returnvalue] = -1;
+			stackModifiers[Opcode.rshift] = -1;
+			stackModifiers[Opcode.setlocal_0] = -1;
+			stackModifiers[Opcode.setlocal_1] = -1;
+			stackModifiers[Opcode.setlocal_2] = -1;
+			stackModifiers[Opcode.setlocal_3] = -1;
+			stackModifiers[Opcode.strictequals] = -1;
+			stackModifiers[Opcode.subtract] = -1;
+			stackModifiers[Opcode.subtract_i] = -1;
+			stackModifiers[Opcode.throw_op] = -1;
+			stackModifiers[Opcode.urshift] = -1;
+			stackModifiers[Opcode.setglobalslot] = -1;
+			stackModifiers[Opcode.iffalse] = -1;
+			stackModifiers[Opcode.iftrue] = -1;
 
-			stackModifiers["ifeq"] = -2;
-			stackModifiers["ifge"] = -2;
-			stackModifiers["ifgt"] = -2;
-			stackModifiers["ifle"] = -2;
-			stackModifiers["iflt"] = -2;
-			stackModifiers["ifne"] = -2;
-			stackModifiers["ifnge"] = -2;
-			stackModifiers["ifngt"] = -2;
-			stackModifiers["ifnle"] = -2;
-			stackModifiers["ifnlt"] = -2;
-			stackModifiers["ifstricteq"] = -2;
-			stackModifiers["ifstrictne"] = -2;
-			stackModifiers["setslot"] = -2;
+			stackModifiers[Opcode.ifeq] = -2;
+			stackModifiers[Opcode.ifge] = -2;
+			stackModifiers[Opcode.ifgt] = -2;
+			stackModifiers[Opcode.ifle] = -2;
+			stackModifiers[Opcode.iflt] = -2;
+			stackModifiers[Opcode.ifne] = -2;
+			stackModifiers[Opcode.ifnge] = -2;
+			stackModifiers[Opcode.ifngt] = -2;
+			stackModifiers[Opcode.ifnle] = -2;
+			stackModifiers[Opcode.ifnlt] = -2;
+			stackModifiers[Opcode.ifstricteq] = -2;
+			stackModifiers[Opcode.ifstrictne] = -2;
+			stackModifiers[Opcode.setslot] = -2;
 		}
 
 		private var _opcodes:Array = [];
 		private var _exceptionInfos:Array = [];
 		private var _traits:Array = [];
-		private var _hasDXNS:Boolean;
-		private var _hasNewActivation:Boolean;
 
 		public function MethodBodyBuilder() {
 			super();
@@ -129,6 +128,14 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set opcodes(value:Array):void {
 			_opcodes = value;
+		}
+
+		public function get exceptionInfos():Array {
+			return _exceptionInfos;
+		}
+
+		public function set exceptionInfos(value:Array):void {
+			_exceptionInfos = value;
 		}
 
 		public function defineExceptionInfo():IExceptionInfoBuilder {
@@ -143,36 +150,30 @@ package org.as3commons.bytecode.emit.impl {
 			mb.exceptionInfos = _exceptionInfos.concat([]);
 			mb.traits = _traits.concat([]);
 			for each (var op:Op in _opcodes) {
-				if (stackModifiers[op.opcode.opcodeName] != null) {
-					mb.maxStack += stackModifiers[op.opcode.opcodeName];
+				if (stackModifiers[op.opcode] != null) {
+					mb.maxStack += stackModifiers[op.opcode];
 				}
-				switch (op.opcode.opcodeName) {
-					case "pushscope":
-					case "pushwith":
+				switch (op.opcode) {
+					case Opcode.pushscope:
+					case Opcode.pushwith:
 						mb.maxScopeDepth++;
 						break;
-					case "popscope":
+					case Opcode.popscope:
 						mb.maxScopeDepth--;
 						break;
-					case "dxns":
-						hasDXNS = true;
-						break;
-					case "newactivation":
-						hasNewActivation = true;
-						break;
-					case "call":
+					case Opcode.call:
 						mb.maxStack = 1 - op.parameters[0] + 2;
 						break;
-					case "construct":
-					case "callmethod":
-					case "callstatic":
+					case Opcode.construct:
+					case Opcode.callmethod:
+					case Opcode.callstatic:
 						mb.maxStack = 1 - op.parameters[1] + 1;
 						break;
-					case "constructsuper":
+					case Opcode.constructsuper:
 						mb.maxStack = op.parameters[0] + 1;
 						break;
-					case "findproperty":
-					case "findpropstrict":
+					case Opcode.findproperty:
+					case Opcode.findpropstrict:
 						if (hasRuntimeNamespace(op.parameters[0])) {
 							mb.maxStack++;
 						}
@@ -181,13 +182,13 @@ package org.as3commons.bytecode.emit.impl {
 						}
 						mb.maxStack++;
 						break;
-					case "deleteproperty":
-					case "getdescendants":
-					case "getproperty":
-					case "getsuper":
-					case "initproperty":
-					case "setproperty":
-					case "setsuper":
+					case Opcode.deleteproperty:
+					case Opcode.getdescendants:
+					case Opcode.getproperty:
+					case Opcode.getsuper:
+					case Opcode.initproperty:
+					case Opcode.setproperty:
+					case Opcode.setsuper:
 						if (hasRuntimeNamespace(op.parameters[0])) {
 							mb.maxStack++;
 						}
@@ -196,10 +197,10 @@ package org.as3commons.bytecode.emit.impl {
 						}
 						mb.maxStack += 2;
 						break;
-					case "callsuper":
-					case "callproperty":
-					case "constructprop":
-					case "callproplex":
+					case Opcode.callsuper:
+					case Opcode.callproperty:
+					case Opcode.constructprop:
+					case Opcode.callproplex:
 						if (hasRuntimeNamespace(op.parameters[0])) {
 							mb.maxStack++;
 						}
@@ -208,8 +209,8 @@ package org.as3commons.bytecode.emit.impl {
 						}
 						mb.maxStack += op.parameters[1];
 						break;
-					case "callsupervoid":
-					case "callpropvoid":
+					case Opcode.callsupervoid:
+					case Opcode.callpropvoid:
 						if (hasRuntimeNamespace(op.parameters[0])) {
 							mb.maxStack++;
 						}
@@ -218,10 +219,10 @@ package org.as3commons.bytecode.emit.impl {
 						}
 						mb.maxStack += op.parameters[1] + 1;
 						break;
-					case "newarray":
+					case Opcode.newarray:
 						mb.maxStack += (1 - op.parameters[0]);
 						break;
-					case "newobject":
+					case Opcode.newobject:
 						mb.maxStack += (1 - (2 * op.parameters[0]));
 						break;
 				}
@@ -251,22 +252,6 @@ package org.as3commons.bytecode.emit.impl {
 					break;
 			}
 			return false;
-		}
-
-		public function get hasDXNS():Boolean {
-			return _hasDXNS;
-		}
-
-		public function set hasDXNS(value:Boolean):void {
-			_hasDXNS = value;
-		}
-
-		public function get hasNewActivation():Boolean {
-			return _hasNewActivation;
-		}
-
-		public function set hasNewActivation(value:Boolean):void {
-			_hasNewActivation = value;
 		}
 
 		public function addOpcode(opcode:Op):IMethodBodyBuilder {

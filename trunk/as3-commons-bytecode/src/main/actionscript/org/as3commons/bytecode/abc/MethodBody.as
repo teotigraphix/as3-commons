@@ -31,7 +31,7 @@ package org.as3commons.bytecode.abc {
 		public var opcodes:Array;
 		public var methodSignature:MethodInfo;
 		public var maxStack:int;
-		public var localCount:int;
+		public var localCount:int = 1;
 		public var initScopeDepth:int;
 		public var maxScopeDepth:int;
 		public var exceptionInfos:Array;
@@ -46,7 +46,6 @@ package org.as3commons.bytecode.abc {
 			exceptionInfos = [];
 			traits = [];
 		}
-
 
 		public function addExceptionInfo(exceptionInfo:ExceptionInfo):uint {
 			var idx:int = exceptionInfos.indexOf(exceptionInfo);

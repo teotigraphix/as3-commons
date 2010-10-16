@@ -29,8 +29,8 @@ package org.as3commons.bytecode.emit.enum {
 		public static const PUBLIC:MemberVisibility = new MemberVisibility(PUBLIC_VALUE);
 		public static const PROTECTED:MemberVisibility = new MemberVisibility(PROTECTED_VALUE);
 		public static const PRIVATE:MemberVisibility = new MemberVisibility(PRIVATE_VALUE);
-		public static const NAMESPACE:MemberVisibility = new MemberVisibility(PRIVATE_VALUE);
-		public static const INTERNAL:MemberVisibility = new MemberVisibility(PRIVATE_VALUE);
+		public static const NAMESPACE:MemberVisibility = new MemberVisibility(NAMESPACE_VALUE);
+		public static const INTERNAL:MemberVisibility = new MemberVisibility(INTERNAL_VALUE);
 
 		private static const PUBLIC_VALUE:String = "public";
 		private static const PROTECTED_VALUE:String = "protected";

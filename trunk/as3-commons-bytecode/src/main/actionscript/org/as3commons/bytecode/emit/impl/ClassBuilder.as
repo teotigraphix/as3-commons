@@ -46,7 +46,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _accessorBuilders:Array;
 		private var _variableBuilders:Array;
 		private var _superClassName:String = OBJECT_BASE_CLASS_NAME;
-		private var _isDynamic:Boolean;
+		private var _isDynamic:Boolean = false;
 		private var _isFinal:Boolean;
 		private var _isProtected:Boolean;
 		private var _metadata:Array;

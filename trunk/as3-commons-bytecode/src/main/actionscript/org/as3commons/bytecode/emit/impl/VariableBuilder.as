@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-
+	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.lang.StringUtils;
 
 	public class VariableBuilder extends EmitMember implements IVariableBuilder {
 
@@ -51,6 +54,8 @@ package org.as3commons.bytecode.emit.impl {
 			trait.traitKind = (isConstant) ? TraitKind.CONST : TraitKind.SLOT;
 			trait.isStatic = isStatic;
 			trait.typeMultiname = MultinameUtil.toQualifiedName(_type);
+			var ns:LNamespace = new LNamespace(NAMESPACEKIND_LOOKUP[visibility],StringUtils.substitute("{0}{1}{2}.{3}",VISIBILITY_LOOKUP[visibility], TRAIT_MULTINAME_DIVIDER,packageName,name));
+			trait.traitMultiname = new QualifiedName(name, ns);
 			return trait;
 		}
 
