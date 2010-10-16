@@ -18,18 +18,14 @@ package org.as3commons.bytecode.emit.impl {
 
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
-	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
-	import org.as3commons.bytecode.abc.enum.BuiltIns;
-	import org.as3commons.bytecode.abc.enum.MultinameKind;
-	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IMetaDataBuilder;
-	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
 	import org.as3commons.bytecode.util.MultinameUtil;
@@ -130,23 +126,28 @@ package org.as3commons.bytecode.emit.impl {
 			if (_ctorBuilder != null) {
 				throw new IllegalOperationError(MULTIPLE_CONSTRUCTORS_ERROR);
 			}
-			return new CtorBuilder(this.name);
+			var _ctorBuilder:ICtorBuilder = new CtorBuilder(this.name);
+			_ctorBuilder.packageName = packageName
+			return _ctorBuilder;
 		}
 
 		public function defineMethod():IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
+			mb.packageName = packageName;
 			_methodBuilders[_methodBuilders.length] = mb;
 			return mb;
 		}
 
 		public function defineAccessor():IAccessorBuilder {
 			var ab:AccessorBuilder = new AccessorBuilder();
+			ab.packageName = packageName;
 			_accessorBuilders[_accessorBuilders.length] = ab;
 			return ab;
 		}
 
 		public function defineVariable():IVariableBuilder {
 			var vb:VariableBuilder = new VariableBuilder();
+			vb.packageName = packageName;
 			_variableBuilders[_variableBuilders.length] = vb;
 			return vb;
 		}
@@ -158,15 +159,15 @@ package org.as3commons.bytecode.emit.impl {
 			var methods:Array = createMethods(metadata);
 			var variableTraits:Array = createVariables();
 			methods = methods.concat(createAccessors(variableTraits));
-			for each(var mi:MethodInfo in methods){
-				if (mi.as3commonsByteCodeAssignedMethodTrait.isStatic){
+			for each(var mi:MethodInfo in methods) {
+				if (mi.as3commonsByteCodeAssignedMethodTrait.isStatic) {
 					ci.traits[ci.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
 				} else {
 					ii.traits[ii.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
 				}
 			}
-			for each(var st:SlotOrConstantTrait in variableTraits){
-				if (st.isStatic){
+			for each(var st:SlotOrConstantTrait in variableTraits) {
+				if (st.isStatic) {
 					ci.traits[ci.traits.length] = st;
 				} else {
 					ii.traits[ii.traits.length] = st;
@@ -177,7 +178,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		private function createVariables():Array {
 			var result:Array = [];
-			for each(var vb:IVariableBuilder in _variableBuilders){
+			for each(var vb:IVariableBuilder in _variableBuilders) {
 				result[result.length] = vb.build();
 			}
 			return result;
@@ -198,8 +199,8 @@ package org.as3commons.bytecode.emit.impl {
 			var result:Array = [];
 			for each(var ab:IAccessorBuilder in _accessorBuilders) {
 				var lst:Array = ab.build() as Array;
-				for each(var obj:Object in lst){
-					if (obj is MethodInfo){
+				for each(var obj:Object in lst) {
+					if (obj is MethodInfo) {
 						result[result.length] = obj;
 					} else {
 						variableTraits[variableTraits.length] = obj;
@@ -221,6 +222,9 @@ package org.as3commons.bytecode.emit.impl {
 			ii.isInterface = false;
 			ii.isProtected = isProtected;
 			ii.isSealed = !isDynamic;
+			if (_ctorBuilder == null) {
+				_ctorBuilder = createDefaultConstructor();
+			}
 			ii.instanceInitializer = _ctorBuilder.build()[0];
 			for each (var interfaceName:String in _implementedInterfaceNames) {
 				ii.interfaceMultinames[ii.interfaceMultinames.length] = MultinameUtil.toQualifiedName(interfaceName);
@@ -230,7 +234,15 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createClassInfo():ClassInfo {
 			var ci:ClassInfo = new ClassInfo();
+			ci.staticInitializer = createDefaultConstructor().build()[0];
+			ci.staticInitializer.methodBody.opcodes.length = 0;
 			return ci;
+		}
+
+		protected function createDefaultConstructor():ICtorBuilder {
+			var ctorBuilder:ICtorBuilder = defineConstructor();
+			ctorBuilder.defineMethodBody().addOpcode(new Op(Opcode.getlocal_0));
+			return ctorBuilder;
 		}
 
 	}

@@ -17,6 +17,7 @@ package org.as3commons.bytecode.swf {
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
 	import flash.utils.ByteArray;
@@ -28,7 +29,8 @@ package org.as3commons.bytecode.swf {
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
 	 */
-	[Event(name="complete", type="flash.event.Event")]
+	[Event(name="complete", type="flash.events.Event")]
+	[Event(name="error", type="flash.events.IOErrorEvent")]
 
 	/**
 	 * Classloader for ABC files, adapted from the EvalES4UI project (specifically, the <code>com.hurlant.eval.ByteLoader</code> class).
@@ -125,6 +127,9 @@ package org.as3commons.bytecode.swf {
 
 			var l:Loader = new Loader;
 			l.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
+				dispatchEvent(event);
+			});
+			l.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
 				dispatchEvent(event);
 			});
 			l.loadBytes(bytes, c);

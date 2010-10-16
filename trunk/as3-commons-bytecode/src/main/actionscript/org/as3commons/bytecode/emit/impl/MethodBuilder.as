@@ -16,9 +16,6 @@
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 
-	import mx.rpc.events.ResultEvent;
-
-	import org.as3commons.bytecode.abc.FunctionTrait;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
@@ -32,6 +29,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.util.BuildUtil;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
 	public class MethodBuilder extends EmitMember implements IMethodBuilder {
@@ -42,6 +40,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _returnType:String = BuiltIns.VOID.fullName;
 		private var _arguments:Array = [];
 		private var _methodBodyBuilder:IMethodBodyBuilder;
+		private var _hasRestArguments:Boolean;
 
 		public function MethodBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
 			super(name, visibility, nameSpace);
@@ -61,6 +60,14 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set returnType(value:String):void {
 			_returnType = value;
+		}
+
+		public function get hasRestArguments():Boolean {
+			return _hasRestArguments;
+		}
+
+		public function set hasRestArguments(value:Boolean):void {
+			_hasRestArguments = value;
 		}
 
 		override public function get isConstant():Boolean {
@@ -92,6 +99,7 @@ package org.as3commons.bytecode.emit.impl {
 			var mi:MethodInfo = new MethodInfo();
 			if (_methodBodyBuilder != null) {
 				mi.methodBody = _methodBodyBuilder.build();
+				mi.methodBody.localCount = 1 + mi.argumentCollection.length + ((_hasRestArguments) ? 1 : 0);
 			}
 			for each (var methodArg:MethodArgument in _arguments) {
 				var arg:Argument = new Argument(MultinameUtil.toQualifiedName(methodArg.type), methodArg.isOptional, methodArg.defaultValue, BuildUtil.toConstantKind(methodArg.defaultValue));
@@ -101,19 +109,24 @@ package org.as3commons.bytecode.emit.impl {
 			MethodTrait(trait).traitMethod = mi;
 			trait.addMetadataList(buildMetadata());
 			mi.as3commonsByteCodeAssignedMethodTrait = MethodTrait(trait);
+			mi.returnType = MultinameUtil.toQualifiedName(_returnType);
+			mi.methodName = name;
 			return [mi, trait.metadata];
 		}
 
 		override protected function buildTrait():TraitInfo {
+			Assert.hasText(name,"name property must not be null or empty");
+			Assert.hasText(packageName,"packageName property must not be null or empty");
+			Assert.notNull(visibility,"visibility property must not be null");
+			Assert.notNull(VISIBILITY_LOOKUP[visibility],"visibility lookup must not be null");
 			var trait:MethodTrait = new MethodTrait();
 			trait.traitKind = TraitKind.METHOD;
 			trait.isFinal = isFinal;
 			trait.isOverride = isOverride;
-			var ns:LNamespace = new LNamespace(NAMESPACEKIND_LOOKUP[visibility],StringUtils.substitute("{0}{1}{2}.{3}",VISIBILITY_LOOKUP[visibility], TRAIT_MULTINAME_DIVIDER,packageName,name));
+			var ns:LNamespace = new LNamespace(NAMESPACEKIND_LOOKUP[visibility], StringUtils.substitute("{0}{1}{2}.{3}", VISIBILITY_LOOKUP[visibility], TRAIT_MULTINAME_DIVIDER, packageName, name));
 			trait.traitMultiname = new QualifiedName(name, ns);
 			return trait;
 		}
-
 
 	}
 }
