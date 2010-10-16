@@ -22,6 +22,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.typeinfo.ClassDefinition;
 	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.typeinfo.Method;
+	import org.as3commons.lang.Assert;
 
 	/**
 	 * as3commons-bytecode representation of the ABC file format.
@@ -60,14 +61,17 @@ package org.as3commons.bytecode.abc {
 
 
 		public function addClassInfo(classInfo:ClassInfo):int {
+			Assert.notNull(classInfo);
 			return addUniquely(classInfo, _classInfo);
 		}
 
 		public function addMetadataInfo(metadata:Metadata):int {
+			Assert.notNull(metadata);
 			return addUniquely(metadata, _metadataInfo);
 		}
 
 		public function addMethodInfo(methodInfo:MethodInfo):int {
+			Assert.notNull(methodInfo);
 			return addUniquely(methodInfo, _methodInfo);
 		}
 
@@ -81,6 +85,7 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function addInstanceInfo(instanceInfo:InstanceInfo):int {
+			Assert.notNull(instanceInfo);
 			constantPool.addMultiname(instanceInfo.classMultiname);
 			for each (var name:BaseMultiname in instanceInfo.interfaceMultinames) {
 				constantPool.addMultiname(name);
@@ -99,10 +104,12 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function addScriptInfo(scriptInfo:ScriptInfo):int {
+			Assert.notNull(scriptInfo);
 			return addUniquely(scriptInfo, _scriptInfo);
 		}
 
 		public function addMethodBody(methodBody:MethodBody):int {
+			Assert.notNull(methodBody);
 			return addUniquely(methodBody, _methodBodies);
 		}
 
@@ -212,9 +219,7 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function toString():String {
-			var strings:Array = [constantPool, "Method Signatures (MethodInfo):", "\t" + _methodInfo.join("\n\t"), metadataInfo.join("\n"), _instanceInfo.join("\n"), _classInfo.join("\n"), _scriptInfo.join("\n"), _methodBodies.join("\n"),
-				// classDefinitions.join("\n")
-				];
+			var strings:Array = [constantPool, "Method Signatures (MethodInfo):", "\t" + _methodInfo.join("\n\t"), metadataInfo.join("\n"), _instanceInfo.join("\n"), _classInfo.join("\n"), _scriptInfo.join("\n"), _methodBodies.join("\n")];
 
 			return strings.join("\n");
 		}

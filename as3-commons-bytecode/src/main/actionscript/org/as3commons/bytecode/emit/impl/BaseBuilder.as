@@ -15,7 +15,6 @@
  */
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
-
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.TraitInfo;
@@ -55,13 +54,15 @@ package org.as3commons.bytecode.emit.impl {
 		protected function init(name:String, nameSpace:String, visibility:MemberVisibility):void {
 			_name = name;
 			_namespace = nameSpace;
-			_visiblity = visibility;
+			if (visibility != null) {
+				_visibility = visibility;
+			}
 		}
 
 		private var _packageName:String;
 		private var _name:String;
 		private var _namespace:String;
-		private var _visiblity:MemberVisibility;
+		private var _visibility:MemberVisibility = MemberVisibility.PUBLIC;
 		private var _trait:TraitInfo;
 
 		public function get packageName():String {
@@ -89,11 +90,11 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function get visibility():MemberVisibility {
-			return _visiblity;
+			return _visibility;
 		}
 
 		public function set visibility(value:MemberVisibility):void {
-			_visiblity = value;
+			_visibility = value;
 		}
 
 		public function get trait():TraitInfo {

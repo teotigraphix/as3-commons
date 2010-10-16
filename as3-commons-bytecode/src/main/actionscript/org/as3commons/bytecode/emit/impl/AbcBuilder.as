@@ -52,7 +52,8 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		/**
-		 * Returns an <code>AbcFile</code> containing all the generated type information, ready to be loaded into an AVM.
+		 * Returns an <code>AbcFile</code> containing all the generated type information,
+		 * ready to be loaded into an AVM.
 		 * @return The specified <code>AbcFile</code>.
 		 */
 		public function build():AbcFile {

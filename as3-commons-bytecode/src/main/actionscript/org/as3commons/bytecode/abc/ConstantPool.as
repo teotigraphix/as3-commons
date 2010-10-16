@@ -19,6 +19,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.util.Assertions;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -425,6 +426,7 @@ package org.as3commons.bytecode.abc {
 		 * @param item    The item to add to the pool.
 		 */
 		public function addToPool(pool:Array, item:Object):int {
+			Assert.notNull(item,"constant pool item cannot be null");
 			var index:int = pool.indexOf(item);
 			if (index == -1) {
 				index = pool.push(item) - 1;

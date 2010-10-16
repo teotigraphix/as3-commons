@@ -49,6 +49,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.typeinfo.ClassDefinition;
 	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.typeinfo.Method;
+	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -172,7 +173,7 @@ package org.as3commons.bytecode.util {
 				//  u30 metadata_count 
 				//  u30 metadata[metadata_count] 
 				// }
-				writeU30(pool.getMultinamePosition(trait.traitMultiname));
+				writeU30(pool.addMultiname(trait.traitMultiname));
 
 				// Assemble trait kind and flip flags for attributes
 				var traitKindAndAttributes:int = trait.traitKind.bitMask;
@@ -270,8 +271,8 @@ package org.as3commons.bytecode.util {
 			//  traits_info trait[trait_count] 
 			// }
 			for each (var instance:InstanceInfo in instanceInfo) {
-				writeU30(pool.getMultinamePosition(instance.classMultiname));
-				writeU30(pool.getMultinamePosition(instance.superclassMultiname));
+				writeU30(pool.addMultiname(instance.classMultiname));
+				writeU30(pool.addMultiname(instance.superclassMultiname));
 
 				// Flip the appropriate bit flags for the various instance flags if applicable
 				var flags:int = 0;
@@ -282,15 +283,15 @@ package org.as3commons.bytecode.util {
 				writeU8(flags);
 
 				if (instance.isProtected) {
-					writeU30(pool.getNamespacePosition(instance.protectedNamespace));
+					writeU30(pool.addNamespace(instance.protectedNamespace));
 				}
 
 				writeU30(instance.interfaceCount);
 				for each (var interfaceEntry:BaseMultiname in instance.interfaceMultinames) {
-					writeU30(pool.getMultinamePosition(interfaceEntry));
+					writeU30(pool.addMultiname(interfaceEntry));
 				}
 
-				writeU30(abcFile.methodInfo.indexOf(instance.instanceInitializer));
+				writeU30(abcFile.addMethodInfo(instance.instanceInitializer));
 				serializeTraits(instance.traits, abcFile);
 			}
 
@@ -301,7 +302,7 @@ package org.as3commons.bytecode.util {
 			//  traits_info traits[trait_count] 
 			// }
 			for each (var classEntry:ClassInfo in classInfo) {
-				writeU30(abcFile.methodInfo.indexOf(classEntry.staticInitializer));
+				writeU30(abcFile.addMethodInfo(classEntry.staticInitializer));
 				serializeTraits(classEntry.traits, abcFile);
 			}
 		}
@@ -312,7 +313,7 @@ package org.as3commons.bytecode.util {
 
 			writeU30(metadataInfo.length);
 			for each (var metadataEntry:Metadata in metadataInfo) {
-				writeU30(pool.getStringPosition(metadataEntry.name));
+				writeU30(pool.addString(metadataEntry.name));
 
 				// There's no way to get the number of entries in a Dictionary, so we copy to an Array first... weak
 				var properties:Dictionary = metadataEntry.properties;
@@ -323,10 +324,10 @@ package org.as3commons.bytecode.util {
 
 				writeU30(keys.length);
 				for each (var key:String in keys) {
-					writeU30(pool.getStringPosition(key));
+					writeU30(pool.addString(key));
 				}
 				for each (var value:String in properties) {
-					writeU30(pool.getStringPosition(value));
+					writeU30(pool.addString(value));
 				}
 			}
 		}

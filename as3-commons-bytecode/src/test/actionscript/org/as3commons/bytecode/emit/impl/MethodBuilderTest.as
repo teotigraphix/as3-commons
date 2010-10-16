@@ -70,6 +70,6 @@ package org.as3commons.bytecode.emit.impl {
 			assertEquals(0,mb.initScopeDepth);
 			assertEquals(1,mb.maxScopeDepth);
 		}
-		//maxStack:1 localCount:1 initScopeDepth:6 maxScopeDepth:7
+
 	}
 }
