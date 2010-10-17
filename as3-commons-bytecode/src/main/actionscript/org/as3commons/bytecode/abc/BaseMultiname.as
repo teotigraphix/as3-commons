@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
+	import org.as3commons.lang.StringUtils;
 
 	/**
 	 * as3commons-bytecode representation of a multiname. Although I hate using the word "base" in classes, I was required to since there
@@ -46,6 +47,10 @@ package org.as3commons.bytecode.abc {
 			}
 
 			return matches;
+		}
+		
+		public function toString():String {
+			return StringUtils.substitute("BaseMultiname[kind={0}]",_kind);
 		}
 	}
 }

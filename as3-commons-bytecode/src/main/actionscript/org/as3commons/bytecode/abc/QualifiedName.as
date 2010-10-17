@@ -60,7 +60,7 @@ package org.as3commons.bytecode.abc {
 			}
 		}
 
-		public function toString():String {
+		override public function toString():String {
 			return StringUtils.substitute("{0}[{1}:{2}]", kind.description, nameSpace, name);
 		}
 

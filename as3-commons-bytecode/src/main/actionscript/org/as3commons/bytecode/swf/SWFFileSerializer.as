@@ -111,7 +111,7 @@ package org.as3commons.bytecode.swf {
 			bytes.position = 0;
 			readHeader(bytes, swfFile);
 			while (bytes.bytesAvailable) {
-				swfFile.tags[swfFile.tags.length] = readTag(bytes);
+				swfFile.addTag(readTag(bytes));
 			}
 
 			return swfFile;

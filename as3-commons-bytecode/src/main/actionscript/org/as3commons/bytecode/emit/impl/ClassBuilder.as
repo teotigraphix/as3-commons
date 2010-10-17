@@ -16,6 +16,10 @@
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 
+	import mx.messaging.messages.AbstractMessage;
+
+	import mx.messaging.messages.HTTPRequestMessage;
+
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
@@ -234,15 +238,17 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createClassInfo():ClassInfo {
 			var ci:ClassInfo = new ClassInfo();
-			ci.staticInitializer = createDefaultConstructor().build()[0];
-			ci.staticInitializer.methodBody.opcodes.length = 0;
+			var cb:ICtorBuilder = createDefaultConstructor();
+			cb.isStatic = true;
+			ci.staticInitializer = cb.build()[0];
 			return ci;
 		}
 
 		protected function createDefaultConstructor():ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
-			ctorBuilder.defineMethodBody().addOpcode(new Op(Opcode.getlocal_0));
+			ctorBuilder.defineMethodBody().addOpcode(new Op(Opcode.getlocal_0)).addOpcode(new Op(Opcode.pushscope)).addOpcode(new Op(Opcode.returnvoid));
 			return ctorBuilder;
+			HTTPRequestMessage
 		}
 
 	}

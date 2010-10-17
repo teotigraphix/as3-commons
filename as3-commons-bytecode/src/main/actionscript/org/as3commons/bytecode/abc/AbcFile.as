@@ -78,7 +78,7 @@ package org.as3commons.bytecode.abc {
 		public function addUniquely(itemToAdd:Object, collectionToAddTo:Array):int {
 			var indexOfItem:int = collectionToAddTo.indexOf(itemToAdd);
 			if (indexOfItem == -1) {
-				indexOfItem = collectionToAddTo.push(itemToAdd);
+				indexOfItem = collectionToAddTo.push(itemToAdd) - 1;
 			}
 
 			return indexOfItem;

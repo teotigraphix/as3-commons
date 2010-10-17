@@ -47,16 +47,15 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function testBuild():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyTest");
-			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
+			/*var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
 			methodBuilder.name = "testMe";
 			var methodBodyBuilder:IMethodBodyBuilder = methodBuilder.defineMethodBody();
 			methodBodyBuilder.addOpcode(new Op(Opcode.getlocal_0));
-			methodBodyBuilder.addOpcode(new Op(Opcode.returnvoid));
+			methodBodyBuilder.addOpcode(new Op(Opcode.returnvoid));*/
 			var abcFile:AbcFile = _abcBuilder.build();
-//			assertEquals(1,abcFile.methodInfo.length);
-//			assertTrue(abcFile.methodInfo[0] is MethodInfo);
 			_loader.addEventListener(Event.COMPLETE, addAsync(successHandler, 5000), false, 0, true);
 			_loader.addEventListener(IOErrorEvent.IO_ERROR, addAsync(errorHandler, 5000), false, 0, true);
+			_loader.addEventListener(IOErrorEvent.VERIFY_ERROR, addAsync(errorHandler, 5000), false, 0, true);
 			_loader.loadAbcFile(abcFile);
 		}
 
