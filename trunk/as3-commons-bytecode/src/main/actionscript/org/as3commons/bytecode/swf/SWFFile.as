@@ -17,6 +17,7 @@ package org.as3commons.bytecode.swf {
 	import flash.geom.Rectangle;
 
 	import org.as3commons.bytecode.tags.ISWFTag;
+	import org.as3commons.lang.Assert;
 
 	public class SWFFile {
 
@@ -26,14 +27,24 @@ package org.as3commons.bytecode.swf {
 		private var _frameSize:Rectangle;
 		private var _frameRate:uint;
 		private var _frameCount:uint;
-		private var _tags:Array = [];
+		private var _tags:Array;
 
 		public function SWFFile() {
 			super();
+			initSWFFile();
+		}
+
+		protected function initSWFFile():void {
+			_signature = SWFFileSerializer.SWF_SIGNATURE_UNCOMPRESSED;
+			_version = 10;
+			_frameSize = new Rectangle();
+			_frameRate = 1;
+			_frameCount = 1;
+			_tags = [];
 		}
 
 		public function get tags():Array {
-			return _tags;
+			return _tags.concat([]);
 		}
 
 		public function get frameSize():Rectangle {
@@ -82,6 +93,11 @@ package org.as3commons.bytecode.swf {
 
 		public function set fileLength(value:uint):void {
 			_fileLength = value;
+		}
+
+		public function addTag(tag:ISWFTag):void {
+			Assert.notNull(tag,"tag argument must not be null");
+			_tags[_tags.length] = tag;
 		}
 
 		public function getTagsByType(tagClass:Class):Array {

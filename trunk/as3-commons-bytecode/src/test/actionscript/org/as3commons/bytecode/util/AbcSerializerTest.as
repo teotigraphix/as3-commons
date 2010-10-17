@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.util {
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.utils.ByteArray;
 
 	import flexunit.framework.TestCase;
@@ -32,10 +33,16 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.swf.AbcClassLoader;
+	import org.as3commons.bytecode.template.BaseClass;
 
 	public class AbcSerializerTest extends TestCase {
 		private var _fixture:AbcSerializer;
 
+		private var _classLoader:AbcClassLoader;
+
+		{
+			BaseClass;
+		}
 
 		public function AbcSerializerTest(methodName:String = null) {
 			super(methodName);
@@ -43,6 +50,7 @@ package org.as3commons.bytecode.util {
 
 		override public function setUp():void {
 			_fixture = new AbcSerializer();
+			_classLoader = new AbcClassLoader();
 		}
 
 		public function testSerializeDynamicSubClass():void {
@@ -59,11 +67,16 @@ package org.as3commons.bytecode.util {
 				assertEquals(originalByte, serializedByte);
 			}
 
-			var classLoader:AbcClassLoader = new AbcClassLoader();
-			classLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
+			_classLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
 					trace(event);
 				});
-			classLoader.loadClassDefinitionsFromBytecode([TestConstants.getMethodInvocation(), reserializedStream]);
+			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
+					fail("loader error: " + event.text);
+				});
+			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, addAsync(function(event:IOErrorEvent):void {
+					fail("loader error: " + event.text);
+				},5000));
+			_classLoader.loadClassDefinitionsFromBytecode([TestConstants.getMethodInvocation(), reserializedStream]);
 		}
 
 		public function testSerializeBaseClass():void {
@@ -77,14 +90,19 @@ package org.as3commons.bytecode.util {
 				assertEquals(originalByte, serializedByte);
 			}
 
-			var classLoader:AbcClassLoader = new AbcClassLoader();
-			classLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
+			_classLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
 					trace(event);
 				});
-			classLoader.loadClassDefinitionsFromBytecode([reserializedStream]);
+			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
+					fail("loader error: " + event.text);
+				});
+			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, addAsync(function(event:IOErrorEvent):void {
+					fail("loader error: " + event.text);
+				},5000));
+			_classLoader.loadClassDefinitionsFromBytecode([reserializedStream]);
 		}
 
-		public function /*test*/SerializeClassWithNoMethodsOrProperties():void {
+		public function testSerializeClassWithNoMethodsOrProperties():void {
 			var abcFileAsByteArray:ByteArray = TestConstants.getFullClassDefinitionByteCode();
 			var deserializedClass:AbcFile = new AbcDeserializer(abcFileAsByteArray).deserialize();
 			var reserializedStream:ByteArray = _fixture.serializeAbcFile(deserializedClass);
@@ -94,21 +112,17 @@ package org.as3commons.bytecode.util {
 //        		trace("abcFileAsByteArray[" + abcIndex + "] = " + abcFileAsByteArray[abcIndex]);
 //        	}
 
-			// Serialized stream should be a byte-for-byte match to the loaded stream
-			for (var index:int = 0; index < reserializedStream.length; index++) {
-				var originalByte:int = abcFileAsByteArray[index];
-				var serializedByte:int = reserializedStream[index];
-				// (index > 962) ? trace("abcFileAsByteArray[" + index + "] = " + originalByte + ", serializedStream[" + index + "] = " + serializedByte) : null;
-				assertEquals(originalByte, serializedByte);
-			}
-
-			var classLoader:AbcClassLoader = new AbcClassLoader();
-			classLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
-					trace(event);
-				});
-			classLoader.loadClassDefinitionsFromBytecode([TestConstants.getInterfaceDefinitionByteCode(), reserializedStream]);
-
-//        	
+			_classLoader.addEventListener(Event.COMPLETE, addAsync(function(event:Event):void {
+					assertTrue(true);
+				},5000));
+			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, addAsync(function(event:IOErrorEvent):void {
+					fail("loader error: " + event.text);
+				},5000));
+			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, addAsync(function(event:IOErrorEvent):void {
+					fail("loader error: " + event.text);
+				},5000));
+			_classLoader.loadClassDefinitionsFromBytecode([TestConstants.getInterfaceDefinitionByteCode(), reserializedStream]);
+//
 //        	var deserializer : AbcDeserializer = new AbcDeserializer(serializedStream);
 //        	assertEquals(16, deserializer.readU16());
 //        	assertEquals(46, deserializer.readU16());

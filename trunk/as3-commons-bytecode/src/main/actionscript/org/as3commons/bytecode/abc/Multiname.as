@@ -53,7 +53,7 @@ package org.as3commons.bytecode.abc {
 			return matches;
 		}
 
-		public function toString():String {
+		override public function toString():String {
 			return StringUtils.substitute("{0}[name={1}, nsset={2}]", kind.description, name, namespaceSet);
 		}
 	}

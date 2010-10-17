@@ -20,6 +20,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.util.Assertions;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -244,7 +245,7 @@ package org.as3commons.bytecode.abc {
 			});
 
 			if (multinameIndex == -1) {
-				multinameIndex = _multinamePool.push(multiname);
+				multinameIndex = _multinamePool.push(multiname) - 1;
 			}
 
 			return multinameIndex;
@@ -394,10 +395,10 @@ package org.as3commons.bytecode.abc {
 		 * @return    The position of the <code>LNamespace</code> in the pool.
 		 */
 		public function addNamespace(namespaceValue:LNamespace):int {
-//			if (namespaceValue == null)
-//			{
-//				trace(namespaceValue);
-//			}
+			//			if (namespaceValue == null)
+			//			{
+			//				trace(namespaceValue);
+			//			}
 
 			addString(namespaceValue.name);
 			return addObject(_namespacePool, namespaceValue);
@@ -426,12 +427,24 @@ package org.as3commons.bytecode.abc {
 		 * @param item    The item to add to the pool.
 		 */
 		public function addToPool(pool:Array, item:Object):int {
-			Assert.notNull(item,"constant pool item cannot be null");
-			var index:int = pool.indexOf(item);
-			if (index == -1) {
-				index = pool.push(item) - 1;
+			Assert.notNull(pool, "pool instance cannot be null");
+			Assert.notNull(item, "constant pool item cannot be null");
+			var index:int = -1;
+			if (item is IEquals) {
+				for each(var eq:IEquals in pool) {
+					index++;
+					if (IEquals(item).equals(eq)){
+						return index;
+						break;
+					}
+				}
+				index = pool.push(item)-1;
+			} else {
+				index = pool.indexOf(item);
+				if (index == -1) {
+					index = pool.push(item)-1;
+				}
 			}
-
 			return index;
 		}
 

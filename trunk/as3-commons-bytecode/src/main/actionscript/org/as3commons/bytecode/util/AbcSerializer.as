@@ -118,7 +118,7 @@ package org.as3commons.bytecode.util {
 
 			writeU30(methodBodies.length);
 			for each (var body:MethodBody in methodBodies) {
-				writeU30(abcFile.methodInfo.indexOf(body.methodSignature));
+				writeU30(abcFile.addMethodInfo(body.methodSignature));
 				writeU30(body.maxStack);
 				writeU30(body.localCount);
 				writeU30(body.initScopeDepth);

@@ -29,7 +29,7 @@ package org.as3commons.bytecode.abc {
 			assertAppropriateMultinameKind([MultinameKind.RTQNAME, MultinameKind.RTQNAME_A], kindValue);
 		}
 
-		public function toString():String {
+		override public function toString():String {
 			return StringUtils.substitute("{0}[name={1}]", kind.description, name);
 		}
 	}
