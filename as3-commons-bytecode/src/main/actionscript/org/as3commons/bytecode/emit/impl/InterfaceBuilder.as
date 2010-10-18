@@ -14,12 +14,28 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.errors.IllegalOperationError;
+
+	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
+	import org.as3commons.bytecode.emit.IVariableBuilder;
 
 	public class InterfaceBuilder extends ClassBuilder implements IInterfaceBuilder {
+
+		private static const INTERFACE_CONSTRUCTOR_ERROR:String = "Interfaces can't have constructors";
+		private static const INTERFACE_PROPERTIES_ERROR:String = "Interfaces can't have properties. (Only getters and/or setters)";
 
 		public function InterfaceBuilder() {
 			super();
 		}
+
+		override public function defineConstructor():ICtorBuilder {
+			throw new IllegalOperationError(INTERFACE_CONSTRUCTOR_ERROR);
+		}
+
+		override public function defineVariable():IVariableBuilder {
+			throw new IllegalOperationError(INTERFACE_PROPERTIES_ERROR);
+		}
+
 	}
 }
