@@ -16,10 +16,6 @@
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 
-	import mx.messaging.messages.AbstractMessage;
-
-	import mx.messaging.messages.HTTPRequestMessage;
-
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
@@ -30,6 +26,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IMetaDataBuilder;
+	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
 	import org.as3commons.bytecode.util.MultinameUtil;
@@ -157,20 +154,21 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function build():Array {
-			var ci:ClassInfo = createClassInfo();
-			var ii:InstanceInfo = createInstanceInfo();
-			var metadata:Array = buildMetadata();
 			var methods:Array = createMethods(metadata);
 			var variableTraits:Array = createVariables();
 			methods = methods.concat(createAccessors(variableTraits));
-			for each(var mi:MethodInfo in methods) {
+			var ci:ClassInfo = createClassInfo(methods, variableTraits);
+			var ii:InstanceInfo = createInstanceInfo();
+			var metadata:Array = buildMetadata();
+			for each (var mi:MethodInfo in methods) {
 				if (mi.as3commonsByteCodeAssignedMethodTrait.isStatic) {
 					ci.traits[ci.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
 				} else {
 					ii.traits[ii.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
 				}
 			}
-			for each(var st:SlotOrConstantTrait in variableTraits) {
+
+			for each (var st:SlotOrConstantTrait in variableTraits) {
 				if (st.isStatic) {
 					ci.traits[ci.traits.length] = st;
 				} else {
@@ -182,7 +180,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		private function createVariables():Array {
 			var result:Array = [];
-			for each(var vb:IVariableBuilder in _variableBuilders) {
+			for each (var vb:IVariableBuilder in _variableBuilders) {
 				result[result.length] = vb.build();
 			}
 			return result;
@@ -201,9 +199,9 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createAccessors(variableTraits:Array):Array {
 			var result:Array = [];
-			for each(var ab:IAccessorBuilder in _accessorBuilders) {
+			for each (var ab:IAccessorBuilder in _accessorBuilders) {
 				var lst:Array = ab.build() as Array;
-				for each(var obj:Object in lst) {
+				for each (var obj:Object in lst) {
 					if (obj is MethodInfo) {
 						result[result.length] = obj;
 					} else {
@@ -236,9 +234,9 @@ package org.as3commons.bytecode.emit.impl {
 			return ii;
 		}
 
-		protected function createClassInfo():ClassInfo {
+		protected function createClassInfo(methodInfos:Array, variableTraits:Array):ClassInfo {
 			var ci:ClassInfo = new ClassInfo();
-			var cb:ICtorBuilder = createDefaultConstructor();
+			var cb:ICtorBuilder = createStaticConstructor();
 			cb.isStatic = true;
 			ci.staticInitializer = cb.build()[0];
 			return ci;
@@ -248,7 +246,11 @@ package org.as3commons.bytecode.emit.impl {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
 			ctorBuilder.defineMethodBody().addOpcode(new Op(Opcode.getlocal_0)).addOpcode(new Op(Opcode.pushscope)).addOpcode(new Op(Opcode.returnvoid));
 			return ctorBuilder;
-			HTTPRequestMessage
+		}
+
+		protected function createStaticConstructor():ICtorBuilder {
+			var ctorBuilder:ICtorBuilder = defineConstructor();
+			return ctorBuilder;
 		}
 
 	}
