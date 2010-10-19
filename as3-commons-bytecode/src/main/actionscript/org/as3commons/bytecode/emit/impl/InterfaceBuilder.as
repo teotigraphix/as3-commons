@@ -37,5 +37,9 @@ package org.as3commons.bytecode.emit.impl {
 			throw new IllegalOperationError(INTERFACE_PROPERTIES_ERROR);
 		}
 
+		override public function build():Array {
+			return [];
+		}
+
 	}
 }
