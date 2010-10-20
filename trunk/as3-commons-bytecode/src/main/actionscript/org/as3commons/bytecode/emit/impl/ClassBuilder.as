@@ -157,7 +157,7 @@ package org.as3commons.bytecode.emit.impl {
 			var methods:Array = createMethods(metadata);
 			var variableTraits:Array = createVariables();
 			methods = methods.concat(createAccessors(variableTraits));
-			var ci:ClassInfo = createClassInfo(methods, variableTraits);
+			var ci:ClassInfo = createClassInfo(variableTraits);
 			var ii:InstanceInfo = createInstanceInfo();
 			var metadata:Array = buildMetadata();
 			for each (var mi:MethodInfo in methods) {
@@ -234,9 +234,15 @@ package org.as3commons.bytecode.emit.impl {
 			return ii;
 		}
 
-		protected function createClassInfo(methodInfos:Array, variableTraits:Array):ClassInfo {
+		protected function createClassInfo(variableTraits:Array):ClassInfo {
+			var staticvariables:Array = [];
+			for each (var slot:SlotOrConstantTrait in variableTraits) {
+				if (slot.isStatic) {
+					staticvariables[staticvariables.length] = slot;
+				}
+			}
 			var ci:ClassInfo = new ClassInfo();
-			var cb:ICtorBuilder = createStaticConstructor();
+			var cb:ICtorBuilder = createStaticConstructor(staticvariables);
 			cb.isStatic = true;
 			ci.staticInitializer = cb.build()[0];
 			return ci;
@@ -244,13 +250,31 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createDefaultConstructor():ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
-			ctorBuilder.defineMethodBody().addOpcode(new Op(Opcode.getlocal_0)).addOpcode(new Op(Opcode.pushscope)).addOpcode(new Op(Opcode.returnvoid));
+			ctorBuilder.defineMethodBody() //add default opcodes:
+				.addOpcode(new Op(Opcode.getlocal_0)) //
+				.addOpcode(new Op(Opcode.pushscope)) //
+				.addOpcode(new Op(Opcode.getlocal_0)) //
+				.addOpcode(new Op(Opcode.constructsuper, [0])) //
+				.addOpcode(new Op(Opcode.returnvoid));
 			return ctorBuilder;
 		}
 
-		protected function createStaticConstructor():ICtorBuilder {
+		protected function createStaticConstructor(staticvariables:Array):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
+			var mb:IMethodBodyBuilder = ctorBuilder.defineMethodBody();
+			mb.opcodes[mb.opcodes] = new Op(Opcode.getlocal_0);
+			mb.opcodes[mb.opcodes] = new Op(Opcode.pushscope);
+			for each (var slot:SlotOrConstantTrait in staticvariables) {
+				mb.opcodes = mb.opcodes.concat(createInitializer(slot));
+			}
+			mb.opcodes[mb.opcodes] = new Op(Opcode.returnvoid);
 			return ctorBuilder;
+		}
+
+		protected function createInitializer(slot:SlotOrConstantTrait):Array {
+			var result:Array = [];
+			//TODO: Add slot initialization logic
+			return result;
 		}
 
 	}
