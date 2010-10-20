@@ -27,61 +27,68 @@ package org.as3commons.logging {
 	 * @author Christophe Herreman
 	 */
 	public interface ILogger {
-		
-		/**
-		 * Returns the name of this logger.
-		 */
-		//function get name():String;
-		
-		/**
-		 * Logs a message with a "debug" level.
-		 */
-		function debug(message:String, ... params):void;
-		
-		/**
-		 * Logs a message with a "info" level.
-		 */
-		function info(message:String, ... params):void;
-		
-		/**
-		 * Logs a message with a "warn" level.
-		 */
-		function warn(message:String, ... params):void;
-		
-		/**
-		 * Logs a message with a "error" level.
-		 */
-		function error(message:String, ... params):void;
-		
-		/**
-		 * Logs a message with a "fatal" level.
-		 */
-		function fatal(message:String, ... params):void;
-		
+
+		// --------------------------------------------------------------------
+		//
+		// Properties
+		//
+		// --------------------------------------------------------------------
+
 		/**
 		 * Is debug logging currently enabled?
 		 */
 		function get debugEnabled():Boolean;
-		
+
 		/**
 		 * Is info logging currently enabled?
 		 */
 		function get infoEnabled():Boolean;
-		
+
 		/**
 		 * Is warn logging currently enabled?
 		 */
 		function get warnEnabled():Boolean;
-		
+
 		/**
 		 * Is error logging currently enabled?
 		 */
 		function get errorEnabled():Boolean;
-		
+
 		/**
 		 * Is fatal logging currently enabled?
 		 */
 		function get fatalEnabled():Boolean;
+
+		// --------------------------------------------------------------------
+		//
+		// Methods
+		//
+		// --------------------------------------------------------------------
+
+		/**
+		 * Logs a message with a "debug" level.
+		 */
+		function debug(messageOrObject:Object, ... params):void;
+		
+		/**
+		 * Logs a message with a "info" level.
+		 */
+		function info(messageOrObject:Object, ... params):void;
+		
+		/**
+		 * Logs a message with a "warn" level.
+		 */
+		function warn(messageOrObject:Object, ... params):void;
+		
+		/**
+		 * Logs a message with a "error" level.
+		 */
+		function error(messageOrObject:Object, ... params):void;
+		
+		/**
+		 * Logs a message with a "fatal" level.
+		 */
+		function fatal(messageOrObject:Object, ... params):void;
 	
 	}
 }

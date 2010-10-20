@@ -56,10 +56,10 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:String, ... params):void {
+		public function debug(messageOrObject:Object, ... params):void {
 			if (_logger && debugEnabled) {
 				var args:Array = params.concat();
-				args.unshift(message);
+				args.unshift(messageOrObject);
 				_logger.debug.apply(_logger, args);
 			}
 		}
@@ -67,10 +67,10 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:String, ... params):void {
+		public function info(messageOrObject:Object, ... params):void {
 			if (_logger && infoEnabled) {
 				var args:Array = params.concat();
-				args.unshift(message);
+				args.unshift(messageOrObject);
 				_logger.info.apply(_logger, args);
 			}
 		}
@@ -78,10 +78,10 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:String, ... params):void {
+		public function warn(messageOrObject:Object, ... params):void {
 			if (_logger && warnEnabled) {
 				var args:Array = params.concat();
-				args.unshift(message);
+				args.unshift(messageOrObject);
 				_logger.warn.apply(_logger, args);
 			}
 		}
@@ -89,10 +89,10 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:String, ... params):void {
+		public function error(messageOrObject:Object, ... params):void {
 			if (_logger && errorEnabled) {
 				var args:Array = params.concat();
-				args.unshift(message);
+				args.unshift(messageOrObject);
 				_logger.error.apply(_logger, args);
 			}
 		}
@@ -100,10 +100,10 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal(message:String, ... params):void {
+		public function fatal(messageOrObject:Object, ... params):void {
 			if (_logger && fatalEnabled) {
 				var args:Array = params.concat();
-				args.unshift(message);
+				args.unshift(messageOrObject);
 				_logger.fatal.apply(_logger, args);
 			}
 		}

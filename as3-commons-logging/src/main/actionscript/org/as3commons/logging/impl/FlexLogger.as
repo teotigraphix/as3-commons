@@ -20,10 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.impl {
-	
 	import mx.logging.ILogger;
 	import mx.logging.Log;
-
 	import mx.logging.LogEvent;
 	import mx.logging.LogEventLevel;
 	import mx.logging.LogLogger;
@@ -77,13 +75,13 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:String, ... params):void {
+		public function debug(messageOrObject:Object, ... params):void {
 			if (Log.isDebug()) {
 				if (_logLogger) {
-					log(_logLogger, message, params, LogEventLevel.DEBUG);
+					log(_logLogger, messageOrObject.toString(), params, LogEventLevel.DEBUG);
 				} else {
 					var args:Array = params.concat();
-					args.unshift(message);
+					args.unshift(messageOrObject);
 					_logger.debug.apply(_logger, args);
 				}
 			}
@@ -92,13 +90,13 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:String, ... params):void {
+		public function info(messageOrObject:Object, ... params):void {
 			if (Log.isInfo()) {
 				if (_logLogger) {
-					log(_logLogger, message, params, LogEventLevel.INFO);
+					log(_logLogger, messageOrObject.toString(), params, LogEventLevel.INFO);
 				} else {
 					var args:Array = params.concat();
-					args.unshift(message);
+					args.unshift(messageOrObject);
 					_logger.info.apply(_logger, args);
 				}
 			}
@@ -107,13 +105,13 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:String, ... params):void {
+		public function warn(messageOrObject:Object, ... params):void {
 			if (Log.isWarn()) {
 				if (_logLogger) {
-					log(_logLogger, message, params, LogEventLevel.WARN);
+					log(_logLogger, messageOrObject.toString(), params, LogEventLevel.WARN);
 				} else {
 					var args:Array = params.concat();
-					args.unshift(message);
+					args.unshift(messageOrObject);
 					_logger.warn.apply(_logger, args);
 				}
 			}
@@ -122,13 +120,13 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:String, ... params):void {
+		public function error(messageOrObject:Object, ... params):void {
 			if (Log.isError()) {
 				if (_logLogger) {
-					log(_logLogger, message, params, LogEventLevel.ERROR);
+					log(_logLogger, messageOrObject.toString(), params, LogEventLevel.ERROR);
 				} else {
 					var args:Array = params.concat();
-					args.unshift(message);
+					args.unshift(messageOrObject);
 					_logger.error.apply(_logger, args);
 				}
 			}
@@ -137,13 +135,13 @@ package org.as3commons.logging.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal(message:String, ... params):void {
+		public function fatal(messageOrObject:Object, ... params):void {
 			if (Log.isFatal()) {
 				if (_logLogger) {
-					log(_logLogger, message, params, LogEventLevel.FATAL);
+					log(_logLogger, messageOrObject.toString(), params, LogEventLevel.FATAL);
 				} else {
 					var args:Array = params.concat();
-					args.unshift(message);
+					args.unshift(messageOrObject);
 					_logger.fatal.apply(_logger, args);
 				}
 			}
@@ -198,7 +196,7 @@ package org.as3commons.logging.impl {
 		 * @param parameters
 		 * @param logEventLevel
 		 */
-		private function log(logLogger:mx.logging.LogLogger, message:String, parameters:Array, logEventLevel:int):void {
+		private function log(logLogger:LogLogger, message:String, parameters:Array, logEventLevel:int):void {
 			if (logLogger.hasEventListener(LogEvent.LOG)) {
 				message = MessageUtil.toString(message, parameters);
 				logLogger.dispatchEvent(new LogEvent(message, logEventLevel));
