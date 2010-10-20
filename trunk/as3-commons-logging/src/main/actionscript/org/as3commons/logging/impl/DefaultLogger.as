@@ -33,33 +33,28 @@ package org.as3commons.logging.impl {
 	public class DefaultLogger extends AbstractLogger {
 		
 		private var _level:int;
-		
+
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
+
 		/**
 		 * Creates a new DefaultLogger.
 		 */
 		public function DefaultLogger(name:String) {
 			super(name);
 		}
-		
+
+		// --------------------------------------------------------------------
+		//
+		// Public Properties
+		//
+		// --------------------------------------------------------------------
+
 		public function set level(value:int):void {
 			_level = value;
-		}
-		
-		override protected function log(level:uint, message:String, params:Array):void {
-			if (level >= this._level) {
-				//var message:String = "";
-				
-				var msg:String = "";
-				
-				// add datetime
-				msg += (new Date()).toString() + " " + LogLevel.toString(level) + " - ";
-				
-				// add name and params
-				msg += name + " - " + MessageUtil.toString(message, params);
-				
-				// trace the message
-				trace(msg);
-			}
 		}
 		
 		/**
@@ -96,5 +91,27 @@ package org.as3commons.logging.impl {
 		override public function get fatalEnabled():Boolean {
 			return (_level <= LogLevel.FATAL);
 		}
+
+		// --------------------------------------------------------------------
+		//
+		// Protected Methods
+		//
+		// --------------------------------------------------------------------
+
+		override protected function log(level:uint, messageOrObject:Object, params:Array):void {
+			if (level >= this._level) {
+				var msg:String = "";
+
+				// add datetime
+				msg += (new Date()).toString() + " " + LogLevel.toString(level) + " - ";
+
+				// add name and params
+				msg += name + " - " + MessageUtil.toString(messageOrObject.toString(), params);
+
+				// trace the message
+				trace(msg);
+			}
+		}
+
 	}
 }
