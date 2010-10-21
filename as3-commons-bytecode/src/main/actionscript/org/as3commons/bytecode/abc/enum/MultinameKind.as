@@ -16,9 +16,10 @@
 package org.as3commons.bytecode.abc.enum {
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.StringUtils;
 
 	/**
 	 * as3commons-bytecode representation of possible values for the kinds of multinames in the ABC file format.
@@ -62,6 +63,10 @@ package org.as3commons.bytecode.abc.enum {
 
 		public function get description():String {
 			return _description;
+		}
+		
+		public function toString():String {
+			return StringUtils.substitute("MultinameKind[description={0}]",_description);
 		}
 
 		public static function determineKind(kind:int):MultinameKind {
