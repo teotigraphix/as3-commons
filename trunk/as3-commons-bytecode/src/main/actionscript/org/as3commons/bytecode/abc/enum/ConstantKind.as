@@ -15,8 +15,9 @@
  */
 package org.as3commons.bytecode.abc.enum {
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.StringUtils;
 
 	/**
 	 * as3commons-bytecode representation of possible values for the kinds of optional arguments to methods in the ABC file format.
@@ -74,6 +75,10 @@ package org.as3commons.bytecode.abc.enum {
 
 		public function get description():String {
 			return _description;
+		}
+		
+		public function toString():String {
+			return StringUtils.substitute("ConstantKind[description={0}]",_description);
 		}
 	}
 }
