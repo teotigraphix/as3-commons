@@ -274,9 +274,9 @@ package org.as3commons.bytecode.emit.impl {
 				.addOpcode(new Op(Opcode.getlocal_0)) //
 				.addOpcode(new Op(Opcode.pushscope));
 			for each (var slot:SlotOrConstantTrait in staticvariables) {
-				mb.opcodes = mb.opcodes.concat(createInitializer(slot));
+				mb.addOpcodes(createInitializer(slot));
 			}
-			mb.opcodes[mb.opcodes] = new Op(Opcode.returnvoid);
+			mb.addOpcode(new Op(Opcode.returnvoid));
 			return ctorBuilder;
 		}
 

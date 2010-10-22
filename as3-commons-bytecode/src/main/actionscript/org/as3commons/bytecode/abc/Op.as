@@ -41,18 +41,18 @@ package org.as3commons.bytecode.abc {
 			checkParameters(_parameters, _opcode);
 		}
 
-		protected function checkParameters(parameters:Array, opcode:Opcode):void {
+		private static function checkParameters(parameters:Array, opcode:Opcode):void {
 			if (parameters.length > 0) {
 				var len:uint = parameters.length;
 				for (var i:uint = 0; i < len; i++) {
-					if (!compareTypes(parameters[i], opcode.argumentTypes[0][i])) {
-						throw new IllegalOperationError(StringUtils.substitute(ARGUMENT_TYPE_ERROR, opcode, opcode.argumentTypes[0][i], parameters[i]));
+					if (!compareTypes(parameters[i], opcode.argumentTypes[i][0])) {
+						throw new IllegalOperationError(StringUtils.substitute(ARGUMENT_TYPE_ERROR, opcode, opcode.argumentTypes[i][0], parameters[i]));
 					}
 				}
 			}
 		}
 
-		protected function compareTypes(instance:*, type:*):Boolean {
+		private static function compareTypes(instance:*, type:*):Boolean {
 			if (type === int) {
 				return (instance is int);
 			} else if (type === uint) {
