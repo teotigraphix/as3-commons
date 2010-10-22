@@ -69,27 +69,27 @@ package org.as3commons.logging {
 		 * @param message Message that should be logged.
 		 * @param params List of parameters 
 		 */
-		function debug(message:String, ... params):void;
+		function debug(message:*, ... params):void;
 		
 		/**
 		 * Logs a message with a "info" level.
 		 */
-		function info(message:String, ... params):void;
+		function info(message:*, ... params):void;
 		
 		/**
 		 * Logs a message with a "warn" level.
 		 */
-		function warn(message:String, ... params):void;
+		function warn(message:*, ... params):void;
 		
 		/**
 		 * Logs a message with a "error" level.
 		 */
-		function error(message:String, ... params):void;
+		function error(message:*, ... params):void;
 		
 		/**
 		 * Logs a message with a "fatal" level.
 		 */
-		function fatal(message:String, ... params):void;
+		function fatal(message:*, ... params):void;
 		
 		/**
 		 * @return <code>true</code> if <code>debug</code> actually does something.

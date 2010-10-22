@@ -7,37 +7,41 @@ package org.as3commons.logging.util {
 	 * @author mh
 	 */
 	public class LogMessageFormatterTest extends TestCase {
+		private static const SECOND : Number = 1000;
+		private static const MINUTE : Number = SECOND * 60;
+		private static const HOUR : Number = MINUTE * 60;
+		private static const DAY : Number = HOUR * 24;
 		
 		public function testTypos(): void {
 			assertEquals( "{MESSAGE}", new LogMessageFormatter( "{MESSAGE}" ).format( null, null, null, NaN, "a message", null ) );
-			assertEquals( "{ message }", new LogMessageFormatter( "{ message }" ).format( null, null, null, null, "a message", null ) );
-			assertEquals( "{me ssage}", new LogMessageFormatter( "{me ssage}" ).format( null, null, null, null, "a message", null ) );
-			assertEquals( "{meSsage}", new LogMessageFormatter( "{meSsage}" ).format( null, null, null, null, "a message", null ) );
+			assertEquals( "{ message }", new LogMessageFormatter( "{ message }" ).format( null, null, null, NaN, "a message", null ) );
+			assertEquals( "{me ssage}", new LogMessageFormatter( "{me ssage}" ).format( null, null, null, NaN, "a message", null ) );
+			assertEquals( "{meSsage}", new LogMessageFormatter( "{meSsage}" ).format( null, null, null, NaN, "a message", null ) );
 		}
 		
 		public function testBraces(): void {
-			assertEquals( "{a message", new LogMessageFormatter( "{{message}" ).format( null, null, null, null, "a message", null ) );
-			assertEquals( "{a message}a message", new LogMessageFormatter( "{{message}}{message}" ).format( null, null, null, null, "a message", null ) );
-			assertEquals( "}a message", new LogMessageFormatter( "}{message}" ).format( null, null, null, null, "a message", null ) );
-			assertEquals( "{a message", new LogMessageFormatter( "{{message}" ).format( null, null, null, null, "a message", null ) );
-			assertEquals( "{message}", new LogMessageFormatter( "{{message}}" ).format( null, null, null, null, "message", null ) );
-			assertEquals( "{{message}a{name}", new LogMessageFormatter( "{{{message}}a{{name}}" ).format( "name", null, null, null, "message", null ) );
+			assertEquals( "{a message", new LogMessageFormatter( "{{message}" ).format( null, null, null, NaN, "a message", null ) );
+			assertEquals( "{a message}a message", new LogMessageFormatter( "{{message}}{message}" ).format( null, null, null, NaN, "a message", null ) );
+			assertEquals( "}a message", new LogMessageFormatter( "}{message}" ).format( null, null, null, NaN, "a message", null ) );
+			assertEquals( "{a message", new LogMessageFormatter( "{{message}" ).format( null, null, null, NaN, "a message", null ) );
+			assertEquals( "{message}", new LogMessageFormatter( "{{message}}" ).format( null, null, null, NaN, "message", null ) );
+			assertEquals( "{{message}a{name}", new LogMessageFormatter( "{{{message}}a{{name}}" ).format( "name", null, null, NaN, "message", null ) );
 		}
 		
 		public function testMultipleOccurances(): void {
-			assertEquals( "a a a", new LogMessageFormatter( "{message} {message} {message}" ).format( null, null, null, null, "a", null ) );
-			assertEquals( "a name a", new LogMessageFormatter( "{message} {name} {message}" ).format( "name", null, null, null, "a", null ) );
+			assertEquals( "a a a", new LogMessageFormatter( "{message} {message} {message}" ).format( null, null, null, NaN, "a", null ) );
+			assertEquals( "a name a", new LogMessageFormatter( "{message} {name} {message}" ).format( "name", null, null, NaN, "a", null ) );
 		}
 		
 		public function testMixedMessages(): void {
-			var time: Date = new Date( 1970, 0, 1, 0, 1, 1, 23 );
+			var time: Date = new Date( DAY + MINUTE + SECOND + 23 );
 			
-			assertEquals( "TimeUTC: (23:1:1.23), Time: \"0:1:1.23\", Message: [hello world]", new LogMessageFormatter( "TimeUTC: ({timeUTC}), Time: \"{time}\", Message: [{message}]" ).format( "", "", null, time.time, "hello world", null ));
+			assertEquals( "TimeUTC: (0:1:1.23), Time: \"9:1:1.23\", Message: [hello world]", new LogMessageFormatter( "TimeUTC: ({timeUTC}), Time: \"{time}\", Message: [{message}]" ).format( "", "", null, time.time, "hello world", null ));
 		}
 		
 		public function testSimpleMessages(): void {
 			
-			var time: Date = new Date( 1970, 0, 1, 0, 1, 1, 23 );
+			var time: Date = new Date( DAY + MINUTE + SECOND + 23 );
 			
 			assertEquals( "hello", new LogMessageFormatter( "hello" ).format( null, null, null, NaN, null, null ) );
 			assertEquals( "a name", new LogMessageFormatter( "{name}" ).format( "a name", null, null, NaN, null, null ) );
@@ -57,13 +61,13 @@ package org.as3commons.logging.util {
 			assertEquals( "a mess\\\"age", new LogMessageFormatter( "{message_dqt}" ).format( null, null, null, NaN, "a mess\"age", null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message_dqt}" ).format( null, null, null, NaN, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message_dqt}" ).format( null, null, null, NaN, undefined, null ) );
-			assertEquals( "0:1:1.23", new LogMessageFormatter( "{time}" ).format( null, null, null, time.getTime(), null, null ) );
-			assertEquals( "23:1:1.23", new LogMessageFormatter( "{timeUTC}" ).format( null, null, null, time.getTime(), null, null ) );
-			assertEquals( "23:01:01.023", new LogMessageFormatter( "{logTime}" ).format( null, null, null, time.getTime(), null, null ) );
-			assertEquals( "1970/1/1", new LogMessageFormatter( "{date}" ).format( null, null, null, time.getTime(), null, null ) );
-			assertEquals( "1969/12/31", new LogMessageFormatter( "{dateUTC}" ).format( null, null, null, time.getTime(), null, null ) );
-			assertEquals( "1:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, null, NaN, null, null ) );
-			assertEquals( "1:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, null, null, null, null ) );
+			assertEquals( "9:1:1.23", new LogMessageFormatter( "{time}" ).format( null, null, null, time.getTime(), null, null ) );
+			assertEquals( "0:1:1.23", new LogMessageFormatter( "{timeUTC}" ).format( null, null, null, time.getTime(), null, null ) );
+			assertEquals( "00:01:01.023", new LogMessageFormatter( "{logTime}" ).format( null, null, null, time.getTime(), null, null ) );
+			assertEquals( "1970/1/2", new LogMessageFormatter( "{date}" ).format( null, null, null, time.getTime(), null, null ) );
+			assertEquals( "1970/1/2", new LogMessageFormatter( "{dateUTC}" ).format( null, null, null, time.getTime(), null, null ) );
+			assertEquals( "9:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, null, NaN, null, null ) );
+			assertEquals( "9:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, null, null, null, null ) );
 			assertEquals( "0:0:0.0", new LogMessageFormatter( "{timeUTC}" ).format( null, null, null, null, null, null ) );
 			assertEquals( "{0}", new LogMessageFormatter( "{0}" ).format( null, null, null, null, null, ["a"] ) );
 			assertEquals( "a", new LogMessageFormatter( "{message}" ).format( null, null, null, null, "{0}", ["a"] ) );

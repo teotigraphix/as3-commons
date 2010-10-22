@@ -37,7 +37,7 @@ package org.as3commons.logging.setup.target {
 			_statementsPerFrame = statementsPerFrame;
 		}
 		
-		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:String, parameters:Array):void {
+		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:*, parameters:Array):void {
 			if( _statementsThisFrame < _statementsPerFrame && _bufferedStatements.length == 0 ) {
 				_target.log(name, shortName, level, timeStamp, message, parameters);
 				++_statementsThisFrame;

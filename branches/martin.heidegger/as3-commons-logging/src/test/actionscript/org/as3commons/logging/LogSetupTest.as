@@ -1,4 +1,4 @@
-package org.as3commons.logging {
+package org.as3commons.logging { 
 	import org.as3commons.logging.level.*;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.setup.TargetSetup;
@@ -312,6 +312,6 @@ import org.as3commons.logging.setup.ILogTarget;
 
 class TestLogTarget implements ILogTarget {
 
-	public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:String, parameters:Array):void {
+	public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:*, parameters:Array):void {
 	}
 }

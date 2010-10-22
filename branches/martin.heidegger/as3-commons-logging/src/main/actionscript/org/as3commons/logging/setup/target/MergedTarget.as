@@ -15,7 +15,7 @@ package org.as3commons.logging.setup.target {
 			_logTargetB = logTargetB;
 		}
 		
-		public function log(name: String, shortName: String, level: LogLevel, timeStamp: Number, message: String, parameters: Array): void {
+		public function log(name: String, shortName: String, level: LogLevel, timeStamp: Number, message: *, parameters: Array): void {
 			_logTargetA.log(name, shortName, level, timeStamp, message, parameters);
 			_logTargetB.log(name, shortName, level, timeStamp, message, parameters);
 		}

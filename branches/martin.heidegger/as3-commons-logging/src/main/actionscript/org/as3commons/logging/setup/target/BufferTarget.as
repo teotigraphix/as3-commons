@@ -12,7 +12,7 @@ package org.as3commons.logging.setup.target {
 		
 		private const _logStatements: Array /* <LogStatement> */ = new Array();
 		
-		public function log(name: String, shortName: String, level: LogLevel, timeStamp: Number, message: String, params: Array): void {
+		public function log(name: String, shortName: String, level: LogLevel, timeStamp: Number, message: *, params: Array): void {
 			_logStatements.push( new BufferStatement( name, shortName, level, timeStamp, message, params ) );
 		}
 		

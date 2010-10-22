@@ -20,9 +20,9 @@ package org.as3commons.logging.setup.target {
 			_target = target;
 		}
 		
-		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:String, parameters:Array):void {
+		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:*, parameters:Array):void {
 			var args: Array = parameters.concat();
-			args.unshift(message);
+			args.unshift( message["toString"]() );
 			switch( level ) {
 				case DEBUG:
 					_target.debug.apply( _target, args );

@@ -26,7 +26,7 @@ package org.as3commons.logging.setup.target {
 			
 			target.log( "longName", "shortName", DEBUG, 123, "Hello World {0} {1}", ["my","dear"] );
 			
-			assertEquals( target.text, "1:0:0.123 DEBUG - shortName - Hello World my dear" + lineEnd );
+			assertEquals( target.text, "9:0:0.123 DEBUG - shortName - Hello World my dear" + lineEnd );
 		}
 		
 		public function testRedirection(): void {
@@ -36,7 +36,7 @@ package org.as3commons.logging.setup.target {
 			target.log( "longName", "shortName", DEBUG, 123, "Hello World", [] );
 			
 			assertEquals( target.text, "" );
-			assertEquals( field.text, "1:0:0.123 DEBUG - shortName - Hello World" + lineEnd );
+			assertEquals( field.text, "9:0:0.123 DEBUG - shortName - Hello World" + lineEnd );
 		}
 		
 		public function testCustomFormat(): void {

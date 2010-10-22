@@ -1,16 +1,16 @@
-package org.mockito.asmock.framework.proxy
-{
+package org.mockito.asmock.framework.proxy {
 	import org.mockito.asmock.reflection.FieldInfo;
 	import org.mockito.asmock.reflection.MemberVisibility;
 	import org.mockito.asmock.reflection.MethodInfo;
 	import org.mockito.asmock.reflection.ParameterInfo;
 	import org.mockito.asmock.reflection.PropertyInfo;
 	import org.mockito.asmock.reflection.Type;
-	
 	import org.mockito.flemit.framework.bytecode.*;
+
+	import flash.display.Sprite;
 	
 	[ExcludeClass]
-	public class ProxyGenerator
+	public class ProxyGenerator extends Sprite
 	{
 		public static const CREATE_METHOD : String = "__createInstance";
 		
@@ -212,50 +212,44 @@ package org.mockito.asmock.framework.proxy
 			var clsNamespaceSet : NamespaceSet = new NamespaceSet(
 				[new BCNamespace(dynamicClass.packageName, NamespaceKind.PACKAGE_NAMESPACE)]);
 			
-			with (Instructions)
+			if (dynamicClass.isInterface)
 			{
-				if (dynamicClass.isInterface)
-				{
-					return new DynamicMethod(dynamicClass.scriptInitialiser, 3, 2, 1, 3, [
-						[GetLocal_0],
-						[PushScope],
-						[FindPropertyStrict, new MultipleNamespaceName(dynamicClass.name, clsNamespaceSet)], 
-						[PushNull],
-						[NewClass, dynamicClass],
-						[InitProperty, dynamicClass.qname],
-						[ReturnVoid]
-					]); 
-				}
-				else
-				{
-					// TODO: Support where base class is not Object
-					return new DynamicMethod(dynamicClass.scriptInitialiser, 3, 2, 1, 3, [
-						[GetLocal_0],
-						[PushScope],
-						//[GetScopeObject, 0],
-						[FindPropertyStrict, dynamicClass.multiNamespaceName], 
-						[GetLex, dynamicClass.baseType.qname],
-						[PushScope],
-						[GetLex, dynamicClass.baseType.qname],
-						[NewClass, dynamicClass],
-						[PopScope],
-						[InitProperty, dynamicClass.qname],
-						[ReturnVoid]
-					]);
-				}
+				return new DynamicMethod(dynamicClass.scriptInitialiser, 3, 2, 1, 3, [
+					[Instructions.GetLocal_0],
+					[Instructions.PushScope],
+					[Instructions.FindPropertyStrict, new MultipleNamespaceName(dynamicClass.name, clsNamespaceSet)], 
+					[Instructions.PushNull],
+					[Instructions.NewClass, dynamicClass],
+					[Instructions.InitProperty, dynamicClass.qname],
+					[Instructions.ReturnVoid]
+				]); 
+			}
+			else
+			{
+				// TODO: Support where base class is not Object
+				return new DynamicMethod(dynamicClass.scriptInitialiser, 3, 2, 1, 3, [
+					[Instructions.GetLocal_0],
+					[Instructions.PushScope],
+					//[GetScopeObject, 0],
+					[Instructions.FindPropertyStrict, dynamicClass.multiNamespaceName], 
+					[Instructions.GetLex, dynamicClass.baseType.qname],
+					[Instructions.PushScope],
+					[Instructions.GetLex, dynamicClass.baseType.qname],
+					[Instructions.NewClass, dynamicClass],
+					[Instructions.PopScope],
+					[Instructions.InitProperty, dynamicClass.qname],
+					[Instructions.ReturnVoid]
+				]);
 			}
 		}
 		
 		private function generateStaticInitialiser(dynamicClass : DynamicClass) : DynamicMethod
 		{
-			with (Instructions)
-			{
-				return new DynamicMethod(dynamicClass.staticInitialiser, 2, 2, 3, 4, [
-					[GetLocal_0],
-					[PushScope],
-					[ReturnVoid]
-				]);
-			}
+			return new DynamicMethod(dynamicClass.staticInitialiser, 2, 2, 3, 4, [
+				[Instructions.GetLocal_0],
+				[Instructions.PushScope],
+				[Instructions.ReturnVoid]
+			]);
 		}
 		
 		private function generateInitialiser(dynamicClass : DynamicClass) : DynamicMethod
@@ -266,57 +260,54 @@ package org.mockito.asmock.framework.proxy
 			
 			var proxyField : FieldInfo = dynamicClass.getField(PROXY_FIELD_NAME);
 			
-			with (Instructions)
+			var instructions : Array = [
+				[Instructions.GetLocal_0],
+				[Instructions.PushScope],
+				
+				
+				/* [ReturnVoid]]; */
+				
+				[Instructions.FindProperty, proxyField.qname],
+				[Instructions.GetLocal_1], // proxy argument (always first arg)
+				[Instructions.InitProperty, proxyField.qname],
+				
+				// begin construct super
+				[Instructions.GetLocal_0] // 'this'
+			];
+			
+			for (var i:uint=0; i<argCount; i++) 
 			{
-				var instructions : Array = [
-					[GetLocal_0],
-					[PushScope],
-					
-					
-					/* [ReturnVoid]]; */
-					
-					[FindProperty, proxyField.qname],
-					[GetLocal_1], // proxy argument (always first arg)
-					[InitProperty, proxyField.qname],
-					
-					// begin construct super
-					[GetLocal_0] // 'this'
-				];
+				instructions.push([Instructions.GetLocal, i+2]);
 				
-				for (var i:uint=0; i<argCount; i++) 
+				/* if (ParameterInfo(baseCtor.parameters[i]).optional)
 				{
-					instructions.push([GetLocal, i+2]);
-					
-					/* if (ParameterInfo(baseCtor.parameters[i]).optional)
-					{
-						instructions.push([PushUndefined]);
-						instructions.push([IfNotEquals, 2]);
-						instructions.push([ConstructSuper, argCount]);
-					} */
-				}
-				
-				instructions.push(
-					// Optionals?
-					//[PushUndefined]
-				
-					[ConstructSuper, argCount],
-					// end construct super
-				
-					// call __proxy__.methodExecuted(this, CONSTRUCTOR, className, {arguments})
-					[GetLocal_1],
-					[GetLocal_0],
-					[PushByte, MethodType.CONSTRUCTOR],
-					[PushString, dynamicClass.name],
-					[GetLocal, argCount + 2], // 'arguments'
-					[PushNull],
-					[CallPropVoid, proxyListenerType.getMethod("methodExecuted").qname, 5],
-					
-					
-					[ReturnVoid]
-				);
-				
-				return new DynamicMethod(dynamicClass.constructor, 6 + argCount, 3 + argCount, 4, 5, instructions);
+					instructions.push([PushUndefined]);
+					instructions.push([IfNotEquals, 2]);
+					instructions.push([ConstructSuper, argCount]);
+				} */
 			}
+			
+			instructions.push(
+				// Optionals?
+				//[PushUndefined]
+			
+				[Instructions.ConstructSuper, argCount],
+				// end construct super
+			
+				// call __proxy__.methodExecuted(this, CONSTRUCTOR, className, {arguments})
+				[Instructions.GetLocal_1],
+				[Instructions.GetLocal_0],
+				[Instructions.PushByte, MethodType.CONSTRUCTOR],
+				[Instructions.PushString, dynamicClass.name],
+				[Instructions.GetLocal, argCount + 2], // 'arguments'
+				[Instructions.PushNull],
+				[Instructions.CallPropVoid, proxyListenerType.getMethod("methodExecuted").qname, 5],
+				
+				
+				[Instructions.ReturnVoid]
+			);
+			
+			return new DynamicMethod(dynamicClass.constructor, 6 + argCount, 3 + argCount, 4, 5, instructions);
 		}
 		
 		private function generateMethod(dynamicClass : DynamicClass, method : MethodInfo, baseMethod : MethodInfo, baseIsDelegate : Boolean, name : String, methodType : uint) : DynamicMethod
@@ -324,85 +315,79 @@ package org.mockito.asmock.framework.proxy
 			var argCount : uint = method.parameters.length;
 			var proxyField : FieldInfo = dynamicClass.getField(PROXY_FIELD_NAME);
 
-			with (Instructions)
+			var instructions : Array = [
+				[Instructions.GetLocal_0],
+				[Instructions.PushScope],
+				
+				[Instructions.GetLex, proxyField.qname],
+				[Instructions.GetLocal_0],
+				[Instructions.PushByte, methodType],
+				[Instructions.PushString, name],
+				[Instructions.GetLocal, argCount + 1], // 'arguments'					
+			];
+			
+			// TODO: IsFinal?
+			if (baseMethod != null)
 			{
-				var instructions : Array = [
-					[GetLocal_0],
-					[PushScope],
-					
-					[GetLex, proxyField.qname],
-					[GetLocal_0],
-					[PushByte, methodType],
-					[PushString, name],
-					[GetLocal, argCount + 1], // 'arguments'					
-				];
-				
-				// TODO: IsFinal?
-				if (baseMethod != null)
+				if (baseIsDelegate)
 				{
-					if (baseIsDelegate)
-					{
-						instructions.push(
-							[GetLex, baseMethod.qname]
-						);
-					}
-					else
-					{
-						instructions.push(
-							[GetLocal_0],
-							[GetSuper, baseMethod.qname]
-						);
-					}
+					instructions.push(
+						[Instructions.GetLex, baseMethod.qname]
+					);
 				}
 				else
 				{
 					instructions.push(
-						[PushNull]
+						[Instructions.GetLocal_0],
+						[Instructions.GetSuper, baseMethod.qname]
 					);
 				}
-				
-				instructions.push(
-					[CallProperty, proxyListenerType.getMethod("methodExecuted").qname, 5]
-				);
-				
-				if (method.returnType == Type.voidType) // void
-				{
-					instructions.push([ReturnVoid]);
-				}
-				else
-				{
-					instructions.push(
-						//[GetLex, method.returnType.qname],
-						//[AsTypeLate],
-						[ReturnValue]
-					);
-				}
-				
-				return new DynamicMethod(method, 7 + argCount, argCount + 2, 4, 5, instructions);
 			}
+			else
+			{
+				instructions.push(
+					[Instructions.PushNull]
+				);
+			}
+			
+			instructions.push(
+				[Instructions.CallProperty, proxyListenerType.getMethod("methodExecuted").qname, 5]
+			);
+			
+			if (method.returnType == Type.voidType) // void
+			{
+				instructions.push([Instructions.ReturnVoid]);
+			}
+			else
+			{
+				instructions.push(
+					//[GetLex, method.returnType.qname],
+					//[AsTypeLate],
+					[Instructions.ReturnValue]
+				);
+			}
+			
+			return new DynamicMethod(method, 7 + argCount, argCount + 2, 4, 5, instructions);
 		}
 		
 		private function generateSuperPropertyGetterMethod(property : PropertyInfo) : DynamicMethod
 		{
 			var method : MethodInfo = new MethodInfo(property.owner, "get_" + property.name + "_internal", null, MemberVisibility.PRIVATE, false, false, Type.getType(Object), []); 
 			
-			with(Instructions)
-			{
-				var instructions : Array = [
-					[GetLocal_0],
-					[PushScope],
-					
-					[GetLocal_0],
-					[GetSuper, property.qname],
-					
-					[GetLex, property.type.qname],
-					[AsTypeLate],
-					
-					[ReturnValue]
-				];
+			var instructions : Array = [
+				[Instructions.GetLocal_0],
+				[Instructions.PushScope],
 				
-				return new DynamicMethod(method, 3, 2, 4, 5, instructions);
-			}
+				[Instructions.GetLocal_0],
+				[Instructions.GetSuper, property.qname],
+				
+				[Instructions.GetLex, property.type.qname],
+				[Instructions.AsTypeLate],
+				
+				[Instructions.ReturnValue]
+			];
+			
+			return new DynamicMethod(method, 3, 2, 4, 5, instructions);
 		}
 		
 		private function generateSuperPropertySetterMethod(property : PropertyInfo) : DynamicMethod
@@ -411,21 +396,19 @@ package org.mockito.asmock.framework.proxy
 			
 			var method : MethodInfo = new MethodInfo(property.owner, "set_" + property.name + "_internal", null, MemberVisibility.PRIVATE, false, false, Type.getType(Object), [valueParam]); 
 			
-			with(Instructions)
-			{
-				var instructions : Array = [
-					[GetLocal_0],
-					[PushScope],
-					
-					[GetLocal_0],
-					[GetLocal_1],
-					[SetSuper, property.qname],
-					
-					[ReturnVoid]
-				];
+			
+			var instructions : Array = [
+				[Instructions.GetLocal_0],
+				[Instructions.PushScope],
 				
-				return new DynamicMethod(method, 4, 3, 4, 5, instructions);
-			}
+				[Instructions.GetLocal_0],
+				[Instructions.GetLocal_1],
+				[Instructions.SetSuper, property.qname],
+				
+				[Instructions.ReturnVoid]
+			];
+				
+			return new DynamicMethod(method, 4, 3, 4, 5, instructions);
 		}
 		
 		private function generateCreateInstanceMethod(dynamicClass : DynamicClass) : DynamicMethod
@@ -434,33 +417,30 @@ package org.mockito.asmock.framework.proxy
 			
 			var method : MethodInfo = new MethodInfo(dynamicClass, CREATE_METHOD, null, MemberVisibility.PUBLIC, true, false, dynamicClass, dynamicClass.constructor.parameters); 
 			
-			with(Instructions)
+			var instructions : Array = [
+				[Instructions.GetLocal_0],
+				[Instructions.PushScope],
+				
+				[Instructions.GetLex, dynamicClass.qname]
+			];
+				
+			for (var i : int = 0; i<argCount; i++)
 			{
-				var instructions : Array = [
-					[GetLocal_0],
-					[PushScope],
-					
-					[GetLex, dynamicClass.qname]
-				];
-					
-				for (var i : int = 0; i<argCount; i++)
-				{
-					instructions.push(
-						[GetLocal, i+1]
-					);
-				}
-				
 				instructions.push(
-					[Construct, dynamicClass.constructor.parameters.length],
-					
-					/* [GetLex, dynamicClass.qname],
-					[AsTypeLate], */
-					
-					[ReturnValue]
+					[Instructions.GetLocal, i+1]
 				);
-				
-				return new DynamicMethod(method, 2 + argCount, 2 + argCount, 3, 4, instructions);
 			}
+			
+			instructions.push(
+				[Instructions.Construct, dynamicClass.constructor.parameters.length],
+				
+				/* [GetLex, dynamicClass.qname],
+				[AsTypeLate], */
+				
+				[Instructions.ReturnValue]
+			);
+			
+			return new DynamicMethod(method, 2 + argCount, 2 + argCount, 3, 4, instructions);
 		}
 		
 		private static const PROXY_FIELD_NAME : String = "__proxy__";

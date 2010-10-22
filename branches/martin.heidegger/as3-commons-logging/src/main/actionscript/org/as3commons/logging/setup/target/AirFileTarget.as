@@ -1,6 +1,5 @@
 package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.LogLevel;
-	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	import org.as3commons.logging.util.SWFInfo;
@@ -32,30 +31,35 @@ package org.as3commons.logging.setup.target {
 		
 		public function AirFileTarget( filePattern: String = null ) {
 			_filePattern = filePattern || DEFAULT_FILE_PATTERN;
-			_stream = new FileStream();
 		}
 		
-		public function log(name:String, shortName:String, level:LogLevel, timeStamp: Number,message:String, params:Array):void {
+		public function log(name:String, shortName:String, level:LogLevel, timeStamp: Number,message:*, params:Array):void {
 			var date: Date = new Date();
 			if( date.dateUTC != _formerDate || !_file.exists ) {
-				if( _file ) {
-					_stream.close();
-					_stream = new FileStream();
-					_file.cancel();
-					_file = null;
-				}
+				dispose();
+				_stream = new FileStream();
 				_formerDate = date.dateUTC;
 				_file = new File( createFileName( date ) );
 				if( _file.exists ) {
 					renameOldFile( _file, date, 1 );
 				}
 				_stream.openAsync( _file, FileMode.APPEND );
-				_stream.writeUTFBytes( "#Version: 1.0\n" +
-									   "#Software: " + SWFInfo.SHORT_URL + "(running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ", publisherID: " + NativeApplication.nativeApplication.publisherID + ")\n" +
+				var descriptor: XML = NativeApplication.nativeApplication.applicationDescriptor;
+				var ns: Namespace = descriptor.namespace();
+				_stream.writeUTFBytes("#Version: 1.0\n" + "#Software: " + descriptor.ns::name + " v" + descriptor.ns::version + " (running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ", publisherID: " + NativeApplication.nativeApplication.publisherID + " )\n" +
 									   "#Date: " + date.dateUTC + "-" + MONTHS[ date.monthUTC ] + "-" + date.fullYearUTC + " " + date.hoursUTC + ":" + date.minutesUTC + ":" + date.secondsUTC + "." + date.millisecondsUTC + "\n"+
 									   "#Fields: time x-method x-name x-comment\n");
 			}
 			_stream.writeUTFBytes( _formatter.format( name, shortName, level, timeStamp, message, params ) + "\n" );
+		}
+		
+		public function dispose(): void {
+			if( _file ) {
+				_stream.close();
+				_stream = null;
+				_file.cancel();
+				_file = null;
+			}
 		}
 		
 		private function renameOldFile(file: File, date: Date, no: int): void {

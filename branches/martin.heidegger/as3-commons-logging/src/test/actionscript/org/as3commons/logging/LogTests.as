@@ -1,15 +1,19 @@
 package org.as3commons.logging {
 	import org.as3commons.logging.integration.FlexIntegrationTest;
 	import org.as3commons.logging.level.DEBUG;
+	import org.as3commons.logging.level.ERROR;
+	import org.as3commons.logging.level.FATAL;
+	import org.as3commons.logging.level.INFO;
+	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ComplexSetupTest;
 	import org.as3commons.logging.setup.FlexSetupTest;
 	import org.as3commons.logging.setup.TargetSetupTest;
+	import org.as3commons.logging.setup.target.AirTargetTest;
 	import org.as3commons.logging.setup.target.BufferTest;
 	import org.as3commons.logging.setup.target.FrameBufferTest;
 	import org.as3commons.logging.setup.target.MergedTest;
 	import org.as3commons.logging.setup.target.SWFInfoTest;
 	import org.as3commons.logging.setup.target.TextFieldTest;
-	import org.as3commons.logging.setup.target.TraceTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	import org.as3commons.logging.util.LogMessageFormatterTest;
 	import org.as3commons.logging.util.SWFInfo;
@@ -76,7 +80,7 @@ package org.as3commons.logging {
 			}
 			trace( getTimer() - t, "ext. const" );
 			
-			trace(  0
+			var mxLoggingSize: uint = 0
 					+ getSize(mx.logging.ILogger)
 					+ getSize(ILoggingTarget)
 					+ getSize(Log)
@@ -86,9 +90,9 @@ package org.as3commons.logging {
 					+ getSize(AbstractTarget)
 					+ getSize(InvalidCategoryError)
 					+ getSize(InvalidFilterError)
-					+ getSize(mx.logging.targets.TraceTarget)
-			);
-			trace(  0
+					+ getSize(mx.logging.targets.TraceTarget);
+			
+			var as3commonsSize: uint = 0
 					+ getSize(org.as3commons.logging.ILogger)
 					+ getSize(ILogSetup)
 					+ getSize(LoggerFactory)
@@ -97,10 +101,18 @@ package org.as3commons.logging {
 					+ getSize(LogSetupLevel)
 					+ getSize(getLogger)
 					+ getSize(toLogName)
-					+ getSize(org.as3commons.logging.setup.target.TraceTarget)
+					+ getSize(TraceTarget)
 					+ getSize(LogMessageFormatter)
 					+ getSize(SWFInfo)
-			);
+					+ getSize(DEBUG)
+					+ getSize(ERROR)
+					+ getSize(INFO)
+					+ getSize(WARN)
+					+ getSize(FATAL);
+			
+			trace("Size of MX Logging in memory, min: " + mxLoggingSize);
+			trace("Size of as3-commons-logging in memory, min: " + as3commonsSize);
+			trace("Difference: " + (mxLoggingSize-as3commonsSize)  );
 			
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
@@ -117,7 +129,8 @@ package org.as3commons.logging {
 				new FrameBufferTest(),
 				new BufferTest(),
 				new MergedTest(),
-				new TextFieldTest()
+				new TextFieldTest(),
+				new AirTargetTest()
 			]);
 		}
 	}

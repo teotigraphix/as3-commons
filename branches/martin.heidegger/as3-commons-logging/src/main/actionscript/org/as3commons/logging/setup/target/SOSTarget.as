@@ -21,7 +21,7 @@ package org.as3commons.logging.setup.target {
 			_gateway = gateway || SOSGateway.INSTANCE;
 		}
 		
-		public function log( name: String, shortName: String, level: LogLevel, timeStamp: Number, message: String, params: Array ): void {
+		public function log( name: String, shortName: String, level: LogLevel, timeStamp: Number, message: *, params: Array ): void {
 			_gateway.log( level.name, _formatter.format( name, shortName, level, timeStamp, message, params) );
 		}
 	}

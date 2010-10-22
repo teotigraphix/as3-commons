@@ -1,5 +1,6 @@
 package org.mockito.asmock.framework.expectations
 {
+	import org.mockito.asmock.framework.Validate;
 	import org.mockito.asmock.framework.proxy.IInvocation;
 	import org.mockito.asmock.framework.util.MethodUtil;
 	import org.mockito.asmock.framework.asmock_internal;
