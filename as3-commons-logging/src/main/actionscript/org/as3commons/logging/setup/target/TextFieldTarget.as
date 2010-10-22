@@ -20,7 +20,7 @@ package org.as3commons.logging.setup.target {
 			_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
 		}
 		
-		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:String, parameters:Array):void {
+		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:*, parameters:Array):void {
 			_textField.appendText( _formatter.format( name, shortName, level, timeStamp, message, parameters ) + "\n" );
 		}
 	}

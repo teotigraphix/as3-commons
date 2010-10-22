@@ -91,7 +91,7 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:String, ... params:*):void {
+		public function debug(message:*, ... params:*):void {
 			if (_debugEnabled) {
 				_logTarget.log( _name, _shortName, DEBUG, _startTime+getTimer(), message, params );
 			}
@@ -100,7 +100,7 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:String, ... params:*):void {
+		public function info(message:*, ... params:*):void {
 			if (_infoEnabled) {
 				_logTarget.log( _name, _shortName, INFO, _startTime+getTimer(), message, params);
 			}
@@ -109,7 +109,7 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:String, ... params:*):void {
+		public function warn(message:*, ... params:*):void {
 			if (_warnEnabled) {
 				_logTarget.log( _name, _shortName, WARN, _startTime+getTimer(), message, params);
 			}
@@ -118,7 +118,7 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:String, ... params:*):void {
+		public function error(message:*, ... params:*):void {
 			if (_errorEnabled) {
 				_logTarget.log( _name, _shortName, ERROR, _startTime+getTimer(), message, params);
 			}
@@ -127,7 +127,7 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal(message:String, ... params:*):void {
+		public function fatal(message:*, ... params:*):void {
 			if (_fatalEnabled) {
 				_logTarget.log( _name, _shortName, FATAL, _startTime+getTimer(), message, params);
 			}
