@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
+	import flash.system.ApplicationDomain;
+
 	import org.as3commons.bytecode.abc.AbcFile;
 
 	public interface IAbcBuilder {
 		function definePackage(name:String):IPackageBuilder;
-		function build():AbcFile;
+		function build(applicationDomain:ApplicationDomain = null):AbcFile;
 	}
 }

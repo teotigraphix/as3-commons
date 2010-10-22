@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import flash.errors.IllegalOperationError;
+
 	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.lang.StringUtils;
 
 	/**
 	 * Represents an individual opcode operation with parameters.
 	 */
 	public class Op {
+
+		private static const ARGUMENT_TYPE_ERROR:String = "Wrong opcode argument type for opcode {0}, expected {1}, but got {2}";
+		private static const OBJECT_TYPE_NAME:String = "object";
+
 		private var _parameters:Array;
 		private var _opcode:Opcode;
 
@@ -31,8 +38,35 @@ package org.as3commons.bytecode.abc {
 		protected function initOp(opcode:Opcode, parameters:Array):void {
 			_opcode = opcode;
 			_parameters = (parameters) ? parameters : [];
+			checkParameters(_parameters, _opcode);
 		}
 
+		protected function checkParameters(parameters:Array, opcode:Opcode):void {
+			if (parameters.length > 0) {
+				var len:uint = parameters.length;
+				for (var i:uint = 0; i < len; i++) {
+					if (!compareTypes(parameters[i], opcode.argumentTypes[0][i])) {
+						throw new IllegalOperationError(StringUtils.substitute(ARGUMENT_TYPE_ERROR, opcode, opcode.argumentTypes[0][i], parameters[i]));
+					}
+				}
+			}
+		}
+
+		protected function compareTypes(instance:*, type:*):Boolean {
+			if (type === int) {
+				return (instance is int);
+			} else if (type === uint) {
+				return (instance is uint);
+			} else if (type === Number) {
+				return (instance is Number);
+			} else if (type === String) {
+				return (instance is String);
+			} else if (type === Array) {
+				return (instance is Array);
+			} else {
+				return (instance is type);
+			}
+		}
 
 		public function get parameters():Array {
 			return _parameters;
