@@ -32,7 +32,7 @@ package org.as3commons.bytecode.abc {
 		public var methodSignature:MethodInfo;
 		public var maxStack:int;
 		public var localCount:int = 1;
-		public var initScopeDepth:int;
+		public var initScopeDepth:int = 1;
 		public var maxScopeDepth:int;
 		public var exceptionInfos:Array;
 		public var traits:Array;
