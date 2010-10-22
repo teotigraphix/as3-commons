@@ -18,9 +18,11 @@ package org.as3commons.bytecode.emit.impl {
 
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
+	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
@@ -29,6 +31,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
+	import org.as3commons.bytecode.util.AbcDeserializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.StringUtils;
 
@@ -45,7 +48,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _superClassName:String = OBJECT_BASE_CLASS_NAME;
 		private var _isDynamic:Boolean = false;
 		private var _isFinal:Boolean;
-		private var _isProtected:Boolean;
+		private var _isProtected:Boolean = true;
 		private var _metadata:Array;
 		private var _traits:Array;
 
@@ -224,6 +227,9 @@ package org.as3commons.bytecode.emit.impl {
 			ii.isInterface = false;
 			ii.isProtected = isProtected;
 			ii.isSealed = !isDynamic;
+			if (ii.isProtected) {
+				ii.protectedNamespace = MultinameUtil.toLNamespace(packageName + MultinameUtil.DOUBLE_COLON + name, NamespaceKind.PROTECTED_NAMESPACE);
+			}
 			if (_ctorBuilder == null) {
 				_ctorBuilder = createDefaultConstructor();
 			}
@@ -245,6 +251,7 @@ package org.as3commons.bytecode.emit.impl {
 			var cb:ICtorBuilder = createStaticConstructor(staticvariables);
 			cb.isStatic = true;
 			ci.staticInitializer = cb.build()[0];
+			ci.staticInitializer.as3commonsBytecodeName = AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME;
 			return ci;
 		}
 
@@ -261,9 +268,10 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createStaticConstructor(staticvariables:Array):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
-			var mb:IMethodBodyBuilder = ctorBuilder.defineMethodBody();
-			mb.opcodes[mb.opcodes] = new Op(Opcode.getlocal_0);
-			mb.opcodes[mb.opcodes] = new Op(Opcode.pushscope);
+			ctorBuilder.name = ctorBuilder.name + CtorBuilder.STATIC_CONSTRUCTOR_NAME_SUFFIX;
+			var mb:IMethodBodyBuilder = ctorBuilder.defineMethodBody() //add default opcodes:
+				.addOpcode(new Op(Opcode.getlocal_0)) //
+				.addOpcode(new Op(Opcode.pushscope));
 			for each (var slot:SlotOrConstantTrait in staticvariables) {
 				mb.opcodes = mb.opcodes.concat(createInitializer(slot));
 			}

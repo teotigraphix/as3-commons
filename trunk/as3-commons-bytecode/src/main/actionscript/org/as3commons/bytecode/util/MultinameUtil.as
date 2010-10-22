@@ -25,8 +25,9 @@ package org.as3commons.bytecode.util {
 		public static const DOUBLE_COLON:String = "::";
 		public static const PERIOD:String = ".";
 
-		public static function toQualifiedName(className:String):QualifiedName {
+		public static function toQualifiedName(className:String, kind:NamespaceKind = null):QualifiedName {
 			var name:QualifiedName;
+			kind = (kind == null) ? NamespaceKind.PACKAGE_NAMESPACE : kind;
 
 			switch (className) {
 				case OBJECT_NAME:
@@ -45,11 +46,42 @@ package org.as3commons.bytecode.util {
 						classNamePortion = String(portions.pop());
 						namespacePortion = portions.join(PERIOD);
 					}
-					name = new QualifiedName(classNamePortion, new LNamespace(NamespaceKind.PROTECTED_NAMESPACE, namespacePortion));
+					name = new QualifiedName(classNamePortion, toLNamespace(className, kind));
 					break;
 			}
 
 			return name;
+		}
+
+		public static function toLNamespace(className:String, kind:NamespaceKind):LNamespace {
+			var namesp:LNamespace;
+
+			switch (className) {
+				case OBJECT_NAME:
+					namesp = BuiltIns.OBJECT.nameSpace;
+					break;
+				default:
+					var portions:Array;
+					var namespacePortion:String;
+					var classNamePortion:String;
+					if (className.indexOf(DOUBLE_COLON) > -1) {
+						portions = className.split(DOUBLE_COLON);
+						namespacePortion = portions[0];
+						classNamePortion = portions[1];
+					} else {
+						portions = className.split(PERIOD);
+						classNamePortion = String(portions.pop());
+						namespacePortion = portions.join(PERIOD);
+					}
+					if (kind == NamespaceKind.PACKAGE_NAMESPACE) {
+						namesp = new LNamespace(kind, namespacePortion);
+					} else {
+						namesp = new LNamespace(kind, namespacePortion + ':' + classNamePortion);
+					}
+					break;
+			}
+
+			return namesp;
 		}
 
 	}

@@ -64,6 +64,10 @@ package org.as3commons.bytecode.abc.enum {
 			return _TYPELIST;
 		}
 
+		public function toString():String {
+			return _description;
+		}
+
 		public static function determineKind(kindByte:int):NamespaceKind {
 			var kind:NamespaceKind = _TYPES[kindByte];
 			if (kind == null) {

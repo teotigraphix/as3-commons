@@ -234,6 +234,10 @@ package org.as3commons.bytecode.abc {
 				addNamespaceSet(multiname[NAMESPACE_SET_PROPERTYNAME]);
 			}
 
+			if (multiname is QualifiedName) {
+				addNamespace(QualifiedName(multiname).nameSpace);
+			}
+
 			var multinameIndex:int = -1;
 			_multinamePool.every(function(element:BaseMultiname, index:int, array:Array):Boolean {
 				if (element.equals(multiname)) {
@@ -431,18 +435,18 @@ package org.as3commons.bytecode.abc {
 			Assert.notNull(item, "constant pool item cannot be null");
 			var index:int = -1;
 			if (item is IEquals) {
-				for each(var eq:IEquals in pool) {
+				for each (var eq:IEquals in pool) {
 					index++;
-					if (IEquals(item).equals(eq)){
+					if (IEquals(item).equals(eq)) {
 						return index;
 						break;
 					}
 				}
-				index = pool.push(item)-1;
+				index = pool.push(item) - 1;
 			} else {
 				index = pool.indexOf(item);
 				if (index == -1) {
-					index = pool.push(item)-1;
+					index = pool.push(item) - 1;
 				}
 			}
 			return index;

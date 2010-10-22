@@ -20,7 +20,9 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
+	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.abc.ScriptInfo;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.typeinfo.Metadata;
@@ -30,6 +32,7 @@ package org.as3commons.bytecode.emit.impl {
 	public class AbcBuilder implements IAbcBuilder {
 
 		private static const PACKAGE_NAME_EXISTS_ERROR:String = "Package with name {0} is already defined.";
+		private static const SCRIPT_INFO_METHOD_NAME:String = "script{0}$init";
 
 		private var _packageBuilders:Dictionary;
 
@@ -58,6 +61,8 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		public function build():AbcFile {
 			var abcFile:AbcFile = new AbcFile();
+			var classNames:Array = [];
+			var idx:uint = 0;
 			for each (var pb:IPackageBuilder in _packageBuilders) {
 				var arr:Array = pb.build();
 				for each (var inst:Object in arr) {
@@ -65,6 +70,7 @@ package org.as3commons.bytecode.emit.impl {
 						abcFile.addClassInfo(ClassInfo(inst));
 					} else if (inst is InstanceInfo) {
 						abcFile.addInstanceInfo(InstanceInfo(inst));
+						abcFile.addScriptInfo(createScriptInfo(InstanceInfo(inst).classMultiname.fullName, idx++));
 					} else if (inst is MethodInfo) {
 						addMethodInfo(abcFile, MethodInfo(inst));
 					} else if (inst is Metadata) {
@@ -73,6 +79,19 @@ package org.as3commons.bytecode.emit.impl {
 				}
 			}
 			return abcFile;
+		}
+
+		protected function createScriptInfo(className:String, index:uint):ScriptInfo {
+			var scriptInfo:ScriptInfo = new ScriptInfo();
+			scriptInfo.scriptInitializer = createScriptInitializer(className, index);
+			return scriptInfo;
+		}
+
+		protected function createScriptInitializer(className:String, index:uint):MethodInfo {
+			var mi:MethodInfo = new MethodInfo();
+			mi.methodName = StringUtils.substitute(SCRIPT_INFO_METHOD_NAME, index);
+			mi.methodBody = new MethodBody();
+			return mi;
 		}
 
 		protected function addMethodInfo(abcFile:AbcFile, methodInfo:MethodInfo):void {

@@ -58,10 +58,10 @@ package org.as3commons.bytecode.util {
 	//TODO: Capture ranges for bytecode blocks so they can be checked in unit tests
 	public class AbcDeserializer extends AbcDeserializerBase {
 
-		private static const __NEED_CONSTANTS_:String = "~~ need constants ~~";
-		private static const CONSTRUCTOR_BYTECODENAME:String = "constructor";
-		private static const STATIC_INITIALIZER_BYTECODENAME:String = "staticInitializer";
-		private static const SCRIPT_INITIALIZER_BYTECODENAME:String = "scriptInitializer";
+		public static const __NEED_CONSTANTS_:String = "~~ need constants ~~";
+		public static const CONSTRUCTOR_BYTECODENAME:String = "constructor";
+		public static const STATIC_INITIALIZER_BYTECODENAME:String = "staticInitializer";
+		public static const SCRIPT_INITIALIZER_BYTECODENAME:String = "scriptInitializer";
 
 		public function AbcDeserializer(byteStream:ByteArray) {
 			super(byteStream);

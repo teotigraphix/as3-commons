@@ -14,14 +14,46 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.abc.MethodTrait;
+	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.TraitInfo;
+	import org.as3commons.bytecode.abc.enum.BuiltIns;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.util.AbcDeserializer;
+	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.lang.Assert;
 
 	public class CtorBuilder extends MethodBuilder implements ICtorBuilder {
 
+		public static const STATIC_CONSTRUCTOR_NAME_SUFFIX:String = '$cinit';
+
 		public function CtorBuilder(name:String) {
 			super(name, MemberVisibility.PUBLIC);
+			returnType = BuiltIns.ANY.fullName;
+		}
+
+		override public function build():Array {
+			var result:Array = super.build();
+			var mi:MethodInfo = MethodInfo(result[0]);
+			mi.returnType = MultinameUtil.toQualifiedName(returnType, NamespaceKind.NAMESPACE);
+			mi.as3commonsBytecodeName = AbcDeserializer.CONSTRUCTOR_BYTECODENAME;
+			return result;
+		}
+
+		override protected function buildTrait():TraitInfo {
+			Assert.hasText(name, "name property must not be null or empty");
+			Assert.hasText(packageName, "packageName property must not be null or empty");
+			var trait:MethodTrait = new MethodTrait();
+			trait.traitKind = TraitKind.METHOD;
+			trait.isFinal = isFinal;
+			trait.isOverride = false;
+			trait.traitMultiname = new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK);
+			return trait;
 		}
 
 	}
