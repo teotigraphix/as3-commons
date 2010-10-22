@@ -24,6 +24,9 @@ package org.as3commons.bytecode.abc {
 	 */
 	public class InstanceInfo {
 
+		//shortcut for emit.* package
+		public var classInfo:ClassInfo;
+
 		public var classMultiname:QualifiedName;
 		public var superclassMultiname:BaseMultiname;
 		public var protectedNamespace:LNamespace;

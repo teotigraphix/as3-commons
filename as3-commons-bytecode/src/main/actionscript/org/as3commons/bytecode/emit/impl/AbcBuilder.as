@@ -86,7 +86,7 @@ package org.as3commons.bytecode.emit.impl {
 						abcFile.addClassInfo(ClassInfo(inst));
 					} else if (inst is InstanceInfo) {
 						abcFile.addInstanceInfo(InstanceInfo(inst));
-						abcFile.addScriptInfo(createScriptInfo(InstanceInfo(inst).classMultiname.fullName, InstanceInfo(inst).superclassMultiname, applicationDomain, idx++));
+						abcFile.addScriptInfo(createScriptInfo(InstanceInfo(inst).classMultiname.fullName, InstanceInfo(inst).superclassMultiname, InstanceInfo(inst).classInfo, applicationDomain, idx++));
 					} else if (inst is MethodInfo) {
 						addMethodInfo(abcFile, MethodInfo(inst));
 					} else if (inst is Metadata) {
@@ -97,9 +97,9 @@ package org.as3commons.bytecode.emit.impl {
 			return abcFile;
 		}
 
-		protected function createScriptInfo(className:String, superClass:BaseMultiname, applicationDomain:ApplicationDomain, index:uint):ScriptInfo {
+		protected function createScriptInfo(className:String, superClass:BaseMultiname, classInfo:ClassInfo, applicationDomain:ApplicationDomain, index:uint):ScriptInfo {
 			var scriptInfo:ScriptInfo = new ScriptInfo();
-			scriptInfo.scriptInitializer = createScriptInitializer(className, superClass, applicationDomain);
+			scriptInfo.scriptInitializer = createScriptInitializer(className, superClass, classInfo, applicationDomain);
 			scriptInfo.traits[scriptInfo.traits.length] = createClassTrait(className, index);
 			return scriptInfo;
 		}
@@ -112,7 +112,7 @@ package org.as3commons.bytecode.emit.impl {
 			return trait;
 		}
 
-		protected function createScriptInitializer(className:String, superClass:BaseMultiname, applicationDomain:ApplicationDomain):MethodInfo {
+		protected function createScriptInitializer(className:String, superClass:BaseMultiname, classInfo:ClassInfo, applicationDomain:ApplicationDomain):MethodInfo {
 			var superClassName:String = "";
 			if (superClass is QualifiedName) {
 				superClassName = QualifiedName(superClass).fullName;
@@ -140,7 +140,7 @@ package org.as3commons.bytecode.emit.impl {
 				popscopes[popscopes.length] = new Op(Opcode.popscope);
 			}
 			mn = MultinameUtil.toQualifiedName(className);
-			mb.addOpcode(new Op(Opcode.newclass, [mn]));
+			mb.addOpcode(new Op(Opcode.newclass, [classInfo]));
 			mb.addOpcodes(popscopes);
 			mb.addOpcode(new Op(Opcode.initproperty, [mn]));
 			mb.addOpcode(new Op(Opcode.returnvoid));

@@ -162,6 +162,7 @@ package org.as3commons.bytecode.emit.impl {
 			methods = methods.concat(createAccessors(variableTraits));
 			var ci:ClassInfo = createClassInfo(variableTraits);
 			var ii:InstanceInfo = createInstanceInfo();
+			ii.classInfo = ci;
 			var metadata:Array = buildMetadata();
 			for each (var mi:MethodInfo in methods) {
 				if (mi.as3commonsByteCodeAssignedMethodTrait.isStatic) {
