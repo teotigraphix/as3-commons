@@ -15,19 +15,34 @@
  */
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
+	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
+	import org.as3commons.bytecode.abc.ClassTrait;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.abc.Multiname;
+	import org.as3commons.bytecode.abc.NamedMultiname;
+	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.ScriptInfo;
+	import org.as3commons.bytecode.abc.enum.BuiltIns;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
+	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.typeinfo.Metadata;
+	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.reflect.Type;
 
 	public class AbcBuilder implements IAbcBuilder {
 
@@ -59,9 +74,10 @@ package org.as3commons.bytecode.emit.impl {
 		 * ready to be loaded into an AVM.
 		 * @return The specified <code>AbcFile</code>.
 		 */
-		public function build():AbcFile {
+		public function build(applicationDomain:ApplicationDomain = null):AbcFile {
 			var abcFile:AbcFile = new AbcFile();
 			var classNames:Array = [];
+			applicationDomain = (applicationDomain) ? applicationDomain : ApplicationDomain.currentDomain;
 			var idx:uint = 0;
 			for each (var pb:IPackageBuilder in _packageBuilders) {
 				var arr:Array = pb.build();
@@ -70,7 +86,7 @@ package org.as3commons.bytecode.emit.impl {
 						abcFile.addClassInfo(ClassInfo(inst));
 					} else if (inst is InstanceInfo) {
 						abcFile.addInstanceInfo(InstanceInfo(inst));
-						abcFile.addScriptInfo(createScriptInfo(InstanceInfo(inst).classMultiname.fullName, idx++));
+						abcFile.addScriptInfo(createScriptInfo(InstanceInfo(inst).classMultiname.fullName, InstanceInfo(inst).superclassMultiname, applicationDomain, idx++));
 					} else if (inst is MethodInfo) {
 						addMethodInfo(abcFile, MethodInfo(inst));
 					} else if (inst is Metadata) {
@@ -81,16 +97,54 @@ package org.as3commons.bytecode.emit.impl {
 			return abcFile;
 		}
 
-		protected function createScriptInfo(className:String, index:uint):ScriptInfo {
+		protected function createScriptInfo(className:String, superClass:BaseMultiname, applicationDomain:ApplicationDomain, index:uint):ScriptInfo {
 			var scriptInfo:ScriptInfo = new ScriptInfo();
-			scriptInfo.scriptInitializer = createScriptInitializer(className, index);
+			scriptInfo.scriptInitializer = createScriptInitializer(className, superClass, applicationDomain);
+			scriptInfo.traits[scriptInfo.traits.length] = createClassTrait(className, index);
 			return scriptInfo;
 		}
 
-		protected function createScriptInitializer(className:String, index:uint):MethodInfo {
+		protected function createClassTrait(className:String, index:uint):ClassTrait {
+			var trait:ClassTrait = new ClassTrait();
+			trait.classIndex = index;
+			trait.traitKind = TraitKind.CLASS;
+			trait.traitMultiname = MultinameUtil.toQualifiedName(className);
+			return trait;
+		}
+
+		protected function createScriptInitializer(className:String, superClass:BaseMultiname, applicationDomain:ApplicationDomain):MethodInfo {
+			var superClassName:String = "";
+			if (superClass is QualifiedName) {
+				superClassName = QualifiedName(superClass).fullName;
+			} else if (superClass is NamedMultiname) {
+				superClassName = NamedMultiname(superClass).name;
+			}
 			var mi:MethodInfo = new MethodInfo();
-			mi.methodName = StringUtils.substitute(SCRIPT_INFO_METHOD_NAME, index);
-			mi.methodBody = new MethodBody();
+			mi.methodName = "";
+			mi.returnType = MultinameUtil.toQualifiedName(BuiltIns.ANY.fullName, NamespaceKind.NAMESPACE);
+			var mb:IMethodBodyBuilder = new MethodBodyBuilder();
+			mb.addOpcode(new Op(Opcode.getlocal_0)) //
+				.addOpcode(new Op(Opcode.pushscope)) //
+				.addOpcode(new Op(Opcode.getscopeobject, [0]));
+			var type:Type = Type.forName(superClassName, applicationDomain);
+			var extendedClasses:Array = type.extendsClasses.reverse();
+			extendedClasses[extendedClasses.length] = superClassName;
+			extendedClasses[extendedClasses.length] = className;
+			var popscopes:Array = [];
+			var mn:QualifiedName;
+			for each (var clsName:String in extendedClasses) {
+				mn = MultinameUtil.toQualifiedName(clsName);
+				mb.addOpcode(new Op(Opcode.findpropstrict, [mn])) //
+					.addOpcode(new Op(Opcode.getproperty, [mn])) //
+					.addOpcode(new Op(Opcode.pushscope));
+				popscopes[popscopes.length] = new Op(Opcode.popscope);
+			}
+			mn = MultinameUtil.toQualifiedName(className);
+			mb.addOpcode(new Op(Opcode.newclass, [mn]));
+			mb.addOpcodes(popscopes);
+			mb.addOpcode(new Op(Opcode.initproperty, [mn]));
+			mb.addOpcode(new Op(Opcode.returnvoid));
+			mi.methodBody = mb.build();
 			return mi;
 		}
 

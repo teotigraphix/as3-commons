@@ -32,8 +32,8 @@ package org.as3commons.bytecode.emit.impl {
 
 		public static const STATIC_CONSTRUCTOR_NAME_SUFFIX:String = '$cinit';
 
-		public function CtorBuilder(name:String) {
-			super(name, MemberVisibility.PUBLIC);
+		public function CtorBuilder() {
+			super("", MemberVisibility.PUBLIC);
 			returnType = BuiltIns.ANY.fullName;
 		}
 
@@ -46,8 +46,6 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		override protected function buildTrait():TraitInfo {
-			Assert.hasText(name, "name property must not be null or empty");
-			Assert.hasText(packageName, "packageName property must not be null or empty");
 			var trait:MethodTrait = new MethodTrait();
 			trait.traitKind = TraitKind.METHOD;
 			trait.isFinal = isFinal;

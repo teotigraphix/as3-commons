@@ -130,7 +130,7 @@ package org.as3commons.bytecode.emit.impl {
 			if (_ctorBuilder != null) {
 				throw new IllegalOperationError(MULTIPLE_CONSTRUCTORS_ERROR);
 			}
-			var _ctorBuilder:ICtorBuilder = new CtorBuilder(this.name);
+			var _ctorBuilder:ICtorBuilder = new CtorBuilder();
 			_ctorBuilder.packageName = packageName
 			return _ctorBuilder;
 		}

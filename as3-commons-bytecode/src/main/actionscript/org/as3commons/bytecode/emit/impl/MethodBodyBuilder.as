@@ -259,5 +259,10 @@ package org.as3commons.bytecode.emit.impl {
 			return this;
 		}
 
+		public function addOpcodes(newOpcodes:Array):IMethodBodyBuilder {
+			_opcodes = _opcodes.concat(newOpcodes);
+			return this;
+		}
+
 	}
 }
