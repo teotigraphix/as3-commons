@@ -39,11 +39,15 @@ package org.as3commons.bytecode.tags.serialization {
 
 		override public function write(output:ByteArray, tag:ISWFTag):void {
 			var abcTag:DoABCTag = DoABCTag(tag);
-			SWFSpec.writeUI32(output, abcTag.flags);
-			SWFSpec.writeString(output, abcTag.byteCodeName);
+			writeTagHeader(output, abcTag);
 			var serializedTag:ByteArray = new AbcSerializer().serializeAbcFile(abcTag.abcFile);
 			serializedTag.position = 0;
 			output.writeBytes(serializedTag);
+		}
+
+		public function writeTagHeader(output:ByteArray, abcTag:DoABCTag):void {
+			SWFSpec.writeUI32(output, abcTag.flags);
+			SWFSpec.writeString(output, abcTag.byteCodeName);
 		}
 
 	}
