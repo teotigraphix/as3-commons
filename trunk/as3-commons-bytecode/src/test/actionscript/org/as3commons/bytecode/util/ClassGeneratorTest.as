@@ -43,7 +43,8 @@ package org.as3commons.bytecode.util {
 			var baseClassClass:Class = getDefinitionByName(getQualifiedClassName(FullClassDefinition)) as Class;
 			var definition:ClassDefinition = _fixture.generateProxy(baseClassClass);
 
-			assertTrue(new QualifiedName("FullClassDefinition", new LNamespace(NamespaceKind.PROTECTED_NAMESPACE, "assets.abc")).equals(definition.className));
+			assertTrue(new QualifiedName("FullClassDefinition", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "assets.abc")).equals(definition.className));
+			//assertEquals(BuiltIns.OBJECT, definition.superClass);
 			assertEquals(BuiltIns.OBJECT, definition.superClass);
 		}
 	}
