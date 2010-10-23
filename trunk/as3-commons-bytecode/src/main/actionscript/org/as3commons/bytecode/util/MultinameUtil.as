@@ -30,8 +30,14 @@ package org.as3commons.bytecode.util {
 			kind = (kind == null) ? NamespaceKind.PACKAGE_NAMESPACE : kind;
 
 			switch (className) {
-				case OBJECT_NAME:
+				case BuiltIns.OBJECT.fullName:
 					name = BuiltIns.OBJECT;
+					break;
+				case BuiltIns.ANY.fullName:
+					name = BuiltIns.ANY;
+					break;
+				case BuiltIns.VOID.fullName:
+					name = BuiltIns.VOID;
 					break;
 				default:
 					var portions:Array;
@@ -59,6 +65,12 @@ package org.as3commons.bytecode.util {
 			switch (className) {
 				case OBJECT_NAME:
 					namesp = BuiltIns.OBJECT.nameSpace;
+					break;
+				case BuiltIns.ANY.fullName:
+					namesp = BuiltIns.ANY.nameSpace;
+					break;
+				case BuiltIns.VOID.fullName:
+					namesp = BuiltIns.VOID.nameSpace;
 					break;
 				default:
 					var portions:Array;

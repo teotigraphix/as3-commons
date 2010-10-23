@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
+	import flash.system.ApplicationDomain;
 
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
@@ -37,7 +38,7 @@ package org.as3commons.bytecode.emit.impl {
 			throw new IllegalOperationError(INTERFACE_PROPERTIES_ERROR);
 		}
 
-		override public function build():Array {
+		override public function build(applicationDomain:ApplicationDomain):Array {
 			return [];
 		}
 

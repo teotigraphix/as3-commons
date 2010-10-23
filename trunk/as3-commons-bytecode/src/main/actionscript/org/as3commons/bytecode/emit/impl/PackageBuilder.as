@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.system.ApplicationDomain;
+
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
@@ -86,13 +88,13 @@ package org.as3commons.bytecode.emit.impl {
 		 * Returns An <code>Array</code> of <code>ClassInfo</code>, <code>InstanceInfo</code> and <code>MethodInfo</code> instances.
 		 * @return An <code>Array</code> of <code>ClassInfo</code>, <code>InstanceInfo</code> and <code>MethodInfo</code> instances.
 		 */
-		public function build():Array {
+		public function build(applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
 			for each (var cb:IClassBuilder in _classBuilders) {
-				result = result.concat(cb.build());
+				result = result.concat(cb.build(applicationDomain));
 			}
 			for each (var ib:IInterfaceBuilder in _interfaceBuilders) {
-				result[result.length] = ib.build()[1];
+				result[result.length] = ib.build(applicationDomain)[1];
 			}
 			for each (var mb:IMethodBuilder in _methodBuilders) {
 				result[result.length] = mb.build();

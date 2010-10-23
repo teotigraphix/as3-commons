@@ -14,33 +14,35 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-public interface IClassBuilder extends IEmitObject {
-	function get superClassName():String;
+	import flash.system.ApplicationDomain;
 
-	function set superClassName(value:String):void;
+	public interface IClassBuilder extends IEmitObject {
+		function get superClassName():String;
 
-	function get isDynamic():Boolean;
+		function set superClassName(value:String):void;
 
-	function set isDynamic(value:Boolean):void;
+		function get isDynamic():Boolean;
 
-	function get isFinal():Boolean;
+		function set isDynamic(value:Boolean):void;
 
-	function set isFinal(value:Boolean):void;
+		function get isFinal():Boolean;
 
-	function get isProtected():Boolean;
+		function set isFinal(value:Boolean):void;
 
-	function set isProtected(value:Boolean):void;
+		function get isProtected():Boolean;
 
-	function implementInterface(name:String):void;
+		function set isProtected(value:Boolean):void;
 
-	function defineConstructor():ICtorBuilder;
+		function implementInterface(name:String):void;
 
-	function defineMethod():IMethodBuilder;
+		function defineConstructor():ICtorBuilder;
 
-	function defineAccessor():IAccessorBuilder;
+		function defineMethod():IMethodBuilder;
 
-	function defineVariable():IVariableBuilder;
+		function defineAccessor():IAccessorBuilder;
 
-	function build():Array;
-}
+		function defineVariable():IVariableBuilder;
+
+		function build(applicationDomain:ApplicationDomain):Array;
+	}
 }
