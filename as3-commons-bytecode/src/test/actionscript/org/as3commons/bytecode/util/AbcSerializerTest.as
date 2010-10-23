@@ -68,15 +68,15 @@ package org.as3commons.bytecode.util {
 			}
 
 			_classLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
-					trace(event);
-				});
+				trace(event);
+			});
 			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
-					fail("loader error: " + event.text);
-				});
+				fail("loader error: " + event.text);
+			});
 			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, addAsync(function(event:IOErrorEvent):void {
-					fail("loader error: " + event.text);
-				},5000));
-			_classLoader.loadClassDefinitionsFromBytecode([TestConstants.getMethodInvocation(), reserializedStream]);
+				fail("loader error: " + event.text);
+			}, 5000));
+			_classLoader.loadClassDefinitionsFromBytecode([TestConstants.getBaseClassTemplate(), TestConstants.getMethodInvocation(), reserializedStream]);
 		}
 
 		public function testSerializeBaseClass():void {
@@ -91,14 +91,14 @@ package org.as3commons.bytecode.util {
 			}
 
 			_classLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
-					trace(event);
-				});
+				trace(event);
+			});
 			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
-					fail("loader error: " + event.text);
-				});
+				fail("loader error: " + event.text);
+			});
 			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, addAsync(function(event:IOErrorEvent):void {
-					fail("loader error: " + event.text);
-				},5000));
+				fail("loader error: " + event.text);
+			}, 5000));
 			_classLoader.loadClassDefinitionsFromBytecode([reserializedStream]);
 		}
 
@@ -113,14 +113,14 @@ package org.as3commons.bytecode.util {
 //        	}
 
 			_classLoader.addEventListener(Event.COMPLETE, addAsync(function(event:Event):void {
-					assertTrue(true);
-				},5000));
+				assertTrue(true);
+			}, 5000));
 			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, addAsync(function(event:IOErrorEvent):void {
-					fail("loader error: " + event.text);
-				},5000));
+				fail("loader error: " + event.text);
+			}, 5000));
 			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, addAsync(function(event:IOErrorEvent):void {
-					fail("loader error: " + event.text);
-				},5000));
+				fail("loader error: " + event.text);
+			}, 5000));
 			_classLoader.loadClassDefinitionsFromBytecode([TestConstants.getInterfaceDefinitionByteCode(), reserializedStream]);
 //
 //        	var deserializer : AbcDeserializer = new AbcDeserializer(serializedStream);
