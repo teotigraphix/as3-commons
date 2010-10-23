@@ -25,6 +25,7 @@ package org.as3commons.bytecode.abc.enum {
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.Integer;
+	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Op;
@@ -179,7 +180,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static const pushdouble:Opcode = new Opcode(0x2f, "pushdouble", [Number, AbcSpec.U30]);
 		public static const pushfalse:Opcode = new Opcode(0x27, "pushfalse");
 		public static const pushint:Opcode = new Opcode(0x2d, "pushint", [Integer, AbcSpec.U30]);
-		public static const pushnamespace:Opcode = new Opcode(0x31, "pushnamespace", [Namespace, AbcSpec.U30]); //Added
+		public static const pushnamespace:Opcode = new Opcode(0x31, "pushnamespace", [LNamespace, AbcSpec.U30]); //Added
 		public static const pushnan:Opcode = new Opcode(0x28, "pushnan");
 		public static const pushnull:Opcode = new Opcode(0x20, "pushnull");
 		public static const pushscope:Opcode = new Opcode(0x30, "pushscope");
@@ -299,7 +300,7 @@ package org.as3commons.bytecode.abc.enum {
 					//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
 					break;
 
-				case Namespace:
+				case LNamespace:
 					abcCompatibleValue = abcFile.constantPool.addNamespace(rawValue);
 					//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
 					break;
@@ -340,18 +341,18 @@ package org.as3commons.bytecode.abc.enum {
 
 			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCount);
 			while (byteArray.position != positionAtEndOfBytecode) {
-				parseOpcode(byteArray, abcFile, ops);
+				parseOpcode(byteArray, abcFile, ops, methodBody);
 			}
 
 			return ops;
 		}
 
-		public static function parseOpcode(byteArray:ByteArray, abcFile:AbcFile, ops:Array):void {
+		public static function parseOpcode(byteArray:ByteArray, abcFile:AbcFile, ops:Array, methodBody:MethodBody):void {
 			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
 
 			var argumentValues:Array = [];
 			for each (var argument:* in opcode.argumentTypes) {
-				parseOpcodeArguments(argument, byteArray, argumentValues, abcFile);
+				parseOpcodeArguments(argument, byteArray, argumentValues, abcFile, methodBody);
 			}
 
 			var op:Op = opcode.op(argumentValues);
@@ -359,7 +360,7 @@ package org.as3commons.bytecode.abc.enum {
 			//trace(byteArray.position + "\t" + op);
 		}
 
-		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, argumentValues:Array, abcFile:AbcFile):void {
+		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, argumentValues:Array, abcFile:AbcFile, methodBody:MethodBody):void {
 			var argumentType:* = argument[0];
 			var readWritePair:ReadWritePair = argument[1];
 			var byteCodeValue:* = readWritePair.read(byteArray);
@@ -394,7 +395,7 @@ package org.as3commons.bytecode.abc.enum {
 					argumentValues[argumentValues.length] = abcFile.constantPool.stringPool[byteCodeValue];
 					break;
 
-				case Namespace:
+				case LNamespace:
 					argumentValues[argumentValues.length] = abcFile.constantPool.namespacePool[byteCodeValue];
 					break;
 
@@ -415,7 +416,7 @@ package org.as3commons.bytecode.abc.enum {
 					break;
 
 				case ExceptionInfo:
-					argumentValues[argumentValues.length] = byteCodeValue;
+					argumentValues[argumentValues.length] = methodBody.exceptionInfos[byteCodeValue];
 					break;
 
 				default:

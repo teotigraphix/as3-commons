@@ -53,9 +53,9 @@ package org.as3commons.bytecode.abc {
 		}
 
 		private static function compareTypes(instance:*, type:*):Boolean {
-			if (type === int) {
+			if ((type === int) || (type === Integer)) {
 				return (instance is int);
-			} else if (type === uint) {
+			} else if ((type === uint) || (type === UnsignedInteger)) {
 				return (instance is uint);
 			} else if (type === Number) {
 				return (instance is Number);
