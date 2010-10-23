@@ -30,10 +30,10 @@ package org.as3commons.bytecode.abc {
 		 */
 		public var opcodes:Array;
 		public var methodSignature:MethodInfo;
-		public var maxStack:int;
+		public var maxStack:int = 1;
 		public var localCount:int = 1;
 		public var initScopeDepth:int = 1;
-		public var maxScopeDepth:int;
+		public var maxScopeDepth:int = 1;
 		public var exceptionInfos:Array;
 		public var traits:Array;
 

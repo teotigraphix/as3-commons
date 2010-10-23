@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
+	import flash.system.ApplicationDomain;
 
 	public interface IPackageBuilder {
 		function get packageName():String;
@@ -21,6 +22,6 @@ package org.as3commons.bytecode.emit {
 		function defineInterface(name:String):IInterfaceBuilder;
 		function defineMethod(name:String):IMethodBuilder;
 		function defineVariable(name:String):IVariableBuilder;
-		function build():Array;
+		function build(applicationDomain:ApplicationDomain):Array;
 	}
 }

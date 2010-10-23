@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
+	import flash.system.ApplicationDomain;
 
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
@@ -34,9 +35,11 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.util.AbcDeserializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.reflect.Type;
 
 	public class ClassBuilder extends BaseBuilder implements IClassBuilder {
 
+		public static const CONSTRUCTOR_NAME:String = "{0}.{1}/{1}";
 		private static const MULTIPLE_CONSTRUCTORS_ERROR:String = "A class can only have one constructor defined";
 		private static const OBJECT_BASE_CLASS_NAME:String = "Object";
 
@@ -156,12 +159,22 @@ package org.as3commons.bytecode.emit.impl {
 			return vb;
 		}
 
-		public function build():Array {
+		public function calculateHierarchDepth(className:String, applicationDomain:ApplicationDomain):uint {
+			var type:Type = Type.forName(className, applicationDomain);
+			var result:uint = 3;
+			for each (var name:String in type.extendsClasses) {
+				result++;
+			}
+			return result;
+		}
+
+		public function build(applicationDomain:ApplicationDomain):Array {
+			var hierarchyDepth:uint = calculateHierarchDepth(superClassName, applicationDomain);
 			var methods:Array = createMethods(metadata);
 			var variableTraits:Array = createVariables();
 			methods = methods.concat(createAccessors(variableTraits));
-			var ci:ClassInfo = createClassInfo(variableTraits);
-			var ii:InstanceInfo = createInstanceInfo();
+			var ci:ClassInfo = createClassInfo(variableTraits, hierarchyDepth++);
+			var ii:InstanceInfo = createInstanceInfo(hierarchyDepth);
 			ii.classInfo = ci;
 			var metadata:Array = buildMetadata();
 			for each (var mi:MethodInfo in methods) {
@@ -216,7 +229,7 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
-		protected function createInstanceInfo():InstanceInfo {
+		protected function createInstanceInfo(initScopeDepth:uint):InstanceInfo {
 			var ii:InstanceInfo = new InstanceInfo();
 			ii.isFinal = isFinal;
 			ii.isInterface = false;
@@ -235,13 +248,16 @@ package org.as3commons.bytecode.emit.impl {
 				_ctorBuilder = createDefaultConstructor();
 			}
 			ii.instanceInitializer = _ctorBuilder.build()[0];
+			ii.instanceInitializer.methodBody.initScopeDepth = initScopeDepth++;
+			ii.instanceInitializer.methodBody.maxScopeDepth = initScopeDepth;
+			ii.instanceInitializer.methodName = StringUtils.substitute(CONSTRUCTOR_NAME, packageName, name);
 			for each (var interfaceName:String in _implementedInterfaceNames) {
 				ii.interfaceMultinames[ii.interfaceMultinames.length] = MultinameUtil.toQualifiedName(interfaceName);
 			}
 			return ii;
 		}
 
-		protected function createClassInfo(variableTraits:Array):ClassInfo {
+		protected function createClassInfo(variableTraits:Array, initScopeDepth:uint):ClassInfo {
 			var staticvariables:Array = [];
 			for each (var slot:SlotOrConstantTrait in variableTraits) {
 				if (slot.isStatic) {
@@ -252,6 +268,8 @@ package org.as3commons.bytecode.emit.impl {
 			var cb:ICtorBuilder = createStaticConstructor(staticvariables);
 			cb.isStatic = true;
 			ci.staticInitializer = cb.build()[0];
+			ci.staticInitializer.methodBody.initScopeDepth = initScopeDepth++;
+			ci.staticInitializer.methodBody.maxScopeDepth = initScopeDepth;
 			ci.staticInitializer.as3commonsBytecodeName = AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME;
 			return ci;
 		}
@@ -269,7 +287,6 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createStaticConstructor(staticvariables:Array):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
-			ctorBuilder.name = ctorBuilder.name + CtorBuilder.STATIC_CONSTRUCTOR_NAME_SUFFIX;
 			var mb:IMethodBodyBuilder = ctorBuilder.defineMethodBody() //add default opcodes:
 				.addOpcode(new Op(Opcode.getlocal_0)) //
 				.addOpcode(new Op(Opcode.pushscope));

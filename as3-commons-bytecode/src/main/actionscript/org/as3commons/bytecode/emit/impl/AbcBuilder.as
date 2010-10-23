@@ -80,7 +80,7 @@ package org.as3commons.bytecode.emit.impl {
 			applicationDomain = (applicationDomain) ? applicationDomain : ApplicationDomain.currentDomain;
 			var idx:uint = 0;
 			for each (var pb:IPackageBuilder in _packageBuilders) {
-				var arr:Array = pb.build();
+				var arr:Array = pb.build(applicationDomain);
 				for each (var inst:Object in arr) {
 					if (inst is ClassInfo) {
 						var classInfo:ClassInfo = ClassInfo(inst);
@@ -155,6 +155,8 @@ package org.as3commons.bytecode.emit.impl {
 			mb.addOpcode(new Op(Opcode.returnvoid));
 			mi.methodBody = mb.build();
 			mi.methodBody.methodSignature = mi;
+			mi.methodBody.maxScopeDepth++;
+			mi.methodBody.maxStack = 2;
 			return mi;
 		}
 
