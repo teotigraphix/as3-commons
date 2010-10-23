@@ -687,10 +687,13 @@ package org.as3commons.bytecode.abc.enum {
 			var op:Op = new Op(opcode, args);
 			var abcFile:AbcFile = new AbcFile();
 			var methodBody:MethodBody = new MethodBody();
+			if (args[0] is ExceptionInfo) {
+				methodBody.addExceptionInfo(ExceptionInfo(args[0]));
+			}
 			var ba:ByteArray = Opcode.serialize([op], methodBody, abcFile);
 			ba.position = 0;
-			abcFile = new AbcFile();
-			methodBody = new MethodBody();
+			//abcFile = new AbcFile();
+			//methodBody = new MethodBody();
 			var opcodes:Array = Opcode.parse(ba, ba.length, methodBody, abcFile);
 			assertEquals(1, opcodes.length);
 			assertTrue(opcodes[0] is Op);
