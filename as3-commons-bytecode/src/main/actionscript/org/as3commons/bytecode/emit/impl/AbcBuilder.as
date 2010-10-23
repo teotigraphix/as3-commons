@@ -136,17 +136,20 @@ package org.as3commons.bytecode.emit.impl {
 				.addOpcode(new Op(Opcode.pushscope)) //
 				.addOpcode(new Op(Opcode.getscopeobject, [0]));
 			var type:Type = Type.forName(superClassName, applicationDomain);
-			var extendedClasses:Array = type.extendsClasses.reverse();
+			var extendedClasses:Array = [BuiltIns.OBJECT.fullName].concat(type.extendsClasses.reverse());
 			extendedClasses[extendedClasses.length] = superClassName;
-			extendedClasses[extendedClasses.length] = className;
 			var popscopes:Array = [];
 			var mn:QualifiedName;
-			for each (var clsName:String in extendedClasses) {
+			var len:int = extendedClasses.length;
+			for (var i:int = 0; i < len; i++) {
+				var clsName:String = extendedClasses[i];
 				mn = MultinameUtil.toQualifiedName(clsName);
 				mb.addOpcode(new Op(Opcode.findpropstrict, [mn])) //
-					.addOpcode(new Op(Opcode.getproperty, [mn])) //
-					.addOpcode(new Op(Opcode.pushscope));
-				popscopes[popscopes.length] = new Op(Opcode.popscope);
+					.addOpcode(new Op(Opcode.getproperty, [mn]));
+				if (i < (len - 1)) {
+					mb.addOpcode(new Op(Opcode.pushscope));
+					popscopes[popscopes.length] = new Op(Opcode.popscope);
+				}
 			}
 			mn = MultinameUtil.toQualifiedName(className);
 			mb.addOpcode(new Op(Opcode.newclass, [classInfo]));
@@ -156,7 +159,6 @@ package org.as3commons.bytecode.emit.impl {
 			mi.methodBody = mb.build();
 			mi.methodBody.methodSignature = mi;
 			mi.methodBody.maxScopeDepth++;
-			mi.methodBody.maxStack = 2;
 			return mi;
 		}
 
