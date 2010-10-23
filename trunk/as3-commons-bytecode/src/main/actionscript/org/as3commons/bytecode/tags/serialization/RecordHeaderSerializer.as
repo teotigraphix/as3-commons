@@ -21,7 +21,7 @@ package org.as3commons.bytecode.tags.serialization {
 
 	public class RecordHeaderSerializer extends AbstractStructSerializer {
 
-		private static const ID_SHIFT:uint = 6;
+		public static const ID_SHIFT:uint = 6;
 		public static const LONG_TAG:uint = 0x3F;
 
 		public function RecordHeaderSerializer() {

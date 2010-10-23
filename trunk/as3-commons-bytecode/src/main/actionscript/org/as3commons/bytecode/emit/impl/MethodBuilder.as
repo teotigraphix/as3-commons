@@ -99,6 +99,7 @@ package org.as3commons.bytecode.emit.impl {
 			var mi:MethodInfo = new MethodInfo();
 			if (_methodBodyBuilder != null) {
 				mi.methodBody = _methodBodyBuilder.build();
+				mi.methodBody.methodSignature = mi;
 				mi.methodBody.localCount = 1 + mi.argumentCollection.length + ((_hasRestArguments) ? 1 : 0);
 			}
 			for each (var methodArg:MethodArgument in _arguments) {
@@ -115,10 +116,10 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		override protected function buildTrait():TraitInfo {
-			Assert.hasText(name,"name property must not be null or empty");
-			Assert.hasText(packageName,"packageName property must not be null or empty");
-			Assert.notNull(visibility,"visibility property must not be null");
-			Assert.notNull(VISIBILITY_LOOKUP[visibility],"visibility lookup must not be null");
+			Assert.hasText(name, "name property must not be null or empty");
+			Assert.hasText(packageName, "packageName property must not be null or empty");
+			Assert.notNull(visibility, "visibility property must not be null");
+			Assert.notNull(VISIBILITY_LOOKUP[visibility], "visibility lookup must not be null");
 			var trait:MethodTrait = new MethodTrait();
 			trait.traitKind = TraitKind.METHOD;
 			trait.isFinal = isFinal;

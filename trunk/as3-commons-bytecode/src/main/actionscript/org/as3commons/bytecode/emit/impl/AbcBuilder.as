@@ -83,10 +83,19 @@ package org.as3commons.bytecode.emit.impl {
 				var arr:Array = pb.build();
 				for each (var inst:Object in arr) {
 					if (inst is ClassInfo) {
-						abcFile.addClassInfo(ClassInfo(inst));
+						var classInfo:ClassInfo = ClassInfo(inst);
+						abcFile.addClassInfo(classInfo);
+						abcFile.addMethodInfo(classInfo.staticInitializer);
+						abcFile.addMethodBody(classInfo.staticInitializer.methodBody);
 					} else if (inst is InstanceInfo) {
-						abcFile.addInstanceInfo(InstanceInfo(inst));
-						abcFile.addScriptInfo(createScriptInfo(InstanceInfo(inst).classMultiname.fullName, InstanceInfo(inst).superclassMultiname, InstanceInfo(inst).classInfo, applicationDomain, idx++));
+						var instanceInfo:InstanceInfo = InstanceInfo(inst);
+						abcFile.addInstanceInfo(instanceInfo);
+						abcFile.addMethodInfo(instanceInfo.instanceInitializer);
+						abcFile.addMethodBody(instanceInfo.instanceInitializer.methodBody);
+						var scriptInfo:ScriptInfo = createScriptInfo(InstanceInfo(inst).classMultiname.fullName, InstanceInfo(inst).superclassMultiname, InstanceInfo(inst).classInfo, applicationDomain, idx++);
+						abcFile.addScriptInfo(scriptInfo);
+						abcFile.addMethodInfo(scriptInfo.scriptInitializer);
+						abcFile.addMethodBody(scriptInfo.scriptInitializer.methodBody);
 					} else if (inst is MethodInfo) {
 						addMethodInfo(abcFile, MethodInfo(inst));
 					} else if (inst is Metadata) {
@@ -145,6 +154,7 @@ package org.as3commons.bytecode.emit.impl {
 			mb.addOpcode(new Op(Opcode.initproperty, [mn]));
 			mb.addOpcode(new Op(Opcode.returnvoid));
 			mi.methodBody = mb.build();
+			mi.methodBody.methodSignature = mi;
 			return mi;
 		}
 

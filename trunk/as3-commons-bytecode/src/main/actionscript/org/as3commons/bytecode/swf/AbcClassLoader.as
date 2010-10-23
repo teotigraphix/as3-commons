@@ -56,9 +56,7 @@ package org.as3commons.bytecode.swf {
 			0x44, 0x11, // Tag type=69 (FileAttributes), length=4
 			0x08, 0x00, 0x00, 0x00];
 
-		private static var ABC_HEADER:Array = [0x3f, 0x12 // Tag type=72 (DoABC), length=next.
-			//0xff, 0xff, 0xff, 0xff                                // ABC length, not included in the copy.
-			];
+		private static const ABC_HEADER:Array = [0x3f, 0x12]; // Tag type=72 (DoABC), length=next.]
 
 		private static var SWF_FOOTER:Array = [0x40, 0x00]; // Tag type=1 (ShowFrame), length=0
 
@@ -107,7 +105,7 @@ package org.as3commons.bytecode.swf {
 
 				// set the length of the ABC bytecode block
 				outputStream.writeInt(abcByteCodeBlock.length);
-				outputStream.writeBytes(abcByteCodeBlock, 0, abcByteCodeBlock.length);
+				outputStream.writeBytes(abcByteCodeBlock);
 			}
 
 			for each (var swfFooterByte:int in SWF_FOOTER) {
@@ -134,7 +132,7 @@ package org.as3commons.bytecode.swf {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var v:uint = 0;
 			if (bytes is ByteArray) {
-				getType(bytes);
+				v = getType(bytes);
 			}
 			if (bytes is Array || (v == 2)) {
 				if (!(bytes is Array)) {
