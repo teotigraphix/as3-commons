@@ -58,16 +58,30 @@ package org.as3commons.bytecode.swf {
 
 		private static var ABC_HEADER:Array = [0x3f, 0x12 // Tag type=72 (DoABC), length=next.
 			//0xff, 0xff, 0xff, 0xff                                // ABC length, not included in the copy.
-		];
+			];
 
 		private static var SWF_FOOTER:Array = [0x40, 0x00]; // Tag type=1 (ShowFrame), length=0
 
 		private static var ALLOW_BYTECODE_PROPERTY_NAME:String = "allowLoadBytesCodeExecution";
 
-		private var _loader:Loader = new Loader;
+		private var _loader:Loader;
 
 		public function AbcClassLoader() {
 			super();
+			initAbcLoader();
+		}
+
+		protected function initAbcLoader():void {
+			_loader = new Loader;
+			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
+				dispatchEvent(event);
+			});
+			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
+				dispatchEvent(event);
+			});
+			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.VERIFY_ERROR, function(event:Event):void {
+				dispatchEvent(event);
+			});
 		}
 
 		/**
@@ -118,7 +132,7 @@ package org.as3commons.bytecode.swf {
 		 */
 		public function loadClassDefinitionsFromBytecode(bytes:*, applicationDomain:ApplicationDomain = null):void {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
-			var v:uint=0;
+			var v:uint = 0;
 			if (bytes is ByteArray) {
 				getType(bytes);
 			}
@@ -136,15 +150,6 @@ package org.as3commons.bytecode.swf {
 				c[ALLOW_BYTECODE_PROPERTY_NAME] = true;
 			}
 
-			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
-				dispatchEvent(event);
-			});
-			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
-				dispatchEvent(event);
-			});
-			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.VERIFY_ERROR, function(event:Event):void {
-				dispatchEvent(event);
-			});
 			_loader.loadBytes(bytes, c);
 		}
 
