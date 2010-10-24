@@ -39,6 +39,8 @@ package org.as3commons.bytecode.emit.impl {
 		private static const MULTIPLE_METHOD_BODIES_ERROR:String = "Only one method body can be created for a method.";
 		private static const CONSTANT_METHOD_ERROR:String = "Methods cannot be constant.";
 
+		public static const METHOD_NAME:String = "{0}/{1}";
+
 		private var _returnType:String = BuiltIns.VOID.fullName;
 		private var _arguments:Array = [];
 		private var _methodBodyBuilder:IMethodBodyBuilder;
@@ -97,7 +99,7 @@ package org.as3commons.bytecode.emit.impl {
 			return arg;
 		}
 
-		public function build(initScopeDepth:uint = 1):Array {
+		public function build(initScopeDepth:uint = 1):MethodInfo {
 			var mi:MethodInfo = new MethodInfo();
 			if (_methodBodyBuilder != null) {
 				mi.methodBody = _methodBodyBuilder.build(initScopeDepth);
@@ -113,8 +115,8 @@ package org.as3commons.bytecode.emit.impl {
 			trait.addMetadataList(buildMetadata());
 			mi.as3commonsByteCodeAssignedMethodTrait = MethodTrait(trait);
 			mi.returnType = MultinameUtil.toQualifiedName(_returnType);
-			mi.methodName = StringUtils.substitute(ClassBuilder.METHOD_NAME, packageName, name);
-			return [mi, trait.metadata];
+			mi.methodName = StringUtils.substitute(METHOD_NAME, packageName, name);
+			return mi;
 		}
 
 		override protected function buildTrait():TraitInfo {

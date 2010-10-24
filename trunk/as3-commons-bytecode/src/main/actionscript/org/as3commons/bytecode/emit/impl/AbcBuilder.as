@@ -148,21 +148,18 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function addClassInfo(abcFile:AbcFile, classInfo:ClassInfo):void {
 			abcFile.addClassInfo(classInfo);
-			abcFile.addMethodInfo(classInfo.staticInitializer);
-			abcFile.addMethodBody(classInfo.staticInitializer.methodBody);
+			addMethodInfo(abcFile, classInfo.staticInitializer);
 		}
 
 		protected function addInstanceInfo(abcFile:AbcFile, instanceInfo:InstanceInfo):void {
 			abcFile.addInstanceInfo(instanceInfo);
-			abcFile.addMethodInfo(instanceInfo.instanceInitializer);
-			abcFile.addMethodBody(instanceInfo.instanceInitializer.methodBody);
+			addMethodInfo(abcFile, instanceInfo.instanceInitializer);
 		}
 
 		protected function addScriptInfo(abcFile:AbcFile, instanceInfo:InstanceInfo, applicationDomain:ApplicationDomain, index:uint):void {
 			var scriptInfo:ScriptInfo = createScriptInfo(instanceInfo.classMultiname.fullName, instanceInfo.superclassMultiname, instanceInfo.classInfo, applicationDomain, index);
 			abcFile.addScriptInfo(scriptInfo);
-			abcFile.addMethodInfo(scriptInfo.scriptInitializer);
-			abcFile.addMethodBody(scriptInfo.scriptInitializer.methodBody);
+			addMethodInfo(abcFile, scriptInfo.scriptInitializer);
 		}
 
 		protected function createScriptInfo(className:String, superClass:BaseMultiname, classInfo:ClassInfo, applicationDomain:ApplicationDomain, index:uint):ScriptInfo {
@@ -231,6 +228,11 @@ package org.as3commons.bytecode.emit.impl {
 		protected function addMethodInfo(abcFile:AbcFile, methodInfo:MethodInfo):void {
 			abcFile.addMethodInfo(methodInfo);
 			abcFile.addMethodBody(methodInfo.methodBody);
+			if ((methodInfo.as3commonsByteCodeAssignedMethodTrait != null) && (methodInfo.as3commonsByteCodeAssignedMethodTrait.hasMetadata)) {
+				for each (var mdi:Metadata in methodInfo.as3commonsByteCodeAssignedMethodTrait.metadata) {
+					abcFile.addMetadataInfo(mdi);
+				}
+			}
 		}
 
 	}

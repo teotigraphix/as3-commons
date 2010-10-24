@@ -16,10 +16,16 @@
 package org.as3commons.bytecode.emit.impl {
 
 	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
+	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
+	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
+	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IVariableBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.emit.util.BuildUtil;
@@ -32,11 +38,12 @@ package org.as3commons.bytecode.emit.impl {
 
 		private static const PRIVATE_VAR_NAME_TEMPLATE:String = "_{0}";
 
-		private var _access:AccessorAccess = AccessorAccess.READ_WRITE;
+		private var _access:AccessorAccess;
 		private var _variable:IVariableBuilder;
 
 		public function AccessorBuilder() {
 			super();
+			_access = AccessorAccess.READ_WRITE;
 		}
 
 		public function get access():AccessorAccess {
@@ -49,23 +56,27 @@ package org.as3commons.bytecode.emit.impl {
 
 		override public function build():Object {
 			var result:Array = [];
-			var mb:MethodBuilder;
-			if ((_access === AccessorAccess.READ_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
-				mb = createGetter();
-				result[result.length] = mb.build();
-				mb.trait.traitKind = TraitKind.GETTER;
-				result[result.length] = mb.trait;
-			}
-			if ((_access === AccessorAccess.WRITE_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
-				mb = createSetter();
-				result[result.length] = mb.build();
-				mb.trait.traitKind = TraitKind.SETTER;
-				result[result.length] = mb.trait;
-			}
+			var mb:IMethodBuilder;
+			var mi:MethodInfo;
 			if (_variable == null) {
 				_variable = createDefaultVariableBuilder();
 			}
-			result[result.length] = _variable.build();
+			var trait:SlotOrConstantTrait = SlotOrConstantTrait(_variable.build());
+			result[result.length] = trait;
+			if ((_access === AccessorAccess.READ_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
+				mb = createGetter(trait);
+				mi = mb.build();
+				mi.methodName = mi.methodName + '/get';
+				result[result.length] = mi;
+				mb.trait.traitKind = TraitKind.GETTER;
+			}
+			if ((_access === AccessorAccess.WRITE_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
+				mb = createSetter(trait);
+				mi = mb.build();
+				mi.methodName = mi.methodName + '/set';
+				result[result.length] = mi;
+				mb.trait.traitKind = TraitKind.SETTER;
+			}
 			return result;
 		}
 
@@ -80,19 +91,33 @@ package org.as3commons.bytecode.emit.impl {
 		protected function createMethod():MethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.name = name;
+			mb.packageName = packageName;
 			return mb;
 		}
 
-		protected function createGetter():MethodBuilder {
-			var mi:MethodBuilder = createMethod();
-			mi.returnType = type;
-			return mi;
+		protected function createGetter(trait:SlotOrConstantTrait):IMethodBuilder {
+			var mb:IMethodBuilder = createMethod();
+			mb.returnType = type;
+			var mbb:IMethodBodyBuilder = mb.defineMethodBody();
+			mbb.addOpcode(new Op(Opcode.getlocal_0)) //
+				.addOpcode(new Op(Opcode.pushscope)) //
+				.addOpcode(new Op(Opcode.getlocal_0)) //
+				.addOpcode(new Op(Opcode.getproperty, [trait.traitMultiname])) //
+				.addOpcode(new Op(Opcode.returnvalue));
+			return mb;
 		}
 
-		protected function createSetter():MethodBuilder {
-			var mb:MethodBuilder = createMethod();
+		protected function createSetter(trait:SlotOrConstantTrait):IMethodBuilder {
+			var mb:IMethodBuilder = createMethod();
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(type);
+			var mbb:IMethodBodyBuilder = mb.defineMethodBody();
+			mbb.addOpcode(new Op(Opcode.getlocal_0)) //
+				.addOpcode(new Op(Opcode.pushscope)) //
+				.addOpcode(new Op(Opcode.getlocal_0)) //
+				.addOpcode(new Op(Opcode.getlocal_1)) //
+				.addOpcode(new Op(Opcode.initproperty, [trait.traitMultiname])) //
+				.addOpcode(new Op(Opcode.returnvoid));
 			return mb;
 		}
 
@@ -103,6 +128,7 @@ package org.as3commons.bytecode.emit.impl {
 			vb.isStatic = isStatic;
 			vb.name = StringUtils.substitute(PRIVATE_VAR_NAME_TEMPLATE, name);
 			vb.type = type;
+			vb.initialValue = initialValue;
 			return vb;
 		}
 
