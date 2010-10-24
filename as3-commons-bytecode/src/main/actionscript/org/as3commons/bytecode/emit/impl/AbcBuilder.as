@@ -136,8 +136,16 @@ package org.as3commons.bytecode.emit.impl {
 				.addOpcode(new Op(Opcode.pushscope)) //
 				.addOpcode(new Op(Opcode.getscopeobject, [0]));
 			var type:Type = Type.forName(superClassName, applicationDomain);
-			var extendedClasses:Array = [BuiltIns.OBJECT.fullName].concat(type.extendsClasses.reverse());
+			var extendedClasses:Array;
+			if (superClassName != BuiltIns.OBJECT.fullName) {
+				extendedClasses = type.extendsClasses.reverse();
+			} else {
+				extendedClasses = [BuiltIns.OBJECT.fullName].concat(type.extendsClasses.reverse());
+			}
 			extendedClasses[extendedClasses.length] = superClassName;
+			if (superClassName != BuiltIns.OBJECT.fullName) {
+				extendedClasses[extendedClasses.length] = superClassName;
+			}
 			var popscopes:Array = [];
 			var mn:QualifiedName;
 			var len:int = extendedClasses.length;
@@ -158,7 +166,7 @@ package org.as3commons.bytecode.emit.impl {
 			mb.addOpcode(new Op(Opcode.returnvoid));
 			mi.methodBody = mb.build();
 			mi.methodBody.methodSignature = mi;
-			mi.methodBody.maxScopeDepth++;
+			mi.methodBody.maxStack = 2;
 			return mi;
 		}
 

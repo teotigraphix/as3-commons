@@ -156,21 +156,22 @@ package org.as3commons.bytecode.emit.impl {
 				switch (op.opcode) {
 					case Opcode.pushscope:
 					case Opcode.pushwith:
+						mb.maxStack--;
 						mb.maxScopeDepth++;
 						break;
-					case Opcode.popscope:
-						mb.maxScopeDepth--;
-						break;
+					/*case Opcode.popscope:
+					   mb.maxStack--;
+					 break;*/
 					case Opcode.call:
-						mb.maxStack = 1 - op.parameters[0] + 2;
+						mb.maxStack += 1 - op.parameters[0] + 2;
 						break;
 					case Opcode.construct:
 					case Opcode.callmethod:
 					case Opcode.callstatic:
-						mb.maxStack = 1 - op.parameters[1] + 1;
+						mb.maxStack += 1 - op.parameters[1] + 1;
 						break;
 					case Opcode.constructsuper:
-						mb.maxStack = op.parameters[0] + 1;
+						mb.maxStack += op.parameters[0] + 1;
 						break;
 					case Opcode.findproperty:
 					case Opcode.findpropstrict:
@@ -226,6 +227,9 @@ package org.as3commons.bytecode.emit.impl {
 						mb.maxStack += (1 - (2 * op.parameters[0]));
 						break;
 				}
+			}
+			if (mb.maxStack < 1) {
+				mb.maxStack = 1;
 			}
 			return mb;
 		}
