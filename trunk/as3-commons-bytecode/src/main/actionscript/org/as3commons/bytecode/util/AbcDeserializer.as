@@ -455,6 +455,7 @@ package org.as3commons.bytecode.util {
 						slotOrConstantTrait.isStatic = isStatic;
 						if (slotOrConstantTrait.vindex != 0) {
 							slotOrConstantTrait.vkind = ConstantKind.determineKind(readU8());
+							slotOrConstantTrait.defaultValue = getSlotOrConstantDefaultValue(pool, slotOrConstantTrait.vindex, slotOrConstantTrait.vkind);
 						}
 						trait = slotOrConstantTrait;
 						break;
@@ -533,6 +534,10 @@ package org.as3commons.bytecode.util {
 			}
 
 			return traits;
+		}
+
+		protected function getSlotOrConstantDefaultValue(pool:ConstantPool, poolIndex:uint, constantKind:ConstantKind):* {
+			return pool.getConstantPoolItem(constantKind.value, poolIndex);
 		}
 
 	}

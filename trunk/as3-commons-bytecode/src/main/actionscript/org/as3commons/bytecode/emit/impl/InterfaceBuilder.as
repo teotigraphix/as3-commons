@@ -34,7 +34,7 @@ package org.as3commons.bytecode.emit.impl {
 			throw new IllegalOperationError(INTERFACE_CONSTRUCTOR_ERROR);
 		}
 
-		override public function defineVariable():IVariableBuilder {
+		override public function defineVariable(name:String = null, type:String = null, initialValue:* = undefined):IVariableBuilder {
 			throw new IllegalOperationError(INTERFACE_PROPERTIES_ERROR);
 		}
 

@@ -41,7 +41,7 @@ package org.as3commons.bytecode.emit {
 
 		function defineAccessor():IAccessorBuilder;
 
-		function defineVariable():IVariableBuilder;
+		function defineVariable(name:String = null, type:String = null, initialValue:* = undefined):IVariableBuilder;
 
 		function build(applicationDomain:ApplicationDomain):Array;
 	}

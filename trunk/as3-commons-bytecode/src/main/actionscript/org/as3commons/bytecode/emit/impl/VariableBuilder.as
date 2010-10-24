@@ -34,6 +34,8 @@ package org.as3commons.bytecode.emit.impl {
 
 		private var _type:String;
 
+		private var _initialValue:*;
+
 		public function get type():String {
 			return _type;
 		}
@@ -46,6 +48,14 @@ package org.as3commons.bytecode.emit.impl {
 			return buildTrait();
 		}
 
+		public function get initialValue():* {
+			return _initialValue;
+		}
+
+		public function set initialValue(value:*):void {
+			_initialValue = value;
+		}
+
 		override protected function buildTrait():TraitInfo {
 			var trait:SlotOrConstantTrait = new SlotOrConstantTrait();
 			trait.addMetadataList(buildMetadata());
@@ -54,8 +64,14 @@ package org.as3commons.bytecode.emit.impl {
 			trait.traitKind = (isConstant) ? TraitKind.CONST : TraitKind.SLOT;
 			trait.isStatic = isStatic;
 			trait.typeMultiname = MultinameUtil.toQualifiedName(_type);
-			var ns:LNamespace = new LNamespace(NAMESPACEKIND_LOOKUP[visibility],StringUtils.substitute("{0}{1}{2}.{3}",VISIBILITY_LOOKUP[visibility], TRAIT_MULTINAME_DIVIDER,packageName,name));
+			var ns:LNamespace = new LNamespace(NAMESPACEKIND_LOOKUP[visibility], "");
 			trait.traitMultiname = new QualifiedName(name, ns);
+			if (_initialValue === undefined) {
+				trait.vindex = 0;
+			} else {
+				trait.vkind = ConstantKind.determineKindFromInstance(_initialValue);
+				trait.defaultValue = _initialValue;
+			}
 			return trait;
 		}
 

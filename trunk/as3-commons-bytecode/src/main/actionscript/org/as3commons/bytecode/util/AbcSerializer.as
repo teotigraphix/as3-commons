@@ -196,6 +196,11 @@ package org.as3commons.bytecode.util {
 						var slotTrait:SlotOrConstantTrait = trait as SlotOrConstantTrait;
 						writeU30(slotTrait.slotId);
 						writeU30(pool.addMultiname(slotTrait.typeMultiname));
+						if (slotTrait.vkind != null) {
+							slotTrait.vindex = pool.addItemToPool(slotTrait.vkind, slotTrait.defaultValue);
+						} else {
+							slotTrait.vindex = 0;
+						}
 						writeU30(slotTrait.vindex);
 						if (slotTrait.vindex != 0) {
 							writeU8(slotTrait.vkind.value);
