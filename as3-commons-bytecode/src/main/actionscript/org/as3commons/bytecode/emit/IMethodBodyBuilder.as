@@ -26,6 +26,6 @@ package org.as3commons.bytecode.emit {
 		function addOpcode(opcode:Op):IMethodBodyBuilder;
 		function addOpcodes(newOpcodes:Array):IMethodBodyBuilder;
 		function defineExceptionInfo():IExceptionInfoBuilder;
-		function build(initScopeDepth:uint = 1):MethodBody;
+		function build(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody;
 	}
 }

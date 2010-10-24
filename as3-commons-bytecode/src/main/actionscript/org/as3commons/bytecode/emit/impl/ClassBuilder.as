@@ -40,7 +40,7 @@ package org.as3commons.bytecode.emit.impl {
 
 	public class ClassBuilder extends BaseBuilder implements IClassBuilder {
 
-		public static const METHOD_NAME:String = "{0}.{1}/{1}";
+		public static const CONSTRUCTOR_NAME:String = "{0}.{1}/{1}";
 		private static const MULTIPLE_CONSTRUCTORS_ERROR:String = "A class can only have one constructor defined";
 
 		private var _ctorBuilder:ICtorBuilder;
@@ -143,15 +143,18 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function defineMethod(name:String = null):IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
-			mb.packageName = packageName;
+			mb.packageName = packageName + '.' + this.name;
 			mb.name = name;
 			_methodBuilders[_methodBuilders.length] = mb;
 			return mb;
 		}
 
-		public function defineAccessor():IAccessorBuilder {
+		public function defineAccessor(name:String = null, type:String = null, initialValue:* = undefined):IAccessorBuilder {
 			var ab:AccessorBuilder = new AccessorBuilder();
-			ab.packageName = packageName;
+			ab.packageName = packageName + '.' + this.name;
+			ab.name = name;
+			ab.type = type;
+			ab.initialValue = initialValue;
 			_accessorBuilders[_accessorBuilders.length] = ab;
 			return ab;
 		}
@@ -213,9 +216,8 @@ package org.as3commons.bytecode.emit.impl {
 		private function createMethods(metadata:Array, initScopeDepth:uint):Array {
 			var result:Array = [];
 			for each (var mb:IMethodBuilder in _methodBuilders) {
-				var arr:Array = mb.build(initScopeDepth);
-				var mi:MethodInfo = arr[0];
-				metadata = metadata.concat(arr[1]);
+				var mi:MethodInfo = mb.build(initScopeDepth);
+				metadata = metadata.concat(mi.as3commonsByteCodeAssignedMethodTrait.metadata);
 				result[result.length] = mi;
 			}
 			return result;
@@ -254,10 +256,10 @@ package org.as3commons.bytecode.emit.impl {
 			if (_ctorBuilder == null) {
 				_ctorBuilder = createDefaultConstructor();
 			}
-			ii.instanceInitializer = _ctorBuilder.build()[0];
+			ii.instanceInitializer = _ctorBuilder.build();
 			ii.instanceInitializer.methodBody.initScopeDepth = initScopeDepth++;
 			ii.instanceInitializer.methodBody.maxScopeDepth = initScopeDepth;
-			ii.instanceInitializer.methodName = StringUtils.substitute(METHOD_NAME, packageName, name);
+			ii.instanceInitializer.methodName = StringUtils.substitute(CONSTRUCTOR_NAME, packageName, name);
 			for each (var interfaceName:String in _implementedInterfaceNames) {
 				ii.interfaceMultinames[ii.interfaceMultinames.length] = MultinameUtil.toQualifiedName(interfaceName);
 			}
@@ -274,7 +276,7 @@ package org.as3commons.bytecode.emit.impl {
 			var ci:ClassInfo = new ClassInfo();
 			var cb:ICtorBuilder = createStaticConstructor(staticvariables);
 			cb.isStatic = true;
-			ci.staticInitializer = cb.build()[0];
+			ci.staticInitializer = cb.build();
 			ci.staticInitializer.methodBody.initScopeDepth = initScopeDepth++;
 			ci.staticInitializer.methodBody.maxScopeDepth = initScopeDepth;
 			ci.staticInitializer.as3commonsBytecodeName = AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME;

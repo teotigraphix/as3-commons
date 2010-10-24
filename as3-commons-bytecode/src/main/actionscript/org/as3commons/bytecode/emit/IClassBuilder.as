@@ -39,7 +39,7 @@ package org.as3commons.bytecode.emit {
 
 		function defineMethod(name:String = null):IMethodBuilder;
 
-		function defineAccessor():IAccessorBuilder;
+		function defineAccessor(name:String = null, type:String = null, initialValue:* = undefined):IAccessorBuilder;
 
 		function defineVariable(name:String = null, type:String = null, initialValue:* = undefined):IVariableBuilder;
 
