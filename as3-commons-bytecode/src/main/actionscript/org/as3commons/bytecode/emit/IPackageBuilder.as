@@ -18,7 +18,7 @@ package org.as3commons.bytecode.emit {
 
 	public interface IPackageBuilder {
 		function get packageName():String;
-		function defineClass(name:String):IClassBuilder;
+		function defineClass(name:String, superClassName:String = null):IClassBuilder;
 		function defineInterface(name:String):IInterfaceBuilder;
 		function defineMethod(name:String):IMethodBuilder;
 		function defineVariable(name:String):IVariableBuilder;

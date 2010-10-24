@@ -144,8 +144,10 @@ package org.as3commons.bytecode.emit.impl {
 			return eib;
 		}
 
-		public function build():MethodBody {
+		public function build(initScopeDepth:uint = 1):MethodBody {
 			var mb:MethodBody = new MethodBody();
+			mb.initScopeDepth = initScopeDepth;
+			mb.maxScopeDepth = initScopeDepth;
 			mb.opcodes = _opcodes.concat([]);
 			mb.exceptionInfos = _exceptionInfos.concat([]);
 			mb.traits = _traits.concat([]);

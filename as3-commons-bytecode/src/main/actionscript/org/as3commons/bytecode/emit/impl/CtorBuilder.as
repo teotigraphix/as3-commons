@@ -37,8 +37,8 @@ package org.as3commons.bytecode.emit.impl {
 			returnType = BuiltIns.ANY.fullName;
 		}
 
-		override public function build():Array {
-			var result:Array = super.build();
+		override public function build(initScopeDepth:uint = 1):Array {
+			var result:Array = super.build(initScopeDepth);
 			var mi:MethodInfo = MethodInfo(result[0]);
 			mi.returnType = MultinameUtil.toQualifiedName(returnType, NamespaceKind.NAMESPACE);
 			mi.as3commonsBytecodeName = AbcDeserializer.CONSTRUCTOR_BYTECODENAME;

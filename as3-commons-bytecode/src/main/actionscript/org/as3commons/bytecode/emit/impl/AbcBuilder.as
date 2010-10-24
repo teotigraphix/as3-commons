@@ -81,29 +81,49 @@ package org.as3commons.bytecode.emit.impl {
 			var idx:uint = 0;
 			for each (var pb:IPackageBuilder in _packageBuilders) {
 				var arr:Array = pb.build(applicationDomain);
-				for each (var inst:Object in arr) {
-					if (inst is ClassInfo) {
-						var classInfo:ClassInfo = ClassInfo(inst);
-						abcFile.addClassInfo(classInfo);
-						abcFile.addMethodInfo(classInfo.staticInitializer);
-						abcFile.addMethodBody(classInfo.staticInitializer.methodBody);
-					} else if (inst is InstanceInfo) {
-						var instanceInfo:InstanceInfo = InstanceInfo(inst);
-						abcFile.addInstanceInfo(instanceInfo);
-						abcFile.addMethodInfo(instanceInfo.instanceInitializer);
-						abcFile.addMethodBody(instanceInfo.instanceInitializer.methodBody);
-						var scriptInfo:ScriptInfo = createScriptInfo(InstanceInfo(inst).classMultiname.fullName, InstanceInfo(inst).superclassMultiname, InstanceInfo(inst).classInfo, applicationDomain, idx++);
-						abcFile.addScriptInfo(scriptInfo);
-						abcFile.addMethodInfo(scriptInfo.scriptInitializer);
-						abcFile.addMethodBody(scriptInfo.scriptInitializer.methodBody);
-					} else if (inst is MethodInfo) {
-						addMethodInfo(abcFile, MethodInfo(inst));
-					} else if (inst is Metadata) {
-						abcFile.addMetadataInfo(Metadata(inst));
-					}
-				}
+				idx = addAbcObjects(arr, abcFile, applicationDomain, idx);
 			}
 			return abcFile;
+		}
+
+		protected function addAbcObjects(instances:Array, abcFile:AbcFile, applicationDomain:ApplicationDomain, index:uint):uint {
+			Assert.notNull(instances, "instances argument must not be null");
+			Assert.notNull(abcFile, "abcFile argument must not be null");
+			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			for each (var inst:Object in instances) {
+				if (inst is ClassInfo) {
+					addClassInfo(abcFile, ClassInfo(inst))
+				} else if (inst is InstanceInfo) {
+					addInstanceInfo(abcFile, InstanceInfo(inst));
+					addScriptInfo(abcFile, InstanceInfo(inst), applicationDomain, index++);
+				} else if (inst is MethodInfo) {
+					addMethodInfo(abcFile, MethodInfo(inst));
+				} else if (inst is Metadata) {
+					abcFile.addMetadataInfo(Metadata(inst));
+				} else if (inst is Array) {
+					addAbcObjects((inst as Array), abcFile, applicationDomain, index);
+				}
+			}
+			return index;
+		}
+
+		protected function addClassInfo(abcFile:AbcFile, classInfo:ClassInfo):void {
+			abcFile.addClassInfo(classInfo);
+			abcFile.addMethodInfo(classInfo.staticInitializer);
+			abcFile.addMethodBody(classInfo.staticInitializer.methodBody);
+		}
+
+		protected function addInstanceInfo(abcFile:AbcFile, instanceInfo:InstanceInfo):void {
+			abcFile.addInstanceInfo(instanceInfo);
+			abcFile.addMethodInfo(instanceInfo.instanceInitializer);
+			abcFile.addMethodBody(instanceInfo.instanceInitializer.methodBody);
+		}
+
+		protected function addScriptInfo(abcFile:AbcFile, instanceInfo:InstanceInfo, applicationDomain:ApplicationDomain, index:uint):void {
+			var scriptInfo:ScriptInfo = createScriptInfo(instanceInfo.classMultiname.fullName, instanceInfo.superclassMultiname, instanceInfo.classInfo, applicationDomain, index);
+			abcFile.addScriptInfo(scriptInfo);
+			abcFile.addMethodInfo(scriptInfo.scriptInitializer);
+			abcFile.addMethodBody(scriptInfo.scriptInitializer.methodBody);
 		}
 
 		protected function createScriptInfo(className:String, superClass:BaseMultiname, classInfo:ClassInfo, applicationDomain:ApplicationDomain, index:uint):ScriptInfo {
@@ -166,7 +186,7 @@ package org.as3commons.bytecode.emit.impl {
 			mb.addOpcode(new Op(Opcode.returnvoid));
 			mi.methodBody = mb.build();
 			mi.methodBody.methodSignature = mi;
-			mi.methodBody.maxStack = 2;
+			//mi.methodBody.maxStack = 2;
 			return mi;
 		}
 

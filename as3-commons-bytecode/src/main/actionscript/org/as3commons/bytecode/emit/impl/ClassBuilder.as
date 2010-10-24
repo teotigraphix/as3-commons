@@ -23,6 +23,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
+	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
@@ -39,16 +40,15 @@ package org.as3commons.bytecode.emit.impl {
 
 	public class ClassBuilder extends BaseBuilder implements IClassBuilder {
 
-		public static const CONSTRUCTOR_NAME:String = "{0}.{1}/{1}";
+		public static const METHOD_NAME:String = "{0}.{1}/{1}";
 		private static const MULTIPLE_CONSTRUCTORS_ERROR:String = "A class can only have one constructor defined";
-		private static const OBJECT_BASE_CLASS_NAME:String = "Object";
 
 		private var _ctorBuilder:ICtorBuilder;
 		private var _implementedInterfaceNames:Array;
 		private var _methodBuilders:Array;
 		private var _accessorBuilders:Array;
 		private var _variableBuilders:Array;
-		private var _superClassName:String = OBJECT_BASE_CLASS_NAME;
+		private var _superClassName:String;
 		private var _isDynamic:Boolean = false;
 		private var _isFinal:Boolean;
 		private var _isProtected:Boolean = true;
@@ -67,6 +67,7 @@ package org.as3commons.bytecode.emit.impl {
 			_implementedInterfaceNames = [];
 			_metadata = [];
 			_traits = [];
+			_superClassName = BuiltIns.OBJECT.fullName;
 		}
 
 		public function get superClassName():String {
@@ -74,7 +75,9 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function set superClassName(value:String):void {
-			_superClassName = value;
+			if (value != null) {
+				_superClassName = value;
+			}
 		}
 
 		public function get isDynamic():Boolean {
@@ -138,9 +141,10 @@ package org.as3commons.bytecode.emit.impl {
 			return _ctorBuilder;
 		}
 
-		public function defineMethod():IMethodBuilder {
+		public function defineMethod(name:String = null):IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.packageName = packageName;
+			mb.name = name;
 			_methodBuilders[_methodBuilders.length] = mb;
 			return mb;
 		}
@@ -170,7 +174,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function build(applicationDomain:ApplicationDomain):Array {
 			var hierarchyDepth:uint = calculateHierarchDepth(superClassName, applicationDomain);
-			var methods:Array = createMethods(metadata);
+			var methods:Array = createMethods(metadata, (hierarchyDepth + 1));
 			var variableTraits:Array = createVariables();
 			methods = methods.concat(createAccessors(variableTraits));
 			var ci:ClassInfo = createClassInfo(variableTraits, hierarchyDepth++);
@@ -203,10 +207,10 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
-		private function createMethods(metadata:Array):Array {
+		private function createMethods(metadata:Array, initScopeDepth:uint):Array {
 			var result:Array = [];
 			for each (var mb:IMethodBuilder in _methodBuilders) {
-				var arr:Array = mb.build();
+				var arr:Array = mb.build(initScopeDepth);
 				var mi:MethodInfo = arr[0];
 				metadata = metadata.concat(arr[1]);
 				result[result.length] = mi;
@@ -250,7 +254,7 @@ package org.as3commons.bytecode.emit.impl {
 			ii.instanceInitializer = _ctorBuilder.build()[0];
 			ii.instanceInitializer.methodBody.initScopeDepth = initScopeDepth++;
 			ii.instanceInitializer.methodBody.maxScopeDepth = initScopeDepth;
-			ii.instanceInitializer.methodName = StringUtils.substitute(CONSTRUCTOR_NAME, packageName, name);
+			ii.instanceInitializer.methodName = StringUtils.substitute(METHOD_NAME, packageName, name);
 			for each (var interfaceName:String in _implementedInterfaceNames) {
 				ii.interfaceMultinames[ii.interfaceMultinames.length] = MultinameUtil.toQualifiedName(interfaceName);
 			}
