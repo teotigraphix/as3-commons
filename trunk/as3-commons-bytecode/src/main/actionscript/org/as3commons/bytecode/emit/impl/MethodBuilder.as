@@ -16,6 +16,8 @@
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 
+	import mx.utils.StringUtil;
+
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
@@ -95,10 +97,10 @@ package org.as3commons.bytecode.emit.impl {
 			return arg;
 		}
 
-		public function build():Array {
+		public function build(initScopeDepth:uint = 1):Array {
 			var mi:MethodInfo = new MethodInfo();
 			if (_methodBodyBuilder != null) {
-				mi.methodBody = _methodBodyBuilder.build();
+				mi.methodBody = _methodBodyBuilder.build(initScopeDepth);
 				mi.methodBody.methodSignature = mi;
 				mi.methodBody.localCount = 1 + mi.argumentCollection.length + ((_hasRestArguments) ? 1 : 0);
 			}
@@ -111,7 +113,7 @@ package org.as3commons.bytecode.emit.impl {
 			trait.addMetadataList(buildMetadata());
 			mi.as3commonsByteCodeAssignedMethodTrait = MethodTrait(trait);
 			mi.returnType = MultinameUtil.toQualifiedName(_returnType);
-			mi.methodName = name;
+			mi.methodName = StringUtils.substitute(ClassBuilder.METHOD_NAME, packageName, name);
 			return [mi, trait.metadata];
 		}
 
@@ -124,7 +126,7 @@ package org.as3commons.bytecode.emit.impl {
 			trait.traitKind = TraitKind.METHOD;
 			trait.isFinal = isFinal;
 			trait.isOverride = isOverride;
-			var ns:LNamespace = new LNamespace(NAMESPACEKIND_LOOKUP[visibility], StringUtils.substitute("{0}{1}{2}.{3}", VISIBILITY_LOOKUP[visibility], TRAIT_MULTINAME_DIVIDER, packageName, name));
+			var ns:LNamespace = new LNamespace(NAMESPACEKIND_LOOKUP[visibility], "");
 			trait.traitMultiname = new QualifiedName(name, ns);
 			return trait;
 		}

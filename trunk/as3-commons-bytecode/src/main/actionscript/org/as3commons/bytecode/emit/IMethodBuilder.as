@@ -26,6 +26,6 @@ package org.as3commons.bytecode.emit {
 		function set hasRestArguments(value:Boolean):void;
 		function defineMethodBody():IMethodBodyBuilder;
 		function defineArgument(type:String = "", isOptional:Boolean = false, defaultValue:Object = null):MethodArgument;
-		function build():Array;
+		function build(initScopeDepth:uint = 1):Array;
 	}
 }

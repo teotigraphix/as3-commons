@@ -37,7 +37,7 @@ package org.as3commons.bytecode.emit {
 
 		function defineConstructor():ICtorBuilder;
 
-		function defineMethod():IMethodBuilder;
+		function defineMethod(name:String = null):IMethodBuilder;
 
 		function defineAccessor():IAccessorBuilder;
 

@@ -52,10 +52,11 @@ package org.as3commons.bytecode.emit.impl {
 			return _packageName;
 		}
 
-		public function defineClass(name:String):IClassBuilder {
+		public function defineClass(name:String, superClassName:String = null):IClassBuilder {
 			var cb:ClassBuilder = new ClassBuilder();
 			cb.name = name;
 			cb.packageName = packageName;
+			cb.superClassName = superClassName;
 			_classBuilders[_classBuilders.length] = cb;
 			return cb;
 		}
