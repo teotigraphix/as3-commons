@@ -15,7 +15,7 @@
  */
 package org.as3commons.bytecode.abc.enum {
 	import flash.utils.Dictionary;
-	
+
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
@@ -65,8 +65,25 @@ package org.as3commons.bytecode.abc.enum {
 			if (matchingKind == null) {
 				throw new Error("Unable to match ConstantKind to " + kindValue);
 			}
-
 			return matchingKind;
+		}
+
+		public static function determineKindFromInstance(instance:*):ConstantKind {
+			if (instance is String) {
+				return ConstantKind.UTF8;
+			} else if (instance is uint) {
+				return ConstantKind.UINT;
+			} else if (instance is int) {
+				return ConstantKind.INT;
+			} else if (instance is Number) {
+				return ConstantKind.DOUBLE;
+			} else if (instance is Boolean) {
+				var b:Boolean = (instance as Boolean);
+				return (b) ? ConstantKind.TRUE : ConstantKind.FALSE;
+			} else if (instance == null) {
+				return ConstantKind.NULL;
+			}
+			return ConstantKind.UNKNOWN;
 		}
 
 		public function get value():uint {
@@ -76,9 +93,9 @@ package org.as3commons.bytecode.abc.enum {
 		public function get description():String {
 			return _description;
 		}
-		
+
 		public function toString():String {
-			return StringUtils.substitute("ConstantKind[description={0}]",_description);
+			return StringUtils.substitute("ConstantKind[description={0}]", _description);
 		}
 	}
 }

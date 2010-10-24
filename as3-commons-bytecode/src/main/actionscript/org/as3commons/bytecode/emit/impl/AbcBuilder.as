@@ -15,6 +15,9 @@
  */
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 
@@ -37,17 +40,33 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
+	import org.as3commons.bytecode.swf.AbcClassLoader;
 	import org.as3commons.bytecode.typeinfo.Metadata;
+	import org.as3commons.bytecode.util.AbcSerializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.Type;
 
-	public class AbcBuilder implements IAbcBuilder {
+	/**
+	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
+	 */
+	[Event(name="complete", type="flash.events.Event")]
+	/**
+	 * Dispatched when the class loader has encountered an IO related error.
+	 */
+	[Event(name="ioError", type="flash.events.IOErrorEvent")]
+	/**
+	 * Dispatched when the class loader has encountered a SWF verification error.
+	 */
+	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
+	public class AbcBuilder extends EventDispatcher implements IAbcBuilder {
 
 		private static const PACKAGE_NAME_EXISTS_ERROR:String = "Package with name {0} is already defined.";
 		private static const SCRIPT_INFO_METHOD_NAME:String = "script{0}$init";
+
+		private var _loader:AbcClassLoader;
 
 		private var _packageBuilders:Dictionary;
 
@@ -58,6 +77,20 @@ package org.as3commons.bytecode.emit.impl {
 
 		private function init():void {
 			_packageBuilders = new Dictionary;
+		}
+
+		protected function get loader():AbcClassLoader {
+			if (_loader == null) {
+				_loader = new AbcClassLoader();
+				_loader.addEventListener(Event.COMPLETE, redispatch);
+				_loader.addEventListener(IOErrorEvent.IO_ERROR, redispatch);
+				_loader.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch);
+			}
+			return _loader;
+		}
+
+		protected function redispatch(event:Event):void {
+			dispatchEvent(event);
 		}
 
 		public function definePackage(name:String):IPackageBuilder {
@@ -83,6 +116,12 @@ package org.as3commons.bytecode.emit.impl {
 				var arr:Array = pb.build(applicationDomain);
 				idx = addAbcObjects(arr, abcFile, applicationDomain, idx);
 			}
+			return abcFile;
+		}
+
+		public function buildAndLoad(applicationDomain:ApplicationDomain = null, newApplicationDomain:ApplicationDomain = null):AbcFile {
+			var abcFile:AbcFile = build(applicationDomain);
+			loader.loadAbcFile(abcFile, newApplicationDomain);
 			return abcFile;
 		}
 
@@ -186,7 +225,6 @@ package org.as3commons.bytecode.emit.impl {
 			mb.addOpcode(new Op(Opcode.returnvoid));
 			mi.methodBody = mb.build();
 			mi.methodBody.methodSignature = mi;
-			//mi.methodBody.maxStack = 2;
 			return mi;
 		}
 

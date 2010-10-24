@@ -156,9 +156,12 @@ package org.as3commons.bytecode.emit.impl {
 			return ab;
 		}
 
-		public function defineVariable():IVariableBuilder {
+		public function defineVariable(name:String = null, type:String = null, initialValue:* = undefined):IVariableBuilder {
 			var vb:VariableBuilder = new VariableBuilder();
 			vb.packageName = packageName;
+			vb.name = name;
+			vb.type = type;
+			vb.initialValue = initialValue;
 			_variableBuilders[_variableBuilders.length] = vb;
 			return vb;
 		}

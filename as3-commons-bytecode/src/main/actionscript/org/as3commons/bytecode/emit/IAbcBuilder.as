@@ -14,12 +14,32 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
+	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 
 	import org.as3commons.bytecode.abc.AbcFile;
 
-	public interface IAbcBuilder {
+	/**
+	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
+	 */
+	[Event(name="complete", type="flash.events.Event")]
+	/**
+	 * Dispatched when the class loader has encountered an IO related error.
+	 */
+	[Event(name="ioError", type="flash.events.IOErrorEvent")]
+	/**
+	 * Dispatched when the class loader has encountered a SWF verification error.
+	 */
+	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
+	public interface IAbcBuilder extends IEventDispatcher {
+		/**
+		 *
+		 * @param name
+		 * @return
+		 *
+		 */
 		function definePackage(name:String):IPackageBuilder;
 		function build(applicationDomain:ApplicationDomain = null):AbcFile;
+		function buildAndLoad(applicationDomain:ApplicationDomain = null, newApplicationDomain:ApplicationDomain = null):AbcFile;
 	}
 }

@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
+
 	public interface IVariableBuilder extends IEmitObject {
 
 		function get type():String;
 
 		function set type(value:String):void;
+
+		function get initialValue():*;
+
+		function set initialValue(value:*):void;
 
 		function build():Object;
 	}
