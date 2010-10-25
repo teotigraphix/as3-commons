@@ -135,9 +135,9 @@ package org.as3commons.bytecode.emit.impl {
 		 * @param input The specified input string.
 		 * @return The input without a trailing period.
 		 */
-		protected function removeTrailingPeriod(input:String):String {
+		public static function removeTrailingPeriod(input:String):String {
 			if (input.charAt(input.length - 1) == '.') {
-				return input.substring(0, input.length - 2);
+				return input.substring(0, input.length - 1);
 			}
 			return input;
 		}
