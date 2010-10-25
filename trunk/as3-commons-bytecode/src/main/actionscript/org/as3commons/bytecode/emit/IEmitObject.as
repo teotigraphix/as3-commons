@@ -18,16 +18,51 @@ package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
+	/**
+	 * Describes a base object that is present in an AbcFile.
+	 * @author Roland Zwaga
+	 */
 	public interface IEmitObject {
+		/**
+		 * The fully qualified package name for the current <code>IEmitObject</code>. I.e. <code>com.myclasses.generated</code>.
+		 */
 		function get packageName():String;
+		/**
+		 * @private
+		 */
 		function set packageName(value:String):void;
+		/**
+		 * The name of the current <code>IEmitObject</code>.
+		 */
 		function get name():String;
+		/**
+		 * @private
+		 */
 		function set name(value:String):void;
+		/**
+		 * The visibility of the current <code>IEmitObject</code> within the package.
+		 */
 		function get visibility():MemberVisibility;
+		/**
+		 * @private
+		 */
 		function set visibility(value:MemberVisibility):void;
+		/**
+		 * The namespace URL that the current <code>IEmitObject</code> belongs to.
+		 */
 		function get namespace():String;
+		/**
+		 * @private
+		 */
 		function set namespace(value:String):void;
+		/**
+		 * The <code>TraitInfo</code> that is associated with the current <code>IEmitObject</code>, this is
+		 * usually generated automatically and needs not to be set.
+		 */
 		function get trait():TraitInfo;
+		/**
+		 * @private
+		 */
 		function set trait(value:TraitInfo):void;
 	}
 }

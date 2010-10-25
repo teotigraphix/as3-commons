@@ -16,6 +16,10 @@
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.MethodInfo;
 
+	/**
+	 * Describes an object that can generate a constructor method for a generated class.
+	 * @author Roland Zwaga
+	 */
 	public interface ICtorBuilder extends IMethodBuilder {
 	}
 }

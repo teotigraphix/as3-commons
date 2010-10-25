@@ -17,12 +17,37 @@ package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.emit.impl.MetaDataArgument;
 	import org.as3commons.bytecode.typeinfo.Metadata;
 
+	/**
+	 * Describes an object that can generate a metadata entry in an <code>AbcFile</code>.
+	 * @author Roland Zwaga
+	 *
+	 */
 	public interface IMetaDataBuilder {
+		/**
+		 * The name of the metadata entry. I.e. <code>[Event]</code>.
+		 */
 		function get name():String;
+		/**
+		 * @private
+		 */
 		function set name(value:String):void;
+		/**
+		 * An array of key value pairs that describe the metadata arguments. I.e. <code>[Event(name="complete",type="flash.events.Event")]</code>.
+		 */
 		function get arguments():Array;
+		/**
+		 * @private
+		 */
 		function set argument(value:Array):void;
+		/**
+		 * Defines an argument for the current <code>IMetaDataBuilder</code>.
+		 */
 		function defineArgument():MetaDataArgument;
+		/**
+		 * Internally used build method, this method should never be called by third parties.
+		 * @param applicationDomain
+		 * @return
+		 */
 		function build():Metadata;
 	}
 }

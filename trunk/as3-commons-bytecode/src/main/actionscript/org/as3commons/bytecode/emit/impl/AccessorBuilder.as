@@ -39,7 +39,7 @@ package org.as3commons.bytecode.emit.impl {
 		private static const PRIVATE_VAR_NAME_TEMPLATE:String = "_{0}";
 
 		private var _access:AccessorAccess;
-		private var _variable:IPropertyBuilder;
+		private var _property:IPropertyBuilder;
 
 		public function AccessorBuilder() {
 			super();
@@ -58,10 +58,10 @@ package org.as3commons.bytecode.emit.impl {
 			var result:Array = [];
 			var mb:IMethodBuilder;
 			var mi:MethodInfo;
-			if (_variable == null) {
-				_variable = createDefaultVariableBuilder();
+			if (_property == null) {
+				_property = createDefaultVariableBuilder();
 			}
-			var trait:SlotOrConstantTrait = SlotOrConstantTrait(_variable.build());
+			var trait:SlotOrConstantTrait = SlotOrConstantTrait(_property.build());
 			result[result.length] = trait;
 			if ((_access === AccessorAccess.READ_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
 				mb = createGetter(trait);
@@ -80,12 +80,12 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
-		public function get variable():IPropertyBuilder {
-			return _variable;
+		public function get property():IPropertyBuilder {
+			return _property;
 		}
 
-		public function set variable(value:IPropertyBuilder):void {
-			_variable = value;
+		public function set property(value:IPropertyBuilder):void {
+			_property = value;
 		}
 
 		protected function createMethod():MethodBuilder {

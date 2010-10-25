@@ -16,6 +16,11 @@
 package org.as3commons.bytecode.emit {
 	import flash.system.ApplicationDomain;
 
+	/**
+	 * Describes an object that can generate a class object to be added to an <code>AbcFile</code> which
+	 * enables runtime class generation.
+	 * @author Roland Zwaga
+	 */
 	public interface IClassBuilder extends IEmitObject {
 		/**
 		 * The fully qualified class name for the class that will be generated. I.e. <code>mx.events.FlexEvent</code>.
