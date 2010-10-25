@@ -42,10 +42,9 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function testAddOpcode():void {
-			var op:Op = new Op(Opcode.add);
-			_methodBodyBuilder.addOpcode(op);
+			_methodBodyBuilder.addOpcode(Opcode.add);
 			assertEquals(_methodBodyBuilder.opcodes.length, 1);
-			assertStrictlyEquals(_methodBodyBuilder.opcodes[0], op);
+			assertStrictlyEquals(_methodBodyBuilder.opcodes[0].opcode, Opcode.add);
 		}
 
 		public function testDefineExceptionInfo():void {
@@ -55,19 +54,19 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function testBuild():void {
-			_methodBodyBuilder.addOpcode(new Op(Opcode.debugfile, ["file.as"]));
-			_methodBodyBuilder.addOpcode(new Op(Opcode.debugline, [10]));
-			_methodBodyBuilder.addOpcode(new Op(Opcode.getlocal_0));
-			_methodBodyBuilder.addOpcode(new Op(Opcode.pushscope));
-			_methodBodyBuilder.addOpcode(new Op(Opcode.debugline, [12]));
-			_methodBodyBuilder.addOpcode(new Op(Opcode.getlocal_0));
-			_methodBodyBuilder.addOpcode(new Op(Opcode.getproperty,[new QualifiedName("description",new LNamespace(NamespaceKind.PACKAGE_NAMESPACE,"namespace"),MultinameKind.QNAME)]));
-			_methodBodyBuilder.addOpcode(new Op(Opcode.returnvalue));
+			_methodBodyBuilder.addOpcode(Opcode.debugfile, ["file.as"]);
+			_methodBodyBuilder.addOpcode(Opcode.debugline, [10]);
+			_methodBodyBuilder.addOpcode(Opcode.getlocal_0);
+			_methodBodyBuilder.addOpcode(Opcode.pushscope);
+			_methodBodyBuilder.addOpcode(Opcode.debugline, [12]);
+			_methodBodyBuilder.addOpcode(Opcode.getlocal_0);
+			_methodBodyBuilder.addOpcode(Opcode.getproperty,[new QualifiedName("description",new LNamespace(NamespaceKind.PACKAGE_NAMESPACE,"namespace"),MultinameKind.QNAME)]);
+			_methodBodyBuilder.addOpcode(Opcode.returnvalue);
 			var mb:MethodBody = _methodBodyBuilder.build();
 			assertEquals(8, mb.opcodes.length);
 			assertEquals(2,mb.maxStack);
 			assertEquals(1,mb.localCount);
-			assertEquals(0,mb.initScopeDepth);
+			assertEquals(1,mb.initScopeDepth);
 			assertEquals(1,mb.maxScopeDepth);
 		}
 

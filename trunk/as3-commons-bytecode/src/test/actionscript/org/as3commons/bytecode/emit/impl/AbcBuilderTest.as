@@ -54,13 +54,7 @@ package org.as3commons.bytecode.emit.impl {
 			methodBodyBuilder.addOpcode(new Op(Opcode.returnvoid));*/
 			var abcFile:AbcFile = _abcBuilder.build();
 			_loader.addEventListener(Event.COMPLETE, addAsync(successHandler, 5000), false, 0, true);
-			_loader.addEventListener(IOErrorEvent.IO_ERROR, addAsync(errorHandler, 5000), false, 0, true);
-			_loader.addEventListener(IOErrorEvent.VERIFY_ERROR, addAsync(errorHandler, 5000), false, 0, true);
 			_loader.loadAbcFile(abcFile);
-		}
-
-		private function errorHandler(event:IOErrorEvent):void {
-			fail("loader error: " + event.text);
 		}
 
 		private function successHandler(event:Event):void {
