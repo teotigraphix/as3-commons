@@ -17,13 +17,14 @@ package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.abc.enum.Opcode;
 
 	public interface IMethodBodyBuilder {
 		function get opcodes():Array;
 		function set opcodes(value:Array):void;
 		function get exceptionInfos():Array;
 		function set exceptionInfos(value:Array):void;
-		function addOpcode(opcode:Op):IMethodBodyBuilder;
+		function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder;
 		function addOpcodes(newOpcodes:Array):IMethodBodyBuilder;
 		function defineExceptionInfo():IExceptionInfoBuilder;
 		function build(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody;

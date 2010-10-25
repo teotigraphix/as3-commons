@@ -26,7 +26,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
-	import org.as3commons.bytecode.emit.IVariableBuilder;
+	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.emit.util.BuildUtil;
 	import org.as3commons.bytecode.typeinfo.Argument;
@@ -34,12 +34,12 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.AccessorAccess;
 
-	public class AccessorBuilder extends VariableBuilder implements IAccessorBuilder {
+	public class AccessorBuilder extends PropertyBuilder implements IAccessorBuilder {
 
 		private static const PRIVATE_VAR_NAME_TEMPLATE:String = "_{0}";
 
 		private var _access:AccessorAccess;
-		private var _variable:IVariableBuilder;
+		private var _variable:IPropertyBuilder;
 
 		public function AccessorBuilder() {
 			super();
@@ -80,11 +80,11 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
-		public function get variable():IVariableBuilder {
+		public function get variable():IPropertyBuilder {
 			return _variable;
 		}
 
-		public function set variable(value:IVariableBuilder):void {
+		public function set variable(value:IPropertyBuilder):void {
 			_variable = value;
 		}
 
@@ -99,11 +99,11 @@ package org.as3commons.bytecode.emit.impl {
 			var mb:IMethodBuilder = createMethod();
 			mb.returnType = type;
 			var mbb:IMethodBodyBuilder = mb.defineMethodBody();
-			mbb.addOpcode(new Op(Opcode.getlocal_0)) //
-				.addOpcode(new Op(Opcode.pushscope)) //
-				.addOpcode(new Op(Opcode.getlocal_0)) //
-				.addOpcode(new Op(Opcode.getproperty, [trait.traitMultiname])) //
-				.addOpcode(new Op(Opcode.returnvalue));
+			mbb.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.getproperty, [trait.traitMultiname]) //
+				.addOpcode(Opcode.returnvalue);
 			return mb;
 		}
 
@@ -112,17 +112,17 @@ package org.as3commons.bytecode.emit.impl {
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(type);
 			var mbb:IMethodBodyBuilder = mb.defineMethodBody();
-			mbb.addOpcode(new Op(Opcode.getlocal_0)) //
-				.addOpcode(new Op(Opcode.pushscope)) //
-				.addOpcode(new Op(Opcode.getlocal_0)) //
-				.addOpcode(new Op(Opcode.getlocal_1)) //
-				.addOpcode(new Op(Opcode.initproperty, [trait.traitMultiname])) //
-				.addOpcode(new Op(Opcode.returnvoid));
+			mbb.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.getlocal_1) //
+				.addOpcode(Opcode.initproperty, [trait.traitMultiname]) //
+				.addOpcode(Opcode.returnvoid);
 			return mb;
 		}
 
-		protected function createDefaultVariableBuilder():IVariableBuilder {
-			var vb:VariableBuilder = new VariableBuilder();
+		protected function createDefaultVariableBuilder():IPropertyBuilder {
+			var vb:PropertyBuilder = new PropertyBuilder();
 			vb.isConstant = isConstant;
 			vb.isFinal = isFinal;
 			vb.isStatic = isStatic;

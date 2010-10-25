@@ -26,7 +26,6 @@ package org.as3commons.bytecode.emit.impl {
 
 	public class MethodBodyBuilder implements IMethodBodyBuilder {
 
-
 		/*
 		   The stack modifier logic I spied from the excellent AS3Eval library: http://eval.hurlant.com/
 		 */
@@ -261,8 +260,8 @@ package org.as3commons.bytecode.emit.impl {
 			return false;
 		}
 
-		public function addOpcode(opcode:Op):IMethodBodyBuilder {
-			_opcodes[opcodes.length] = opcode;
+		public function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder {
+			_opcodes[opcodes.length] = new Op(opcode, params);
 			return this;
 		}
 

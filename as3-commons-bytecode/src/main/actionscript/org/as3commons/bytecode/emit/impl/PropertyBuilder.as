@@ -21,14 +21,14 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
-	import org.as3commons.bytecode.emit.IVariableBuilder;
+	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.StringUtils;
 
-	public class VariableBuilder extends EmitMember implements IVariableBuilder {
+	public class PropertyBuilder extends EmitMember implements IPropertyBuilder {
 
-		public function VariableBuilder() {
+		public function PropertyBuilder() {
 			super();
 		}
 
