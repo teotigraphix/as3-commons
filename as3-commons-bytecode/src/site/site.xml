@@ -25,6 +25,7 @@
 
     <menu name="Documentation">
       <item name="Introduction" href="introduction.html" />
+      <item name="Runtime class generation" href="emit.html" />
       <item name="API" href="asdoc/index.html"/>
     </menu>
 
