@@ -63,7 +63,6 @@ package org.as3commons.bytecode.emit.impl {
 	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
 	public class AbcBuilder extends EventDispatcher implements IAbcBuilder {
 
-		private static const PACKAGE_NAME_EXISTS_ERROR:String = "Package with name {0} is already defined.";
 		private static const SCRIPT_INFO_METHOD_NAME:String = "script{0}$init";
 
 		private var _loader:AbcClassLoader;
@@ -76,7 +75,7 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		private function init():void {
-			_packageBuilders = new Dictionary;
+			_packageBuilders = new Dictionary();
 		}
 
 		protected function get loader():AbcClassLoader {
@@ -93,19 +92,24 @@ package org.as3commons.bytecode.emit.impl {
 			dispatchEvent(event);
 		}
 
+		/**
+		 * <p>If the specified package name already exists, the exisiting <code>IPackageBuilder</code>
+		 * will be returned instead of a new instance.</p>
+		 * @inheritDoc
+		 */
 		public function definePackage(name:String):IPackageBuilder {
+			var pb:PackageBuilder;
 			if (_packageBuilders[name] != null) {
-				throw new IllegalOperationError(StringUtils.substitute(PACKAGE_NAME_EXISTS_ERROR, name));
+				pb = _packageBuilders[name];
+			} else {
+				pb = new PackageBuilder(name);
+				_packageBuilders[name] = pb;
 			}
-			var pb:PackageBuilder = new PackageBuilder(name);
-			_packageBuilders[name] = pb;
 			return pb;
 		}
 
 		/**
-		 * Returns an <code>AbcFile</code> containing all the generated type information,
-		 * ready to be loaded into an AVM.
-		 * @return The specified <code>AbcFile</code>.
+		 * @inheritDoc
 		 */
 		public function build(applicationDomain:ApplicationDomain = null):AbcFile {
 			var abcFile:AbcFile = new AbcFile();
@@ -119,6 +123,9 @@ package org.as3commons.bytecode.emit.impl {
 			return abcFile;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function buildAndLoad(applicationDomain:ApplicationDomain = null, newApplicationDomain:ApplicationDomain = null):AbcFile {
 			var abcFile:AbcFile = build(applicationDomain);
 			loader.loadAbcFile(abcFile, newApplicationDomain);
@@ -188,9 +195,9 @@ package org.as3commons.bytecode.emit.impl {
 			mi.methodName = "";
 			mi.returnType = MultinameUtil.toQualifiedName(BuiltIns.ANY.fullName, NamespaceKind.NAMESPACE);
 			var mb:IMethodBodyBuilder = new MethodBodyBuilder();
-			mb.addOpcode(new Op(Opcode.getlocal_0)) //
-				.addOpcode(new Op(Opcode.pushscope)) //
-				.addOpcode(new Op(Opcode.getscopeobject, [0]));
+			mb.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.getscopeobject, [0]);
 			var type:Type = Type.forName(superClassName, applicationDomain);
 			var extendedClasses:Array;
 			if (superClassName != BuiltIns.OBJECT.fullName) {
@@ -208,18 +215,18 @@ package org.as3commons.bytecode.emit.impl {
 			for (var i:int = 0; i < len; i++) {
 				var clsName:String = extendedClasses[i];
 				mn = MultinameUtil.toQualifiedName(clsName);
-				mb.addOpcode(new Op(Opcode.findpropstrict, [mn])) //
-					.addOpcode(new Op(Opcode.getproperty, [mn]));
+				mb.addOpcode(Opcode.findpropstrict, [mn]) //
+					.addOpcode(Opcode.getproperty, [mn]);
 				if (i < (len - 1)) {
-					mb.addOpcode(new Op(Opcode.pushscope));
+					mb.addOpcode(Opcode.pushscope);
 					popscopes[popscopes.length] = new Op(Opcode.popscope);
 				}
 			}
 			mn = MultinameUtil.toQualifiedName(className);
-			mb.addOpcode(new Op(Opcode.newclass, [classInfo]));
+			mb.addOpcode(Opcode.newclass, [classInfo]);
 			mb.addOpcodes(popscopes);
-			mb.addOpcode(new Op(Opcode.initproperty, [mn]));
-			mb.addOpcode(new Op(Opcode.returnvoid));
+			mb.addOpcode(Opcode.initproperty, [mn]);
+			mb.addOpcode(Opcode.returnvoid);
 			mi.methodBody = mb.build();
 			mi.methodBody.methodSignature = mi;
 			return mi;

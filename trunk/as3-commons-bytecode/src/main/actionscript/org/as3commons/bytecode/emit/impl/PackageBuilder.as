@@ -22,9 +22,13 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
-	import org.as3commons.bytecode.emit.IVariableBuilder;
+	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.lang.Assert;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public class PackageBuilder implements IPackageBuilder {
 
 		private var _classBuilders:Array;
@@ -32,6 +36,10 @@ package org.as3commons.bytecode.emit.impl {
 		private var _methodBuilders:Array;
 		private var _variableBuilders:Array;
 
+		/**
+		 * Creates a new <code>PackageBuilder</code> instance.
+		 * @param name The fully qualified name of the package. I.e. <code>com.myclasses.generated</code>
+		 */
 		public function PackageBuilder(name:String) {
 			super();
 			init(name);
@@ -39,7 +47,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		private function init(name:String):void {
 			Assert.hasText(name, "name argument must not be null or empty");
-			_packageName = name;
+			_packageName = removeTrailingPeriod(name);
 			_classBuilders = [];
 			_interfaceBuilders = [];
 			_methodBuilders = [];
@@ -48,10 +56,16 @@ package org.as3commons.bytecode.emit.impl {
 
 		private var _packageName:String;
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get packageName():String {
 			return _packageName;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function defineClass(name:String, superClassName:String = null):IClassBuilder {
 			var cb:ClassBuilder = new ClassBuilder();
 			cb.name = name;
@@ -61,14 +75,21 @@ package org.as3commons.bytecode.emit.impl {
 			return cb;
 		}
 
-		public function defineInterface(name:String):IInterfaceBuilder {
+		/**
+		 * @inheritDoc
+		 */
+		public function defineInterface(name:String, superInterfaceName:String = null):IInterfaceBuilder {
 			var ib:InterfaceBuilder = new InterfaceBuilder();
 			ib.name = name;
+			ib.superClassName = superInterfaceName;
 			ib.packageName = packageName;
 			_interfaceBuilders[_interfaceBuilders.length] = ib;
 			return ib;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function defineMethod(name:String):IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.name = name;
@@ -77,8 +98,11 @@ package org.as3commons.bytecode.emit.impl {
 			return mb;
 		}
 
-		public function defineVariable(name:String):IVariableBuilder {
-			var vb:VariableBuilder = new VariableBuilder();
+		/**
+		 * @inheritDoc
+		 */
+		public function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
+			var vb:PropertyBuilder = new PropertyBuilder();
 			vb.name = name;
 			vb.packageName = packageName;
 			_variableBuilders[_variableBuilders.length] = vb;
@@ -86,8 +110,7 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		/**
-		 * Returns An <code>Array</code> of <code>ClassInfo</code>, <code>InstanceInfo</code> and <code>MethodInfo</code> instances.
-		 * @return An <code>Array</code> of <code>ClassInfo</code>, <code>InstanceInfo</code> and <code>MethodInfo</code> instances.
+		 * @inheritDoc
 		 */
 		public function build(applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
@@ -100,10 +123,23 @@ package org.as3commons.bytecode.emit.impl {
 			for each (var mb:IMethodBuilder in _methodBuilders) {
 				result[result.length] = mb.build();
 			}
-			for each (var vb:IVariableBuilder in _variableBuilders) {
+			for each (var vb:IPropertyBuilder in _variableBuilders) {
 				result[result.length] = vb.build();
 			}
 			return result;
+		}
+
+		/**
+		 * If the specified input has a trailing period ('.') it will be removed from the string
+		 * and the result will be returned. Otherwise the original string is returned.
+		 * @param input The specified input string.
+		 * @return The input without a trailing period.
+		 */
+		protected function removeTrailingPeriod(input:String):String {
+			if (input[input.length - 1] == '.') {
+				return input.substring(0, input.length - 2);
+			}
+			return input;
 		}
 	}
 }

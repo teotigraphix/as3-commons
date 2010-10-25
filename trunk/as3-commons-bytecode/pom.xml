@@ -14,7 +14,7 @@
 	<description>
 			ABC bytecode parsing and publishing and bytecode based reflection API for ActionScript 3.0, formerly known as Loom. (http://code.google.com/p/loom-as3/)
 	</description>
-	<inceptionYear>2009</inceptionYear>
+	<inceptionYear>2010</inceptionYear>
 
 	<dependencies>
 		<dependency>

@@ -32,7 +32,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IMetaDataBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
-	import org.as3commons.bytecode.emit.IVariableBuilder;
+	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.util.AbcDeserializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.StringUtils;
@@ -51,7 +51,6 @@ package org.as3commons.bytecode.emit.impl {
 		private var _superClassName:String;
 		private var _isDynamic:Boolean = false;
 		private var _isFinal:Boolean;
-		private var _isProtected:Boolean = true;
 		private var _metadata:Array;
 		private var _traits:Array;
 
@@ -96,14 +95,6 @@ package org.as3commons.bytecode.emit.impl {
 			_isFinal = value;
 		}
 
-		public function get isProtected():Boolean {
-			return _isProtected;
-		}
-
-		public function set isProtected(value:Boolean):void {
-			_isProtected = value;
-		}
-
 		public function get metadata():Array {
 			return _metadata;
 		}
@@ -129,6 +120,12 @@ package org.as3commons.bytecode.emit.impl {
 		public function implementInterface(name:String):void {
 			if (_implementedInterfaceNames.indexOf(name) < 0) {
 				_implementedInterfaceNames[_implementedInterfaceNames.length] = name;
+			}
+		}
+
+		public function implementInterfaces(names:Array):void {
+			for each (var name:String in names) {
+				implementInterface(name);
 			}
 		}
 
@@ -159,8 +156,8 @@ package org.as3commons.bytecode.emit.impl {
 			return ab;
 		}
 
-		public function defineVariable(name:String = null, type:String = null, initialValue:* = undefined):IVariableBuilder {
-			var vb:VariableBuilder = new VariableBuilder();
+		public function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
+			var vb:PropertyBuilder = new PropertyBuilder();
 			vb.packageName = packageName;
 			vb.name = name;
 			vb.type = type;
@@ -207,7 +204,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		private function createVariables():Array {
 			var result:Array = [];
-			for each (var vb:IVariableBuilder in _variableBuilders) {
+			for each (var vb:IPropertyBuilder in _variableBuilders) {
 				result[result.length] = vb.build();
 			}
 			return result;
@@ -242,14 +239,12 @@ package org.as3commons.bytecode.emit.impl {
 			var ii:InstanceInfo = new InstanceInfo();
 			ii.isFinal = isFinal;
 			ii.isInterface = false;
-			ii.isProtected = isProtected;
+			//TODO: inspect methods and properties to see if any of them are protected,
+			//based on this set isProtected: 
+			//ii.isProtected = isProtected;
 			ii.isSealed = !isDynamic;
 			ii.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
 			ii.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : MultinameUtil.OBJECT_NAME);
-			ii.isFinal = isFinal;
-			ii.isInterface = false;
-			ii.isProtected = isProtected;
-			ii.isSealed = !isDynamic;
 			if (ii.isProtected) {
 				ii.protectedNamespace = MultinameUtil.toLNamespace(packageName + MultinameUtil.DOUBLE_COLON + name, NamespaceKind.PROTECTED_NAMESPACE);
 			}
@@ -286,23 +281,23 @@ package org.as3commons.bytecode.emit.impl {
 		protected function createDefaultConstructor():ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
 			ctorBuilder.defineMethodBody() //add default opcodes:
-				.addOpcode(new Op(Opcode.getlocal_0)) //
-				.addOpcode(new Op(Opcode.pushscope)) //
-				.addOpcode(new Op(Opcode.getlocal_0)) //
-				.addOpcode(new Op(Opcode.constructsuper, [0])) //
-				.addOpcode(new Op(Opcode.returnvoid));
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.constructsuper, [0]) //
+				.addOpcode(Opcode.returnvoid);
 			return ctorBuilder;
 		}
 
 		protected function createStaticConstructor(staticvariables:Array):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
 			var mb:IMethodBodyBuilder = ctorBuilder.defineMethodBody() //add default opcodes:
-				.addOpcode(new Op(Opcode.getlocal_0)) //
-				.addOpcode(new Op(Opcode.pushscope));
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope);
 			for each (var slot:SlotOrConstantTrait in staticvariables) {
 				mb.addOpcodes(createInitializer(slot));
 			}
-			mb.addOpcode(new Op(Opcode.returnvoid));
+			mb.addOpcode(Opcode.returnvoid);
 			return ctorBuilder;
 		}
 

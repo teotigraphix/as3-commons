@@ -21,8 +21,18 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.swf.SWFFile;
 	import org.as3commons.bytecode.tags.DoABCTag;
 
+	/**
+	 * Helper methods for modifying <code>ABCFiles</code>, <code>ConstantPools</code> and <code>SWFFile</code>.
+	 * @author Roland Zwaga
+	 */
 	public final class AbcFileUtil {
 
+		/**
+		 * Searches the specified <code>SWFFile</code> for <code>DoABCTags</code>
+		 * and merges all of them into one <code>DoABCTag</code>. This will safe some
+		 * memory because the constant pools for the respective ABC tags will be merged as well.
+		 * @param swf The specified <code>SWFFile</code> instance.
+		 */
 		public static function mergeAbcFilesInSWFFile(swf:SWFFile):void {
 			var abcTags:Array = swf.getTagsByType(DoABCTag);
 			if (abcTags.length < 2) {
@@ -42,6 +52,12 @@ package org.as3commons.bytecode.util {
 			DoABCTag(abcTags[0]).abcFile = mergeMultipleAbcFiles(abcFiles);
 		}
 
+		/**
+		 * Merges the specified <code>Array</code> of <code>AbcFiles</code> into
+		 * one <code>AbcFile</code> instance.
+		 * @param files The specifed <code>Array</code> of <code>AbcFiles</code>.
+		 * @return The merged <code>AbcFile</code> instance.
+		 */
 		public static function mergeMultipleAbcFiles(files:Array):AbcFile {
 			if ((!files) || (files.length == 0)) {
 				return null;
@@ -57,6 +73,12 @@ package org.as3commons.bytecode.util {
 			return abc;
 		}
 
+		/**
+		 * Merges the specified <code>AbcFile</code> instances into one single <code>AbcFile</code> instance.
+		 * @param file1 The first <code>AbcFile</code> instance.
+		 * @param file2 The second <code>AbcFile</code> instance.
+		 * @return The merged <code>AbcFile</code> instance.
+		 */
 		public static function mergeAbcFiles(file1:AbcFile, file2:AbcFile):AbcFile {
 			var result:AbcFile = new AbcFile();
 			result.majorVersion = file1.majorVersion;
@@ -71,6 +93,12 @@ package org.as3commons.bytecode.util {
 			return result;
 		}
 
+		/**
+		 * Merges the specified <code>ConstantPool</code> instances into one single <code>ConstantPool</code> instance.
+		 * @param pool1 The first <code>ConstantPool</code> instance.
+		 * @param pool2 The second <code>ConstantPool</code> instance.
+		 * @return The merged <code>ConstantPool</code> instance.
+		 */
 		public static function mergeConstantPools(pool1:ConstantPool, pool2:ConstantPool):ConstantPool {
 			var result:ConstantPool = new ConstantPool();
 			result.as3commons_bytecode::setDoublePool(pool1.doublePool.concat([]));

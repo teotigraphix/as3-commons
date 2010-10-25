@@ -19,7 +19,7 @@ package org.as3commons.bytecode.emit.impl {
 
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
-	import org.as3commons.bytecode.emit.IVariableBuilder;
+	import org.as3commons.bytecode.emit.IPropertyBuilder;
 
 	public class InterfaceBuilder extends ClassBuilder implements IInterfaceBuilder {
 
@@ -34,7 +34,7 @@ package org.as3commons.bytecode.emit.impl {
 			throw new IllegalOperationError(INTERFACE_CONSTRUCTOR_ERROR);
 		}
 
-		override public function defineVariable(name:String = null, type:String = null, initialValue:* = undefined):IVariableBuilder {
+		override public function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
 			throw new IllegalOperationError(INTERFACE_PROPERTIES_ERROR);
 		}
 

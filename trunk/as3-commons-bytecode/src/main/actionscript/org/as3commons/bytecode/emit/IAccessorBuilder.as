@@ -17,13 +17,13 @@ package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.reflect.AccessorAccess;
 
-	public interface IAccessorBuilder extends IVariableBuilder {
+	public interface IAccessorBuilder extends IPropertyBuilder {
 
 		function get access():AccessorAccess;
 		function set access(value:AccessorAccess):void;
 
-        function get variable():IVariableBuilder;
-        function set variable(value:IVariableBuilder):void;
+        function get variable():IPropertyBuilder;
+        function set variable(value:IPropertyBuilder):void;
 
 	}
 }

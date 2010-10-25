@@ -15,7 +15,7 @@
  */
 package org.as3commons.bytecode.emit {
 
-	public interface IVariableBuilder extends IEmitObject {
+	public interface IPropertyBuilder extends IEmitObject {
 
 		function get type():String;
 
