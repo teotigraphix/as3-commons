@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-import org.as3commons.bytecode.abc.ExceptionInfo;
+	import org.as3commons.bytecode.abc.ExceptionInfo;
 
-public interface IExceptionInfoBuilder {
-	function build():ExceptionInfo;
-}
+	/**
+	 * Describes an object that can generate an <code>ExceptionInfo</code> to be used in a method body.
+	 * @author Roland Zwaga
+	 */
+	public interface IExceptionInfoBuilder {
+		/**
+		 * Internally used build method, this method should never be called by third parties.
+		 * @return
+		 */
+		function build():ExceptionInfo;
+	}
 }

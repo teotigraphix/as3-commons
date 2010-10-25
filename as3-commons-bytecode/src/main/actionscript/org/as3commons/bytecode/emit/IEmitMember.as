@@ -15,23 +15,58 @@
  */
 package org.as3commons.bytecode.emit {
 
+	/**
+	 * Describes an object that can generate a class or instance member.
+	 * @author Roland Zwaga
+	 */
 	public interface IEmitMember extends IEmitObject {
+
+		/**
+		 * If <code>true</code> this member overrides a member of a superclass.
+		 */
 		function get isOverride():Boolean;
 
+		/**
+		 * @private
+		 */
 		function set isOverride(value:Boolean):void;
 
+		/**
+		 * If <code>true</code> this member is marked as final and cannot be overridden in subclasses.
+		 */
 		function get isFinal():Boolean;
 
+		/**
+		 * @private
+		 */
 		function set isFinal(value:Boolean):void;
 
+		/**
+		 * If <code>true</code> this member is marked as static.
+		 */
 		function get isStatic():Boolean;
 
+		/**
+		 * @private
+		 */
 		function set isStatic(value:Boolean):void;
 
+		/**
+		 * an <code>Array</code> of <code>IMetaDataBuilder</code> instances that describe the metadata that
+		 * will be generated for the current <code>IEmitMember</code>.
+		 */
 		function get metadata():Array;
 
+		/**
+		 * @private
+		 */
 		function set metadata(value:Array):void;
 
+		/**
+		 * Creates an <code>IMetaDataBuilder</code> instance that is able to generate a metadata entry
+		 * for the current <code>IEmitMember</code>.
+		 * @return The specified <code>IMetaDataBuilder</code>.
+		 */
 		function defineMetaData():IMetaDataBuilder;
 	}
 }
