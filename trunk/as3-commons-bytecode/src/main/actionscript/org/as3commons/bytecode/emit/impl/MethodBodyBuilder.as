@@ -143,7 +143,7 @@ package org.as3commons.bytecode.emit.impl {
 			return eib;
 		}
 
-		public function build(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody {
+		public function buildBody(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody {
 			var mb:MethodBody = new MethodBody();
 			mb.localCount += extraLocalCount;
 			mb.initScopeDepth = initScopeDepth;

@@ -21,7 +21,7 @@ package org.as3commons.bytecode.emit {
 	 * Describes an object that can generate a <code>MethodInfo</code> instance to be used in an <code>AbcFile</code>.
 	 * @author Roland Zwaga
 	 */
-	public interface IMethodBuilder extends IEmitMember {
+	public interface IMethodBuilder extends IEmitMember, IMethodBodyBuilder {
 		/**
 		 * The fully qualified type of the return value of the generated <code>MethodBody</code>. I.e. <code>flash.utils.Dictionary</code>.
 		 */
@@ -46,11 +46,11 @@ package org.as3commons.bytecode.emit {
 		 * @private
 		 */
 		function set hasRestArguments(value:Boolean):void;
-		/**
+		/*
 		 * Creates and returns an <code>IMethodBodyBuilder</code> for the generated method.
 		 * @return The specified <code>IMethodBodyBuilder</code>.
 		 */
-		function defineMethodBody():IMethodBodyBuilder;
+		//function defineMethodBody():IMethodBodyBuilder;
 		/**
 		 * Creates and returns a new <code>MethodArgument</code> for the current method.
 		 * @param type The fully qualified type for the argument. I.e. <code>flash.events.Event</code>

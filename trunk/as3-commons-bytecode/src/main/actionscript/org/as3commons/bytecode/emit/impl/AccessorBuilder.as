@@ -98,8 +98,7 @@ package org.as3commons.bytecode.emit.impl {
 		protected function createGetter(trait:SlotOrConstantTrait):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod();
 			mb.returnType = type;
-			var mbb:IMethodBodyBuilder = mb.defineMethodBody();
-			mbb.addOpcode(Opcode.getlocal_0) //
+			mb.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.getproperty, [trait.traitMultiname]) //
@@ -111,8 +110,7 @@ package org.as3commons.bytecode.emit.impl {
 			var mb:IMethodBuilder = createMethod();
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(type);
-			var mbb:IMethodBodyBuilder = mb.defineMethodBody();
-			mbb.addOpcode(Opcode.getlocal_0) //
+			mb.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.getlocal_1) //

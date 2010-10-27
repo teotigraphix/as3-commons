@@ -63,6 +63,6 @@ package org.as3commons.bytecode.emit {
 		 * @param applicationDomain
 		 * @return
 		 */
-		function build(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody;
+		function buildBody(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody;
 	}
 }

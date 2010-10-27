@@ -280,8 +280,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createDefaultConstructor():ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
-			ctorBuilder.defineMethodBody() //add default opcodes:
-				.addOpcode(Opcode.getlocal_0) //
+			ctorBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.constructsuper, [0]) //
@@ -291,13 +290,12 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createStaticConstructor(staticvariables:Array):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
-			var mb:IMethodBodyBuilder = ctorBuilder.defineMethodBody() //add default opcodes:
-				.addOpcode(Opcode.getlocal_0) //
+			ctorBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope);
 			for each (var slot:SlotOrConstantTrait in staticvariables) {
-				mb.addOpcodes(createInitializer(slot));
+				ctorBuilder.addOpcodes(createInitializer(slot));
 			}
-			mb.addOpcode(Opcode.returnvoid);
+			ctorBuilder.addOpcode(Opcode.returnvoid);
 			return ctorBuilder;
 		}
 

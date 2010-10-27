@@ -88,16 +88,15 @@ package org.as3commons.bytecode.emit.impl {
 	 *   var methodBuilder:IMethodBuilder = classBuilder.defineMethod("multiplyByHundred");
 	 *   methodBuilder.returnType("int");
 	 *   methodBuilder.defineArgument("int");
-	 *   var methodBodyBuilder:IMethodBodyBuilder = methodBuilder.defineMethodBody();
-	 *   methodBodyBuilder.addOpcode(opcode.getlocal_0)
-	 *                    .addOpcode(opcode.pushscope)
-	 *                    .addOpcode(opcode.getlocal_1)
-	 *                    .addOpcode(opcode.pushbyte, [100])
-	 *                    .addOpcode(opcode.multiply)
-	 *                    .addOpcode(opcode.convert_i)
-	 *                    .addOpcode(opcode.setlocal_1)
-	 *                    .addOpcode(opcode.getlocal_1)
-	 *                    .addOpcode(opcode.returnvalue);
+	 *   methodBuilder.addOpcode(opcode.getlocal_0)
+	 *                .addOpcode(opcode.pushscope)
+	 *                .addOpcode(opcode.getlocal_1)
+	 *                .addOpcode(opcode.pushbyte, [100])
+	 *                .addOpcode(opcode.multiply)
+	 *                .addOpcode(opcode.convert_i)
+	 *                .addOpcode(opcode.setlocal_1)
+	 *                .addOpcode(opcode.getlocal_1)
+	 *                .addOpcode(opcode.returnvalue);
 	 *   abcBuilder.addEventListener(Event.COMPLETE, completeHandler);
 	 *   abcBuilder.buildAndLoad(); //loads the generated class into the current application domain
 	 * }
@@ -343,7 +342,7 @@ package org.as3commons.bytecode.emit.impl {
 			mb.addOpcodes(popscopes);
 			mb.addOpcode(Opcode.initproperty, [mn]);
 			mb.addOpcode(Opcode.returnvoid);
-			mi.methodBody = mb.build();
+			mi.methodBody = mb.buildBody();
 			mi.methodBody.methodSignature = mi;
 			return mi;
 		}
