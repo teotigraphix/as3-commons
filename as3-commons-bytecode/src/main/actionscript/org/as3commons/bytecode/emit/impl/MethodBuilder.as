@@ -19,12 +19,15 @@ package org.as3commons.bytecode.emit.impl {
 	import mx.utils.StringUtil;
 
 	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
+	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.bytecode.emit.IExceptionInfoBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
@@ -47,6 +50,13 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function MethodBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
 			super(name, visibility, nameSpace);
+		}
+
+		protected function get methodBodyBuilder():IMethodBodyBuilder {
+			if (_methodBodyBuilder == null) {
+				_methodBodyBuilder = new MethodBodyBuilder();
+			}
+			return _methodBodyBuilder;
 		}
 
 		public function get arguments():Array {
@@ -81,13 +91,6 @@ package org.as3commons.bytecode.emit.impl {
 			throw new IllegalOperationError(CONSTANT_METHOD_ERROR);
 		}
 
-		public function defineMethodBody():IMethodBodyBuilder {
-			if (_methodBodyBuilder == null) {
-				_methodBodyBuilder = new MethodBodyBuilder();
-			}
-			return _methodBodyBuilder;
-		}
-
 		public function defineArgument(type:String = "", isOptional:Boolean = false, defaultValue:Object = null):MethodArgument {
 			var arg:MethodArgument = new MethodArgument();
 			arg.type = type;
@@ -100,7 +103,7 @@ package org.as3commons.bytecode.emit.impl {
 		public function build(initScopeDepth:uint = 1):MethodInfo {
 			var mi:MethodInfo = new MethodInfo();
 			if (_methodBodyBuilder != null) {
-				mi.methodBody = _methodBodyBuilder.build(initScopeDepth);
+				mi.methodBody = _methodBodyBuilder.buildBody(initScopeDepth);
 				mi.methodBody.methodSignature = mi;
 				mi.methodBody.localCount = 1 + mi.argumentCollection.length + ((_hasRestArguments) ? 1 : 0);
 			}
@@ -117,6 +120,9 @@ package org.as3commons.bytecode.emit.impl {
 			return mi;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		override protected function buildTrait():TraitInfo {
 			Assert.hasText(name, "name property must not be null or empty");
 			Assert.hasText(packageName, "packageName property must not be null or empty");
@@ -129,6 +135,62 @@ package org.as3commons.bytecode.emit.impl {
 			var ns:LNamespace = new LNamespace(NAMESPACEKIND_LOOKUP[visibility], "");
 			trait.traitMultiname = new QualifiedName(name, ns);
 			return trait;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get opcodes():Array {
+			return methodBodyBuilder.opcodes;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function set opcodes(value:Array):void {
+			methodBodyBuilder.opcodes = value;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get exceptionInfos():Array {
+			return methodBodyBuilder.exceptionInfos;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function set exceptionInfos(value:Array):void {
+			methodBodyBuilder.exceptionInfos = value;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder {
+			return methodBodyBuilder.addOpcode(opcode, params);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function addOpcodes(newOpcodes:Array):IMethodBodyBuilder {
+			return methodBodyBuilder.addOpcodes(newOpcodes);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function defineExceptionInfo():IExceptionInfoBuilder {
+			return methodBodyBuilder.defineExceptionInfo();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function buildBody(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody {
+			return methodBodyBuilder.buildBody(initScopeDepth, extraLocalCount);
 		}
 
 	}
