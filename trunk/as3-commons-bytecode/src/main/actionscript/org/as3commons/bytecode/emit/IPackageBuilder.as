@@ -38,7 +38,7 @@ package org.as3commons.bytecode.emit {
 		 * @param superInterfaceName The fully qualified super interface name. I.e. <code>mx.styles.IStyleClient</code>.
 		 * @return The specified <code>IInterfaceBuilder</code> instance.
 		 */
-		function defineInterface(name:String, superInterfaceName:String = null):IInterfaceBuilder;
+		function defineInterface(name:String, superInterfaceNames:Array = null):IInterfaceBuilder;
 		/**
 		 * Creates an <code>IMethodBuilder</code> instance for the specified method name.
 		 * @param name The name of the method. I.e. <code>myMethodName</code>.

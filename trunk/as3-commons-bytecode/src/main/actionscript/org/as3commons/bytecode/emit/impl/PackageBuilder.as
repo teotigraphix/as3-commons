@@ -78,10 +78,10 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineInterface(name:String, superInterfaceName:String = null):IInterfaceBuilder {
+		public function defineInterface(name:String, superInterfaceNames:Array = null):IInterfaceBuilder {
 			var ib:InterfaceBuilder = new InterfaceBuilder();
 			ib.name = name;
-			ib.superClassName = superInterfaceName;
+			//ib.superClassName = superInterfaceName;
 			ib.packageName = packageName;
 			_interfaceBuilders[_interfaceBuilders.length] = ib;
 			return ib;
