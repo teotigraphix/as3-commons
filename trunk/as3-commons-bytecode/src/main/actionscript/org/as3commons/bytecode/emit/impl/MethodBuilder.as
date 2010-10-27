@@ -36,7 +36,6 @@ package org.as3commons.bytecode.emit.impl {
 
 	public class MethodBuilder extends EmitMember implements IMethodBuilder {
 
-		private static const MULTIPLE_METHOD_BODIES_ERROR:String = "Only one method body can be created for a method.";
 		private static const CONSTANT_METHOD_ERROR:String = "Methods cannot be constant.";
 
 		public static const METHOD_NAME:String = "{0}/{1}";
@@ -83,10 +82,9 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function defineMethodBody():IMethodBodyBuilder {
-			if (_methodBodyBuilder != null) {
-				throw new IllegalOperationError(MULTIPLE_METHOD_BODIES_ERROR);
+			if (_methodBodyBuilder == null) {
+				_methodBodyBuilder = new MethodBodyBuilder();
 			}
-			_methodBodyBuilder = new MethodBodyBuilder();
 			return _methodBodyBuilder;
 		}
 
@@ -107,7 +105,7 @@ package org.as3commons.bytecode.emit.impl {
 				mi.methodBody.localCount = 1 + mi.argumentCollection.length + ((_hasRestArguments) ? 1 : 0);
 			}
 			for each (var methodArg:MethodArgument in _arguments) {
-				var arg:Argument = new Argument(MultinameUtil.toQualifiedName(methodArg.type), methodArg.isOptional, methodArg.defaultValue, BuildUtil.toConstantKind(methodArg.defaultValue));
+				var arg:Argument = new Argument(MultinameUtil.toQualifiedName(methodArg.type), methodArg.isOptional, methodArg.defaultValue, BuildUtil.defaultValueToConstantKind(methodArg.defaultValue));
 				mi.argumentCollection[mi.argumentCollection.length] = arg;
 			}
 			trait = buildTrait();

@@ -19,10 +19,31 @@ package org.as3commons.bytecode.emit.util {
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.lang.ClassUtils;
 
+	/**
+	 * Helper methods used in the emit.impl.* package.
+	 * @author Roland Zwaga
+	 */
 	public final class BuildUtil {
+
 		private static const ILLEGAL_DEFAULT_TYPE:String = "Type of instance cannot be used as a default argument value: ";
 
-		public static function toConstantKind(instance:Object):ConstantKind {
+		/**
+		 * Determines a <code>ConstantKind</code> associated with the specified instance that can be used
+		 *  as a default value for a method argument.
+		 * <p>Valid types for default values are:</p>
+		 * <ul>
+		 * <li><code>int</code></li>
+		 * <li><code>uint</code></li>
+		 * <li><code>Number</code></li>
+		 * <li><code>String</code></li>
+		 * <li><code>Boolean</code></li>
+		 * <li><code>null</code></li>
+		 * </ul>
+		 * @param instance The specified instance.
+		 * @return The <code>ConstantKind</code> associated with the specified instance.
+		 * @throws IllegalOperationError when an instance is passed in that cannot be used for default values for methods.
+		 */
+		public static function defaultValueToConstantKind(instance:Object):ConstantKind {
 			if (instance is int) {
 				return ConstantKind.INT;
 			} else if (instance is uint) {

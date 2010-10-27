@@ -22,14 +22,17 @@ package org.as3commons.bytecode.emit {
 
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
+	 * @eventType flash.events.Event.COMPLETE
 	 */
 	[Event(name="complete", type="flash.events.Event")]
 	/**
 	 * Dispatched when the class loader has encountered an IO related error.
+	 * @eventType flash.events.IOErrorEvent.IO_ERROR
 	 */
 	[Event(name="ioError", type="flash.events.IOErrorEvent")]
 	/**
 	 * Dispatched when the class loader has encountered a SWF verification error.
+	 * @eventType flash.events.IOErrorEvent.VERIFY_ERROR
 	 */
 	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
 	/**

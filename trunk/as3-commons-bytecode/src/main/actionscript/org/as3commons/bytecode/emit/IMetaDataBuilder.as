@@ -18,9 +18,8 @@ package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.typeinfo.Metadata;
 
 	/**
-	 * Describes an object that can generate a metadata entry in an <code>AbcFile</code>.
+	 * Describes an object that can generate a metadata entry for use in an <code>AbcFile</code>.
 	 * @author Roland Zwaga
-	 *
 	 */
 	public interface IMetaDataBuilder {
 		/**
