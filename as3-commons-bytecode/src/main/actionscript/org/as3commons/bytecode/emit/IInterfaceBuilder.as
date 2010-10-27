@@ -20,6 +20,13 @@ package org.as3commons.bytecode.emit {
 	 * @author Roland Zwaga
 	 */
 	public interface IInterfaceBuilder extends IClassBuilder {
-
+		/**
+		 * An <code>Array</code> of fully qualified interface names. I.e. <code></code>.
+		 */
+		function get extendingInterfacesNames():Array;
+		/**
+		 * @private
+		 */
+		function set extendingInterfacesNames(value:Array):void;
 	}
 }

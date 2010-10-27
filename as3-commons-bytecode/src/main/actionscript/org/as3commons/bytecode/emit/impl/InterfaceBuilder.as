@@ -25,6 +25,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		private static const INTERFACE_CONSTRUCTOR_ERROR:String = "Interfaces can't have constructors";
 		private static const INTERFACE_PROPERTIES_ERROR:String = "Interfaces can't have properties. (Only getters and/or setters)";
+		private var _extendingInterfacesNames:Array;
 
 		public function InterfaceBuilder() {
 			super();
@@ -36,6 +37,14 @@ package org.as3commons.bytecode.emit.impl {
 
 		override public function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
 			throw new IllegalOperationError(INTERFACE_PROPERTIES_ERROR);
+		}
+
+		public function get extendingInterfacesNames():Array {
+			return _extendingInterfacesNames;
+		}
+
+		public function set extendingInterfacesNames(value:Array):void {
+			_extendingInterfacesNames = value;
 		}
 
 		override public function build(applicationDomain:ApplicationDomain):Array {
