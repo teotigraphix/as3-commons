@@ -9,11 +9,12 @@
   <body>
     <section name="Introduction"><p>The as3commons-bytecode library offers a
     set of classes and interfaces which can help a developer work with SWF
-    bytecode in general and Abc bytecode in particular. Its not neccessarily
-    meant as an all purpose bytecode library, it focuses mostly on the Abc
+    files in general and Abc bytecode in particular. Its not neccessarily
+    meant as an all purpose SWF library, it focuses mostly on the Abc
     side of things.</p><p>It does include SWF serialization and
     deserialization functionality, but this only supports a small selection of
-    the SWF tags that can be present in a SWF file.</p></section>
+    the SWF tags that can be present in a SWF file.</p>
+    <p>For an allround SWF publishing library check out <a href="http://github.com/claus/as3swf" target="_blank">Claus Wahlers' excellent as3swf library</a>.</p></section>
 
     <section name="Abc deserialization and serialization"><p>To deserialize a
     DoABC tag use the AbcDeserializer class:</p><div class="source"><pre>var ds:AbcDeserializer = new AbcDeserializer(byteStream); <i>//The bytestream contains the DoAbc file

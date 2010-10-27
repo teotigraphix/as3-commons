@@ -19,14 +19,50 @@ package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 
+	/**
+	 * Describes an object that can generate a <code>MethodBody</code> to be used in an <code>AbcFile</code>.
+	 * @author Roland Zwaga
+	 */
 	public interface IMethodBodyBuilder {
+		/**
+		 * An <code>Array</code> of <code>Op</code> instances that represent the programming logic inside the method.
+		 */
 		function get opcodes():Array;
+		/**
+		 * @private
+		 */
 		function set opcodes(value:Array):void;
+		/**
+		 * An <code>Array</code> of <code>IExceptionInfoBuilders</code> that are able to generate the necessary <code>ExceptionInfo</code> instances references in the method body.
+		 */
 		function get exceptionInfos():Array;
+		/**
+		 * @private
+		 */
 		function set exceptionInfos(value:Array):void;
+		/**
+		 * Adds an extra <code>Op</code> instance with the specified <code>Opcode</code> and parameters.
+		 * @param opcode The specified <code>Opcode</code>.
+		 * @param params An array of parameters requried by the specified <code>Opcode</code>.
+		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining of <code>addOpcode()</code> invocations.
+		 */
 		function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder;
+		/**
+		 * Adds an <code>Array</code> of <code>Op</code> instances.
+		 * @param newOpcodes The specified <code>Array</code> of <code>Op</code> instances.
+		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining of <code>addOpcodes()</code> invocations.
+		 */
 		function addOpcodes(newOpcodes:Array):IMethodBodyBuilder;
+		/**
+		 * Creates and returns a new <code>IExceptionInfoBuilder</code> instance.
+		 * @return The specified <code>IExceptionInfoBuilder</code> instance.
+		 */
 		function defineExceptionInfo():IExceptionInfoBuilder;
+		/**
+		 * Internally used build method, this method should never be called by third parties.
+		 * @param applicationDomain
+		 * @return
+		 */
 		function build(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody;
 	}
 }

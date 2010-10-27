@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
@@ -26,9 +25,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ClassTrait;
 	import org.as3commons.bytecode.abc.InstanceInfo;
-	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.NamedMultiname;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
@@ -42,33 +39,96 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.swf.AbcClassLoader;
 	import org.as3commons.bytecode.typeinfo.Metadata;
-	import org.as3commons.bytecode.util.AbcSerializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
-	import org.as3commons.lang.ClassUtils;
-	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.Type;
 
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
+	 * @eventType flash.events.Event.COMPLETE
 	 */
 	[Event(name="complete", type="flash.events.Event")]
 	/**
 	 * Dispatched when the class loader has encountered an IO related error.
+	 * @eventType flash.events.IOErrorEvent.IO_ERROR
 	 */
 	[Event(name="ioError", type="flash.events.IOErrorEvent")]
 	/**
 	 * Dispatched when the class loader has encountered a SWF verification error.
+	 * @eventType flash.events.IOErrorEvent.VERIFY_ERROR
 	 */
 	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
+	/**
+	 * The <code>AbcBuilder</code> is the main entry point for the emit API. Here is
+	 * an example of how to generate a simple class:
+	 * <listing version="3.0">
+	 * function generateClass():void {
+	 *   var abcBuilder:IAbcBuilder = new AbcBuilder();
+	 *   var classBuilder:IClassBuilder = abcBuilder.definePackage("com.classes.generated").defineClass("MyGeneratedClass");
+	 *   classBuilder.defineProperty("myProperty", "String", "default value");
+	 *   classBuilder.defineAccessor("myOtherProperty", "int", 10).access = AccessorAccess.READ_ONLY;
+	 *   abcBuilder.addEventListener(Event.COMPLETE, completeHandler);
+	 *   abcBuilder.buildAndLoad(); //loads the generated class into the current application domain
+	 * }
+	 * function completeHandler(event:Event):void {
+	 *   var clazz:Class = ApplicationDomain.currentDomain.getDefinition("com.classes.generated.MyGeneratedClass") as Class;
+	 *   var instance:Object = new class();
+	 *   var propertyValue:String = instance.myProperty;
+	 *   var otherPropertyValue:int = instance.myOtherProperty;
+	 *   //propertyValue == "default value"
+	 *   //otherPropertyValue == 10
+	 *   instance.myOtherProperty = 20; //ERROR! Accessor is read-only (getter)
+	 * }
+	 * </listing>
+	 * To add methods and method bodies to a class a certain knowledge of AVM opcodes is required:
+	 * <listing version="3.0">
+	 * function generateClass():void {
+	 *   var abcBuilder:IAbcBuilder = new AbcBuilder();
+	 *   var classBuilder:IClassBuilder = abcBuilder.definePackage("com.classes.generated").defineClass("MyGeneratedClass");
+	 *   var methodBuilder:IMethodBuilder = classBuilder.defineMethod("multiplyByHundred");
+	 *   methodBuilder.returnType("int");
+	 *   methodBuilder.defineArgument("int");
+	 *   var methodBodyBuilder:IMethodBodyBuilder = methodBuilder.defineMethodBody();
+	 *   methodBodyBuilder.addOpcode(opcode.getlocal_0)
+	 *                    .addOpcode(opcode.pushscope)
+	 *                    .addOpcode(opcode.getlocal_1)
+	 *                    .addOpcode(opcode.pushbyte, [100])
+	 *                    .addOpcode(opcode.multiply)
+	 *                    .addOpcode(opcode.convert_i)
+	 *                    .addOpcode(opcode.setlocal_1)
+	 *                    .addOpcode(opcode.getlocal_1)
+	 *                    .addOpcode(opcode.returnvalue);
+	 *   abcBuilder.addEventListener(Event.COMPLETE, completeHandler);
+	 *   abcBuilder.buildAndLoad(); //loads the generated class into the current application domain
+	 * }
+	 * function completeHandler(event:Event):void {
+	 *   var clazz:Class = ApplicationDomain.currentDomain.getDefinition("com.classes.generated.MyGeneratedClass") as Class;
+	 *   var instance:Object = new class();
+	 *   var i:int = instance.multiplyByHundred(10);
+	 *   // i == 1000
+	 * }
+	 * </listing>
+	 * @author Roland Zwaga
+	 */
 	public class AbcBuilder extends EventDispatcher implements IAbcBuilder {
 
-		private static const SCRIPT_INFO_METHOD_NAME:String = "script{0}$init";
+		/*
+
+
+		   100
+
+
+
+
+
+		 */
 
 		private var _loader:AbcClassLoader;
-
 		private var _packageBuilders:Dictionary;
 
+		/**
+		 * Creates a new <code>AbcBuilder</code> instance.
+		 */
 		public function AbcBuilder() {
 			super();
 			init();
@@ -78,6 +138,9 @@ package org.as3commons.bytecode.emit.impl {
 			_packageBuilders = new Dictionary();
 		}
 
+		/**
+		 * Internal <code>AbcClassLoader</code> instance used by the <code>buildAndLoad()</code> method.
+		 */
 		protected function get loader():AbcClassLoader {
 			if (_loader == null) {
 				_loader = new AbcClassLoader();
@@ -88,6 +151,10 @@ package org.as3commons.bytecode.emit.impl {
 			return _loader;
 		}
 
+		/**
+		 * Redispatches the specified <code>AbcClassLoader</code> <code>Event</code>.
+		 * @param event The specified <code>Event</code>.
+		 */
 		protected function redispatch(event:Event):void {
 			dispatchEvent(event);
 		}
@@ -132,6 +199,14 @@ package org.as3commons.bytecode.emit.impl {
 			return abcFile;
 		}
 
+		/**
+		 *
+		 * @param instances Array of builder objects that represent the various elements to be added to the <code>AbcFile</code>.
+		 * @param abcFile The <code>AbcFile</code> that will be populated with the builder results.
+		 * @param applicationDomain The <code>ApplicationDomain</code> used to lookup superclasses.
+		 * @param index The current class index in the <code>AbcFile</code>.
+		 * @return The current class index in the <code>AbcFile</code>.
+		 */
 		protected function addAbcObjects(instances:Array, abcFile:AbcFile, applicationDomain:ApplicationDomain, index:uint):uint {
 			Assert.notNull(instances, "instances argument must not be null");
 			Assert.notNull(abcFile, "abcFile argument must not be null");
@@ -153,22 +228,49 @@ package org.as3commons.bytecode.emit.impl {
 			return index;
 		}
 
+		/**
+		 * Adds the specified <code>ClassInfo</code> and its constructor <code>MethodInfo</code> to the specified <code>AbcFile</code>.
+		 * @param abcFile The specified <code>AbcFile</code>.
+		 * @param classInfo The specified <code>ClassInfo</code>.
+		 */
 		protected function addClassInfo(abcFile:AbcFile, classInfo:ClassInfo):void {
 			abcFile.addClassInfo(classInfo);
 			addMethodInfo(abcFile, classInfo.staticInitializer);
 		}
 
+		/**
+		 * Adds the specified <code>InstanceInfo</code> and its constructor <code>MethodInfo</code> to the specified <code>AbcFile</code>.
+		 * @param abcFile The specified <code>AbcFile</code>.
+		 * @param instanceInfo The specified <code>InstanceInfo</code>.
+		 */
 		protected function addInstanceInfo(abcFile:AbcFile, instanceInfo:InstanceInfo):void {
 			abcFile.addInstanceInfo(instanceInfo);
 			addMethodInfo(abcFile, instanceInfo.instanceInitializer);
 		}
 
+		/**
+		 * Creates a <code>ScriptInfo</code> instance based on the specified <code>InstanceInfo</code> and adds it and its constructor
+		 * <code>MethodInfo</code> to the specified <code>AbcFile</code>.
+		 * @param abcFile The specified <code>AbcFile</code>.
+		 * @param instanceInfo The specified <code>InstanceInfo</code>.
+		 * @param applicationDomain The <code>ApplicationDomain</code> used to lookup superclasses.
+		 * @param index The current class index in the <code>AbcFile</code>.
+		 */
 		protected function addScriptInfo(abcFile:AbcFile, instanceInfo:InstanceInfo, applicationDomain:ApplicationDomain, index:uint):void {
 			var scriptInfo:ScriptInfo = createScriptInfo(instanceInfo.classMultiname.fullName, instanceInfo.superclassMultiname, instanceInfo.classInfo, applicationDomain, index);
 			abcFile.addScriptInfo(scriptInfo);
 			addMethodInfo(abcFile, scriptInfo.scriptInitializer);
 		}
 
+		/**
+		 * Creates a <code>ScriptInfo</code> instance based on the specified <code>InstanceInfo</code>.
+		 * @param className The class name of the generated class
+		 * @param superClass A <code>BaseMultiName</code> representing the super class.
+		 * @param classInfo The <code>ClassInfo</code> associated with the new <code>ScriptInfo</code>.
+		 * @param applicationDomain The <code>ApplicationDomain</code> used to lookup superclasses.
+		 * @param index The current class index in the <code>AbcFile</code>.
+		 * @return The new <code>ScriptInfo</code> instance.
+		 */
 		protected function createScriptInfo(className:String, superClass:BaseMultiname, classInfo:ClassInfo, applicationDomain:ApplicationDomain, index:uint):ScriptInfo {
 			var scriptInfo:ScriptInfo = new ScriptInfo();
 			scriptInfo.scriptInitializer = createScriptInitializer(className, superClass, classInfo, applicationDomain);
@@ -176,6 +278,12 @@ package org.as3commons.bytecode.emit.impl {
 			return scriptInfo;
 		}
 
+		/**
+		 * Creates a <code>ClassTrait</code> instance for the specified class name and class index.
+		 * @param className The specified class name.
+		 * @param index The current class index in the <code>AbcFile</code>.
+		 * @return the new <code>ClassTrait</code>.
+		 */
 		protected function createClassTrait(className:String, index:uint):ClassTrait {
 			var trait:ClassTrait = new ClassTrait();
 			trait.classIndex = index;
@@ -184,6 +292,14 @@ package org.as3commons.bytecode.emit.impl {
 			return trait;
 		}
 
+		/**
+		 * Creates a <code>MethodInfo</code> instance that represents the initializer method for a <code>ScriptInfo</code>.
+		 * @param className The class name associated with the <code>ScriptInfo</code>.
+		 * @param superClass The super class name associated with the <code>ScriptInfo</code>.
+		 * @param classInfo The <code>ClassInfo</code> name associated with the <code>ScriptInfo</code>.
+		 * @param applicationDomain The <code>ApplicationDomain</code> used to lookup the <code>superClass</code>.
+		 * @return The new <code>MethodInfo</code> instance.
+		 */
 		protected function createScriptInitializer(className:String, superClass:BaseMultiname, classInfo:ClassInfo, applicationDomain:ApplicationDomain):MethodInfo {
 			var superClassName:String = "";
 			if (superClass is QualifiedName) {
@@ -232,6 +348,12 @@ package org.as3commons.bytecode.emit.impl {
 			return mi;
 		}
 
+		/**
+		 * Addds the specified <code>MethodInfo</code>, its associated <code>MethodBody</code> and, if present,
+		 * its associated <code>Metadata</code> entries to the specified <code>AbcFile</code>.
+		 * @param abcFile the specified <code>AbcFile</code>.
+		 * @param methodInfo the specified <code>MethodInfo</code>.
+		 */
 		protected function addMethodInfo(abcFile:AbcFile, methodInfo:MethodInfo):void {
 			abcFile.addMethodInfo(methodInfo);
 			abcFile.addMethodBody(methodInfo.methodBody);

@@ -19,6 +19,10 @@ package org.as3commons.bytecode.swf {
 	import org.as3commons.bytecode.tags.ISWFTag;
 	import org.as3commons.lang.Assert;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public class SWFFile {
 
 		private var _signature:String;
@@ -29,11 +33,17 @@ package org.as3commons.bytecode.swf {
 		private var _frameCount:uint;
 		private var _tags:Array;
 
+		/**
+		 * Creates a new <code>SWFFile</code> instance.
+		 */
 		public function SWFFile() {
 			super();
 			initSWFFile();
 		}
 
+		/**
+		 * Initializes the current <code>SWFFile</code>.
+		 */
 		protected function initSWFFile():void {
 			_signature = SWFFileSerializer.SWF_SIGNATURE_UNCOMPRESSED;
 			_version = 10;
@@ -43,6 +53,9 @@ package org.as3commons.bytecode.swf {
 			_tags = [];
 		}
 
+		/**
+		 * A copy of the <code>Array</code> of <code>ISWFTags</code> belonging to the current <code>SWFFile</code>.
+		 */
 		public function get tags():Array {
 			return _tags.concat([]);
 		}
@@ -51,6 +64,9 @@ package org.as3commons.bytecode.swf {
 			return _frameSize;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set frameSize(value:Rectangle):void {
 			_frameSize = value;
 		}
@@ -59,6 +75,9 @@ package org.as3commons.bytecode.swf {
 			return _frameRate;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set frameRate(value:uint):void {
 			_frameRate = value;
 		}
@@ -67,6 +86,9 @@ package org.as3commons.bytecode.swf {
 			return _frameCount;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set frameCount(value:uint):void {
 			_frameCount = value;
 		}
@@ -75,6 +97,9 @@ package org.as3commons.bytecode.swf {
 			return _signature;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set signature(value:String):void {
 			_signature = value;
 		}
@@ -83,6 +108,9 @@ package org.as3commons.bytecode.swf {
 			return _version;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set version(value:uint):void {
 			_version = value;
 		}
@@ -91,12 +119,15 @@ package org.as3commons.bytecode.swf {
 			return _fileLength;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set fileLength(value:uint):void {
 			_fileLength = value;
 		}
 
 		public function addTag(tag:ISWFTag):void {
-			Assert.notNull(tag,"tag argument must not be null");
+			Assert.notNull(tag, "tag argument must not be null");
 			_tags[_tags.length] = tag;
 		}
 

@@ -15,16 +15,32 @@
  */
 package org.as3commons.bytecode.emit {
 
+	/**
+	 * Describes an object that can generate a property on a class or interface to be sued in an <code>AbcFile</code>.
+	 * @author Roland Zwaga
+	 */
 	public interface IPropertyBuilder extends IEmitObject {
-
+		/**
+		 * The fully qualified type name of the generated property. I.e. <code>flash.util.Dictionary</code>.
+		 */
 		function get type():String;
-
+		/**
+		 * @private
+		 */
 		function set type(value:String):void;
-
+		/**
+		 * The initial value for the generated property. I.e. "defaultValue".
+		 */
 		function get initialValue():*;
-
+		/**
+		 * @private
+		 */
 		function set initialValue(value:*):void;
-
+		/**
+		 * Internally used build method, this method should never be called by third parties.
+		 * @param applicationDomain
+		 * @return
+		 */
 		function build():Object;
 	}
 }

@@ -28,24 +28,25 @@ package org.as3commons.bytecode.swf {
 
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
+	 * @eventType flash.events.Event.COMPLETE
 	 */
 	[Event(name="complete", type="flash.events.Event")]
 	/**
 	 * Dispatched when the class loader has encountered an IO related error.
+	 * @eventType flash.events.IOErrorEvent.IO_ERROR
 	 */
 	[Event(name="ioError", type="flash.events.IOErrorEvent")]
 	/**
 	 * Dispatched when the class loader has encountered a SWF verification error.
+	 * @eventType flash.events.IOErrorEvent.VERIFY_ERROR
 	 */
 	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
 
 	/**
 	 * Classloader for ABC files, adapted from the EvalES4UI project (specifically, the <code>com.hurlant.eval.ByteLoader</code> class).
-	 *
 	 * <p>
 	 * This class provides just enough of a SWF wrapper for an ABC file to be loaded in to the Flash Player/AVM.
 	 * </p>
-	 *
 	 * @see http://eval.hurlant.com/
 	 */
 	public class AbcClassLoader extends EventDispatcher {
@@ -64,13 +65,19 @@ package org.as3commons.bytecode.swf {
 
 		private var _loader:Loader;
 
+		/**
+		 * Creates a new <code>AbcClassLoader</code> instance.
+		 */
 		public function AbcClassLoader() {
 			super();
 			initAbcLoader();
 		}
 
+		/**
+		 * Initializes the current <code>AbcClassLoader</code>.
+		 */
 		protected function initAbcLoader():void {
-			_loader = new Loader;
+			_loader = new Loader();
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
 				dispatchEvent(event);
 			});
@@ -121,9 +128,10 @@ package org.as3commons.bytecode.swf {
 		}
 
 		/**
-		 * Loads the given bytecode in to the Flash Player/AVM, using the current <code>ApplicationDomain</code>.
+		 * Loads the given bytecode in to the Flash Player/AVM, using the specified <code>ApplicationDomain</code>.
 		 *
 		 * @param bytes Either a single SWF or an array of ByteArrays containing SWF data to load in to the VM
+		 * @param applicationDomain The <code>ApplicationDomain</code> that the ABC file will be loaded into, when null, <code>ApplicationDomain.currentDomain</code> is used.
 		 *
 		 * @see flash.utils.ByteArray
 		 * @see flash.system.ApplicationDomain
@@ -151,6 +159,11 @@ package org.as3commons.bytecode.swf {
 			_loader.loadBytes(bytes, c);
 		}
 
+		/**
+		 * Loads the specified <code>AbcFile</code> into the AVM using the specified <code>ApplicationDomain</code>.
+		 * @param abcFile The specified <code>AbcFile</code>.
+		 * @param applicationDomain The <code>ApplicationDomain</code> that the ABC file will be loaded into, when null, <code>ApplicationDomain.currentDomain</code> is used.
+		 */
 		public function loadAbcFile(abcFile:AbcFile, applicationDomain:ApplicationDomain = null):void {
 			loadClassDefinitionsFromBytecode(new AbcSerializer().serializeAbcFile(abcFile), applicationDomain);
 		}
