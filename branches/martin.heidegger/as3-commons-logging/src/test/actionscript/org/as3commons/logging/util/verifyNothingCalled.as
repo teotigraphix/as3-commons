@@ -10,7 +10,7 @@ package org.as3commons.logging.util {
 	 * @author mh
 	 */
 	public function verifyNothingCalled( mock: *): void {
-		var invocations: Invocations = currentMockito.getInvocationsFor( mock );
+		var invocations: Invocations = currentMockito.expertsMockInterceptor.getInvocationsFor( mock );
 		var encountered: ArrayCollection = invocations.getEncounteredInvocations();
 		if( encountered.length != 0 ) {
 			var invocation: Invocation = encountered.getItemAt( encountered.length-1 ) as Invocation;

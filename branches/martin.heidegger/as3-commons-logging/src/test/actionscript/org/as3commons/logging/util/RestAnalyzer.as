@@ -14,7 +14,7 @@ package org.as3commons.logging.util {
 		private var _to:int;
 		
 		public function RestAnalyzer( mock: * ) {
-			_invocations = currentMockito.getInvocationsFor(mock).getEncounteredInvocations();
+			_invocations = currentMockito.expertsMockInterceptor.getInvocationsFor(mock).getEncounteredInvocations();
 			_to = _invocations.length;
 		}
 		

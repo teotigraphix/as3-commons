@@ -1,10 +1,14 @@
 package org.as3commons.logging.setup.target {
+	import flash.events.OutputProgressEvent;
 	import org.as3commons.logging.LogLevel;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	import org.as3commons.logging.util.SWFInfo;
 
 	import flash.desktop.NativeApplication;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
@@ -12,9 +16,9 @@ package org.as3commons.logging.setup.target {
 	/**
 	 * @author mh
 	 */
-	public final class AirFileTarget implements ILogTarget {
+	public final class AirFileTarget extends EventDispatcher implements ILogTarget {
 		
-		public static const DEFAULT_FILE_PATTERN: String = File.applicationDirectory.resolvePath("{file}.{date}.log").nativePath;
+		public static const DEFAULT_FILE_PATTERN: String = File.applicationStorageDirectory.resolvePath("{file}.{date}.log").nativePath;
 		public static const INSTANCE: AirFileTarget = new AirFileTarget();
 		
 		private static const DATE: RegExp = /{date}/g;
@@ -36,6 +40,7 @@ package org.as3commons.logging.setup.target {
 		public function log(name:String, shortName:String, level:LogLevel, timeStamp: Number,message:*, params:Array):void {
 			var date: Date = new Date();
 			if( date.dateUTC != _formerDate || !_file.exists ) {
+				
 				dispose();
 				_stream = new FileStream();
 				_formerDate = date.dateUTC;
@@ -43,14 +48,25 @@ package org.as3commons.logging.setup.target {
 				if( _file.exists ) {
 					renameOldFile( _file, date, 1 );
 				}
-				_stream.openAsync( _file, FileMode.APPEND );
+				_stream.addEventListener(OutputProgressEvent.OUTPUT_PROGRESS, disposeFinished, false, 0, true);
+				_stream.openAsync(_file, FileMode.APPEND);
 				var descriptor: XML = NativeApplication.nativeApplication.applicationDescriptor;
 				var ns: Namespace = descriptor.namespace();
-				_stream.writeUTFBytes("#Version: 1.0\n" + "#Software: " + descriptor.ns::name + " v" + descriptor.ns::version + " (running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ", publisherID: " + NativeApplication.nativeApplication.publisherID + " )\n" +
+				_stream.writeUTFBytes("#Version: 1.0\n" +
+									   "#Software: " + descriptor.ns::name + " v" + descriptor.ns::version + " (running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ", publisherID: " + NativeApplication.nativeApplication.publisherID + " )\n" +
 									   "#Date: " + date.dateUTC + "-" + MONTHS[ date.monthUTC ] + "-" + date.fullYearUTC + " " + date.hoursUTC + ":" + date.minutesUTC + ":" + date.secondsUTC + "." + date.millisecondsUTC + "\n"+
 									   "#Fields: time x-method x-name x-comment\n");
 			}
 			_stream.writeUTFBytes( _formatter.format( name, shortName, level, timeStamp, message, params ) + "\n" );
+		}
+		
+		private function disposeFinished(event: Event): void {
+			if( event.target == _stream ) {
+				dispatchEvent( new Event( Event.COMPLETE ) );
+			} else {
+				IEventDispatcher(event.target).removeEventListener(
+					OutputProgressEvent.OUTPUT_PROGRESS, disposeFinished);
+			}
 		}
 		
 		public function dispose(): void {
