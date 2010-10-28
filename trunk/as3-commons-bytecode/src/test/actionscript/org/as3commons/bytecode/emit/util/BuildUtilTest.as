@@ -13,42 +13,42 @@ package org.as3commons.bytecode.emit.util {
 			super();
 		}
 
-		public function toConstantKindIntTest():void {
+		public function testToConstantKindInt():void {
 			var c:ConstantKind = BuildUtil.defaultValueToConstantKind(-1);
 			assertStrictlyEquals(ConstantKind.INT, c);
 		}
 
-		public function toConstantKindUIntTest():void {
+		public function testToConstantKindUInt():void {
 			var c:ConstantKind = BuildUtil.defaultValueToConstantKind(uint(1));
 			assertStrictlyEquals(ConstantKind.UINT, c);
 		}
 
-		public function toConstantKindNumberTest():void {
+		public function testToConstantKindNumber():void {
 			var c:ConstantKind = BuildUtil.defaultValueToConstantKind(Number(1.3));
 			assertStrictlyEquals(ConstantKind.DOUBLE, c);
 		}
 
-		public function toConstantKindStringTest():void {
+		public function testToConstantKindString():void {
 			var c:ConstantKind = BuildUtil.defaultValueToConstantKind("Test");
 			assertStrictlyEquals(ConstantKind.UTF8, c);
 		}
 
-		public function toConstantKindFalseTest():void {
+		public function testToConstantKindFalse():void {
 			var c:ConstantKind = BuildUtil.defaultValueToConstantKind(false);
 			assertStrictlyEquals(ConstantKind.FALSE, c);
 		}
 
-		public function toConstantKindTrueTest():void {
+		public function testToConstantKindTrue():void {
 			var c:ConstantKind = BuildUtil.defaultValueToConstantKind(true);
 			assertStrictlyEquals(ConstantKind.TRUE, c);
 		}
 
-		public function toConstantKindNullTest():void {
+		public function testToConstantKindNull():void {
 			var c:ConstantKind = BuildUtil.defaultValueToConstantKind(null);
 			assertStrictlyEquals(ConstantKind.NULL, c);
 		}
 
-		public function toConstantKindIllegalValueTest():void {
+		public function testToConstantKindIllegalValue():void {
 			try {
 				BuildUtil.defaultValueToConstantKind(new Dictionary());
 				fail("IllegalOperationError needs to be thrown");
