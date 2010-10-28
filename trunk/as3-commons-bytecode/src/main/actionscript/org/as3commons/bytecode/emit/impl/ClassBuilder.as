@@ -17,6 +17,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
@@ -53,13 +54,14 @@ package org.as3commons.bytecode.emit.impl {
 		private var _isFinal:Boolean;
 		private var _metadata:Array;
 		private var _traits:Array;
+		private var _abcFile:AbcFile;
 
-		public function ClassBuilder() {
+		public function ClassBuilder(abcFile:AbcFile = null) {
 			super();
-			initClassBuilder();
+			initClassBuilder(_abcFile);
 		}
 
-		protected function initClassBuilder():void {
+		protected function initClassBuilder(abcFile:AbcFile):void {
 			_methodBuilders = [];
 			_accessorBuilders = [];
 			_variableBuilders = [];
@@ -67,6 +69,7 @@ package org.as3commons.bytecode.emit.impl {
 			_metadata = [];
 			_traits = [];
 			_superClassName = BuiltIns.OBJECT.fullName;
+			_abcFile = abcFile;
 		}
 
 		public function get superClassName():String {
@@ -261,7 +264,7 @@ package org.as3commons.bytecode.emit.impl {
 			return ii;
 		}
 
-		protected function createClassInfo(variableTraits:Array, initScopeDepth:uint):ClassInfo {
+		protected function createClassInfo(variableTraits:Array, initScopeDepth:uint, isInterface:Boolean = false):ClassInfo {
 			var staticvariables:Array = [];
 			for each (var slot:SlotOrConstantTrait in variableTraits) {
 				if (slot.isStatic) {
@@ -269,7 +272,7 @@ package org.as3commons.bytecode.emit.impl {
 				}
 			}
 			var ci:ClassInfo = new ClassInfo();
-			var cb:ICtorBuilder = createStaticConstructor(staticvariables);
+			var cb:ICtorBuilder = createStaticConstructor(staticvariables, isInterface);
 			cb.isStatic = true;
 			ci.staticInitializer = cb.build();
 			ci.staticInitializer.methodBody.initScopeDepth = initScopeDepth++;
@@ -288,12 +291,14 @@ package org.as3commons.bytecode.emit.impl {
 			return ctorBuilder;
 		}
 
-		protected function createStaticConstructor(staticvariables:Array):ICtorBuilder {
+		protected function createStaticConstructor(staticvariables:Array, isInterface:Boolean):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = defineConstructor();
-			ctorBuilder.addOpcode(Opcode.getlocal_0) //
-				.addOpcode(Opcode.pushscope);
-			for each (var slot:SlotOrConstantTrait in staticvariables) {
-				ctorBuilder.addOpcodes(createInitializer(slot));
+			if (!isInterface) {
+				ctorBuilder.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.pushscope);
+				for each (var slot:SlotOrConstantTrait in staticvariables) {
+					ctorBuilder.addOpcodes(createInitializer(slot));
+				}
 			}
 			ctorBuilder.addOpcode(Opcode.returnvoid);
 			return ctorBuilder;

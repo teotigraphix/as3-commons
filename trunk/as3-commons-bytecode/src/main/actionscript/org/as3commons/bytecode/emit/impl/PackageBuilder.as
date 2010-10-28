@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.emit.impl {
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
@@ -35,23 +36,25 @@ package org.as3commons.bytecode.emit.impl {
 		private var _interfaceBuilders:Array;
 		private var _methodBuilders:Array;
 		private var _variableBuilders:Array;
+		private var _abcFile:AbcFile;
 
 		/**
 		 * Creates a new <code>PackageBuilder</code> instance.
 		 * @param name The fully qualified name of the package. I.e. <code>com.myclasses.generated</code>
 		 */
-		public function PackageBuilder(name:String) {
+		public function PackageBuilder(name:String, abcFile:AbcFile = null) {
 			super();
-			init(name);
+			init(name, abcFile);
 		}
 
-		private function init(name:String):void {
+		private function init(name:String, abcFile:AbcFile):void {
 			Assert.hasText(name, "name argument must not be null or empty");
 			_packageName = removeTrailingPeriod(name);
 			_classBuilders = [];
 			_interfaceBuilders = [];
 			_methodBuilders = [];
 			_variableBuilders = [];
+			_abcFile = abcFile;
 		}
 
 		private var _packageName:String;
@@ -67,7 +70,7 @@ package org.as3commons.bytecode.emit.impl {
 		 * @inheritDoc
 		 */
 		public function defineClass(name:String, superClassName:String = null):IClassBuilder {
-			var cb:ClassBuilder = new ClassBuilder();
+			var cb:ClassBuilder = new ClassBuilder(_abcFile);
 			cb.name = name;
 			cb.packageName = packageName;
 			cb.superClassName = superClassName;
