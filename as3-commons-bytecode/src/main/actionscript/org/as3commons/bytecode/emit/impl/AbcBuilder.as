@@ -111,30 +111,21 @@ package org.as3commons.bytecode.emit.impl {
 	 */
 	public class AbcBuilder extends EventDispatcher implements IAbcBuilder {
 
-		/*
-
-
-		   100
-
-
-
-
-
-		 */
-
 		private var _loader:AbcClassLoader;
 		private var _packageBuilders:Dictionary;
+		private var _abcFile:AbcFile;
 
 		/**
 		 * Creates a new <code>AbcBuilder</code> instance.
 		 */
-		public function AbcBuilder() {
+		public function AbcBuilder(abcFile:AbcFile = null) {
 			super();
-			init();
+			init(abcFile);
 		}
 
-		private function init():void {
+		private function init(abcFile:AbcFile):void {
 			_packageBuilders = new Dictionary();
+			_abcFile = abcFile;
 		}
 
 		/**
@@ -168,7 +159,7 @@ package org.as3commons.bytecode.emit.impl {
 			if (_packageBuilders[name] != null) {
 				pb = _packageBuilders[name];
 			} else {
-				pb = new PackageBuilder(name);
+				pb = new PackageBuilder(name, _abcFile);
 				_packageBuilders[name] = pb;
 			}
 			return pb;
@@ -178,15 +169,17 @@ package org.as3commons.bytecode.emit.impl {
 		 * @inheritDoc
 		 */
 		public function build(applicationDomain:ApplicationDomain = null):AbcFile {
-			var abcFile:AbcFile = new AbcFile();
+			if (_abcFile == null) {
+				_abcFile = new AbcFile();
+			}
 			var classNames:Array = [];
 			applicationDomain = (applicationDomain) ? applicationDomain : ApplicationDomain.currentDomain;
 			var idx:uint = 0;
 			for each (var pb:IPackageBuilder in _packageBuilders) {
 				var arr:Array = pb.build(applicationDomain);
-				idx = addAbcObjects(arr, abcFile, applicationDomain, idx);
+				idx = addAbcObjects(arr, _abcFile, applicationDomain, idx);
 			}
-			return abcFile;
+			return _abcFile;
 		}
 
 		/**
@@ -256,7 +249,7 @@ package org.as3commons.bytecode.emit.impl {
 		 * @param index The current class index in the <code>AbcFile</code>.
 		 */
 		protected function addScriptInfo(abcFile:AbcFile, instanceInfo:InstanceInfo, applicationDomain:ApplicationDomain, index:uint):void {
-			var scriptInfo:ScriptInfo = createScriptInfo(instanceInfo.classMultiname.fullName, instanceInfo.superclassMultiname, instanceInfo.classInfo, applicationDomain, index);
+			var scriptInfo:ScriptInfo = createClassScriptInfo(instanceInfo.classMultiname.fullName, instanceInfo.superclassMultiname, instanceInfo.classInfo, applicationDomain, index, instanceInfo.isInterface);
 			abcFile.addScriptInfo(scriptInfo);
 			addMethodInfo(abcFile, scriptInfo.scriptInitializer);
 		}
@@ -270,9 +263,13 @@ package org.as3commons.bytecode.emit.impl {
 		 * @param index The current class index in the <code>AbcFile</code>.
 		 * @return The new <code>ScriptInfo</code> instance.
 		 */
-		protected function createScriptInfo(className:String, superClass:BaseMultiname, classInfo:ClassInfo, applicationDomain:ApplicationDomain, index:uint):ScriptInfo {
+		protected function createClassScriptInfo(className:String, superClass:BaseMultiname, classInfo:ClassInfo, applicationDomain:ApplicationDomain, index:uint, isInterface:Boolean):ScriptInfo {
 			var scriptInfo:ScriptInfo = new ScriptInfo();
-			scriptInfo.scriptInitializer = createScriptInitializer(className, superClass, classInfo, applicationDomain);
+			if (!isInterface) {
+				scriptInfo.scriptInitializer = createClassScriptInitializer(className, superClass, classInfo, applicationDomain);
+			} else {
+				scriptInfo.scriptInitializer = createInterfaceScriptInitializer(className, classInfo);
+			}
 			scriptInfo.traits[scriptInfo.traits.length] = createClassTrait(className, index);
 			return scriptInfo;
 		}
@@ -291,6 +288,24 @@ package org.as3commons.bytecode.emit.impl {
 			return trait;
 		}
 
+		protected function createInterfaceScriptInitializer(className:String, classInfo:ClassInfo):MethodInfo {
+			var mn:QualifiedName = MultinameUtil.toQualifiedName(className);
+			var mi:MethodInfo = new MethodInfo();
+			mi.methodName = "";
+			mi.returnType = MultinameUtil.toQualifiedName(BuiltIns.ANY.fullName, NamespaceKind.NAMESPACE);
+			var mb:IMethodBodyBuilder = new MethodBodyBuilder();
+			mb.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.findpropstrict, [mn]) //
+				.addOpcode(Opcode.pushnull) //
+				.addOpcode(Opcode.newclass, [classInfo]) //
+				.addOpcode(Opcode.initproperty, [mn]) //
+				.addOpcode(Opcode.returnvoid);
+			mi.methodBody = mb.buildBody();
+			mi.methodBody.methodSignature = mi;
+			return mi;
+		}
+
 		/**
 		 * Creates a <code>MethodInfo</code> instance that represents the initializer method for a <code>ScriptInfo</code>.
 		 * @param className The class name associated with the <code>ScriptInfo</code>.
@@ -299,7 +314,7 @@ package org.as3commons.bytecode.emit.impl {
 		 * @param applicationDomain The <code>ApplicationDomain</code> used to lookup the <code>superClass</code>.
 		 * @return The new <code>MethodInfo</code> instance.
 		 */
-		protected function createScriptInitializer(className:String, superClass:BaseMultiname, classInfo:ClassInfo, applicationDomain:ApplicationDomain):MethodInfo {
+		protected function createClassScriptInitializer(className:String, superClass:BaseMultiname, classInfo:ClassInfo, applicationDomain:ApplicationDomain):MethodInfo {
 			var superClassName:String = "";
 			if (superClass is QualifiedName) {
 				superClassName = QualifiedName(superClass).fullName;
