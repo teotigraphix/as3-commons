@@ -18,10 +18,6 @@ package org.as3commons.bytecode.emit.impl {
 
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
-	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.bytecode.abc.Multiname;
-	import org.as3commons.bytecode.abc.NamespaceSet;
-	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
@@ -62,7 +58,7 @@ package org.as3commons.bytecode.emit.impl {
 			_methodBodyBuilder.addOpcode(Opcode.getlocal_0);
 			_methodBodyBuilder.addOpcode(Opcode.getproperty,[new QualifiedName("description",new LNamespace(NamespaceKind.PACKAGE_NAMESPACE,"namespace"),MultinameKind.QNAME)]);
 			_methodBodyBuilder.addOpcode(Opcode.returnvalue);
-			var mb:MethodBody = _methodBodyBuilder.build();
+			var mb:MethodBody = _methodBodyBuilder.buildBody();
 			assertEquals(8, mb.opcodes.length);
 			assertEquals(2,mb.maxStack);
 			assertEquals(1,mb.localCount);
