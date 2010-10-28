@@ -1,0 +1,4 @@
+glob:mockito/target/
+glob:mockito_tests/target
+glob:out
+glob:bin

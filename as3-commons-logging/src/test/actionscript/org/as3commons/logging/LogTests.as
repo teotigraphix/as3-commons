@@ -1,4 +1,5 @@
 package org.as3commons.logging {
+	import mx.core.FlexGlobals;
 	import org.as3commons.logging.integration.FlexIntegrationTest;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
@@ -113,6 +114,7 @@ package org.as3commons.logging {
 			trace("Size of MX Logging in memory, min: " + mxLoggingSize);
 			trace("Size of as3-commons-logging in memory, min: " + as3commonsSize);
 			trace("Difference: " + (mxLoggingSize-as3commonsSize)  );
+			
 			
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
