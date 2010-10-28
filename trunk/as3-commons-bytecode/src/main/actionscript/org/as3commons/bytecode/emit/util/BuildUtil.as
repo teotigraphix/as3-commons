@@ -17,7 +17,6 @@ package org.as3commons.bytecode.emit.util {
 	import flash.errors.IllegalOperationError;
 
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
-	import org.as3commons.lang.ClassUtils;
 
 	/**
 	 * Helper methods used in the emit.impl.* package.
@@ -44,10 +43,10 @@ package org.as3commons.bytecode.emit.util {
 		 * @throws IllegalOperationError when an instance is passed in that cannot be used for default values for methods.
 		 */
 		public static function defaultValueToConstantKind(instance:Object):ConstantKind {
-			if (instance is int) {
-				return ConstantKind.INT;
-			} else if (instance is uint) {
+			if (instance is uint) {
 				return ConstantKind.UINT;
+			} else if (instance is int) {
+				return ConstantKind.INT;
 			} else if (instance is Number) {
 				return ConstantKind.DOUBLE;
 			} else if (instance is String) {
