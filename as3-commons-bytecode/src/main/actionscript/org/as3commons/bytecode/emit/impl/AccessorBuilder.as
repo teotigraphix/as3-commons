@@ -37,6 +37,8 @@ package org.as3commons.bytecode.emit.impl {
 	public class AccessorBuilder extends PropertyBuilder implements IAccessorBuilder {
 
 		private static const PRIVATE_VAR_NAME_TEMPLATE:String = "_{0}";
+		private static const GETTER_SUFFIX:String = '/get';
+		private static const SETTER_SUFFIX:String = '/set';
 
 		private var _access:AccessorAccess;
 		private var _property:IPropertyBuilder;
@@ -58,26 +60,37 @@ package org.as3commons.bytecode.emit.impl {
 			var result:Array = [];
 			var mb:IMethodBuilder;
 			var mi:MethodInfo;
-			if (_property == null) {
-				_property = createDefaultVariableBuilder();
-			}
-			var trait:SlotOrConstantTrait = SlotOrConstantTrait(_property.build());
+
+			var trait:SlotOrConstantTrait = createSlotTrait();
+
 			result[result.length] = trait;
+
 			if ((_access === AccessorAccess.READ_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
 				mb = createGetter(trait);
 				mi = mb.build();
-				mi.methodName = mi.methodName + '/get';
+				mi.methodName = createAccessorName(GETTER_SUFFIX);
 				result[result.length] = mi;
 				mb.trait.traitKind = TraitKind.GETTER;
 			}
 			if ((_access === AccessorAccess.WRITE_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
 				mb = createSetter(trait);
 				mi = mb.build();
-				mi.methodName = mi.methodName + '/set';
+				mi.methodName = createAccessorName(SETTER_SUFFIX);
 				result[result.length] = mi;
 				mb.trait.traitKind = TraitKind.SETTER;
 			}
 			return result;
+		}
+
+		protected function createSlotTrait():SlotOrConstantTrait {
+			if (_property == null) {
+				_property = createDefaultVariableBuilder();
+			}
+			return SlotOrConstantTrait(_property.build());
+		}
+
+		protected function createAccessorName(suffix:String):String {
+			return name + suffix;
 		}
 
 		public function get property():IPropertyBuilder {
@@ -88,8 +101,8 @@ package org.as3commons.bytecode.emit.impl {
 			_property = value;
 		}
 
-		protected function createMethod():MethodBuilder {
-			var mb:MethodBuilder = new MethodBuilder();
+		protected function createMethod():IMethodBuilder {
+			var mb:IMethodBuilder = new MethodBuilder();
 			mb.name = name;
 			mb.packageName = packageName;
 			return mb;
@@ -98,29 +111,38 @@ package org.as3commons.bytecode.emit.impl {
 		protected function createGetter(trait:SlotOrConstantTrait):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod();
 			mb.returnType = type;
+			addGetterOpcodes(mb, trait);
+			return mb;
+		}
+
+		protected function addGetterOpcodes(mb:IMethodBuilder, trait:SlotOrConstantTrait):void {
 			mb.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.getproperty, [trait.traitMultiname]) //
 				.addOpcode(Opcode.returnvalue);
-			return mb;
 		}
 
 		protected function createSetter(trait:SlotOrConstantTrait):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod();
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(type);
+			addSetterOpcodes(mb, trait);
+			return mb;
+		}
+
+		protected function addSetterOpcodes(mb:IMethodBuilder, trait:SlotOrConstantTrait):void {
 			mb.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.getlocal_1) //
 				.addOpcode(Opcode.initproperty, [trait.traitMultiname]) //
 				.addOpcode(Opcode.returnvoid);
-			return mb;
 		}
 
 		protected function createDefaultVariableBuilder():IPropertyBuilder {
 			var vb:PropertyBuilder = new PropertyBuilder();
+			vb.visibility = MemberVisibility.PRIVATE;
 			vb.isConstant = isConstant;
 			vb.isFinal = isFinal;
 			vb.isStatic = isStatic;

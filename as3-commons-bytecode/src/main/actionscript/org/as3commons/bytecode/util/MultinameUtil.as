@@ -15,13 +15,14 @@
  */
 package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.Multiname;
+	import org.as3commons.bytecode.abc.NamespaceSet;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 
 	public final class MultinameUtil {
 
-		public static const OBJECT_NAME:String = "Object";
 		public static const DOUBLE_COLON:String = "::";
 		public static const PERIOD:String = ".";
 
@@ -38,6 +39,18 @@ package org.as3commons.bytecode.util {
 					break;
 				case BuiltIns.VOID.fullName:
 					name = BuiltIns.VOID;
+					break;
+				case BuiltIns.DICTIONARY.fullName:
+					name = BuiltIns.DICTIONARY;
+					break;
+				case BuiltIns.FUNCTION.fullName:
+					name = BuiltIns.FUNCTION;
+					break;
+				case BuiltIns.NUMBER.fullName:
+					name = BuiltIns.NUMBER;
+					break;
+				case BuiltIns.STRING.fullName:
+					name = BuiltIns.STRING;
 					break;
 				default:
 					var portions:Array;
@@ -59,11 +72,26 @@ package org.as3commons.bytecode.util {
 			return name;
 		}
 
+		public static function toMultiName(className:String, kind:NamespaceKind = null):Multiname {
+			var portions:Array;
+			var classNamePortion:String;
+			if (className.indexOf(DOUBLE_COLON) > -1) {
+				portions = className.split(DOUBLE_COLON);
+				classNamePortion = portions[1];
+			} else {
+				portions = className.split(PERIOD);
+				classNamePortion = String(portions.pop());
+			}
+			var namesp:LNamespace = toLNamespace(className, kind)
+			var namespSet:NamespaceSet = new NamespaceSet([namesp]);
+			return new Multiname(classNamePortion, namespSet);
+		}
+
 		public static function toLNamespace(className:String, kind:NamespaceKind):LNamespace {
 			var namesp:LNamespace;
 
 			switch (className) {
-				case OBJECT_NAME:
+				case BuiltIns.OBJECT.fullName:
 					namesp = BuiltIns.OBJECT.nameSpace;
 					break;
 				case BuiltIns.ANY.fullName:
@@ -71,6 +99,18 @@ package org.as3commons.bytecode.util {
 					break;
 				case BuiltIns.VOID.fullName:
 					namesp = BuiltIns.VOID.nameSpace;
+					break;
+				case BuiltIns.DICTIONARY.fullName:
+					namesp = BuiltIns.DICTIONARY.nameSpace;
+					break;
+				case BuiltIns.FUNCTION.fullName:
+					namesp = BuiltIns.FUNCTION.nameSpace;
+					break;
+				case BuiltIns.NUMBER.fullName:
+					namesp = BuiltIns.NUMBER.nameSpace;
+					break;
+				case BuiltIns.STRING.fullName:
+					namesp = BuiltIns.STRING.nameSpace;
 					break;
 				default:
 					var portions:Array;

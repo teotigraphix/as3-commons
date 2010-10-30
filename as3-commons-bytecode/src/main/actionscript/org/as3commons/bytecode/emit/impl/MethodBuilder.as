@@ -116,8 +116,13 @@ package org.as3commons.bytecode.emit.impl {
 			trait.addMetadataList(buildMetadata());
 			mi.as3commonsByteCodeAssignedMethodTrait = MethodTrait(trait);
 			mi.returnType = MultinameUtil.toQualifiedName(_returnType);
-			mi.methodName = StringUtils.substitute(METHOD_NAME, packageName, name);
+			mi.methodName = createMethodName(mi);
+			mi.as3commonsBytecodeName = name;
 			return mi;
+		}
+
+		protected function createMethodName(methodInfo:MethodInfo):String {
+			return StringUtils.substitute(METHOD_NAME, packageName, name);
 		}
 
 		/**
@@ -132,9 +137,17 @@ package org.as3commons.bytecode.emit.impl {
 			trait.traitKind = TraitKind.METHOD;
 			trait.isFinal = isFinal;
 			trait.isOverride = isOverride;
-			var ns:LNamespace = new LNamespace(NAMESPACEKIND_LOOKUP[visibility], "");
-			trait.traitMultiname = new QualifiedName(name, ns);
+			var ns:LNamespace = createTraitNamespace();
+			trait.traitMultiname = createTraitMultiname(name, ns);
 			return trait;
+		}
+
+		protected function createTraitNamespace():LNamespace {
+			return new LNamespace(NAMESPACEKIND_LOOKUP[visibility], "");
+		}
+
+		protected function createTraitMultiname(name:String, nameSpace:LNamespace):QualifiedName {
+			return new QualifiedName(name, nameSpace);
 		}
 
 		/**

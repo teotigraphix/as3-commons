@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 	import flash.system.ApplicationDomain;
+	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -36,18 +37,22 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.util.AbcDeserializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.Type;
 
 	public class ClassBuilder extends BaseBuilder implements IClassBuilder {
 
+		public static const STATIC_CONSTRUCTOR_NAME:String = "{0}:{1}::{0}:{1}$cinit";
 		public static const CONSTRUCTOR_NAME:String = "{0}.{1}/{1}";
 		private static const MULTIPLE_CONSTRUCTORS_ERROR:String = "A class can only have one constructor defined";
+		private static const PERIOD:String = '.';
+		private static const DUPLICATE_METHOD_ERROR:String = "Duplicate method {0}.{1} in class {2}";
 
 		private var _ctorBuilder:ICtorBuilder;
 		private var _implementedInterfaceNames:Array;
 		private var _methodBuilders:Array;
-		private var _accessorBuilders:Array;
+		protected var _accessorBuilders:Array;
 		private var _variableBuilders:Array;
 		private var _superClassName:String;
 		private var _isDynamic:Boolean = false;
@@ -55,6 +60,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _metadata:Array;
 		private var _traits:Array;
 		private var _abcFile:AbcFile;
+		private var _addedMethods:Dictionary;
 
 		public function ClassBuilder(abcFile:AbcFile = null) {
 			super();
@@ -70,6 +76,7 @@ package org.as3commons.bytecode.emit.impl {
 			_traits = [];
 			_superClassName = BuiltIns.OBJECT.fullName;
 			_abcFile = abcFile;
+			_addedMethods = new Dictionary();
 		}
 
 		public function get superClassName():String {
@@ -133,29 +140,34 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function defineConstructor():ICtorBuilder {
-			if (_ctorBuilder != null) {
-				throw new IllegalOperationError(MULTIPLE_CONSTRUCTORS_ERROR);
+			if (_ctorBuilder == null) {
+				_ctorBuilder = new CtorBuilder();
+				_ctorBuilder.packageName = packageName;
 			}
-			var _ctorBuilder:ICtorBuilder = new CtorBuilder();
-			_ctorBuilder.packageName = packageName
 			return _ctorBuilder;
 		}
 
-		public function defineMethod(name:String = null):IMethodBuilder {
+		public function defineMethod(name:String = null, nameSpace:String = null):IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
-			mb.packageName = packageName + '.' + this.name;
+			mb.packageName = packageName + PERIOD + this.name;
 			mb.name = name;
+			mb.namespace = nameSpace;
 			_methodBuilders[_methodBuilders.length] = mb;
 			return mb;
 		}
 
 		public function defineAccessor(name:String = null, type:String = null, initialValue:* = undefined):IAccessorBuilder {
-			var ab:AccessorBuilder = new AccessorBuilder();
-			ab.packageName = packageName + '.' + this.name;
+			var ab:IAccessorBuilder = createAccessorBuilder(name, type, initialValue);
+			_accessorBuilders[_accessorBuilders.length] = ab;
+			return ab;
+		}
+
+		protected function createAccessorBuilder(name:String, type:String, initialValue:* = undefined):IAccessorBuilder {
+			var ab:IAccessorBuilder = new AccessorBuilder();
+			ab.packageName = packageName + PERIOD + this.name;
 			ab.name = name;
 			ab.type = type;
 			ab.initialValue = initialValue;
-			_accessorBuilders[_accessorBuilders.length] = ab;
 			return ab;
 		}
 
@@ -183,29 +195,33 @@ package org.as3commons.bytecode.emit.impl {
 			var methods:Array = createMethods(metadata, (hierarchyDepth + 1));
 			var variableTraits:Array = createVariables();
 			methods = methods.concat(createAccessors(variableTraits));
-			var ci:ClassInfo = createClassInfo(variableTraits, hierarchyDepth++);
-			var ii:InstanceInfo = createInstanceInfo(hierarchyDepth);
-			ii.classInfo = ci;
+			var classInfo:ClassInfo = createClassInfo(variableTraits, hierarchyDepth++);
+			var instanceInfo:InstanceInfo = createInstanceInfo(hierarchyDepth);
+			instanceInfo.classInfo = classInfo;
 			var metadata:Array = buildMetadata();
 			for each (var mi:MethodInfo in methods) {
-				if (mi.as3commonsByteCodeAssignedMethodTrait.isStatic) {
-					ci.traits[ci.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+				if (!methodExists(mi)) {
+					if (mi.as3commonsByteCodeAssignedMethodTrait.isStatic) {
+						classInfo.traits[classInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+					} else {
+						instanceInfo.traits[instanceInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+					}
 				} else {
-					ii.traits[ii.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+					throw new IllegalOperationError(StringUtils.substitute(DUPLICATE_METHOD_ERROR, mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name, mi.methodName, this.name));
 				}
 			}
 
 			for each (var st:SlotOrConstantTrait in variableTraits) {
 				if (st.isStatic) {
-					ci.traits[ci.traits.length] = st;
+					classInfo.traits[classInfo.traits.length] = st;
 				} else {
-					ii.traits[ii.traits.length] = st;
+					instanceInfo.traits[instanceInfo.traits.length] = st;
 				}
 			}
-			return [ci, ii, methods, metadata];
+			return [classInfo, instanceInfo, methods, metadata];
 		}
 
-		private function createVariables():Array {
+		protected function createVariables():Array {
 			var result:Array = [];
 			for each (var vb:IPropertyBuilder in _variableBuilders) {
 				result[result.length] = vb.build();
@@ -213,7 +229,7 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
-		private function createMethods(metadata:Array, initScopeDepth:uint):Array {
+		protected function createMethods(metadata:Array, initScopeDepth:uint):Array {
 			var result:Array = [];
 			for each (var mb:IMethodBuilder in _methodBuilders) {
 				var mi:MethodInfo = mb.build(initScopeDepth);
@@ -223,14 +239,14 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
-		protected function createAccessors(variableTraits:Array):Array {
+		protected function createAccessors(variableTraits:Array = null):Array {
 			var result:Array = [];
 			for each (var ab:IAccessorBuilder in _accessorBuilders) {
 				var lst:Array = ab.build() as Array;
 				for each (var obj:Object in lst) {
 					if (obj is MethodInfo) {
 						result[result.length] = obj;
-					} else {
+					} else if (variableTraits != null) {
 						variableTraits[variableTraits.length] = obj;
 					}
 				}
@@ -247,7 +263,7 @@ package org.as3commons.bytecode.emit.impl {
 			//ii.isProtected = isProtected;
 			ii.isSealed = !isDynamic;
 			ii.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
-			ii.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : MultinameUtil.OBJECT_NAME);
+			ii.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : BuiltIns.OBJECT.fullName);
 			if (ii.isProtected) {
 				ii.protectedNamespace = MultinameUtil.toLNamespace(packageName + MultinameUtil.DOUBLE_COLON + name, NamespaceKind.PROTECTED_NAMESPACE);
 			}
@@ -259,16 +275,18 @@ package org.as3commons.bytecode.emit.impl {
 			ii.instanceInitializer.methodBody.maxScopeDepth = initScopeDepth;
 			ii.instanceInitializer.methodName = StringUtils.substitute(CONSTRUCTOR_NAME, packageName, name);
 			for each (var interfaceName:String in _implementedInterfaceNames) {
-				ii.interfaceMultinames[ii.interfaceMultinames.length] = MultinameUtil.toQualifiedName(interfaceName);
+				ii.interfaceMultinames[ii.interfaceMultinames.length] = MultinameUtil.toMultiName(interfaceName);
 			}
 			return ii;
 		}
 
 		protected function createClassInfo(variableTraits:Array, initScopeDepth:uint, isInterface:Boolean = false):ClassInfo {
 			var staticvariables:Array = [];
-			for each (var slot:SlotOrConstantTrait in variableTraits) {
-				if (slot.isStatic) {
-					staticvariables[staticvariables.length] = slot;
+			if (variableTraits != null) {
+				for each (var slot:SlotOrConstantTrait in variableTraits) {
+					if (slot.isStatic) {
+						staticvariables[staticvariables.length] = slot;
+					}
 				}
 			}
 			var ci:ClassInfo = new ClassInfo();
@@ -278,6 +296,7 @@ package org.as3commons.bytecode.emit.impl {
 			ci.staticInitializer.methodBody.initScopeDepth = initScopeDepth++;
 			ci.staticInitializer.methodBody.maxScopeDepth = initScopeDepth;
 			ci.staticInitializer.as3commonsBytecodeName = AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME;
+			ci.staticInitializer.methodName = StringUtils.substitute(STATIC_CONSTRUCTOR_NAME, packageName, name);
 			return ci;
 		}
 
@@ -292,15 +311,17 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		protected function createStaticConstructor(staticvariables:Array, isInterface:Boolean):ICtorBuilder {
-			var ctorBuilder:ICtorBuilder = defineConstructor();
+			var ctorBuilder:ICtorBuilder = new CtorBuilder();
+			ctorBuilder.packageName = packageName;
 			if (!isInterface) {
 				ctorBuilder.addOpcode(Opcode.getlocal_0) //
 					.addOpcode(Opcode.pushscope);
 				for each (var slot:SlotOrConstantTrait in staticvariables) {
 					ctorBuilder.addOpcodes(createInitializer(slot));
 				}
+				ctorBuilder.addOpcode(Opcode.returnvoid);
 			}
-			ctorBuilder.addOpcode(Opcode.returnvoid);
+
 			return ctorBuilder;
 		}
 
@@ -308,6 +329,16 @@ package org.as3commons.bytecode.emit.impl {
 			var result:Array = [];
 			//TODO: Add slot initialization logic
 			return result;
+		}
+
+		protected function methodExists(methodInfo:MethodInfo):Boolean {
+			Assert.notNull(methodInfo, "methodInfo argument must not be null");
+			var methodKey:String = methodInfo.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name + methodInfo.methodName;
+			if (_addedMethods[methodKey] == null) {
+				_addedMethods[methodKey] = true;
+				return false;
+			}
+			return true;
 		}
 
 	}

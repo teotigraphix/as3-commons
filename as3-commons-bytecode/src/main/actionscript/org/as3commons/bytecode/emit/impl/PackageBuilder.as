@@ -84,7 +84,9 @@ package org.as3commons.bytecode.emit.impl {
 		public function defineInterface(name:String, superInterfaceNames:Array = null):IInterfaceBuilder {
 			var ib:InterfaceBuilder = new InterfaceBuilder();
 			ib.name = name;
-			//ib.superClassName = superInterfaceName;
+			if (superInterfaceNames != null) {
+				ib.implementInterfaces(superInterfaceNames);
+			}
 			ib.packageName = packageName;
 			_interfaceBuilders[_interfaceBuilders.length] = ib;
 			return ib;
@@ -121,7 +123,7 @@ package org.as3commons.bytecode.emit.impl {
 				result = result.concat(cb.build(applicationDomain));
 			}
 			for each (var ib:IInterfaceBuilder in _interfaceBuilders) {
-				result[result.length] = ib.build(applicationDomain)[1];
+				result[result.length] = ib.build(applicationDomain);
 			}
 			for each (var mb:IMethodBuilder in _methodBuilders) {
 				result[result.length] = mb.build();
