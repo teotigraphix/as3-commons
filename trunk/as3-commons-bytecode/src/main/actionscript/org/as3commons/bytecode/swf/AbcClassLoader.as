@@ -65,6 +65,8 @@ package org.as3commons.bytecode.swf {
 
 		private var _loader:Loader;
 
+		private var _abcSerializer:AbcSerializer;
+
 		/**
 		 * Creates a new <code>AbcClassLoader</code> instance.
 		 */
@@ -87,6 +89,16 @@ package org.as3commons.bytecode.swf {
 			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.VERIFY_ERROR, function(event:Event):void {
 				dispatchEvent(event);
 			});
+		}
+
+		/**
+		 * Internally used <code>AbcSerializer</code> to serialize incoming <code>AbcFiles</code>.
+		 */
+		protected function get abcSerializer():AbcSerializer {
+			if (_abcSerializer == null) {
+				_abcSerializer = new AbcSerializer();
+			}
+			return _abcSerializer;
 		}
 
 		/**
@@ -165,7 +177,7 @@ package org.as3commons.bytecode.swf {
 		 * @param applicationDomain The <code>ApplicationDomain</code> that the ABC file will be loaded into, when null, <code>ApplicationDomain.currentDomain</code> is used.
 		 */
 		public function loadAbcFile(abcFile:AbcFile, applicationDomain:ApplicationDomain = null):void {
-			loadClassDefinitionsFromBytecode(new AbcSerializer().serializeAbcFile(abcFile), applicationDomain);
+			loadClassDefinitionsFromBytecode(abcSerializer.serializeAbcFile(abcFile), applicationDomain);
 		}
 
 		/**

@@ -237,7 +237,6 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		protected function addInstanceInfo(abcFile:AbcFile, instanceInfo:InstanceInfo):void {
 			abcFile.addInstanceInfo(instanceInfo);
-			addMethodInfo(abcFile, instanceInfo.instanceInitializer);
 		}
 
 		/**
@@ -370,7 +369,9 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		protected function addMethodInfo(abcFile:AbcFile, methodInfo:MethodInfo):void {
 			abcFile.addMethodInfo(methodInfo);
-			abcFile.addMethodBody(methodInfo.methodBody);
+			if (methodInfo.methodBody != null) {
+				abcFile.addMethodBody(methodInfo.methodBody);
+			}
 			if ((methodInfo.as3commonsByteCodeAssignedMethodTrait != null) && (methodInfo.as3commonsByteCodeAssignedMethodTrait.hasMetadata)) {
 				for each (var mdi:Metadata in methodInfo.as3commonsByteCodeAssignedMethodTrait.metadata) {
 					abcFile.addMetadataInfo(mdi);

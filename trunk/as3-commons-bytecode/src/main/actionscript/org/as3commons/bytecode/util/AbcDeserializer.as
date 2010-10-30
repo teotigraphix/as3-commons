@@ -286,7 +286,8 @@ package org.as3commons.bytecode.util {
 				}
 				var interfaceCount:int = readU30();
 				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
-					instanceInfo.interfaceMultinames.push(pool.multinamePool[readU30()]);
+					var intfIdx:int = readU30();
+					instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = pool.multinamePool[intfIdx];
 				}
 				instanceInfo.instanceInitializer = abcFile.methodInfo[readU30()];
 				instanceInfo.instanceInitializer.as3commonsBytecodeName = CONSTRUCTOR_BYTECODENAME;
@@ -307,6 +308,7 @@ package org.as3commons.bytecode.util {
 				classInfo.staticInitializer = abcFile.methodInfo[readU30()];
 				classInfo.staticInitializer.as3commonsBytecodeName = STATIC_INITIALIZER_BYTECODENAME;
 				classInfo.traits = deserializeTraitsInfo(abcFile, byteStream, true);
+				abcFile.instanceInfo[classIndex].classInfo = classInfo;
 				abcFile.addClassInfo(classInfo);
 			}
 

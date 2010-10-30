@@ -77,7 +77,7 @@ package org.as3commons.bytecode.emit {
 		 * @param name The name of the method. I.e. <code>myMethodName</code>.
 		 * @return The specified <code>IMethodBuilder</code> instance.
 		 */
-		function defineMethod(name:String = null):IMethodBuilder;
+		function defineMethod(name:String = null, nameSpace:String = null):IMethodBuilder;
 		/**
 		 * Creates an <code>IAccessorBuilder</code> (getter/setter) instance for the specified accessor name.
 		 * @param name The name of the accessor. I.e. <code>MyGetter</code>.

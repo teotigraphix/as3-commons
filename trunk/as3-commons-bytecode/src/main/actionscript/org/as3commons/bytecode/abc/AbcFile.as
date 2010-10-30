@@ -99,6 +99,9 @@ package org.as3commons.bytecode.abc {
 
 			constantPool.addMultiname(instanceInfo.superclassMultiname);
 			addMethodInfo(instanceInfo.instanceInitializer);
+			if (instanceInfo.instanceInitializer.methodBody != null) {
+				addMethodBody(instanceInfo.instanceInitializer.methodBody);
+			}
 
 			return addUniquely(instanceInfo, _instanceInfo);
 		}
