@@ -72,7 +72,7 @@ package org.as3commons.bytecode.emit.impl {
 		override public function build(applicationDomain:ApplicationDomain):Array {
 			var methods:Array = createMethods(metadata, 4);
 			methods = methods.concat(createAccessors());
-			var classInfo:ClassInfo = createClassInfo(null, 4);
+			var classInfo:ClassInfo = createClassInfo(null, methods, 4);
 			var instanceInfo:InstanceInfo = new InstanceInfo();
 			var ctorBuilder:ICtorBuilder = createStaticConstructor([], true);
 			instanceInfo.instanceInitializer = ctorBuilder.build();
@@ -86,13 +86,6 @@ package org.as3commons.bytecode.emit.impl {
 				instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(intfName);
 			}
 			var metadata:Array = buildMetadata();
-			for each (var mi:MethodInfo in methods) {
-				if (!MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic) {
-					instanceInfo.traits[instanceInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
-				} else {
-					throw new IllegalOperationError(INTERFACE_STATIC_METHOD_ERROR);
-				}
-			}
 			return [classInfo, instanceInfo, methods, metadata];
 		}
 

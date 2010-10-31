@@ -54,7 +54,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _packageName:String;
 		private var _name:String;
 		private var _namespace:String;
-		private var _visibility:MemberVisibility = MemberVisibility.PUBLIC;
+		private var _visibility:MemberVisibility;
 		private var _trait:TraitInfo;
 
 		/**
@@ -79,6 +79,8 @@ package org.as3commons.bytecode.emit.impl {
 			_namespace = nameSpace;
 			if (visibility != null) {
 				_visibility = visibility;
+			} else {
+				_visibility = MemberVisibility.PUBLIC;
 			}
 		}
 
