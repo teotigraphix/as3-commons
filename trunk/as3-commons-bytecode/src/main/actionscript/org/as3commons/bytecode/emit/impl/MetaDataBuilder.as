@@ -38,7 +38,7 @@ package org.as3commons.bytecode.emit.impl {
 			return _arguments;
 		}
 
-		public function set argument(value:Array):void {
+		public function set arguments(value:Array):void {
 			_arguments = value;
 		}
 

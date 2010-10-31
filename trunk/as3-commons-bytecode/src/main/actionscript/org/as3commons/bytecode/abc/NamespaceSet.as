@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.util.CloneUtils;
 
 	/**
 	 * as3commons-bytecode representation of <code>ns_set_info</code> in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Namespace set" in the AVM Spec (page 22)
 	 */
-	public class NamespaceSet {
+	public class NamespaceSet implements ICloneable {
 
 		public static const PUBLIC_NSSET:NamespaceSet = new NamespaceSet([LNamespace.PUBLIC]);
 
@@ -29,6 +31,11 @@ package org.as3commons.bytecode.abc {
 		public function NamespaceSet(namespaceArray:Array = null) {
 			super();
 			_namespaces = (namespaceArray) ? namespaceArray : [];
+		}
+
+
+		public function clone():* {
+			var clone:NamespaceSet = new NamespaceSet(CloneUtils.cloneList(_namespaces));
 		}
 
 		public function get namespaces():Array {

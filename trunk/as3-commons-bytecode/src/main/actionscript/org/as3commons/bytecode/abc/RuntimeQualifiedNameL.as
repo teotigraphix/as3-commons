@@ -30,6 +30,10 @@ package org.as3commons.bytecode.abc {
 			assertAppropriateMultinameKind([MultinameKind.RTQNAME_L, MultinameKind.RTQNAME_LA], kindValue);
 		}
 
+		override public function clone():* {
+			return new RuntimeQualifiedNameL(kind);
+		}
+
 		override public function toString():String {
 			return kind.description;
 		}

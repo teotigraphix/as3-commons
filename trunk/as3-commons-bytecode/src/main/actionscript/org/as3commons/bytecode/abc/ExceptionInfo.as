@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import org.as3commons.lang.ICloneable;
 
 	/**
 	 * as3commons-bytecode representation of <code>exception_info</code> in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Exception" in the AVM Spec (page 34)
 	 */
-	public class ExceptionInfo {
+	public class ExceptionInfo implements ICloneable {
 
 		public var exceptionEnabledFromCodePosition:int;
 		public var exceptionEnabledToCodePosition:int;
@@ -31,5 +32,17 @@ package org.as3commons.bytecode.abc {
 		public function ExceptionInfo() {
 			super();
 		}
+
+		public function clone():* {
+			var clone:ExceptionInfo = new ExceptionInfo();
+			clone.exceptionEnabledFromCodePosition = exceptionEnabledFromCodePosition;
+			clone.exceptionEnabledToCodePosition = exceptionEnabledToCodePosition;
+			clone.codePositionToJumpToOnException = codePositionToJumpToOnException;
+			clone.exceptionTypeName = exceptionTypeName;
+			clone.nameOfVariableReceivingException = nameOfVariableReceivingException;
+			return clone;
+		}
+
+
 	}
 }

@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-public class MetaDataArgument {
-	private var _key:String;
-	private var _value:String;
 
-	public function MetaDataArgument() {
-		super();
-	}
+	public class MetaDataArgument {
+		private var _key:String;
+		private var _value:String;
 
-	public function get key():String {
-		return _key;
-	}
+		public function MetaDataArgument(key:String = null, value:String = null) {
+			super();
+			_key = key;
+			_value = value;
+		}
 
-	public function set key(value:String):void {
-		_key = value;
-	}
+		public function get key():String {
+			return _key;
+		}
 
-	public function get value():String {
-		return _value;
-	}
+		public function set key(value:String):void {
+			_key = value;
+		}
 
-	public function set value(v:String):void {
-		_value = v;
+		public function get value():String {
+			return _value;
+		}
+
+		public function set value(v:String):void {
+			_value = v;
+		}
 	}
-}
 }

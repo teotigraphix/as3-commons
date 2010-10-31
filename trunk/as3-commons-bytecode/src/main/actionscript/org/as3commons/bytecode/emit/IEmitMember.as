@@ -67,6 +67,6 @@ package org.as3commons.bytecode.emit {
 		 * for the current <code>IEmitMember</code>.
 		 * @return The specified <code>IMetaDataBuilder</code>.
 		 */
-		function defineMetaData():IMetaDataBuilder;
+		function defineMetaData(name:String = null, arguments:Array = null):IMetaDataBuilder;
 	}
 }

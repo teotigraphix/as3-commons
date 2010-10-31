@@ -23,10 +23,15 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "RTQName" in the AVM Spec (page 8)
 	 */
 	public class RuntimeQualifiedName extends NamedMultiname {
+
 		public function RuntimeQualifiedName(name:String, kindValue:MultinameKind = null) {
 			kindValue = (kindValue) ? kindValue : MultinameKind.RTQNAME;
 			super(kindValue, name);
 			assertAppropriateMultinameKind([MultinameKind.RTQNAME, MultinameKind.RTQNAME_A], kindValue);
+		}
+
+		override public function clone():* {
+			return new RuntimeQualifiedName(name, kind);
 		}
 
 		override public function toString():String {

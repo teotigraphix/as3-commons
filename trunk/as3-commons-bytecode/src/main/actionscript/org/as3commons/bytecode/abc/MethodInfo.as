@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import flash.errors.IllegalOperationError;
+
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
+	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.IllegalArgumentError;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.lang.util.CloneUtils;
 
 	/**
 	 * as3commons-bytecode representation of <code>method_info</code> in the ABC file format. This is actually the method's signature, and combined
@@ -25,9 +30,12 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Method signature" in the AVM Spec (page 24)
 	 * @see MethodTrait
 	 */
-	public class MethodInfo {
+	public class MethodInfo implements ICloneable {
+
+		private static const ILLEGAL_TRAITINFO_TYPE:String = "Argument must be of type FunctionTrait or MethodTrait";
+		private var _as3commonsByteCodeAssignedMethodTrait:TraitInfo;
+
 		public var argumentCollection:Array;
-		public var optionalParameters:Array;
 		public var returnType:BaseMultiname;
 		public var methodName:String;
 
@@ -49,7 +57,17 @@ package org.as3commons.bytecode.abc {
 		 * Association of this instance with its <code>MethodTrait</code>. The ABC file format never directly links these elements,
 		 * but as3commons-bytecode classes do so for convenience when accessing related information about a method.
 		 */
-		public var as3commonsByteCodeAssignedMethodTrait:MethodTrait;
+		public function get as3commonsByteCodeAssignedMethodTrait():TraitInfo {
+			return _as3commonsByteCodeAssignedMethodTrait;
+		}
+
+		public function set as3commonsByteCodeAssignedMethodTrait(value:TraitInfo):void {
+			if ((value is FunctionTrait) || (value is MethodTrait)) {
+				_as3commonsByteCodeAssignedMethodTrait = value;
+			} else {
+				throw IllegalArgumentError(ILLEGAL_TRAITINFO_TYPE);
+			}
+		}
 		public var flags:uint;
 		public var methodBody:MethodBody;
 
@@ -60,9 +78,15 @@ package org.as3commons.bytecode.abc {
 
 		protected function initMethodInfo():void {
 			argumentCollection = [];
-			optionalParameters = [];
 		}
 
+		public function clone():* {
+			var clone:MethodInfo = new MethodInfo();
+			clone.argumentCollection = CloneUtils.cloneList(argumentCollection);
+			clone.returnType = returnType;
+			clone.methodName = methodName;
+			return clone;
+		}
 
 		/**
 		 * Returns the total number of parameters to this method, both formal and informal
@@ -82,6 +106,16 @@ package org.as3commons.bytecode.abc {
 				}
 			}
 			return formalParams;
+		}
+
+		public function get optionalParameters():Array {
+			var optionalParams:Array = [];
+			for each (var argument:Argument in argumentCollection) {
+				if (argument.isOptional) {
+					optionalParams[optionalParams.length] = argument;
+				}
+			}
+			return optionalParams;
 		}
 
 		public function toString():String {

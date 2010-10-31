@@ -190,7 +190,7 @@ package org.as3commons.bytecode.util {
 								break;
 						}
 						var qualifiedName:QualifiedName = new QualifiedName(__NEED_CONSTANTS_, null, MultinameKind.QNAME);
-						methodInfo.optionalParameters.push(new Argument(qualifiedName, true, defaultValue, ConstantKind.determineKind(optionalValueKind)));
+						methodInfo.argumentCollection[methodInfo.argumentCollection.length] = new Argument(qualifiedName, true, defaultValue, ConstantKind.determineKind(optionalValueKind));
 					}
 				}
 
@@ -506,6 +506,7 @@ package org.as3commons.bytecode.util {
 						functionTrait.functionSlotId = readU30();
 						functionTrait.functionMethod = methodInfos[readU30()];
 						functionTrait.isStatic = isStatic;
+						functionTrait.functionMethod.as3commonsByteCodeAssignedMethodTrait = functionTrait;
 						trait = functionTrait;
 						break;
 				}
@@ -522,8 +523,8 @@ package org.as3commons.bytecode.util {
 				// The value of the metadata_count field is the number of entries in the metadata array. That array 
 				// contains indices into the metadata array of the abcFile." 
 				if (traitKindValue & (TraitAttributes.METADATA.bitMask << 4)) {
-					var numberOfTraitMetadataItems:int = readU30();
-					for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; ++traitMetadataIndex) {
+					var traitMetadataCount:int = readU30();
+					for (var traitMetadataIndex:int = 0; traitMetadataIndex < traitMetadataCount; ++traitMetadataIndex) {
 						trait.addMetadata(metadata[readU30()]);
 					}
 				}

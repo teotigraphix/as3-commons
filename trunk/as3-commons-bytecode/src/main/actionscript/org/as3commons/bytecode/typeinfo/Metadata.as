@@ -16,7 +16,9 @@
 package org.as3commons.bytecode.typeinfo {
 	import flash.utils.Dictionary;
 
+	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.lang.util.CloneUtils;
 
 	/**
 	 * Represents metadata annotated on an <code>Annotatable</code> element.
@@ -30,7 +32,7 @@ package org.as3commons.bytecode.typeinfo {
 	 *
 	 * @see Annotatable
 	 */
-	public class Metadata {
+	public class Metadata implements ICloneable {
 
 		private static const KEY_VALUE_PAIR_TOSTRING:String = "{0}=\"{1}\"";
 		private static const METADATA_TOSTRING:String = "[{0}({1})]";
@@ -41,6 +43,13 @@ package org.as3commons.bytecode.typeinfo {
 			properties = new Dictionary();
 		}
 
+
+		public function clone():* {
+			var clone:Metadata = new Metadata();
+			clone.name = name;
+			clone.properties = CloneUtils.cloneDictionary(properties);
+		}
+
 		public function toString():String {
 			var keyValuePairs:Array = [];
 			for (var key:String in properties) {
@@ -48,5 +57,6 @@ package org.as3commons.bytecode.typeinfo {
 			}
 			return StringUtils.substitute(METADATA_TOSTRING, name, keyValuePairs.join());
 		}
+
 	}
 }

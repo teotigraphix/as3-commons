@@ -34,6 +34,11 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.AccessorAccess;
 
+	/**
+	 * Generates a setter and/or getter method along with an optional private property
+	 * that together form an accessor on a class.
+	 * @author Roland Zwaga
+	 */
 	public class AccessorBuilder extends PropertyBuilder implements IAccessorBuilder {
 
 		private static const PRIVATE_VAR_NAME_TEMPLATE:String = "_{0}";
@@ -43,19 +48,33 @@ package org.as3commons.bytecode.emit.impl {
 		private var _access:AccessorAccess;
 		private var _property:IPropertyBuilder;
 
+		/**
+		 * Creates a new <code>AccessorBuilder</code> instance.
+		 */
 		public function AccessorBuilder() {
 			super();
 			_access = AccessorAccess.READ_WRITE;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get access():AccessorAccess {
 			return _access;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set access(value:AccessorAccess):void {
 			_access = value;
 		}
 
+		/**
+		 * <p>Creates a getter method, a setter method and a property based on the <code>AccessorAccess</code>
+		 * value.</p>
+		 * @inheritDoc
+		 */
 		override public function build():Object {
 			var result:Array = [];
 			var mb:IMethodBuilder;
@@ -82,25 +101,46 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
+		/**
+		 * When no <code>property</code> value has been explicitly assigned, a default <code>PropertyBuilder</code>
+		 * is created, otherwise the specified <code>PropertyBuilder</code> is used to return the specified <code>SlotOrConstantTrait</code>.
+		 * @return The specified <code>SlotOrConstantTrait</code>
+		 */
 		protected function createSlotTrait():SlotOrConstantTrait {
 			if (_property == null) {
-				_property = createDefaultVariableBuilder();
+				_property = createDefaultPropertyBuilder();
 			}
 			return SlotOrConstantTrait(_property.build());
 		}
 
+		/**
+		 * Returns the abc accessor name.
+		 * @param suffix The suffix for the accessor name (/get or /set)
+		 * @return The specified accessor name.
+		 *
+		 */
 		protected function createAccessorName(suffix:String):String {
 			return name + suffix;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get property():IPropertyBuilder {
 			return _property;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set property(value:IPropertyBuilder):void {
 			_property = value;
 		}
 
+		/**
+		 * Creates a default <code>IMethodBuilder</code> to be used for the getter or setter method.
+		 * @return The specified <code>IMethodBuilder</code>
+		 */
 		protected function createMethod():IMethodBuilder {
 			var mb:IMethodBuilder = new MethodBuilder();
 			mb.name = name;
@@ -108,6 +148,11 @@ package org.as3commons.bytecode.emit.impl {
 			return mb;
 		}
 
+		/**
+		 * Creates the <code>IMethodBuilder</code> used for the getter method.
+		 * @param trait The <code>SlotOrConstantTrait</code> associated with the getter method.
+		 * @return The specified <code>IMethodBuilder</code>
+		 */
 		protected function createGetter(trait:SlotOrConstantTrait):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod();
 			mb.returnType = type;
@@ -115,6 +160,11 @@ package org.as3commons.bytecode.emit.impl {
 			return mb;
 		}
 
+		/**
+		 * Creates the method body for the getter method.
+		 * @param mb The <code>IMethodBuilder</code> that will generate the getter method.
+		 * @param trait The <code>SlotOrConstantTrait</code> associated with the getter method.
+		 */
 		protected function addGetterOpcodes(mb:IMethodBuilder, trait:SlotOrConstantTrait):void {
 			mb.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
@@ -123,6 +173,11 @@ package org.as3commons.bytecode.emit.impl {
 				.addOpcode(Opcode.returnvalue);
 		}
 
+		/**
+		 * Creates the <code>IMethodBuilder</code> used for the setter method.
+		 * @param trait The <code>SlotOrConstantTrait</code> associated with the setter method.
+		 * @return The specified <code>IMethodBuilder</code>
+		 */
 		protected function createSetter(trait:SlotOrConstantTrait):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod();
 			mb.returnType = BuiltIns.VOID.fullName;
@@ -131,6 +186,11 @@ package org.as3commons.bytecode.emit.impl {
 			return mb;
 		}
 
+		/**
+		 * Creates the method body for the setter method.
+		 * @param mb The <code>IMethodBuilder</code> that will generate the setter method.
+		 * @param trait The <code>SlotOrConstantTrait</code> associated with the setter method.
+		 */
 		protected function addSetterOpcodes(mb:IMethodBuilder, trait:SlotOrConstantTrait):void {
 			mb.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
@@ -140,7 +200,12 @@ package org.as3commons.bytecode.emit.impl {
 				.addOpcode(Opcode.returnvoid);
 		}
 
-		protected function createDefaultVariableBuilder():IPropertyBuilder {
+		/**
+		 * Creates the default <code>IPropertyBuilder</code> that will generate a private
+		 * property that holds the value for the accessor.
+		 * @return The specified <code>IPropertyBuilder</code>
+		 */
+		protected function createDefaultPropertyBuilder():IPropertyBuilder {
 			var vb:PropertyBuilder = new PropertyBuilder();
 			vb.visibility = MemberVisibility.PRIVATE;
 			vb.isConstant = isConstant;
@@ -152,6 +217,10 @@ package org.as3commons.bytecode.emit.impl {
 			return vb;
 		}
 
+		/**
+		 * Returns null, no trait need here
+		 * @return null
+		 */
 		override protected function buildTrait():TraitInfo {
 			return null;
 		}

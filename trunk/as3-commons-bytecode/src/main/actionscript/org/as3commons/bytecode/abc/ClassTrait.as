@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import org.as3commons.bytecode.typeinfo.Annotatable;
 	import org.as3commons.lang.StringUtils;
-	import org.as3commons.lang.StringUtils;
+
 
 	/**
 	 * as3commons-bytecode representation of <code>trait_class</code> in the ABC file format.
@@ -33,5 +34,18 @@ package org.as3commons.bytecode.abc {
 		public function toString():String {
 			return StringUtils.substitute("ClassTrait[name={0}, classSlotId={1}, classIndex={2}, metadata={3}]", traitMultiname, classSlotId, classIndex, metadata);
 		}
+
+		override public function clone():* {
+			var clone:ClassTrait = new ClassTrait();
+			populateClone(clone);
+			return clone;
+		}
+
+		override protected function populateClone(annotatable:Annotatable):void {
+			super.populateClone(annotatable);
+			ClassTrait(annotatable).classSlotId = classSlotId;
+			ClassTrait(annotatable).classIndex = classIndex;
+		}
+
 	}
 }
