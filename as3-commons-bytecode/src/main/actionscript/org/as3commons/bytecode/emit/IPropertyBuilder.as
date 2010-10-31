@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.emit {
 
 	/**
-	 * Describes an object that can generate a property on a class or interface to be sued in an <code>AbcFile</code>.
+	 * Describes an object that can generate a property on a class or interface to be used in an <code>AbcFile</code>.
 	 * @author Roland Zwaga
 	 */
 	public interface IPropertyBuilder extends IEmitMember {

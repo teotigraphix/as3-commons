@@ -20,16 +20,16 @@
     DoABC tag use the AbcDeserializer class:</p><div class="source"><pre>var ds:AbcDeserializer = new AbcDeserializer(byteStream); <i>//The bytestream contains the DoAbc file
     and its assumed to be at the right position.</i>
 var abcFile:AbcFile = ds.deserialize();</pre></div>
-	<p>The AbcFile instance will contain
+	<p>The <code><a href="asdoc/org/as3commons/bytecode/abc/AbcFile.html" target="_blank">AbcFile</a></code> instance will contain
     a full code representation of the DoABCTag. Including: The constantpool,
     class info, method info, etc.</p></section>
 
     <section name="Simple SWF deserialization and serialization"><p>Simple SWF
     files that only contain code (such as class libraries or resource
-    modules), so no embedded images, sounds or whatever can be directly
-    deserialized/serialized with the SWFFileSerializer class:</p><div class="source"><pre>var ds:SWFSerializer = new SWFFileSerializer();
+    modules), so no embedded images, sounds or whatever, can be directly
+    deserialized/serialized with the <code><a href="asdoc/org/as3commons/bytecode/swf/SWFFileSerializer.html" target="_blank">SWFFileSerializer</a></code> class:</p><div class="source"><pre>var ds:SWFSerializer = new SWFFileSerializer();
 var swfFile:SWFFile = ds.read(byteArray); <i>//Where the bytearray is a loaded SWF file (.swf, *not* .swc)</i>
-</pre></div><p>By using the SWFFile's getTagsByType method you can retrieve the
+</pre></div><p>By using the <code><a href="asdoc/org/as3commons/bytecode/swf/SWFFile.html" target="_blank">SWFFile</a></code>'s <code><a href="asdoc/org/as3commons/bytecode/swf/SWFFile.html#getTagsByType()" target="_blank">getTagsByType</a></code> method you can retrieve the
     different sorts of SWF tags and examine them:</p><div class="source"><pre>var abcTags:Array = swfFile.getTagsByType(DoABCTag);
 for each(var tag:DoABCTag in abcTags){
   var abcFile:AbcFile = tag.abcFile;
@@ -55,13 +55,15 @@ for each(var tag:DoABCTag in abcTags){
         <li>ShowFrameTag</li>
 
         <li>SymbolClass</li>
-      </ul></section>
+      </ul>
+      <p>Other tags will be loaded by an <code><a href="asdoc/org/as3commons/bytecode/tags/UnsupportedTag.html" target="_blank">UnsupportedTag</a></code> instance.</p>
+      </section>
 
     <section name="Bytecode based reflection"><p>The most important class for
-    reflection is <code>ByteCodeType</code> which will parse the currently
-    loaded bytecode and populate its cache with <code>ByteCodeType</code>
+    reflection is <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeType.html" target="_blank">ByteCodeType</a></code> which will parse the currently
+    loaded bytecode and populate its cache with <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeType.html" target="_blank">ByteCodeType</a></code>
     instances for each class that was parsed.</p> <p>There are two static
-    methods on the <code>ByteCodeType</code>:<br />
+    methods on the <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeType.html" target="_blank">ByteCodeType</a></code>:<br />
     <code>ByteCodeType.fromLoader(loader:LoaderInfo)</code><br /> and
     <code>ByteCodeType.fromByteArray(input:ByteArray,
     applicationDomain:ApplicationDomain = null)</code></p> <p>Both methods
@@ -122,8 +124,8 @@ for(var i:uint=0; i &lt; definitionNames.length;i++){
       </div> </p> <p>Generating this list using
     <code>metaDataLookupFromLoader(loader)</code> is much, much faster than
     reading all of the reflection data.</p> <p>The list can later be accessed
-    using the <code>ByteCodeTypeCache.metaDataLookup</code> property or using
-    the <code>ByteCodeTypeCache.getClassesWithMetaData(metaDataName)</code>
+    using the <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeTypeCache.html#metaDataLookup" target="_blank">ByteCodeTypeCache.metaDataLookup</a></code> property or using
+    the <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeTypeCache.html#getClassesWithMetaData()" target="_blank">ByteCodeTypeCache.getClassesWithMetaData(metaDataName)</a></code>
     method.</p> <p>At the same time a full list of definition names contained
     within the specified bytecode will be populated.<br /> To retrieve this
     list use this <code>ByteCodeTypeCache</code> property:
