@@ -36,6 +36,8 @@ package org.as3commons.bytecode.emit.impl {
 
 		private var _initialValue:*;
 
+		private var _isConstant:Boolean;
+
 		public function get type():String {
 			return _type;
 		}
@@ -54,6 +56,14 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set initialValue(value:*):void {
 			_initialValue = value;
+		}
+
+		public function get isConstant():Boolean {
+			return _isConstant;
+		}
+
+		public function set isConstant(value:Boolean):void {
+			_isConstant = value;
 		}
 
 		override protected function buildTrait():TraitInfo {

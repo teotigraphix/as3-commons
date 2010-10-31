@@ -21,6 +21,14 @@ package org.as3commons.bytecode.emit {
 	 */
 	public interface IPropertyBuilder extends IEmitMember {
 		/**
+		 * If <code>true</code> the generated property will be marked as a constant.
+		 */
+		function get isConstant():Boolean;
+		/**
+		 * @private
+		 */
+		function set isConstant(value:Boolean):void;
+		/**
 		 * The fully qualified type name of the generated property. I.e. <code>flash.util.Dictionary</code>.
 		 */
 		function get type():String;
