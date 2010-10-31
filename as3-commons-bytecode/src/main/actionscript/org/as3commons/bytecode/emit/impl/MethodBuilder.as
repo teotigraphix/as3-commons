@@ -39,8 +39,6 @@ package org.as3commons.bytecode.emit.impl {
 
 	public class MethodBuilder extends EmitMember implements IMethodBuilder {
 
-		private static const CONSTANT_METHOD_ERROR:String = "Methods cannot be constant.";
-
 		public static const METHOD_NAME:String = "{0}/{1}";
 
 		private var _returnType:String = BuiltIns.VOID.fullName;
@@ -81,14 +79,6 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set hasRestArguments(value:Boolean):void {
 			_hasRestArguments = value;
-		}
-
-		override public function get isConstant():Boolean {
-			return false;
-		}
-
-		override public function set isConstant(value:Boolean):void {
-			throw new IllegalOperationError(CONSTANT_METHOD_ERROR);
 		}
 
 		public function defineArgument(type:String = "", isOptional:Boolean = false, defaultValue:Object = null):MethodArgument {

@@ -24,7 +24,6 @@ package org.as3commons.bytecode.emit.impl {
 		private var _isOverride:Boolean;
 		private var _isFinal:Boolean;
 		private var _isStatic:Boolean;
-		private var _isConstant:Boolean;
 
 		public function EmitMember(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
 			super(name, visibility, nameSpace);
@@ -52,14 +51,6 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set isStatic(value:Boolean):void {
 			_isStatic = value;
-		}
-
-		public function get isConstant():Boolean {
-			return _isConstant;
-		}
-
-		public function set isConstant(value:Boolean):void {
-			_isConstant = value;
 		}
 
 		public function get metadata():Array {
