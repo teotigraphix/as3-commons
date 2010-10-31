@@ -15,8 +15,11 @@
  */
 package org.as3commons.bytecode.abc {
 
+	import flash.errors.IllegalOperationError;
+
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.typeinfo.Annotatable;
+	import org.as3commons.lang.ICloneable;
 
 	/**
 	 * as3commons-bytecode representation of <code>traits_info</code> in the ABC file format, which is the base type for all kinds of object traits
@@ -25,6 +28,7 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Trait" in the AVM Spec (page 29)
 	 */
 	public class TraitInfo extends Annotatable {
+
 		public var traitMultiname:QualifiedName;
 		public var traitKind:TraitKind;
 		public var isFinal:Boolean;
@@ -32,6 +36,19 @@ package org.as3commons.bytecode.abc {
 
 		public function TraitInfo() {
 			super();
+		}
+
+		override public function clone():* {
+			throw new IllegalOperationError(NOT_IMPLEMENTED_ERROR);
+		}
+
+		override protected function populateClone(annotatable:Annotatable):void {
+			super.populateClone(annotatable);
+			var traitInfo:TraitInfo = TraitInfo(annotatable);
+			traitInfo.traitMultiname = this.traitMultiname.clone();
+			traitInfo.traitKind = this.traitKind;
+			traitInfo.isFinal = this.isFinal;
+			traitInfo.isOverride = this.isOverride;
 		}
 
 		public function get hasMetadata():Boolean {

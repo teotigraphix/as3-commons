@@ -15,6 +15,8 @@
  */
 package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
+	import org.as3commons.bytecode.typeinfo.Annotatable;
+	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -33,6 +35,22 @@ package org.as3commons.bytecode.abc {
 
 		public function SlotOrConstantTrait() {
 			super();
+		}
+
+		override public function clone():* {
+			var slot:SlotOrConstantTrait = new SlotOrConstantTrait();
+			populateClone(slot);
+		}
+
+		override protected function populateClone(annotatable:Annotatable):void {
+			super.populateClone(annotatable);
+			var slot:SlotOrConstantTrait = SlotOrConstantTrait(annotatable);
+			slot.slotId = slotId;
+			slot.typeMultiname = typeMultiname.clone();
+			slot.vindex = vindex;
+			slot.vkind = vkind;
+			slot.isStatic = isStatic;
+			slot.defaultValue = (defaultValue is ICloneable) ? ICloneable(defaultValue).clone() : defaultValue;
 		}
 
 		public function toString():String {

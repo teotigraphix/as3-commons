@@ -17,12 +17,13 @@ package org.as3commons.bytecode.abc {
 	import flash.errors.IllegalOperationError;
 
 	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.StringUtils;
 
 	/**
 	 * Represents an individual opcode operation with parameters.
 	 */
-	public class Op {
+	public class Op implements ICloneable {
 
 		private static const ARGUMENT_TYPE_ERROR:String = "Wrong opcode argument type for opcode {0}, expected {1}, but got {2}";
 		private static const OBJECT_TYPE_NAME:String = "object";
@@ -39,6 +40,18 @@ package org.as3commons.bytecode.abc {
 			_opcode = opcode;
 			_parameters = (parameters) ? parameters : [];
 			checkParameters(_parameters, _opcode);
+		}
+
+		public function clone():* {
+			var params:Array = [];
+			for each (var obj:* in _parameters) {
+				if (obj is ICloneable) {
+					params[params.length] = ICloneable(obj).clone();
+				} else {
+					params[params.length] = obj;
+				}
+			}
+			return new Op(_opcode, params);
 		}
 
 		private static function checkParameters(parameters:Array, opcode:Opcode):void {

@@ -34,7 +34,9 @@ package org.as3commons.bytecode.abc {
 			_parameters = params;
 		}
 
-
+		override public function clone():* {
+			return new MultinameG(_qualifiedName.clone(), _paramCount, _parameters, kind);
+		}
 
 		public function get paramCount():uint {
 			return _paramCount;

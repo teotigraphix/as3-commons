@@ -22,6 +22,10 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IEmitObject;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 
+	/**
+	 * Base class for all emit builder classes, provides stubs for all the shared properties.
+	 * @author Roland Zwaga
+	 */
 	public class BaseBuilder implements IEmitObject {
 
 		private static const NOT_IMPLEMENTED_ERROR:String = "buildTrait is not implemented in BaseBuilder base class.";
@@ -46,11 +50,30 @@ package org.as3commons.bytecode.emit.impl {
 			NAMESPACEKIND_LOOKUP[MemberVisibility.PROTECTED] = NamespaceKind.PROTECTED_NAMESPACE;
 		}
 
+
+		private var _packageName:String;
+		private var _name:String;
+		private var _namespace:String;
+		private var _visibility:MemberVisibility = MemberVisibility.PUBLIC;
+		private var _trait:TraitInfo;
+
+		/**
+		 * Creates a new <code>BaseBuilder</code> instance.
+		 * @param name The specified name for the generated object.
+		 * @param visibility The visibility that will be assigned to the generated object.
+		 * @param nameSpace The namespace that will be assigned to the generated object.
+		 */
 		public function BaseBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
 			super();
 			init(name, nameSpace, visibility);
 		}
 
+		/**
+		 * Initializes the current <code>BaseBuilder</code> instance.
+		 * @param name The specified name for the generated object.
+		 * @param visibility The visibility that will be assigned to the generated object.
+		 * @param nameSpace The namespace that will be assigned to the generated object.
+		 */
 		protected function init(name:String, nameSpace:String, visibility:MemberVisibility):void {
 			_name = name;
 			_namespace = nameSpace;
@@ -59,52 +82,79 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
-		private var _packageName:String;
-		private var _name:String;
-		private var _namespace:String;
-		private var _visibility:MemberVisibility = MemberVisibility.PUBLIC;
-		private var _trait:TraitInfo;
-
+		/**
+		 * @inheritDoc
+		 */
 		public function get packageName():String {
 			return _packageName;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set packageName(value:String):void {
 			_packageName = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get name():String {
 			return _name;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set name(value:String):void {
 			_name = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get namespace():String {
 			return _namespace;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set namespace(value:String):void {
 			_namespace = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get visibility():MemberVisibility {
 			return _visibility;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set visibility(value:MemberVisibility):void {
 			_visibility = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get trait():TraitInfo {
 			return _trait;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set trait(value:TraitInfo):void {
 			_trait = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		protected function buildTrait():TraitInfo {
 			throw new IllegalOperationError(NOT_IMPLEMENTED_ERROR);
 		}

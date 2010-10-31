@@ -37,7 +37,7 @@ package org.as3commons.bytecode.emit {
 		/**
 		 * @private
 		 */
-		function set argument(value:Array):void;
+		function set arguments(value:Array):void;
 		/**
 		 * Defines an argument for the current <code>IMetaDataBuilder</code>.
 		 */

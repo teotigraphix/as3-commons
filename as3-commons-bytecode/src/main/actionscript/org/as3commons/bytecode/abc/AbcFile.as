@@ -31,8 +31,6 @@ package org.as3commons.bytecode.abc {
 	 */
 	public class AbcFile {
 
-		private static const INSTANCE_INITIALIZER_QNAME:String = "{instance initializer (constructor?)}";
-
 		private var _methodInfo:Array;
 		private var _metadataInfo:Array;
 		private var _instanceInfo:Array;
@@ -65,14 +63,29 @@ package org.as3commons.bytecode.abc {
 			return addUniquely(classInfo, _classInfo);
 		}
 
+		public function addClassInfos(classInfos:Array):void {
+			Assert.notNull(classInfos);
+			addCollection(addClassInfo, classInfos);
+		}
+
 		public function addMetadataInfo(metadata:Metadata):int {
 			Assert.notNull(metadata);
 			return addUniquely(metadata, _metadataInfo);
 		}
 
+		public function addMetadataInfos(metadatas:Array):void {
+			Assert.notNull(metadatas);
+			addCollection(addMetadataInfo, metadatas);
+		}
+
 		public function addMethodInfo(methodInfo:MethodInfo):int {
 			Assert.notNull(methodInfo);
 			return addUniquely(methodInfo, _methodInfo);
+		}
+
+		public function addMethodInfos(methodInfos:Array):void {
+			Assert.notNull(methodInfos);
+			addCollection(addMethodInfo, methodInfo);
 		}
 
 		public function addUniquely(itemToAdd:Object, collectionToAddTo:Array):int {
@@ -106,9 +119,19 @@ package org.as3commons.bytecode.abc {
 			return addUniquely(instanceInfo, _instanceInfo);
 		}
 
+		public function addInstanceInfos(instanceInfos:Array):void {
+			Assert.notNull(instanceInfos);
+			addCollection(addInstanceInfo, instanceInfos);
+		}
+
 		public function addScriptInfo(scriptInfo:ScriptInfo):int {
 			Assert.notNull(scriptInfo);
 			return addUniquely(scriptInfo, _scriptInfo);
+		}
+
+		public function addScriptInfos(scriptInfos:Array):void {
+			Assert.notNull(scriptInfos);
+			addCollection(addScriptInfo, scriptInfos);
 		}
 
 		public function addMethodBody(methodBody:MethodBody):int {
@@ -164,61 +187,10 @@ package org.as3commons.bytecode.abc {
 			_methodBodies = value;
 		}
 
-		//TODO: This would do better in a utility class that converts AbcFiles to ClassDefinitions
-		public function get classDefinitions():Array {
-			var classDefinitions:Array = [];
-
-			for each (var currentInstanceInfo:InstanceInfo in instanceInfo) {
-				var classDefinition:ClassDefinition = new ClassDefinition();
-				classDefinition.className = currentInstanceInfo.classMultiname as QualifiedName;
-				classDefinition.superClass = currentInstanceInfo.superclassMultiname as QualifiedName;
-				classDefinition.isFinal = currentInstanceInfo.isFinal;
-				classDefinition.isSealed = currentInstanceInfo.isSealed;
-				classDefinition.isProtectedNamespace = currentInstanceInfo.isProtected;
-				classDefinition.isInterface = currentInstanceInfo.isInterface;
-
-				var instanceInitializer:MethodInfo = currentInstanceInfo.instanceInitializer;
-				classDefinition.instanceInitializer = new Method(new QualifiedName(INSTANCE_INITIALIZER_QNAME, new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "")), instanceInitializer.returnType);
-				classDefinition.instanceInitializer.setMethodBody(instanceInitializer.methodBody);
-
-				for each (var methodTrait:MethodTrait in currentInstanceInfo.methodTraits) {
-					var associatedMethodInfo:MethodInfo = methodTrait.traitMethod;
-					var method:Method;
-					switch (methodTrait.traitKind) {
-						case TraitKind.GETTER:
-							method = classDefinition.addGetter(methodTrait.traitMultiname, associatedMethodInfo.returnType, false, methodTrait.isOverride, methodTrait.isFinal);
-							break;
-						case TraitKind.SETTER:
-							method = classDefinition.addSetter(methodTrait.traitMultiname, associatedMethodInfo.returnType, false, methodTrait.isOverride, methodTrait.isFinal);
-							break;
-						case TraitKind.METHOD:
-							method = classDefinition.addMethod(methodTrait.traitMultiname, associatedMethodInfo.returnType, false, methodTrait.isOverride, methodTrait.isFinal);
-							break;
-						default:
-							throw new Error("Unknown method trait kind: " + methodTrait.traitKind);
-							break;
-					}
-
-					for each (var argument:Argument in associatedMethodInfo.argumentCollection) {
-						method.addArgument(argument);
-					}
-
-					method.setMethodBody(associatedMethodInfo.methodBody);
-				}
-
-				for each (var slotOrConstant:SlotOrConstantTrait in currentInstanceInfo.slotOrConstantTraits) {
-					classDefinition.addField(slotOrConstant.traitMultiname as QualifiedName, slotOrConstant.typeMultiname as QualifiedName);
-				}
-
-				var interfaces:Array = classDefinition.interfaces;
-				for each (var interfaceMultiname:BaseMultiname in currentInstanceInfo.interfaceMultinames) {
-					interfaces[interfaces.length] = interfaceMultiname;
-				}
-
-				classDefinitions[classDefinitions.length] = classDefinition;
+		protected function addCollection(addFunction:Function, collection:Array):void {
+			for each (var obj:Object in collection) {
+				addFunction(obj);
 			}
-
-			return classDefinitions;
 		}
 
 		public function toString():String {

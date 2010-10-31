@@ -23,6 +23,7 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "QName" in the AVM Spec (page 23)
 	 */
 	public class QualifiedName extends NamedMultiname {
+
 		private static const ASTERISK:String = '*';
 		private var _namespace:LNamespace;
 
@@ -38,7 +39,6 @@ package org.as3commons.bytecode.abc {
 				throw new Error("Invalid multiname kind: " + kindValue);
 			}
 		}
-
 
 		public function get nameSpace():LNamespace {
 			return _namespace;
@@ -77,6 +77,10 @@ package org.as3commons.bytecode.abc {
 			}
 
 			return matches;
+		}
+
+		override public function clone():* {
+			return new QualifiedName(this.name, this._namespace.clone(), this.kind);
 		}
 
 	}

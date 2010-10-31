@@ -70,8 +70,10 @@ package org.as3commons.bytecode.emit.impl {
 			_metadata = value;
 		}
 
-		public function defineMetaData():IMetaDataBuilder {
+		public function defineMetaData(name:String = null, arguments:Array = null):IMetaDataBuilder {
 			var mdb:MetaDataBuilder = new MetaDataBuilder();
+			mdb.name = name;
+			mdb.arguments = arguments;
 			_metadata[_metadata.length] = mdb;
 			return mdb;
 		}

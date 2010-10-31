@@ -31,6 +31,10 @@ package org.as3commons.bytecode.abc {
 			_name = name;
 		}
 
+		override public function clone():* {
+			return new NamedMultiname(this.kind, this.name);
+		}
+
 		public function get name():String {
 			return _name;
 		}

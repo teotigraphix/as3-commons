@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import flash.errors.IllegalOperationError;
+
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
+	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -23,11 +26,16 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Names" in the AVM Spec (page 8)
 	 */
-	public class BaseMultiname {
+	public class BaseMultiname implements ICloneable {
+		private static const NOT_IMPLEMENTED_ERROR:String = "Not implemented in BaseMultiname";
 		private var _kind:MultinameKind;
 
 		public function BaseMultiname(kindValue:MultinameKind) {
 			_kind = kindValue;
+		}
+
+		public function clone():* {
+			throw new IllegalOperationError(NOT_IMPLEMENTED_ERROR);
 		}
 
 		public function assertAppropriateMultinameKind(expectedKinds:Array, givenKind:MultinameKind):void {
@@ -48,9 +56,9 @@ package org.as3commons.bytecode.abc {
 
 			return matches;
 		}
-		
+
 		public function toString():String {
-			return StringUtils.substitute("BaseMultiname[kind={0}]",_kind);
+			return StringUtils.substitute("BaseMultiname[kind={0}]", _kind);
 		}
 	}
 }

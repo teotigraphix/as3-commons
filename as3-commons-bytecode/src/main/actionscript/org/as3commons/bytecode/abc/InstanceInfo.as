@@ -22,7 +22,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Instance" in the AVM Spec (page 28)
 	 */
-	public class InstanceInfo {
+	public class InstanceInfo extends BaseTypeInfo {
 
 		//shortcut for emit.* package
 		public var classInfo:ClassInfo;
@@ -32,7 +32,6 @@ package org.as3commons.bytecode.abc {
 		public var protectedNamespace:LNamespace;
 		public var interfaceMultinames:Array;
 		public var instanceInitializer:MethodInfo;
-		public var traits:Array;
 
 		public var isProtected:Boolean;
 		public var isFinal:Boolean;
@@ -46,7 +45,6 @@ package org.as3commons.bytecode.abc {
 
 		private function initInstanceInfo():void {
 			interfaceMultinames = [];
-			traits = [];
 		}
 
 		/**
@@ -58,34 +56,6 @@ package org.as3commons.bytecode.abc {
 
 		public function get interfaceCount():int {
 			return interfaceMultinames.length;
-		}
-
-		public function get slotOrConstantTraits():Array {
-			var matchingTraits:Array = [];
-			for each (var trait:TraitInfo in traits) {
-				if (trait is SlotOrConstantTrait) {
-					matchingTraits[matchingTraits.length] = trait;
-				}
-			}
-			return matchingTraits;
-		}
-
-		public function filterTraits(traitKind:TraitKind):Array {
-			return traits.filter(function(trait:TraitInfo, index:int, array:Array):Boolean {
-				return (trait.traitKind == traitKind);
-			});
-		}
-
-		public function get methodTraits():Array {
-			return filterTraits(TraitKind.METHOD);
-		}
-
-		public function get getterTraits():Array {
-			return filterTraits(TraitKind.GETTER);
-		}
-
-		public function get setterTraits():Array {
-			return filterTraits(TraitKind.SETTER);
 		}
 
 		public function toString():String {

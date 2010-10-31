@@ -15,7 +15,6 @@
  */
 package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
-
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -24,6 +23,7 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "MultinameL" in the AVM Spec (page 24)
 	 */
 	public class MultinameL extends BaseMultiname {
+
 		private var _namespaceSet:NamespaceSet;
 
 		public function MultinameL(namespaceSet:NamespaceSet, kindValue:MultinameKind = null) {
@@ -35,6 +35,10 @@ package org.as3commons.bytecode.abc {
 		protected function initMultinameL(kindValue:MultinameKind, namespaceSet:NamespaceSet):void {
 			assertAppropriateMultinameKind([MultinameKind.MULTINAME_L, MultinameKind.MULTINAME_LA], kindValue);
 			_namespaceSet = namespaceSet;
+		}
+
+		override public function clone():* {
+			return new MultinameL(_namespaceSet, this.kind);
 		}
 
 		public function get namespaceSet():NamespaceSet {

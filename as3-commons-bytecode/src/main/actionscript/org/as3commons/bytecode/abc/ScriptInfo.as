@@ -14,20 +14,30 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.lang.util.CloneUtils;
 
 	/**
 	 * as3commons-bytecode representation of <code>script_info</code> in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Script" in the AVM Spec (page 32)
 	 */
-	public class ScriptInfo {
+	public class ScriptInfo implements ICloneable {
 		public var scriptInitializer:MethodInfo;
 		public var traits:Array;
 
 		public function ScriptInfo() {
 			super();
 			traits = [];
+		}
+
+
+		public function clone():* {
+			var scriptInfo:ScriptInfo = new ScriptInfo();
+			scriptInfo.scriptInitializer = scriptInitializer.clone();
+			scriptInfo.traits = CloneUtils.cloneList(traits);
+			return scriptInfo;
 		}
 
 		public function toString():String {

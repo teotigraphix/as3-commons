@@ -20,6 +20,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
@@ -86,7 +87,7 @@ package org.as3commons.bytecode.emit.impl {
 			}
 			var metadata:Array = buildMetadata();
 			for each (var mi:MethodInfo in methods) {
-				if (!mi.as3commonsByteCodeAssignedMethodTrait.isStatic) {
+				if (!MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic) {
 					instanceInfo.traits[instanceInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
 				} else {
 					throw new IllegalOperationError(INTERFACE_STATIC_METHOD_ERROR);

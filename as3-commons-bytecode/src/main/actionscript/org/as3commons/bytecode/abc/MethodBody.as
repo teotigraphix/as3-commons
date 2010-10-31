@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.lang.util.CloneUtils;
 
 	/**
 	 * as3commons-bytecode representation of <code>method_body_info</code> in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Method body" in the AVM Spec (page 32)
 	 */
-	public class MethodBody {
+	public class MethodBody implements ICloneable {
 		/**
 		 * Containes <code>Opcode</code> instances with appropriate arguments, representing the body of this method.
 		 *
@@ -57,6 +59,18 @@ package org.as3commons.bytecode.abc {
 
 		public function toString():String {
 			return StringUtils.substitute("\n\t{0}\n\t{\t\n\t\t//maxStack={1}, localCount={2}, initScopeDepth={3}, maxScopeDepth={4}\n\t\t{5}\n\t}\ntraits={6}", methodSignature, maxStack, localCount, initScopeDepth, maxScopeDepth, opcodes.join("\n\t\t"), (traits.length == 0) ? "(no traits)" : ("[\n\t" + traits + "]\n"));
+		}
+
+		public function clone():* {
+			var clone:MethodBody = new MethodBody();
+			clone.opcodes = CloneUtils.cloneList(opcodes);
+			clone.maxStack = maxStack;
+			clone.localCount = localCount;
+			clone.initScopeDepth = initScopeDepth;
+			clone.maxScopeDepth = maxScopeDepth;
+			clone.exceptionInfos = CloneUtils.cloneList(exceptionInfos);
+			clone.traits = CloneUtils.cloneList(traits);
+			return clone;
 		}
 	}
 }

@@ -23,6 +23,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
@@ -41,6 +42,10 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.Type;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public class ClassBuilder extends BaseBuilder implements IClassBuilder {
 
 		public static const STATIC_CONSTRUCTOR_NAME:String = "{0}:{1}::{0}:{1}$cinit";
@@ -62,11 +67,20 @@ package org.as3commons.bytecode.emit.impl {
 		private var _abcFile:AbcFile;
 		private var _addedMethods:Dictionary;
 
+		/**
+		 * Creates a new <code>ClassBuilder</code> instance.
+		 * @param abcFile An optional <code>AbcFile</code> that will be used to generate classes
+		 * and interfaces in, when null a new <code>AbcFile</code> instance will be created in
+		 * the <code>build()</code> method.
+		 */
 		public function ClassBuilder(abcFile:AbcFile = null) {
 			super();
 			initClassBuilder(_abcFile);
 		}
 
+		/**
+		 * Initializes the current <code>ClassBuilder</code>.
+		 */
 		protected function initClassBuilder(abcFile:AbcFile):void {
 			_methodBuilders = [];
 			_accessorBuilders = [];
@@ -79,6 +93,9 @@ package org.as3commons.bytecode.emit.impl {
 			_addedMethods = new Dictionary();
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get superClassName():String {
 			return _superClassName;
 		}
@@ -89,30 +106,51 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get isDynamic():Boolean {
 			return _isDynamic;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set isDynamic(value:Boolean):void {
 			_isDynamic = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get isFinal():Boolean {
 			return _isFinal;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set isFinal(value:Boolean):void {
 			_isFinal = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get metadata():Array {
 			return _metadata;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set metadata(value:Array):void {
 			_metadata = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function defineMetaData():IMetaDataBuilder {
 			var mdb:MetaDataBuilder = new MetaDataBuilder();
 			_metadata[_metadata.length] = mdb;
@@ -127,18 +165,27 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function implementInterface(name:String):void {
 			if (_implementedInterfaceNames.indexOf(name) < 0) {
 				_implementedInterfaceNames[_implementedInterfaceNames.length] = name;
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function implementInterfaces(names:Array):void {
 			for each (var name:String in names) {
 				implementInterface(name);
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function defineConstructor():ICtorBuilder {
 			if (_ctorBuilder == null) {
 				_ctorBuilder = new CtorBuilder();
@@ -147,6 +194,9 @@ package org.as3commons.bytecode.emit.impl {
 			return _ctorBuilder;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function defineMethod(name:String = null, nameSpace:String = null):IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.packageName = packageName + PERIOD + this.name;
@@ -156,6 +206,9 @@ package org.as3commons.bytecode.emit.impl {
 			return mb;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function defineAccessor(name:String = null, type:String = null, initialValue:* = undefined):IAccessorBuilder {
 			var ab:IAccessorBuilder = createAccessorBuilder(name, type, initialValue);
 			_accessorBuilders[_accessorBuilders.length] = ab;
@@ -171,6 +224,9 @@ package org.as3commons.bytecode.emit.impl {
 			return ab;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
 			var vb:PropertyBuilder = new PropertyBuilder();
 			vb.packageName = packageName;
@@ -181,7 +237,7 @@ package org.as3commons.bytecode.emit.impl {
 			return vb;
 		}
 
-		public function calculateHierarchDepth(className:String, applicationDomain:ApplicationDomain):uint {
+		protected function calculateHierarchDepth(className:String, applicationDomain:ApplicationDomain):uint {
 			var type:Type = Type.forName(className, applicationDomain);
 			var result:uint = 3;
 			for each (var name:String in type.extendsClasses) {
@@ -190,6 +246,9 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function build(applicationDomain:ApplicationDomain):Array {
 			var hierarchyDepth:uint = calculateHierarchDepth(superClassName, applicationDomain);
 			var methods:Array = createMethods(metadata, (hierarchyDepth + 1));
@@ -201,7 +260,7 @@ package org.as3commons.bytecode.emit.impl {
 			var metadata:Array = buildMetadata();
 			for each (var mi:MethodInfo in methods) {
 				if (!methodExists(mi)) {
-					if (mi.as3commonsByteCodeAssignedMethodTrait.isStatic) {
+					if (MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic) {
 						classInfo.traits[classInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
 					} else {
 						instanceInfo.traits[instanceInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
@@ -327,7 +386,14 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createInitializer(slot:SlotOrConstantTrait):Array {
 			var result:Array = [];
+			//result[result.length] = new Op(Opcode.findproperty, [slot.traitMultiname]);
 			//TODO: Add slot initialization logic
+			/*
+			   findproperty  	private:test
+			   findpropstrict	flash.utils:Dictionary
+			   constructprop 	flash.utils:Dictionary (0)
+			   initproperty  	private:test
+			 */
 			return result;
 		}
 

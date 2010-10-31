@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.typeinfo {
+	import flash.errors.IllegalOperationError;
+
+	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.util.CloneUtils;
 
 	/**
 	 * Anything that can have metadata attached to it uses <code>Annotatable</code> as a base class.
 	 */
-	public class Annotatable {
+	public class Annotatable implements ICloneable {
+
+		protected static const NOT_IMPLEMENTED_ERROR:String = "Not implemented in base class";
+
 		private var _metadata:Array;
 
 		public function Annotatable() {
@@ -45,6 +52,14 @@ package org.as3commons.bytecode.typeinfo {
 		 */
 		public function get metadata():Array {
 			return _metadata;
+		}
+
+		public function clone():* {
+			throw new IllegalOperationError(NOT_IMPLEMENTED_ERROR);
+		}
+
+		protected function populateClone(annotatable:Annotatable):void {
+			annotatable.addMetadataList(CloneUtils.cloneList(metadata));
 		}
 	}
 }
