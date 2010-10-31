@@ -27,6 +27,7 @@ package org.as3commons.bytecode.abc {
 		public static const PUBLIC:LNamespace = new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, ""); // Namespace[public::*]
 		public static const ASTERISK:LNamespace = new LNamespace(NamespaceKind.NAMESPACE, "*"); //  Namespace[namespace::*]
 		public static const FLASH_UTILS:LNamespace = new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "flash.utils"); //  Namespace[public::flash.utils]
+		public static const BUILTIN:LNamespace = new LNamespace(NamespaceKind.NAMESPACE, "http://adobe.com/AS3/2006/builtin"); // Namespace[namespace::http://adobe.com/AS3/2006/builtin]
 
 		public var kind:NamespaceKind;
 		public var name:String;

@@ -27,6 +27,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
+	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
@@ -53,6 +54,15 @@ package org.as3commons.bytecode.emit.impl {
 		private static const MULTIPLE_CONSTRUCTORS_ERROR:String = "A class can only have one constructor defined";
 		private static const PERIOD:String = '.';
 		private static const DUPLICATE_METHOD_ERROR:String = "Duplicate method {0}.{1} in class {2}";
+		private static const CONSTANTKIND_OPCODE_LOOKUP:Dictionary = new Dictionary();
+		{
+			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.DOUBLE] = Opcode.pushdouble;
+			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.INT] = Opcode.pushint;
+			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.FALSE] = Opcode.pushfalse;
+			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.TRUE] = Opcode.pushtrue;
+			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.UINT] = Opcode.pushuint;
+			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.UTF8] = Opcode.pushstring;
+		}
 
 		private var _ctorBuilder:ICtorBuilder;
 		private var _implementedInterfaceNames:Array;
@@ -252,25 +262,14 @@ package org.as3commons.bytecode.emit.impl {
 		public function build(applicationDomain:ApplicationDomain):Array {
 			var hierarchyDepth:uint = calculateHierarchDepth(superClassName, applicationDomain);
 			var methods:Array = createMethods(metadata, (hierarchyDepth + 1));
-			var variableTraits:Array = createVariables();
-			methods = methods.concat(createAccessors(variableTraits));
-			var classInfo:ClassInfo = createClassInfo(variableTraits, hierarchyDepth++);
-			var instanceInfo:InstanceInfo = createInstanceInfo(hierarchyDepth);
+			var slotTraits:Array = createSlots();
+			methods = methods.concat(createAccessors(slotTraits));
+			var classInfo:ClassInfo = createClassInfo(slotTraits, methods, hierarchyDepth++);
+			var instanceInfo:InstanceInfo = createInstanceInfo(slotTraits, methods, hierarchyDepth);
 			instanceInfo.classInfo = classInfo;
 			var metadata:Array = buildMetadata();
-			for each (var mi:MethodInfo in methods) {
-				if (!methodExists(mi)) {
-					if (MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic) {
-						classInfo.traits[classInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
-					} else {
-						instanceInfo.traits[instanceInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
-					}
-				} else {
-					throw new IllegalOperationError(StringUtils.substitute(DUPLICATE_METHOD_ERROR, mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name, mi.methodName, this.name));
-				}
-			}
 
-			for each (var st:SlotOrConstantTrait in variableTraits) {
+			for each (var st:SlotOrConstantTrait in slotTraits) {
 				if (st.isStatic) {
 					classInfo.traits[classInfo.traits.length] = st;
 				} else {
@@ -280,7 +279,7 @@ package org.as3commons.bytecode.emit.impl {
 			return [classInfo, instanceInfo, methods, metadata];
 		}
 
-		protected function createVariables():Array {
+		protected function createSlots():Array {
 			var result:Array = [];
 			for each (var vb:IPropertyBuilder in _variableBuilders) {
 				result[result.length] = vb.build();
@@ -313,33 +312,56 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
-		protected function createInstanceInfo(initScopeDepth:uint):InstanceInfo {
-			var ii:InstanceInfo = new InstanceInfo();
-			ii.isFinal = isFinal;
-			ii.isInterface = false;
-			//TODO: inspect methods and properties to see if any of them are protected,
-			//based on this set isProtected: 
-			//ii.isProtected = isProtected;
-			ii.isSealed = !isDynamic;
-			ii.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
-			ii.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : BuiltIns.OBJECT.fullName);
-			if (ii.isProtected) {
-				ii.protectedNamespace = MultinameUtil.toLNamespace(packageName + MultinameUtil.DOUBLE_COLON + name, NamespaceKind.PROTECTED_NAMESPACE);
+		protected function createInstanceInfo(slots:Array, methods:Array, initScopeDepth:uint):InstanceInfo {
+			var instanceInfo:InstanceInfo = new InstanceInfo();
+			for each (var mi:MethodInfo in methods) {
+				if (MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic == false) {
+					instanceInfo.traits[instanceInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+					if (mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name === NamespaceKind.PROTECTED_NAMESPACE.description) {
+						instanceInfo.isProtected = true;
+					}
+				}
+			}
+			if (!instanceInfo.isProtected) {
+				for each (var slot:SlotOrConstantTrait in slots) {
+					if (slot.traitMultiname.nameSpace.name === NamespaceKind.PROTECTED_NAMESPACE.description) {
+						instanceInfo.isProtected = true;
+						break;
+					}
+				}
+			}
+			instanceInfo.isFinal = isFinal;
+			instanceInfo.isInterface = false;
+			instanceInfo.isSealed = !isDynamic;
+			instanceInfo.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
+			instanceInfo.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : BuiltIns.OBJECT.fullName);
+			if (instanceInfo.isProtected) {
+				instanceInfo.protectedNamespace = MultinameUtil.toLNamespace(packageName + MultinameUtil.DOUBLE_COLON + name, NamespaceKind.PROTECTED_NAMESPACE);
 			}
 			if (_ctorBuilder == null) {
 				_ctorBuilder = createDefaultConstructor();
 			}
-			ii.instanceInitializer = _ctorBuilder.build();
-			ii.instanceInitializer.methodBody.initScopeDepth = initScopeDepth++;
-			ii.instanceInitializer.methodBody.maxScopeDepth = initScopeDepth;
-			ii.instanceInitializer.methodName = StringUtils.substitute(CONSTRUCTOR_NAME, packageName, name);
+			instanceInfo.instanceInitializer = _ctorBuilder.build();
+			instanceInfo.instanceInitializer.methodBody.initScopeDepth = initScopeDepth++;
+			instanceInfo.instanceInitializer.methodBody.maxScopeDepth = initScopeDepth;
+			instanceInfo.instanceInitializer.methodName = StringUtils.substitute(CONSTRUCTOR_NAME, packageName, name);
 			for each (var interfaceName:String in _implementedInterfaceNames) {
-				ii.interfaceMultinames[ii.interfaceMultinames.length] = MultinameUtil.toMultiName(interfaceName);
+				instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(interfaceName);
 			}
-			return ii;
+			return instanceInfo;
 		}
 
-		protected function createClassInfo(variableTraits:Array, initScopeDepth:uint, isInterface:Boolean = false):ClassInfo {
+		protected function createClassInfo(variableTraits:Array, methods:Array, initScopeDepth:uint, isInterface:Boolean = false):ClassInfo {
+			var classInfo:ClassInfo = new ClassInfo();
+			for each (var mi:MethodInfo in methods) {
+				if (!methodExists(mi)) {
+					if (MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic) {
+						classInfo.traits[classInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+					}
+				} else {
+					throw new IllegalOperationError(StringUtils.substitute(DUPLICATE_METHOD_ERROR, mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name, mi.methodName, this.name));
+				}
+			}
 			var staticvariables:Array = [];
 			if (variableTraits != null) {
 				for each (var slot:SlotOrConstantTrait in variableTraits) {
@@ -348,15 +370,14 @@ package org.as3commons.bytecode.emit.impl {
 					}
 				}
 			}
-			var ci:ClassInfo = new ClassInfo();
 			var cb:ICtorBuilder = createStaticConstructor(staticvariables, isInterface);
 			cb.isStatic = true;
-			ci.staticInitializer = cb.build();
-			ci.staticInitializer.methodBody.initScopeDepth = initScopeDepth++;
-			ci.staticInitializer.methodBody.maxScopeDepth = initScopeDepth;
-			ci.staticInitializer.as3commonsBytecodeName = AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME;
-			ci.staticInitializer.methodName = StringUtils.substitute(STATIC_CONSTRUCTOR_NAME, packageName, name);
-			return ci;
+			classInfo.staticInitializer = cb.build();
+			classInfo.staticInitializer.methodBody.initScopeDepth = initScopeDepth++;
+			classInfo.staticInitializer.methodBody.maxScopeDepth = initScopeDepth;
+			classInfo.staticInitializer.as3commonsBytecodeName = AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME;
+			classInfo.staticInitializer.methodName = StringUtils.substitute(STATIC_CONSTRUCTOR_NAME, packageName, name);
+			return classInfo;
 		}
 
 		protected function createDefaultConstructor():ICtorBuilder {
@@ -386,15 +407,16 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createInitializer(slot:SlotOrConstantTrait):Array {
 			var result:Array = [];
-			//result[result.length] = new Op(Opcode.findproperty, [slot.traitMultiname]);
-			//TODO: Add slot initialization logic
-			/*
-			   findproperty  	private:test
-			   findpropstrict	flash.utils:Dictionary
-			   constructprop 	flash.utils:Dictionary (0)
-			   initproperty  	private:test
-			 */
+			if (!(slot.defaultValue === undefined)) {
+				result[result.length] = new Op(Opcode.findproperty, [slot.traitMultiname]);
+				result[result.length] = new Op(determinePushOpcode(slot), [slot.defaultValue]);
+				result[result.length] = new Op(Opcode.initproperty, [slot.traitMultiname]);
+			}
 			return result;
+		}
+
+		protected function determinePushOpcode(slot:SlotOrConstantTrait):Opcode {
+			return Opcode(CONSTANTKIND_OPCODE_LOOKUP[slot.vkind]);
 		}
 
 		protected function methodExists(methodInfo:MethodInfo):Boolean {
