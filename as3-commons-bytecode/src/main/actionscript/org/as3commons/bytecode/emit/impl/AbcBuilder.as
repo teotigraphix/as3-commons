@@ -37,6 +37,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
+	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
 	import org.as3commons.bytecode.swf.AbcClassLoader;
 	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.util.MultinameUtil;
@@ -160,9 +161,27 @@ package org.as3commons.bytecode.emit.impl {
 				pb = _packageBuilders[name];
 			} else {
 				pb = new PackageBuilder(name, _abcFile);
+				pb.addEventListener(ExtendedClassesNotFoundError.EXTENDED_CLASSES_NOT_FOUND, classNotFoundHandler);
 				_packageBuilders[name] = pb;
 			}
 			return pb;
+		}
+
+		protected function classNotFoundHandler(event:ExtendedClassesNotFoundError):void {
+			var nameList:Array = extractExtendedClasses(event.className, event.applicationDomain);
+			for each (var name:String in nameList) {
+				event.extendedClasses[event.extendedClasses.length] = name;
+			}
+		}
+
+		protected function extractPackageName(fullName:String):String {
+			var idx:int = fullName.indexOf(':');
+			if (idx > -1) {
+				return fullName.split(':')[0];
+			} else {
+				idx = fullName.lastIndexOf('.');
+				return fullName.substr(0, idx);
+			}
 		}
 
 		/**
@@ -327,12 +346,9 @@ package org.as3commons.bytecode.emit.impl {
 			mb.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.getscopeobject, [0]);
-			var type:Type = Type.forName(superClassName, applicationDomain);
-			var extendedClasses:Array;
-			if (superClassName != BuiltIns.OBJECT.fullName) {
-				extendedClasses = type.extendsClasses.reverse();
-			} else {
-				extendedClasses = [BuiltIns.OBJECT.fullName].concat(type.extendsClasses.reverse());
+			var extendedClasses:Array = extractExtendedClasses(superClassName, applicationDomain);
+			if (superClassName == BuiltIns.OBJECT.fullName) {
+				extendedClasses = [BuiltIns.OBJECT.fullName].concat(extendedClasses);
 			}
 			extendedClasses[extendedClasses.length] = superClassName;
 			if (superClassName != BuiltIns.OBJECT.fullName) {
@@ -359,6 +375,21 @@ package org.as3commons.bytecode.emit.impl {
 			mi.methodBody = mb.buildBody();
 			mi.methodBody.methodSignature = mi;
 			return mi;
+		}
+
+		protected function extractExtendedClasses(superClassname:String, applicationDomain:ApplicationDomain):Array {
+			var extendedClasses:Array = [];
+			if (applicationDomain.hasDefinition(superClassname)) {
+				var type:Type = Type.forName(superClassname, applicationDomain);
+				return type.extendsClasses.reverse();
+			} else {
+				var packageName:String = extractPackageName(superClassname);
+				var packageBuilder:PackageBuilder = _packageBuilders[packageName];
+				if (packageBuilder != null) {
+					packageBuilder.extractExtendeClasses(extendedClasses, superClassname, applicationDomain);
+				}
+			}
+			return extendedClasses;
 		}
 
 		/**

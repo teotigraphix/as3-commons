@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
+	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 
+	[Event(name="extendedClassesNotFound", type="org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
 	/**
 	 * Describes an object that can generate a class object to be added to an <code>AbcFile</code> which
 	 * enables runtime class generation.
 	 * @author Roland Zwaga
 	 */
-	public interface IClassBuilder extends IEmitObject {
+	public interface IClassBuilder extends ITypeBuilder, IEventDispatcher {
 		/**
-		 * The fully qualified class name for the class that will be generated. I.e. <code>mx.events.FlexEvent</code>.
+		 * The fully qualified superclass name for the class that will be generated. I.e. <code>mx.events.FlexEvent</code>.
 		 */
 		function get superClassName():String;
 
@@ -73,20 +75,6 @@ package org.as3commons.bytecode.emit {
 		 */
 		function defineConstructor():ICtorBuilder;
 		/**
-		 * Creates an <code>IMethodBuilder</code> instance for the specified method name.
-		 * @param name The name of the method. I.e. <code>myMethodName</code>.
-		 * @return The specified <code>IMethodBuilder</code> instance.
-		 */
-		function defineMethod(name:String = null, nameSpace:String = null):IMethodBuilder;
-		/**
-		 * Creates an <code>IAccessorBuilder</code> (getter/setter) instance for the specified accessor name.
-		 * @param name The name of the accessor. I.e. <code>MyGetter</code>.
-		 * @param type The fully qualified type of the property. I.e. <code>String</code> or <code>flash.utils.Dictionary</code>.
-		 * @param initialValue The default value of the property. I.e. "My default value".
-		 * @return The specified <code>IAccessorBuilder</code> instance.
-		 */
-		function defineAccessor(name:String = null, type:String = null, initialValue:* = undefined):IAccessorBuilder;
-		/**
 		 * Creates an <code>IPropertyBuilder</code> instance for the specified property name.
 		 * @param name The name of the property. I.e. <code>myProperty</code>.
 		 * @param type The fully qualified type of the property. I.e. <code>String</code> or <code>flash.utils.Dictionary</code>.
@@ -94,11 +82,5 @@ package org.as3commons.bytecode.emit {
 		 * @return The specified <code>IPropertyBuilder</code> instance.
 		 */
 		function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder;
-		/**
-		 * Internally used build method, this method should never be called by third parties.
-		 * @param applicationDomain
-		 * @return
-		 */
-		function build(applicationDomain:ApplicationDomain):Array;
 	}
 }

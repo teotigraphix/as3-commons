@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
+	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 
+	[Event(name="extendedClassesNotFound", type="org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
 	/**
 	 * Describes an object capable of creating classes, interfaces and package level variables and methods.
 	 * @author Roland Zwaga
 	 */
-	public interface IPackageBuilder {
+	public interface IPackageBuilder extends IEventDispatcher {
 		/**
 		 * The name of the current package. i.e. <code>com.myclasses.test</code>.
 		 */
