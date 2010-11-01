@@ -60,7 +60,7 @@ package org.as3commons.bytecode.emit.impl {
 			_methodBodyBuilder.addOpcode(Opcode.returnvalue);
 			var mb:MethodBody = _methodBodyBuilder.buildBody();
 			assertEquals(8, mb.opcodes.length);
-			assertEquals(2,mb.maxStack);
+			assertEquals(3,mb.maxStack);
 			assertEquals(1,mb.localCount);
 			assertEquals(1,mb.initScopeDepth);
 			assertEquals(2,mb.maxScopeDepth);
