@@ -89,15 +89,14 @@ package org.as3commons.bytecode.emit.impl {
 	 *   var methodBuilder:IMethodBuilder = classBuilder.defineMethod("multiplyByHundred");
 	 *   methodBuilder.returnType("int");
 	 *   methodBuilder.defineArgument("int");
-	 *   methodBuilder.addOpcode(opcode.getlocal_0)
-	 *                .addOpcode(opcode.pushscope)
-	 *                .addOpcode(opcode.getlocal_1)
-	 *                .addOpcode(opcode.pushbyte, [100])
-	 *                .addOpcode(opcode.multiply)
-	 *                .addOpcode(opcode.convert_i)
-	 *                .addOpcode(opcode.setlocal_1)
-	 *                .addOpcode(opcode.getlocal_1)
-	 *                .addOpcode(opcode.returnvalue);
+	 *   methodBuilder.addOpcode(Opcode.getlocal_0)
+	 *                .addOpcode(Opcode.pushscope)
+	 *                .addOpcode(Opcode.getlocal_1)
+	 *                .addOpcode(Opcode.pushint, [100])
+	 *                .addOpcode(Opcode.multiply)
+	 *                .addOpcode(Opcode.setlocal_1)
+	 *                .addOpcode(Opcode.getlocal_1)
+	 *                .addOpcode(Opcode.returnvalue);
 	 *   abcBuilder.addEventListener(Event.COMPLETE, completeHandler);
 	 *   abcBuilder.buildAndLoad(); //loads the generated class into the current application domain
 	 * }

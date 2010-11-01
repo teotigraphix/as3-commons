@@ -92,14 +92,14 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function build(initScopeDepth:uint = 1):MethodInfo {
 			var mi:MethodInfo = new MethodInfo();
-			if (_methodBodyBuilder != null) {
-				mi.methodBody = _methodBodyBuilder.buildBody(initScopeDepth);
-				mi.methodBody.methodSignature = mi;
-				mi.methodBody.localCount = 1 + mi.argumentCollection.length + ((_hasRestArguments) ? 1 : 0);
-			}
 			for each (var methodArg:MethodArgument in _arguments) {
 				var arg:Argument = new Argument(MultinameUtil.toQualifiedName(methodArg.type), methodArg.isOptional, methodArg.defaultValue, BuildUtil.defaultValueToConstantKind(methodArg.defaultValue));
 				mi.argumentCollection[mi.argumentCollection.length] = arg;
+			}
+			if (_methodBodyBuilder != null) {
+				var extraLocalCount:uint = mi.argumentCollection.length + ((_hasRestArguments) ? 1 : 0);
+				mi.methodBody = _methodBodyBuilder.buildBody(initScopeDepth, extraLocalCount);
+				mi.methodBody.methodSignature = mi;
 			}
 			trait = buildTrait();
 			MethodTrait(trait).traitMethod = mi;

@@ -91,15 +91,14 @@ var packageBuilder:IPackageBuilder = abcBuilder.definePackage("com.classes.gener
     	<p>By default a generated method has a return type of <code>void</code>, to change this set the <code>returnType</code> property:</p>
     	<div class="source"><pre>methodBuilder.returnType = "int";</pre></div>
     	<p>Lastly, to add a method body a certain knowledge about AVM opcodes is required:</p>
-    	<div class="source"><pre>methodBuilder.addOpcode(opcode.getlocal_0)
-             .addOpcode(opcode.pushscope)
-             .addOpcode(opcode.getlocal_1)
-             .addOpcode(opcode.pushbyte, [100])
-             .addOpcode(opcode.multiply)
-             .addOpcode(opcode.convert_i)
-             .addOpcode(opcode.setlocal_1)
-             .addOpcode(opcode.getlocal_1)
-             .addOpcode(opcode.returnvalue);</pre></div>
+    	<div class="source"><pre>methodBuilder.addOpcode(Opcode.getlocal_0)
+             .addOpcode(Opcode.pushscope)
+             .addOpcode(Opcode.getlocal_1)
+             .addOpcode(Opcode.pushint, [100])
+             .addOpcode(Opcode.multiply)
+             .addOpcode(Opcode.setlocal_1)
+             .addOpcode(Opcode.getlocal_1)
+             .addOpcode(Opcode.returnvalue);</pre></div>
 	<p>Any exceptions referenced in the opcode collection can be added using the <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html#defineExceptionInfo()" target="_blank">defineExceptionInfo()</a></code> method:</p>
 	<div class="source"><pre>var exceptionInfoBuilder:IExceptionInfoBuilder = methodBuilder.defineExceptionInfo();</pre></div>
     	<p>Other properties that can be set on the <code>IMethodBuilder</code> include:</p>

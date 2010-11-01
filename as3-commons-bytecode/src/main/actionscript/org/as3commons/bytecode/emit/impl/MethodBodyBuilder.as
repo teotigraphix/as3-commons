@@ -116,6 +116,8 @@ package org.as3commons.bytecode.emit.impl {
 		private var _opcodes:Array = [];
 		private var _exceptionInfos:Array = [];
 		private var _traits:Array = [];
+		private var _currentStack:int = 0;
+		private var _maxStack:int = 0;
 
 		public function MethodBodyBuilder() {
 			super();
@@ -144,6 +146,8 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function buildBody(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody {
+			_currentStack = 0;
+			_maxStack = 0;
 			var mb:MethodBody = new MethodBody();
 			mb.localCount += extraLocalCount;
 			mb.initScopeDepth = initScopeDepth;
@@ -153,37 +157,36 @@ package org.as3commons.bytecode.emit.impl {
 			mb.traits = _traits.concat([]);
 			for each (var op:Op in _opcodes) {
 				if (stackModifiers[op.opcode] != null) {
-					mb.maxStack += stackModifiers[op.opcode];
+					stack(stackModifiers[op.opcode]);
 				}
 				switch (op.opcode) {
 					case Opcode.pushscope:
 					case Opcode.pushwith:
-						mb.maxStack--;
 						mb.maxScopeDepth++;
 						break;
 					/*case Opcode.popscope:
 					   mb.maxStack--;
 					 break;*/
 					case Opcode.call:
-						mb.maxStack += 1 - op.parameters[0] + 2;
+						stack(1 - op.parameters[0] + 2);
 						break;
 					case Opcode.construct:
 					case Opcode.callmethod:
 					case Opcode.callstatic:
-						mb.maxStack += 1 - op.parameters[1] + 1;
+						stack(1 - op.parameters[1] + 1);
 						break;
 					case Opcode.constructsuper:
-						mb.maxStack += op.parameters[0] + 1;
+						stack(op.parameters[0] + 1);
 						break;
 					case Opcode.findproperty:
 					case Opcode.findpropstrict:
 						if (hasRuntimeNamespace(op.parameters[0])) {
-							mb.maxStack++;
+							stack(1);
 						}
 						if (hasRuntimeMultiname(op.parameters[0])) {
-							mb.maxStack++;
+							stack(1);
 						}
-						mb.maxStack++;
+						stack(1);
 						break;
 					case Opcode.deleteproperty:
 					case Opcode.getdescendants:
@@ -193,46 +196,44 @@ package org.as3commons.bytecode.emit.impl {
 					case Opcode.setproperty:
 					case Opcode.setsuper:
 						if (hasRuntimeNamespace(op.parameters[0])) {
-							mb.maxStack++;
+							stack(1);
 						}
 						if (hasRuntimeMultiname(op.parameters[0])) {
-							mb.maxStack++;
+							stack(1);
 						}
-						mb.maxStack += 2;
+						stack(2);
 						break;
 					case Opcode.callsuper:
 					case Opcode.callproperty:
 					case Opcode.constructprop:
 					case Opcode.callproplex:
 						if (hasRuntimeNamespace(op.parameters[0])) {
-							mb.maxStack++;
+							stack(1);
 						}
 						if (hasRuntimeMultiname(op.parameters[0])) {
-							mb.maxStack++;
+							stack(1);
 						}
-						mb.maxStack += op.parameters[1];
+						stack(op.parameters[1]);
 						break;
 					case Opcode.callsupervoid:
 					case Opcode.callpropvoid:
 						if (hasRuntimeNamespace(op.parameters[0])) {
-							mb.maxStack++;
+							stack(1);
 						}
 						if (hasRuntimeMultiname(op.parameters[0])) {
-							mb.maxStack++;
+							stack(1);
 						}
-						mb.maxStack += op.parameters[1] + 1;
+						stack(op.parameters[1] + 1);
 						break;
 					case Opcode.newarray:
-						mb.maxStack += (1 - op.parameters[0]);
+						stack(1 - op.parameters[0]);
 						break;
 					case Opcode.newobject:
-						mb.maxStack += (1 - (2 * op.parameters[0]));
+						stack(1 - (2 * op.parameters[0]));
 						break;
 				}
 			}
-			if (mb.maxStack < 1) {
-				mb.maxStack = 1;
-			}
+			mb.maxStack = _maxStack
 			return mb;
 		}
 
@@ -269,6 +270,14 @@ package org.as3commons.bytecode.emit.impl {
 			_opcodes = _opcodes.concat(newOpcodes);
 			return this;
 		}
+
+		private function stack(n:int):void {
+			_currentStack += n;
+			if (_currentStack > _maxStack) {
+				_maxStack = _currentStack;
+			}
+		}
+
 
 	}
 }
