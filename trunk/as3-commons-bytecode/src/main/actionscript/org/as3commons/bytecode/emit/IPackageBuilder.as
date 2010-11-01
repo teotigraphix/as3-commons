@@ -42,20 +42,6 @@ package org.as3commons.bytecode.emit {
 		 */
 		function defineInterface(name:String, superInterfaceNames:Array = null):IInterfaceBuilder;
 		/**
-		 * Creates an <code>IMethodBuilder</code> instance for the specified method name.
-		 * @param name The name of the method. I.e. <code>myMethodName</code>.
-		 * @return The specified <code>IMethodBuilder</code> instance.
-		 */
-		function defineMethod(name:String):IMethodBuilder;
-		/**
-		 * Creates an <code>IPropertyBuilder</code> instance for the specified property name.
-		 * @param name The name of the property. I.e. <code>myProperty</code>.
-		 * @param type The fully qualified type of the property. I.e. <code>String</code> or <code>flash.utils.Dictionary</code>.
-		 * @param initialValue The default value of the property. I.e. "My default value".
-		 * @return The specified <code>IPropertyBuilder</code> instance.
-		 */
-		function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder;
-		/**
 		 * Internally used build method, this method should never be called by third parties.
 		 * @param applicationDomain
 		 * @return

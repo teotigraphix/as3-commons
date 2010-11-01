@@ -40,8 +40,6 @@ package org.as3commons.bytecode.emit.impl {
 
 		private var _classBuilders:Array;
 		private var _interfaceBuilders:Array;
-		private var _methodBuilders:Array;
-		private var _variableBuilders:Array;
 		private var _abcFile:AbcFile;
 		private var _eventDispatcher:IEventDispatcher;
 		private var _classBuilderLookup:Dictionary;
@@ -61,8 +59,6 @@ package org.as3commons.bytecode.emit.impl {
 			_packageName = removeTrailingPeriod(name);
 			_classBuilders = [];
 			_interfaceBuilders = [];
-			_methodBuilders = [];
-			_variableBuilders = [];
 			_classBuilderLookup = new Dictionary();
 			_abcFile = abcFile;
 		}
@@ -111,28 +107,6 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineMethod(name:String):IMethodBuilder {
-			var mb:MethodBuilder = new MethodBuilder();
-			mb.name = name;
-			mb.packageName = packageName;
-			_methodBuilders[_methodBuilders.length] = mb;
-			return mb;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
-			var vb:PropertyBuilder = new PropertyBuilder();
-			vb.name = name;
-			vb.packageName = packageName;
-			_variableBuilders[_variableBuilders.length] = vb;
-			return vb;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
 		public function build(applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
 			for each (var cb:IClassBuilder in _classBuilders) {
@@ -140,12 +114,6 @@ package org.as3commons.bytecode.emit.impl {
 			}
 			for each (var ib:IInterfaceBuilder in _interfaceBuilders) {
 				result[result.length] = ib.build(applicationDomain);
-			}
-			for each (var mb:IMethodBuilder in _methodBuilders) {
-				result[result.length] = mb.build();
-			}
-			for each (var vb:IPropertyBuilder in _variableBuilders) {
-				result[result.length] = vb.build();
 			}
 			return result;
 		}
