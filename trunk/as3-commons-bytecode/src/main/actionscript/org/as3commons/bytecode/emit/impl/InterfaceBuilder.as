@@ -30,10 +30,8 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.StringUtils;
 
-	public class InterfaceBuilder extends ClassBuilder implements IInterfaceBuilder {
+	public class InterfaceBuilder extends BaseTypeBuilder implements IInterfaceBuilder {
 
-		private static const INTERFACE_CONSTRUCTOR_ERROR:String = "Interfaces can't have constructors";
-		private static const INTERFACE_PROPERTIES_ERROR:String = "Interfaces can't have properties. (Only getters and/or setters)";
 		private static const INTERFACE_STATIC_METHOD_ERROR:String = "Interfaces cannot have static methods";
 		private static const DOUBLE_COLON:String = ':';
 
@@ -41,14 +39,6 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function InterfaceBuilder() {
 			super();
-		}
-
-		override public function defineConstructor():ICtorBuilder {
-			throw new IllegalOperationError(INTERFACE_CONSTRUCTOR_ERROR);
-		}
-
-		override public function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
-			throw new IllegalOperationError(INTERFACE_PROPERTIES_ERROR);
 		}
 
 		override protected function createAccessorBuilder(name:String, type:String, initialValue:* = undefined):IAccessorBuilder {
@@ -83,7 +73,7 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.superclassMultiname = BuiltIns.ANY;
 			instanceInfo.isInterface = true;
 			for each (var intfName:String in _extendingInterfacesNames) {
-				instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(intfName);
+				instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(intfName, NamespaceKind.PACKAGE_NAMESPACE);
 			}
 			var metadata:Array = buildMetadata();
 			return [classInfo, instanceInfo, methods, metadata];

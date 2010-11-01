@@ -1,0 +1,42 @@
+/*
+ * Copyright 2007-2010 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.as3commons.bytecode.emit {
+	import flash.system.ApplicationDomain;
+
+	public interface ITypeBuilder extends IEmitObject, IMetadataContainer {
+		/**
+		 * Creates an <code>IMethodBuilder</code> instance for the specified method name.
+		 * @param name The name of the method. I.e. <code>myMethodName</code>.
+		 * @return The specified <code>IMethodBuilder</code> instance.
+		 */
+		function defineMethod(name:String = null, nameSpace:String = null):IMethodBuilder;
+		/**
+		 * Creates an <code>IAccessorBuilder</code> (getter/setter) instance for the specified accessor name.
+		 * @param name The name of the accessor. I.e. <code>MyGetter</code>.
+		 * @param type The fully qualified type of the property. I.e. <code>String</code> or <code>flash.utils.Dictionary</code>.
+		 * @param initialValue The default value of the property. I.e. "My default value".
+		 * @return The specified <code>IAccessorBuilder</code> instance.
+		 */
+		function defineAccessor(name:String = null, type:String = null, initialValue:* = undefined):IAccessorBuilder;
+		/**
+		 * Internally used build method, this method should never be called by third parties.
+		 * @param applicationDomain
+		 * @return
+		 */
+		function build(applicationDomain:ApplicationDomain):Array;
+
+	}
+}

@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ICloneable;
 
 	/**
@@ -33,6 +34,7 @@ package org.as3commons.bytecode.abc {
 		public var name:String;
 
 		public function LNamespace(kindValue:NamespaceKind, nameValue:String) {
+			Assert.notNull(kindValue, "kindValue argument must not be null");
 			super();
 			kind = kindValue;
 			name = nameValue;

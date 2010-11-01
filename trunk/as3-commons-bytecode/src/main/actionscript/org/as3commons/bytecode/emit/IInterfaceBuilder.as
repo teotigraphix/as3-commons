@@ -19,7 +19,7 @@ package org.as3commons.bytecode.emit {
 	 * Describes an object that can generate an interface object to be added to an <code>AbcFile</code>.
 	 * @author Roland Zwaga
 	 */
-	public interface IInterfaceBuilder extends IClassBuilder {
+	public interface IInterfaceBuilder extends ITypeBuilder {
 		/**
 		 * An <code>Array</code> of fully qualified interface names. I.e. <code></code>.
 		 */

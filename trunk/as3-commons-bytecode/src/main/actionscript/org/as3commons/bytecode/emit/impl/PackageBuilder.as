@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
+	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.MethodBody;
@@ -24,10 +28,12 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
+	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.reflect.Type;
 
+	[Event(name="extendedClassesNotFound", type="org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
 	/**
-	 *
 	 * @author Roland Zwaga
 	 */
 	public class PackageBuilder implements IPackageBuilder {
@@ -37,6 +43,8 @@ package org.as3commons.bytecode.emit.impl {
 		private var _methodBuilders:Array;
 		private var _variableBuilders:Array;
 		private var _abcFile:AbcFile;
+		private var _eventDispatcher:IEventDispatcher;
+		private var _classBuilderLookup:Dictionary;
 
 		/**
 		 * Creates a new <code>PackageBuilder</code> instance.
@@ -49,11 +57,13 @@ package org.as3commons.bytecode.emit.impl {
 
 		private function init(name:String, abcFile:AbcFile):void {
 			Assert.hasText(name, "name argument must not be null or empty");
+			_eventDispatcher = new EventDispatcher();
 			_packageName = removeTrailingPeriod(name);
 			_classBuilders = [];
 			_interfaceBuilders = [];
 			_methodBuilders = [];
 			_variableBuilders = [];
+			_classBuilderLookup = new Dictionary();
 			_abcFile = abcFile;
 		}
 
@@ -70,11 +80,17 @@ package org.as3commons.bytecode.emit.impl {
 		 * @inheritDoc
 		 */
 		public function defineClass(name:String, superClassName:String = null):IClassBuilder {
-			var cb:ClassBuilder = new ClassBuilder(_abcFile);
-			cb.name = name;
-			cb.packageName = packageName;
-			cb.superClassName = superClassName;
-			_classBuilders[_classBuilders.length] = cb;
+			var fullName:String = packageName + '.' + name;
+			var cb:ClassBuilder = _classBuilderLookup[fullName];
+			if (cb == null) {
+				cb = new ClassBuilder(_abcFile);
+				_classBuilderLookup[fullName] = cb;
+				cb.addEventListener(ExtendedClassesNotFoundError.EXTENDED_CLASSES_NOT_FOUND, classNotFoundHandler);
+				cb.name = name;
+				cb.packageName = packageName;
+				cb.superClassName = superClassName;
+				_classBuilders[_classBuilders.length] = cb;
+			}
 			return cb;
 		}
 
@@ -85,7 +101,7 @@ package org.as3commons.bytecode.emit.impl {
 			var ib:InterfaceBuilder = new InterfaceBuilder();
 			ib.name = name;
 			if (superInterfaceNames != null) {
-				ib.implementInterfaces(superInterfaceNames);
+				ib.extendingInterfacesNames = superInterfaceNames;
 			}
 			ib.packageName = packageName;
 			_interfaceBuilders[_interfaceBuilders.length] = ib;
@@ -132,6 +148,52 @@ package org.as3commons.bytecode.emit.impl {
 				result[result.length] = vb.build();
 			}
 			return result;
+		}
+
+
+		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+			_eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
+		}
+
+		public function dispatchEvent(event:Event):Boolean {
+			return _eventDispatcher.dispatchEvent(event);
+		}
+
+		public function hasEventListener(type:String):Boolean {
+			return _eventDispatcher.hasEventListener(type);
+		}
+
+		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
+			_eventDispatcher.removeEventListener(type, listener, useCapture);
+		}
+
+		public function willTrigger(type:String):Boolean {
+			return _eventDispatcher.willTrigger(type);
+		}
+
+		protected function classNotFoundHandler(event:ExtendedClassesNotFoundError):void {
+			var extendedClasses:Array = [];
+			if (!extractExtendeClasses(extendedClasses, event.className, event.applicationDomain)) {
+				event.extendedClasses = event.extendedClasses.concat(extendedClasses);
+				dispatchEvent(event);
+			}
+		}
+
+		public function extractExtendeClasses(extendedClasses:Array, className:String, applicationDomain:ApplicationDomain):Boolean {
+			var classBuilder:IClassBuilder = _classBuilderLookup[className];
+			if (classBuilder != null) {
+				extendedClasses[extendedClasses.length] = classBuilder.superClassName;
+				if (applicationDomain.hasDefinition(classBuilder.superClassName)) {
+					var type:Type = Type.forName(classBuilder.superClassName, applicationDomain);
+					for each (var name:String in type.extendsClasses) {
+						extendedClasses[extendedClasses.length] = name;
+					}
+					return true;
+				} else {
+					return extractExtendeClasses(extendedClasses, classBuilder.superClassName, applicationDomain);
+				}
+			}
+			return false;
 		}
 
 		/**

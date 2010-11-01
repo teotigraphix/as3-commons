@@ -35,6 +35,11 @@ var packageBuilder:IPackageBuilder = abcBuilder.definePackage("com.classes.gener
     		<strong>Note:</strong> Invoking <code>implementInterface()</code> does <strong>*not*</strong> automatically add the
     		required methods to the class, this needs to be done manually.
     	</blockquote>
+    	<p>Other properties that can be set on the <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html" target="_blank">IClassBuilder</a></code> include:</p>
+    	<ul>
+    		<li>isDynamic</li>
+    		<li>isFinal</li>
+    	</ul>
     </section>
     
     <section name="Generating properties">

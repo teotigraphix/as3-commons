@@ -15,6 +15,9 @@
  */
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 
@@ -37,45 +40,29 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
+	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
 	import org.as3commons.bytecode.util.AbcDeserializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.Type;
 
+	[Event(name="extendedClassesNotFound", type="org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
 	/**
-	 *
 	 * @author Roland Zwaga
 	 */
-	public class ClassBuilder extends BaseBuilder implements IClassBuilder {
+	public class ClassBuilder extends BaseTypeBuilder implements IClassBuilder, IEventDispatcher {
 
-		public static const STATIC_CONSTRUCTOR_NAME:String = "{0}:{1}::{0}:{1}$cinit";
 		public static const CONSTRUCTOR_NAME:String = "{0}.{1}/{1}";
-		private static const MULTIPLE_CONSTRUCTORS_ERROR:String = "A class can only have one constructor defined";
-		private static const PERIOD:String = '.';
-		private static const DUPLICATE_METHOD_ERROR:String = "Duplicate method {0}.{1} in class {2}";
-		private static const CONSTANTKIND_OPCODE_LOOKUP:Dictionary = new Dictionary();
-		{
-			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.DOUBLE] = Opcode.pushdouble;
-			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.INT] = Opcode.pushint;
-			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.FALSE] = Opcode.pushfalse;
-			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.TRUE] = Opcode.pushtrue;
-			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.UINT] = Opcode.pushuint;
-			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.UTF8] = Opcode.pushstring;
-		}
 
 		private var _ctorBuilder:ICtorBuilder;
+		private var _propertyBuilders:Array;
 		private var _implementedInterfaceNames:Array;
-		private var _methodBuilders:Array;
-		protected var _accessorBuilders:Array;
-		private var _variableBuilders:Array;
 		private var _superClassName:String;
 		private var _isDynamic:Boolean = false;
 		private var _isFinal:Boolean;
-		private var _metadata:Array;
-		private var _traits:Array;
 		private var _abcFile:AbcFile;
-		private var _addedMethods:Dictionary;
+		private var _eventDispatcher:IEventDispatcher;
 
 		/**
 		 * Creates a new <code>ClassBuilder</code> instance.
@@ -92,15 +79,11 @@ package org.as3commons.bytecode.emit.impl {
 		 * Initializes the current <code>ClassBuilder</code>.
 		 */
 		protected function initClassBuilder(abcFile:AbcFile):void {
-			_methodBuilders = [];
-			_accessorBuilders = [];
-			_variableBuilders = [];
+			_eventDispatcher = new EventDispatcher();
+			_propertyBuilders = [];
 			_implementedInterfaceNames = [];
-			_metadata = [];
-			_traits = [];
 			_superClassName = BuiltIns.OBJECT.fullName;
 			_abcFile = abcFile;
-			_addedMethods = new Dictionary();
 		}
 
 		/**
@@ -147,37 +130,6 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get metadata():Array {
-			return _metadata;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set metadata(value:Array):void {
-			_metadata = value;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function defineMetaData():IMetaDataBuilder {
-			var mdb:MetaDataBuilder = new MetaDataBuilder();
-			_metadata[_metadata.length] = mdb;
-			return mdb;
-		}
-
-		protected function buildMetadata():Array {
-			var result:Array = [];
-			for each (var mdb:MetaDataBuilder in _metadata) {
-				result[result.length] = mdb.build();
-			}
-			return result;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
 		public function implementInterface(name:String):void {
 			if (_implementedInterfaceNames.indexOf(name) < 0) {
 				_implementedInterfaceNames[_implementedInterfaceNames.length] = name;
@@ -207,59 +159,43 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineMethod(name:String = null, nameSpace:String = null):IMethodBuilder {
-			var mb:MethodBuilder = new MethodBuilder();
-			mb.packageName = packageName + PERIOD + this.name;
-			mb.name = name;
-			mb.namespace = nameSpace;
-			_methodBuilders[_methodBuilders.length] = mb;
-			return mb;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function defineAccessor(name:String = null, type:String = null, initialValue:* = undefined):IAccessorBuilder {
-			var ab:IAccessorBuilder = createAccessorBuilder(name, type, initialValue);
-			_accessorBuilders[_accessorBuilders.length] = ab;
-			return ab;
-		}
-
-		protected function createAccessorBuilder(name:String, type:String, initialValue:* = undefined):IAccessorBuilder {
-			var ab:IAccessorBuilder = new AccessorBuilder();
-			ab.packageName = packageName + PERIOD + this.name;
-			ab.name = name;
-			ab.type = type;
-			ab.initialValue = initialValue;
-			return ab;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
 		public function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
 			var vb:PropertyBuilder = new PropertyBuilder();
 			vb.packageName = packageName;
 			vb.name = name;
 			vb.type = type;
 			vb.initialValue = initialValue;
-			_variableBuilders[_variableBuilders.length] = vb;
+			_propertyBuilders[_propertyBuilders.length] = vb;
 			return vb;
 		}
 
-		protected function calculateHierarchDepth(className:String, applicationDomain:ApplicationDomain):uint {
-			var type:Type = Type.forName(className, applicationDomain);
-			var result:uint = 3;
-			for each (var name:String in type.extendsClasses) {
-				result++;
+		override protected function createDefaultConstructor():ICtorBuilder {
+			var ctorBuilder:ICtorBuilder = defineConstructor();
+			ctorBuilder.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.constructsuper, [0]) //
+				.addOpcode(Opcode.returnvoid);
+			return ctorBuilder;
+		}
+
+		protected function calculateHierarchDepth(superClassName:String, applicationDomain:ApplicationDomain):uint {
+			var extendedClasses:Array = [];
+			if (applicationDomain.hasDefinition(superClassName)) {
+				var type:Type = Type.forName(superClassName, applicationDomain);
+				extendedClasses = type.extendsClasses;
+			} else {
+				var evt:ExtendedClassesNotFoundError = new ExtendedClassesNotFoundError(superClassName, applicationDomain);
+				dispatchEvent(evt);
+				extendedClasses = evt.extendedClasses;
 			}
-			return result;
+			return (3 + extendedClasses.length);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function build(applicationDomain:ApplicationDomain):Array {
+		override public function build(applicationDomain:ApplicationDomain):Array {
 			var hierarchyDepth:uint = calculateHierarchDepth(superClassName, applicationDomain);
 			var methods:Array = createMethods(metadata, (hierarchyDepth + 1));
 			var slotTraits:Array = createSlots();
@@ -281,33 +217,8 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createSlots():Array {
 			var result:Array = [];
-			for each (var vb:IPropertyBuilder in _variableBuilders) {
+			for each (var vb:IPropertyBuilder in _propertyBuilders) {
 				result[result.length] = vb.build();
-			}
-			return result;
-		}
-
-		protected function createMethods(metadata:Array, initScopeDepth:uint):Array {
-			var result:Array = [];
-			for each (var mb:IMethodBuilder in _methodBuilders) {
-				var mi:MethodInfo = mb.build(initScopeDepth);
-				metadata = metadata.concat(mi.as3commonsByteCodeAssignedMethodTrait.metadata);
-				result[result.length] = mi;
-			}
-			return result;
-		}
-
-		protected function createAccessors(variableTraits:Array = null):Array {
-			var result:Array = [];
-			for each (var ab:IAccessorBuilder in _accessorBuilders) {
-				var lst:Array = ab.build() as Array;
-				for each (var obj:Object in lst) {
-					if (obj is MethodInfo) {
-						result[result.length] = obj;
-					} else if (variableTraits != null) {
-						variableTraits[variableTraits.length] = obj;
-					}
-				}
 			}
 			return result;
 		}
@@ -351,83 +262,26 @@ package org.as3commons.bytecode.emit.impl {
 			return instanceInfo;
 		}
 
-		protected function createClassInfo(variableTraits:Array, methods:Array, initScopeDepth:uint, isInterface:Boolean = false):ClassInfo {
-			var classInfo:ClassInfo = new ClassInfo();
-			for each (var mi:MethodInfo in methods) {
-				if (!methodExists(mi)) {
-					if (MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic) {
-						classInfo.traits[classInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
-					}
-				} else {
-					throw new IllegalOperationError(StringUtils.substitute(DUPLICATE_METHOD_ERROR, mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name, mi.methodName, this.name));
-				}
-			}
-			var staticvariables:Array = [];
-			if (variableTraits != null) {
-				for each (var slot:SlotOrConstantTrait in variableTraits) {
-					if (slot.isStatic) {
-						staticvariables[staticvariables.length] = slot;
-					}
-				}
-			}
-			var cb:ICtorBuilder = createStaticConstructor(staticvariables, isInterface);
-			cb.isStatic = true;
-			classInfo.staticInitializer = cb.build();
-			classInfo.staticInitializer.methodBody.initScopeDepth = initScopeDepth++;
-			classInfo.staticInitializer.methodBody.maxScopeDepth = initScopeDepth;
-			classInfo.staticInitializer.as3commonsBytecodeName = AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME;
-			classInfo.staticInitializer.methodName = StringUtils.substitute(STATIC_CONSTRUCTOR_NAME, packageName, name);
-			return classInfo;
+		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+			_eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
 
-		protected function createDefaultConstructor():ICtorBuilder {
-			var ctorBuilder:ICtorBuilder = defineConstructor();
-			ctorBuilder.addOpcode(Opcode.getlocal_0) //
-				.addOpcode(Opcode.pushscope) //
-				.addOpcode(Opcode.getlocal_0) //
-				.addOpcode(Opcode.constructsuper, [0]) //
-				.addOpcode(Opcode.returnvoid);
-			return ctorBuilder;
+		public function dispatchEvent(event:Event):Boolean {
+			return _eventDispatcher.dispatchEvent(event);
 		}
 
-		protected function createStaticConstructor(staticvariables:Array, isInterface:Boolean):ICtorBuilder {
-			var ctorBuilder:ICtorBuilder = new CtorBuilder();
-			ctorBuilder.packageName = packageName;
-			if (!isInterface) {
-				ctorBuilder.addOpcode(Opcode.getlocal_0) //
-					.addOpcode(Opcode.pushscope);
-				for each (var slot:SlotOrConstantTrait in staticvariables) {
-					ctorBuilder.addOpcodes(createInitializer(slot));
-				}
-				ctorBuilder.addOpcode(Opcode.returnvoid);
-			}
-
-			return ctorBuilder;
+		public function hasEventListener(type:String):Boolean {
+			return _eventDispatcher.hasEventListener(type);
 		}
 
-		protected function createInitializer(slot:SlotOrConstantTrait):Array {
-			var result:Array = [];
-			if (!(slot.defaultValue === undefined)) {
-				result[result.length] = new Op(Opcode.findproperty, [slot.traitMultiname]);
-				result[result.length] = new Op(determinePushOpcode(slot), [slot.defaultValue]);
-				result[result.length] = new Op(Opcode.initproperty, [slot.traitMultiname]);
-			}
-			return result;
+		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
+			_eventDispatcher.removeEventListener(type, listener, useCapture);
 		}
 
-		protected function determinePushOpcode(slot:SlotOrConstantTrait):Opcode {
-			return Opcode(CONSTANTKIND_OPCODE_LOOKUP[slot.vkind]);
+		public function willTrigger(type:String):Boolean {
+			return _eventDispatcher.willTrigger(type);
 		}
 
-		protected function methodExists(methodInfo:MethodInfo):Boolean {
-			Assert.notNull(methodInfo, "methodInfo argument must not be null");
-			var methodKey:String = methodInfo.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name + methodInfo.methodName;
-			if (_addedMethods[methodKey] == null) {
-				_addedMethods[methodKey] = true;
-				return false;
-			}
-			return true;
-		}
 
 	}
 }
