@@ -40,6 +40,11 @@ var packageBuilder:IPackageBuilder = abcBuilder.definePackage("com.classes.gener
     		<li>isDynamic</li>
     		<li>isFinal</li>
     	</ul>
+    	<p>The actionscript source equivalent of the above statements would look like this:</p>
+    	<div class="source"><pre>package com.classes.generated {
+  public class RuntimeByteArraySubClass extends ByteArray implements IEventDispatcher {
+  }
+}</pre></div>
     </section>
     
     <section name="Generating properties">
@@ -48,6 +53,8 @@ var packageBuilder:IPackageBuilder = abcBuilder.definePackage("com.classes.gener
     	<p>The first argument is the name of the property, the second is the type, this always needs to be a fully qualified name.<br/>
     	To define a default value for the property add a third argument:</p>
     	<div class="source"><pre>var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("name","String","defaultName");</pre></div>
+    	<p>The actionscript source equivalent of those statements would look like this:</p>
+    	<div class="source"><pre>public var name:String = "defaultName";</pre></div>
     	<p>By default the generated property will be public, to change this use the <code>IPropertyBuilder.visibility</code> property:</p>
     	<div class="source"><pre>propertyBuilder.visibility = MemberVisibility.PRIVATE;</pre></div>
     	<p>To assign a custom namespace to the property, assign the specified namespace URL to the <code><a href="asdoc/org/as3commons/bytecode/emit/IEmitObject.html#namespace" target="_blank">IPropertyBuilder.namespace</a></code> property:</p>
@@ -65,6 +72,16 @@ var packageBuilder:IPackageBuilder = abcBuilder.definePackage("com.classes.gener
     	<p>Getters and setters, also known as accessors, are added using the <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html#defineAccessor()" target="_blank">defineAccessor()</a></code> method, its similar
     	to the <code>defineProperty()</code> method:</p>
     	<div class="source"><pre>var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor("count","int",100);</pre></div>
+    	<p>The actionscript source equivalent of this statement would look like this:</p>
+    	<div class="source"><pre>private var _count:int = 100;
+
+public function get count():int {
+  return _count;
+}
+
+public function set count(value:int):void {
+  _count =  value;
+}</pre></div>
     	<p>By default the accessor will be read/write, this can be changed using the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html#access" target="_blank">access</a></code> property on the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html" target="_blank">IAccessorBuilder</a></code> interface:</p>
     	<div class="source"><pre>accessorBuilder.access = AccessorAccess.READ_ONLY;</pre></div>
     	<p>By default a private property will be generated with a name in the format <em>"_" + accessorName</em>.<br/>
@@ -99,7 +116,12 @@ var packageBuilder:IPackageBuilder = abcBuilder.definePackage("com.classes.gener
              .addOpcode(Opcode.setlocal_1)
              .addOpcode(Opcode.getlocal_1)
              .addOpcode(Opcode.returnvalue);</pre></div>
-	<p>Any exceptions referenced in the opcode collection can be added using the <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html#defineExceptionInfo()" target="_blank">defineExceptionInfo()</a></code> method:</p>
+	<p>The actionscript source equivalent of these statements would look like this:</p>
+    	<div class="source"><pre>public function multiplyByHundred(value:int):int {
+  value = (value * 100);
+  return value;
+}</pre></div>
+<p>Any exceptions referenced in the opcode collection can be added using the <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html#defineExceptionInfo()" target="_blank">defineExceptionInfo()</a></code> method:</p>
 	<div class="source"><pre>var exceptionInfoBuilder:IExceptionInfoBuilder = methodBuilder.defineExceptionInfo();</pre></div>
     	<p>Other properties that can be set on the <code>IMethodBuilder</code> include:</p>
     	<ul>
@@ -124,6 +146,8 @@ var packageBuilder:IPackageBuilder = abcBuilder.definePackage("com.classes.gener
     	<div class="source"><pre>var metadataArgument:MetaDataArgument = metadataBuilder.defineArgument();
 metadataArgument.name = "name";
 metadataArgument.value = "objectName";</pre></div>
+	<p>The actionscript source equivalent of this statement would look like this:</p>
+	<div class="source"><pre>[Inject(name="objectName")]</pre></div>
     </section>
 
     <section name="Generating interfaces">
@@ -132,6 +156,11 @@ metadataArgument.value = "objectName";</pre></div>
     	<div class="source"><pre>var interfaceBuilder:IInterfaceBuilder = packageBuilder.defineInterface("RuntimeInterface");</pre></div>
     	<p>If the interface needs to extend other interfaces pass a list of their fully qualified names to the constructor like this:</p>
     	<div class="source"><pre>var interfaceBuilder:IInterfaceBuilder = packageBuilder.defineInterface("RuntimeInterface",["flash.events.IEventDispatcher"]);</pre></div>
+	<p>The actionscript source equivalent of this statement would look like this:</p>
+	<div class="source"><pre>package com.classes.generated {
+  public interface RuntimeInterface extends IEventDispatcher {
+  }
+}</pre></div>
     </section>
     
     <section name="Loading the generated types into the AVM">
