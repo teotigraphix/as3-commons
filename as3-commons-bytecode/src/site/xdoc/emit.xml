@@ -176,7 +176,7 @@ abcBuilder.addEventListener(IOErrorEvent.VERIFY_ERROR, errorHandler);</pre></div
 	<p>In the <code>loadedHandler</code> method a reference to a generated class can be retrieved and instantiated like this:</p>
 	<div class="source"><pre>function loadedHandler(event:Event):void {
   var clazz:Class = ApplicationDomain.currentDomain.getDefinition("com.classes.generated.RuntimeClass") as Class;
-  var instance:Object = new class();
+  var instance:Object = new clazz();
   var i:int = instance.multiplyByHundred(10);
   // i == 1000
 }</pre></div>
