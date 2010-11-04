@@ -129,6 +129,10 @@ public function set count(value:int):void {
     		<li>isFinal</li>
     		<li>isStatic</li>
     	</ul>
+    	<blockquote>
+    		<strong>Note:</strong> At the moment only simple opcodes are supported. Any opcodes requiring jumps (if statements, switches, etc) will fail
+    		because there's no backpatch resolving in place yet. This will be available in the next drop of as3commons-bytecode though, so please bear with us :)
+    	</blockquote>
     </section>
 
     <section name="Generating a constructor">

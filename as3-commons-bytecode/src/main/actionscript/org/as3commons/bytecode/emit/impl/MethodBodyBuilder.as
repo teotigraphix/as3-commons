@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.emit.impl {
 	import flash.utils.Dictionary;
 
+	import org.as3commons.bytecode.abc.BackPatchLabel;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
@@ -155,6 +156,12 @@ package org.as3commons.bytecode.emit.impl {
 			mb.opcodes = _opcodes.concat([]);
 			mb.exceptionInfos = _exceptionInfos.concat([]);
 			mb.traits = _traits.concat([]);
+			processOpcodes(mb);
+			mb.maxStack = _maxStack;
+			return mb;
+		}
+
+		protected function processOpcodes(methodBody:MethodBody):void {
 			for each (var op:Op in _opcodes) {
 				if (stackModifiers[op.opcode] != null) {
 					stack(stackModifiers[op.opcode]);
@@ -162,7 +169,7 @@ package org.as3commons.bytecode.emit.impl {
 				switch (op.opcode) {
 					case Opcode.pushscope:
 					case Opcode.pushwith:
-						mb.maxScopeDepth++;
+						methodBody.maxScopeDepth++;
 						break;
 					/*case Opcode.popscope:
 					   mb.maxStack--;
@@ -233,9 +240,17 @@ package org.as3commons.bytecode.emit.impl {
 						break;
 				}
 			}
-			mb.maxStack = _maxStack
-			return mb;
 		}
+
+		/*protected function jmp(stack:int, name:String, opcode, label:BackPatchLabel):BackPatchLabel {
+		   stack(stk);
+
+		   if (label == null) {
+		   label = newLabel();
+		   }
+
+		   return label;
+		 }*/
 
 		private function hasRuntimeMultiname(baseMultiname:BaseMultiname):Boolean {
 			switch (baseMultiname.kind) {
