@@ -300,12 +300,15 @@ package org.as3commons.lang {
 
 		private static function handleDaylightSavingsTime(originalDate:Date, newDate:Date):Date {
 			var result:Date=newDate;
-			var originalHours:int=originalDate.hours;
+            var originalHours:int=originalDate.hours;
 			if (originalHours != result.hours)
 				result=addHours(result, -(result.hours - originalHours));
 			var originalMinutes:int=originalDate.minutes;
 			if (originalMinutes != result.minutes)
 				result=addMinutes(result, -(result.minutes - originalMinutes));
+            var originalOffset:int = originalDate.getTimezoneOffset()
+            if (originalOffset != result.getTimezoneOffset())
+                result = addMinutes(result, -(result.getTimezoneOffset() - originalOffset));
 
 			return result;
 		}
