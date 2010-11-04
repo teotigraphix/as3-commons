@@ -195,6 +195,7 @@ package org.as3commons.lang {
 			// Daily Savings Time
 			expectedDate=cloneDate(CONTROL_DATE);
 			expectedDate.setMonth(expectedDate.month + 1, expectedDate.date + 9);
+            expectedDate = new Date(expectedDate.getTime() + DateUtils.MILLIS_PER_HOUR);
 			actualDate=DateUtils.addDays(CONTROL_DATE, 40);
 			assertSameDateInstant(expectedDate, actualDate);
 
