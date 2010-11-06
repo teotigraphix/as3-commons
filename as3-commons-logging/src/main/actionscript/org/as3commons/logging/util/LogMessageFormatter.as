@@ -77,9 +77,9 @@ package org.as3commons.logging.util {
 				
 				if( type != -1 ) {
 					
-					if( pos != parseResult.index ) {
+					if( pos != parseResult["index"] ) {
 						
-						strBefore = format.substring( pos, parseResult.index );
+						strBefore = format.substring( pos, parseResult["index"] );
 						strNode = new FormatNode();
 						strNode.type = STATIC_TYPE;
 						strNode.content = strBefore;
@@ -95,7 +95,7 @@ package org.as3commons.logging.util {
 					var contentNode: FormatNode = new FormatNode();
 					contentNode.type = type;
 					
-					pos = parseResult.index + parseResult[0].length;
+					pos = parseResult["index"] + parseResult[0]["length"];
 					
 					if( lastNode )
 						lastNode.next = contentNode;
