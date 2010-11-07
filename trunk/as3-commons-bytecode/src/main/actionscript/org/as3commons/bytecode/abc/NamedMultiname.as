@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.abc {
 
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
+	import org.as3commons.lang.IEquals;
 
 	/**
 	 * Representation of a named multiname, which doesn't exist in the ABC spec but represents several types described
@@ -43,11 +44,11 @@ package org.as3commons.bytecode.abc {
 			_name = value;
 		}
 
-		override public function equals(multiname:BaseMultiname):Boolean {
+		override public function equals(other:Object):Boolean {
 			var matches:Boolean = false;
-			if (multiname is NamedMultiname) {
-				if (NamedMultiname(multiname).name == this.name) {
-					if (super.equals(multiname)) {
+			if (other is NamedMultiname) {
+				if (NamedMultiname(other).name == this.name) {
+					if (super.equals(other)) {
 						matches = true;
 					}
 				}

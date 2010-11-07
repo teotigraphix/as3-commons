@@ -105,6 +105,17 @@ package org.as3commons.bytecode.util {
 
 			_outputStream = tempOutputStream;
 
+			for each (var ns:LNamespace in abcFile.constantPool.namespacePool) {
+				abcFile.constantPool.addNamespace(ns);
+			}
+			for each (var nss:NamespaceSet in abcFile.constantPool.namespaceSetPool) {
+				abcFile.constantPool.addNamespaceSet(nss);
+			}
+			for each (var mn:BaseMultiname in abcFile.constantPool.multinamePool) {
+				abcFile.constantPool.addMultiname(mn);
+			}
+
+			abcFile.constantPool.locked = true;
 			serializeConstantPool(abcFile.constantPool, _outputStream);
 
 			_outputStream.writeBytes(trailingOutputStream);
@@ -197,12 +208,13 @@ package org.as3commons.bytecode.util {
 						writeU30(slotTrait.slotId);
 						writeU30(pool.addMultiname(slotTrait.typeMultiname));
 						if (slotTrait.vkind != null) {
-							slotTrait.vindex = pool.addItemToPool(slotTrait.vkind, slotTrait.defaultValue);
+							var vindex:int = pool.addItemToPool(slotTrait.vkind, slotTrait.defaultValue);
+							slotTrait.vindex = vindex;
 						} else {
 							slotTrait.vindex = 0;
 						}
 						writeU30(slotTrait.vindex);
-						if (slotTrait.vindex != 0) {
+						if (slotTrait.vindex > 0) {
 							writeU8(slotTrait.vkind.value);
 						}
 						break;
@@ -227,6 +239,7 @@ package org.as3commons.bytecode.util {
 						//  u30 classi 
 						// }
 						var classTrait:ClassTrait = trait as ClassTrait;
+						classTrait.classIndex = abcFile.classInfo.indexOf(classTrait.classInfo);
 						writeU30(classTrait.classSlotId);
 						writeU30(classTrait.classIndex);
 						break;
@@ -357,10 +370,10 @@ package org.as3commons.bytecode.util {
 
 			writeU30(methodInfoArray.length); // u30 method_count
 			for each (var methodInfo:MethodInfo in methodInfoArray) {
-				writeU30(methodInfo.formalParameters.length); // u30 param_count
+				writeU30(methodInfo.argumentCollection.length); // u30 param_count
 				writeU30(pool.addMultiname(methodInfo.returnType)); // u30 return_type
-				for each (var formalParam:Argument in methodInfo.formalParameters) {
-					writeU30(pool.addMultiname(formalParam.type)); // u30 param_type[param_count] 
+				for each (var param:Argument in methodInfo.argumentCollection) {
+					writeU30(pool.addMultiname(param.type)); // u30 param_type[param_count] 
 				}
 
 				writeU30(pool.addString(methodInfo.methodName));
@@ -426,7 +439,7 @@ package org.as3commons.bytecode.util {
 								break;
 
 							default:
-								throw new Error(__UNABLE_TO_DETERMINE_POOL_POSITION_ERROR);
+								throw new Error(__UNABLE_TO_DETERMINE_POOL_POSITION_ERROR + " " + optionalArgument.kind);
 								break;
 						}
 						// option_detail 

@@ -15,17 +15,24 @@
  */
 package org.as3commons.bytecode.abc.enum {
 	import flash.errors.IllegalOperationError;
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
 	import mx.controls.Alert;
+	import mx.effects.easing.Back;
 
 	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.abc.BackPatch;
 	import org.as3commons.bytecode.abc.BaseMultiname;
+	import org.as3commons.bytecode.abc.ByteCodeErrorEvent;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.Integer;
+	import org.as3commons.bytecode.abc.JumpTargetData;
 	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.Label;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Op;
@@ -47,6 +54,8 @@ package org.as3commons.bytecode.abc.enum {
 		private static var _enumCreated:Boolean = false;
 		private static const _ALL_OPCODES:Dictionary = new Dictionary();
 
+		public static const errorDispatcher:IEventDispatcher = new EventDispatcher();
+
 		// 162 total opcodes
 		public static const add:Opcode = new Opcode(0xa0, "add");
 		public static const add_d:Opcode = new Opcode(0x9B, "add_d"); //Added
@@ -59,7 +68,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static const bitor:Opcode = new Opcode(0xa9, "bitor"); //Added
 		public static const bitxor:Opcode = new Opcode(0xAA, "bitxor"); //Added
 		public static const bkpt:Opcode = new Opcode(0x01, "bkpt"); //Added
-		public static const bkptline:Opcode = new Opcode(0xF2, "bkptline", [int, AbcSpec.U30]);
+		public static const bkptline:Opcode = new Opcode(0xF2, "bkptline", [Integer, AbcSpec.U30]);
 		public static const call:Opcode = new Opcode(0x41, "call", [int, AbcSpec.U30]);
 		public static const callinterface:Opcode = new Opcode(0x4D, "callinterface", [BaseMultiname, AbcSpec.U30], [int, AbcSpec.U30]); //Added
 		public static const callmethod:Opcode = new Opcode(0x43, "callmethod", [int, AbcSpec.U30], [int, AbcSpec.U30]); //Added
@@ -184,7 +193,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static const pushnan:Opcode = new Opcode(0x28, "pushnan");
 		public static const pushnull:Opcode = new Opcode(0x20, "pushnull");
 		public static const pushscope:Opcode = new Opcode(0x30, "pushscope");
-		public static const pushshort:Opcode = new Opcode(0x25, "pushshort", [int, AbcSpec.U30]);
+		public static const pushshort:Opcode = new Opcode(0x25, "pushshort", [uint, AbcSpec.U30]);
 		public static const pushstring:Opcode = new Opcode(0x2c, "pushstring", [String, AbcSpec.U30]);
 		public static const pushtrue:Opcode = new Opcode(0x26, "pushtrue");
 		public static const pushuint:Opcode = new Opcode(0x2E, "pushuint", [UnsignedInteger, AbcSpec.U30]); //Added
@@ -210,7 +219,28 @@ package org.as3commons.bytecode.abc.enum {
 		public static const throw_op:Opcode = new Opcode(0x03, "throw");
 		public static const typeof_op:Opcode = new Opcode(0x95, "typeof");
 		public static const urshift:Opcode = new Opcode(0xa7, "urshift");
+
 		private static const UNKNOWN_OPCODE_ARGUMENTTYPE:String = "Unknown Opcode argument type. {0}";
+
+		private static var _jumpLookup:Dictionary;
+		public static const jumpOpcodes:Dictionary = new Dictionary();
+		{
+			jumpOpcodes[ifeq] = true;
+			jumpOpcodes[ifge] = true;
+			jumpOpcodes[ifgt] = true;
+			jumpOpcodes[ifle] = true;
+			jumpOpcodes[iflt] = true;
+			jumpOpcodes[ifne] = true;
+			jumpOpcodes[ifnge] = true;
+			jumpOpcodes[ifngt] = true;
+			jumpOpcodes[ifnle] = true;
+			jumpOpcodes[ifnlt] = true;
+			jumpOpcodes[ifstricteq] = true;
+			jumpOpcodes[ifstrictne] = true;
+			jumpOpcodes[iffalse] = true;
+			jumpOpcodes[iftrue] = true;
+			jumpOpcodes[jump] = true;
+		}
 
 		private var _opcodeName:String;
 		private var _value:int;
@@ -244,9 +274,20 @@ package org.as3commons.bytecode.abc.enum {
 				serializeOpcodeArguments(op, abcFile, methodBody, serializedOpcodes);
 //				trace(serializedOpcodes.position + "\t" + op);
 			}
-
+			serializedOpcodes.position = 0;
+			resolveBackPatches(serializedOpcodes, methodBody.backPatches);
 			serializedOpcodes.position = 0;
 			return serializedOpcodes;
+		}
+
+		public static function resolveBackPatches(serializedOpcodes:ByteArray, backPatches:Array):void {
+		/*for each (var backPatch:BackPatch in backPatches) {
+		   if (backPatch.label.address == -1) {
+		   throw new IllegalOperationError("Missing definition for label " + backPatch.label.name);
+		   }
+		   serializedOpcodes.position = backPatch.location;
+		   AbcSpec.writeS24(backPatch.label.address, serializedOpcodes);
+		 }*/
 		}
 
 		public static function serializeOpcodeArguments(op:Op, abcFile:AbcFile, methodBody:MethodBody, serializedOpcodes:ByteArray):void {
@@ -263,6 +304,7 @@ package org.as3commons.bytecode.abc.enum {
 			var abcCompatibleValue:* = rawValue;
 
 			switch (argumentType) {
+				case uint:
 				case int:
 					abcCompatibleValue = rawValue;
 					//trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
@@ -270,10 +312,6 @@ package org.as3commons.bytecode.abc.enum {
 
 				case Integer:
 					abcCompatibleValue = abcFile.constantPool.addInt(rawValue);
-					break;
-
-				case uint:
-					abcCompatibleValue = rawValue;
 					break;
 
 				case UnsignedInteger:
@@ -336,34 +374,74 @@ package org.as3commons.bytecode.abc.enum {
 		 * bytecode in the Ops. This method assumes that the ByteArray is positioned at the top of an
 		 * opcode block.
 		 */
-		public static function parse(byteArray:ByteArray, opcodeByteCount:int, methodBody:MethodBody, abcFile:AbcFile):Array {
+		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, abcFile:AbcFile):Array {
 			var ops:Array = [];
+			methodBody.backPatches = [];
+			_jumpLookup = new Dictionary();
+			var startPosition:int = byteArray.position;
 
-			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCount);
-			while (byteArray.position != positionAtEndOfBytecode) {
-				parseOpcode(byteArray, abcFile, ops, methodBody);
+			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCodeLength);
+			//try {
+			while (byteArray.position < positionAtEndOfBytecode) {
+				parseOpcode(byteArray, abcFile, ops, methodBody, startPosition);
 			}
-
+			if (byteArray.position > positionAtEndOfBytecode) {
+				throw new Error("Opcode parsing read beyond end of method body");
+			}
+			//} catch (e:*) {
+			/*var pos:int = (byteArray.position - startPosition);
+			   var fragment:ByteArray = AbcSpec.byteArray();
+			   fragment.writeBytes(byteArray, startPosition, opcodeByteCodeLength);
+			   fragment.position = 0;
+			 errorDispatcher.dispatchEvent(new ByteCodeErrorEvent(ByteCodeErrorEvent.BYTECODE_METHODBODY_ERROR, fragment, pos));*/
+			//throw e;
+			//}
+			for (var key:* in _jumpLookup) {
+				var jt:JumpTargetData = _jumpLookup[key];
+					//throw new IllegalOperationError("Unresolved jump code left: " + jt.jumpOpcode.opcode);
+					//trace("Unresolved jump code left: " + jt.jumpOpcode.opcode);
+			}
 			return ops;
 		}
 
-		public static function parseOpcode(byteArray:ByteArray, abcFile:AbcFile, ops:Array, methodBody:MethodBody):void {
+		public static function parseOpcode(byteArray:ByteArray, abcFile:AbcFile, ops:Array, methodBody:MethodBody, startPosition:int):void {
+			var startPos:int = byteArray.position;
 			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
-
 			var argumentValues:Array = [];
 			for each (var argument:* in opcode.argumentTypes) {
 				parseOpcodeArguments(argument, byteArray, argumentValues, abcFile, methodBody);
 			}
+			var endPos:int = byteArray.position;
 
 			var op:Op = opcode.op(argumentValues);
 			ops[ops.length] = op;
+
+			if (jumpOpcodes[opcode] == true) {
+				var pos:int = (endPos + int(op.parameters[0]));
+				_jumpLookup[pos] = new JumpTargetData(op, endPos, null);
+			}
+			if (_jumpLookup[startPos] != null) {
+				var jt:JumpTargetData = _jumpLookup[startPos];
+				jt.targetOpcode = op;
+				jt.targetOpcodePosition = startPos;
+				methodBody.backPatches[methodBody.backPatches.length] = jt;
+				delete _jumpLookup[startPos];
+			}
 			//trace(byteArray.position + "\t" + op);
+		}
+
+		public static function newBackPatch(op:Op, location:int):BackPatch {
+			var lbl:Label = new Label(0, 0, op);
+			var bp:BackPatch = new BackPatch(op, lbl, location);
+			_jumpLookup[location] = bp;
+			return bp;
 		}
 
 		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, argumentValues:Array, abcFile:AbcFile, methodBody:MethodBody):void {
 			var argumentType:* = argument[0];
 			var readWritePair:ReadWritePair = argument[1];
 			var byteCodeValue:* = readWritePair.read(byteArray);
+			var constantPoolValue:*;
 
 			switch (argumentType) {
 				case uint:
@@ -372,31 +450,45 @@ package org.as3commons.bytecode.abc.enum {
 					break;
 
 				case Integer:
-					argumentValues[argumentValues.length] = abcFile.constantPool.integerPool[byteCodeValue];
+					constantPoolValue = abcFile.constantPool.integerPool[byteCodeValue];
+					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case UnsignedInteger:
-					argumentValues[argumentValues.length] = abcFile.constantPool.uintPool[byteCodeValue];
+					constantPoolValue = abcFile.constantPool.uintPool[byteCodeValue];
+					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case Number:
-					argumentValues[argumentValues.length] = abcFile.constantPool.doublePool[byteCodeValue];
+					constantPoolValue = abcFile.constantPool.doublePool[byteCodeValue];
+					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case BaseMultiname:
-					argumentValues[argumentValues.length] = abcFile.constantPool.multinamePool[byteCodeValue];
+					constantPoolValue = abcFile.constantPool.multinamePool[byteCodeValue];
+					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case ClassInfo:
-					argumentValues[argumentValues.length] = abcFile.classInfo[byteCodeValue];
+					constantPoolValue = abcFile.classInfo[byteCodeValue];
+					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case String:
-					argumentValues[argumentValues.length] = abcFile.constantPool.stringPool[byteCodeValue];
+					constantPoolValue = abcFile.constantPool.stringPool[byteCodeValue];
+					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case LNamespace:
-					argumentValues[argumentValues.length] = abcFile.constantPool.namespacePool[byteCodeValue];
+					constantPoolValue = abcFile.constantPool.namespacePool[byteCodeValue];
+					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case Array:
@@ -407,7 +499,7 @@ package org.as3commons.bytecode.abc.enum {
 					// to pull the rest of the offsets. We determine how many there are by looking at
 					// the second argument to the op, which is the case_count
 					var caseOffsets:Array = [];
-					caseOffsets.push(byteCodeValue);
+					caseOffsets[caseOffsets.length] = byteCodeValue;
 					var caseCount:int = argumentValues[1];
 					for (var i:int = 0; i < caseCount; ++i) {
 						caseOffsets[caseOffsets.length] = AbcSpec.readS24(byteArray);
@@ -416,7 +508,9 @@ package org.as3commons.bytecode.abc.enum {
 					break;
 
 				case ExceptionInfo:
-					argumentValues[argumentValues.length] = methodBody.exceptionInfos[byteCodeValue];
+					//Exception info is assigned after all opcodes and exception infos have been parsed,
+					//so for now we only assign the raw value (which is the index into the methodbody's exception info array)
+					argumentValues[argumentValues.length] = byteCodeValue;
 					break;
 
 				default:
@@ -455,17 +549,10 @@ package org.as3commons.bytecode.abc.enum {
 				throw new Error(this.opcodeName + " requires " + this._argumentTypes.length + " arguments.");
 			}
 
-			var opArgLen:int = opArguments.length;
-			for (var argIndex:int = 0; argIndex < opArgLen; ++argIndex) {
-				var argument:* = opArguments[argIndex];
-				var expectedArgumentType:Class = this._argumentTypes[argIndex][0];
-//            	if (!(argument is expectedArgumentType))
-//            	{
-//            		throw new Error(argument + " is not an instance of " + expectedArgumentType);
-//            	}
-			}
+			Op.checkParameters(opArguments, this);
 
 			return new Op(this, opArguments);
 		}
 	}
+
 }

@@ -64,12 +64,12 @@ package org.as3commons.bytecode.abc {
 			return StringUtils.substitute("{0}[{1}:{2}]", kind.description, nameSpace, name);
 		}
 
-		override public function equals(multiname:BaseMultiname):Boolean {
+		override public function equals(other:Object):Boolean {
 			var matches:Boolean = false;
-			if (multiname is QualifiedName) {
-				if (_namespace.equals(QualifiedName(multiname).nameSpace)) {
-					if (NamedMultiname(multiname).name == this.name) {
-						if (super.equals(multiname)) {
+			if (other is QualifiedName) {
+				if (_namespace.equals(QualifiedName(other).nameSpace)) {
+					if (NamedMultiname(other).name == this.name) {
+						if (super.equals(other)) {
 							matches = true;
 						}
 					}

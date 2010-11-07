@@ -57,6 +57,8 @@ package org.as3commons.bytecode.abc {
 
 		private var _lookup:Dictionary;
 
+		public var locked:Boolean = false;
+
 		/**
 		 * Constructs and initializes a fresh <code>ConstantPool</code> instance. All the pools
 		 * are created and the zero/default entries are placed in to the pool. These values
@@ -65,10 +67,10 @@ package org.as3commons.bytecode.abc {
 		 */
 		public function ConstantPool() {
 			super();
-			initConstantPool();
+			reset();
 		}
 
-		protected function initConstantPool():void {
+		public function reset():void {
 			_integerPool = [0];
 			_uintPool = [0];
 			_doublePool = [0];
@@ -117,7 +119,7 @@ package org.as3commons.bytecode.abc {
 			if (pool is Array) {
 				return addToPool(pool as Array, item);
 			} else {
-				return -1;
+				return 1;
 			}
 		}
 
@@ -249,7 +251,11 @@ package org.as3commons.bytecode.abc {
 			});
 
 			if (multinameIndex == -1) {
-				multinameIndex = _multinamePool.push(multiname) - 1;
+				if (!locked) {
+					multinameIndex = _multinamePool.push(multiname) - 1;
+				} else {
+					throw new Error("Constantpool is locked");
+				}
 			}
 
 			return multinameIndex;
@@ -265,17 +271,23 @@ package org.as3commons.bytecode.abc {
 			}
 
 			var matchingIndex:int = -1;
-			pool.every(function(element:Object, index:int, array:Array):Boolean {
-				if (element.equals(object)) {
-					matchingIndex = index;
-					return false;
-				} else {
-					return true;
-				}
-			});
+			if (object is IEquals) {
+				pool.every(function(element:Object, index:int, array:Array):Boolean {
+					if (element.equals(object)) {
+						matchingIndex = index;
+						return false;
+					} else {
+						return true;
+					}
+				});
+			}
 
 			if (matchingIndex == -1) {
-				matchingIndex = pool.push(object) - 1;
+				if (!locked) {
+					matchingIndex = pool.push(object) - 1;
+				} else {
+					throw new Error("Constantpool is locked");
+				}
 			}
 
 			return matchingIndex;
@@ -301,7 +313,7 @@ package org.as3commons.bytecode.abc {
 			var index:int = -1;
 			var len:uint = _namespacePool.length;
 			for (var i:int = 0; i < len; ++i) {
-				if (_namespacePool[i].equals(namespaze)) {
+				if (IEquals(_namespacePool[i]).equals(namespaze)) {
 					index = i;
 					break;
 				}
@@ -315,7 +327,7 @@ package org.as3commons.bytecode.abc {
 			var index:int = -1;
 			var len:uint = _namespaceSetPool.length;
 			for (var i:int = 0; i < len; ++i) {
-				if (_namespaceSetPool[i].equals(namespaceSet)) {
+				if (IEquals(_namespaceSetPool[i]).equals(namespaceSet)) {
 					index = i;
 					break;
 				}
@@ -328,7 +340,7 @@ package org.as3commons.bytecode.abc {
 			var index:int = -1;
 			var len:uint = _multinamePool.length;
 			for (var i:int = 0; i < len; ++i) {
-				if (_multinamePool[i].equals(multiname)) {
+				if (IEquals(_multinamePool[i]).equals(multiname)) {
 					index = i;
 					break;
 				}
@@ -340,8 +352,8 @@ package org.as3commons.bytecode.abc {
 			var multinameIndex:int = -1;
 			var len:uint = _multinamePool.length;
 			for (var i:int = 0; i < len; ++i) {
-				var multiname:BaseMultiname = _multinamePool[i];
-				if (multiname is NamedMultiname) {
+				var multiname:NamedMultiname = _multinamePool[i] as NamedMultiname;
+				if (multiname != null) {
 					if (NamedMultiname(multiname).name == multinameName) {
 						multinameIndex = i;
 						break;
@@ -403,8 +415,6 @@ package org.as3commons.bytecode.abc {
 			//			{
 			//				trace(namespaceValue);
 			//			}
-
-			addString(namespaceValue.name);
 			return addObject(_namespacePool, namespaceValue);
 		}
 
@@ -442,13 +452,22 @@ package org.as3commons.bytecode.abc {
 						break;
 					}
 				}
-				index = pool.push(item) - 1;
+				if (!locked) {
+					index = pool.push(item) - 1;
+				} else {
+					throw new Error("Constantpool is locked");
+				}
 			} else {
 				index = pool.indexOf(item);
 				if (index == -1) {
-					index = pool.push(item) - 1;
+					if (!locked) {
+						index = pool.push(item) - 1;
+					} else {
+						throw new Error("Constantpool is locked");
+					}
 				}
 			}
+
 			return index;
 		}
 

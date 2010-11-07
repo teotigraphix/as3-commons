@@ -43,6 +43,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.typeinfo.Metadata;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -101,9 +102,10 @@ package org.as3commons.bytecode.util {
 
 			deserializeConstantPool(pool);
 
-//            trace("MethodInfos: " + _byteStream.position);
 			var methodCount:int = readU30();
+			//trace("MethodInfo count: " + methodCount);
 			for (var methodIndex:int = 0; methodIndex < methodCount; ++methodIndex) {
+				//trace("---------------------------------------------------------------------");
 				// method_info 
 				// { 
 				//  u30 param_count 
@@ -117,13 +119,18 @@ package org.as3commons.bytecode.util {
 				var methodInfo:MethodInfo = new MethodInfo();
 				abcFile.addMethodInfo(methodInfo);
 				var paramCount:int = readU30();
+				//trace("MethodInfo param count: " + paramCount);
 				methodInfo.returnType = pool.multinamePool[readU30()];
+				//trace("MethodInfo return type: " + methodInfo.returnType);
 				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
 					var mn:BaseMultiname = pool.multinamePool[readU30()];
 					var paramQName:QualifiedName = convertToQualifiedName(mn);
-					methodInfo.argumentCollection.push(new Argument(paramQName));
+					var arg:Argument = new Argument(paramQName);
+					methodInfo.argumentCollection[methodInfo.argumentCollection.length] = arg;
+						//trace("MethodInfo param " + argumentIndex + ": " + arg.toString());
 				}
 				methodInfo.methodName = pool.stringPool[readU30()];
+				//trace("Method name " + methodInfo.methodName);
 				methodInfo.flags = readU8();
 
 				if (MethodFlag.flagPresent(methodInfo.flags, MethodFlag.HAS_OPTIONAL)) {
@@ -138,6 +145,7 @@ package org.as3commons.bytecode.util {
 					//  u8  kind 
 					// }
 					var optionInfoCount:int = readU30();
+					//trace("Method has " + optionInfoCount + " optional parameters");
 					//trace("optioninfo count:" + optionInfoCount);
 					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
 						var valueIndexInConstantPool:int = readU30();
@@ -146,18 +154,22 @@ package org.as3commons.bytecode.util {
 						switch (optionalValueKind) {
 							case ConstantKind.INT.value:
 								defaultValue = pool.integerPool[valueIndexInConstantPool];
+								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 								break;
 
 							case ConstantKind.UINT.value:
 								defaultValue = pool.uintPool[valueIndexInConstantPool];
+								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 								break;
 
 							case ConstantKind.DOUBLE.value:
 								defaultValue = pool.doublePool[valueIndexInConstantPool];
+								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 								break;
 
 							case ConstantKind.UTF8.value:
 								defaultValue = pool.stringPool[valueIndexInConstantPool];
+								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 								break;
 
 							case ConstantKind.TRUE.value:
@@ -184,17 +196,27 @@ package org.as3commons.bytecode.util {
 							case ConstantKind.STATIC_PROTECTED_NAMESPACE.value:
 							case ConstantKind.PRIVATE_NAMESPACE.value:
 								defaultValue = pool.namespacePool[valueIndexInConstantPool];
+								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 								break;
 							default:
 								throw new Error("Unknown optional value kind: " + optionalValueKind);
 								break;
 						}
-						var qualifiedName:QualifiedName = new QualifiedName(__NEED_CONSTANTS_, null, MultinameKind.QNAME);
-						methodInfo.argumentCollection[methodInfo.argumentCollection.length] = new Argument(qualifiedName, true, defaultValue, ConstantKind.determineKind(optionalValueKind));
+						//var qualifiedName:QualifiedName = new QualifiedName(__NEED_CONSTANTS_, null, MultinameKind.QNAME);
+						//var optArg:Argument = new Argument(qualifiedName, true, defaultValue, ConstantKind.determineKind(optionalValueKind));
+						//methodInfo.argumentCollection[methodInfo.argumentCollection.length] = optArg;
+						var len:int = methodInfo.argumentCollection.length;
+						var argIdx:int = int((len - optionInfoCount) + optionInfoIndex);
+						var optArg:Argument = Argument(methodInfo.argumentCollection[argIdx]);
+						optArg.defaultValue = defaultValue;
+						optArg.kind = ConstantKind.determineKind(optionalValueKind);
+						optArg.isOptional = true;
+							//trace("Optional argument " + optionInfoIndex + ": " + optArg.toString());
 					}
 				}
 
 				if (MethodFlag.flagPresent(methodInfo.flags, MethodFlag.HAS_PARAM_NAMES)) {
+					//trace("Method has param names:");
 					// param_info
 					// {
 					//  u30 param_name[param_count] -- index in to String Pool
@@ -203,6 +225,7 @@ package org.as3commons.bytecode.util {
 					for (var nameIndex:uint = 0; nameIndex < nameCount; ++nameIndex) {
 						var paramName:String = abcFile.constantPool.stringPool[readU30()];
 						Argument(methodInfo.argumentCollection[nameIndex]).name = paramName;
+							//trace("Param name " + nameIndex + ": " + paramName);
 					}
 				}
 			}
@@ -334,6 +357,7 @@ package org.as3commons.bytecode.util {
 
 //            trace("MethodBodies: " + _byteStream.position);
 			var methodBodyCount:int = readU30();
+			trace("methodBody count:" + methodBodyCount);
 			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; ++bodyIndex) {
 				var methodBody:MethodBody = new MethodBody();
 				// method_body_info 
@@ -351,6 +375,7 @@ package org.as3commons.bytecode.util {
 				//  traits_info trait[trait_count] 
 				// }
 				methodBody.methodSignature = abcFile.methodInfo[readU30()];
+				methodBody.methodSignature.methodBody = methodBody;
 				methodBody.maxStack = readU30();
 				methodBody.localCount = readU30();
 				methodBody.initScopeDepth = readU30();
@@ -372,7 +397,13 @@ package org.as3commons.bytecode.util {
 
 				var exceptionCount:int = readU30();
 				var exceptionInfos:Array = methodBody.exceptionInfos;
+				/*trace("----------------------------------------------------");
+				   trace("Method: " + methodBody.methodSignature.methodName);
+				   trace("Opcode count: " + methodBody.opcodes.length);
+				   trace("Exception info count: " + exceptionCount);
+				 trace("----------------------------------------------------");*/
 				for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
+					trace("Exception #" + exceptionIndex);
 					var exceptionInfo:ExceptionInfo = new ExceptionInfo();
 					// exception_info  
 					// { 
@@ -386,22 +417,25 @@ package org.as3commons.bytecode.util {
 					exceptionInfo.exceptionEnabledToCodePosition = readU30();
 					exceptionInfo.codePositionToJumpToOnException = readU30();
 					exceptionInfo.exceptionTypeName = pool.stringPool[readU30()];
-					exceptionInfo.nameOfVariableReceivingException = pool.stringPool[readU30()];
+					Assert.notNull(exceptionInfo.exceptionTypeName, "exceptionInfo.exceptionTypeName returned null from constant pool");
+					var index:int = readU30();
+					exceptionInfo.nameOfVariableReceivingException = pool.stringPool[index];
+					Assert.notNull(exceptionInfo.nameOfVariableReceivingException, "exceptionInfo.nameOfVariableReceivingException returned null from constant pool");
 					exceptionInfos[exceptionInfos.length] = exceptionInfo;
 				}
 
-				//Add the ExceptionInfo reference to all opcodes to untill now only carried an
+				//Add the ExceptionInfo reference to all opcodes to until now only carried an
 				//index for the reference (this replaces the index with the actual reference in the parameter):
 				for each (var op:Op in methodBody.opcodes) {
 					var idx:int = getExceptionInfoArgumentIndex(op);
 					if (idx > -1) {
 						exceptionIndex = op.parameters[idx];
 						op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
+						Assert.notNull(op.parameters[idx], op.parameters[idx].toString() + " returned null from method exception info collection");
 					}
 				}
 
 				methodBody.traits = deserializeTraitsInfo(abcFile, byteStream);
-				methodBody.methodSignature.methodBody = methodBody;
 
 				abcFile.addMethodBody(methodBody);
 			}
@@ -455,7 +489,7 @@ package org.as3commons.bytecode.util {
 						slotOrConstantTrait.typeMultiname = pool.multinamePool[readU30()];
 						slotOrConstantTrait.vindex = readU30();
 						slotOrConstantTrait.isStatic = isStatic;
-						if (slotOrConstantTrait.vindex != 0) {
+						if (slotOrConstantTrait.vindex > 0) {
 							slotOrConstantTrait.vkind = ConstantKind.determineKind(readU8());
 							slotOrConstantTrait.defaultValue = getSlotOrConstantDefaultValue(pool, slotOrConstantTrait.vindex, slotOrConstantTrait.vkind);
 						}
@@ -493,6 +527,7 @@ package org.as3commons.bytecode.util {
 						var classTrait:ClassTrait = new ClassTrait();
 						classTrait.classSlotId = readU30();
 						classTrait.classIndex = readU30();
+						classTrait.classInfo = ClassInfo(abcFile.classInfo[classTrait.classIndex]);
 						trait = classTrait;
 						break;
 

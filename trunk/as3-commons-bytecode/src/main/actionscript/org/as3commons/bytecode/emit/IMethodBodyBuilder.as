@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.ConstantPool;
+	import org.as3commons.bytecode.abc.Label;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.Opcode;
@@ -47,6 +48,11 @@ package org.as3commons.bytecode.emit {
 		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining of <code>addOpcode()</code> invocations.
 		 */
 		function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder;
+		/**
+		 *
+		 * @return
+		 */
+		function defineLabel():Label;
 		/**
 		 * Adds an <code>Array</code> of <code>Op</code> instances.
 		 * @param newOpcodes The specified <code>Array</code> of <code>Op</code> instances.

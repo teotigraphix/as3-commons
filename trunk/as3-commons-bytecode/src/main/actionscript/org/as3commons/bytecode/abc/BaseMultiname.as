@@ -18,6 +18,7 @@ package org.as3commons.bytecode.abc {
 
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -26,7 +27,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Names" in the AVM Spec (page 8)
 	 */
-	public class BaseMultiname implements ICloneable {
+	public class BaseMultiname implements ICloneable, IEquals {
 		private static const NOT_IMPLEMENTED_ERROR:String = "Not implemented in BaseMultiname";
 		private var _kind:MultinameKind;
 
@@ -48,8 +49,9 @@ package org.as3commons.bytecode.abc {
 			return _kind;
 		}
 
-		public function equals(multiname:BaseMultiname):Boolean {
+		public function equals(other:Object):Boolean {
 			var matches:Boolean = false;
+			var multiname:BaseMultiname = BaseMultiname(other);
 			if (multiname.kind == kind) {
 				matches = true;
 			}

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.sampler.NewObjectSample;
 	import flash.utils.Dictionary;
 
-	import org.as3commons.bytecode.abc.BackPatchLabel;
 	import org.as3commons.bytecode.abc.BaseMultiname;
+	import org.as3commons.bytecode.abc.Label;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
@@ -119,6 +120,8 @@ package org.as3commons.bytecode.emit.impl {
 		private var _traits:Array = [];
 		private var _currentStack:int = 0;
 		private var _maxStack:int = 0;
+		private var _currentScope:int = 0;
+		private var _maxScope:int = 0;
 
 		public function MethodBodyBuilder() {
 			super();
@@ -149,15 +152,18 @@ package org.as3commons.bytecode.emit.impl {
 		public function buildBody(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody {
 			_currentStack = 0;
 			_maxStack = 0;
+			_currentScope = initScopeDepth;
+			_maxScope = 0;
 			var mb:MethodBody = new MethodBody();
+			mb.backPatches = [];
 			mb.localCount += extraLocalCount;
 			mb.initScopeDepth = initScopeDepth;
-			mb.maxScopeDepth = initScopeDepth;
 			mb.opcodes = _opcodes.concat([]);
 			mb.exceptionInfos = _exceptionInfos.concat([]);
 			mb.traits = _traits.concat([]);
 			processOpcodes(mb);
 			mb.maxStack = _maxStack;
+			mb.maxScopeDepth = _maxScope;
 			return mb;
 		}
 
@@ -167,13 +173,13 @@ package org.as3commons.bytecode.emit.impl {
 					stack(stackModifiers[op.opcode]);
 				}
 				switch (op.opcode) {
+					case Opcode.label:
+
+					//jmp(_currentStack, op,
 					case Opcode.pushscope:
 					case Opcode.pushwith:
-						methodBody.maxScopeDepth++;
+						scope(1);
 						break;
-					/*case Opcode.popscope:
-					   mb.maxStack--;
-					 break;*/
 					case Opcode.call:
 						stack(1 - op.parameters[0] + 2);
 						break;
@@ -242,15 +248,17 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
-		/*protected function jmp(stack:int, name:String, opcode, label:BackPatchLabel):BackPatchLabel {
-		   stack(stk);
+		protected function jmp(stackChange:int, opcode:Op, label:Label):Label {
+			stack(stackChange);
+			if (label == null) {
+				label = new Label(_currentStack, _currentScope, opcode);
+			}
+			return label;
+		}
 
-		   if (label == null) {
-		   label = newLabel();
-		   }
-
-		   return label;
-		 }*/
+		public function defineLabel():Label {
+			return null;
+		}
 
 		private function hasRuntimeMultiname(baseMultiname:BaseMultiname):Boolean {
 			switch (baseMultiname.kind) {
@@ -293,6 +301,12 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
+		private function scope(n:int):void {
+			_currentScope += n;
+			if (_currentScope > _maxScope) {
+				_maxScope = _currentScope;
+			}
+		}
 
 	}
 }

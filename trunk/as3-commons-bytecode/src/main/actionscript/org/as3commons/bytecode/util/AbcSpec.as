@@ -74,15 +74,21 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function readU8(bytes:ByteArray):uint {
-			return 255 & bytes[bytes.position++];
+			var value:uint = 255 & bytes[bytes.position++];
+			assertWithinRange(value < 256);
+			return value;
 		}
 
 		public static function readU16(bytes:ByteArray):uint {
-			return readU8(bytes) | readU8(bytes) << 8;
+			var value:uint = readU8(bytes) | readU8(bytes) << 8;
+			assertWithinRange(value < 65536);
+			return value;
 		}
 
 		public static function readS24(bytes:ByteArray):int {
-			return readU16(bytes) | readU8(bytes) << 16;
+			var value:int = readU16(bytes) | readU8(bytes) << 16;
+			assertWithinRange(-16777216 <= value && value < 16777216);
+			return value;
 		}
 
 		public static function readS32(bytes:ByteArray):int {
@@ -90,7 +96,9 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function readU30(bytes:ByteArray):uint {
-			return readU32(bytes);
+			var value:uint = readU32(bytes);
+			assertWithinRange(value < 1073741824);
+			return value;
 		}
 
 		public static function readStringInfo(bytes:ByteArray):String {
@@ -244,9 +252,9 @@ package org.as3commons.bytecode.util {
 		 * Asserts a given statementm, throwing an error if the statement is false.
 		 */
 		public static function assertWithinRange(assertion:Boolean):void {
-			if (!assertion) {
-				throw new Error(__VALUE_OUT_OF_RANGE_ERROR);
-			}
+		/*if (!assertion) {
+		   throw new Error(__VALUE_OUT_OF_RANGE_ERROR);
+		 }*/
 		}
 	}
 }

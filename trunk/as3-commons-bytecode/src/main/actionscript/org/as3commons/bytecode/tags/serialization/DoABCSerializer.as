@@ -33,6 +33,7 @@ package org.as3commons.bytecode.tags.serialization {
 			var tag:DoABCTag = new DoABCTag();
 			tag.flags = SWFSpec.readUI32(input);
 			tag.byteCodeName = SWFSpec.readString(input);
+			trace("Starting deserialization for ABC Tag " + tag.byteCodeName);
 			tag.abcFile = new AbcDeserializer(input).deserialize(input.position);
 			return tag;
 		}
