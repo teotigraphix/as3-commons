@@ -240,8 +240,16 @@ package org.as3commons.bytecode.abc {
 				addNamespace(QualifiedName(multiname).nameSpace);
 			}
 
+			if (multiname is MultinameG) {
+				var mg:MultinameG = MultinameG(multiname);
+				addMultiname(mg.qualifiedName);
+				for each (var qn:QualifiedName in mg.parameters) {
+					addMultiname(qn);
+				}
+			}
+
 			var multinameIndex:int = -1;
-			_multinamePool.every(function(element:BaseMultiname, index:int, array:Array):Boolean {
+			_multinamePool.every(function(element:IEquals, index:int, array:Array):Boolean {
 				if (element.equals(multiname)) {
 					multinameIndex = index;
 					return false;
