@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
+	import org.as3commons.lang.IEquals;
 
 	public class MultinameG extends BaseMultiname {
 
@@ -63,15 +64,17 @@ package org.as3commons.bytecode.abc {
 		}
 
 		override public function equals(other:Object):Boolean {
-			var mg:MultinameG = MultinameG(other);
-			if (_qualifiedName.equals(mg)) {
-				if (_paramCount == mg._paramCount) {
-					for (var i:int = 0; i < paramCount; ++i) {
-						if (_parameters[i] !== mg.parameters[i]) {
-							return false;
+			var mg:MultinameG = (other as MultinameG);
+			if (mg != null) {
+				if (_qualifiedName.equals(mg.qualifiedName)) {
+					if (_paramCount == mg._paramCount) {
+						for (var i:int = 0; i < paramCount; ++i) {
+							if (IEquals(_parameters[i]).equals(mg.parameters[i])) {
+								return false;
+							}
 						}
+						return super.equals(other);
 					}
-					return super.equals(other);
 				}
 			}
 			return false;

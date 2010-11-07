@@ -31,6 +31,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.Multiname;
+	import org.as3commons.bytecode.abc.MultinameG;
 	import org.as3commons.bytecode.abc.MultinameL;
 	import org.as3commons.bytecode.abc.NamespaceSet;
 	import org.as3commons.bytecode.abc.QualifiedName;
@@ -664,6 +665,16 @@ package org.as3commons.bytecode.util {
 						// { 
 						// }
 						break;
+					case MultinameKind.GENERIC:
+						var generic:MultinameG = multiname as MultinameG;
+						AbcSpec.writeU30(pool.addMultiname(generic.qualifiedName), outputStream);
+						var paramCount:uint = generic.parameters.length;
+						AbcSpec.writeU30(paramCount, outputStream);
+						for (var idx:uint = 0; idx < paramCount; ++idx) {
+							AbcSpec.writeU30(pool.addMultiname(BaseMultiname(generic.parameters[idx])), outputStream);
+						}
+						break;
+
 				}
 			}
 		}
