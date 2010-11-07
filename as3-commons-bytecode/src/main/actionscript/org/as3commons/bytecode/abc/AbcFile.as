@@ -91,7 +91,7 @@ package org.as3commons.bytecode.abc {
 		public function addUniquely(itemToAdd:Object, collectionToAddTo:Array):int {
 			var indexOfItem:int = collectionToAddTo.indexOf(itemToAdd);
 			if (indexOfItem == -1) {
-				indexOfItem = collectionToAddTo.push(itemToAdd) - 1;
+				indexOfItem = (collectionToAddTo.push(itemToAdd) - 1);
 			}
 
 			return indexOfItem;
@@ -112,6 +112,7 @@ package org.as3commons.bytecode.abc {
 
 			constantPool.addMultiname(instanceInfo.superclassMultiname);
 			addMethodInfo(instanceInfo.instanceInitializer);
+			//Interface initializers don't have a method body, so check for null:
 			if (instanceInfo.instanceInitializer.methodBody != null) {
 				addMethodBody(instanceInfo.instanceInitializer.methodBody);
 			}

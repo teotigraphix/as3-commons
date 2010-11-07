@@ -45,11 +45,11 @@ package org.as3commons.bytecode.abc {
 			return _namespaceSet;
 		}
 
-		override public function equals(multiname:BaseMultiname):Boolean {
+		override public function equals(other:Object):Boolean {
 			var matches:Boolean = false;
-			if (multiname is MultinameL) {
-				if (MultinameL(multiname).namespaceSet.equals(namespaceSet)) {
-					if (super.equals(multiname)) {
+			if (other is MultinameL) {
+				if (MultinameL(other).namespaceSet.equals(namespaceSet)) {
+					if (super.equals(other)) {
 						matches = true;
 					}
 				}

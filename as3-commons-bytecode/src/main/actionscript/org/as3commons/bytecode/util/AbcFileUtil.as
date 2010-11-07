@@ -79,9 +79,9 @@ package org.as3commons.bytecode.util {
 			if (files.length == 1) {
 				return files[0];
 			}
-			var abc:AbcFile = files[0];
+			var abc:AbcFile = new AbcFile();
 			var len:uint = files.length;
-			for (var i:uint = 1; i < len; ++i) {
+			for (var i:uint = 0; i < len; ++i) {
 				abc = mergeAbcFiles(abc, files[i]);
 			}
 			return abc;

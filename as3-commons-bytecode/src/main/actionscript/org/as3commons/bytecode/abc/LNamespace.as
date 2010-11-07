@@ -17,13 +17,14 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.IEquals;
 
 	/**
 	 * as3commons-bytecode representation of <code>namespace_info</code> in the ABC file format.
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Namespace" in the AVM Spec (page 22)
 	 */
-	public class LNamespace implements ICloneable {
+	public class LNamespace implements ICloneable, IEquals {
 
 		public static const PUBLIC:LNamespace = new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, ""); // Namespace[public::*]
 		public static const ASTERISK:LNamespace = new LNamespace(NamespaceKind.NAMESPACE, "*"); //  Namespace[namespace::*]
@@ -44,8 +45,9 @@ package org.as3commons.bytecode.abc {
 			return new LNamespace(this.kind, this.name);
 		}
 
-		public function equals(namespaze:LNamespace):Boolean {
+		public function equals(other:Object):Boolean {
 			var namespacesMatch:Boolean = false;
+			var namespaze:LNamespace = LNamespace(other);
 
 			var thisNamespaceIsPrivate:Boolean = (this.kind == NamespaceKind.PRIVATE_NAMESPACE);
 			var comparingNamespaceIsPrivate:Boolean = (namespaze.kind == NamespaceKind.PRIVATE_NAMESPACE);

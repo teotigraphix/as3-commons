@@ -26,6 +26,7 @@ package org.as3commons.bytecode.abc {
 	public class ClassTrait extends TraitInfo {
 		public var classSlotId:int;
 		public var classIndex:int;
+		public var classInfo:ClassInfo;
 
 		public function ClassTrait() {
 			super();

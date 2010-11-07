@@ -62,5 +62,20 @@ package org.as3commons.bytecode.abc {
 			_qualifiedName = value;
 		}
 
+		override public function equals(other:Object):Boolean {
+			var mg:MultinameG = MultinameG(other);
+			if (_qualifiedName.equals(mg)) {
+				if (_paramCount == mg._paramCount) {
+					for (var i:int = 0; i < paramCount; ++i) {
+						if (_parameters[i] !== mg.parameters[i]) {
+							return false;
+						}
+					}
+					return super.equals(other);
+				}
+			}
+			return false;
+		}
+
 	}
 }

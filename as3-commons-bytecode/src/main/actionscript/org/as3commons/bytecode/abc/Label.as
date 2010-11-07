@@ -15,28 +15,23 @@
  */
 package org.as3commons.bytecode.abc {
 
-	/**
-	 *
-	 * @author Roland Zwaga
-	 */
-	public class BackPatch {
+	public class Label {
 
-		public var label:Label;
-		public var location:int;
-		public var op:Op;
+		public static var NEXT_LABEL:uint = 0;
 
-		/**
-		 *
-		 * @param newOp
-		 * @param newLabel
-		 * @param newLocation
-		 *
-		 */
-		public function BackPatch(newOp:Op, newLabel:Label, newLocation:int) {
+		public var name:int;
+		public var referencingOp:Op;
+		public var labelOp:Op;
+		public var stack:int;
+		public var scope:int;
+		public var address:int = -1;
+
+		public function Label(currentStack:int, currentScope:int, refOp:Op) {
 			super();
-			op = newOp;
-			label = newLabel;
-			location = newLocation;
+			name = NEXT_LABEL++;
+			stack = currentStack;
+			scope = currentScope;
+			referencingOp = refOp;
 		}
 	}
 }

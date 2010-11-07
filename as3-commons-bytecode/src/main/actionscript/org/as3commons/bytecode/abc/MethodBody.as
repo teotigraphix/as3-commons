@@ -38,8 +38,10 @@ package org.as3commons.bytecode.abc {
 		public var maxScopeDepth:int = 1;
 		public var exceptionInfos:Array;
 		public var traits:Array;
+		public var backPatches:Array;
 
 		public function MethodBody() {
+			super();
 			initMethodBody();
 		}
 

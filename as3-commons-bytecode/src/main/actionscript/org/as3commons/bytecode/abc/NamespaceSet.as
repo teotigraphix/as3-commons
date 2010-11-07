@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.abc {
 	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.util.CloneUtils;
 
 	/**
@@ -22,7 +23,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Namespace set" in the AVM Spec (page 22)
 	 */
-	public class NamespaceSet implements ICloneable {
+	public class NamespaceSet implements ICloneable, IEquals {
 
 		public static const PUBLIC_NSSET:NamespaceSet = new NamespaceSet([LNamespace.PUBLIC]);
 
@@ -46,7 +47,8 @@ package org.as3commons.bytecode.abc {
 			_namespaces[_namespaces.length] = namespaze;
 		}
 
-		public function equals(namespaceSet:NamespaceSet):Boolean {
+		public function equals(other:Object):Boolean {
+			var namespaceSet:NamespaceSet = NamespaceSet(other);
 			var matches:Boolean = (this.namespaces.length == namespaceSet.namespaces.length);
 			if (matches) {
 				for (var i:int = 0; i < namespaces.length; ++i) {

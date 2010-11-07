@@ -39,7 +39,6 @@ package org.as3commons.bytecode.abc {
 		protected function initOp(opcode:Opcode, parameters:Array):void {
 			_opcode = opcode;
 			_parameters = (parameters) ? parameters : [];
-			checkParameters(_parameters, _opcode);
 		}
 
 		public function clone():* {
@@ -54,7 +53,7 @@ package org.as3commons.bytecode.abc {
 			return new Op(_opcode, params);
 		}
 
-		private static function checkParameters(parameters:Array, opcode:Opcode):void {
+		public static function checkParameters(parameters:Array, opcode:Opcode):void {
 			if (parameters.length > 0) {
 				var len:uint = parameters.length;
 				for (var i:uint = 0; i < len; i++) {
@@ -77,7 +76,11 @@ package org.as3commons.bytecode.abc {
 			} else if (type === Array) {
 				return (instance is Array);
 			} else {
-				return (instance is type);
+				if (type !== ExceptionInfo) {
+					return (instance is type);
+				} else {
+					return true;
+				}
 			}
 		}
 

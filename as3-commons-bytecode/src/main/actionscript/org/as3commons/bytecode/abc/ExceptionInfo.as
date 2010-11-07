@@ -43,6 +43,10 @@ package org.as3commons.bytecode.abc {
 			return clone;
 		}
 
+		public function toString():String {
+			return "ExceptionInfo{exceptionEnabledFromCodePosition:" + exceptionEnabledFromCodePosition + ", exceptionEnabledToCodePosition:" + exceptionEnabledToCodePosition + ", codePositionToJumpToOnException:" + codePositionToJumpToOnException + ", exceptionTypeName:\"" + exceptionTypeName + "\", nameOfVariableReceivingException:\"" + nameOfVariableReceivingException + "\"}";
+		}
+
 
 	}
 }
