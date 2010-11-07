@@ -112,8 +112,9 @@ package org.as3commons.bytecode.util {
 			for each (var nss:NamespaceSet in abcFile.constantPool.namespaceSetPool) {
 				abcFile.constantPool.addNamespaceSet(nss);
 			}
-			for each (var mn:BaseMultiname in abcFile.constantPool.multinamePool) {
-				abcFile.constantPool.addMultiname(mn);
+			var multinameCount:uint = abcFile.constantPool.multinamePool.length;
+			for (var idx:int = 0; idx < multinameCount; ++idx) {
+				abcFile.constantPool.addMultiname(abcFile.constantPool.multinamePool[idx]);
 			}
 
 			abcFile.constantPool.locked = true;
