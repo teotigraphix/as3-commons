@@ -43,16 +43,24 @@ package org.as3commons.bytecode.emit {
 		function set exceptionInfos(value:Array):void;
 		/**
 		 * Adds an extra <code>Op</code> instance with the specified <code>Opcode</code> and parameters.
-		 * @param opcode The specified <code>Opcode</code>.
+		 * @param opcode The specified <code>Op</code>.
 		 * @param params An array of parameters requried by the specified <code>Opcode</code>.
-		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining of <code>addOpcode()</code> invocations.
+		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining of <code>addOpcode()</code> and <code>addOp</code>  invocations.
 		 */
 		function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder;
 		/**
-		 *
-		 * @return
+		 * Adds the specified <code>Op</code> instance.
+		 * @param opcode The specified <code>Op</code>.
+		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining of <code>addOpcode()</code> and <code>addOp</code> invocations.
 		 */
-		function defineLabel():Label;
+		function addOp(opcode:Op):IMethodBodyBuilder;
+		/**
+		 * Defines a jump between the <code>triggerOpcode</code> and <code>targetOpcode</code>, for example, an <code>iffalse</code> opcode
+		 * can trigger a jump to an opcode further down the chain of command if it resolves to true.
+		 * <p>The <code>targetOpcode</code> will be added to the opcodes list if it hasn't been already.</p>
+		 * @return The current <code>IMethodBodyBuilder</code> to enable chaining.
+		 */
+		function defineJump(triggerOpcode:Op, targetOpcode:Op):IMethodBodyBuilder;
 		/**
 		 * Adds an <code>Array</code> of <code>Op</code> instances.
 		 * @param newOpcodes The specified <code>Array</code> of <code>Op</code> instances.
