@@ -223,6 +223,7 @@ package org.as3commons.bytecode.abc.enum {
 		private static const UNKNOWN_OPCODE_ARGUMENTTYPE:String = "Unknown Opcode argument type. {0}";
 
 		private static var _jumpLookup:Dictionary;
+		private static var _opcodeLocations:Dictionary;
 		public static const jumpOpcodes:Dictionary = new Dictionary();
 		{
 			jumpOpcodes[ifeq] = true;
@@ -375,6 +376,7 @@ package org.as3commons.bytecode.abc.enum {
 		 * opcode block.
 		 */
 		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, abcFile:AbcFile):Array {
+			_opcodeLocations = new Dictionary();
 			var ops:Array = [];
 			methodBody.backPatches = [];
 			_jumpLookup = new Dictionary();
@@ -396,11 +398,7 @@ package org.as3commons.bytecode.abc.enum {
 			 errorDispatcher.dispatchEvent(new ByteCodeErrorEvent(ByteCodeErrorEvent.BYTECODE_METHODBODY_ERROR, fragment, pos));*/
 			//throw e;
 			//}
-			for (var key:* in _jumpLookup) {
-				var jt:JumpTargetData = _jumpLookup[key];
-					//throw new IllegalOperationError("Unresolved jump code left: " + jt.jumpOpcode.opcode);
-					//trace("Unresolved jump code left: " + jt.jumpOpcode.opcode);
-			}
+			_opcodeLocations = null;
 			return ops;
 		}
 
@@ -417,8 +415,14 @@ package org.as3commons.bytecode.abc.enum {
 			ops[ops.length] = op;
 
 			if (jumpOpcodes[opcode] == true) {
-				var pos:int = (endPos + int(op.parameters[0]));
-				_jumpLookup[pos] = new JumpTargetData(op, endPos, null);
+				var jumpPos:int = int(op.parameters[0]);
+				trace("jumpPos " + jumpPos + ", :" + op.opcode._opcodeName + ", :" + startPos);
+				var pos:int = (endPos + jumpPos);
+				if (pos > endPos) {
+					_jumpLookup[pos] = new JumpTargetData(op, endPos, null);
+				} else {
+					methodBody.backPatches[methodBody.backPatches.length] = new JumpTargetData(op, endPos, _opcodeLocations[endPos], pos);
+				}
 			}
 			if (_jumpLookup[startPos] != null) {
 				var jt:JumpTargetData = _jumpLookup[startPos];
@@ -427,6 +431,7 @@ package org.as3commons.bytecode.abc.enum {
 				methodBody.backPatches[methodBody.backPatches.length] = jt;
 				delete _jumpLookup[startPos];
 			}
+			_opcodeLocations[startPos] = op;
 			//trace(byteArray.position + "\t" + op);
 		}
 

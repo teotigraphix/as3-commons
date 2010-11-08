@@ -86,8 +86,8 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function readS24(bytes:ByteArray):int {
-			var value:int = readU16(bytes) | readU8(bytes) << 16;
-			assertWithinRange(-16777216 <= value && value < 16777216);
+			var value:int = bytes.readUnsignedByte();
+			value |= (bytes.readUnsignedByte() << 8 | bytes.readByte() << 16);
 			return value;
 		}
 
@@ -202,7 +202,7 @@ package org.as3commons.bytecode.util {
 		 * Writes a three-byte signed integer value.
 		 */
 		public static function writeS24(value:int, byteArray:ByteArray):void {
-			assertWithinRange(-16777216 <= value && value < 16777216);
+			assertWithinRange(-16777216 >= value && value < 16777216);
 			byteArray.writeByte(value & 0xFF);
 			byteArray.writeByte((value >> 8) & 0xFF);
 			byteArray.writeByte((value >> 16) & 0xFF);

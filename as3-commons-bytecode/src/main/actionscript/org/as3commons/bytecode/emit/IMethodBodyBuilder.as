@@ -57,7 +57,7 @@ package org.as3commons.bytecode.emit {
 		/**
 		 * Defines a jump between the <code>triggerOpcode</code> and <code>targetOpcode</code>, for example, an <code>iffalse</code> opcode
 		 * can trigger a jump to an opcode further down the chain of command if it resolves to true.
-		 * <p>The <code>targetOpcode</code> will be added to the opcodes list if it hasn't been already.</p>
+		 * <p>The <code>triggerOpcode</code> and/or <code>targetOpcode</code> will be added to the opcodes list if it hasn't been already.</p>
 		 * @return The current <code>IMethodBodyBuilder</code> to enable chaining.
 		 */
 		function defineJump(triggerOpcode:Op, targetOpcode:Op):IMethodBodyBuilder;
