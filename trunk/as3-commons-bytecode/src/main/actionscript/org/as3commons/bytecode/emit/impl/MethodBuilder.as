@@ -37,6 +37,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.bytecode.abc.Op;
 
 	public class MethodBuilder extends EmitMember implements IMethodBuilder {
 
@@ -183,15 +184,20 @@ package org.as3commons.bytecode.emit.impl {
 			return methodBodyBuilder.addOpcodes(newOpcodes);
 		}
 
+
+		public function addOp(opcode:Op):IMethodBodyBuilder {
+			return methodBodyBuilder.addOp(opcode);
+		}
+
+		public function defineJump(triggerOpcode:Op, targetOpcode:Op):IMethodBodyBuilder {
+			return methodBodyBuilder.defineJump(triggerOpcode, targetOpcode);
+		}
+
 		/**
 		 * @inheritDoc
 		 */
 		public function defineExceptionInfo():IExceptionInfoBuilder {
 			return methodBodyBuilder.defineExceptionInfo();
-		}
-
-		public function defineLabel():Label {
-			return methodBodyBuilder.defineLabel();
 		}
 
 		/**

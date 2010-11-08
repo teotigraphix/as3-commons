@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.errors.IllegalOperationError;
 	import flash.sampler.NewObjectSample;
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
+	import org.as3commons.bytecode.abc.JumpTargetData;
 	import org.as3commons.bytecode.abc.Label;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
@@ -25,6 +27,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.emit.IExceptionInfoBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
+	import org.as3commons.lang.StringUtils;
 
 	public class MethodBodyBuilder implements IMethodBodyBuilder {
 
@@ -32,6 +35,7 @@ package org.as3commons.bytecode.emit.impl {
 		   The stack modifier logic I spied from the excellent AS3Eval library: http://eval.hurlant.com/
 		 */
 		private static const stackModifiers:Dictionary = new Dictionary();
+		private static const ILLEGAL_JUMP_OPCODE_ERROR:String = "{0} is not an opcode that can trigger a jump";
 		{
 			stackModifiers[Opcode.dup] = 1;
 			stackModifiers[Opcode.getglobalscope] = 1;
@@ -115,6 +119,7 @@ package org.as3commons.bytecode.emit.impl {
 			stackModifiers[Opcode.setslot] = -2;
 		}
 
+		private var _jumpData:Array = [];
 		private var _opcodes:Array = [];
 		private var _exceptionInfos:Array = [];
 		private var _traits:Array = [];
@@ -256,10 +261,6 @@ package org.as3commons.bytecode.emit.impl {
 			return label;
 		}
 
-		public function defineLabel():Label {
-			return null;
-		}
-
 		private function hasRuntimeMultiname(baseMultiname:BaseMultiname):Boolean {
 			switch (baseMultiname.kind) {
 				case MultinameKind.RTQNAME_L:
@@ -286,6 +287,22 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder {
 			_opcodes[opcodes.length] = new Op(opcode, params);
+			return this;
+		}
+
+		public function addOp(opcode:Op):IMethodBodyBuilder {
+			_opcodes[opcodes.length] = opcode;
+			return this;
+		}
+
+		public function defineJump(triggerOpcode:Op, targetOpcode:Op):IMethodBodyBuilder {
+			if (Opcode.jumpOpcodes[triggerOpcode] == null) {
+				throw new IllegalOperationError(StringUtils.substitute(ILLEGAL_JUMP_OPCODE_ERROR, triggerOpcode));
+			}
+			if (_opcodes.indexOf(targetOpcode) < 0) {
+				_opcodes[opcodes.length] = targetOpcode;
+			}
+			_jumpData[_jumpData.length] = new JumpTargetData(triggerOpcode, 0, targetOpcode);
 			return this;
 		}
 
