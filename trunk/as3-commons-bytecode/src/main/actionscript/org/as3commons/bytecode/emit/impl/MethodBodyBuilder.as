@@ -285,22 +285,34 @@ package org.as3commons.bytecode.emit.impl {
 			return false;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder {
 			_opcodes[opcodes.length] = new Op(opcode, params);
 			return this;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function addOp(opcode:Op):IMethodBodyBuilder {
 			_opcodes[opcodes.length] = opcode;
 			return this;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function defineJump(triggerOpcode:Op, targetOpcode:Op):IMethodBodyBuilder {
 			if (Opcode.jumpOpcodes[triggerOpcode] == null) {
 				throw new IllegalOperationError(StringUtils.substitute(ILLEGAL_JUMP_OPCODE_ERROR, triggerOpcode));
 			}
 			if (_opcodes.indexOf(targetOpcode) < 0) {
 				_opcodes[opcodes.length] = targetOpcode;
+			}
+			if (_opcodes.indexOf(triggerOpcode) < 0) {
+				_opcodes[opcodes.length] = triggerOpcode;
 			}
 			_jumpData[_jumpData.length] = new JumpTargetData(triggerOpcode, 0, targetOpcode);
 			return this;
