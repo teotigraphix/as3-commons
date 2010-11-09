@@ -66,7 +66,10 @@ package org.as3commons.bytecode.util {
 
 		public function AbcDeserializer(byteStream:ByteArray) {
 			super(byteStream);
+			methodBodyExtractionMethod = MethodBodyExtractionMethod.PARSE;
 		}
+
+		public var methodBodyExtractionMethod:MethodBodyExtractionMethod;
 
 		/**
 		 * Acts as a guard to make sure that the expected number of items was extracted from the
@@ -382,16 +385,12 @@ package org.as3commons.bytecode.util {
 				methodBody.maxScopeDepth = readU30();
 
 				var codeLength:int = readU30();
-				//TODO: Not parsing opcodes by skipping ahead halves the parsing time for SWFLoader tests... might be a useful optimization flag
-				var parseOpcodes:Boolean = true;
-				if (parseOpcodes) {
+				if (methodBodyExtractionMethod === MethodBodyExtractionMethod.PARSE) {
 					methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile);
-//                    trace("\t" + methodBody.opcodes.join("\n\t"));
+				} else if (methodBodyExtractionMethod === MethodBodyExtractionMethod.BYTEARRAY) {
+					methodBody.rawOpcodes.writeBytes(byteStream, byteStream.position, codeLength);
+					byteStream.position += codeLength;
 				} else {
-//		            for (var codeIndex : int = 0; codeIndex < codeLength; codeIndex++)
-//		            {
-//		            	methodBody.opcodes.push(readU8());
-//		            }
 					byteStream.position += codeLength;
 				}
 
@@ -418,8 +417,7 @@ package org.as3commons.bytecode.util {
 					exceptionInfo.codePositionToJumpToOnException = readU30();
 					exceptionInfo.exceptionTypeName = pool.stringPool[readU30()];
 					Assert.notNull(exceptionInfo.exceptionTypeName, "exceptionInfo.exceptionTypeName returned null from constant pool");
-					var index:int = readU30();
-					exceptionInfo.nameOfVariableReceivingException = pool.stringPool[index];
+					exceptionInfo.nameOfVariableReceivingException = pool.stringPool[readU30()];
 					Assert.notNull(exceptionInfo.nameOfVariableReceivingException, "exceptionInfo.nameOfVariableReceivingException returned null from constant pool");
 					exceptionInfos[exceptionInfos.length] = exceptionInfo;
 				}

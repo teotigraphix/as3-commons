@@ -106,17 +106,6 @@ package org.as3commons.bytecode.util {
 
 			_outputStream = tempOutputStream;
 
-			for each (var ns:LNamespace in abcFile.constantPool.namespacePool) {
-				abcFile.constantPool.addNamespace(ns);
-			}
-			for each (var nss:NamespaceSet in abcFile.constantPool.namespaceSetPool) {
-				abcFile.constantPool.addNamespaceSet(nss);
-			}
-			var multinameCount:uint = abcFile.constantPool.multinamePool.length;
-			for (var idx:int = 0; idx < multinameCount; ++idx) {
-				abcFile.constantPool.addMultiname(abcFile.constantPool.multinamePool[idx]);
-			}
-
 			abcFile.constantPool.locked = true;
 			serializeConstantPool(abcFile.constantPool, _outputStream);
 

@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import flash.utils.ByteArray;
+
+	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.lang.util.CloneUtils;
@@ -31,6 +34,7 @@ package org.as3commons.bytecode.abc {
 		 * @see Opcode@op()
 		 */
 		public var opcodes:Array;
+		public var rawOpcodes:ByteArray;
 		public var methodSignature:MethodInfo;
 		public var maxStack:int = 1;
 		public var localCount:int = 1;
@@ -66,6 +70,11 @@ package org.as3commons.bytecode.abc {
 		public function clone():* {
 			var clone:MethodBody = new MethodBody();
 			clone.opcodes = CloneUtils.cloneList(opcodes);
+			if (rawOpcodes != null) {
+				clone.rawOpcodes = AbcSpec.byteArray();
+				clone.rawOpcodes.writeBytes(rawOpcodes);
+				clone.rawOpcodes.position = 0;
+			}
 			clone.maxStack = maxStack;
 			clone.localCount = localCount;
 			clone.initScopeDepth = initScopeDepth;
