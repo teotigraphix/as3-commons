@@ -126,9 +126,25 @@ package org.as3commons.bytecode.emit.impl {
 		private var _maxStack:int = 0;
 		private var _currentScope:int = 0;
 		private var _maxScope:int = 0;
+		private var _hasDXNS:Boolean = false;
+		private var _needActivation:Boolean = false;
+		private var _needArguments:Boolean = false;
 
 		public function MethodBodyBuilder() {
 			super();
+		}
+
+		public function get setDXNS():Boolean {
+			return _hasDXNS;
+		}
+
+
+		public function get needActivation():Boolean {
+			return _needActivation;
+		}
+
+		public function get needArguments():Boolean {
+			return _needArguments;
 		}
 
 		public function get opcodes():Array {
@@ -177,9 +193,14 @@ package org.as3commons.bytecode.emit.impl {
 					stack(stackModifiers[op.opcode]);
 				}
 				switch (op.opcode) {
+					case Opcode.dxns:
+						_hasDXNS = true;
+						break;
+					case Opcode.newactivation:
+						_needActivation = true;
+						break;
 					case Opcode.label:
-
-					//jmp(_currentStack, op,
+						break;
 					case Opcode.pushscope:
 					case Opcode.pushwith:
 						scope(1);
