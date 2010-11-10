@@ -19,7 +19,6 @@ package org.as3commons.bytecode.emit.impl {
 	import mx.utils.StringUtil;
 
 	import org.as3commons.bytecode.abc.LNamespace;
-	import org.as3commons.bytecode.abc.Label;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;

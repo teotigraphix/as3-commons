@@ -24,7 +24,6 @@ package org.as3commons.bytecode.abc.enum {
 	import mx.effects.easing.Back;
 
 	import org.as3commons.bytecode.abc.AbcFile;
-	import org.as3commons.bytecode.abc.BackPatch;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ByteCodeErrorEvent;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -32,7 +31,6 @@ package org.as3commons.bytecode.abc.enum {
 	import org.as3commons.bytecode.abc.Integer;
 	import org.as3commons.bytecode.abc.JumpTargetData;
 	import org.as3commons.bytecode.abc.LNamespace;
-	import org.as3commons.bytecode.abc.Label;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Op;
@@ -433,13 +431,6 @@ package org.as3commons.bytecode.abc.enum {
 			}
 			_opcodeLocations[startPos] = op;
 			//trace(byteArray.position + "\t" + op);
-		}
-
-		public static function newBackPatch(op:Op, location:int):BackPatch {
-			var lbl:Label = new Label(0, 0, op);
-			var bp:BackPatch = new BackPatch(op, lbl, location);
-			_jumpLookup[location] = bp;
-			return bp;
 		}
 
 		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, argumentValues:Array, abcFile:AbcFile, methodBody:MethodBody):void {
