@@ -20,7 +20,6 @@ package org.as3commons.bytecode.emit.impl {
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.JumpTargetData;
-	import org.as3commons.bytecode.abc.Label;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
@@ -251,14 +250,6 @@ package org.as3commons.bytecode.emit.impl {
 						break;
 				}
 			}
-		}
-
-		protected function jmp(stackChange:int, opcode:Op, label:Label):Label {
-			stack(stackChange);
-			if (label == null) {
-				label = new Label(_currentStack, _currentScope, opcode);
-			}
-			return label;
 		}
 
 		private function hasRuntimeMultiname(baseMultiname:BaseMultiname):Boolean {

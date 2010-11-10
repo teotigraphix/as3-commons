@@ -287,7 +287,7 @@ package org.as3commons.bytecode.emit.impl {
 			} else {
 				scriptInfo.scriptInitializer = createInterfaceScriptInitializer(className, classInfo);
 			}
-			scriptInfo.traits[scriptInfo.traits.length] = createClassTrait(className, index);
+			scriptInfo.traits[scriptInfo.traits.length] = createClassTrait(className, index, classInfo);
 			return scriptInfo;
 		}
 
@@ -297,9 +297,10 @@ package org.as3commons.bytecode.emit.impl {
 		 * @param index The current class index in the <code>AbcFile</code>.
 		 * @return the new <code>ClassTrait</code>.
 		 */
-		protected function createClassTrait(className:String, index:uint):ClassTrait {
+		protected function createClassTrait(className:String, index:uint, classInfo:ClassInfo):ClassTrait {
 			var trait:ClassTrait = new ClassTrait();
 			trait.classIndex = index;
+			trait.classInfo = classInfo;
 			trait.traitKind = TraitKind.CLASS;
 			trait.traitMultiname = MultinameUtil.toQualifiedName(className);
 			return trait;

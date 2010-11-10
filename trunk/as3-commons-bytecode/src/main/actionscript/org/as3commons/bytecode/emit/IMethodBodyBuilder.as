@@ -15,7 +15,6 @@
  */
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.ConstantPool;
-	import org.as3commons.bytecode.abc.Label;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.Opcode;

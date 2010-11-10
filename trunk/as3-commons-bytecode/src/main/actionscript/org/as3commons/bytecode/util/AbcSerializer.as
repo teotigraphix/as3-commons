@@ -231,6 +231,7 @@ package org.as3commons.bytecode.util {
 						// }
 						var classTrait:ClassTrait = trait as ClassTrait;
 						classTrait.classIndex = abcFile.classInfo.indexOf(classTrait.classInfo);
+						Assert.state((classTrait.classIndex > -1), "classTrait.classIndex is -1");
 						writeU30(classTrait.classSlotId);
 						writeU30(classTrait.classIndex);
 						break;
@@ -389,8 +390,9 @@ package org.as3commons.bytecode.util {
 				// }
 				// This entry is only made if MethodFlag.HAS_OPTIONAL is present 
 				if (MethodFlag.flagPresent(methodInfo.flags, MethodFlag.HAS_OPTIONAL)) {
-					writeU30(methodInfo.optionalParameters.length); // u30 option_count
-					for each (var optionalArgument:Argument in methodInfo.optionalParameters) {
+					var optionalParams:Array = methodInfo.optionalParameters;
+					writeU30(optionalParams.length); // u30 option_count
+					for each (var optionalArgument:Argument in optionalParams) {
 						var defaultValue:* = optionalArgument.defaultValue;
 						var positionInPool:int;
 						switch (optionalArgument.kind) {
