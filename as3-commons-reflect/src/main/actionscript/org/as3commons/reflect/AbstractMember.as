@@ -73,7 +73,7 @@ package org.as3commons.reflect {
 			_isStatic = isStatic;
 			typeName = type;
 			declaringTypeName = declaringType;
-			applicationDomain = applicationDomain;
+			this.applicationDomain = applicationDomain;
 		}
 
 		// -------------------------------------------------------------------------

@@ -65,7 +65,7 @@ package org.as3commons.reflect {
 			_isStatic = isStatic;
 			_parameters = parameters;
 			_returnTypeName = returnType;
-			applicationDomain = applicationDomain;
+			this.applicationDomain = applicationDomain;
 		}
 
 		// -------------------------------------------------------------------------
