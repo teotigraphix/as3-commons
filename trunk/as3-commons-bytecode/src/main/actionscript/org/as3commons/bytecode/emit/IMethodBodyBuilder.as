@@ -77,5 +77,11 @@ package org.as3commons.bytecode.emit {
 		 * @return
 		 */
 		function buildBody(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody;
+
+		function get setDXNS():Boolean;
+
+		function get needActivation():Boolean;
+
+		function get needArguments():Boolean;
 	}
 }

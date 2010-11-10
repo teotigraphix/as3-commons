@@ -22,9 +22,11 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
+	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
+	import org.as3commons.bytecode.abc.enum.MethodFlag;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.IExceptionInfoBuilder;
@@ -36,7 +38,6 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
-	import org.as3commons.bytecode.abc.Op;
 
 	public class MethodBuilder extends EmitMember implements IMethodBuilder {
 
@@ -82,6 +83,29 @@ package org.as3commons.bytecode.emit.impl {
 			_hasRestArguments = value;
 		}
 
+		public function get hasOptionalArguments():Boolean {
+			for each (var arg:MethodArgument in _arguments) {
+				if (arg.isOptional) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+
+		public function get setDXNS():Boolean {
+			return (_methodBodyBuilder) ? _methodBodyBuilder.setDXNS : false;
+		}
+
+
+		public function get needActivation():Boolean {
+			return (_methodBodyBuilder) ? _methodBodyBuilder.needActivation : false;
+		}
+
+		public function get needArguments():Boolean {
+			return (_methodBodyBuilder) ? _methodBodyBuilder.needArguments : false;
+		}
+
 		public function defineArgument(type:String = "", isOptional:Boolean = false, defaultValue:Object = null):MethodArgument {
 			var arg:MethodArgument = new MethodArgument();
 			arg.type = type;
@@ -109,8 +133,28 @@ package org.as3commons.bytecode.emit.impl {
 			mi.returnType = MultinameUtil.toQualifiedName(_returnType);
 			mi.methodName = createMethodName(mi);
 			mi.as3commonsBytecodeName = name;
+			setMethodFlags(mi, setDXNS, needActivation, needArguments);
 			return mi;
 		}
+
+		protected function setMethodFlags(methodInfo:MethodInfo, setDXNS:Boolean, needActivation:Boolean, needArguments:Boolean):void {
+			if (hasOptionalArguments) {
+				MethodFlag.addFlag(methodInfo.flags, MethodFlag.HAS_OPTIONAL);
+			}
+			if (_methodBodyBuilder.setDXNS) {
+				MethodFlag.addFlag(methodInfo.flags, MethodFlag.SET_DXNS);
+			}
+			if (_methodBodyBuilder.needActivation) {
+				MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_ACTIVATION);
+			}
+			if (_methodBodyBuilder.needArguments) {
+				MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_ARGUMENTS);
+			}
+			if (hasRestArguments) {
+				MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_REST);
+			}
+		}
+
 
 		protected function createMethodName(methodInfo:MethodInfo):String {
 			return StringUtils.substitute(METHOD_NAME, packageName, name);

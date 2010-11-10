@@ -46,11 +46,13 @@ package org.as3commons.bytecode.emit {
 		 * @private
 		 */
 		function set hasRestArguments(value:Boolean):void;
-		/*
-		 * Creates and returns an <code>IMethodBodyBuilder</code> for the generated method.
-		 * @return The specified <code>IMethodBodyBuilder</code>.
+
+		/**
+		 * Returns <code>true</code> if one or more of the current <code>IMethodBuilder</code>'s arguments has
+		 * its <code>isOptional</code> property set to <code>true</code>;
 		 */
-		//function defineMethodBody():IMethodBodyBuilder;
+		function get hasOptionalArguments():Boolean;
+
 		/**
 		 * Creates and returns a new <code>MethodArgument</code> for the current method.
 		 * @param type The fully qualified type for the argument. I.e. <code>flash.events.Event</code>

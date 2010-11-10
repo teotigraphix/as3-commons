@@ -45,7 +45,7 @@ package org.as3commons.bytecode.abc.enum {
 			return Boolean(flagsValueFromMethodInfo & flagBeingCheckedFor.value);
 		}
 
-		public static function addFlasg(flagsValueFromMethodInfo:uint, flagToAdd:MethodFlag):uint {
+		public static function addFlag(flagsValueFromMethodInfo:uint, flagToAdd:MethodFlag):uint {
 			return (flagsValueFromMethodInfo |= flagToAdd.value);
 		}
 
