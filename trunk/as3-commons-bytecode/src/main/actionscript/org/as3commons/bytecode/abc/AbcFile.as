@@ -18,6 +18,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
+	import org.as3commons.bytecode.emit.asm.ClassInfoReference;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.typeinfo.ClassDefinition;
 	import org.as3commons.bytecode.typeinfo.Metadata;
@@ -55,6 +56,17 @@ package org.as3commons.bytecode.abc {
 			_classInfo = [];
 			_scriptInfo = [];
 			_methodBodies = [];
+		}
+
+		public function addClassInfoReference(classInfoReference:ClassInfoReference):int {
+			var idx:int = 0;
+			for each (var classInfo:ClassInfo in _classInfo) {
+				if (classInfo.classMultiName.equals(classInfoReference.classMultiName)) {
+					return idx;
+				}
+				idx++;
+			}
+			return -1;
 		}
 
 

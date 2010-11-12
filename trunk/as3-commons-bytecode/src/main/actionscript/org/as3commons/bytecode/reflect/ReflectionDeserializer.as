@@ -437,8 +437,6 @@ package org.as3commons.bytecode.reflect {
 						//  u30 classi 
 						// }
 						readU30();
-						//readU30();
-						//classTrait.classIndex = readU30();
 						metaDataContainer = instanceInfos[readU30()];
 						break;
 				}

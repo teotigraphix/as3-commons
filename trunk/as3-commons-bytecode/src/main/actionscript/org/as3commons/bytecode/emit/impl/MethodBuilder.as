@@ -92,11 +92,9 @@ package org.as3commons.bytecode.emit.impl {
 			return false;
 		}
 
-
 		public function get setDXNS():Boolean {
 			return (_methodBodyBuilder) ? _methodBodyBuilder.setDXNS : false;
 		}
-
 
 		public function get needActivation():Boolean {
 			return (_methodBodyBuilder) ? _methodBodyBuilder.needActivation : false;
@@ -227,12 +225,21 @@ package org.as3commons.bytecode.emit.impl {
 			return methodBodyBuilder.addOpcodes(newOpcodes);
 		}
 
+		public function addBackPatches(newBackpatches:Array):IMethodBodyBuilder {
+			return methodBodyBuilder.addBackPatches(newBackpatches);
+		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function addOp(opcode:Op):IMethodBodyBuilder {
 			return methodBodyBuilder.addOp(opcode);
 		}
 
-		public function defineJump(triggerOpcode:Op, targetOpcode:Op):IMethodBodyBuilder {
+		/**
+		 * @inheritDoc
+		 */
+		public function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean = false):IMethodBodyBuilder {
 			return methodBodyBuilder.defineJump(triggerOpcode, targetOpcode);
 		}
 

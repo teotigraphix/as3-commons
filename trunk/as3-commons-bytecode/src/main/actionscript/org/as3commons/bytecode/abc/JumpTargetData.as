@@ -24,43 +24,81 @@ package org.as3commons.bytecode.abc {
 	 */
 	public class JumpTargetData {
 
-		private var _jumpOpcode:Op;
+		private var _jumpOpcodePosition:OpcodePosition;
+		private var _targetOpcodePosition:OpcodePosition;
+		private var _extraOpcodePositions:Array;
+
+		public function get extraOpcodePositions():Array {
+			return _extraOpcodePositions;
+		}
+
 		/**
 		 * The bytecode position directly after the <code>jumpOpcode<code> and its arguments.
 		 */
-		public var jumpOpcodePosition:uint;
+		public function get jumpOpcodePosition():uint {
+			return _jumpOpcodePosition.position;
+		}
+
 		/**
 		 * The <code>Opcode</code> that will be jumped to if the <code>jumpOpcode</code> is executed.
 		 */
-		public var targetOpcode:Op;
+		public function get targetOpcode():Op {
+			return _targetOpcodePosition.opcode;
+		}
+
 		/**
 		 * The bytecode position directly before the <code>targetOpcode</code>.
 		 */
-		public var targetOpcodePosition:uint;
+		public function get targetOpcodePosition():uint {
+			return _targetOpcodePosition.position;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set targetOpcode(op:Op):void {
+			_targetOpcodePosition.opcode = op;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set targetOpcodePosition(pos:uint):void {
+			_targetOpcodePosition.position = pos;
+		}
 
 		public function JumpTargetData(jumpOp:Op = null, jumpOpcodePos:uint = 0, targetOp:Op = null, targetOpcodePos:uint = 0) {
 			super();
-			jumpOpcode = jumpOp;
-			jumpOpcodePosition = jumpOpcodePos;
-			targetOpcode = targetOp;
-			targetOpcodePosition = targetOpcodePos;
+			_jumpOpcodePosition = new OpcodePosition(jumpOp, jumpOpcodePos);
+			_targetOpcodePosition = new OpcodePosition(targetOp, targetOpcodePos);
 		}
 
+		public function addTarget(targetOp:Op = null, targetOpcodePos:uint = 0):void {
+			if (_extraOpcodePositions == null) {
+				_extraOpcodePositions = [];
+			}
+			var opcodePos:OpcodePosition = new OpcodePosition(targetOp, targetOpcodePos);
+			if (_targetOpcodePosition != null) {
+				_extraOpcodePositions[_extraOpcodePositions.length] = opcodePos;
+			} else {
+				_targetOpcodePosition = opcodePos;
+			}
+		}
 
 		/**
 		 * The <code>Opcode</code> triggering the jump.
 		 */
 		public function get jumpOpcode():Op {
-			return _jumpOpcode;
+			return _jumpOpcodePosition.opcode;
 		}
 
 		/**
 		 * @private
 		 */
 		public function set jumpOpcode(value:Op):void {
-			_jumpOpcode = value;
-			if ((_jumpOpcode != null) && (Opcode.jumpOpcodes[_jumpOpcode.opcode] == null)) {
-				throw new IllegalOperationError("Opcode " + _jumpOpcode.opcode.opcodeName + " is not a jump code");
+			_jumpOpcodePosition.opcode = value;
+			if ((_jumpOpcodePosition.opcode != null) && (Opcode.jumpOpcodes[_jumpOpcodePosition.opcode.opcode] == null)) {
+				throw new IllegalOperationError("Opcode " + _jumpOpcodePosition.opcode.opcode.opcodeName + " is not a jump code");
 			}
 		}
 
@@ -71,9 +109,9 @@ package org.as3commons.bytecode.abc {
 		 * matches the location of the <code>targetOpcode</code>.
 		 */
 		public function validate():Boolean {
-			if ((_jumpOpcode != null) && (targetOpcode != null)) {
-				var jumpLocation:int = int(_jumpOpcode.parameters[0]);
-				return (jumpLocation == (targetOpcodePosition - jumpOpcodePosition));
+			if ((_jumpOpcodePosition != null) && (_targetOpcodePosition != null)) {
+				var jumpLocation:int = int(_jumpOpcodePosition.opcode.parameters[0]);
+				return (jumpLocation == (_targetOpcodePosition.position - _jumpOpcodePosition.position));
 			}
 			return false;
 		}

@@ -24,6 +24,7 @@ package org.as3commons.bytecode.abc.enum {
 	public class NamespaceKind {
 		private static var _enumCreated:Boolean = false;
 		private static const _TYPES:Dictionary = new Dictionary();
+		private static const _NAMES:Dictionary = new Dictionary();
 		private static const _TYPELIST:Array = [];
 
 		private var _byteValue:uint;
@@ -45,6 +46,7 @@ package org.as3commons.bytecode.abc.enum {
 			_byteValue = byteValue;
 			_description = description;
 			_TYPES[byteValue] = this;
+			_NAMES[description] = this;
 		}
 
 		public function get byteValue():int {
@@ -72,6 +74,14 @@ package org.as3commons.bytecode.abc.enum {
 			var kind:NamespaceKind = _TYPES[kindByte];
 			if (kind == null) {
 				throw new Error("Unknown NamespaceKind: " + kindByte);
+			}
+			return kind;
+		}
+
+		public static function determineKindByName(kindName:String):NamespaceKind {
+			var kind:NamespaceKind = _NAMES[kindName];
+			if (kind == null) {
+				throw new Error("Unknown NamespaceKind: " + kindName);
 			}
 			return kind;
 		}

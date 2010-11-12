@@ -59,13 +59,15 @@ package org.as3commons.bytecode.emit {
 		 * <p>The <code>triggerOpcode</code> and/or <code>targetOpcode</code> will be added to the opcodes list if it hasn't been already.</p>
 		 * @return The current <code>IMethodBodyBuilder</code> to enable chaining.
 		 */
-		function defineJump(triggerOpcode:Op, targetOpcode:Op):IMethodBodyBuilder;
+		function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean = false):IMethodBodyBuilder;
 		/**
 		 * Adds an <code>Array</code> of <code>Op</code> instances.
 		 * @param newOpcodes The specified <code>Array</code> of <code>Op</code> instances.
 		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining of <code>addOpcodes()</code> invocations.
 		 */
 		function addOpcodes(newOpcodes:Array):IMethodBodyBuilder;
+
+		function addBackPatches(newBackpatches:Array):IMethodBodyBuilder;
 		/**
 		 * Creates and returns a new <code>IExceptionInfoBuilder</code> instance.
 		 * @return The specified <code>IExceptionInfoBuilder</code> instance.

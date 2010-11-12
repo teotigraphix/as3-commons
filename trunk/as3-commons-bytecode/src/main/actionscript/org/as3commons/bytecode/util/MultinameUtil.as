@@ -24,6 +24,7 @@ package org.as3commons.bytecode.util {
 	public final class MultinameUtil {
 
 		public static const DOUBLE_COLON:String = "::";
+		public static const DOUBLE_COLON_REGEXP:RegExp = /[:]+/;
 		public static const PERIOD:String = ".";
 
 		public static function toQualifiedName(className:String, kind:NamespaceKind = null):QualifiedName {
@@ -56,8 +57,8 @@ package org.as3commons.bytecode.util {
 					var portions:Array;
 					var namespacePortion:String;
 					var classNamePortion:String;
-					if (className.indexOf(DOUBLE_COLON) > -1) {
-						portions = className.split(DOUBLE_COLON);
+					if (className.match(DOUBLE_COLON_REGEXP) != null) {
+						portions = className.split(DOUBLE_COLON_REGEXP);
 						namespacePortion = portions[0];
 						classNamePortion = portions[1];
 					} else {
@@ -73,10 +74,11 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function toMultiName(className:String, kind:NamespaceKind = null):Multiname {
+			kind = (kind != null) ? kind : NamespaceKind.PACKAGE_NAMESPACE;
 			var portions:Array;
 			var classNamePortion:String;
-			if (className.indexOf(DOUBLE_COLON) > -1) {
-				portions = className.split(DOUBLE_COLON);
+			if (className.match(DOUBLE_COLON_REGEXP) != null) {
+				portions = className.split(DOUBLE_COLON_REGEXP);
 				classNamePortion = portions[1];
 			} else {
 				portions = className.split(PERIOD);
@@ -116,8 +118,8 @@ package org.as3commons.bytecode.util {
 					var portions:Array;
 					var namespacePortion:String;
 					var classNamePortion:String;
-					if (className.indexOf(DOUBLE_COLON) > -1) {
-						portions = className.split(DOUBLE_COLON);
+					if (className.match(DOUBLE_COLON_REGEXP) != null) {
+						portions = className.split(DOUBLE_COLON_REGEXP);
 						namespacePortion = portions[0];
 						classNamePortion = portions[1];
 					} else {
