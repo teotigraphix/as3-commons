@@ -34,8 +34,10 @@ package org.as3commons.bytecode.abc.enum {
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.abc.OpcodePosition;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.UnsignedInteger;
+	import org.as3commons.bytecode.emit.asm.ClassInfoReference;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.ReadWritePair;
 	import org.as3commons.lang.Assert;
@@ -51,6 +53,7 @@ package org.as3commons.bytecode.abc.enum {
 
 		private static var _enumCreated:Boolean = false;
 		private static const _ALL_OPCODES:Dictionary = new Dictionary();
+		private static const _opcodeNameLookup:Dictionary = new Dictionary();
 
 		public static const errorDispatcher:IEventDispatcher = new EventDispatcher();
 
@@ -221,7 +224,7 @@ package org.as3commons.bytecode.abc.enum {
 		private static const UNKNOWN_OPCODE_ARGUMENTTYPE:String = "Unknown Opcode argument type. {0}";
 
 		private static var _jumpLookup:Dictionary;
-		private static var _opcodeLocations:Dictionary;
+		private static var _opcodePositions:Dictionary;
 		public static const jumpOpcodes:Dictionary = new Dictionary();
 		{
 			jumpOpcodes[ifeq] = true;
@@ -239,6 +242,7 @@ package org.as3commons.bytecode.abc.enum {
 			jumpOpcodes[iffalse] = true;
 			jumpOpcodes[iftrue] = true;
 			jumpOpcodes[jump] = true;
+			jumpOpcodes[lookupswitch] = true;
 		}
 
 		private var _opcodeName:String;
@@ -260,33 +264,55 @@ package org.as3commons.bytecode.abc.enum {
 			} else {
 				throw new IllegalOperationError("duplicate! " + opcodeName + " : " + Opcode(_ALL_OPCODES[_value]).opcodeName);
 			}
+			_opcodeNameLookup[opcodeName] = this;
+		}
+
+		public static function fromName(opcodeName:String):Opcode {
+			return _opcodeNameLookup[opcodeName] as Opcode;
 		}
 
 		/**
 		 * Serializes an array of Ops, returning a ByteArray with the opcode output block.
 		 */
 		public static function serialize(ops:Array, methodBody:MethodBody, abcFile:AbcFile):ByteArray {
+			_opcodePositions = new Dictionary();
 			var serializedOpcodes:ByteArray = AbcSpec.byteArray();
 			for each (var op:Op in ops) {
+				_opcodePositions[op] = serializedOpcodes.position;
 				AbcSpec.writeU8(op.opcode._value, serializedOpcodes);
 
 				serializeOpcodeArguments(op, abcFile, methodBody, serializedOpcodes);
 //				trace(serializedOpcodes.position + "\t" + op);
 			}
 			serializedOpcodes.position = 0;
-			resolveBackPatches(serializedOpcodes, methodBody.backPatches);
+			resolveBackPatches(serializedOpcodes, methodBody.backPatches, _opcodePositions);
 			serializedOpcodes.position = 0;
+			serializedOpcodes.position = 0;
+			_opcodePositions = null;
 			return serializedOpcodes;
 		}
 
-		public static function resolveBackPatches(serializedOpcodes:ByteArray, backPatches:Array):void {
-		/*for each (var backPatch:BackPatch in backPatches) {
-		   if (backPatch.label.address == -1) {
-		   throw new IllegalOperationError("Missing definition for label " + backPatch.label.name);
-		   }
-		   serializedOpcodes.position = backPatch.location;
-		   AbcSpec.writeS24(backPatch.label.address, serializedOpcodes);
-		 }*/
+		public static function resolveBackPatches(serializedOpcodes:ByteArray, backPatches:Array, positions:Dictionary):void {
+			for each (var jumpData:JumpTargetData in backPatches) {
+				trace(jumpData.jumpOpcode);
+				trace(jumpData.targetOpcode);
+				var targetPos:int = positions[jumpData.jumpOpcode] + int(jumpData.jumpOpcode.parameters[0]);
+				var targetOpPos:int = (positions[jumpData.targetOpcode]) ? positions[jumpData.targetOpcode] : 0;
+				if (targetPos != targetOpPos) {
+					serializedOpcodes.position = (positions[jumpData.jumpOpcode]);
+					var opcode:Opcode = determineOpcode(AbcSpec.readU8(serializedOpcodes));
+					var operandPos:int = serializedOpcodes.position;
+					AbcSpec.readS24(serializedOpcodes);
+					var currentPos:int = serializedOpcodes.position;
+					var newJump:int = (targetOpPos - currentPos);
+					serializedOpcodes.position = operandPos;
+					AbcSpec.writeS24(newJump, serializedOpcodes);
+					if ((positions[jumpData.jumpOpcode] + newJump) > serializedOpcodes.length) {
+						trace("WRONG");
+					}
+					trace(StringUtils.substitute("resolved backpatch: {0}", newJump));
+				}
+			}
 		}
 
 		public static function serializeOpcodeArguments(op:Op, abcFile:AbcFile, methodBody:MethodBody, serializedOpcodes:ByteArray):void {
@@ -319,16 +345,21 @@ package org.as3commons.bytecode.abc.enum {
 
 				case Number:
 					abcCompatibleValue = abcFile.constantPool.addDouble(rawValue);
-					//                            trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
+					//trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
 					break;
 
 				case BaseMultiname:
 					abcCompatibleValue = abcFile.constantPool.addMultiname(rawValue);
-					//                            trace("\tMultiname: " + abcCompatibleValue + "(" + rawValue + ")");
+					//trace("\tMultiname: " + abcCompatibleValue + "(" + rawValue + ")");
 					break;
 
 				case ClassInfo:
-					abcCompatibleValue = abcFile.addClassInfo(rawValue);
+					if (rawValue is ClassInfoReference) {
+						abcCompatibleValue = abcFile.addClassInfoReference(rawValue);
+						Assert.state(abcCompatibleValue > 0, "Unknown classinfo: " + ClassInfoReference(rawValue).classMultiName.toString());
+					} else {
+						abcCompatibleValue = abcFile.addClassInfo(rawValue);
+					}
 					//                            trace("\tClassInfo: " + abcCompatibleValue + "(" + rawValue + ")");
 					break;
 
@@ -374,33 +405,33 @@ package org.as3commons.bytecode.abc.enum {
 		 * opcode block.
 		 */
 		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, abcFile:AbcFile):Array {
-			_opcodeLocations = new Dictionary();
+			_opcodePositions = new Dictionary();
 			var ops:Array = [];
 			methodBody.backPatches = [];
 			_jumpLookup = new Dictionary();
 			var startPosition:int = byteArray.position;
 
 			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCodeLength);
-			//try {
-			while (byteArray.position < positionAtEndOfBytecode) {
-				parseOpcode(byteArray, abcFile, ops, methodBody, startPosition);
+			try {
+				while (byteArray.position < positionAtEndOfBytecode) {
+					parseOpcode(byteArray, abcFile, ops, methodBody);
+				}
+				if (byteArray.position > positionAtEndOfBytecode) {
+					throw new Error("Opcode parsing read beyond end of method body");
+				}
+			} catch (e:*) {
+				var pos:int = (byteArray.position - startPosition);
+				var fragment:ByteArray = AbcSpec.byteArray();
+				fragment.writeBytes(byteArray, startPosition, opcodeByteCodeLength);
+				fragment.position = 0;
+				errorDispatcher.dispatchEvent(new ByteCodeErrorEvent(ByteCodeErrorEvent.BYTECODE_METHODBODY_ERROR, fragment, pos));
+				throw e;
 			}
-			if (byteArray.position > positionAtEndOfBytecode) {
-				throw new Error("Opcode parsing read beyond end of method body");
-			}
-			//} catch (e:*) {
-			/*var pos:int = (byteArray.position - startPosition);
-			   var fragment:ByteArray = AbcSpec.byteArray();
-			   fragment.writeBytes(byteArray, startPosition, opcodeByteCodeLength);
-			   fragment.position = 0;
-			 errorDispatcher.dispatchEvent(new ByteCodeErrorEvent(ByteCodeErrorEvent.BYTECODE_METHODBODY_ERROR, fragment, pos));*/
-			//throw e;
-			//}
-			_opcodeLocations = null;
+			_opcodePositions = null;
 			return ops;
 		}
 
-		public static function parseOpcode(byteArray:ByteArray, abcFile:AbcFile, ops:Array, methodBody:MethodBody, startPosition:int):void {
+		public static function parseOpcode(byteArray:ByteArray, abcFile:AbcFile, ops:Array, methodBody:MethodBody):void {
 			var startPos:int = byteArray.position;
 			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
 			var argumentValues:Array = [];
@@ -412,24 +443,49 @@ package org.as3commons.bytecode.abc.enum {
 			var op:Op = opcode.op(argumentValues);
 			ops[ops.length] = op;
 
+			var pos:int;
 			if (jumpOpcodes[opcode] == true) {
-				var jumpPos:int = int(op.parameters[0]);
-				trace("jumpPos " + jumpPos + ", :" + op.opcode._opcodeName + ", :" + startPos);
-				var pos:int = (endPos + jumpPos);
-				if (pos > endPos) {
-					_jumpLookup[pos] = new JumpTargetData(op, endPos, null);
+				if (opcode !== Opcode.lookupswitch) {
+					var jumpPos:int = int(op.parameters[0]);
+					pos = (endPos + jumpPos);
+					if (pos > endPos) {
+						if (_jumpLookup[pos] == null) {
+							_jumpLookup[pos] = [new JumpTargetData(op, endPos, null)];
+						} else {
+							var arr:Array = _jumpLookup[pos];
+							arr[arr.length] = new JumpTargetData(op, endPos, null);
+						}
+					} else {
+						methodBody.backPatches[methodBody.backPatches.length] = new JumpTargetData(op, endPos, _opcodePositions[endPos], pos);
+					}
 				} else {
-					methodBody.backPatches[methodBody.backPatches.length] = new JumpTargetData(op, endPos, _opcodeLocations[endPos], pos);
+					var newJpd:JumpTargetData = new JumpTargetData(op, endPos, null);
+					var positions:Array = (op.parameters[2] as Array);
+					for each (var switchPos:int in positions) {
+						if (switchPos < 0) {
+							pos = (endPos + switchPos);
+							newJpd.addTarget(_opcodePositions[endPos], pos);
+						} else {
+							_jumpLookup[switchPos] = newJpd;
+						}
+					}
+					methodBody.backPatches[methodBody.backPatches.length] = newJpd;
 				}
 			}
 			if (_jumpLookup[startPos] != null) {
-				var jt:JumpTargetData = _jumpLookup[startPos];
-				jt.targetOpcode = op;
-				jt.targetOpcodePosition = startPos;
-				methodBody.backPatches[methodBody.backPatches.length] = jt;
+				var jumpTargets:Array = _jumpLookup[startPos];
+				for each (var jt:JumpTargetData in jumpTargets) {
+					if (jt.jumpOpcode.opcode !== Opcode.lookupswitch) {
+						jt.targetOpcode = op;
+						jt.targetOpcodePosition = startPos;
+						methodBody.backPatches[methodBody.backPatches.length] = jt;
+					} else {
+						jt.addTarget(op, startPos);
+					}
+				}
 				delete _jumpLookup[startPos];
 			}
-			_opcodeLocations[startPos] = op;
+			_opcodePositions[startPos] = op;
 			//trace(byteArray.position + "\t" + op);
 		}
 

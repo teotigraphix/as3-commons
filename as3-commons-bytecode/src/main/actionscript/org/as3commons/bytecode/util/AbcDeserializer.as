@@ -105,6 +105,246 @@ package org.as3commons.bytecode.util {
 
 			deserializeConstantPool(pool);
 
+			deserializeMethodInfos(abcFile, pool);
+
+//            trace("Metadata: " + _byteStream.position);
+			deserializeMetadata(pool, abcFile);
+
+//            trace("Classes: " + _byteStream.position);
+			var classCount:int = deserializeInstanceInfo(pool, abcFile);
+
+			deserializeClassInfos(pool, abcFile, classCount);
+
+			trace("ClassInfos parsed by " + (new Date().getTime() - startTime) + " ms");
+
+			// script_info  
+			// { 
+			//  u30 init 
+			//  u30 trait_count 
+			//  traits_info trait[trait_count] 
+			// }
+//            trace("Scripts: " + _byteStream.position);
+			deserializeScriptInfos(abcFile);
+
+			trace("ScriptInfos parsed by " + (new Date().getTime() - startTime) + " ms");
+
+//            trace("MethodBodies: " + _byteStream.position);
+			deserializeMethodBodies(abcFile, pool);
+
+			trace("MethodInfos parsed by " + (new Date().getTime() - startTime) + " ms");
+
+			return abcFile;
+		}
+
+		private function deserializeClassInfos(pool:ConstantPool, abcFile:AbcFile, classCount:int):void {
+			// class info
+			//	        trace("ClassInfo: " + _byteStream.position);
+			for (var classIndex:int = 0; classIndex < classCount; ++classIndex) {
+				// class_info  
+				// { 
+				//  u30 cinit 
+				//  u30 trait_count 
+				//  traits_info traits[trait_count] 
+				// }
+				var classInfo:ClassInfo = new ClassInfo();
+				classInfo.classMultiName = InstanceInfo(abcFile.instanceInfo[classIndex]).classMultiname;
+				classInfo.staticInitializer = abcFile.methodInfo[readU30()];
+				classInfo.staticInitializer.as3commonsBytecodeName = STATIC_INITIALIZER_BYTECODENAME;
+				classInfo.traits = deserializeTraitsInfo(abcFile, byteStream, true);
+				abcFile.instanceInfo[classIndex].classInfo = classInfo;
+				abcFile.addClassInfo(classInfo);
+			}
+		}
+
+
+		private function deserializeMethodBodies(abcFile:AbcFile, pool:ConstantPool):void {
+			var methodBodyCount:int = readU30();
+			trace("methodBody count:" + methodBodyCount);
+			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; ++bodyIndex) {
+				var methodBody:MethodBody = new MethodBody();
+				// method_body_info 
+				// { 
+				//  u30 method 
+				//  u30 max_stack 
+				//  u30 local_count 
+				//  u30 init_scope_depth  
+				//  u30 max_scope_depth 
+				//  u30 code_length 
+				//  u8  code[code_length] 
+				//  u30 exception_count 
+				//  exception_info exception[exception_count] 
+				//  u30 trait_count 
+				//  traits_info trait[trait_count] 
+				// }
+				methodBody.methodSignature = abcFile.methodInfo[readU30()];
+				methodBody.methodSignature.methodBody = methodBody;
+				methodBody.maxStack = readU30();
+				methodBody.localCount = readU30();
+				methodBody.initScopeDepth = readU30();
+				methodBody.maxScopeDepth = readU30();
+
+				var codeLength:int = readU30();
+				if (methodBodyExtractionMethod === MethodBodyExtractionMethod.PARSE) {
+					methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile);
+				} else if (methodBodyExtractionMethod === MethodBodyExtractionMethod.BYTEARRAY) {
+					methodBody.rawOpcodes.writeBytes(byteStream, byteStream.position, codeLength);
+					byteStream.position += codeLength;
+				} else {
+					byteStream.position += codeLength;
+				}
+
+				var exceptionCount:int = readU30();
+				var exceptionInfos:Array = methodBody.exceptionInfos;
+				/*trace("----------------------------------------------------");
+				   trace("Method: " + methodBody.methodSignature.methodName);
+				   trace("Opcode count: " + methodBody.opcodes.length);
+				   trace("Exception info count: " + exceptionCount);
+				 trace("----------------------------------------------------");*/
+				for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
+					trace("Exception #" + exceptionIndex);
+					var exceptionInfo:ExceptionInfo = new ExceptionInfo();
+					// exception_info  
+					// { 
+					//  u30 from 
+					//  u30 to  
+					//  u30 target 
+					//  u30 exc_type 
+					//  u30 var_name 
+					// }
+					exceptionInfo.exceptionEnabledFromCodePosition = readU30();
+					exceptionInfo.exceptionEnabledToCodePosition = readU30();
+					exceptionInfo.codePositionToJumpToOnException = readU30();
+					exceptionInfo.exceptionTypeName = pool.stringPool[readU30()];
+					Assert.notNull(exceptionInfo.exceptionTypeName, "exceptionInfo.exceptionTypeName returned null from constant pool");
+					exceptionInfo.nameOfVariableReceivingException = pool.stringPool[readU30()];
+					Assert.notNull(exceptionInfo.nameOfVariableReceivingException, "exceptionInfo.nameOfVariableReceivingException returned null from constant pool");
+					exceptionInfos[exceptionInfos.length] = exceptionInfo;
+				}
+
+				//Add the ExceptionInfo reference to all opcodes to until now only carried an
+				//index for the reference (this replaces the index with the actual reference in the parameter):
+				for each (var op:Op in methodBody.opcodes) {
+					var idx:int = getExceptionInfoArgumentIndex(op);
+					if (idx > -1) {
+						exceptionIndex = op.parameters[idx];
+						op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
+						Assert.notNull(op.parameters[idx], op.parameters[idx].toString() + " returned null from method exception info collection");
+					}
+				}
+
+				methodBody.traits = deserializeTraitsInfo(abcFile, byteStream);
+
+				abcFile.addMethodBody(methodBody);
+			}
+		}
+
+
+		private function deserializeScriptInfos(abcFile:AbcFile):void {
+			var scriptCount:int = readU30();
+			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
+				var scriptInfo:ScriptInfo = new ScriptInfo();
+				scriptInfo.scriptInitializer = abcFile.methodInfo[readU30()];
+				scriptInfo.scriptInitializer.as3commonsBytecodeName = SCRIPT_INITIALIZER_BYTECODENAME;
+				scriptInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
+				abcFile.addScriptInfo(scriptInfo);
+			}
+		}
+
+
+		private function deserializeInstanceInfo(pool:ConstantPool, abcFile:AbcFile):int {
+			var classCount:int = readU30();
+			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
+				// instance_info  
+				// { 
+				//  u30 name 
+				//  u30 super_name 
+				//  u8  flags 
+				//  u30 protectedNs  
+				//  u30 intrf_count 
+				//  u30 interface[intrf_count] 
+				//  u30 iinit 
+				//  u30 trait_count 
+				//  traits_info trait[trait_count] 
+				// }
+				//	            trace("InstanceInfo: " + _byteStream.position);
+				var instanceInfo:InstanceInfo = new InstanceInfo();
+
+				// The AVM2 spec dictates that this should always be a QualifiedName, but when parsing SWFs I have come across
+				// Multinames with single namespaces (which are essentially QualifiedNames - the only reason to be a multiname
+				// is to have multiple namespaces to search within to resolve a name). I haven't heard back from the Tamarin
+				// list yet on this anomaly so I'm going to convert single-namespace Multinames to QualifiedNames here.
+				//
+				// From the spec (Section 4.7 "Instance", page 28):
+				//  name 
+				//      The name field is an index into the multiname array of the constant pool; it provides a name for the 
+				//      class. The entry specified must be a QName. 
+				var classMultiname:BaseMultiname = pool.multinamePool[readU30()];
+
+				instanceInfo.classMultiname = convertToQualifiedName(classMultiname);
+				instanceInfo.superclassMultiname = pool.multinamePool[readU30()];
+				var instanceInfoFlags:int = readU8();
+				instanceInfo.isFinal = ClassConstant.FINAL.present(instanceInfoFlags);
+				instanceInfo.isInterface = ClassConstant.INTERFACE.present(instanceInfoFlags);
+				instanceInfo.isProtected = ClassConstant.PROTECTED_NAMESPACE.present(instanceInfoFlags);
+				instanceInfo.isSealed = ClassConstant.SEALED.present(instanceInfoFlags);
+				if (instanceInfo.isProtected) {
+					instanceInfo.protectedNamespace = pool.namespacePool[readU30()];
+				}
+				var interfaceCount:int = readU30();
+				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
+					var intfIdx:int = readU30();
+					instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = pool.multinamePool[intfIdx];
+				}
+				instanceInfo.instanceInitializer = abcFile.methodInfo[readU30()];
+				instanceInfo.instanceInitializer.as3commonsBytecodeName = CONSTRUCTOR_BYTECODENAME;
+				instanceInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
+				abcFile.addInstanceInfo(instanceInfo);
+			}
+			return classCount;
+		}
+
+
+		protected function deserializeMetadata(pool:ConstantPool, abcFile:AbcFile):void {
+			var metadataCount:int = readU30();
+			for (var metadataIndex:int = 0; metadataIndex < metadataCount; ++metadataIndex) {
+				// metadata_info  
+				// { 
+				//  u30 name 
+				//  u30 item_count 
+				//  item_info items[item_count] 
+				// }
+				// item_info  
+				// { 
+				//  u30 key 
+				//  u30 value 
+				// }
+				// The above is a lie... the metadata is saved with all the keys first, then all the values afterwards.
+				// So, if the item_count is 3, that means you will get three keys followed by three values. The keys
+				// and values match up with each other in index, so the first key matches the first value, second key
+				// matches the second value, etc.
+				var metadataInstance:Metadata = new Metadata();
+				metadataInstance.name = pool.stringPool[readU30()];
+				abcFile.addMetadataInfo(metadataInstance);
+				var keyValuePairCount:int = readU30();
+				var keys:Array = [];
+
+				// Suck out the keys first
+				for (var keyIndex:int = 0; keyIndex < keyValuePairCount; ++keyIndex) {
+					var key:String = pool.stringPool[readU30()];
+					keys[keys.length] = key;
+				}
+
+				// Map keys to values in another loop
+				for each (var currentKey:String in keys) {
+					// Note that if a key is zero, then this is a keyless entry and only carries a value (AVM2 overview, page 27 under 4.6 metadata_info) 
+					var value:String = pool.stringPool[readU30()];
+					metadataInstance.properties[currentKey] = value;
+				}
+			}
+		}
+
+
+		protected function deserializeMethodInfos(abcFile:AbcFile, pool:ConstantPool):void {
 			var methodCount:int = readU30();
 			//trace("MethodInfo count: " + methodCount);
 			for (var methodIndex:int = 0; methodIndex < methodCount; ++methodIndex) {
@@ -232,216 +472,8 @@ package org.as3commons.bytecode.util {
 					}
 				}
 			}
-
-//            trace("Metadata: " + _byteStream.position);
-			var metadataCount:int = readU30();
-			for (var metadataIndex:int = 0; metadataIndex < metadataCount; ++metadataIndex) {
-				// metadata_info  
-				// { 
-				//  u30 name 
-				//  u30 item_count 
-				//  item_info items[item_count] 
-				// }
-				// item_info  
-				// { 
-				//  u30 key 
-				//  u30 value 
-				// }
-				// The above is a lie... the metadata is saved with all the keys first, then all the values afterwards.
-				// So, if the item_count is 3, that means you will get three keys followed by three values. The keys
-				// and values match up with each other in index, so the first key matches the first value, second key
-				// matches the second value, etc.
-				var metadataInstance:Metadata = new Metadata();
-				metadataInstance.name = pool.stringPool[readU30()];
-				abcFile.addMetadataInfo(metadataInstance);
-				var keyValuePairCount:int = readU30();
-				var keys:Array = [];
-
-				// Suck out the keys first
-				for (var keyIndex:int = 0; keyIndex < keyValuePairCount; ++keyIndex) {
-					var key:String = pool.stringPool[readU30()];
-					keys[keys.length] = key;
-				}
-
-				// Map keys to values in another loop
-				for each (var currentKey:String in keys) {
-					// Note that if a key is zero, then this is a keyless entry and only carries a value (AVM2 overview, page 27 under 4.6 metadata_info) 
-					var value:String = pool.stringPool[readU30()];
-					metadataInstance.properties[currentKey] = value;
-				}
-			}
-
-//            trace("Classes: " + _byteStream.position);
-			var classCount:int = readU30();
-			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
-				// instance_info  
-				// { 
-				//  u30 name 
-				//  u30 super_name 
-				//  u8  flags 
-				//  u30 protectedNs  
-				//  u30 intrf_count 
-				//  u30 interface[intrf_count] 
-				//  u30 iinit 
-				//  u30 trait_count 
-				//  traits_info trait[trait_count] 
-				// }
-//	            trace("InstanceInfo: " + _byteStream.position);
-				var instanceInfo:InstanceInfo = new InstanceInfo();
-
-				// The AVM2 spec dictates that this should always be a QualifiedName, but when parsing SWFs I have come across
-				// Multinames with single namespaces (which are essentially QualifiedNames - the only reason to be a multiname
-				// is to have multiple namespaces to search within to resolve a name). I haven't heard back from the Tamarin
-				// list yet on this anomaly so I'm going to convert single-namespace Multinames to QualifiedNames here.
-				//
-				// From the spec (Section 4.7 "Instance", page 28):
-				//  name 
-				//      The name field is an index into the multiname array of the constant pool; it provides a name for the 
-				//      class. The entry specified must be a QName. 
-				var classMultiname:BaseMultiname = pool.multinamePool[readU30()];
-
-				instanceInfo.classMultiname = convertToQualifiedName(classMultiname);
-				instanceInfo.superclassMultiname = pool.multinamePool[readU30()];
-				var instanceInfoFlags:int = readU8();
-				instanceInfo.isFinal = ClassConstant.FINAL.present(instanceInfoFlags);
-				instanceInfo.isInterface = ClassConstant.INTERFACE.present(instanceInfoFlags);
-				instanceInfo.isProtected = ClassConstant.PROTECTED_NAMESPACE.present(instanceInfoFlags);
-				instanceInfo.isSealed = ClassConstant.SEALED.present(instanceInfoFlags);
-				if (instanceInfo.isProtected) {
-					instanceInfo.protectedNamespace = pool.namespacePool[readU30()];
-				}
-				var interfaceCount:int = readU30();
-				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
-					var intfIdx:int = readU30();
-					instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = pool.multinamePool[intfIdx];
-				}
-				instanceInfo.instanceInitializer = abcFile.methodInfo[readU30()];
-				instanceInfo.instanceInitializer.as3commonsBytecodeName = CONSTRUCTOR_BYTECODENAME;
-				instanceInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
-				abcFile.addInstanceInfo(instanceInfo);
-			}
-
-			// class info
-//	        trace("ClassInfo: " + _byteStream.position);
-			for (var classIndex:int = 0; classIndex < classCount; ++classIndex) {
-				// class_info  
-				// { 
-				//  u30 cinit 
-				//  u30 trait_count 
-				//  traits_info traits[trait_count] 
-				// }
-				var classInfo:ClassInfo = new ClassInfo();
-				classInfo.staticInitializer = abcFile.methodInfo[readU30()];
-				classInfo.staticInitializer.as3commonsBytecodeName = STATIC_INITIALIZER_BYTECODENAME;
-				classInfo.traits = deserializeTraitsInfo(abcFile, byteStream, true);
-				abcFile.instanceInfo[classIndex].classInfo = classInfo;
-				abcFile.addClassInfo(classInfo);
-			}
-
-			trace("ClassInfos parsed by " + (new Date().getTime() - startTime) + " ms");
-
-			// script_info  
-			// { 
-			//  u30 init 
-			//  u30 trait_count 
-			//  traits_info trait[trait_count] 
-			// }
-//            trace("Scripts: " + _byteStream.position);
-			var scriptCount:int = readU30();
-			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
-				var scriptInfo:ScriptInfo = new ScriptInfo();
-				scriptInfo.scriptInitializer = abcFile.methodInfo[readU30()];
-				scriptInfo.scriptInitializer.as3commonsBytecodeName = SCRIPT_INITIALIZER_BYTECODENAME;
-				scriptInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
-				abcFile.addScriptInfo(scriptInfo);
-			}
-
-			trace("ScriptInfos parsed by " + (new Date().getTime() - startTime) + " ms");
-
-//            trace("MethodBodies: " + _byteStream.position);
-			var methodBodyCount:int = readU30();
-			trace("methodBody count:" + methodBodyCount);
-			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; ++bodyIndex) {
-				var methodBody:MethodBody = new MethodBody();
-				// method_body_info 
-				// { 
-				//  u30 method 
-				//  u30 max_stack 
-				//  u30 local_count 
-				//  u30 init_scope_depth  
-				//  u30 max_scope_depth 
-				//  u30 code_length 
-				//  u8  code[code_length] 
-				//  u30 exception_count 
-				//  exception_info exception[exception_count] 
-				//  u30 trait_count 
-				//  traits_info trait[trait_count] 
-				// }
-				methodBody.methodSignature = abcFile.methodInfo[readU30()];
-				methodBody.methodSignature.methodBody = methodBody;
-				methodBody.maxStack = readU30();
-				methodBody.localCount = readU30();
-				methodBody.initScopeDepth = readU30();
-				methodBody.maxScopeDepth = readU30();
-
-				var codeLength:int = readU30();
-				if (methodBodyExtractionMethod === MethodBodyExtractionMethod.PARSE) {
-					methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile);
-				} else if (methodBodyExtractionMethod === MethodBodyExtractionMethod.BYTEARRAY) {
-					methodBody.rawOpcodes.writeBytes(byteStream, byteStream.position, codeLength);
-					byteStream.position += codeLength;
-				} else {
-					byteStream.position += codeLength;
-				}
-
-				var exceptionCount:int = readU30();
-				var exceptionInfos:Array = methodBody.exceptionInfos;
-				/*trace("----------------------------------------------------");
-				   trace("Method: " + methodBody.methodSignature.methodName);
-				   trace("Opcode count: " + methodBody.opcodes.length);
-				   trace("Exception info count: " + exceptionCount);
-				 trace("----------------------------------------------------");*/
-				for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
-					trace("Exception #" + exceptionIndex);
-					var exceptionInfo:ExceptionInfo = new ExceptionInfo();
-					// exception_info  
-					// { 
-					//  u30 from 
-					//  u30 to  
-					//  u30 target 
-					//  u30 exc_type 
-					//  u30 var_name 
-					// }
-					exceptionInfo.exceptionEnabledFromCodePosition = readU30();
-					exceptionInfo.exceptionEnabledToCodePosition = readU30();
-					exceptionInfo.codePositionToJumpToOnException = readU30();
-					exceptionInfo.exceptionTypeName = pool.stringPool[readU30()];
-					Assert.notNull(exceptionInfo.exceptionTypeName, "exceptionInfo.exceptionTypeName returned null from constant pool");
-					exceptionInfo.nameOfVariableReceivingException = pool.stringPool[readU30()];
-					Assert.notNull(exceptionInfo.nameOfVariableReceivingException, "exceptionInfo.nameOfVariableReceivingException returned null from constant pool");
-					exceptionInfos[exceptionInfos.length] = exceptionInfo;
-				}
-
-				//Add the ExceptionInfo reference to all opcodes to until now only carried an
-				//index for the reference (this replaces the index with the actual reference in the parameter):
-				for each (var op:Op in methodBody.opcodes) {
-					var idx:int = getExceptionInfoArgumentIndex(op);
-					if (idx > -1) {
-						exceptionIndex = op.parameters[idx];
-						op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
-						Assert.notNull(op.parameters[idx], op.parameters[idx].toString() + " returned null from method exception info collection");
-					}
-				}
-
-				methodBody.traits = deserializeTraitsInfo(abcFile, byteStream);
-
-				abcFile.addMethodBody(methodBody);
-			}
-
-			trace("MethodInfos parsed by " + (new Date().getTime() - startTime) + " ms");
-
-			return abcFile;
 		}
+
 
 		protected function getExceptionInfoArgumentIndex(op:Op):int {
 			if (op.opcode === Opcode.newcatch) {

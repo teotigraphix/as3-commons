@@ -120,6 +120,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		private var _jumpData:Array = [];
 		private var _opcodes:Array = [];
+		private var _backpatches:Array = [];
 		private var _exceptionInfos:Array = [];
 		private var _traits:Array = [];
 		private var _currentStack:int = 0;
@@ -137,7 +138,6 @@ package org.as3commons.bytecode.emit.impl {
 		public function get setDXNS():Boolean {
 			return _hasDXNS;
 		}
-
 
 		public function get needActivation():Boolean {
 			return _needActivation;
@@ -184,6 +184,7 @@ package org.as3commons.bytecode.emit.impl {
 			processOpcodes(mb);
 			mb.maxStack = _maxStack;
 			mb.maxScopeDepth = _maxScope;
+			mb.backPatches = _backpatches.concat([]);
 			return mb;
 		}
 
@@ -313,10 +314,12 @@ package org.as3commons.bytecode.emit.impl {
 			return this;
 		}
 
+		private var _jumpDataLookup:Dictionary = new Dictionary();
+
 		/**
 		 * @inheritDoc
 		 */
-		public function defineJump(triggerOpcode:Op, targetOpcode:Op):IMethodBodyBuilder {
+		public function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean = false):IMethodBodyBuilder {
 			if (Opcode.jumpOpcodes[triggerOpcode] == null) {
 				throw new IllegalOperationError(StringUtils.substitute(ILLEGAL_JUMP_OPCODE_ERROR, triggerOpcode));
 			}
@@ -326,12 +329,23 @@ package org.as3commons.bytecode.emit.impl {
 			if (_opcodes.indexOf(triggerOpcode) < 0) {
 				_opcodes[opcodes.length] = triggerOpcode;
 			}
-			_jumpData[_jumpData.length] = new JumpTargetData(triggerOpcode, 0, targetOpcode);
+			var jpd:JumpTargetData;
+			if (_jumpDataLookup[triggerOpcode] == null) {
+				jpd = new JumpTargetData(triggerOpcode, 0, targetOpcode)
+				_jumpData[_jumpData.length] = jpd;
+			} else {
+				jpd = _jumpDataLookup[triggerOpcode];
+			}
 			return this;
 		}
 
 		public function addOpcodes(newOpcodes:Array):IMethodBodyBuilder {
 			_opcodes = _opcodes.concat(newOpcodes);
+			return this;
+		}
+
+		public function addBackPatches(newBackpatches:Array):IMethodBodyBuilder {
+			_backpatches = _backpatches.concat(newBackpatches);
 			return this;
 		}
 
