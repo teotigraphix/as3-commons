@@ -16,9 +16,6 @@
 package org.as3commons.bytecode.emit.asm {
 	import flexunit.framework.TestCase;
 
-	import org.flexunit.asserts.assertEquals;
-	import org.flexunit.asserts.assertStrictlyEquals;
-
 	public class AsmTest extends TestCase {
 
 		private var _asm:Asm;
