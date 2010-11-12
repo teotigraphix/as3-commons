@@ -294,17 +294,27 @@ package org.as3commons.bytecode.abc.enum {
 
 		public static function resolveBackPatches(serializedOpcodes:ByteArray, backPatches:Array, positions:Dictionary):void {
 			for each (var jumpData:JumpTargetData in backPatches) {
-				var targetPos:int = positions[jumpData.jumpOpcode] + int(jumpData.jumpOpcode.parameters[0]);
-				var targetOpPos:int = (positions[jumpData.targetOpcode]) ? positions[jumpData.targetOpcode] : 0;
-				if (targetPos != targetOpPos) {
-					serializedOpcodes.position = (positions[jumpData.jumpOpcode]) + 1;
-					var operandPos:int = serializedOpcodes.position;
-					var newJump:int = (targetOpPos - (operandPos + 3));
-					serializedOpcodes.position = operandPos;
-					AbcSpec.writeS24(newJump, serializedOpcodes);
+				resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes);
+				if (jumpData.extraOpcodePositions != null) {
+					for each (var targetOpcode:Op in jumpData.extraOpcodePositions) {
+						resolveBackpatch(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes);
+					}
 				}
 			}
 		}
+
+		private static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray):void {
+			var targetPos:int = positions[jumpOpcode] + int(jumpOpcode.parameters[0]);
+			var targetOpPos:int = (positions[targetOpcode]) ? positions[targetOpcode] : 0;
+			if (targetPos != targetOpPos) {
+				serializedOpcodes.position = (positions[jumpOpcode]) + 1;
+				var operandPos:int = serializedOpcodes.position;
+				var newJump:int = (targetOpPos - (operandPos + 3));
+				serializedOpcodes.position = operandPos;
+				AbcSpec.writeS24(newJump, serializedOpcodes);
+			}
+		}
+
 
 		public static function serializeOpcodeArguments(op:Op, abcFile:AbcFile, methodBody:MethodBody, serializedOpcodes:ByteArray):void {
 			var serializedArgumentCount:int = 0;
