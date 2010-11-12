@@ -294,23 +294,14 @@ package org.as3commons.bytecode.abc.enum {
 
 		public static function resolveBackPatches(serializedOpcodes:ByteArray, backPatches:Array, positions:Dictionary):void {
 			for each (var jumpData:JumpTargetData in backPatches) {
-				trace(jumpData.jumpOpcode);
-				trace(jumpData.targetOpcode);
 				var targetPos:int = positions[jumpData.jumpOpcode] + int(jumpData.jumpOpcode.parameters[0]);
 				var targetOpPos:int = (positions[jumpData.targetOpcode]) ? positions[jumpData.targetOpcode] : 0;
 				if (targetPos != targetOpPos) {
-					serializedOpcodes.position = (positions[jumpData.jumpOpcode]);
-					var opcode:Opcode = determineOpcode(AbcSpec.readU8(serializedOpcodes));
+					serializedOpcodes.position = (positions[jumpData.jumpOpcode]) + 1;
 					var operandPos:int = serializedOpcodes.position;
-					AbcSpec.readS24(serializedOpcodes);
-					var currentPos:int = serializedOpcodes.position;
-					var newJump:int = (targetOpPos - currentPos);
+					var newJump:int = (targetOpPos - (operandPos + 3));
 					serializedOpcodes.position = operandPos;
 					AbcSpec.writeS24(newJump, serializedOpcodes);
-					if ((positions[jumpData.jumpOpcode] + newJump) > serializedOpcodes.length) {
-						trace("WRONG");
-					}
-					trace(StringUtils.substitute("resolved backpatch: {0}", newJump));
 				}
 			}
 		}
