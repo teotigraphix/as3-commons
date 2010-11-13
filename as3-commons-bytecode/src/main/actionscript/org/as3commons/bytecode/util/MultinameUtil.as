@@ -138,5 +138,26 @@ package org.as3commons.bytecode.util {
 			return namesp;
 		}
 
+		/**
+		 * Returns the package part of a fully qualifed name. Fully qualifed names are expected
+		 * to be in either of these formats:
+		 * <ul>
+		 * <li>com.classes.test.MyClass</li>
+		 * <li>com.classes.test:MyClass</li>
+		 * <li>com.classes.test::MyClass</li>
+		 * </ul>
+		 * @param fullName The specified fully qualified name.
+		 * @return The package name.
+		 */
+		public static function extractPackageName(fullName:String):String {
+			var matches:Array = fullName.match(MultinameUtil.DOUBLE_COLON_REGEXP);
+			if (matches != null) {
+				return fullName.split(MultinameUtil.DOUBLE_COLON_REGEXP)[0];
+			} else {
+				var idx:int = fullName.lastIndexOf(MultinameUtil.PERIOD);
+				return fullName.substr(0, idx);
+			}
+		}
+
 	}
 }

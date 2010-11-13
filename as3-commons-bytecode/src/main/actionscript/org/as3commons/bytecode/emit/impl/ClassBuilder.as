@@ -202,7 +202,7 @@ package org.as3commons.bytecode.emit.impl {
 			methods = methods.concat(createAccessors(slotTraits));
 			var classInfo:ClassInfo = createClassInfo(slotTraits, methods, hierarchyDepth++);
 			var instanceInfo:InstanceInfo = createInstanceInfo(slotTraits, methods, hierarchyDepth);
-			classInfo.classMultiName = instanceInfo.classMultiname;
+			classInfo.classMultiname = instanceInfo.classMultiname;
 			instanceInfo.classInfo = classInfo;
 			var metadata:Array = buildMetadata();
 

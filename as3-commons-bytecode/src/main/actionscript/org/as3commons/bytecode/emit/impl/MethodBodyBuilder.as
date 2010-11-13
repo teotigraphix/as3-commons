@@ -26,6 +26,8 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.emit.IExceptionInfoBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
+	import org.as3commons.bytecode.emit.asm.Asm;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
 	public class MethodBodyBuilder implements IMethodBodyBuilder {
@@ -118,7 +120,6 @@ package org.as3commons.bytecode.emit.impl {
 			stackModifiers[Opcode.setslot] = -2;
 		}
 
-		private var _jumpData:Array = [];
 		private var _opcodes:Array = [];
 		private var _backpatches:Array = [];
 		private var _exceptionInfos:Array = [];
@@ -130,6 +131,8 @@ package org.as3commons.bytecode.emit.impl {
 		private var _hasDXNS:Boolean = false;
 		private var _needActivation:Boolean = false;
 		private var _needArguments:Boolean = false;
+		private var _jumpDataLookup:Dictionary = new Dictionary();
+		private var _asm:Asm;
 
 		public function MethodBodyBuilder() {
 			super();
@@ -186,6 +189,13 @@ package org.as3commons.bytecode.emit.impl {
 			mb.maxScopeDepth = _maxScope;
 			mb.backPatches = _backpatches.concat([]);
 			return mb;
+		}
+
+		protected function get asm():Asm {
+			if (_asm == null) {
+				_asm = new Asm();
+			}
+			return _asm;
 		}
 
 		protected function processOpcodes(methodBody:MethodBody):void {
@@ -314,14 +324,20 @@ package org.as3commons.bytecode.emit.impl {
 			return this;
 		}
 
-		private var _jumpDataLookup:Dictionary = new Dictionary();
+
+		public function addAsmSource(source:String):IMethodBodyBuilder {
+			Assert.hasText(source, "source argument must not be empty or null");
+			var result:Array = asm.parseAndConvert(source);
+			addOpcodes(result[0]);
+			return addBackPatches(result[1]);
+		}
 
 		/**
 		 * @inheritDoc
 		 */
 		public function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean = false):IMethodBodyBuilder {
-			if (Opcode.jumpOpcodes[triggerOpcode] == null) {
-				throw new IllegalOperationError(StringUtils.substitute(ILLEGAL_JUMP_OPCODE_ERROR, triggerOpcode));
+			if (Opcode.jumpOpcodes[triggerOpcode.opcode] == null) {
+				throw new IllegalOperationError(StringUtils.substitute(ILLEGAL_JUMP_OPCODE_ERROR, triggerOpcode.opcode));
 			}
 			if (_opcodes.indexOf(targetOpcode) < 0) {
 				_opcodes[opcodes.length] = targetOpcode;
@@ -332,9 +348,10 @@ package org.as3commons.bytecode.emit.impl {
 			var jpd:JumpTargetData;
 			if (_jumpDataLookup[triggerOpcode] == null) {
 				jpd = new JumpTargetData(triggerOpcode, 0, targetOpcode)
-				_jumpData[_jumpData.length] = jpd;
+				_backpatches[_backpatches.length] = jpd;
 			} else {
 				jpd = _jumpDataLookup[triggerOpcode];
+				jpd.addTarget(targetOpcode);
 			}
 			return this;
 		}

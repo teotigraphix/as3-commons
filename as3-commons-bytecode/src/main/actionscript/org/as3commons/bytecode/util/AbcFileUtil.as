@@ -17,6 +17,7 @@ package org.as3commons.bytecode.util {
 
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
+	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
@@ -201,6 +202,31 @@ package org.as3commons.bytecode.util {
 
 			return classDefinitions;
 		}
+
+		public static function getClassinfoByFullyQualifiedName(abcFile:AbcFile, fullName:String):ClassInfo {
+			fullName = normalizeFullName(fullName);
+			for each (var classInfo:ClassInfo in abcFile.classInfo) {
+				if (classInfo.classMultiname.fullName == fullName) {
+					return classInfo;
+				}
+			}
+			return null;
+		}
+
+		public static function getInstanceinfoByFullyQualifiedName(abcFile:AbcFile, fullName:String):InstanceInfo {
+			fullName = normalizeFullName(fullName);
+			for each (var instanceInfo:InstanceInfo in abcFile.instanceInfo) {
+				if (instanceInfo.classMultiname.fullName == fullName) {
+					return instanceInfo;
+				}
+			}
+			return null;
+		}
+
+		public static function normalizeFullName(fullName:String):String {
+			return fullName.replace(MultinameUtil.DOUBLE_COLON_REGEXP, '.');
+		}
+
 
 	}
 }

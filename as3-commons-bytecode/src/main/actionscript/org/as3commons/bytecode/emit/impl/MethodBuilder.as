@@ -225,6 +225,16 @@ package org.as3commons.bytecode.emit.impl {
 			return methodBodyBuilder.addOpcodes(newOpcodes);
 		}
 
+		/**
+		 * @inheritDoc
+		 */
+		public function addAsmSource(source:String):IMethodBodyBuilder {
+			return methodBodyBuilder.addAsmSource(source);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
 		public function addBackPatches(newBackpatches:Array):IMethodBodyBuilder {
 			return methodBodyBuilder.addBackPatches(newBackpatches);
 		}
