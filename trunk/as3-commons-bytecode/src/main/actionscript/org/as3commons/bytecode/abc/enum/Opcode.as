@@ -287,7 +287,6 @@ package org.as3commons.bytecode.abc.enum {
 			serializedOpcodes.position = 0;
 			resolveBackPatches(serializedOpcodes, methodBody.backPatches, _opcodePositions);
 			serializedOpcodes.position = 0;
-			serializedOpcodes.position = 0;
 			_opcodePositions = null;
 			return serializedOpcodes;
 		}
@@ -435,6 +434,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static function parseOpcode(byteArray:ByteArray, abcFile:AbcFile, ops:Array, methodBody:MethodBody):void {
 			var startPos:int = byteArray.position;
 			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
+			_opcodePositions[startPos] = opcode;
 			var argumentValues:Array = [];
 			for each (var argument:* in opcode.argumentTypes) {
 				parseOpcodeArguments(argument, byteArray, argumentValues, abcFile, methodBody);
