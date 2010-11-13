@@ -25,7 +25,7 @@ package org.as3commons.bytecode.abc {
 
 		public var staticInitializer:MethodInfo;
 
-		public var classMultiName:QualifiedName;
+		public var classMultiname:QualifiedName;
 
 		public function ClassInfo() {
 			super();

@@ -37,6 +37,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.ITypeBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.util.AbcDeserializer;
+	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
@@ -47,7 +48,6 @@ package org.as3commons.bytecode.emit.impl {
 
 		public static const STATIC_CONSTRUCTOR_NAME:String = "{0}:{1}::{0}:{1}$cinit";
 		private static const NOT_IMPLEMENTED_ERROR:String = "Not implemented in base class";
-		private static const PERIOD:String = '.';
 		protected static const DUPLICATE_METHOD_ERROR:String = "Duplicate method {0}.{1} in class {2}";
 		private static const CONSTANTKIND_OPCODE_LOOKUP:Dictionary = new Dictionary();
 		{
@@ -81,7 +81,7 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		public function defineMethod(name:String = null, nameSpace:String = null):IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
-			mb.packageName = packageName + PERIOD + this.name;
+			mb.packageName = packageName + MultinameUtil.PERIOD + this.name;
 			mb.name = name;
 			mb.namespace = nameSpace;
 			_methodBuilders[_methodBuilders.length] = mb;
@@ -99,7 +99,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createAccessorBuilder(name:String, type:String, initialValue:* = undefined):IAccessorBuilder {
 			var ab:IAccessorBuilder = new AccessorBuilder();
-			ab.packageName = packageName + PERIOD + this.name;
+			ab.packageName = packageName + MultinameUtil.PERIOD + this.name;
 			ab.name = name;
 			ab.type = type;
 			ab.initialValue = initialValue;

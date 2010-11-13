@@ -121,7 +121,72 @@ public function set count(value:int):void {
   value = (value * 100);
   return value;
 }</pre></div>
-<p>Any exceptions referenced in the opcode collection can be added using the <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html#defineExceptionInfo()" target="_blank">defineExceptionInfo()</a></code> method:</p>
+
+	<p>To define jumps between opcodes, for use in <em>if</em> statements for example, use the <code>defineJump</code> method.</p>
+	<p>Let's add an extra boolean argument to the method which will determine if the given integer value will be multiplied
+	by a hundred or a thousand:</p>
+	<div class="source"><pre>methodBuilder.defineArgument("Boolean");</pre></div>
+	<p>And then change the method body generation like this:</p>
+    	<div class="source"><pre>var iffalse:Op = new Op(Opcode.iffalse,[0]);
+var jump:Op = new Op(Opcode.jump,[0]);
+methodBuilder.addOpcode(Opcode.getlocal_0)
+             .addOpcode(Opcode.pushscope)
+             .addOpcode(Opcode.getlocal_2)
+             .addOp(iffalse)
+             .addOpcode(Opcode.getlocal_1)
+             .addOpcode(Opcode.pushbyte,[100])
+             .addOpcode(Opcode.multiply)
+             .addOpcode(Opcode.convert_i)
+             .addOpcode(Opcode.setlocal_1)
+             .addOp(jump)
+             .defineJump(iffalse, new Op(Opcode.getlocal_1))
+             .addOpcode(Opcode.pushshort,[1000])
+             .addOpcode(Opcode.multiply)
+             .addOpcode(Opcode.convert_i)
+             .addOpcode(Opcode.setlocal_1)
+             .defineJump(jump, new Op(Opcode.getlocal_1))
+             .addOpcode(Opcode.returnvalue);</pre></div>
+<p>The actionscript source equivalent of these statements would look like this:</p>
+    	<div class="source"><pre>public function multiplyByHundred(value:int, reallyDoIt:Boolean):int {
+  if (reallyDoIt) {
+    value = value * 100;
+  } else {
+    value = value * 1000;
+  }
+  return value;
+}</pre></div>
+	<p>A second way of adding the method body is by defining the assembly source fully as a string:</p>
+	<div class="source"><pre>var source:String = (&lt;![CDATA[<strong>
+             getlocal_0
+             pushscope
+             getlocal_2
+             iffalse L0
+             getlocal_1
+             pushbyte 100
+             multiply
+             convert_i
+             setlocal_1
+             jump L1
+             L0:
+             getlocal_1
+             pushshort 1000
+             multiply
+             convert_i
+             setlocal_1
+             L1:
+             getlocal_1
+             returnvalue
+</strong>]]&gt;).toString();
+methodBuilder.addAsmSource(source);</pre></div>
+	<p>The format of the source is quite similar to the results found in a <code><a href="http://blogs.adobe.com/gosmith/2008/02/disassembling_a_swf_with_swfdu_1.html" target="_blank">swfdump</a></code> output.</p>
+	<p>The source needs to adhere to a few simple rules:</p>
+	<ul>
+	<li>Each instruction and its operands need to be on a separate line.</li>
+	<li>Separate instructions and operands with spaces and/or tabs.</li>
+	<li>Labels are referenced by name. I.e. <strong>iffalse L0</strong></li>
+	<li>Labels are defined by name suffixed by a colon. I.e. <strong>L0:</strong></li>
+	</ul>
+	<p>Any exceptions referenced in the opcode collection can be added using the <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html#defineExceptionInfo()" target="_blank">defineExceptionInfo()</a></code> method:</p>
 	<div class="source"><pre>var exceptionInfoBuilder:IExceptionInfoBuilder = methodBuilder.defineExceptionInfo();</pre></div>
     	<p>Other properties that can be set on the <code>IMethodBuilder</code> include:</p>
     	<ul>
@@ -129,10 +194,6 @@ public function set count(value:int):void {
     		<li>isFinal</li>
     		<li>isStatic</li>
     	</ul>
-    	<blockquote>
-    		<strong>Note:</strong> At the moment only simple opcodes are supported. Any opcodes requiring jumps (if statements, switches, etc) will fail
-    		because there's no backpatch resolving in place yet. This will be available in the next drop of as3commons-bytecode though, so please bear with us :)
-    	</blockquote>
     </section>
 
     <section name="Generating a constructor">
@@ -144,7 +205,7 @@ public function set count(value:int):void {
     </section>
     
     <section name="Generating metadata">
-    	<p>Methods, properties, accessors and classes themselves can be annotated with metadata at run-time as well:</p>
+    	<p>Methods, properties, accessors and classes themselves can be annotated with metadata using an <code><a href="asdoc/org/as3commons/bytecode/emit/IMetaDataBuilder.html" target="_blank">IMetadataBuilder</a></code> instance:</p>
     	<div class="source"><pre>var metadataBuilder:IMetadataBuilder = methodBuilder.defineMetaData("Inject");</pre></div>
     	<p>To add arguments to the metadata definition invoke the <code><a href="asdoc/org/as3commons/bytecode/emit/IMetaDataBuilder.html#defineArgument()" target="_blank">defineArgument()</a></code> method:</p>
     	<div class="source"><pre>var metadataArgument:MetaDataArgument = metadataBuilder.defineArgument();

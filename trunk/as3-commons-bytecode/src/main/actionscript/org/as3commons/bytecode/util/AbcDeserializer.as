@@ -147,7 +147,7 @@ package org.as3commons.bytecode.util {
 				//  traits_info traits[trait_count] 
 				// }
 				var classInfo:ClassInfo = new ClassInfo();
-				classInfo.classMultiName = InstanceInfo(abcFile.instanceInfo[classIndex]).classMultiname;
+				classInfo.classMultiname = InstanceInfo(abcFile.instanceInfo[classIndex]).classMultiname;
 				classInfo.staticInitializer = abcFile.methodInfo[readU30()];
 				classInfo.staticInitializer.as3commonsBytecodeName = STATIC_INITIALIZER_BYTECODENAME;
 				classInfo.traits = deserializeTraitsInfo(abcFile, byteStream, true);

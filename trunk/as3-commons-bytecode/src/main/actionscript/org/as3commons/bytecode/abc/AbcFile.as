@@ -61,7 +61,7 @@ package org.as3commons.bytecode.abc {
 		public function addClassInfoReference(classInfoReference:ClassInfoReference):int {
 			var idx:int = 0;
 			for each (var classInfo:ClassInfo in _classInfo) {
-				if (classInfo.classMultiName.equals(classInfoReference.classMultiName)) {
+				if (classInfo.classMultiname.equals(classInfoReference.classMultiName)) {
 					return idx;
 				}
 				idx++;

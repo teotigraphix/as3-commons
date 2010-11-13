@@ -54,6 +54,38 @@ package org.as3commons.bytecode.emit {
 		 */
 		function addOp(opcode:Op):IMethodBodyBuilder;
 		/**
+		 * Parses and converts the specified opcode source and adds the resulting <code>Op</code> collection the current <code>IMethodBodyBuilder</code>.
+		 * <p>For example:</p>
+		 * <listing version="3.0">
+		 * var source:String = (&lt;![CDATA[<strong>
+		 * getlocal_0
+		 * pushscope
+		 * getlocal_2
+		 * iffalse L0
+		 * getlocal_1
+		 * pushbyte 100
+		 * multiply
+		 * convert_i
+		 * setlocal_1
+		 * jump L1
+		 * L0:
+		 * getlocal_1
+		 * pushshort 1000
+		 * multiply
+		 * convert_i
+		 * setlocal_1
+		 * L1:
+		 * getlocal_1
+		 * returnvalue</strong>
+		 * ]]&gt;).toString();
+		 *
+		 * methodBodyBuilder.addAsmSource(source);
+		 * </listing>
+		 * @param source The specified opcode source.
+		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining.
+		 */
+		function addAsmSource(source:String):IMethodBodyBuilder;
+		/**
 		 * Defines a jump between the <code>triggerOpcode</code> and <code>targetOpcode</code>, for example, an <code>iffalse</code> opcode
 		 * can trigger a jump to an opcode further down the chain of command if it resolves to true.
 		 * <p>The <code>triggerOpcode</code> and/or <code>targetOpcode</code> will be added to the opcodes list if it hasn't been already.</p>

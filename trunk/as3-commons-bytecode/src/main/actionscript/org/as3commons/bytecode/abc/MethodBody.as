@@ -31,7 +31,7 @@ package org.as3commons.bytecode.abc {
 		 * Containes <code>Opcode</code> instances with appropriate arguments, representing the body of this method.
 		 *
 		 * @see Opcode
-		 * @see Opcode@op()
+		 * @see Opcode#op()
 		 */
 		public var opcodes:Array;
 		public var rawOpcodes:ByteArray;

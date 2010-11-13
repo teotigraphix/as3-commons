@@ -143,7 +143,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		/**
 		 * Redispatches the specified <code>AbcClassLoader</code> <code>Event</code>.
-		 * @param event The specified <code>Event</code>.
+		 * @param event The specified <code>AbcClassLoader</code> <code>Event</code>.
 		 */
 		protected function redispatch(event:Event):void {
 			dispatchEvent(event);
@@ -166,20 +166,15 @@ package org.as3commons.bytecode.emit.impl {
 			return pb;
 		}
 
+		/**
+		 *
+		 * @param event
+		 *
+		 */
 		protected function classNotFoundHandler(event:ExtendedClassesNotFoundError):void {
 			var nameList:Array = extractExtendedClasses(event.className, event.applicationDomain);
 			for each (var name:String in nameList) {
 				event.extendedClasses[event.extendedClasses.length] = name;
-			}
-		}
-
-		protected function extractPackageName(fullName:String):String {
-			var idx:int = fullName.indexOf(':');
-			if (idx > -1) {
-				return fullName.split(':')[0];
-			} else {
-				idx = fullName.lastIndexOf('.');
-				return fullName.substr(0, idx);
 			}
 		}
 
@@ -383,7 +378,7 @@ package org.as3commons.bytecode.emit.impl {
 				var type:Type = Type.forName(superClassname, applicationDomain);
 				return type.extendsClasses.reverse();
 			} else {
-				var packageName:String = extractPackageName(superClassname);
+				var packageName:String = MultinameUtil.extractPackageName(superClassname);
 				var packageBuilder:PackageBuilder = _packageBuilders[packageName];
 				if (packageBuilder != null) {
 					packageBuilder.extractExtendeClasses(extendedClasses, superClassname, applicationDomain);
@@ -393,7 +388,7 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		/**
-		 * Addds the specified <code>MethodInfo</code>, its associated <code>MethodBody</code> and, if present,
+		 * Adds the specified <code>MethodInfo</code>, its associated <code>MethodBody</code> and, if present,
 		 * its associated <code>Metadata</code> entries to the specified <code>AbcFile</code>.
 		 * @param abcFile the specified <code>AbcFile</code>.
 		 * @param methodInfo the specified <code>MethodInfo</code>.
