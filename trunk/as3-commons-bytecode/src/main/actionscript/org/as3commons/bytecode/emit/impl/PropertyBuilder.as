@@ -21,9 +21,11 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
 	public class PropertyBuilder extends EmitMember implements IPropertyBuilder {
@@ -64,6 +66,15 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set isConstant(value:Boolean):void {
 			_isConstant = value;
+		}
+
+		as3commons_bytecode function setTrait(trait:SlotOrConstantTrait):void {
+			Assert.notNull(trait, "trait argument must not be null");
+			isFinal = trait.isFinal;
+			isOverride = trait.isOverride;
+			isStatic = trait.isStatic;
+			isConstant = (trait.traitKind == TraitKind.CONST);
+			_type = QualifiedName(trait.typeMultiname).fullName;
 		}
 
 		override protected function buildTrait():TraitInfo {

@@ -31,6 +31,26 @@ package org.as3commons.bytecode.abc {
 			}
 		}
 
+		public function getSlotTraitByName(name:String):SlotOrConstantTrait {
+			var slots:Array = slotOrConstantTraits;
+			for each (var slot:SlotOrConstantTrait in slots) {
+				if (slot.traitMultiname.name == name) {
+					return slot;
+				}
+			}
+			return null;
+		}
+
+		public function getMethodTraitByName(name:String):MethodTrait {
+			var methods:Array = methodTraits;
+			for each (var method:MethodTrait in methods) {
+				if (method.traitMultiname.name == name) {
+					return method;
+				}
+			}
+			return null;
+		}
+
 		public function get slotOrConstantTraits():Array {
 			var matchingTraits:Array = [];
 			for each (var trait:TraitInfo in traits) {

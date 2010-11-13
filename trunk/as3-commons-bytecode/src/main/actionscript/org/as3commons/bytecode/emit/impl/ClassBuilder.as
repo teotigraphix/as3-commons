@@ -64,26 +64,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _superClassName:String;
 		private var _isDynamic:Boolean = false;
 		private var _isFinal:Boolean;
-		private var _abcFile:AbcFile;
 		private var _eventDispatcher:IEventDispatcher;
-		private var _classInfo:ClassInfo;
-		private var _instanceInfo:InstanceInfo;
-
-		as3commons_bytecode function setClassInfo(classInfo:ClassInfo):void {
-			Assert.notNull(classInfo, "classInfo argument must not be null");
-			_classInfo = classInfo;
-		}
-
-		as3commons_bytecode function setInstanceInfo(instanceInfo:InstanceInfo):void {
-			Assert.notNull(instanceInfo, "instanceInfo argument must not be null");
-			_instanceInfo = instanceInfo;
-			_superClassName = QualifiedName(_instanceInfo.superclassMultiname).fullName;
-			for each (var mn:Multiname in _instanceInfo.interfaceMultinames) {
-				_implementedInterfaceNames[_implementedInterfaceNames.length] = QualifiedName(mn).fullName;
-			}
-			_isFinal = _instanceInfo.isFinal;
-			_isDynamic = !_instanceInfo.isSealed;
-		}
 
 		/**
 		 * Creates a new <code>ClassBuilder</code> instance.
@@ -91,20 +72,30 @@ package org.as3commons.bytecode.emit.impl {
 		 * and interfaces in, when null a new <code>AbcFile</code> instance will be created in
 		 * the <code>build()</code> method.
 		 */
-		public function ClassBuilder(abcFile:AbcFile = null) {
+		public function ClassBuilder() {
 			super();
-			initClassBuilder(_abcFile);
+			initClassBuilder();
+		}
+
+		as3commons_bytecode function setInstanceInfo(instanceInfo:InstanceInfo):void {
+			Assert.notNull(instanceInfo, "instanceInfo argument must not be null");
+			this.instanceInfo = instanceInfo;
+			_superClassName = QualifiedName(instanceInfo.superclassMultiname).fullName;
+			for each (var mn:Multiname in instanceInfo.interfaceMultinames) {
+				_implementedInterfaceNames[_implementedInterfaceNames.length] = QualifiedName(mn).fullName;
+			}
+			_isFinal = this.instanceInfo.isFinal;
+			_isDynamic = !this.instanceInfo.isSealed;
 		}
 
 		/**
 		 * Initializes the current <code>ClassBuilder</code>.
 		 */
-		protected function initClassBuilder(abcFile:AbcFile):void {
+		protected function initClassBuilder():void {
 			_eventDispatcher = new EventDispatcher();
 			_propertyBuilders = [];
 			_implementedInterfaceNames = [];
 			_superClassName = BuiltIns.OBJECT.fullName;
-			_abcFile = abcFile;
 		}
 
 		/**
@@ -176,8 +167,8 @@ package org.as3commons.bytecode.emit.impl {
 			if (_ctorBuilder == null) {
 				_ctorBuilder = new CtorBuilder();
 				_ctorBuilder.packageName = packageName;
-				if (_instanceInfo != null) {
-					_ctorBuilder.as3commons_bytecode::setMethodInfo(_instanceInfo.instanceInitializer);
+				if (instanceInfo != null) {
+					_ctorBuilder.as3commons_bytecode::setMethodInfo(instanceInfo.instanceInitializer);
 				}
 			}
 			return _ctorBuilder;
@@ -192,6 +183,18 @@ package org.as3commons.bytecode.emit.impl {
 			vb.name = name;
 			vb.type = type;
 			vb.initialValue = initialValue;
+			var trait:SlotOrConstantTrait;
+			if (instanceInfo != null) {
+				trait = instanceInfo.getSlotTraitByName(name);
+				if (trait != null) {
+					vb.as3commons_bytecode::setTrait(trait);
+				} else if (classInfo != null) {
+					trait = classInfo.getSlotTraitByName(name);
+					if (trait != null) {
+						vb.as3commons_bytecode::setTrait(trait);
+					}
+				}
+			}
 			_propertyBuilders[_propertyBuilders.length] = vb;
 			return vb;
 		}
@@ -227,20 +230,20 @@ package org.as3commons.bytecode.emit.impl {
 			var methods:Array = createMethods(metadata, (hierarchyDepth + 1));
 			var slotTraits:Array = createSlots();
 			methods = methods.concat(createAccessors(slotTraits));
-			_classInfo = createClassInfo(slotTraits, methods, hierarchyDepth++);
-			_instanceInfo = createInstanceInfo(slotTraits, methods, hierarchyDepth);
-			_classInfo.classMultiname = _instanceInfo.classMultiname;
-			_instanceInfo.classInfo = _classInfo;
+			classInfo = createClassInfo(slotTraits, methods, hierarchyDepth++);
+			instanceInfo = createInstanceInfo(slotTraits, methods, hierarchyDepth);
+			classInfo.classMultiname = instanceInfo.classMultiname;
+			instanceInfo.classInfo = classInfo;
 			var metadata:Array = buildMetadata();
 
 			for each (var st:SlotOrConstantTrait in slotTraits) {
 				if (st.isStatic) {
-					_classInfo.addTrait(st);
+					classInfo.addTrait(st);
 				} else {
-					_instanceInfo.addTrait(st);
+					instanceInfo.addTrait(st);
 				}
 			}
-			return [_classInfo, _instanceInfo, methods, metadata];
+			return [classInfo, instanceInfo, methods, metadata];
 		}
 
 		protected function createSlots():Array {
@@ -252,7 +255,7 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		protected function createInstanceInfo(slots:Array, methods:Array, initScopeDepth:uint):InstanceInfo {
-			var instanceInfo:InstanceInfo = (_instanceInfo != null) ? _instanceInfo : new InstanceInfo();
+			var instanceInfo:InstanceInfo = (instanceInfo != null) ? instanceInfo : new InstanceInfo();
 			for each (var mi:MethodInfo in methods) {
 				if (MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic == false) {
 					instanceInfo.addTrait(mi.as3commonsByteCodeAssignedMethodTrait);

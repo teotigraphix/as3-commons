@@ -23,12 +23,16 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.ClassInfo;
+	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
+	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IMetaDataBuilder;
@@ -58,6 +62,13 @@ package org.as3commons.bytecode.emit.impl {
 			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.UINT] = Opcode.pushuint;
 			CONSTANTKIND_OPCODE_LOOKUP[ConstantKind.UTF8] = Opcode.pushstring;
 		}
+		protected var classInfo:ClassInfo;
+		protected var instanceInfo:InstanceInfo;
+
+		as3commons_bytecode function setClassInfo(classInfo:ClassInfo):void {
+			Assert.notNull(classInfo, "classInfo argument must not be null");
+			this.classInfo = classInfo;
+		}
 
 		private var _methodBuilders:Array;
 		private var _accessorBuilders:Array;
@@ -84,6 +95,18 @@ package org.as3commons.bytecode.emit.impl {
 			mb.packageName = packageName + MultinameUtil.PERIOD + this.name;
 			mb.name = name;
 			mb.namespace = nameSpace;
+			var trait:TraitInfo;
+			if (instanceInfo != null) {
+				trait = instanceInfo.getMethodTraitByName(name);
+				if (trait != null) {
+					mb.as3commons_bytecode::setMethodInfo(MethodTrait(trait).traitMethod);
+				} else if (classInfo != null) {
+					trait = classInfo.getMethodTraitByName(name);
+					if (trait != null) {
+						mb.as3commons_bytecode::setMethodInfo(MethodTrait(trait).traitMethod);
+					}
+				}
+			}
 			_methodBuilders[_methodBuilders.length] = mb;
 			return mb;
 		}
