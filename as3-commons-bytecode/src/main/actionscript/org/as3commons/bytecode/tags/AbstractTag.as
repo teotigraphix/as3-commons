@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.tags {
-	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.lang.Assert;
-	import org.as3commons.lang.StringUtils;
 
 	public class AbstractTag implements ISWFTag {
 

@@ -45,8 +45,10 @@ package org.as3commons.bytecode.abc {
 	 */
 	//TODO: There are a lot of opportunities for fast-lookup optimizations here, such as using dictionaries instead of looping over collections
 	public class ConstantPool {
+
 		private static const NAMESPACE_SET_PROPERTYNAME:String = "namespaceSet";
 		private static const NAME_PROPERTYNAME:String = "name";
+
 		private var _integerPool:Array;
 		private var _uintPool:Array;
 		private var _doublePool:Array;

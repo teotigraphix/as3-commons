@@ -20,6 +20,7 @@ package org.as3commons.bytecode.template {
 	import org.as3commons.bytecode.as3commons_bytecode;
 
 	public class DynamicSubClass extends BaseClass {
+
 		as3commons_bytecode var handlerMappings:Dictionary;
 
 		public function DynamicSubClass(constructorArg1:String, constructorArg2:String) {

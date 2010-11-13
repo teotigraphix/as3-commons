@@ -78,7 +78,6 @@ package org.as3commons.bytecode.emit {
 		 * getlocal_1
 		 * returnvalue</strong>
 		 * ]]&gt;).toString();
-		 *
 		 * methodBodyBuilder.addAsmSource(source);
 		 * </listing>
 		 * @param source The specified opcode source.
