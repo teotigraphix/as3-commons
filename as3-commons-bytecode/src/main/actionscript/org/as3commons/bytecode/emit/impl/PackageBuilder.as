@@ -21,7 +21,10 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.abc.ClassInfo;
+	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodBody;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
@@ -29,6 +32,8 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
+	import org.as3commons.bytecode.util.AbcFileUtil;
+	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Type;
 
@@ -76,15 +81,25 @@ package org.as3commons.bytecode.emit.impl {
 		 * @inheritDoc
 		 */
 		public function defineClass(name:String, superClassName:String = null):IClassBuilder {
-			var fullName:String = packageName + '.' + name;
+			var fullName:String = packageName + MultinameUtil.PERIOD + name;
 			var cb:ClassBuilder = _classBuilderLookup[fullName];
 			if (cb == null) {
-				cb = new ClassBuilder(_abcFile);
+				cb = new ClassBuilder();
 				_classBuilderLookup[fullName] = cb;
 				cb.addEventListener(ExtendedClassesNotFoundError.EXTENDED_CLASSES_NOT_FOUND, classNotFoundHandler);
 				cb.name = name;
 				cb.packageName = packageName;
 				cb.superClassName = superClassName;
+				if (_abcFile != null) {
+					var classInfo:ClassInfo = AbcFileUtil.getClassinfoByFullyQualifiedName(_abcFile, fullName);
+					if (classInfo != null) {
+						cb.as3commons_bytecode::setClassInfo(classInfo);
+					}
+					var instanceInfo:InstanceInfo = AbcFileUtil.getInstanceinfoByFullyQualifiedName(_abcFile, fullName);
+					if (instanceInfo != null) {
+						cb.as3commons_bytecode::setInstanceInfo(instanceInfo);
+					}
+				}
 				_classBuilders[_classBuilders.length] = cb;
 			}
 			return cb;

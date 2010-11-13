@@ -24,6 +24,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IExceptionInfoBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.asm.Asm;
@@ -133,9 +134,20 @@ package org.as3commons.bytecode.emit.impl {
 		private var _needArguments:Boolean = false;
 		private var _jumpDataLookup:Dictionary = new Dictionary();
 		private var _asm:Asm;
+		private var _methodBody:MethodBody;
 
 		public function MethodBodyBuilder() {
 			super();
+		}
+
+		as3commons_bytecode function setMethodBody(methodBody:MethodBody):void {
+			Assert.notNull(methodBody, "methodBody argument must not be null");
+			_methodBody = methodBody;
+			_opcodes = _methodBody.opcodes.concat([]);
+			_exceptionInfos = _methodBody.exceptionInfos.concat([]);
+			_traits = _methodBody.traits.concat([]);
+			_maxStack = _methodBody.maxStack;
+			_maxScope = _methodBody.maxScopeDepth;
 		}
 
 		public function get setDXNS():Boolean {
@@ -177,14 +189,14 @@ package org.as3commons.bytecode.emit.impl {
 			_maxStack = 0;
 			_currentScope = initScopeDepth;
 			_maxScope = 0;
-			var mb:MethodBody = new MethodBody();
+			var mb:MethodBody = (_methodBody != null) ? _methodBody : new MethodBody();
 			mb.backPatches = [];
 			mb.localCount += extraLocalCount;
 			mb.initScopeDepth = initScopeDepth;
 			mb.opcodes = _opcodes.concat([]);
 			mb.exceptionInfos = _exceptionInfos.concat([]);
 			mb.traits = _traits.concat([]);
-			processOpcodes(mb);
+			analyzeOpcodes(mb);
 			mb.maxStack = _maxStack;
 			mb.maxScopeDepth = _maxScope;
 			mb.backPatches = _backpatches.concat([]);
@@ -198,7 +210,7 @@ package org.as3commons.bytecode.emit.impl {
 			return _asm;
 		}
 
-		protected function processOpcodes(methodBody:MethodBody):void {
+		protected function analyzeOpcodes(methodBody:MethodBody):void {
 			for each (var op:Op in _opcodes) {
 				if (stackModifiers[op.opcode] != null) {
 					stack(stackModifiers[op.opcode]);

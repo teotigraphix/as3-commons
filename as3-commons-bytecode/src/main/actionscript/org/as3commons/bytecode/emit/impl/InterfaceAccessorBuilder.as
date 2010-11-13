@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.lang.StringUtils;
 
@@ -28,11 +31,14 @@ package org.as3commons.bytecode.emit.impl {
 			super();
 		}
 
-		override protected function createMethod():IMethodBuilder {
+		override protected function createMethod(methodInfo:MethodInfo):IMethodBuilder {
 			var mb:InterfaceMethodBuilder = new InterfaceMethodBuilder();
 			mb.name = name;
 			mb.packageName = packageName;
 			mb.interfaceName = interfaceName;
+			if (methodInfo != null) {
+				mb.as3commons_bytecode::setMethodInfo(methodInfo);
+			}
 			return mb;
 		}
 

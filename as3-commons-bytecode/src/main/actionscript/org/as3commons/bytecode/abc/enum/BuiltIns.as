@@ -32,6 +32,11 @@ package org.as3commons.bytecode.abc.enum {
 		public static const VOID:QualifiedName = new QualifiedName("void", LNamespace.PUBLIC);
 
 		/**
+		 * <code>public:Boolean</code>
+		 */
+		public static const BOOLEAN:QualifiedName = new QualifiedName("Boolean", LNamespace.PUBLIC);
+
+		/**
 		 * <code>public:String</code>
 		 */
 		public static const STRING:QualifiedName = new QualifiedName("String", LNamespace.PUBLIC);

@@ -38,6 +38,9 @@ package org.as3commons.bytecode.util {
 				case BuiltIns.ANY.fullName:
 					name = BuiltIns.ANY;
 					break;
+				case BuiltIns.BOOLEAN.fullName:
+					name = BuiltIns.BOOLEAN;
+					break;
 				case BuiltIns.VOID.fullName:
 					name = BuiltIns.VOID;
 					break;
@@ -95,6 +98,9 @@ package org.as3commons.bytecode.util {
 			switch (className) {
 				case BuiltIns.OBJECT.fullName:
 					namesp = BuiltIns.OBJECT.nameSpace;
+					break;
+				case BuiltIns.BOOLEAN.fullName:
+					namesp = BuiltIns.BOOLEAN.nameSpace;
 					break;
 				case BuiltIns.ANY.fullName:
 					namesp = BuiltIns.ANY.nameSpace;

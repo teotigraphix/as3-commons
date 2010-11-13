@@ -23,7 +23,7 @@
     		<li><a href="#Generating_a_constructor">Generating a constructor</a></li>
     		<li><a href="#Generating_metadata">Generating metadata</a></li>
     		<li><a href="#Generating_interfaces">Generating interfaces</a></li>
-    		<li><a href="#Loading_the_generated_types_into_the_AVM">Loading the generated types into the AVM</a></li>
+    		<li><a href="#Loading_the_generated_classes_into_the_AVM">Loading the generated classes into the AVM</a></li>
     	</ul>
     </section>
     
@@ -131,6 +131,7 @@ public function set count(value:int):void {
              .addOpcode(Opcode.setlocal_1)
              .addOpcode(Opcode.getlocal_1)
              .addOpcode(Opcode.returnvalue);</pre></div>
+        <p>For more information on AVM instructions follow this link: <a href="http://learn.adobe.com/wiki/display/AVM2/5.+AVM2+instructions" target="_blank">AVM2 instructions</a>.</p>
 	<p>The actionscript source equivalent of these statements would look like this:</p>
     	<div class="source"><pre>public function multiplyByHundred(value:int):int {
   value = (value * 100);
@@ -249,7 +250,7 @@ metadataArgument.value = "objectName";</pre></div>
 }</pre></div>
     </section>
     
-    <section name="Loading the generated types into the AVM">
+    <section name="Loading the generated classes into the AVM">
     	<p>Finally, after defining the necessary classes and interfaces they need to be loaded into the AVM so they can
     	be instantiated.<br/>
     	There are two ways of doing this, the shortest way is using the <code><a href="asdoc/org/as3commons/bytecode/emit/IAbcBuilder.html#buildAndLoad()" target="_blank">buildAndLoad()</a></code> method on the <code><a href="asdoc/org/as3commons/bytecode/emit/IAbcBuilder.html" target="_blank">IAbcBuilder</a></code> instance.</p>

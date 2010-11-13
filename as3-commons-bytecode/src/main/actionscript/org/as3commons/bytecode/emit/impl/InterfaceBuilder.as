@@ -17,6 +17,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;

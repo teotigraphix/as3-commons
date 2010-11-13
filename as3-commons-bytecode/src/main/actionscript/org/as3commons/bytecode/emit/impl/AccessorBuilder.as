@@ -23,6 +23,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
@@ -31,8 +32,10 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.util.BuildUtil;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.AccessorAccess;
+	import org.as3commons.reflect.as3commons_reflect;
 
 	/**
 	 * Generates a setter and/or getter method along with an optional private property
@@ -47,6 +50,18 @@ package org.as3commons.bytecode.emit.impl {
 
 		private var _access:AccessorAccess;
 		private var _property:IPropertyBuilder;
+		private var _getterMethodInfo:MethodInfo;
+		private var _setterMethodInfo:MethodInfo;
+
+		as3commons_bytecode function setGetter(getterMethodInfo:MethodInfo):void {
+			Assert.notNull(getterMethodInfo, "getterMethodInfo argument must not be null");
+			_getterMethodInfo = getterMethodInfo;
+		}
+
+		as3commons_bytecode function setSetter(setterMethodInfo:MethodInfo):void {
+			Assert.notNull(setterMethodInfo, "setterMethodInfo argument must not be null");
+			_setterMethodInfo = setterMethodInfo;
+		}
 
 		/**
 		 * Creates a new <code>AccessorBuilder</code> instance.
@@ -141,10 +156,13 @@ package org.as3commons.bytecode.emit.impl {
 		 * Creates a default <code>IMethodBuilder</code> to be used for the getter or setter method.
 		 * @return The specified <code>IMethodBuilder</code>
 		 */
-		protected function createMethod():IMethodBuilder {
-			var mb:IMethodBuilder = new MethodBuilder();
+		protected function createMethod(methodInfo:MethodInfo):IMethodBuilder {
+			var mb:MethodBuilder = new MethodBuilder();
 			mb.name = name;
 			mb.packageName = packageName;
+			if (methodInfo != null) {
+				mb.as3commons_bytecode::setMethodInfo(methodInfo);
+			}
 			return mb;
 		}
 
@@ -154,7 +172,7 @@ package org.as3commons.bytecode.emit.impl {
 		 * @return The specified <code>IMethodBuilder</code>
 		 */
 		protected function createGetter(trait:SlotOrConstantTrait):IMethodBuilder {
-			var mb:IMethodBuilder = createMethod();
+			var mb:IMethodBuilder = createMethod(_getterMethodInfo);
 			mb.returnType = type;
 			addGetterOpcodes(mb, trait);
 			return mb;
@@ -179,7 +197,7 @@ package org.as3commons.bytecode.emit.impl {
 		 * @return The specified <code>IMethodBuilder</code>
 		 */
 		protected function createSetter(trait:SlotOrConstantTrait):IMethodBuilder {
-			var mb:IMethodBuilder = createMethod();
+			var mb:IMethodBuilder = createMethod(_setterMethodInfo);
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(type);
 			addSetterOpcodes(mb, trait);
