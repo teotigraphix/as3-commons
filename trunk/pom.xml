@@ -96,7 +96,7 @@
 	</developers>
 
 	<modules>
-		<!--<module>as3-commons-bytecode</module>-->
+		<module>as3-commons-bytecode</module>
 		<module>as3-commons-collections</module>
 		<module>as3-commons-concurrency</module>
 		<!-- module>as3-commons-emit</module -->
