@@ -2,7 +2,6 @@
 <document>
   <properties>
     <title>Runtime class generation using the emit API</title>
-
     <author email="scab@dds.nl">Roland Zwaga</author>
   </properties>
 
@@ -11,6 +10,21 @@
     	<p>As3commons-bytecode offers an API that enables a developer to generate classes at run-time.<br/>
     	All the necessary classes for this functionality can be found in the <code><a href="asdoc/org/as3commons/bytecode/emit/package-detail.html" target="_blank">org.as3commons.bytecode.emit.*</a></code> package.<br/>
     	This API can form the basis for mocking or run-time proxy libraries.</p>
+    </section>
+    
+    <section name="Sections">
+    	<ul>
+    		<li><a href="#Generating_classes">Generating class</a></li>
+    		<li><a href="#Generating_properties">Generating properties</a></li>
+    		<li><a href="#Generating_getters_and_setters">Generating getters and setters</a></li>
+    		<li><a href="#Generating_methods">Generating methods</a></li>
+    		<li><a href="#Defining_method_bodies">Defining method bodies</a></li>
+    		<li><a href="#asm">Defining method bodies using a string source</a></li>
+    		<li><a href="#Generating_a_constructor">Generating a constructor</a></li>
+    		<li><a href="#Generating_metadata">Generating metadata</a></li>
+    		<li><a href="#Generating_interfaces">Generating interfaces</a></li>
+    		<li><a href="#Loading_the_generated_types_into_the_AVM">Loading the generated types into the AVM</a></li>
+    	</ul>
     </section>
     
     <section name="Generating classes">
@@ -107,7 +121,8 @@ public function set count(value:int):void {
     	<p>Further properties for an argument are <code>isOptional</code> and <code>defaultValue</code>, their names are self-explanatory.</p>
     	<p>By default a generated method has a return type of <code>void</code>, to change this set the <code>returnType</code> property:</p>
     	<div class="source"><pre>methodBuilder.returnType = "int";</pre></div>
-    	<p>Lastly, to add a method body a certain knowledge about AVM opcodes is required:</p>
+    	<subsection name="Defining method bodies">
+    	<p>To add a method body a certain knowledge about AVM opcodes is required:</p>
     	<div class="source"><pre>methodBuilder.addOpcode(Opcode.getlocal_0)
              .addOpcode(Opcode.pushscope)
              .addOpcode(Opcode.getlocal_1)
@@ -129,6 +144,7 @@ public function set count(value:int):void {
 	<p>And then change the method body generation like this:</p>
     	<div class="source"><pre>var iffalse:Op = new Op(Opcode.iffalse,[0]);
 var jump:Op = new Op(Opcode.jump,[0]);
+
 methodBuilder.addOpcode(Opcode.getlocal_0)
              .addOpcode(Opcode.pushscope)
              .addOpcode(Opcode.getlocal_2)
@@ -155,37 +171,41 @@ methodBuilder.addOpcode(Opcode.getlocal_0)
   }
   return value;
 }</pre></div>
-	<p>A second way of adding the method body is by defining the assembly source fully as a string:</p>
-	<div class="source"><pre>var source:String = (&lt;![CDATA[<strong>
-             getlocal_0
-             pushscope
-             getlocal_2
-             iffalse L0
-             getlocal_1
-             pushbyte 100
-             multiply
-             convert_i
-             setlocal_1
-             jump L1
-             L0:
-             getlocal_1
-             pushshort 1000
-             multiply
-             convert_i
-             setlocal_1
-             L1:
-             getlocal_1
-             returnvalue
-</strong>]]&gt;).toString();
+	</subsection>
+	<subsection name="Defining method bodies using a string source" id="asm">
+		<p>A second way of adding the method body is by defining the assembly source fully as a string:</p>
+		<div class="source"><pre>var source:String = (&lt;![CDATA[<strong>
+		     getlocal_0
+		     pushscope
+		     getlocal_2
+		     iffalse L0
+		     getlocal_1
+		     pushbyte 100
+		     multiply
+		     convert_i
+		     setlocal_1
+		     jump L1
+		     L0:
+		     getlocal_1
+		     pushshort 1000
+		     multiply
+		     convert_i
+		     setlocal_1
+		     L1:
+		     getlocal_1
+		     returnvalue
+	</strong>]]&gt;).toString();
+
 methodBuilder.addAsmSource(source);</pre></div>
-	<p>The format of the source is quite similar to the results found in a <code><a href="http://blogs.adobe.com/gosmith/2008/02/disassembling_a_swf_with_swfdu_1.html" target="_blank">swfdump</a></code> output.</p>
-	<p>The source needs to adhere to a few simple rules:</p>
-	<ul>
-	<li>Each instruction and its operands need to be on a separate line.</li>
-	<li>Separate instructions and operands with spaces and/or tabs.</li>
-	<li>Labels are referenced by name. I.e. <strong>iffalse L0</strong></li>
-	<li>Labels are defined by name suffixed by a colon. I.e. <strong>L0:</strong></li>
-	</ul>
+		<p>The format of the source is quite similar to the results found in a <code><a href="http://blogs.adobe.com/gosmith/2008/02/disassembling_a_swf_with_swfdu_1.html" target="_blank">swfdump</a></code> output.</p>
+		<p>The source needs to adhere to a few simple rules:</p>
+		<ul>
+		<li>Each instruction and its operands need to be on a separate line.</li>
+		<li>Separate instructions and operands with spaces and/or tabs.</li>
+		<li>Labels are referenced by name. I.e. <strong>iffalse L1</strong></li>
+		<li>Labels are defined by a name suffixed by a colon. I.e. <strong>L1:</strong></li>
+		</ul>
+	</subsection>
 	<p>Any exceptions referenced in the opcode collection can be added using the <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html#defineExceptionInfo()" target="_blank">defineExceptionInfo()</a></code> method:</p>
 	<div class="source"><pre>var exceptionInfoBuilder:IExceptionInfoBuilder = methodBuilder.defineExceptionInfo();</pre></div>
     	<p>Other properties that can be set on the <code>IMethodBuilder</code> include:</p>
@@ -202,6 +222,7 @@ methodBuilder.addAsmSource(source);</pre></div>
     	<div class="source"><pre>var ctorBuilder:ICtorBuilder = classBuilder.defineConstructor();</pre></div>
     	<p>The <code><a href="asdoc/org/as3commons/bytecode/emit/ICtorBuilder.html" target="_blank">ICtorBuilder</a></code> instance works the same as an <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html" target="_blank">IMethodBuilder</a></code> instance with the
     	exception that any <code>returnType</code> or <code>visibility</code> assignments will be ignored.</p>
+    	<p>Multiple calls to <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html#defineConstructor()" target="_blank">defineConstructor()</a></code> will yield the same <code><a href="asdoc/org/as3commons/bytecode/emit/ICtorBuilder.html" target="_blank">ICtorBuilder</a></code> instance.</p>
     </section>
     
     <section name="Generating metadata">
@@ -246,18 +267,20 @@ abcBuilder.addEventListener(IOErrorEvent.VERIFY_ERROR, errorHandler);</pre></div
   // i == 1000
 }</pre></div>
 	<p>The <code><a href="asdoc/org/as3commons/bytecode/emit/IAbcBuilder.html#buildAndLoad()" target="_blank">buildAndLoad()</a></code> method has two optional arguments:</p>
-	<p><code>public function buildAndLoad(applicationDomain:ApplicationDomain = null, newApplicationDomain:ApplicationDomain = null):AbcFile;</code></p>
+	<p><div class="source"><code>public function buildAndLoad(applicationDomain:ApplicationDomain = null, newApplicationDomain:ApplicationDomain = null):AbcFile;</code></div></p>
 	<p>The first <code>ApplicationDomain</code> argument will be the domain that contains any class definitions that are used
 	as superclasses in the generated classes. This domain will be used to retrieve reflection information about the superclasses
 	needed by the class generation process. If no <code>ApplicationDomain</code> is passed then <code>ApplicationDomain.currentDomain</code> will be used.</p> 
-	<p>The second <code>ApplicationDomain</code> argument will be used to load the generated classes into, again, when no <code>ApplicationDomain</code> is passed
+	<p>The second <code>ApplicationDomain</code> argument will be used to load the generated classes into. Again, when no <code>ApplicationDomain</code> is passed
 	then <code>ApplicationDomain.currentDomain</code> will be used.</p> 
 	<p>The second way to load the generated classes is like this:</p>
 	<div class="source"><pre>var abcFile:AbcFile = abcBuilder.build();
 var abcLoader:AbcClassLoader = new AbcClassLoader();
+
 abcLoader.addEventListener(Event.COMPLETE, loadedHandler);
 abcLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 abcLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, errorHandler);
+
 abcLoader.loadAbcFile(abcFile);</pre></div>
     </section>
 

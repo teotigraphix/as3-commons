@@ -23,6 +23,7 @@ package org.as3commons.bytecode.typeinfo {
 	 */
 	//TODO: Set this up so that the user does not need to worry about the ConstantKind. You should be able to determine this from the default value 
 	public class Argument implements ICloneable {
+
 		public var classDefinition:ClassDefinition;
 		public var name:String;
 		public var defaultValue:Object;
@@ -31,7 +32,12 @@ package org.as3commons.bytecode.typeinfo {
 
 		public var type:QualifiedName;
 
-		public function Argument(typeValue:QualifiedName, hasOptionalValue:Boolean = false, defaultVal:Object = null, defaultValueKind:ConstantKind = null) {
+		public function Argument(typeValue:QualifiedName = null, hasOptionalValue:Boolean = false, defaultVal:Object = null, defaultValueKind:ConstantKind = null) {
+			super();
+			initArgument(typeValue, hasOptionalValue, defaultVal, defaultValueKind);
+		}
+
+		protected function initArgument(typeValue:QualifiedName, hasOptionalValue:Boolean, defaultVal:Object, defaultValueKind:ConstantKind):void {
 			type = typeValue;
 			isOptional = hasOptionalValue;
 			defaultValue = defaultVal;

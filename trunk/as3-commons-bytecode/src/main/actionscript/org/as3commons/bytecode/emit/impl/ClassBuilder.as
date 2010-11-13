@@ -27,12 +27,15 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
+	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
@@ -63,6 +66,24 @@ package org.as3commons.bytecode.emit.impl {
 		private var _isFinal:Boolean;
 		private var _abcFile:AbcFile;
 		private var _eventDispatcher:IEventDispatcher;
+		private var _classInfo:ClassInfo;
+		private var _instanceInfo:InstanceInfo;
+
+		as3commons_bytecode function setClassInfo(classInfo:ClassInfo):void {
+			Assert.notNull(classInfo, "classInfo argument must not be null");
+			_classInfo = classInfo;
+		}
+
+		as3commons_bytecode function setInstanceInfo(instanceInfo:InstanceInfo):void {
+			Assert.notNull(instanceInfo, "instanceInfo argument must not be null");
+			_instanceInfo = instanceInfo;
+			_superClassName = QualifiedName(_instanceInfo.superclassMultiname).fullName;
+			for each (var mn:Multiname in _instanceInfo.interfaceMultinames) {
+				_implementedInterfaceNames[_implementedInterfaceNames.length] = QualifiedName(mn).fullName;
+			}
+			_isFinal = _instanceInfo.isFinal;
+			_isDynamic = !_instanceInfo.isSealed;
+		}
 
 		/**
 		 * Creates a new <code>ClassBuilder</code> instance.
@@ -93,6 +114,9 @@ package org.as3commons.bytecode.emit.impl {
 			return _superClassName;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set superClassName(value:String):void {
 			if (value != null) {
 				_superClassName = value;
@@ -152,6 +176,9 @@ package org.as3commons.bytecode.emit.impl {
 			if (_ctorBuilder == null) {
 				_ctorBuilder = new CtorBuilder();
 				_ctorBuilder.packageName = packageName;
+				if (_instanceInfo != null) {
+					_ctorBuilder.as3commons_bytecode::setMethodInfo(_instanceInfo.instanceInitializer);
+				}
 			}
 			return _ctorBuilder;
 		}
@@ -200,20 +227,20 @@ package org.as3commons.bytecode.emit.impl {
 			var methods:Array = createMethods(metadata, (hierarchyDepth + 1));
 			var slotTraits:Array = createSlots();
 			methods = methods.concat(createAccessors(slotTraits));
-			var classInfo:ClassInfo = createClassInfo(slotTraits, methods, hierarchyDepth++);
-			var instanceInfo:InstanceInfo = createInstanceInfo(slotTraits, methods, hierarchyDepth);
-			classInfo.classMultiname = instanceInfo.classMultiname;
-			instanceInfo.classInfo = classInfo;
+			_classInfo = createClassInfo(slotTraits, methods, hierarchyDepth++);
+			_instanceInfo = createInstanceInfo(slotTraits, methods, hierarchyDepth);
+			_classInfo.classMultiname = _instanceInfo.classMultiname;
+			_instanceInfo.classInfo = _classInfo;
 			var metadata:Array = buildMetadata();
 
 			for each (var st:SlotOrConstantTrait in slotTraits) {
 				if (st.isStatic) {
-					classInfo.traits[classInfo.traits.length] = st;
+					_classInfo.addTrait(st);
 				} else {
-					instanceInfo.traits[instanceInfo.traits.length] = st;
+					_instanceInfo.addTrait(st);
 				}
 			}
-			return [classInfo, instanceInfo, methods, metadata];
+			return [_classInfo, _instanceInfo, methods, metadata];
 		}
 
 		protected function createSlots():Array {
@@ -225,10 +252,10 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		protected function createInstanceInfo(slots:Array, methods:Array, initScopeDepth:uint):InstanceInfo {
-			var instanceInfo:InstanceInfo = new InstanceInfo();
+			var instanceInfo:InstanceInfo = (_instanceInfo != null) ? _instanceInfo : new InstanceInfo();
 			for each (var mi:MethodInfo in methods) {
 				if (MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic == false) {
-					instanceInfo.traits[instanceInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+					instanceInfo.addTrait(mi.as3commonsByteCodeAssignedMethodTrait);
 					if (mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name === NamespaceKind.PROTECTED_NAMESPACE.description) {
 						instanceInfo.isProtected = true;
 					}
@@ -247,7 +274,7 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.isSealed = !isDynamic;
 			instanceInfo.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
 			instanceInfo.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : BuiltIns.OBJECT.fullName);
-			if (instanceInfo.isProtected) {
+			if ((instanceInfo.isProtected) && (instanceInfo.protectedNamespace == null)) {
 				instanceInfo.protectedNamespace = MultinameUtil.toLNamespace(packageName + MultinameUtil.DOUBLE_COLON + name, NamespaceKind.PROTECTED_NAMESPACE);
 			}
 			if (_ctorBuilder == null) {

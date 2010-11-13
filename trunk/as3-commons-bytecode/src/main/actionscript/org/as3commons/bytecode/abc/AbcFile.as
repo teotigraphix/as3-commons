@@ -15,14 +15,9 @@
  */
 package org.as3commons.bytecode.abc {
 
-	import org.as3commons.bytecode.abc.enum.NamespaceKind;
-	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.asm.ClassInfoReference;
-	import org.as3commons.bytecode.typeinfo.Argument;
-	import org.as3commons.bytecode.typeinfo.ClassDefinition;
 	import org.as3commons.bytecode.typeinfo.Metadata;
-	import org.as3commons.bytecode.typeinfo.Method;
 	import org.as3commons.lang.Assert;
 
 	/**

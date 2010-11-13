@@ -80,6 +80,12 @@ package org.as3commons.bytecode.abc {
 			argumentCollection = [];
 		}
 
+		public function addArgument(argument:Argument):void {
+			if (argumentCollection.indexOf(argument) < 0) {
+				argumentCollection[argumentCollection.length] = argument;
+			}
+		}
+
 		public function clone():* {
 			var clone:MethodInfo = new MethodInfo();
 			clone.argumentCollection = CloneUtils.cloneList(argumentCollection);

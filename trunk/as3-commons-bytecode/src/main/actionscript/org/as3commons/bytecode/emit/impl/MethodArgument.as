@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.emit.util.BuildUtil;
+	import org.as3commons.bytecode.typeinfo.Argument;
+	import org.as3commons.bytecode.util.MultinameUtil;
 
 	public class MethodArgument {
 		private var _name:String;
 		private var _isOptional:Boolean;
 		private var _type:String;
 		private var _defaultValue:Object;
+		private var _argument:Argument;
 
 		public function MethodArgument() {
 			super();
@@ -55,6 +60,18 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set defaultValue(value:Object):void {
 			_defaultValue = value;
+		}
+
+		public function build():Argument {
+			var argument:Argument = (_argument != null) ? _argument : new Argument();
+			var qname:QualifiedName = MultinameUtil.toQualifiedName(_type);
+			if ((argument.type == null) || (argument.type.fullName != qname.fullName)) {
+				argument.type = qname;
+			}
+			argument.isOptional = _isOptional;
+			argument.defaultValue = _defaultValue;
+			argument.kind = BuildUtil.defaultValueToConstantKind(_defaultValue);
+			return argument;
 		}
 	}
 }

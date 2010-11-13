@@ -25,6 +25,12 @@ package org.as3commons.bytecode.abc {
 			traits = [];
 		}
 
+		public function addTrait(trait:TraitInfo):void {
+			if (traits.indexOf(trait) < 0) {
+				traits[traits.length] = trait;
+			}
+		}
+
 		public function get slotOrConstantTraits():Array {
 			var matchingTraits:Array = [];
 			for each (var trait:TraitInfo in traits) {

@@ -29,6 +29,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.enum.MethodFlag;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IExceptionInfoBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
@@ -47,9 +48,14 @@ package org.as3commons.bytecode.emit.impl {
 		private var _arguments:Array = [];
 		private var _methodBodyBuilder:IMethodBodyBuilder;
 		private var _hasRestArguments:Boolean;
+		private var _methodInfo:MethodInfo;
 
 		public function MethodBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
 			super(name, visibility, nameSpace);
+		}
+
+		as3commons_bytecode function setMethodInfo(methodInfo:MethodInfo):void {
+			;
 		}
 
 		protected function get methodBodyBuilder():IMethodBodyBuilder {
@@ -114,10 +120,10 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function build(initScopeDepth:uint = 1):MethodInfo {
-			var mi:MethodInfo = new MethodInfo();
+			var mi:MethodInfo = (_methodInfo != null) ? _methodInfo : new MethodInfo();
 			for each (var methodArg:MethodArgument in _arguments) {
-				var arg:Argument = new Argument(MultinameUtil.toQualifiedName(methodArg.type), methodArg.isOptional, methodArg.defaultValue, BuildUtil.defaultValueToConstantKind(methodArg.defaultValue));
-				mi.argumentCollection[mi.argumentCollection.length] = arg;
+				var arg:Argument = methodArg.build();
+				mi.addArgument(arg);
 			}
 			if (_methodBodyBuilder != null) {
 				var extraLocalCount:uint = mi.argumentCollection.length + ((_hasRestArguments) ? 1 : 0);
@@ -152,7 +158,6 @@ package org.as3commons.bytecode.emit.impl {
 				MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_REST);
 			}
 		}
-
 
 		protected function createMethodName(methodInfo:MethodInfo):String {
 			return StringUtils.substitute(METHOD_NAME, packageName, name);
