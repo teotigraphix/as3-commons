@@ -45,6 +45,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
 	import org.as3commons.bytecode.util.AbcDeserializer;
+	import org.as3commons.bytecode.util.EmitUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
@@ -84,6 +85,7 @@ package org.as3commons.bytecode.emit.impl {
 			for each (var mn:Multiname in instanceInfo.interfaceMultinames) {
 				_implementedInterfaceNames[_implementedInterfaceNames.length] = QualifiedName(mn).fullName;
 			}
+			visibility = EmitUtil.getMemberVisibilityFromQualifiedName(QualifiedName(instanceInfo.classMultiname));
 			_isFinal = this.instanceInfo.isFinal;
 			_isDynamic = !this.instanceInfo.isSealed;
 		}

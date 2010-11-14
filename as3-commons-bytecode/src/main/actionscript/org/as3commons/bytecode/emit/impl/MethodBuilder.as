@@ -36,6 +36,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.emit.util.BuildUtil;
 	import org.as3commons.bytecode.typeinfo.Argument;
+	import org.as3commons.bytecode.util.EmitUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
@@ -57,11 +58,14 @@ package org.as3commons.bytecode.emit.impl {
 		as3commons_bytecode function setMethodInfo(methodInfo:MethodInfo):void {
 			Assert.notNull(methodInfo, "methodInfo argument must not be null");
 			_methodInfo = methodInfo;
-			_returnType = QualifiedName(_methodInfo.returnType).fullName;
+			if (_methodInfo.returnType != null) {
+				_returnType = QualifiedName(_methodInfo.returnType).fullName;
+			}
 			_hasRestArguments = MethodFlag.flagPresent(_methodInfo.flags, MethodFlag.NEED_REST);
 			if (_methodInfo.methodBody != null) {
 				methodBodyBuilder.as3commons_bytecode::setMethodBody(_methodInfo.methodBody);
 			}
+			visibility = EmitUtil.getMemberVisibilityFromQualifiedName(_methodInfo.as3commonsByteCodeAssignedMethodTrait.traitMultiname);
 		}
 
 		protected function get methodBodyBuilder():IMethodBodyBuilder {

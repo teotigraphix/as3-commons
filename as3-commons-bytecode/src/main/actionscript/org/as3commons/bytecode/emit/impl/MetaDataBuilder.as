@@ -14,16 +14,33 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.utils.Dictionary;
+
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.*;
 	import org.as3commons.bytecode.typeinfo.Metadata;
+	import org.as3commons.lang.Assert;
 
 	public class MetaDataBuilder implements IMetaDataBuilder {
 
+		private var _argLookup:Dictionary;
+		private var _metadata:Metadata;
 		private var _name:String = "";
 		private var _arguments:Array = [];
 
 		public function MetaDataBuilder() {
 			super();
+			_argLookup = new Dictionary();
+		}
+
+		as3commons_bytecode function setMetadata(metadata:Metadata):void {
+			Assert.notNull(metadata, "metadata argument must not be null");
+			_metadata = metadata;
+			_name = metadata.name;
+			for (var name:String in metadata.properties) {
+				var arg:MetaDataArgument = defineArgument(name);
+				arg.value = metadata.properties[name];
+			}
 		}
 
 		public function get name():String {
@@ -42,14 +59,23 @@ package org.as3commons.bytecode.emit.impl {
 			_arguments = value;
 		}
 
-		public function defineArgument():MetaDataArgument {
-			var ma:MetaDataArgument = new MetaDataArgument();
-			_arguments[_arguments.length] = ma;
+		public function defineArgument(name:String = null):MetaDataArgument {
+			var ma:MetaDataArgument;
+			if ((name == null) || (_argLookup[name] == null)) {
+				ma = new MetaDataArgument();
+				_arguments[_arguments.length] = ma;
+				ma.key = name;
+				if (name != null) {
+					_argLookup[name] = ma;
+				}
+			} else {
+				ma = _argLookup[name] as MetaDataArgument;
+			}
 			return ma;
 		}
 
 		public function build():Metadata {
-			var md:Metadata = new Metadata();
+			var md:Metadata = (_metadata != null) ? _metadata : new Metadata();
 			md.name = _name;
 			for each (var ma:MetaDataArgument in _arguments) {
 				md.properties[ma.key] = ma.value;
