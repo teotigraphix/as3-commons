@@ -20,6 +20,7 @@ package org.as3commons.eventbus.impl {
 	import flexunit.framework.TestCase;
 
 	import org.as3commons.eventbus.IEventBusListener;
+	import org.as3commons.eventbus.IEventInterceptor;
 	import org.as3commons.reflect.MethodInvoker;
 
 	public class EventBusTests extends TestCase {
@@ -113,7 +114,7 @@ package org.as3commons.eventbus.impl {
 			assertTrue(_eventReceived);
 		}
 
-		public function testRemoveAll():void {
+		public function testRemoveAllListeners():void {
 			_eventBus.addEventClassListener(MockCustomEvent, eventBusTestListener);
 			_eventBus.addEventClassListenerProxy(MockCustomEvent, new MethodInvoker())
 			_eventBus.addEventListener("testType", new Function());
@@ -124,12 +125,57 @@ package org.as3commons.eventbus.impl {
 			assertEquals(1, _eventBus.numEventListeners);
 			assertEquals(1, _eventBus.numEventListenerProxies);
 			assertEquals(1, _eventBus.numListeners);
-			_eventBus.removeAll();
+			_eventBus.removeAllListeners();
 			assertEquals(0, _eventBus.numClassListeners);
 			assertEquals(0, _eventBus.numClassProxyListeners);
 			assertEquals(0, _eventBus.numEventListeners);
 			assertEquals(0, _eventBus.numEventListenerProxies);
 			assertEquals(0, _eventBus.numListeners);
+		}
+
+		public function testAddEventClassInterceptor():void {
+			assertEquals(0, _eventBus.numEventClassInterceptors);
+			_eventBus.addEventClassInterceptor(MockCustomEvent, new MockInterceptor(true));
+			assertEquals(1, _eventBus.numEventClassInterceptors);
+		}
+
+		public function testAddEventInterceptor():void {
+			assertEquals(0, _eventBus.numEventInterceptors);
+			_eventBus.addEventInterceptor("testType", new MockInterceptor(true));
+			assertEquals(1, _eventBus.numEventInterceptors);
+		}
+
+		public function testAddInterceptor():void {
+			assertEquals(0, _eventBus.numInterceptors);
+			_eventBus.addInterceptor(new MockInterceptor(true));
+			assertEquals(1, _eventBus.numInterceptors);
+		}
+
+		public function testRemoveEventClassInterceptor():void {
+			var ic:IEventInterceptor = new MockInterceptor(true);
+			assertEquals(0, _eventBus.numEventClassInterceptors);
+			_eventBus.addEventClassInterceptor(MockCustomEvent, ic);
+			assertEquals(1, _eventBus.numEventClassInterceptors);
+			_eventBus.removeEventClassInterceptor(MockCustomEvent, ic);
+			assertEquals(0, _eventBus.numEventClassInterceptors);
+		}
+
+		public function testRemoveEventInterceptor():void {
+			var ic:IEventInterceptor = new MockInterceptor(true);
+			assertEquals(0, _eventBus.numEventInterceptors);
+			_eventBus.addEventInterceptor("testType", ic);
+			assertEquals(1, _eventBus.numEventInterceptors);
+			_eventBus.removeEventInterceptor("testType", ic);
+			assertEquals(0, _eventBus.numEventInterceptors);
+		}
+
+		public function testRemoveInterceptor():void {
+			var ic:IEventInterceptor = new MockInterceptor(true);
+			assertEquals(0, _eventBus.numInterceptors);
+			_eventBus.addInterceptor(ic);
+			assertEquals(1, _eventBus.numInterceptors);
+			_eventBus.removeInterceptor(ic);
+			assertEquals(0, _eventBus.numInterceptors);
 		}
 
 		public function eventBusTestListener(event:Event):void {
@@ -144,6 +190,7 @@ package org.as3commons.eventbus.impl {
 import flash.events.Event;
 
 import org.as3commons.eventbus.IEventBusListener;
+import org.as3commons.eventbus.IEventInterceptor;
 
 class MockEventBusListener implements IEventBusListener {
 
@@ -161,5 +208,18 @@ class MockEventBusListener implements IEventBusListener {
 class MockCustomEvent extends Event {
 	public function MockCustomEvent() {
 		super("customEvent");
+	}
+}
+
+class MockInterceptor implements IEventInterceptor {
+
+	private var _result:Boolean;
+
+	public function MockInterceptor(result:Boolean) {
+		_result = result;
+	}
+
+	public function intercept(event:Event):Boolean {
+		return _result;
 	}
 }

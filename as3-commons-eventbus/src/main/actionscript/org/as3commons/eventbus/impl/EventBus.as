@@ -18,7 +18,9 @@ package org.as3commons.eventbus.impl {
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 
+	import org.as3commons.eventbus.IEventBus;
 	import org.as3commons.eventbus.IEventBusListener;
+	import org.as3commons.eventbus.IEventInterceptor;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.reflect.MethodInvoker;
@@ -37,7 +39,7 @@ package org.as3commons.eventbus.impl {
 	 * @author Christophe Herreman
 	 * @author Roland Zwaga
 	 */
-	public class EventBus {
+	public class EventBus implements IEventBus {
 
 		private static var LOGGER:ILogger = LoggerFactory.getClassLogger(EventBus);
 
@@ -61,6 +63,13 @@ package org.as3commons.eventbus.impl {
 
 		/** A map of event types/names with there corresponding proxied handler functions. */
 		protected var eventListenerProxies:Object /* <String, ListenerCollection> */ = {};
+
+		/** */
+		protected var eventClassInterceptors:Dictionary = new Dictionary();
+		/** */
+		protected var eventInterceptors:Object = {};
+		/** */
+		protected var interceptors:Array = [];
 
 		// --------------------------------------------------------------------
 		//
@@ -113,6 +122,30 @@ package org.as3commons.eventbus.impl {
 			}
 			return idx;
 		}
+
+		/** */
+		public function get numEventClassInterceptors():int {
+			var idx:int = 0;
+			for (var s:* in eventClassInterceptors) {
+				idx++;
+			}
+			return idx;
+		}
+
+		/** */
+		public function get numEventInterceptors():int {
+			var idx:int = 0;
+			for (var s:* in eventInterceptors) {
+				idx++;
+			}
+			return idx;
+		}
+
+		/** */
+		public function get numInterceptors():int {
+			return interceptors.length;
+		}
+
 
 		/**
 		 * Adds the given listener object as a listener to all events send via the event bus.
@@ -249,13 +282,67 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * Clears the entire <code>EventBus</code> by removing all types of listeners.
 		 */
-		public function removeAll():void {
+		public function removeAllListeners():void {
 			classListeners = new Dictionary();
 			classProxyListeners = new Dictionary();
 			listeners = new ListenerCollection();
 			eventListeners = {};
 			eventListenerProxies = {};
-			LOGGER.debug("Eventbus was cleared entirely");
+			LOGGER.debug("All eventbus listeners were removed");
+		}
+
+		public function addEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor):void {
+			var interceptors:Array = getClassInterceptorsForEventClass(eventClass);
+			interceptors[interceptors.length] = interceptor;
+		}
+
+		public function addEventInterceptor(type:String, interceptor:IEventInterceptor):void {
+			var interceptors:Array = getInterceptorsForEventType(type);
+			interceptors[interceptors.length] = interceptor;
+		}
+
+		public function addInterceptor(interceptor:IEventInterceptor):void {
+			interceptors[interceptors.length] = interceptor;
+		}
+
+		public function clear():void {
+			removeAllListeners();
+			removeAllInterceptors();
+		}
+
+		public function removeAllInterceptors():void {
+			eventClassInterceptors = new Dictionary();
+			eventInterceptors = {};
+			interceptors = [];
+		}
+
+		public function removeEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor):void {
+			var clsInterceptors:Array = getClassInterceptorsForEventClass(eventClass);
+			var idx:int = clsInterceptors.indexOf(interceptor);
+			if (idx > -1) {
+				clsInterceptors.splice(idx, 1);
+				if (clsInterceptors.length == 0) {
+					delete eventClassInterceptors[eventClass];
+				}
+			}
+		}
+
+		public function removeEventInterceptor(type:String, interceptor:IEventInterceptor):void {
+			var evtInterceptors:Array = getInterceptorsForEventType(type);
+			var idx:int = evtInterceptors.indexOf(interceptor);
+			if (idx > -1) {
+				evtInterceptors.splice(idx, 1);
+				if (evtInterceptors.length == 0) {
+					delete eventInterceptors[type];
+				}
+			}
+		}
+
+		public function removeInterceptor(interceptor:IEventInterceptor):void {
+			var idx:int = interceptors.indexOf(interceptor);
+			if (idx > -1) {
+				interceptors.splice(idx, 1);
+			}
 		}
 
 		/**
@@ -267,69 +354,78 @@ package org.as3commons.eventbus.impl {
 				return;
 			}
 
-			notifyEventBusListeners(event);
+			if (interceptGlobal(event) == false) {
+				notifyEventBusListeners(event);
 
-			notifySpecificEventListeners(event);
+				if (specificEventIntercepted(event) == false) {
+					notifySpecificEventListeners(event);
+					notifyProxies(event);
+				}
 
-			notifyProxies(event);
+				var eventClass:Class = Object(event).constructor as Class;
 
-			var eventClass:Class = Object(event).constructor as Class;
+				if (classIntercepted(eventClass, event) == false) {
+					notifySpecificClassListeners(eventClass, event);
+					notifySpecificClassListenerProxies(eventClass, event);
+				}
+			}
+		}
 
-			notifySpecificClassListeners(eventClass, event);
+		public function interceptGlobal(event:Event):Boolean {
+			return intercept(interceptors, event);
+		}
 
-			notifySpecificClassListenerProxies(eventClass, event);
+		public function specificEventIntercepted(event:Event):Boolean {
+			var interceptors:Array = eventInterceptors[event.type];
+			return intercept(interceptors, event);
+		}
+
+		public function classIntercepted(eventClass:Class, event:Event):Boolean {
+			var interceptors:Array = eventClassInterceptors[eventClass];
+			return intercept(interceptors, event);
+		}
+
+		public function intercept(interceptors:Array, event:Event):Boolean {
+			if (interceptors != null) {
+				for each (var interceptor:IEventInterceptor in interceptors) {
+					if (interceptor.intercept(event) == true) {
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 
 		public function notifySpecificClassListenerProxies(eventClass:Class, event:Event):void {
 			// notify proxies for a specific event Class
-			var cls:Class;
-			var obj:Object;
-			for (obj in classProxyListeners) {
-				cls = Class(obj);
-				if (eventClass === cls) {
-					var proxies:ListenerCollection = classProxyListeners[obj];
-					if (proxies != null) {
-						var len:uint = proxies.length;
-						for (var i:uint = 0; i < len; i++) {
-							var proxy:MethodInvoker = proxies.get(i) as MethodInvoker;
-							if (proxy != null) {
-								proxy.arguments = [event];
-								proxy.invoke();
-								LOGGER.debug("Notified class listenerproxy " + proxy + " of event " + event);
-							}
-						}
+			var proxies:ListenerCollection = classProxyListeners[eventClass] as ListenerCollection;
+			if (proxies != null) {
+				var len:uint = proxies.length;
+				for (var i:uint = 0; i < len; i++) {
+					var proxy:MethodInvoker = proxies.get(i) as MethodInvoker;
+					if (proxy != null) {
+						proxy.arguments = [event];
+						proxy.invoke();
+						LOGGER.debug("Notified class listenerproxy " + proxy + " of event " + event);
 					}
-					break;
 				}
 			}
 		}
 
 
-		public function notifySpecificClassListeners(eventClass:Class, event:Event):Class {
+		public function notifySpecificClassListeners(eventClass:Class, event:Event):void {
 			// notify listeners for a specific event Class
-			var cls:Class;
-			var obj:Object;
-			if (eventClass != null) {
-				for (obj in classListeners) {
-					cls = Class(obj);
-					if (eventClass === cls) {
-						var funcs:ListenerCollection = classListeners[obj];
-						if (funcs != null) {
-							for (var i:uint = 0; i < funcs.length; i++) {
-								var func:Function = funcs.get(i) as Function;
-								if (func != null) {
-									func.apply(null, [event]);
-									LOGGER.debug("Notified class listener " + func + " of event " + event);
-								}
-							}
-						}
-						break;
+			var funcs:ListenerCollection = classListeners[eventClass];
+			if (funcs != null) {
+				for (var i:uint = 0; i < funcs.length; i++) {
+					var func:Function = funcs.get(i) as Function;
+					if (func != null) {
+						func.apply(null, [event]);
+						LOGGER.debug("Notified class listener " + func + " of event " + event);
 					}
 				}
 			}
-			return eventClass;
 		}
-
 
 		public function notifyProxies(event:Event):void {
 			// notify all proxies
@@ -346,7 +442,6 @@ package org.as3commons.eventbus.impl {
 				}
 			}
 		}
-
 
 		public function notifySpecificEventListeners(event:Event):void {
 			// notify all specific event listeners
@@ -390,6 +485,20 @@ package org.as3commons.eventbus.impl {
 		// Protected Methods
 		//
 		// --------------------------------------------------------------------
+
+		protected function getClassInterceptorsForEventClass(clazz:Class):Array {
+			if (!eventClassInterceptors[clazz]) {
+				eventClassInterceptors[clazz] = [];
+			}
+			return eventClassInterceptors[clazz];
+		}
+
+		protected function getInterceptorsForEventType(type:String):Array {
+			if (!eventInterceptors[type]) {
+				eventInterceptors[type] = [];
+			}
+			return eventInterceptors[type];
+		}
 
 		protected function getEventListenersForEventType(eventType:String):ListenerCollection {
 			if (!eventListeners[eventType]) {
