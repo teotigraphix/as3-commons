@@ -37,14 +37,18 @@ package org.as3commons.bytecode.typeinfo {
 		 * Adds a <code>Metadata</code> entry to this object instance.
 		 */
 		public function addMetadata(metadata:Metadata):void {
-			_metadata[_metadata.length] = metadata;
+			if (_metadata.indexOf(metadata) < 0) {
+				_metadata[_metadata.length] = metadata;
+			}
 		}
 
 		/**
 		 * Adds a <code>Metadata</code> entry to this object instance.
 		 */
 		public function addMetadataList(metadataList:Array):void {
-			_metadata = metadata.concat(metadataList);
+			for each (var metadata:Metadata in metadataList) {
+				addMetadata(metadata);
+			}
 		}
 
 		/**

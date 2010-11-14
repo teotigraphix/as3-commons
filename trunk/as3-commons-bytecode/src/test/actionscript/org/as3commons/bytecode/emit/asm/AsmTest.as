@@ -55,7 +55,7 @@ package org.as3commons.bytecode.emit.asm {
 		}
 
 		public function testParseTwoInstructionsWithoutParameter():void {
-			var result:Array = _asm.parse("add_i;add");
+			var result:Array = _asm.parse("add_i\r\nadd");
 			assertTrue(result.length == 2);
 			assertStrictlyEquals(AsmToken(result[0]).kind, TokenKind.INSTRUCTION);
 			assertEquals(AsmToken(result[0]).value, "add_i");
@@ -82,7 +82,7 @@ package org.as3commons.bytecode.emit.asm {
 		}
 
 		public function testParseOTwoInstructionsWithParameter():void {
-			var result:Array = _asm.parse('applytype	1;astype com.classes.MyType');
+			var result:Array = _asm.parse('applytype	1\r\nastype com.classes.MyType');
 			assertTrue(result.length == 4);
 			assertStrictlyEquals(AsmToken(result[0]).kind, TokenKind.INSTRUCTION);
 			assertEquals(AsmToken(result[0]).value, "applytype");

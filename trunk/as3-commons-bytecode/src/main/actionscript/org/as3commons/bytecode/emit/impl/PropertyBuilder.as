@@ -24,11 +24,15 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.typeinfo.Metadata;
+	import org.as3commons.bytecode.util.EmitUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
 	public class PropertyBuilder extends EmitMember implements IPropertyBuilder {
+
+		private var _trait:SlotOrConstantTrait;
 
 		public function PropertyBuilder() {
 			super();
@@ -70,15 +74,21 @@ package org.as3commons.bytecode.emit.impl {
 
 		as3commons_bytecode function setTrait(trait:SlotOrConstantTrait):void {
 			Assert.notNull(trait, "trait argument must not be null");
+			_trait = trait;
 			isFinal = trait.isFinal;
 			isOverride = trait.isOverride;
 			isStatic = trait.isStatic;
 			isConstant = (trait.traitKind == TraitKind.CONST);
 			_type = QualifiedName(trait.typeMultiname).fullName;
+			visibility = EmitUtil.getMemberVisibilityFromQualifiedName(trait.traitMultiname);
+			for each (var metadata:Metadata in trait.metadata) {
+				var mdb:MetaDataBuilder = defineMetaData() as MetaDataBuilder;
+				mdb.as3commons_bytecode::setMetadata(metadata);
+			}
 		}
 
 		override protected function buildTrait():TraitInfo {
-			var trait:SlotOrConstantTrait = new SlotOrConstantTrait();
+			var trait:SlotOrConstantTrait = (_trait != null) ? _trait : new SlotOrConstantTrait();
 			trait.addMetadataList(buildMetadata());
 			trait.isFinal = isFinal;
 			trait.isOverride = isOverride;

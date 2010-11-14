@@ -41,7 +41,7 @@ package org.as3commons.bytecode.emit {
 		/**
 		 * Defines an argument for the current <code>IMetaDataBuilder</code>.
 		 */
-		function defineArgument():MetaDataArgument;
+		function defineArgument(name:String = null):MetaDataArgument;
 		/**
 		 * Internally used build method, this method should never be called by third parties.
 		 * @param applicationDomain

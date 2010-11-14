@@ -18,6 +18,14 @@ package org.as3commons.bytecode {
 	import flash.utils.Endian;
 
 	public class TestConstants {
+
+		[Embed(source="../../../../../test/resources/assets/metadatalookuptest.swf", mimeType="application/octet-stream")]
+		private static var metadataLookupTest:Class;
+
+		public static function getMetadataLookupTest():ByteArray {
+			return new metadataLookupTest() as ByteArray;
+		}
+
 		[Embed(source="../../../../../test/resources/assets/template/SubClassOfSubClassOfSubClass.abc", mimeType="application/octet-stream")]
 		private static var subClassOfsubClassOfSubClassTemplate:Class;
 
