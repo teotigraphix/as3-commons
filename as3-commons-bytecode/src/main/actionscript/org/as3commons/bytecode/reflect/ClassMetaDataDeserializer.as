@@ -52,7 +52,7 @@ package org.as3commons.bytecode.reflect {
 					var optionInfoCount:int = readU30();
 					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
 						readU30(); //valueIndexInConstantconstantPool
-						readU8(); //optionalValueKind
+						input.position++;
 					}
 				}
 

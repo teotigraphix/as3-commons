@@ -1,3 +1,18 @@
+/*
+* Copyright 2007-2010 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.as3commons.bytecode.emit.impl {
 	import flash.system.ApplicationDomain;
 
@@ -41,7 +56,10 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait.traitMultiname = traitMultiname;
 			_classBuilder.as3commons_bytecode::setInstanceInfo(instanceInfo);
 			var arr:Array = _classBuilder.build(ApplicationDomain.currentDomain);
-			assertStrictlyEquals(arr[1], instanceInfo);
+			var inst:InstanceInfo = arr[1];
+			assertStrictlyEquals(inst, instanceInfo);
+			assertStrictlyEquals(inst.instanceInitializer, instanceInfo.instanceInitializer);
+			assertStrictlyEquals(inst.instanceInitializer.as3commonsByteCodeAssignedMethodTrait, instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait);
 		}
 
 	/*public function testDefineProperty():void {
