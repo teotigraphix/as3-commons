@@ -17,6 +17,7 @@ package org.as3commons.eventbus.impl {
 	import flash.events.Event;
 
 	import org.as3commons.eventbus.IEventInterceptor;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.MethodInvoker;
 
 	public class InterceptorProxy implements IEventInterceptor {
@@ -29,6 +30,8 @@ package org.as3commons.eventbus.impl {
 		}
 
 		protected function initInterceptorProxy(target:Object, methodName:String):void {
+			Assert.notNull(target, "target argument must not be null");
+			Assert.hasText(methodName, "methodName argument must not be empty or null");
 			_methodInvoker = new MethodInvoker();
 			_methodInvoker.target = target;
 			_methodInvoker.method = methodName;
