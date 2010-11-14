@@ -43,24 +43,24 @@ package org.as3commons.eventbus.impl {
 
 		// --------------------------------------------------------------------
 		//
-		// Private Static Variables
+		// Protected Variables
 		//
 		// --------------------------------------------------------------------
 
 		/** The <code>Dictionary&lt;Class,Function[]&gt;</code> that holds a mapping between event classes and a list of listener functions */
-		protected var _classListeners:Dictionary = new Dictionary();
+		protected var classListeners:Dictionary = new Dictionary();
 
 		/** The <code>Dictionary&lt;Class,MethodInvoker[]&gt;</code> that holds a mapping between event classes and a list of listener proxies */
-		protected var _classProxyListeners:Dictionary = new Dictionary();
+		protected var classProxyListeners:Dictionary = new Dictionary();
 
 		/** The IEventBusListener objects that listen to all events on the event bus. */
-		protected var _listeners:ListenerCollection = new ListenerCollection();
+		protected var listeners:ListenerCollection = new ListenerCollection();
 
 		/** A map of event types/names with there corresponding handler functions. */
-		protected var _eventListeners:Object /* <String, ListenerCollection> */ = {};
+		protected var eventListeners:Object /* <String, ListenerCollection> */ = {};
 
 		/** A map of event types/names with there corresponding proxied handler functions. */
-		protected var _eventListenerProxies:Object /* <String, ListenerCollection> */ = {};
+		protected var eventListenerProxies:Object /* <String, ListenerCollection> */ = {};
 
 		// --------------------------------------------------------------------
 		//
@@ -78,14 +78,50 @@ package org.as3commons.eventbus.impl {
 		//
 		// --------------------------------------------------------------------
 
+		public function get numClassListeners():int {
+			var idx:int = 0;
+			for (var s:* in classListeners) {
+				idx++;
+			}
+			return idx;
+		}
+
+		public function get numClassProxyListeners():int {
+			var idx:int = 0;
+			for (var s:* in classProxyListeners) {
+				idx++;
+			}
+			return idx;
+		}
+
+		public function get numListeners():int {
+			return listeners.length;
+		}
+
+		public function get numEventListeners():int {
+			var idx:int = 0;
+			for (var s:* in eventListeners) {
+				idx++;
+			}
+			return idx;
+		}
+
+		public function get numEventListenerProxies():int {
+			var idx:int = 0;
+			for (var s:* in eventListenerProxies) {
+				idx++;
+			}
+			return idx;
+		}
+
 		/**
 		 * Adds the given listener object as a listener to all events send via the event bus.
 		 */
 		public function addListener(listener:IEventBusListener, useWeakReference:Boolean = false):void {
-			if (!listener || (_listeners.indexOf(listener) > -1)) {
+			if (!listener || (listeners.indexOf(listener) > -1)) {
 				return;
 			}
-			_listeners.add(listener, useWeakReference);
+			listeners.add(listener, useWeakReference);
 			LOGGER.debug("Added IEventBusListener " + listener);
 		}
 
@@ -94,7 +130,7 @@ package org.as3commons.eventbus.impl {
 		 * @param listener
 		 */
 		public function removeListener(listener:IEventBusListener):void {
-			_listeners.remove(listener);
+			listeners.remove(listener);
 			LOGGER.debug("Removed IEventBusListener " + listener);
 		}
 
@@ -117,8 +153,11 @@ package org.as3commons.eventbus.impl {
 		 * @param listener
 		 */
 		public function removeEventListener(type:String, listener:Function):void {
-			var eventListeners:ListenerCollection = getEventListenersForEventType(type);
-			eventListeners.remove(listener);
+			var eventListenerCollection:ListenerCollection = getEventListenersForEventType(type);
+			eventListenerCollection.remove(listener);
+			if (eventListenerCollection.length == 0) {
+				delete this.eventListeners[type];
+			}
 			LOGGER.debug("Removed eventbus listener " + listener + " for type " + type);
 		}
 
@@ -139,8 +178,11 @@ package org.as3commons.eventbus.impl {
 		 * Removes a proxied event handler as a listener from the specified event type.
 		 */
 		public function removeEventListenerProxy(type:String, proxy:MethodInvoker):void {
-			var eventListenerProxies:ListenerCollection = getEventListenerProxiesForEventType(type);
-			eventListenerProxies.remove(proxy);
+			var eventListenerProxyCollection:ListenerCollection = getEventListenerProxiesForEventType(type);
+			eventListenerProxyCollection.remove(proxy);
+			if (eventListenerProxyCollection.length == 0) {
+				delete eventListenerProxies[type];
+			}
 			LOGGER.debug("Removed eventbus listenerproxy " + proxy + " for type " + type);
 		}
 
@@ -150,10 +192,10 @@ package org.as3commons.eventbus.impl {
 		 * @param listener The specified listener function.
 		 */
 		public function addEventClassListener(eventClass:Class, listener:Function, useWeakReference:Boolean = false):void {
-			var listeners:ListenerCollection = (_classListeners[eventClass] == null) ? new ListenerCollection() : _classListeners[eventClass] as ListenerCollection;
+			var listeners:ListenerCollection = (classListeners[eventClass] == null) ? new ListenerCollection() : classListeners[eventClass] as ListenerCollection;
 			if (listeners.indexOf(listener) < 0) {
 				listeners.add(listener, useWeakReference);
-				_classListeners[eventClass] = listeners;
+				classListeners[eventClass] = listeners;
 				LOGGER.debug("Added eventbus classlistener " + listener + " for class " + eventClass);
 			}
 		}
@@ -164,11 +206,11 @@ package org.as3commons.eventbus.impl {
 		 * @param listener The specified listener function.
 		 */
 		public function removeEventClassListener(eventClass:Class, listener:Function):void {
-			var listeners:ListenerCollection = _classListeners[eventClass] as ListenerCollection;
+			var listeners:ListenerCollection = classListeners[eventClass] as ListenerCollection;
 			if (listeners != null) {
 				listeners.remove(listener);
 				if (listeners.length < 1) {
-					delete _classListeners[eventClass];
+					delete classListeners[eventClass];
 				}
 				LOGGER.debug("Removed eventbus classlistener " + listener + " for class " + eventClass);
 			}
@@ -180,10 +222,10 @@ package org.as3commons.eventbus.impl {
 		 * @param proxy The specified listener function.
 		 */
 		public function addEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, useWeakReference:Boolean = false):void {
-			var proxies:ListenerCollection = (_classProxyListeners[eventClass] == null) ? new ListenerCollection() : _classProxyListeners[eventClass] as ListenerCollection;
+			var proxies:ListenerCollection = (classProxyListeners[eventClass] == null) ? new ListenerCollection() : classProxyListeners[eventClass] as ListenerCollection;
 			if (proxies.indexOf(proxy) < 0) {
 				proxies.add(proxy, useWeakReference);
-				_classProxyListeners[eventClass] = proxies;
+				classProxyListeners[eventClass] = proxies;
 				LOGGER.debug("Added eventbus classlistener proxy " + proxy + " for class " + eventClass);
 			}
 		}
@@ -194,11 +236,11 @@ package org.as3commons.eventbus.impl {
 		 * @param proxy The specified listener function.
 		 */
 		public function removeEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker):void {
-			var proxies:ListenerCollection = _classProxyListeners[eventClass] as ListenerCollection;
+			var proxies:ListenerCollection = classProxyListeners[eventClass] as ListenerCollection;
 			if (proxies != null) {
 				proxies.remove(proxy);
 				if (proxies.length < 1) {
-					delete _classProxyListeners[eventClass];
+					delete classProxyListeners[eventClass];
 				}
 				LOGGER.debug("Removed eventbus classlistener proxy " + proxy + " for class " + eventClass);
 			}
@@ -208,11 +250,11 @@ package org.as3commons.eventbus.impl {
 		 * Clears the entire <code>EventBus</code> by removing all types of listeners.
 		 */
 		public function removeAll():void {
-			_classListeners = new Dictionary();
-			_classProxyListeners = new Dictionary();
-			_listeners = new ListenerCollection();
-			_eventListeners = {};
-			_eventListenerProxies = {};
+			classListeners = new Dictionary();
+			classProxyListeners = new Dictionary();
+			listeners = new ListenerCollection();
+			eventListeners = {};
+			eventListenerProxies = {};
 			LOGGER.debug("Eventbus was cleared entirely");
 		}
 
@@ -242,10 +284,10 @@ package org.as3commons.eventbus.impl {
 			// notify proxies for a specific event Class
 			var cls:Class;
 			var obj:Object;
-			for (obj in _classProxyListeners) {
+			for (obj in classProxyListeners) {
 				cls = Class(obj);
 				if (eventClass === cls) {
-					var proxies:ListenerCollection = _classProxyListeners[obj];
+					var proxies:ListenerCollection = classProxyListeners[obj];
 					if (proxies != null) {
 						var len:uint = proxies.length;
 						for (var i:uint = 0; i < len; i++) {
@@ -268,10 +310,10 @@ package org.as3commons.eventbus.impl {
 			var cls:Class;
 			var obj:Object;
 			if (eventClass != null) {
-				for (obj in _classListeners) {
+				for (obj in classListeners) {
 					cls = Class(obj);
 					if (eventClass === cls) {
-						var funcs:ListenerCollection = _classListeners[obj];
+						var funcs:ListenerCollection = classListeners[obj];
 						if (funcs != null) {
 							for (var i:uint = 0; i < funcs.length; i++) {
 								var func:Function = funcs.get(i) as Function;
@@ -291,7 +333,7 @@ package org.as3commons.eventbus.impl {
 
 		public function notifyProxies(event:Event):void {
 			// notify all proxies
-			var eventListenerProxies:ListenerCollection = _eventListenerProxies[event.type];
+			var eventListenerProxies:ListenerCollection = eventListenerProxies[event.type];
 			if (eventListenerProxies != null) {
 				var len:uint = eventListenerProxies.length;
 				for (var i:uint = 0; i < len; i++) {
@@ -308,7 +350,7 @@ package org.as3commons.eventbus.impl {
 
 		public function notifySpecificEventListeners(event:Event):void {
 			// notify all specific event listeners
-			var eventListeners:ListenerCollection = _eventListeners[event.type];
+			var eventListeners:ListenerCollection = eventListeners[event.type];
 			if (eventListeners != null) {
 				var len:uint = eventListeners.length;
 				for (var i:uint = 0; i < len; i++) {
@@ -323,9 +365,9 @@ package org.as3commons.eventbus.impl {
 
 		public function notifyEventBusListeners(event:Event):void {
 			// notify all event bus listeners
-			var len:uint = _listeners.length;
+			var len:uint = listeners.length;
 			for (var i:uint = 0; i < len; i++) {
-				var listener:IEventBusListener = _listeners.get(i) as IEventBusListener;
+				var listener:IEventBusListener = listeners.get(i) as IEventBusListener;
 				if (listener != null) {
 					listener.onEvent(event);
 					LOGGER.debug("Notified eventbus listener " + listener + " of event " + event);
@@ -350,17 +392,17 @@ package org.as3commons.eventbus.impl {
 		// --------------------------------------------------------------------
 
 		protected function getEventListenersForEventType(eventType:String):ListenerCollection {
-			if (!_eventListeners[eventType]) {
-				_eventListeners[eventType] = new ListenerCollection();
+			if (!eventListeners[eventType]) {
+				eventListeners[eventType] = new ListenerCollection();
 			}
-			return _eventListeners[eventType];
+			return eventListeners[eventType];
 		}
 
 		protected function getEventListenerProxiesForEventType(eventType:String):ListenerCollection {
-			if (!_eventListenerProxies[eventType]) {
-				_eventListenerProxies[eventType] = new ListenerCollection();
+			if (!eventListenerProxies[eventType]) {
+				eventListenerProxies[eventType] = new ListenerCollection();
 			}
-			return _eventListenerProxies[eventType];
+			return eventListenerProxies[eventType];
 		}
 
 	}
