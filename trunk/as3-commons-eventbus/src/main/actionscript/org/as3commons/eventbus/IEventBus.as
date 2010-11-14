@@ -93,9 +93,25 @@ package org.as3commons.eventbus {
 		function removeEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker):void;
 
 		/**
-		 * Clears the entire <code>IEventBus</code> by removing all types of listeners.
+		 * Removes all types of listeners.
 		 */
-		function removeAll():void;
+		function removeAllListeners():void;
+
+		function addInterceptor(interceptor:IEventInterceptor):void;
+
+		function removeInterceptor(interceptor:IEventInterceptor):void;
+
+		function addEventInterceptor(type:String, interceptor:IEventInterceptor):void;
+
+		function removeEventInterceptor(type:String, interceptor:IEventInterceptor):void;
+
+		function addEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor):void;
+
+		function removeEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor):void;
+
+		function removeAllInterceptors():void;
+
+		function clear():void;
 
 		/**
 		 * Dispatches the specified <code>Event</code> on the event bus.
