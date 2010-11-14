@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 package org.as3commons.eventbus.impl {
+
 	import org.as3commons.lang.SoftReference;
 
 	/**
-	 *
+	 * Collection that holds a list of weakly and hard referenced event listeners or proxies.
 	 * @author Roland Zwaga
 	 */
 	public class ListenerCollection {
 
 		private var _collection:Array;
 
+		/**
+		 * Creates a new <code>ListenerCollection</code> instance.
+		 */
 		public function ListenerCollection() {
 			super();
 			_collection = [];
