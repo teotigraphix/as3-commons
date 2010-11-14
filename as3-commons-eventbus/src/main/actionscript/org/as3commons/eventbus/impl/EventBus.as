@@ -238,7 +238,7 @@ package org.as3commons.eventbus.impl {
 			notifySpecificClassListenerProxies(eventClass, event);
 		}
 
-		protected function notifySpecificClassListenerProxies(eventClass:Class, event:Event):void {
+		public function notifySpecificClassListenerProxies(eventClass:Class, event:Event):void {
 			// notify proxies for a specific event Class
 			var cls:Class;
 			var obj:Object;
@@ -263,7 +263,7 @@ package org.as3commons.eventbus.impl {
 		}
 
 
-		protected function notifySpecificClassListeners(eventClass:Class, event:Event):Class {
+		public function notifySpecificClassListeners(eventClass:Class, event:Event):Class {
 			// notify listeners for a specific event Class
 			var cls:Class;
 			var obj:Object;
@@ -289,7 +289,7 @@ package org.as3commons.eventbus.impl {
 		}
 
 
-		protected function notifyProxies(event:Event):void {
+		public function notifyProxies(event:Event):void {
 			// notify all proxies
 			var eventListenerProxies:ListenerCollection = _eventListenerProxies[event.type];
 			if (eventListenerProxies != null) {
@@ -306,7 +306,7 @@ package org.as3commons.eventbus.impl {
 		}
 
 
-		protected function notifySpecificEventListeners(event:Event):void {
+		public function notifySpecificEventListeners(event:Event):void {
 			// notify all specific event listeners
 			var eventListeners:ListenerCollection = _eventListeners[event.type];
 			if (eventListeners != null) {
@@ -321,7 +321,7 @@ package org.as3commons.eventbus.impl {
 			}
 		}
 
-		protected function notifyEventBusListeners(event:Event):void {
+		public function notifyEventBusListeners(event:Event):void {
 			// notify all event bus listeners
 			var len:uint = _listeners.length;
 			for (var i:uint = 0; i < len; i++) {
@@ -345,18 +345,18 @@ package org.as3commons.eventbus.impl {
 
 		// --------------------------------------------------------------------
 		//
-		// Private Static Methods
+		// Protected Methods
 		//
 		// --------------------------------------------------------------------
 
-		private function getEventListenersForEventType(eventType:String):ListenerCollection {
+		protected function getEventListenersForEventType(eventType:String):ListenerCollection {
 			if (!_eventListeners[eventType]) {
 				_eventListeners[eventType] = new ListenerCollection();
 			}
 			return _eventListeners[eventType];
 		}
 
-		private function getEventListenerProxiesForEventType(eventType:String):ListenerCollection {
+		protected function getEventListenerProxiesForEventType(eventType:String):ListenerCollection {
 			if (!_eventListenerProxies[eventType]) {
 				_eventListenerProxies[eventType] = new ListenerCollection();
 			}
