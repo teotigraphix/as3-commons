@@ -1,0 +1,10 @@
+AS3COMMONS-EVENTBUS CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+Changes in version 1.0 (14.11.2010)
+-----------------------------------
+
+General
+* initial commit, directly copied from Spring Actionscript sources with minor refactorings
