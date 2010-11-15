@@ -24,6 +24,7 @@ package org.as3commons.bytecode.swf {
 	import flash.utils.Endian;
 
 	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.bytecode.util.AbcSerializer;
 
 	/**
@@ -50,17 +51,6 @@ package org.as3commons.bytecode.swf {
 	 * @see http://eval.hurlant.com/
 	 */
 	public class AbcClassLoader extends EventDispatcher {
-		private static const SWF_HEADER:Array = [0x46, 0x57, 0x53, 0x10, // FWS, Version 10
-			0xff, 0xff, 0xff, 0xff, // File length
-			0x78, 0x00, 0x03, 0xe8, 0x00, 0x00, 0x0b, 0xb8, 0x00, // size [Rect 0 0 8000 6000]
-			0x00, 0x0c, 0x01, 0x00, // 16bit le frame rate 12, 16bit be frame count 1
-			0x44, 0x11, // Tag type=69 (FileAttributes), length=4
-			0x08, 0x00, 0x00, 0x00];
-
-		private static const ABC_HEADER:Array = [0x3f, 0x12]; // Tag type=72 (DoABC), length=next.]
-
-		private static var SWF_FOOTER:Array = [0x40, 0x00]; // Tag type=1 (ShowFrame), length=0
-
 		private static var ALLOW_BYTECODE_PROPERTY_NAME:String = "allowLoadBytesCodeExecution";
 
 		private var _loader:Loader;
@@ -101,43 +91,6 @@ package org.as3commons.bytecode.swf {
 			return _abcSerializer;
 		}
 
-		/**
-		 * Wraps the ABC bytecode inside the simplest possible SWF file, for the purpose of allowing the player
-		 * VM to load it.
-		 *
-		 * @param   bytes an array or ABC bytecode blocks
-		 * @return  a byte array containing the contents of a valid SWF file ready for loading in to the Flash Player
-		 *
-		 */
-		public function wrapBytecodeInSWF(arrayOfAbcByteCodeBlocks:Array):ByteArray {
-			var outputStream:ByteArray = new ByteArray();
-			outputStream.endian = Endian.LITTLE_ENDIAN;
-
-			for each (var swfHeaderByte:int in SWF_HEADER) {
-				outputStream.writeByte(swfHeaderByte);
-			}
-
-			for each (var abcByteCodeBlock:ByteArray in arrayOfAbcByteCodeBlocks) {
-				for each (var abcHeaderByte:int in ABC_HEADER) {
-					outputStream.writeByte(abcHeaderByte);
-				}
-
-				// set the length of the ABC bytecode block
-				outputStream.writeInt(abcByteCodeBlock.length);
-				outputStream.writeBytes(abcByteCodeBlock);
-			}
-
-			for each (var swfFooterByte:int in SWF_FOOTER) {
-				outputStream.writeByte(swfFooterByte);
-			}
-
-			// set the length of the total SWF
-			outputStream.position = 4;
-			outputStream.writeInt(outputStream.length);
-
-			outputStream.position = 0;
-			return outputStream;
-		}
 
 		/**
 		 * Loads the given bytecode in to the Flash Player/AVM, using the specified <code>ApplicationDomain</code>.
@@ -158,7 +111,7 @@ package org.as3commons.bytecode.swf {
 				if (!(bytes is Array)) {
 					bytes = [bytes];
 				}
-				bytes = wrapBytecodeInSWF(bytes);
+				bytes = AbcFileUtil.wrapBytecodeInSWF(bytes);
 			}
 			//throw new Error("type version: " + v);
 
