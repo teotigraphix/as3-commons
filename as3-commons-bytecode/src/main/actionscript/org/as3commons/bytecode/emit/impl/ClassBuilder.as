@@ -64,7 +64,6 @@ package org.as3commons.bytecode.emit.impl {
 		private var _implementedInterfaceNames:Array;
 		private var _superClassName:String;
 		private var _isDynamic:Boolean = false;
-		private var _isFinal:Boolean;
 		private var _eventDispatcher:IEventDispatcher;
 
 		/**
@@ -86,7 +85,8 @@ package org.as3commons.bytecode.emit.impl {
 				_implementedInterfaceNames[_implementedInterfaceNames.length] = QualifiedName(mn).fullName;
 			}
 			visibility = EmitUtil.getMemberVisibilityFromQualifiedName(QualifiedName(instanceInfo.classMultiname));
-			_isFinal = this.instanceInfo.isFinal;
+			isFinal = this.instanceInfo.isFinal;
+			isInternal = (this.instanceInfo.classMultiname.nameSpace.kind === NamespaceKind.PACKAGE_INTERNAL_NAMESPACE);
 			_isDynamic = !this.instanceInfo.isSealed;
 		}
 
@@ -128,20 +128,6 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		public function set isDynamic(value:Boolean):void {
 			_isDynamic = value;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function get isFinal():Boolean {
-			return _isFinal;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set isFinal(value:Boolean):void {
-			_isFinal = value;
 		}
 
 		/**
@@ -278,6 +264,9 @@ package org.as3commons.bytecode.emit.impl {
 			instInfo.isInterface = false;
 			instInfo.isSealed = !isDynamic;
 			instInfo.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
+			if (isInternal) {
+				instInfo.classMultiname.nameSpace.kind = NamespaceKind.PACKAGE_INTERNAL_NAMESPACE;
+			}
 			instInfo.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : BuiltIns.OBJECT.fullName);
 			if ((instInfo.isProtected) && (instInfo.protectedNamespace == null)) {
 				instInfo.protectedNamespace = MultinameUtil.toLNamespace(packageName + MultinameUtil.DOUBLE_COLON + name, NamespaceKind.PROTECTED_NAMESPACE);

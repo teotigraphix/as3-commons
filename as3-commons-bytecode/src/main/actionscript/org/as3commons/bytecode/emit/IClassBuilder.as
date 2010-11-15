@@ -45,16 +45,6 @@ package org.as3commons.bytecode.emit {
 		function set isDynamic(value:Boolean):void;
 
 		/**
-		 * If <code>true</code> the class that will be generated will be marked as final.
-		 */
-		function get isFinal():Boolean;
-
-		/**
-		 * @private
-		 */
-		function set isFinal(value:Boolean):void;
-
-		/**
 		 * Marks the generated class as an implementation of the specified fully qualified interface name.
 		 * <p>This will NOT automatically add the methods defined in this interface.</p>
 		 * @param name The specified fully qualifed interface name. I.e. <code>mx.styles.IStyleClient</code>.

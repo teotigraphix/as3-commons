@@ -17,6 +17,27 @@ package org.as3commons.bytecode.emit {
 	import flash.system.ApplicationDomain;
 
 	public interface ITypeBuilder extends IEmitObject, IMetadataContainer {
+
+		/**
+		 * If <code>true</code> the class that will be generated will be marked as final.
+		 */
+		function get isFinal():Boolean;
+
+		/**
+		 * @private
+		 */
+		function set isFinal(value:Boolean):void;
+
+		/**
+		 * If <code>true</code> the class that will be generated will be marked as internal.
+		 * @default false
+		 */
+		function get isInternal():Boolean;
+
+		/**
+		 * @private
+		 */
+		function set isInternal(value:Boolean):void;
 		/**
 		 * Creates an <code>IMethodBuilder</code> instance for the specified method name.
 		 * @param name The name of the method. I.e. <code>myMethodName</code>.

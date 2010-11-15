@@ -74,6 +74,8 @@ package org.as3commons.bytecode.emit.impl {
 		private var _accessorBuilders:Array;
 		private var _addedMethods:Dictionary;
 		private var _metadata:Array;
+		private var _isFinal:Boolean;
+		private var _isInternal:Boolean;
 
 		public function BaseTypeBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
 			super(name, visibility, nameSpace);
@@ -85,6 +87,34 @@ package org.as3commons.bytecode.emit.impl {
 			_accessorBuilders = [];
 			_metadata = [];
 			_addedMethods = new Dictionary();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get isInternal():Boolean {
+			return _isInternal;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set isInternal(value:Boolean):void {
+			_isInternal = value;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get isFinal():Boolean {
+			return _isFinal;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set isFinal(value:Boolean):void {
+			_isFinal = value;
 		}
 
 		/**

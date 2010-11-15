@@ -49,7 +49,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _arguments:Array = [];
 		private var _methodBodyBuilder:IMethodBodyBuilder;
 		private var _hasRestArguments:Boolean;
-		private var _methodInfo:MethodInfo;
+		protected var methodInfo:MethodInfo;
 
 		public function MethodBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
 			super(name, visibility, nameSpace);
@@ -57,15 +57,15 @@ package org.as3commons.bytecode.emit.impl {
 
 		as3commons_bytecode function setMethodInfo(methodInfo:MethodInfo):void {
 			Assert.notNull(methodInfo, "methodInfo argument must not be null");
-			_methodInfo = methodInfo;
-			if (_methodInfo.returnType != null) {
-				_returnType = QualifiedName(_methodInfo.returnType).fullName;
+			methodInfo = methodInfo;
+			if (methodInfo.returnType != null) {
+				_returnType = QualifiedName(methodInfo.returnType).fullName;
 			}
-			_hasRestArguments = MethodFlag.flagPresent(_methodInfo.flags, MethodFlag.NEED_REST);
-			if (_methodInfo.methodBody != null) {
-				methodBodyBuilder.as3commons_bytecode::setMethodBody(_methodInfo.methodBody);
+			_hasRestArguments = MethodFlag.flagPresent(methodInfo.flags, MethodFlag.NEED_REST);
+			if (methodInfo.methodBody != null) {
+				methodBodyBuilder.as3commons_bytecode::setMethodBody(methodInfo.methodBody);
 			}
-			visibility = EmitUtil.getMemberVisibilityFromQualifiedName(_methodInfo.as3commonsByteCodeAssignedMethodTrait.traitMultiname);
+			visibility = EmitUtil.getMemberVisibilityFromQualifiedName(methodInfo.as3commonsByteCodeAssignedMethodTrait.traitMultiname);
 		}
 
 		protected function get methodBodyBuilder():IMethodBodyBuilder {
@@ -130,7 +130,7 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function build(initScopeDepth:uint = 1):MethodInfo {
-			var mi:MethodInfo = (_methodInfo != null) ? _methodInfo : new MethodInfo();
+			var mi:MethodInfo = (methodInfo != null) ? methodInfo : new MethodInfo();
 			for each (var methodArg:MethodArgument in _arguments) {
 				var arg:Argument = methodArg.build();
 				mi.addArgument(arg);
@@ -198,7 +198,7 @@ package org.as3commons.bytecode.emit.impl {
 			Assert.hasText(packageName, "packageName property must not be null or empty");
 			Assert.notNull(visibility, "visibility property must not be null");
 			Assert.notNull(VISIBILITY_LOOKUP[visibility], "visibility lookup must not be null");
-			var trait:MethodTrait = (_methodInfo != null) ? MethodTrait(_methodInfo.as3commonsByteCodeAssignedMethodTrait) : new MethodTrait();
+			var trait:MethodTrait = (methodInfo != null) ? MethodTrait(methodInfo.as3commonsByteCodeAssignedMethodTrait) : new MethodTrait();
 			trait.traitKind = TraitKind.METHOD;
 			trait.isFinal = isFinal;
 			trait.isOverride = isOverride;
