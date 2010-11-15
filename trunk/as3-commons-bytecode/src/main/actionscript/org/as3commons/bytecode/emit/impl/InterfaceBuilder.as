@@ -80,6 +80,8 @@ package org.as3commons.bytecode.emit.impl {
 			}
 			instanceInfo.superclassMultiname = BuiltIns.ANY;
 			instanceInfo.isInterface = true;
+			instanceInfo.isSealed = false;
+			instanceInfo.isFinal = isFinal;
 			instanceInfo.interfaceMultinames.length = 0;
 			for each (var intfName:String in _extendingInterfacesNames) {
 				instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(intfName, NamespaceKind.PACKAGE_NAMESPACE);
