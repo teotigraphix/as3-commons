@@ -24,6 +24,7 @@
     		<li><a href="#Generating_metadata">Generating metadata</a></li>
     		<li><a href="#Generating_interfaces">Generating interfaces</a></li>
     		<li><a href="#Loading_the_generated_classes_into_the_AVM">Loading the generated classes into the AVM</a></li>
+    		<li><a href="#Exporting_the_generated_classes_to_file">Exporting the generated classes to file</a></li>
     	</ul>
     </section>
     
@@ -283,6 +284,14 @@ abcLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 abcLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, errorHandler);
 
 abcLoader.loadAbcFile(abcFile);</pre></div>
+    </section>
+    
+    <section name="Exporting the generated classes to file">
+    	<p>If there is a need to persist the generated classes to disk, follow these steps:</p>
+    	<div class="source"><pre>var binarySwf:ByteArray = abcBuilder.buildAndExport();
+var file:FileReference = new FileReference();
+file.save(binarySwf, "MyGeneratedClasses.swf");
+</pre></div>
     </section>
 
   </body>

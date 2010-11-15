@@ -3,6 +3,27 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 0.8.6-SNAPSHOT (00.00.0000)
+-----------------------------------
+
+General
+* Added buildAndExport() method to IAbcBuilder and implementation in AbcBuilder
+
+
+Changes in version 0.8.5 (14.11.2010)
+-----------------------------------
+
+General
+* Further maturation of the emit API, implemented backpatching (resolving of opcode jumps)
+and added an asm parser/converter to enable importing of method bodies defined by string.
+
+Changes in version 0.8.1 (02.11.2010)
+-----------------------------------
+
+General
+* First iteration of the emit API, simple class generation implemented
+
+
 Changes in version 0.7 (28.10.2010)
 -----------------------------------
 
