@@ -188,11 +188,11 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		protected function createClassInfo(slotTraits:Array, methods:Array, initScopeDepth:uint, isInterface:Boolean = false):ClassInfo {
-			var classInfo:ClassInfo = new ClassInfo();
+			var clsInfo:ClassInfo = (classInfo != null) ? classInfo : new ClassInfo();
 			for each (var mi:MethodInfo in methods) {
 				if (!methodExists(mi)) {
 					if (MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic) {
-						classInfo.traits[classInfo.traits.length] = mi.as3commonsByteCodeAssignedMethodTrait;
+						clsInfo.addTrait(mi.as3commonsByteCodeAssignedMethodTrait);
 					}
 				} else {
 					throw new IllegalOperationError(StringUtils.substitute(DUPLICATE_METHOD_ERROR, mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name, mi.methodName, this.name));
@@ -209,12 +209,12 @@ package org.as3commons.bytecode.emit.impl {
 			}
 			var cb:ICtorBuilder = createStaticConstructor(staticSlots, isInterface);
 			cb.isStatic = true;
-			classInfo.staticInitializer = cb.build();
-			classInfo.staticInitializer.methodBody.initScopeDepth = initScopeDepth++;
-			classInfo.staticInitializer.methodBody.maxScopeDepth = initScopeDepth;
-			classInfo.staticInitializer.as3commonsBytecodeName = AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME;
-			classInfo.staticInitializer.methodName = StringUtils.substitute(STATIC_CONSTRUCTOR_NAME, packageName, name);
-			return classInfo;
+			clsInfo.staticInitializer = cb.build();
+			clsInfo.staticInitializer.methodBody.initScopeDepth = initScopeDepth++;
+			clsInfo.staticInitializer.methodBody.maxScopeDepth = initScopeDepth;
+			clsInfo.staticInitializer.as3commonsBytecodeName = AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME;
+			clsInfo.staticInitializer.methodName = StringUtils.substitute(STATIC_CONSTRUCTOR_NAME, packageName, name);
+			return clsInfo;
 		}
 
 		protected function createDefaultConstructor():ICtorBuilder {
@@ -222,15 +222,22 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		protected function createStaticConstructor(staticSlots:Array, isInterface:Boolean):ICtorBuilder {
-			var ctorBuilder:ICtorBuilder = new CtorBuilder();
+			var ctorBuilder:CtorBuilder = new CtorBuilder();
+			if ((classInfo != null) && (classInfo.staticInitializer != null)) {
+				ctorBuilder.as3commons_bytecode::setMethodInfo(classInfo.staticInitializer);
+			}
+
 			ctorBuilder.packageName = packageName;
-			if (!isInterface) {
-				ctorBuilder.addOpcode(Opcode.getlocal_0) //
-					.addOpcode(Opcode.pushscope);
-				for each (var slot:SlotOrConstantTrait in staticSlots) {
-					ctorBuilder.addOpcodes(createInitializer(slot));
+
+			if ((classInfo == null) || (classInfo.staticInitializer == null)) {
+				if (!isInterface) {
+					ctorBuilder.addOpcode(Opcode.getlocal_0) //
+						.addOpcode(Opcode.pushscope);
+					for each (var slot:SlotOrConstantTrait in staticSlots) {
+						ctorBuilder.addOpcodes(createInitializer(slot));
+					}
+					ctorBuilder.addOpcode(Opcode.returnvoid);
 				}
-				ctorBuilder.addOpcode(Opcode.returnvoid);
 			}
 
 			return ctorBuilder;
