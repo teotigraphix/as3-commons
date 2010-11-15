@@ -45,11 +45,14 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		override protected function buildTrait():TraitInfo {
-			var trait:MethodTrait = new MethodTrait();
+			var trait:MethodTrait = (methodInfo != null) ? MethodTrait(methodInfo.as3commonsByteCodeAssignedMethodTrait) : new MethodTrait();
 			trait.traitKind = TraitKind.METHOD;
 			trait.isFinal = isFinal;
 			trait.isOverride = false;
-			trait.traitMultiname = new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK);
+			var qname:QualifiedName = new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK);
+			if ((trait.traitMultiname == null) || (trait.traitMultiname.equals(qname) == false)) {
+				trait.traitMultiname = qname;
+			}
 			return trait;
 		}
 

@@ -22,6 +22,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
@@ -70,9 +71,16 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.instanceInitializer.methodBody = null;
 			instanceInfo.instanceInitializer.methodName = StringUtils.substitute(ClassBuilder.CONSTRUCTOR_NAME, packageName, name);
 			instanceInfo.classInfo = classInfo;
-			instanceInfo.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
+			var qname:QualifiedName = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
+			if ((instanceInfo.classMultiname == null) || (instanceInfo.classMultiname.equals(qname) == false)) {
+				instanceInfo.classMultiname = qname;
+			}
+			if (isInternal == true) {
+				instanceInfo.classMultiname.nameSpace.kind = NamespaceKind.PACKAGE_INTERNAL_NAMESPACE;
+			}
 			instanceInfo.superclassMultiname = BuiltIns.ANY;
 			instanceInfo.isInterface = true;
+			instanceInfo.interfaceMultinames.length = 0;
 			for each (var intfName:String in _extendingInterfacesNames) {
 				instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(intfName, NamespaceKind.PACKAGE_NAMESPACE);
 			}
