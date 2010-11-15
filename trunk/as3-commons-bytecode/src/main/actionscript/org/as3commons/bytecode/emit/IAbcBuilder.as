@@ -17,6 +17,7 @@ package org.as3commons.bytecode.emit {
 	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
+	import flash.utils.ByteArray;
 
 	import org.as3commons.bytecode.abc.AbcFile;
 
@@ -69,5 +70,13 @@ package org.as3commons.bytecode.emit {
 		 * @return The created <code>AbcFile</code>.
 		 */
 		function buildAndLoad(applicationDomain:ApplicationDomain = null, newApplicationDomain:ApplicationDomain = null):AbcFile;
+
+		/**
+		 * Builds, serializes and wraps the <code>AbcFile</code> in a SWF, the resulting <code>ByteArray</code> can be saved to
+		 * disk as a .swf file for later use.
+		 * @param applicationDomain The applicationDomain that has access to the super classes that are defined.
+		 * @return The <code>ByteArray</code> containing the serialized <code>AbcFile</code> wrapped inside a SWF.
+		 */
+		function buildAndExport(applicationDomain:ApplicationDomain = null):ByteArray;
 	}
 }
