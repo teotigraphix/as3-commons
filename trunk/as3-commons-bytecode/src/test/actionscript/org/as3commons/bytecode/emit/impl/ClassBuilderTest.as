@@ -18,16 +18,17 @@ package org.as3commons.bytecode.emit.impl {
 
 	import flexunit.framework.TestCase;
 
-	import org.as3commons.bytecode.abc.BaseMultiname;
+	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
-	import org.as3commons.bytecode.emit.IClassBuilder;
+	import org.as3commons.bytecode.emit.ICtorBuilder;
 
 	public class ClassBuilderTest extends TestCase {
 
@@ -51,15 +52,33 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.superclassMultiname = new QualifiedName("supertest", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
 			instanceInfo.classMultiname = new QualifiedName("test", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
 			instanceInfo.instanceInitializer = new MethodInfo();
+			instanceInfo.instanceInitializer.methodBody = new MethodBody();
 			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait = new MethodTrait();
 			var traitMultiname:QualifiedName = new QualifiedName("testmethod", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"));
 			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait.traitMultiname = traitMultiname;
 			_classBuilder.as3commons_bytecode::setInstanceInfo(instanceInfo);
+			var cb:ICtorBuilder = _classBuilder.defineConstructor();
 			var arr:Array = _classBuilder.build(ApplicationDomain.currentDomain);
 			var inst:InstanceInfo = arr[1];
 			assertStrictlyEquals(inst, instanceInfo);
 			assertStrictlyEquals(inst.instanceInitializer, instanceInfo.instanceInitializer);
 			assertStrictlyEquals(inst.instanceInitializer.as3commonsByteCodeAssignedMethodTrait, instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait);
+		}
+
+		public function testBuildWithExistingClassInfo():void {
+			var classInfo:ClassInfo = new ClassInfo();
+			classInfo.classMultiname = new QualifiedName("test", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
+			classInfo.staticInitializer = new MethodInfo();
+			classInfo.staticInitializer.methodBody = new MethodBody();
+			classInfo.staticInitializer.as3commonsByteCodeAssignedMethodTrait = new MethodTrait();
+			classInfo.staticInitializer.as3commonsByteCodeAssignedMethodTrait.traitMultiname = new QualifiedName("test", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
+			_classBuilder.as3commons_bytecode::setClassInfo(classInfo);
+
+			var arr:Array = _classBuilder.build(ApplicationDomain.currentDomain);
+			var cls:ClassInfo = arr[0];
+			assertStrictlyEquals(cls, classInfo);
+			assertStrictlyEquals(cls.staticInitializer, classInfo.staticInitializer);
+			assertStrictlyEquals(cls.staticInitializer.as3commonsByteCodeAssignedMethodTrait, classInfo.staticInitializer.as3commonsByteCodeAssignedMethodTrait);
 		}
 
 	/*public function testDefineProperty():void {

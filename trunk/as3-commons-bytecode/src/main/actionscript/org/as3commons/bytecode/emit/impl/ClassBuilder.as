@@ -257,42 +257,42 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		protected function createInstanceInfo(slots:Array, methods:Array, initScopeDepth:uint):InstanceInfo {
-			var instanceInfo:InstanceInfo = (instanceInfo != null) ? instanceInfo : new InstanceInfo();
+			var instInfo:InstanceInfo = (instanceInfo != null) ? instanceInfo : new InstanceInfo();
 			for each (var mi:MethodInfo in methods) {
 				if (MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic == false) {
-					instanceInfo.addTrait(mi.as3commonsByteCodeAssignedMethodTrait);
+					instInfo.addTrait(mi.as3commonsByteCodeAssignedMethodTrait);
 					if (mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name === NamespaceKind.PROTECTED_NAMESPACE.description) {
-						instanceInfo.isProtected = true;
+						instInfo.isProtected = true;
 					}
 				}
 			}
-			if (!instanceInfo.isProtected) {
+			if (!instInfo.isProtected) {
 				for each (var slot:SlotOrConstantTrait in slots) {
 					if (slot.traitMultiname.nameSpace.name === NamespaceKind.PROTECTED_NAMESPACE.description) {
-						instanceInfo.isProtected = true;
+						instInfo.isProtected = true;
 						break;
 					}
 				}
 			}
-			instanceInfo.isFinal = isFinal;
-			instanceInfo.isInterface = false;
-			instanceInfo.isSealed = !isDynamic;
-			instanceInfo.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
-			instanceInfo.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : BuiltIns.OBJECT.fullName);
-			if ((instanceInfo.isProtected) && (instanceInfo.protectedNamespace == null)) {
-				instanceInfo.protectedNamespace = MultinameUtil.toLNamespace(packageName + MultinameUtil.DOUBLE_COLON + name, NamespaceKind.PROTECTED_NAMESPACE);
+			instInfo.isFinal = isFinal;
+			instInfo.isInterface = false;
+			instInfo.isSealed = !isDynamic;
+			instInfo.classMultiname = MultinameUtil.toQualifiedName(packageName + MultinameUtil.DOUBLE_COLON + name);
+			instInfo.superclassMultiname = MultinameUtil.toQualifiedName((StringUtils.hasText(_superClassName)) ? _superClassName : BuiltIns.OBJECT.fullName);
+			if ((instInfo.isProtected) && (instInfo.protectedNamespace == null)) {
+				instInfo.protectedNamespace = MultinameUtil.toLNamespace(packageName + MultinameUtil.DOUBLE_COLON + name, NamespaceKind.PROTECTED_NAMESPACE);
 			}
 			if (_ctorBuilder == null) {
 				_ctorBuilder = createDefaultConstructor();
 			}
-			instanceInfo.instanceInitializer = _ctorBuilder.build();
-			instanceInfo.instanceInitializer.methodBody.initScopeDepth = initScopeDepth++;
-			instanceInfo.instanceInitializer.methodBody.maxScopeDepth = initScopeDepth;
-			instanceInfo.instanceInitializer.methodName = StringUtils.substitute(CONSTRUCTOR_NAME, packageName, name);
+			instInfo.instanceInitializer = _ctorBuilder.build();
+			instInfo.instanceInitializer.methodBody.initScopeDepth = initScopeDepth++;
+			instInfo.instanceInitializer.methodBody.maxScopeDepth = initScopeDepth;
+			instInfo.instanceInitializer.methodName = StringUtils.substitute(CONSTRUCTOR_NAME, packageName, name);
 			for each (var interfaceName:String in _implementedInterfaceNames) {
-				instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(interfaceName);
+				instInfo.interfaceMultinames[instInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(interfaceName);
 			}
-			return instanceInfo;
+			return instInfo;
 		}
 
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
