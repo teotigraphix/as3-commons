@@ -18,6 +18,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.AbcFile;
@@ -40,6 +41,8 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
 	import org.as3commons.bytecode.swf.AbcClassLoader;
 	import org.as3commons.bytecode.typeinfo.Metadata;
+	import org.as3commons.bytecode.util.AbcFileUtil;
+	import org.as3commons.bytecode.util.AbcSerializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Type;
@@ -112,6 +115,7 @@ package org.as3commons.bytecode.emit.impl {
 	public class AbcBuilder extends EventDispatcher implements IAbcBuilder {
 
 		private var _loader:AbcClassLoader;
+		private var _serializer:AbcSerializer;
 		private var _packageBuilders:Dictionary;
 		private var _abcFile:AbcFile;
 
@@ -139,6 +143,16 @@ package org.as3commons.bytecode.emit.impl {
 				_loader.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch);
 			}
 			return _loader;
+		}
+
+		/**
+		 * Internal <code>AbcSerializer</code> instance used by the <code>buildAndExport()</code> method.
+		 */
+		protected function get serializer():AbcSerializer {
+			if (_serializer == null) {
+				_serializer = new AbcSerializer();
+			}
+			return _serializer;
 		}
 
 		/**
@@ -202,6 +216,15 @@ package org.as3commons.bytecode.emit.impl {
 			var abcFile:AbcFile = build(applicationDomain);
 			loader.loadAbcFile(abcFile, newApplicationDomain);
 			return abcFile;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function buildAndExport(applicationDomain:ApplicationDomain = null):ByteArray {
+			var abcFile:AbcFile = build(applicationDomain);
+			var ba:ByteArray = serializer.serializeAbcFile(abcFile);
+			return AbcFileUtil.wrapBytecodeInSWF([ba]);
 		}
 
 		/**
