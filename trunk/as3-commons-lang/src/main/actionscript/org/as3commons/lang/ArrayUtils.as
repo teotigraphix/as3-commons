@@ -182,5 +182,13 @@ package org.as3commons.lang {
 		public static function toString(array:Array, separator:String = ", "):String {
 			return (!array) ? "" : array.join(separator);
 		}
+		
+		/**
+		 * @return <code>true</code> if the array is empty or null
+		 */
+		public static function isEmpty(array:Array):Boolean {
+			return array == null || array.length == 0;
+		}
+		
 	}
 }
