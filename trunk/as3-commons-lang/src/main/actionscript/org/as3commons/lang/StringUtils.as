@@ -22,6 +22,7 @@ package org.as3commons.lang {
 	 *
 	 * @author Steffen Leistner
 	 * @author Christophe Herreman
+	 * @author James Ghandour
 	 */
 	public class StringUtils {
 
@@ -45,6 +46,11 @@ package org.as3commons.lang {
 		 */
 		private static const PAD_LIMIT:uint = 8192;
 
+		/**
+		 * <p>A RegExp containing the characters not allowed in a filename.</p>
+		 */
+		private static const FILENAME_CHARS_NOT_ALLOWED:RegExp = new RegExp("/|\\\\|:|\\\*|\\\?|<|>|\\||%|\"" );
+		
 		/**
 		 * <p>Returns a simple Initials like string.</p>
 		 *
@@ -2365,6 +2371,20 @@ package org.as3commons.lang {
 
 			return str;
 		}
+		
+		/**
+		 * Determines whether the specified filename is valid
+		 * @param fileName
+		 * @return <code>true</code> if the String is a valid filename
+		 */
+		public static function isValidFileName(fileName:String):Boolean {
+			if (!isEmpty(fileName)) {
+				return FILENAME_CHARS_NOT_ALLOWED.exec(fileName) == null;
+			}
+			return false ;
+		}
+		
+		
 
 	}
 }
