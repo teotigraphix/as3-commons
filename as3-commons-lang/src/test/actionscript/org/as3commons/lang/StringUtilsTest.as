@@ -657,5 +657,25 @@ package org.as3commons.lang {
 			assertEquals("c", tokens[2]);
 			assertEquals("d", tokens[3]);
 		}
+
+        //=====================================================================
+        // isValidFileName(string:String):Boolean
+        //=====================================================================
+		public function testIsFileNameValid():void {
+			assertTrue(StringUtils.isValidFileName("GoodFileName.csv"));
+			assertFalse(StringUtils.isValidFileName(null));
+			assertFalse(StringUtils.isValidFileName(""));
+			assertFalse(StringUtils.isValidFileName("/.csv"));
+			assertFalse(StringUtils.isValidFileName("\\.csv"));
+			assertFalse(StringUtils.isValidFileName(":.csv"));
+			assertFalse(StringUtils.isValidFileName("*.csv"));
+			assertFalse(StringUtils.isValidFileName("?.csv"));
+			assertFalse(StringUtils.isValidFileName("\".csv"));
+			assertFalse(StringUtils.isValidFileName("<.csv"));
+			assertFalse(StringUtils.isValidFileName(">.csv"));
+			assertFalse(StringUtils.isValidFileName("|.csv"));
+			assertFalse(StringUtils.isValidFileName("%.csv"));
+		}
+
 	}
 }
