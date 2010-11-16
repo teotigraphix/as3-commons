@@ -227,11 +227,13 @@ package org.as3commons.bytecode.abc.enum {
 		public static const si32:Opcode = new Opcode(0x37, "si32");
 		public static const sf32:Opcode = new Opcode(0x38, "sf32");
 		public static const sf64:Opcode = new Opcode(0x39, "sf64");
+
 		public static const li8:Opcode = new Opcode(0x3a, "li8");
 		public static const li16:Opcode = new Opcode(0x3b, "li16");
 		public static const li32:Opcode = new Opcode(0x3c, "li32");
 		public static const lf32:Opcode = new Opcode(0x3d, "lf32");
 		public static const lf64:Opcode = new Opcode(0x3e, "lf64");
+
 		public static const sxi1:Opcode = new Opcode(0x50, "sxi1");
 		public static const sxi8:Opcode = new Opcode(0x51, "sxi8");
 		public static const sxi16:Opcode = new Opcode(0x52, "sxi16");
