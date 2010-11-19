@@ -15,7 +15,7 @@ package {
 			theSet.add(1);
 			theSet.add(3);
 			theSet.add(2);
-			theSet.add(2); // no event (two already contained)
+			theSet.add(2); // no event (2 already contained)
 			
 			theSet.addFirst(4);
 			theSet.addLast(5);
@@ -30,7 +30,7 @@ package {
 			theSet.removeLast();
 			theSet.remove(8);
 			theSet.remove(6);
-			theSet.remove(10); // no event (5 not contained)
+			theSet.remove(10); // no event (10 not contained)
 
 			theSet.reverse();
 			theSet.sort(new NumericComparator());
