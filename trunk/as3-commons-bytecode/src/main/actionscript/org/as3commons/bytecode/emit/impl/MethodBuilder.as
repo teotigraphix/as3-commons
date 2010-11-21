@@ -66,6 +66,11 @@ package org.as3commons.bytecode.emit.impl {
 				methodBodyBuilder.as3commons_bytecode::setMethodBody(methodInfo.methodBody);
 			}
 			visibility = EmitUtil.getMemberVisibilityFromQualifiedName(methodInfo.as3commonsByteCodeAssignedMethodTrait.traitMultiname);
+			for each (var arg:Argument in methodInfo.argumentCollection) {
+				var ma:MethodArgument = new MethodArgument();
+				ma.as3commons_bytecode::setArgument(arg);
+				_arguments[_arguments.length] = ma;
+			}
 		}
 
 		protected function get methodBodyBuilder():IMethodBodyBuilder {

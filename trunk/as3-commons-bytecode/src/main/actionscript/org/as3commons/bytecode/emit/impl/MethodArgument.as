@@ -15,9 +15,11 @@
  */
 package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.util.BuildUtil;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.lang.Assert;
 
 	public class MethodArgument {
 		private var _name:String;
@@ -28,6 +30,15 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function MethodArgument() {
 			super();
+		}
+
+		as3commons_bytecode function setArgument(argument:Argument):void {
+			Assert.notNull(argument, "argument argument must not be null");
+			_argument = argument;
+			_name = argument.name;
+			_isOptional = argument.isOptional;
+			_type = argument.type.fullName;
+			_defaultValue = argument.defaultValue;
 		}
 
 		public function get name():String {
