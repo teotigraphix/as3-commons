@@ -25,6 +25,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
@@ -57,12 +58,16 @@ package org.as3commons.bytecode.emit.impl {
 			var traitMultiname:QualifiedName = new QualifiedName("testmethod", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"));
 			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait.traitMultiname = traitMultiname;
 			_classBuilder.as3commons_bytecode::setInstanceInfo(instanceInfo);
+
 			var cb:ICtorBuilder = _classBuilder.defineConstructor();
+			var instInit:MethodInfo = instanceInfo.instanceInitializer;
+			var methodTrait:TraitInfo = instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait;
+
 			var arr:Array = _classBuilder.build(ApplicationDomain.currentDomain);
 			var inst:InstanceInfo = arr[1];
 			assertStrictlyEquals(inst, instanceInfo);
-			assertStrictlyEquals(inst.instanceInitializer, instanceInfo.instanceInitializer);
-			assertStrictlyEquals(inst.instanceInitializer.as3commonsByteCodeAssignedMethodTrait, instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait);
+			assertStrictlyEquals(inst.instanceInitializer, instInit);
+			assertStrictlyEquals(inst.instanceInitializer.as3commonsByteCodeAssignedMethodTrait, methodTrait);
 		}
 
 		public function testBuildWithExistingClassInfo():void {

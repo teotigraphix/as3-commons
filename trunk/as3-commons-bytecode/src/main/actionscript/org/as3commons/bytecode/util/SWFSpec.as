@@ -19,7 +19,7 @@ package org.as3commons.bytecode.util {
 	import flash.utils.ByteArray;
 
 	public final class SWFSpec {
-		//Bits and pieces from have been copies from the SWF assist library:
+		//Bits and pieces from have been copied from the SWF assist library:
 		//http://www.libspark.org/wiki/yossy/swfassist
 		//(Sorry, didn't feel like figuring out this low-level bitshifting stuff, just needed to get stuff working :) )
 
