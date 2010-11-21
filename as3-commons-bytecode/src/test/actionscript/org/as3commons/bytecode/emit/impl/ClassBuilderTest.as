@@ -25,11 +25,14 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
+	import org.as3commons.bytecode.emit.IPropertyBuilder;
+	import org.flexunit.asserts.assertEquals;
 
 	public class ClassBuilderTest extends TestCase {
 
@@ -43,10 +46,6 @@ package org.as3commons.bytecode.emit.impl {
 			super.setUp();
 			_classBuilder = new ClassBuilder();
 		}
-
-		/*public function testBuild():void {
-			fail("Test method Not yet implemented");
-		}*/
 
 		public function testDefineConstructorWithExistingInstance():void {
 			var instanceInfo:InstanceInfo = new InstanceInfo();
@@ -99,16 +98,31 @@ package org.as3commons.bytecode.emit.impl {
 			assertStrictlyEquals(cls.staticInitializer.as3commonsByteCodeAssignedMethodTrait, classInfo.staticInitializer.as3commonsByteCodeAssignedMethodTrait);
 		}
 
-	/*public function testDefineProperty():void {
-		fail("Test method Not yet implemented");
-	}
+		public function testDefineExisitngProperty():void {
+			var instanceInfo:InstanceInfo = new InstanceInfo();
+			instanceInfo.superclassMultiname = new QualifiedName("supertest", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
+			instanceInfo.classMultiname = new QualifiedName("test", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
+			instanceInfo.instanceInitializer = new MethodInfo();
+			instanceInfo.instanceInitializer.methodBody = new MethodBody();
+			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait = new MethodTrait();
+			var traitMultiname:QualifiedName = new QualifiedName("testmethod", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"));
+			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait.traitMultiname = traitMultiname;
+			var slot:SlotOrConstantTrait = new SlotOrConstantTrait();
+			slot.traitMultiname = new QualifiedName("testProperty", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes.test"));
+			slot.typeMultiname = new QualifiedName("testPropType", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes.types"));
+			instanceInfo.addTrait(slot);
 
-	public function testImplementInterface():void {
-		fail("Test method Not yet implemented");
-	}
+			_classBuilder.as3commons_bytecode::setInstanceInfo(instanceInfo);
 
-	public function testImplementInterfaces():void {
-		fail("Test method Not yet implemented");
-	}*/
+			var pb:IPropertyBuilder = _classBuilder.defineProperty("testProperty");
+
+			assertEquals(pb.type, "com.classes.types.testPropType");
+
+			var arr:Array = _classBuilder.build(ApplicationDomain.currentDomain);
+			var inst:InstanceInfo = arr[1];
+
+			assertStrictlyEquals(inst.traits[0], slot);
+		}
+
 	}
 }
