@@ -57,17 +57,30 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait = new MethodTrait();
 			var traitMultiname:QualifiedName = new QualifiedName("testmethod", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"));
 			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait.traitMultiname = traitMultiname;
+
+			var classInfo:ClassInfo = new ClassInfo();
+			classInfo.classMultiname = instanceInfo.classMultiname;
+			instanceInfo.classInfo = classInfo;
+
 			_classBuilder.as3commons_bytecode::setInstanceInfo(instanceInfo);
+			_classBuilder.as3commons_bytecode::setClassInfo(classInfo);
 
 			var cb:ICtorBuilder = _classBuilder.defineConstructor();
 			var instInit:MethodInfo = instanceInfo.instanceInitializer;
 			var methodTrait:TraitInfo = instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait;
 
 			var arr:Array = _classBuilder.build(ApplicationDomain.currentDomain);
+			var cls:ClassInfo = arr[0];
 			var inst:InstanceInfo = arr[1];
+
 			assertStrictlyEquals(inst, instanceInfo);
 			assertStrictlyEquals(inst.instanceInitializer, instInit);
 			assertStrictlyEquals(inst.instanceInitializer.as3commonsByteCodeAssignedMethodTrait, methodTrait);
+			assertStrictlyEquals(inst.instanceInitializer.as3commonsByteCodeAssignedMethodTrait.traitMultiname, methodTrait.traitMultiname);
+
+			assertStrictlyEquals(cls, classInfo);
+			assertStrictlyEquals(cls.classMultiname, instanceInfo.classMultiname);
+			assertStrictlyEquals(cls, instanceInfo.classInfo);
 		}
 
 		public function testBuildWithExistingClassInfo():void {
