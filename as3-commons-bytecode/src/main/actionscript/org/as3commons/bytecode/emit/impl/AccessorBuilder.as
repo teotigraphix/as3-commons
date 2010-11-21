@@ -44,9 +44,9 @@ package org.as3commons.bytecode.emit.impl {
 	 */
 	public class AccessorBuilder extends PropertyBuilder implements IAccessorBuilder {
 
-		private static const PRIVATE_VAR_NAME_TEMPLATE:String = "_{0}";
-		private static const GETTER_SUFFIX:String = '/get';
-		private static const SETTER_SUFFIX:String = '/set';
+		public static const PRIVATE_VAR_NAME_TEMPLATE:String = "_{0}";
+		public static const GETTER_SUFFIX:String = '/get';
+		public static const SETTER_SUFFIX:String = '/set';
 
 		private var _access:AccessorAccess;
 		private var _property:IPropertyBuilder;

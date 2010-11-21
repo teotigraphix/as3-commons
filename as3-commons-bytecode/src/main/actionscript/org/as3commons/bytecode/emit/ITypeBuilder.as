@@ -52,6 +52,11 @@ package org.as3commons.bytecode.emit {
 		 * @return The specified <code>IAccessorBuilder</code> instance.
 		 */
 		function defineAccessor(name:String = null, type:String = null, initialValue:* = undefined):IAccessorBuilder;
+
+		function removeMethod(name:String, nameSpace:String = null):void;
+
+		function removeAccessor(name:String, nameSpace:String = null):void;
+
 		/**
 		 * Internally used build method, this method should never be called by third parties.
 		 * @param applicationDomain

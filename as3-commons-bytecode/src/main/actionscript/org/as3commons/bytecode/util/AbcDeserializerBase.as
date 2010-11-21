@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.util {
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 
 	import mx.formatters.SwitchSymbolFormatter;
 	import mx.utils.ObjectUtil;
@@ -182,7 +183,7 @@ package org.as3commons.bytecode.util {
 
 				return multiname;
 			});
-
+			pool.initializeLookups();
 			return pool;
 		}
 
