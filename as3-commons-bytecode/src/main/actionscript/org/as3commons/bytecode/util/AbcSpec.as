@@ -60,7 +60,7 @@ package org.as3commons.bytecode.util {
 		public static const UNSIGNED_BYTE:ReadWritePair = new ReadWritePair(readUnsigned, writeU8);
 		private static const __VALUE_OUT_OF_RANGE_ERROR:String = "Value out of range";
 
-		public static function readUnsigned(bytes:ByteArray):int {
+		public static function readUnsigned(bytes:ByteArray):uint {
 			return bytes.readUnsignedByte();
 		}
 
@@ -202,10 +202,13 @@ package org.as3commons.bytecode.util {
 		 * Writes a three-byte signed integer value.
 		 */
 		public static function writeS24(value:int, byteArray:ByteArray):void {
-			assertWithinRange(-16777216 >= value && value < 16777216);
-			byteArray.writeByte(value & 0xFF);
-			byteArray.writeByte((value >> 8) & 0xFF);
-			byteArray.writeByte((value >> 16) & 0xFF);
+			assertWithinRange(value > -8388607 && value < 8388607);
+			var i:int = value & 0xFF;
+			byteArray.writeByte(i);
+			i = (value >> 8) & 0xFF;
+			byteArray.writeByte(i);
+			i = (value >> 16) & 0xFF;
+			byteArray.writeByte(i);
 		}
 
 		/**
@@ -252,9 +255,9 @@ package org.as3commons.bytecode.util {
 		 * Asserts a given statementm, throwing an error if the statement is false.
 		 */
 		public static function assertWithinRange(assertion:Boolean):void {
-		/*if (!assertion) {
-		   throw new Error(__VALUE_OUT_OF_RANGE_ERROR);
-		 }*/
+			if (!assertion) {
+				throw new Error(__VALUE_OUT_OF_RANGE_ERROR);
+			}
 		}
 	}
 }
