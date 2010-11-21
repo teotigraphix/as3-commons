@@ -3,10 +3,12 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 0.8.6-SNAPSHOT (00.00.0000)
+Changes in version 0.9-SNAPSHOT (00.00.0000)
 -----------------------------------
 
 General
+* Added support for manipulating existing classes in an Abc file
+* Added alchemy specific opcodes
 * Added buildAndExport() method to IAbcBuilder and implementation in AbcBuilder
 
 
