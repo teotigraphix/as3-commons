@@ -284,6 +284,37 @@ package org.as3commons.bytecode.emit.impl {
 			return instInfo;
 		}
 
+		override public function removeAccessor(name:String, nameSpace:String = null):void {
+			super.removeAccessor(name, nameSpace);
+			removeProperty(StringUtils.substitute(AccessorBuilder.PRIVATE_VAR_NAME_TEMPLATE, name));
+		}
+
+		public function removeProperty(name:String, nameSpace:String = null):void {
+			var idx:int = -1;
+			for each (var pb:IPropertyBuilder in _propertyBuilders) {
+				if (pb.name == name) {
+					if (nameSpace != null) {
+						if (pb.namespace == nameSpace) {
+							idx++;
+							break;
+						}
+					}
+					idx++;
+					break;
+				}
+			}
+			if (idx > -1) {
+				_propertyBuilders.splice(idx, 1);
+			}
+			var slot:SlotOrConstantTrait;
+			if (instanceInfo != null) {
+				slot = instanceInfo.getSlotTraitByName(name);
+				if (slot != null) {
+					instanceInfo.removeTrait(slot);
+				}
+			}
+		}
+
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
 			_eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}

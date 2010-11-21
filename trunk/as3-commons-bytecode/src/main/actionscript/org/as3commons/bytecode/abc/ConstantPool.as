@@ -17,6 +17,7 @@ package org.as3commons.bytecode.abc {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.util.Assertions;
 	import org.as3commons.lang.Assert;
@@ -44,18 +45,26 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf "Constant Pool" the in AVM Spec (page 20)
 	 */
 	//TODO: There are a lot of opportunities for fast-lookup optimizations here, such as using dictionaries instead of looping over collections
-	public class ConstantPool {
+	public class ConstantPool implements IEquals, IConstantPool {
 
 		private static const NAMESPACE_SET_PROPERTYNAME:String = "namespaceSet";
 		private static const NAME_PROPERTYNAME:String = "name";
+		private static const LOCKED_CONSTANTPOOL_ERROR:String = "Constantpool is locked";
 
 		private var _integerPool:Array;
+		private var _integerLookup:Dictionary;
 		private var _uintPool:Array;
+		private var _uintLookup:Dictionary;
 		private var _doublePool:Array;
+		private var _doubleLookup:Dictionary;
 		private var _stringPool:Array;
+		private var _stringLookup:Dictionary;
 		private var _namespacePool:Array;
+		private var _namespaceLookup:Dictionary;
 		private var _namespaceSetPool:Array;
+		private var _namespaceSetLookup:Dictionary;
 		private var _multinamePool:Array;
+		private var _multinameLookup:Dictionary;
 
 		private var _lookup:Dictionary;
 
@@ -73,10 +82,22 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function reset():void {
+			_integerLookup = new Dictionary();
+			_uintLookup = new Dictionary();
+			_doubleLookup = new Dictionary();
+			_stringLookup = new Dictionary();
+			_namespaceLookup = new Dictionary();
+			_namespaceSetLookup = new Dictionary();
+			_multinameLookup = new Dictionary();
+
 			_integerPool = [0];
+			_integerLookup[0] = 0;
 			_uintPool = [0];
+			_uintLookup[0] = 0;
 			_doublePool = [0];
+			_doubleLookup[0] = 0;
 			_stringPool = [LNamespace.ASTERISK.name];
+			_stringLookup[LNamespace.ASTERISK.name] = 0;
 
 			_namespacePool = [];
 			addNamespace(LNamespace.ASTERISK);
@@ -88,17 +109,17 @@ package org.as3commons.bytecode.abc {
 			addMultiname(new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK));
 
 			_lookup = new Dictionary();
-			_lookup[ConstantKind.INT] = _integerPool;
-			_lookup[ConstantKind.UINT] = _uintPool;
-			_lookup[ConstantKind.DOUBLE] = _doublePool;
-			_lookup[ConstantKind.UTF8] = _stringPool;
-			_lookup[ConstantKind.NAMESPACE] = _namespacePool;
-			_lookup[ConstantKind.PACKAGE_NAMESPACE] = _namespacePool;
-			_lookup[ConstantKind.PACKAGE_INTERNAL_NAMESPACE] = _namespacePool;
-			_lookup[ConstantKind.PROTECTED_NAMESPACE] = _namespacePool;
-			_lookup[ConstantKind.EXPLICIT_NAMESPACE] = _namespacePool;
-			_lookup[ConstantKind.STATIC_PROTECTED_NAMESPACE] = _namespacePool;
-			_lookup[ConstantKind.PRIVATE_NAMESPACE] = _namespacePool;
+			_lookup[ConstantKind.INT] = [_integerPool, _integerLookup];
+			_lookup[ConstantKind.UINT] = [_uintPool, _uintLookup];
+			_lookup[ConstantKind.DOUBLE] = [_doublePool, _doubleLookup];
+			_lookup[ConstantKind.UTF8] = [_stringPool, _stringLookup];
+			_lookup[ConstantKind.NAMESPACE] = [_namespacePool, _namespaceLookup];
+			_lookup[ConstantKind.PACKAGE_NAMESPACE] = [_namespacePool, _namespaceLookup];
+			_lookup[ConstantKind.PACKAGE_INTERNAL_NAMESPACE] = [_namespacePool, _namespaceLookup];
+			_lookup[ConstantKind.PROTECTED_NAMESPACE] = [_namespacePool, _namespaceLookup];
+			_lookup[ConstantKind.EXPLICIT_NAMESPACE] = [_namespacePool, _namespaceLookup];
+			_lookup[ConstantKind.STATIC_PROTECTED_NAMESPACE] = [_namespacePool, _namespaceLookup];
+			_lookup[ConstantKind.PRIVATE_NAMESPACE] = [_namespacePool, _namespaceLookup];
 			_lookup[ConstantKind.TRUE] = true;
 			_lookup[ConstantKind.FALSE] = false;
 			_lookup[ConstantKind.NULL] = null;
@@ -108,7 +129,7 @@ package org.as3commons.bytecode.abc {
 		public function getConstantPoolItem(constantKindValue:uint, poolIndex:uint):* {
 			var constantKind:ConstantKind = ConstantKind.determineKind(constantKindValue);
 			var retVal:* = _lookup[constantKind];
-			return (retVal is Array) ? retVal[poolIndex] : retVal;
+			return (retVal is Array) ? retVal[0][poolIndex] : retVal;
 		}
 
 		public function getConstantPoolItemIndex(constantKindValue:ConstantKind, item:*):int {
@@ -119,7 +140,7 @@ package org.as3commons.bytecode.abc {
 		public function addItemToPool(constantKindValue:ConstantKind, item:*):int {
 			var pool:* = _lookup[constantKindValue];
 			if (pool is Array) {
-				return addToPool(pool as Array, item);
+				return addToPool(pool[0] as Array, pool[1] as Dictionary, item);
 			} else {
 				return 1;
 			}
@@ -264,7 +285,7 @@ package org.as3commons.bytecode.abc {
 				if (!locked) {
 					multinameIndex = _multinamePool.push(multiname) - 1;
 				} else {
-					throw new Error("Constantpool is locked");
+					throw new Error(LOCKED_CONSTANTPOOL_ERROR);
 				}
 			}
 
@@ -275,13 +296,15 @@ package org.as3commons.bytecode.abc {
 		 * Used to add objects with explicitly defined equals() methods to a pool.
 		 */
 		//TODO: Make an interface for these types?
-		private function addObject(pool:Array, object:Object):int {
+		private function addObject(pool:Array, lookup:Dictionary, object:Object):int {
 			if (object.hasOwnProperty(NAME_PROPERTYNAME)) {
 				addString(object.name);
 			}
 
-			var matchingIndex:int = -1;
-			if (object is IEquals) {
+			var key:String = object.toString();
+			var n:* = lookup[key];
+			var matchingIndex:int = (n != null) ? n : -1;
+			/*if (object is IEquals) {
 				pool.every(function(element:Object, index:int, array:Array):Boolean {
 					if (element.equals(object)) {
 						matchingIndex = index;
@@ -290,13 +313,14 @@ package org.as3commons.bytecode.abc {
 						return true;
 					}
 				});
-			}
+			}*/
 
 			if (matchingIndex == -1) {
 				if (!locked) {
 					matchingIndex = pool.push(object) - 1;
+					lookup[key] = matchingIndex;
 				} else {
-					throw new Error("Constantpool is locked");
+					throw new Error(LOCKED_CONSTANTPOOL_ERROR);
 				}
 			}
 
@@ -381,7 +405,7 @@ package org.as3commons.bytecode.abc {
 		 * @return    The position of the string in the pool.
 		 */
 		public function addString(string:String):int {
-			return addToPool(_stringPool, string);
+			return addToPool(_stringPool, _stringLookup, string);
 		}
 
 		/**
@@ -391,7 +415,7 @@ package org.as3commons.bytecode.abc {
 		 * @return    The position of the <code>int</code> in the pool.
 		 */
 		public function addInt(integer:int):int {
-			return addToPool(_integerPool, integer);
+			return addToPool(_integerPool, _integerLookup, integer);
 		}
 
 		/**
@@ -401,7 +425,7 @@ package org.as3commons.bytecode.abc {
 		 * @return    The position of the <code>uint</code> in the pool.
 		 */
 		public function addUint(uinteger:uint):int {
-			return addToPool(_uintPool, uinteger);
+			return addToPool(_uintPool, _uintLookup, uinteger);
 		}
 
 		/**
@@ -411,7 +435,7 @@ package org.as3commons.bytecode.abc {
 		 * @return    The position of the <code>Number</code> in the pool.
 		 */
 		public function addDouble(double:Number):int {
-			return addToPool(_doublePool, double);
+			return addToPool(_doublePool, _doubleLookup, double);
 		}
 
 		/**
@@ -425,7 +449,7 @@ package org.as3commons.bytecode.abc {
 			//			{
 			//				trace(namespaceValue);
 			//			}
-			return addObject(_namespacePool, namespaceValue);
+			return addObject(_namespacePool, _namespaceLookup, namespaceValue);
 		}
 
 		/**
@@ -441,20 +465,57 @@ package org.as3commons.bytecode.abc {
 				addNamespace(namespaze);
 			}
 
-			return addObject(_namespaceSetPool, namespaceSet);
+			return addObject(_namespaceSetPool, _namespaceSetLookup, namespaceSet);
+		}
+
+		public function initializeLookups():void {
+			var idx:int = 0;
+			for each (var i:int in _integerPool) {
+				_integerLookup[i] = idx++;
+			}
+			idx = 0;
+			for each (var u:uint in _uintPool) {
+				_uintLookup[u] = idx++;
+			}
+			idx = 0;
+			for each (var n:Number in _doublePool) {
+				_doubleLookup[n] = idx++;
+			}
+			idx = 0;
+			for each (var s:String in _stringPool) {
+				_stringLookup[s] = idx++;
+			}
+			idx = 0;
+			for each (var mn:BaseMultiname in _multinamePool) {
+				_multinameLookup[mn.toString()] = idx++;
+			}
+			idx = 0;
+			for each (var ns:LNamespace in _namespacePool) {
+				_namespaceLookup[ns.toString()] = idx++;
+			}
+			idx = 0;
+			for each (var nss:NamespaceSet in _namespaceSetPool) {
+				_namespaceSetLookup[nss.toString()] = idx++;
+			}
 		}
 
 		/**
 		 * Adds items without explicit <code>equals()</code> methods to the specified pool.
 		 *
 		 * @param pool    The pool to add the item to.
+		 * @param lookup    The item to index Dictionary.
 		 * @param item    The item to add to the pool.
 		 */
-		public function addToPool(pool:Array, item:Object):int {
+		public function addToPool(pool:Array, lookup:Dictionary, item:Object):int {
 			Assert.notNull(pool, "pool instance cannot be null");
+			Assert.notNull(lookup, "lookup instance cannot be null");
 			Assert.notNull(item, "constant pool item cannot be null");
-			var index:int = -1;
-			if (item is IEquals) {
+			var n:* = lookup[item];
+			var index:int = (n != null) ? n : -1;
+			if (index > -1) {
+				return index;
+			}
+			/*if (item is IEquals) {
 				for each (var eq:IEquals in pool) {
 					index++;
 					if (IEquals(item).equals(eq)) {
@@ -465,19 +526,16 @@ package org.as3commons.bytecode.abc {
 				if (!locked) {
 					index = pool.push(item) - 1;
 				} else {
-					throw new Error("Constantpool is locked");
+					throw new Error(LOCKED_CONSTANTPOOL_ERROR);
 				}
+			} else {*/
+			if (!locked) {
+				index = pool.push(item) - 1;
 			} else {
-				index = pool.indexOf(item);
-				if (index == -1) {
-					if (!locked) {
-						index = pool.push(item) - 1;
-					} else {
-						throw new Error("Constantpool is locked");
-					}
-				}
+				throw new Error(LOCKED_CONSTANTPOOL_ERROR);
 			}
-
+			//}
+			lookup[item] = index;
 			return index;
 		}
 
@@ -489,7 +547,8 @@ package org.as3commons.bytecode.abc {
 		 * @param constantPool    The constant pool to compare this constant pool instance against.
 		 * @return    True if the pools match, false otherwise.
 		 */
-		public function equals(constantPool:ConstantPool):Boolean {
+		public function equals(other:Object):Boolean {
+			var constantPool:ConstantPool = ConstantPool(other);
 			return Assertions.assertArrayContentsEqual(this._integerPool, constantPool._integerPool) && Assertions.assertArrayContentsEqual(this._uintPool, constantPool._uintPool) && Assertions.assertArrayContentsEqual(this._doublePool, constantPool._doublePool) && Assertions.assertArrayContentsEqual(this._stringPool, constantPool._stringPool) && Assertions.assertArrayContentsEqual(this._namespacePool, constantPool._namespacePool) && Assertions.assertArrayContentsEqual(this._namespaceSetPool, constantPool._namespaceSetPool) && Assertions.assertArrayContentsEqual(this._multinamePool, constantPool._multinamePool);
 		}
 

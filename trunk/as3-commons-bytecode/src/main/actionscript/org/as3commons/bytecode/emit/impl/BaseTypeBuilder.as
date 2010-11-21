@@ -23,6 +23,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.ClassInfo;
+	import org.as3commons.bytecode.abc.FunctionTrait;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
@@ -141,6 +142,61 @@ package org.as3commons.bytecode.emit.impl {
 			return mb;
 		}
 
+		public function removeAccessor(name:String, nameSpace:String = null):void {
+			var idx:int = -1;
+			for each (var ab:IAccessorBuilder in _accessorBuilders) {
+				if (ab.name == name) {
+					if (nameSpace != null) {
+						if (nameSpace == ab.namespace) {
+							idx++;
+							break;
+						}
+					}
+					idx++;
+					break;
+				}
+			}
+			if (idx > -1) {
+				_accessorBuilders.splice(idx, 1);
+				removeMethod(name + AccessorBuilder.GETTER_SUFFIX, nameSpace);
+				removeMethod(name + AccessorBuilder.SETTER_SUFFIX, nameSpace);
+			}
+		}
+
+		public function removeMethod(name:String, nameSpace:String = null):void {
+			var idx:int = -1;
+			for each (var mb:IMethodBuilder in _methodBuilders) {
+				if (mb.name == name) {
+					if (nameSpace != null) {
+						if (mb.namespace == nameSpace) {
+							idx++;
+							break;
+						}
+					}
+					idx++;
+					break;
+				}
+				idx++;
+			}
+			if (idx > -1) {
+				_methodBuilders.splice(idx, 1);
+			}
+			var methodTrait:MethodTrait;
+			if (instanceInfo != null) {
+				methodTrait = instanceInfo.getMethodTraitByName(name);
+				if (methodTrait != null) {
+					instanceInfo.removeTrait(methodTrait);
+				}
+			}
+			if (classInfo != null) {
+				methodTrait = classInfo.getMethodTraitByName(name);
+				if (methodTrait != null) {
+					classInfo.removeTrait(methodTrait);
+				}
+			}
+		}
+
+
 		/**
 		 * @inheritDoc
 		 */
@@ -156,6 +212,36 @@ package org.as3commons.bytecode.emit.impl {
 			ab.name = name;
 			ab.type = type;
 			ab.initialValue = initialValue;
+			var methodTrait:MethodTrait;
+			var slot:SlotOrConstantTrait;
+			if (instanceInfo != null) {
+				methodTrait = instanceInfo.getMethodTraitByName(name + AccessorBuilder.GETTER_SUFFIX);
+				if (methodTrait != null) {
+					ab.as3commons_bytecode::setGetter(methodTrait.traitMethod);
+				}
+				methodTrait = instanceInfo.getMethodTraitByName(name + AccessorBuilder.SETTER_SUFFIX);
+				if (methodTrait != null) {
+					ab.as3commons_bytecode::setSetter(methodTrait.traitMethod);
+				}
+				slot = instanceInfo.getSlotTraitByName(StringUtils.substitute(AccessorBuilder.PRIVATE_VAR_NAME_TEMPLATE, name));
+				if (slot != null) {
+					ab.as3commons_bytecode::setTrait(slot);
+				}
+			}
+			if (classInfo != null) {
+				methodTrait = classInfo.getMethodTraitByName(name + AccessorBuilder.GETTER_SUFFIX);
+				if (methodTrait != null) {
+					ab.as3commons_bytecode::setGetter(methodTrait.traitMethod);
+				}
+				methodTrait = classInfo.getMethodTraitByName(name + AccessorBuilder.SETTER_SUFFIX);
+				if (methodTrait != null) {
+					ab.as3commons_bytecode::setSetter(methodTrait.traitMethod);
+				}
+				slot = classInfo.getSlotTraitByName(StringUtils.substitute(AccessorBuilder.PRIVATE_VAR_NAME_TEMPLATE, name));
+				if (slot != null) {
+					ab.as3commons_bytecode::setTrait(slot);
+				}
+			}
 			return ab;
 		}
 

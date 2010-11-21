@@ -200,6 +200,8 @@ package org.as3commons.bytecode.abc.enum {
 		public static const pushuint:Opcode = new Opcode(0x2E, "pushuint", [UnsignedInteger, AbcSpec.U30]); //Added
 		public static const pushundefined:Opcode = new Opcode(0x21, "pushundefined");
 		public static const pushwith:Opcode = new Opcode(0x1c, "pushwith");
+		public static const pushdecimal:Opcode = new Opcode(0x33, "pushdecimal", [Number, AbcSpec.U30]);
+		public static const pushdnan:Opcode = new Opcode(0x34, "pushdnan");
 		public static const returnvalue:Opcode = new Opcode(0x48, "returnvalue");
 		public static const returnvoid:Opcode = new Opcode(0x47, "returnvoid");
 		public static const rshift:Opcode = new Opcode(0xa6, "rshift");

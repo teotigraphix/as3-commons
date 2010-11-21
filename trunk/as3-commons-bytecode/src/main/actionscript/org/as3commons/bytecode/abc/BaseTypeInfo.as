@@ -31,6 +31,13 @@ package org.as3commons.bytecode.abc {
 			}
 		}
 
+		public function removeTrait(trait:TraitInfo):void {
+			var idx:int = traits.indexOf(trait);
+			if (idx > -1) {
+				traits.splice(idx, 1);
+			}
+		}
+
 		public function getSlotTraitByName(name:String):SlotOrConstantTrait {
 			var slots:Array = slotOrConstantTraits;
 			for each (var slot:SlotOrConstantTrait in slots) {
@@ -49,6 +56,13 @@ package org.as3commons.bytecode.abc {
 				}
 			}
 			return null;
+		}
+
+		public function removeMethodTrait(trait:MethodTrait):void {
+			var idx:int = traits.indexOf(trait);
+			if (idx > -1) {
+				traits.splice(idx, 1);
+			}
 		}
 
 		public function get slotOrConstantTraits():Array {
