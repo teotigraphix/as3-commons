@@ -60,6 +60,18 @@ package org.as3commons.bytecode.util {
 		public static const UNSIGNED_BYTE:ReadWritePair = new ReadWritePair(readUnsigned, writeU8);
 		private static const __VALUE_OUT_OF_RANGE_ERROR:String = "Value out of range";
 
+		public static const TWOHUNDRED_FIFTYFIVE:uint = 255;
+		public static const EIGHT:uint = 8;
+		public static const SIXTEEN:uint = 16;
+		public static const MAX_U8:uint = 256;
+		public static const MAX_U16:uint = 65536;
+		public static const MAX_U30:uint = 1073741824;
+		public static const SEVEN:Number = 7;
+		private static const FOURTEEN:Number = 14;
+		private static const TWENTY_ONE:Number = 21;
+		private static const TWENTY_EIGHT:Number = 28;
+		private static const MAX_S24:Number = 8388607;
+
 		public static function readUnsigned(bytes:ByteArray):uint {
 			return bytes.readUnsignedByte();
 		}
@@ -74,20 +86,20 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function readU8(bytes:ByteArray):uint {
-			var value:uint = 255 & bytes[bytes.position++];
-			assertWithinRange(value < 256);
+			var value:uint = TWOHUNDRED_FIFTYFIVE & bytes[bytes.position++];
+			assertWithinRange(value < MAX_U8);
 			return value;
 		}
 
 		public static function readU16(bytes:ByteArray):uint {
-			var value:uint = readU8(bytes) | readU8(bytes) << 8;
-			assertWithinRange(value < 65536);
+			var value:uint = readU8(bytes) | readU8(bytes) << EIGHT;
+			assertWithinRange(value < MAX_U16);
 			return value;
 		}
 
 		public static function readS24(bytes:ByteArray):int {
 			var value:int = bytes.readUnsignedByte();
-			value |= (bytes.readUnsignedByte() << 8 | bytes.readByte() << 16);
+			value |= (bytes.readUnsignedByte() << EIGHT | bytes.readByte() << SIXTEEN);
 			return value;
 		}
 
@@ -97,7 +109,7 @@ package org.as3commons.bytecode.util {
 
 		public static function readU30(bytes:ByteArray):uint {
 			var value:uint = readU32(bytes);
-			assertWithinRange(value < 1073741824);
+			assertWithinRange(value < MAX_U30);
 			return value;
 		}
 
@@ -132,25 +144,25 @@ package org.as3commons.bytecode.util {
 				return result;
 			}
 
-			var nextByte:int = byteArray.readUnsignedByte() << 7;
+			var nextByte:int = byteArray.readUnsignedByte() << SEVEN;
 			result = result & 0x0000007f | nextByte;
 			if (!(result & 0x00004000)) {
 				return result;
 			}
 
-			nextByte = byteArray.readUnsignedByte() << 14;
+			nextByte = byteArray.readUnsignedByte() << FOURTEEN;
 			result = result & 0x00003fff | nextByte;
 			if (!(result & 0x00200000)) {
 				return result;
 			}
 
-			nextByte = byteArray.readUnsignedByte() << 21;
+			nextByte = byteArray.readUnsignedByte() << TWENTY_ONE;
 			result = result & 0x001fffff | nextByte;
 			if (!(result & 0x10000000)) {
 				return result;
 			}
 
-			nextByte = byteArray.readUnsignedByte() << 28;
+			nextByte = byteArray.readUnsignedByte() << TWENTY_EIGHT;
 			return result & 0x0fffffff | nextByte;
 		}
 
@@ -162,22 +174,22 @@ package org.as3commons.bytecode.util {
 				byteArray.writeByte(value);
 			} else if (value < 16384 && value > -1) {
 				byteArray.writeByte((value & 0x7F) | 0x80);
-				byteArray.writeByte((value >> 7) & 0x7F);
+				byteArray.writeByte((value >> SEVEN) & 0x7F);
 			} else if (value < 2097152 && value > -1) {
 				byteArray.writeByte((value & 0x7F) | 0x80);
-				byteArray.writeByte((value >> 7) | 0x80);
-				byteArray.writeByte((value >> 14) & 0x7F);
+				byteArray.writeByte((value >> SEVEN) | 0x80);
+				byteArray.writeByte((value >> FOURTEEN) & 0x7F);
 			} else if (value < 268435456 && value > -1) {
 				byteArray.writeByte((value & 0x7F) | 0x80);
-				byteArray.writeByte(value >> 7 | 0x80);
-				byteArray.writeByte(value >> 14 | 0x80);
-				byteArray.writeByte((value >> 21) & 0x7F);
+				byteArray.writeByte(value >> SEVEN | 0x80);
+				byteArray.writeByte(value >> FOURTEEN | 0x80);
+				byteArray.writeByte((value >> TWENTY_ONE) & 0x7F);
 			} else {
 				byteArray.writeByte((value & 0x7F) | 0x80);
-				byteArray.writeByte(value >> 7 | 0x80);
-				byteArray.writeByte(value >> 14 | 0x80);
-				byteArray.writeByte(value >> 21 | 0x80);
-				byteArray.writeByte((value >> 28) & 0x0F);
+				byteArray.writeByte(value >> SEVEN | 0x80);
+				byteArray.writeByte(value >> FOURTEEN | 0x80);
+				byteArray.writeByte(value >> TWENTY_ONE | 0x80);
+				byteArray.writeByte((value >> TWENTY_EIGHT) & 0x0F);
 			}
 		}
 
@@ -185,7 +197,7 @@ package org.as3commons.bytecode.util {
 		 * Writes a one-byte unsigned integer value.
 		 */
 		public static function writeU8(value:uint, byteArray:ByteArray):void {
-			assertWithinRange(value < 256);
+			assertWithinRange(value < MAX_U8);
 			byteArray.writeByte(value);
 		}
 
@@ -193,21 +205,21 @@ package org.as3commons.bytecode.util {
 		 * Writes a two-byte unsigned integer value.
 		 */
 		public static function writeU16(value:uint, byteArray:ByteArray):void {
-			assertWithinRange(value < 65536);
+			assertWithinRange(value < MAX_U16);
 			byteArray.writeByte(value & 0xFF);
-			byteArray.writeByte((value >> 8) & 0xFF);
+			byteArray.writeByte((value >> EIGHT) & 0xFF);
 		}
 
 		/**
 		 * Writes a three-byte signed integer value.
 		 */
 		public static function writeS24(value:int, byteArray:ByteArray):void {
-			assertWithinRange(value > -8388607 && value < 8388607);
+			assertWithinRange(value > -MAX_S24 && value < MAX_S24);
 			var i:int = value & 0xFF;
 			byteArray.writeByte(i);
-			i = (value >> 8) & 0xFF;
+			i = (value >> EIGHT) & 0xFF;
 			byteArray.writeByte(i);
-			i = (value >> 16) & 0xFF;
+			i = (value >> SIXTEEN) & 0xFF;
 			byteArray.writeByte(i);
 		}
 
@@ -215,7 +227,7 @@ package org.as3commons.bytecode.util {
 		 * Writes a variable-length encoded 30-bit unsigned integer value.
 		 */
 		public static function writeU30(value:uint, byteArray:ByteArray):void {
-			assertWithinRange(value < 1073741824);
+			assertWithinRange(value < MAX_U30);
 			writeU32(value, byteArray);
 		}
 

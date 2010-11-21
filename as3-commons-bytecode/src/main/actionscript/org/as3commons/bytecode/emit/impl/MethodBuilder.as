@@ -57,7 +57,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		as3commons_bytecode function setMethodInfo(methodInfo:MethodInfo):void {
 			Assert.notNull(methodInfo, "methodInfo argument must not be null");
-			methodInfo = methodInfo;
+			this.methodInfo = methodInfo;
 			if (methodInfo.returnType != null) {
 				_returnType = QualifiedName(methodInfo.returnType).fullName;
 			}
