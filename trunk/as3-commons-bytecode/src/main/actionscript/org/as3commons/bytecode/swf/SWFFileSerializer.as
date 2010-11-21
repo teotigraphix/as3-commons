@@ -48,7 +48,7 @@ package org.as3commons.bytecode.swf {
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.SWFSpec;
 
-	public class SWFFileSerializer {
+	public class SWFFileSerializer implements ISWFFileSerializer {
 
 		public static const SWF_SIGNATURE_COMPRESSED:String = "CWS";
 		public static const SWF_SIGNATURE_UNCOMPRESSED:String = "FWS";
