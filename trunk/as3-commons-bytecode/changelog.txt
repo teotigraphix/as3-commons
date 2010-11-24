@@ -7,6 +7,7 @@ Changes in version 0.9-SNAPSHOT (00.00.0000)
 -----------------------------------
 
 General
+* Added defineClass and defineInterface methods to IAbcBuilder to build classes and interfaces with fully qualified names
 * Added support for manipulating existing classes in an Abc file
 * Added alchemy specific opcodes
 * Added buildAndExport() method to IAbcBuilder and implementation in AbcBuilder
