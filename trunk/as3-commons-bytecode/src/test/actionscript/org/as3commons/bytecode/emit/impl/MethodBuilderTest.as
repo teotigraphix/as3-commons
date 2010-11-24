@@ -27,8 +27,6 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.typeinfo.Argument;
-	import org.flexunit.asserts.assertStrictlyEquals;
-	import org.flexunit.asserts.assertTrue;
 
 	public class MethodBuilderTest extends TestCase {
 
