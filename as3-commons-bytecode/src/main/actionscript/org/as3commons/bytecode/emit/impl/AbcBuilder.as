@@ -20,7 +20,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -36,6 +36,8 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
+	import org.as3commons.bytecode.emit.IClassBuilder;
+	import org.as3commons.bytecode.emit.IInterfaceBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
@@ -178,6 +180,28 @@ package org.as3commons.bytecode.emit.impl {
 				_packageBuilders[name] = pb;
 			}
 			return pb;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function defineClass(fullName:String, superClassName:String = null):IClassBuilder {
+			fullName = AbcFileUtil.normalizeFullName(fullName);
+			var packageName:String = MultinameUtil.extractPackageName(fullName);
+			var classname:String = fullName.substr(fullName.lastIndexOf(MultinameUtil.PERIOD), fullName.length);
+			var packageBuilder:IPackageBuilder = definePackage(packageName);
+			return packageBuilder.defineClass(classname, superClassName);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function defineInterface(fullName:String, superInterfaceNames:Array = null):IInterfaceBuilder {
+			fullName = AbcFileUtil.normalizeFullName(fullName);
+			var packageName:String = MultinameUtil.extractPackageName(fullName);
+			var classname:String = fullName.substr(fullName.lastIndexOf(MultinameUtil.PERIOD), fullName.length);
+			var packageBuilder:IPackageBuilder = definePackage(packageName);
+			return packageBuilder.defineInterface(classname, superInterfaceNames);
 		}
 
 		/**

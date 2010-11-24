@@ -32,7 +32,6 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
-	import org.flexunit.asserts.assertEquals;
 
 	public class ClassBuilderTest extends TestCase {
 
@@ -54,6 +53,7 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.instanceInitializer = new MethodInfo();
 			instanceInfo.instanceInitializer.methodBody = new MethodBody();
 			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait = new MethodTrait();
+			instanceInfo.instanceInitializer.methodName = "test/test()";
 			var traitMultiname:QualifiedName = new QualifiedName("testmethod", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"));
 			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait.traitMultiname = traitMultiname;
 
@@ -89,6 +89,7 @@ package org.as3commons.bytecode.emit.impl {
 			classInfo.staticInitializer.methodBody = new MethodBody();
 			classInfo.staticInitializer.as3commonsByteCodeAssignedMethodTrait = new MethodTrait();
 			classInfo.staticInitializer.as3commonsByteCodeAssignedMethodTrait.traitMultiname = new QualifiedName("test", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
+			classInfo.staticInitializer.methodName = "test/cinit()";
 			_classBuilder.as3commons_bytecode::setClassInfo(classInfo);
 
 			var arr:Array = _classBuilder.build(ApplicationDomain.currentDomain);
@@ -98,7 +99,7 @@ package org.as3commons.bytecode.emit.impl {
 			assertStrictlyEquals(cls.staticInitializer.as3commonsByteCodeAssignedMethodTrait, classInfo.staticInitializer.as3commonsByteCodeAssignedMethodTrait);
 		}
 
-		public function testDefineExisitngProperty():void {
+		public function testDefineExistingProperty():void {
 			var instanceInfo:InstanceInfo = new InstanceInfo();
 			instanceInfo.superclassMultiname = new QualifiedName("supertest", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
 			instanceInfo.classMultiname = new QualifiedName("test", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
@@ -107,6 +108,7 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait = new MethodTrait();
 			var traitMultiname:QualifiedName = new QualifiedName("testmethod", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"));
 			instanceInfo.instanceInitializer.as3commonsByteCodeAssignedMethodTrait.traitMultiname = traitMultiname;
+			instanceInfo.instanceInitializer.methodName = "test/test()";
 			var slot:SlotOrConstantTrait = new SlotOrConstantTrait();
 			slot.traitMultiname = new QualifiedName("testProperty", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes.test"));
 			slot.typeMultiname = new QualifiedName("testPropType", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes.types"));

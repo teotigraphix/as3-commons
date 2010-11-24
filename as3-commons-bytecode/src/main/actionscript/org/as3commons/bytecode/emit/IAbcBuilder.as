@@ -18,7 +18,7 @@ package org.as3commons.bytecode.emit {
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 
 	/**
@@ -49,6 +49,20 @@ package org.as3commons.bytecode.emit {
 		 * @return The specified <code>IPackageBuilder</code> instance.
 		 */
 		function definePackage(name:String):IPackageBuilder;
+		/**
+		 * Creates an <code>IClassBuilder</code> instance for the specified fuly qualified class name and super class name.
+		 * @param name The fully qualified name of the new class. I.e. <code>com.myclasses.MyGeneratedClass</code>.
+		 * @param superClassName The fully qualified super class name. I.e. <code>mx.events.FlexEvent</code>, defaults to <code>Object</code>.
+		 * @return The specified <code>IClassBuilder</code> instance.
+		 */
+		function defineClass(fullName:String, superClassName:String = null):IClassBuilder;
+		/**
+		 * Creates an <code>IInterfaceBuilder</code> instance for the specified fully qualified interface name and super interface names.
+		 * @param name The fully qualified name of the new interface. I.e. <code>com.myinterfaces.IMyGeneratedInterface</code>.
+		 * @param superInterfaceNames The fully qualified super interface names. I.e. <code>mx.styles.IStyleClient</code>.
+		 * @return The specified <code>IInterfaceBuilder</code> instance.
+		 */
+		function defineInterface(fullName:String, superInterfaceNames:Array = null):IInterfaceBuilder;
 		/**
 		 * Builds an <code>AbcFile</code> using the previously defined <code>IPackageBuilder</code> instances.
 		 * @param applicationDomain The applicationDomain that has access to the super classes that are defined

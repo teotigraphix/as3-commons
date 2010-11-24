@@ -35,9 +35,9 @@ package org.as3commons.bytecode.emit {
 		 */
 		function defineClass(name:String, superClassName:String = null):IClassBuilder;
 		/**
-		 * Creates an <code>IInterfaceBuilder</code> instance for the specified interface name and super interface name.
+		 * Creates an <code>IInterfaceBuilder</code> instance for the specified interface name and super interface names.
 		 * @param name The name of the new interface. I.e. <code>IMyGeneratedInterface</code>.
-		 * @param superInterfaceName The fully qualified super interface name. I.e. <code>mx.styles.IStyleClient</code>.
+		 * @param superInterfaceNames The fully qualified super interface names. I.e. <code>mx.styles.IStyleClient</code>.
 		 * @return The specified <code>IInterfaceBuilder</code> instance.
 		 */
 		function defineInterface(name:String, superInterfaceNames:Array = null):IInterfaceBuilder;

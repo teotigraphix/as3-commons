@@ -19,8 +19,6 @@ package org.as3commons.bytecode.util {
 
 	import flexunit.framework.TestCase;
 
-	import org.flexunit.asserts.assertEquals;
-
 	public class AbcSpecTest extends TestCase {
 
 		private var _testArray:ByteArray;
