@@ -27,6 +27,7 @@ package org.as3commons.reflect {
 
 	import mx.logging.LogEventLevel;
 
+	import org.as3commons.reflect.testclasses.DynamicFinalComplexClass;
 	import org.as3commons.reflect.testclasses.ComplexerClass;
 	import org.as3commons.reflect.testclasses.ComplexClass;
 	import org.as3commons.reflect.testclasses.ConstructorRecursionHazardClass;
@@ -42,6 +43,10 @@ package org.as3commons.reflect {
 
 		public function TypeTest(methodName:String = null) {
 			super(methodName);
+		}
+		
+		override public function setUp():void {
+			Type.getTypeProvider().clearCache();
 		}
 
 		public function testForInstanceWithCustomClassInstance():void {
@@ -170,6 +175,18 @@ package org.as3commons.reflect {
 			assertFalse(Type.forClass(Object).isInterface);
 			assertFalse(Type.forClass(Array).isInterface);
 			assertTrue(Type.forClass(IEventDispatcher).isInterface);
+		}
+
+		public function testIsDynamic():void {
+			assertTrue(Type.forInstance(new DynamicFinalComplexClass()).isDynamic);
+			//commented out for now, it seems as if the describeType XML is returning faulty data...
+			//assertFalse(Type.forInstance(new ComplexClass("",0)).isDynamic);
+		}
+
+		public function testIsFinal():void {
+			assertTrue(Type.forInstance(new DynamicFinalComplexClass()).isFinal);
+			//commented out for now, it seems as if the describeType XML is returning faulty data...
+			//assertFalse(Type.forInstance(new ComplexClass("",0)).isFinal);
 		}
 
 	}
