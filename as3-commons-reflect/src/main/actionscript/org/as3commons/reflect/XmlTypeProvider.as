@@ -84,9 +84,9 @@ package org.as3commons.reflect {
 			type.fullName = fullyQualifiedClassName;
 			type.name = org.as3commons.lang.ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
 			type.clazz = cls;
-			type.isDynamic = description.@isDynamic;
-			type.isFinal = description.@isFinal;
-			type.isStatic = description.@isStatic;
+			type.isDynamic = (description.@isDynamic.toString() == "true");
+			type.isFinal = (description.@isFinal.toString() == "true");
+			type.isStatic = (description.@isStatic.toString() == "true");
 			type.alias = description.@alias;
 			type.isInterface = (cls === Object) ? false : (description.factory.extendsClass.length() == 0);
 			type.constructor = parseConstructor(type, description.factory.constructor, applicationDomain);
@@ -160,7 +160,7 @@ package org.as3commons.reflect {
 			for each (var m:XML in members) {
 				var member:IMember = new memberClass(m.@name, m.@type.toString(), declaringType, isStatic, applicationDomain);
 				if (member is INamespaceOwner) {
-					INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.@uri);
+					INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.@uri.toString());
 				}
 				parseMetaData(m.metadata, member);
 				result.push(member);
