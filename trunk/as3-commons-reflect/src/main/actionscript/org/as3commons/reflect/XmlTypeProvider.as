@@ -224,10 +224,10 @@ package org.as3commons.reflect {
 			for each (var accessorXML:XML in accessorsXML) {
 				var accessor:Accessor = new Accessor(accessorXML.@name, AccessorAccess.fromString(accessorXML.@access), accessorXML.@type.toString(), accessorXML.@declaredBy.toString(), isStatic, applicationDomain);
 				if (StringUtils.hasText(accessorXML.@uri)) {
-					accessor.as3commons_reflect::setNamespaceURI(accessorXML.@uri);
+					accessor.as3commons_reflect::setNamespaceURI(accessorXML.@uri.toString());
 				}
 				parseMetaData(accessorXML.metadata, accessor);
-				result.push(accessor);
+				result[result.length] = accessor;
 			}
 			return result;
 		}

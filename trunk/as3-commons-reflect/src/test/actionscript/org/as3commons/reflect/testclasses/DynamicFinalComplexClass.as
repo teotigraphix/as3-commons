@@ -29,14 +29,14 @@ package org.as3commons.reflect.testclasses {
 	 * </p>
 	 */
 	public final dynamic class DynamicFinalComplexClass {
-			
+
 		private var _name:String;
 		private var _number:Number;
-			
-		public function ComplexClass(name:String, number:Number, otherParameters:Array = null) {
+
+		public function DynamicFinalComplexClass(name:String, number:Number, otherParameters:Array = null) {
 			this._name = name;
 			this._number = number;
 		}
-	
+
 	}
 }
