@@ -44,7 +44,7 @@ package org.as3commons.reflect {
 		public function TypeTest(methodName:String = null) {
 			super(methodName);
 		}
-		
+
 		override public function setUp():void {
 			Type.getTypeProvider().clearCache();
 		}
@@ -178,13 +178,13 @@ package org.as3commons.reflect {
 		}
 
 		public function testIsDynamic():void {
-			assertTrue(Type.forInstance(new DynamicFinalComplexClass()).isDynamic);
+			assertTrue(Type.forInstance(new DynamicFinalComplexClass("name", 10)).isDynamic);
 			//commented out for now, it seems as if the describeType XML is returning faulty data...
 			//assertFalse(Type.forInstance(new ComplexClass("",0)).isDynamic);
 		}
 
 		public function testIsFinal():void {
-			assertTrue(Type.forInstance(new DynamicFinalComplexClass()).isFinal);
+			assertTrue(Type.forInstance(new DynamicFinalComplexClass("name", 10)).isFinal);
 			//commented out for now, it seems as if the describeType XML is returning faulty data...
 			//assertFalse(Type.forInstance(new ComplexClass("",0)).isFinal);
 		}
