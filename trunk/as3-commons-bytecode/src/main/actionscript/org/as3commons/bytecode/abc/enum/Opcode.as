@@ -20,9 +20,6 @@ package org.as3commons.bytecode.abc.enum {
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
-	import mx.controls.Alert;
-	import mx.effects.easing.Back;
-
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ByteCodeErrorEvent;
@@ -32,10 +29,7 @@ package org.as3commons.bytecode.abc.enum {
 	import org.as3commons.bytecode.abc.JumpTargetData;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
-	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Op;
-	import org.as3commons.bytecode.abc.OpcodePosition;
-	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.UnsignedInteger;
 	import org.as3commons.bytecode.emit.asm.ClassInfoReference;
 	import org.as3commons.bytecode.util.AbcSpec;

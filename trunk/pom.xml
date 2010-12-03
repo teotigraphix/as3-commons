@@ -14,13 +14,12 @@
 	<properties>
 		<flex-mojos.version>3.7.1</flex-mojos.version>
 		<flex-sdk.version>3.5.0.12683</flex-sdk.version>
-
 		<!-- Flash Player -->
-		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}
-		</flashplayer.version>
 		<flashplayer.version.major>10</flashplayer.version.major>
 		<flashplayer.version.minor>0</flashplayer.version.minor>
 		<flashplayer.version.revision>0</flashplayer.version.revision>
+		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}
+		</flashplayer.version>
 	</properties>
 
 	<licenses>
@@ -96,7 +95,7 @@
 	</developers>
 
 	<modules>
-		<module>as3-commons-bytecode</module>
+		<!-- module>as3-commons-bytecode</module -->
 		<module>as3-commons-collections</module>
 		<module>as3-commons-concurrency</module>
 		<!-- module>as3-commons-emit</module -->
@@ -171,7 +170,8 @@
 		<dependency>
 			<groupId>com.adobe.flex.framework</groupId>
 			<artifactId>playerglobal</artifactId>
-			<version>${flex-sdk.version}</version>
+			<version>3.5.0.12683</version>
+			<!--<version>${flex-sdk.version}</version>-->
 			<scope>external</scope>
 			<type>swc</type>
 			<classifier>${flashplayer.version.major}</classifier>

@@ -16,8 +16,6 @@
 package org.as3commons.bytecode.util {
 	import flash.utils.ByteArray;
 
-	import mx.utils.ObjectUtil;
-
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -37,7 +35,6 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.enum.ClassConstant;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.bytecode.abc.enum.MethodFlag;
-	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;

@@ -54,18 +54,18 @@ package org.as3commons.reflect {
 		private function concatMetadata(type:Type, metaDataContainers:Array, propertyName:String):void {
 			for each (var container:IMetaDataContainer in metaDataContainers) {
 				type[propertyName].some(function(item:MetaDataContainer, index:int, arr:Array):Boolean {
-						if (Object(item).name == Object(container).name) {
-							var metaDataList:Array = container.metaData;
-							var numMetaData:int = metaDataList.length;
-							for (var j:int = 0; j < numMetaData; j++) {
-								if (!item.hasExactMetaData(metaDataList[j])) {
-									item.addMetaData(metaDataList[j]);
-								}
+					if (Object(item).name == Object(container).name) {
+						var metaDataList:Array = container.metaData;
+						var numMetaData:int = metaDataList.length;
+						for (var j:int = 0; j < numMetaData; j++) {
+							if (!item.hasExactMetaData(metaDataList[j])) {
+								item.addMetaData(metaDataList[j]);
 							}
-							return true;
 						}
-						return false;
-					});
+						return true;
+					}
+					return false;
+				});
 			}
 		}
 
@@ -212,7 +212,7 @@ package org.as3commons.reflect {
 
 			for each (var paramXML:XML in paramsXML) {
 				var param:Parameter = new Parameter(paramXML.@index, paramXML.@type, applicationDomain, paramXML.@optional == "true" ? true : false);
-				params.push(param);
+				params[params.length] = param;
 			}
 
 			return params;
