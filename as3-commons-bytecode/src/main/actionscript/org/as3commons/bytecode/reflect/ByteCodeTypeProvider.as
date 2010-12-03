@@ -52,11 +52,30 @@ package org.as3commons.bytecode.reflect {
 			return null;
 		}
 
+		public function definitionNamesFromLoader(loader:LoaderInfo):Array {
+			Assert.notNull(loader, "loader argument must not be null");
+			var loaderBytesPosition:uint = loader.bytes.position;
+			try {
+				loader.bytes.position = 0;
+				return definitionNamesFromByteArray(loader.bytes);
+			} finally {
+				loader.bytes.position = loaderBytesPosition;
+			}
+			return null;
+		}
+
 		public function metaDataLookupFromByteArray(input:ByteArray):Object {
 			Assert.notNull(input, "input argument must not be null");
 			var deserializer:ClassMetaDataDeserializer = new ClassMetaDataDeserializer();
 			deserializer.read(getTypeCache() as ByteCodeTypeCache, input);
 			return (getTypeCache() as ByteCodeTypeCache).metaDataLookup;
+		}
+
+		public function definitionNamesFromByteArray(input:ByteArray):Array {
+			Assert.notNull(input, "input argument must not be null");
+			var deserializer:ClassMetaDataDeserializer = new ClassMetaDataDeserializer();
+			deserializer.read(getTypeCache() as ByteCodeTypeCache, input);
+			return (getTypeCache() as ByteCodeTypeCache).definitionNames;
 		}
 
 		public function fromLoader(loader:LoaderInfo, applicationDomain:ApplicationDomain = null):void {

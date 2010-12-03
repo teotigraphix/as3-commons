@@ -54,6 +54,16 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		/**
+		 * Retrieves a list of all class names found in the specified <code>LoaderInfo</code>.
+		 * @param loader The loader whose bytecode will be used to generate the classname <code>Array</code>.
+		 * @return A list of all class names found in the specified <code>ByteArray</code>.
+		 */
+		public static function definitionNamesFromLoader(loader:LoaderInfo):Array {
+			Assert.notNull(loader, "loader argument must not be null");
+			return (getTypeProvider() as ByteCodeTypeProvider).definitionNamesFromLoader(loader);
+		}
+
+		/**
 		 * Generates a lookup of metadata name -&gt; <code>Array</code> of class names.
 		 * @param input The <code>ByteArray</code> will be used to generate the lookup
 		 * @return A lookup of metadata name -&gt; <code>Array</code> of class names.
@@ -61,6 +71,16 @@ package org.as3commons.bytecode.reflect {
 		public static function metaDataLookupFromByteArray(input:ByteArray):Object {
 			Assert.notNull(input, "input argument must not be null");
 			return (getTypeProvider() as ByteCodeTypeProvider).metaDataLookupFromByteArray(input);
+		}
+
+		/**
+		 * Retrieves a list of all class names found in the specified <code>ByteArray</code>.
+		 * @param input The <code>ByteArray</code> will be used to generate the classname <code>Array</code>.
+		 * @return A list of all class names found in the specified <code>ByteArray</code>.
+		 */
+		public static function definitionNamesFromByteArray(input:ByteArray):Array {
+			Assert.notNull(input, "input argument must not be null");
+			return (getTypeProvider() as ByteCodeTypeProvider).definitionNamesFromByteArray(input);
 		}
 
 		/**
