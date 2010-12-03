@@ -14,14 +14,14 @@ package org.as3commons.reflect.testclasses {
 		}
 
 		public function get getset():Boolean {
-			return 0;
+			return true;
 		}
 
 		public function set getset(value:Boolean):void {
 		}
 
 		public static function get staticGetset():Boolean {
-			return 0;
+			return true;
 		}
 
 		public static function set staticGetset(value:Boolean):void {
