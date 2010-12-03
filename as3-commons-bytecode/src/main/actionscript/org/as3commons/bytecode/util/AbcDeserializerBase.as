@@ -15,44 +15,19 @@
  */
 package org.as3commons.bytecode.util {
 	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
 
-	import mx.formatters.SwitchSymbolFormatter;
-	import mx.utils.ObjectUtil;
-
-	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
-	import org.as3commons.bytecode.abc.ClassInfo;
-	import org.as3commons.bytecode.abc.ClassTrait;
 	import org.as3commons.bytecode.abc.ConstantPool;
-	import org.as3commons.bytecode.abc.ExceptionInfo;
-	import org.as3commons.bytecode.abc.FunctionTrait;
-	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
-	import org.as3commons.bytecode.abc.MethodBody;
-	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.MultinameG;
 	import org.as3commons.bytecode.abc.MultinameL;
-	import org.as3commons.bytecode.abc.NamedMultiname;
 	import org.as3commons.bytecode.abc.NamespaceSet;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.RuntimeQualifiedName;
 	import org.as3commons.bytecode.abc.RuntimeQualifiedNameL;
-	import org.as3commons.bytecode.abc.ScriptInfo;
-	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
-	import org.as3commons.bytecode.abc.TraitInfo;
-	import org.as3commons.bytecode.abc.enum.ClassConstant;
-	import org.as3commons.bytecode.abc.enum.ConstantKind;
-	import org.as3commons.bytecode.abc.enum.MethodFlag;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
-	import org.as3commons.bytecode.abc.enum.Opcode;
-	import org.as3commons.bytecode.abc.enum.TraitAttributes;
-	import org.as3commons.bytecode.abc.enum.TraitKind;
-	import org.as3commons.bytecode.typeinfo.Argument;
-	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.lang.StringUtils;
 
 	/**
