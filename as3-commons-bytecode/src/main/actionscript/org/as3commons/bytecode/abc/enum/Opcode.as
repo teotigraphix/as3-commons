@@ -307,8 +307,8 @@ package org.as3commons.bytecode.abc.enum {
 		public static function resolveBackPatches(serializedOpcodes:ByteArray, backPatches:Array, positions:Dictionary):void {
 			for each (var jumpData:JumpTargetData in backPatches) {
 				resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes);
-				if (jumpData.extraOpcodePositions != null) {
-					for each (var targetOpcode:Op in jumpData.extraOpcodePositions) {
+				if (jumpData.extraOpcodes != null) {
+					for each (var targetOpcode:Op in jumpData.extraOpcodes) {
 						resolveBackpatch(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes);
 					}
 				}
@@ -464,21 +464,21 @@ package org.as3commons.bytecode.abc.enum {
 					pos = (endPos + jumpPos);
 					if (pos > endPos) {
 						if (_jumpLookup[pos] == null) {
-							_jumpLookup[pos] = [new JumpTargetData(op, endPos, null)];
+							_jumpLookup[pos] = [new JumpTargetData(op, null)];
 						} else {
 							var arr:Array = _jumpLookup[pos];
-							arr[arr.length] = new JumpTargetData(op, endPos, null);
+							arr[arr.length] = new JumpTargetData(op, null);
 						}
 					} else {
-						methodBody.backPatches[methodBody.backPatches.length] = new JumpTargetData(op, endPos, _opcodePositions[endPos], pos);
+						methodBody.backPatches[methodBody.backPatches.length] = new JumpTargetData(op, _opcodePositions[endPos]);
 					}
 				} else {
-					var newJpd:JumpTargetData = new JumpTargetData(op, endPos, null);
+					var newJpd:JumpTargetData = new JumpTargetData(op, null);
 					var positions:Array = (op.parameters[2] as Array);
 					for each (var switchPos:int in positions) {
 						if (switchPos < 0) {
 							pos = (endPos + switchPos);
-							newJpd.addTarget(_opcodePositions[endPos], pos);
+							newJpd.addTarget(_opcodePositions[endPos]);
 						} else {
 							_jumpLookup[switchPos] = newJpd;
 						}
@@ -491,10 +491,9 @@ package org.as3commons.bytecode.abc.enum {
 				for each (var jt:JumpTargetData in jumpTargets) {
 					if (jt.jumpOpcode.opcode !== Opcode.lookupswitch) {
 						jt.targetOpcode = op;
-						jt.targetOpcodePosition = startPos;
 						methodBody.backPatches[methodBody.backPatches.length] = jt;
 					} else {
-						jt.addTarget(op, startPos);
+						jt.addTarget(op);
 					}
 				}
 				delete _jumpLookup[startPos];
