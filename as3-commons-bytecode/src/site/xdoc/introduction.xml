@@ -117,7 +117,7 @@ for each (var key:String in keys) {
     <p>Here is a way to generate a lookup for class-level metadata annotations
     and their corresponding class names: <div class="source">
         <pre>var metaDataLookup:Object = ByteCodeType.metaDataLookupFromLoader(loader);
-var definitionNames:Array = metaDataLookup['Mixin'];
+var definitionNames:Array = metaDataLookup['mixin'];
 for(var i:uint=0; i &lt; definitionNames.length;i++){
   var type:Type = Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
 }</pre>
@@ -134,8 +134,13 @@ var definitionNames:Array = typeCache.definitionNames;
 for(var i:uint=0; i &lt; definitionNames.length;i++){
   var type:Type = Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
 }</pre>
-      </div> </p> <p>Notice that to retrieve the type information the regular
-    as3commons-reflect <code>Type</code> is used. Combing as3commons-bytecode
+      </div> </p>
+    <p>Or use this, slighty less verbose, method instead:<div class="source">
+	<pre>var definitionNames:Array = ByteCodeType.definitionNamesFromLoader(loader);</pre>
+    </div></p>
+      
+    <p>Notice that to retrieve the type information the regular
+    as3commons-reflect <code>Type</code> is used. Combining as3commons-bytecode
     and -reflect can yield the most efficient result in this way.</p>
     <blockquote><strong>Note:</strong> the definitionNames list and metadata lookup property
     are of course also generated when the full bytecode reflection data is
