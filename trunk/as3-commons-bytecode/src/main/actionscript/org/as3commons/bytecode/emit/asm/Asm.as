@@ -267,7 +267,7 @@ package org.as3commons.bytecode.emit.asm {
 						}
 					}
 					if (existingJmp == null) {
-						backpatches[backpatches.length] = new JumpTargetData(op, 16777216, labelOp, 16777216);
+						backpatches[backpatches.length] = new JumpTargetData(op, labelOp);
 					} else {
 						existingJmp.addTarget(labelOp);
 					}

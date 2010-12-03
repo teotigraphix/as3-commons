@@ -359,7 +359,7 @@ package org.as3commons.bytecode.emit.impl {
 			}
 			var jpd:JumpTargetData;
 			if (_jumpDataLookup[triggerOpcode] == null) {
-				jpd = new JumpTargetData(triggerOpcode, 0, targetOpcode)
+				jpd = new JumpTargetData(triggerOpcode, targetOpcode);
 				_backpatches[_backpatches.length] = jpd;
 			} else {
 				jpd = _jumpDataLookup[triggerOpcode];
