@@ -170,8 +170,7 @@
 		<dependency>
 			<groupId>com.adobe.flex.framework</groupId>
 			<artifactId>playerglobal</artifactId>
-			<version>3.5.0.12683</version>
-			<!--<version>${flex-sdk.version}</version>-->
+			<version>${flex-sdk.version}</version>
 			<scope>external</scope>
 			<type>swc</type>
 			<classifier>${flashplayer.version.major}</classifier>
