@@ -433,6 +433,18 @@ package org.as3commons.reflect {
 		 */
 		public function set accessors(value:Array):void {
 			_accessors = value;
+            
+            /*
+            // Must invalidate the fields cache.
+            // Due to the work-around implemented for constructor argument types
+            // in ReflectionUtils.getTypeDescription(), an instance of Type is created, 
+            // which could also lead to an invalid fields cache (e.g., empty cache)
+            // if the constructor uses Type.forName() and/or Type.getField().
+            // Therefore it is important to invalidate the cache when any of
+            // the constituents of the fields cache change.
+            // See also note in XmlTypeProvider#getType().
+             */
+            _fields = null;
 		}
 
 		// ----------------------------
@@ -475,6 +487,9 @@ package org.as3commons.reflect {
 		 */
 		public function set staticConstants(value:Array):void {
 			_staticConstants = value;
+
+            // Must invalidate the fields cache. See note in #accessors.
+            _fields = null;
 		}
 
 		// ----------------------------
@@ -496,6 +511,9 @@ package org.as3commons.reflect {
 		 */
 		public function set constants(value:Array):void {
 			_constants = value;
+            
+            // Must invalidate the fields cache. See note in #accessors.
+            _fields = null;
 		}
 
 		// ----------------------------
@@ -517,6 +535,9 @@ package org.as3commons.reflect {
 		 */
 		public function set staticVariables(value:Array):void {
 			_staticVariables = value;
+            
+            // Must invalidate the fields cache. See note in #accessors.
+            _fields = null;
 		}
 
 		// ----------------------------
@@ -559,6 +580,9 @@ package org.as3commons.reflect {
 		 */
 		public function set variables(value:Array):void {
 			_variables = value;
+            
+            // Must invalidate the fields cache. See note in #accessors.
+            _fields = null;
 		}
 
 		// ----------------------------
