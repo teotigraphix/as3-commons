@@ -26,6 +26,7 @@ package org.as3commons.reflect {
 		}
 
 		override public function getType(cls:Class, applicationDomain:ApplicationDomain):Type {
+			throw new Error("This class is completely unfinished, do NOT use");
 			var type:Type = new Type(applicationDomain);
 			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(cls);
 
@@ -44,7 +45,7 @@ package org.as3commons.reflect {
 			type.isFinal = description.isFinal;
 			type.isStatic = description.isStatic;
 			type.alias = "alias";
-			type.isInterface = "";
+			type.isInterface = false;
 			type.constructor = parseConstructor(type, description.constructor, applicationDomain);
 			type.accessors = parseAccessors(type, description.accessors, applicationDomain);
 			type.methods = null; //parseMethods(type, description, applicationDomain);
