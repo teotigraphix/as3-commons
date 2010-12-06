@@ -68,6 +68,12 @@ package org.as3commons.bytecode.util {
 
 		public var methodBodyExtractionMethod:MethodBodyExtractionMethod;
 
+		private var _constantPoolEndPosition:uint = 0;
+
+		public function get constantPoolEndPosition():uint {
+			return _constantPoolEndPosition;
+		}
+
 		/**
 		 * Acts as a guard to make sure that the expected number of items was extracted from the
 		 * ABC file.
@@ -101,6 +107,7 @@ package org.as3commons.bytecode.util {
 			abcFile.majorVersion = readU16();
 
 			deserializeConstantPool(pool);
+			_constantPoolEndPosition = _byteStream.position;
 
 			deserializeMethodInfos(abcFile, pool);
 
