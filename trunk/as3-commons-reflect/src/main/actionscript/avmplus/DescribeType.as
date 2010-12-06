@@ -26,6 +26,7 @@ package avmplus {
 		public static const GET_FULL:uint = INCLUDE_BASES | INCLUDE_INTERFACES | INCLUDE_VARIABLES | INCLUDE_ACCESSORS | INCLUDE_METHODS | INCLUDE_METADATA | INCLUDE_CONSTRUCTOR | INCLUDE_TRAITS;
 
 		public static function getJSONFunction():Function {
+			throw new Error("This class is completely unfinished, do NOT use");
 			try {
 				return describeTypeJSON;
 			} catch (e:*) {
