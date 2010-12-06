@@ -15,6 +15,12 @@
 			Library providing a reflection API for ActionScript 3.0
 	</description>
 	<inceptionYear>2007</inceptionYear>
+	
+	<properties>
+		<flex-sdk.version>4.1.0.16076</flex-sdk.version>
+		<flashplayer.version.minor>1</flashplayer.version.minor>
+		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
+	</properties>
 
 	<dependencies>
 		<dependency>

@@ -42,6 +42,7 @@ package org.as3commons.bytecode.util {
 	 */
 	//TODO: Capture ranges for bytecode blocks so they can be checked in unit tests
 	public class AbcDeserializerBase {
+
 		private static const ASSERT_EXTRACTION_ERROR:String = "Expected {0} elements in {1}, actual count is {2}";
 		protected var _byteStream:ByteArray;
 

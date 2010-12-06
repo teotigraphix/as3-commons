@@ -337,6 +337,9 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 
+		/**
+		 * @inheritDoc
+		 */
 		public function addAsmSource(source:String):IMethodBodyBuilder {
 			Assert.hasText(source, "source argument must not be empty or null");
 			var result:Array = asm.parseAndConvert(source);
