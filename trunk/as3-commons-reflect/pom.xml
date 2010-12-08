@@ -1,5 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>org.as3commons</groupId>
 		<artifactId>as3commons-project</artifactId>
@@ -15,7 +16,7 @@
 			Library providing a reflection API for ActionScript 3.0
 	</description>
 	<inceptionYear>2007</inceptionYear>
-	
+
 	<properties>
 		<flex-sdk.version>4.1.0.16076</flex-sdk.version>
 		<flashplayer.version.minor>1</flashplayer.version.minor>
@@ -31,8 +32,8 @@
 			<scope>external</scope>
 			<exclusions>
 				<exclusion>
-				<groupId>com.adobe.flex.framework</groupId>
-				<artifactId>playerglobal</artifactId>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>playerglobal</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -44,8 +45,8 @@
 			<scope>external</scope>
 			<exclusions>
 				<exclusion>
-				<groupId>com.adobe.flex.framework</groupId>
-				<artifactId>playerglobal</artifactId>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>playerglobal</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -69,15 +70,18 @@
 						src/main/assembly/package.xml
 					</descriptor>
 					<finalName>as3commons-reflect-latest-snapshot</finalName>
-          			<outputDirectory>target/site/downloads</outputDirectory>
-          			<workDirectory>target/assembly/work</workDirectory>
+					<outputDirectory>target/site/downloads</outputDirectory>
+					<workDirectory>target/assembly/work</workDirectory>
 				</configuration>
 				<executions>
 					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
-						<phase>site</phase> <!-- append to the packaging phase. -->
+						<id>make-assembly</id>
+						<!-- this is used for inheritance merges -->
+						<phase>site</phase>
+						<!-- append to the packaging phase. -->
 						<goals>
-							<goal>single</goal> <!-- goals == mojos -->
+							<goal>single</goal>
+							<!-- goals == mojos -->
 						</goals>
 					</execution>
 				</executions>
