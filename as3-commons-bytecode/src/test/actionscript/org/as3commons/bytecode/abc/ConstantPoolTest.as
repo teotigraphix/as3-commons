@@ -58,7 +58,16 @@ package org.as3commons.bytecode.abc {
 			assertEquals(2, _fixture.addString("stringTwo"));
 			assertEquals(1, _fixture.addString("stringOne"));
 			assertEquals(2, _fixture.addString("stringTwo"));
-			assertEquals(3, _fixture.stringPool.length);
+			assertEquals(3, _fixture.addString("hasOwnProperty"));
+			assertEquals(4, _fixture.addString("isPrototypeOf"));
+			assertEquals(5, _fixture.addString("propertyIsEnumerable"));
+			assertEquals(6, _fixture.addString("setPropertyIsEnumerable"));
+			assertEquals(7, _fixture.addString("toLocaleString"));
+			assertEquals(8, _fixture.addString("toString"));
+			assertEquals(9, _fixture.addString("valueOf"));
+			assertEquals(10, _fixture.addString("prototype"));
+			assertEquals(11, _fixture.addString("constructor"));
+			assertEquals(12, _fixture.stringPool.length);
 		}
 	}
 }
