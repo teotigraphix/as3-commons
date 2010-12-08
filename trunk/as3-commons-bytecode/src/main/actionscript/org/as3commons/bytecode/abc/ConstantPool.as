@@ -17,9 +17,9 @@ package org.as3commons.bytecode.abc {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
-	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.util.Assertions;
+	import org.as3commons.bytecode.util.StringLookup;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.StringUtils;
@@ -58,7 +58,7 @@ package org.as3commons.bytecode.abc {
 		private var _doublePool:Array;
 		private var _doubleLookup:Dictionary;
 		private var _stringPool:Array;
-		private var _stringLookup:Dictionary;
+		private var _stringLookup:StringLookup;
 		private var _namespacePool:Array;
 		private var _namespaceLookup:Dictionary;
 		private var _namespaceSetPool:Array;
@@ -85,7 +85,7 @@ package org.as3commons.bytecode.abc {
 			_integerLookup = new Dictionary();
 			_uintLookup = new Dictionary();
 			_doubleLookup = new Dictionary();
-			_stringLookup = new Dictionary();
+			_stringLookup = new StringLookup();
 			_namespaceLookup = new Dictionary();
 			_namespaceSetLookup = new Dictionary();
 			_multinameLookup = new Dictionary();
@@ -97,7 +97,7 @@ package org.as3commons.bytecode.abc {
 			_doublePool = [0];
 			_doubleLookup[0] = 0;
 			_stringPool = [LNamespace.ASTERISK.name];
-			_stringLookup[LNamespace.ASTERISK.name] = 0;
+			_stringLookup.set(LNamespace.ASTERISK.name, 0);
 
 			_namespacePool = [];
 			addNamespace(LNamespace.ASTERISK);
@@ -140,7 +140,7 @@ package org.as3commons.bytecode.abc {
 		public function addItemToPool(constantKindValue:ConstantKind, item:*):int {
 			var pool:* = _lookup[constantKindValue];
 			if (pool is Array) {
-				return addToPool(pool[0] as Array, pool[1] as Dictionary, item);
+				return addToPool(pool[0] as Array, pool[1], item);
 			} else {
 				return 1;
 			}
@@ -483,7 +483,7 @@ package org.as3commons.bytecode.abc {
 			}
 			idx = 0;
 			for each (var s:String in _stringPool) {
-				_stringLookup[s] = idx++;
+				_stringLookup.set(s, idx++);
 			}
 			idx = 0;
 			for each (var mn:BaseMultiname in _multinamePool) {
@@ -506,36 +506,26 @@ package org.as3commons.bytecode.abc {
 		 * @param lookup    The item to index Dictionary.
 		 * @param item    The item to add to the pool.
 		 */
-		public function addToPool(pool:Array, lookup:Dictionary, item:Object):int {
+		public function addToPool(pool:Array, lookup:*, item:Object):int {
 			Assert.notNull(pool, "pool instance cannot be null");
 			Assert.notNull(lookup, "lookup instance cannot be null");
 			Assert.notNull(item, "constant pool item cannot be null");
-			var n:* = lookup[item];
+			var n:* = (lookup is Dictionary) ? lookup[item] : lookup.get(item);
 			var index:int = (n != null) ? n : -1;
 			if (index > -1) {
 				return index;
 			}
-			/*if (item is IEquals) {
-				for each (var eq:IEquals in pool) {
-					index++;
-					if (IEquals(item).equals(eq)) {
-						return index;
-						break;
-					}
-				}
-				if (!locked) {
-					index = pool.push(item) - 1;
-				} else {
-					throw new Error(LOCKED_CONSTANTPOOL_ERROR);
-				}
-			} else {*/
+
 			if (!locked) {
 				index = pool.push(item) - 1;
 			} else {
 				throw new Error(LOCKED_CONSTANTPOOL_ERROR);
 			}
-			//}
-			lookup[item] = index;
+			if (lookup is Dictionary) {
+				lookup[item] = index;
+			} else {
+				lookup.set(item, index);
+			}
 			return index;
 		}
 

@@ -46,6 +46,6 @@ package org.as3commons.bytecode.abc {
 		function addDouble(double:Number):int;
 		function addNamespace(namespaceValue:LNamespace):int;
 		function addNamespaceSet(namespaceSet:NamespaceSet):int;
-		function addToPool(pool:Array, lookup:Dictionary, item:Object):int;
+		function addToPool(pool:Array, lookup:*, item:Object):int;
 	}
 }
