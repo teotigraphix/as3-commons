@@ -77,6 +77,14 @@
 
         <dependency>
             <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>flash-integration</artifactId>
+            <version>${flex-sdk.version}</version>
+            <scope>external</scope>
+            <type>swc</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
             <artifactId>osmf</artifactId>
             <version>${flex-sdk.version}</version>
             <scope>external</scope>
