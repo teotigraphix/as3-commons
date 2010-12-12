@@ -163,7 +163,7 @@ package org.as3commons.reflect {
 					INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.@uri.toString());
 				}
 				parseMetaData(m.metadata, member);
-				result.push(member);
+				result[result.length] = member;
 			}
 			return result;
 		}
@@ -202,7 +202,7 @@ package org.as3commons.reflect {
 				var method:Method = new Method(type.fullName, methodXML.@name, isStatic, params, methodXML.@returnType, applicationDomain);
 				method.as3commons_reflect::setNamespaceURI(methodXML.@uri);
 				parseMetaData(methodXML.metadata, method);
-				result.push(method);
+				result[result.length] = method;
 			}
 			return result;
 		}
