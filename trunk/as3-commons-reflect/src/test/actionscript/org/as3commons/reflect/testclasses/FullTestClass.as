@@ -1,5 +1,6 @@
 package org.as3commons.reflect.testclasses {
 
+	[Autowired]
 	public class FullTestClass implements Interface {
 
 		public const DUMMY_NON_STATIC:String = "dummynonstatic";
@@ -9,6 +10,7 @@ package org.as3commons.reflect.testclasses {
 
 		custom_namespace var custom:String = "yes";
 
+		[Bindable]
 		public var name:String;
 
 		public function get number():int {
