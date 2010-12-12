@@ -2,6 +2,8 @@ package org.as3commons.reflect.testclasses {
 
 	public class FullTestClass implements Interface {
 
+		public const DUMMY_NON_STATIC:String = "dummynonstatic";
+
 		public static const DUMMY:String = "dummy";
 		public static var DUMMY_VAR:String = "dummyvar";
 

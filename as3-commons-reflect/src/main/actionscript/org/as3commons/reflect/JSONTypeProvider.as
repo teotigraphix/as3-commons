@@ -49,8 +49,8 @@ package org.as3commons.reflect {
 			type.constructor = parseConstructor(type, instanceInfo.traits.constructor, applicationDomain);
 			type.accessors = parseAccessors(type, instanceInfo.traits.accessors, applicationDomain, false).concat(parseAccessors(type, classInfo.traits.accessors, applicationDomain, true));
 			type.methods = parseMethods(type, instanceInfo.traits.methods, applicationDomain, false).concat(parseMethods(type, classInfo.traits.methods, applicationDomain, true));
-			type.staticConstants = null; //parseMembers(Constant, description.constant, fullyQualifiedClassName, true, applicationDomain);
-			type.constants = null; //parseMembers(Constant, description.factory.constant, fullyQualifiedClassName, false, applicationDomain);
+			type.staticConstants = parseMembers(Constant, classInfo.traits.variables, fullyQualifiedClassName, true, true, applicationDomain);
+			type.constants = parseMembers(Constant, instanceInfo.traits.variables, fullyQualifiedClassName, false, true, applicationDomain);
 			type.staticVariables = null; //parseMembers(Variable, description.variable, fullyQualifiedClassName, true, applicationDomain);
 			type.variables = null; //parseMembers(Variable, description.factory.variable, fullyQualifiedClassName, false, applicationDomain);
 			type.extendsClasses = null; //parseExtendsClasses(description.factory.extendsClass, type.applicationDomain);
@@ -79,7 +79,7 @@ package org.as3commons.reflect {
 		}
 
 		protected function parseConstructor(type:Type, constructor:Array, applicationDomain:ApplicationDomain):Constructor {
-			if (constructor.length > 0) {
+			if ((constructor != null) && (constructor.length > 0)) {
 				var params:Array = parseParameters(constructor, applicationDomain);
 				return new Constructor(type.fullName, applicationDomain, params);
 			} else {
@@ -133,6 +133,24 @@ package org.as3commons.reflect {
 			}
 		}
 
+		private function parseMembers(memberClass:Class, members:Array, declaringType:String, isStatic:Boolean, isConstant:Boolean, applicationDomain:ApplicationDomain):Array {
+			var result:Array = [];
+
+			for each (var m:Object in members) {
+				if ((isConstant) && (m.access != AccessorAccess.READ_ONLY.name)) {
+					continue;
+				} else if ((!isConstant) && (m.access == AccessorAccess.READ_ONLY.name)) {
+					continue;
+				}
+				var member:IMember = new memberClass(m.name, m.type, declaringType, isStatic, applicationDomain);
+				if (member is INamespaceOwner) {
+					INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.uri);
+				}
+				parseMetaData(m.metadata, member);
+				result[result.length] = member;
+			}
+			return result;
+		}
 
 	}
 }

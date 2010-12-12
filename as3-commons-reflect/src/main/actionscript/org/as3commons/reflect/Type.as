@@ -59,23 +59,26 @@ package org.as3commons.reflect {
 
 		public static const UNTYPED:Type = new Type(ApplicationDomain.currentDomain);
 		{
-			UNTYPED.fullName = '*';
-			UNTYPED.name = '*';
+			UNTYPED.fullName = UNTYPED_NAME;
+			UNTYPED.name = UNTYPED_NAME;
 		}
 
 		public static const VOID:Type = new Type(ApplicationDomain.currentDomain);
 		{
-			VOID.fullName = 'void';
-			VOID.name = 'void';
+			VOID.fullName = VOID_NAME;
+			VOID.name = VOID_NAME;
 		}
 
 		public static const PRIVATE:Type = new Type(ApplicationDomain.currentDomain);
 		{
-			PRIVATE.fullName = 'private';
-			PRIVATE.name = 'private';
+			PRIVATE.fullName = PRIVATE_NAME;
+			PRIVATE.name = PRIVATE_NAME;
 		}
 
 		private static const MEMBER_PROPERTY_NAME:String = 'name';
+		public static const VOID_NAME:String = "void";
+		private static const UNTYPED_NAME:String = "*";
+		private static const PRIVATE_NAME:String = 'private';
 
 		private static var logger:ILogger = LoggerFactory.getClassLogger(Type);
 
@@ -116,10 +119,10 @@ package org.as3commons.reflect {
 			   return Type.PRIVATE;
 			 }*/
 			switch (name) {
-				case "void":
+				case VOID_NAME:
 					result = Type.VOID;
 					break;
-				case "*":
+				case UNTYPED_NAME:
 					result = Type.UNTYPED;
 					break;
 				default:
@@ -162,7 +165,13 @@ package org.as3commons.reflect {
 		 */
 		public static function getTypeProvider():ITypeProvider {
 			if (typeProvider == null) {
-				typeProvider = new XmlTypeProvider();
+				try {
+					typeProvider = new JSONTypeProvider();
+				} catch (e:*) {
+				}
+				if (typeProvider == null) {
+					typeProvider = new XmlTypeProvider();
+				}
 			}
 			return typeProvider;
 		}
@@ -433,18 +442,18 @@ package org.as3commons.reflect {
 		 */
 		public function set accessors(value:Array):void {
 			_accessors = value;
-            
-            /*
-            // Must invalidate the fields cache.
-            // Due to the work-around implemented for constructor argument types
-            // in ReflectionUtils.getTypeDescription(), an instance of Type is created, 
-            // which could also lead to an invalid fields cache (e.g., empty cache)
-            // if the constructor uses Type.forName() and/or Type.getField().
-            // Therefore it is important to invalidate the cache when any of
-            // the constituents of the fields cache change.
-            // See also note in XmlTypeProvider#getType().
-             */
-            _fields = null;
+
+			/*
+			// Must invalidate the fields cache.
+			// Due to the work-around implemented for constructor argument types
+			// in ReflectionUtils.getTypeDescription(), an instance of Type is created,
+			// which could also lead to an invalid fields cache (e.g., empty cache)
+			// if the constructor uses Type.forName() and/or Type.getField().
+			// Therefore it is important to invalidate the cache when any of
+			// the constituents of the fields cache change.
+			// See also note in XmlTypeProvider#getType().
+			 */
+			_fields = null;
 		}
 
 		// ----------------------------
@@ -488,8 +497,8 @@ package org.as3commons.reflect {
 		public function set staticConstants(value:Array):void {
 			_staticConstants = value;
 
-            // Must invalidate the fields cache. See note in #accessors.
-            _fields = null;
+			// Must invalidate the fields cache. See note in #accessors.
+			_fields = null;
 		}
 
 		// ----------------------------
@@ -511,9 +520,9 @@ package org.as3commons.reflect {
 		 */
 		public function set constants(value:Array):void {
 			_constants = value;
-            
-            // Must invalidate the fields cache. See note in #accessors.
-            _fields = null;
+
+			// Must invalidate the fields cache. See note in #accessors.
+			_fields = null;
 		}
 
 		// ----------------------------
@@ -535,9 +544,9 @@ package org.as3commons.reflect {
 		 */
 		public function set staticVariables(value:Array):void {
 			_staticVariables = value;
-            
-            // Must invalidate the fields cache. See note in #accessors.
-            _fields = null;
+
+			// Must invalidate the fields cache. See note in #accessors.
+			_fields = null;
 		}
 
 		// ----------------------------
@@ -580,9 +589,9 @@ package org.as3commons.reflect {
 		 */
 		public function set variables(value:Array):void {
 			_variables = value;
-            
-            // Must invalidate the fields cache. See note in #accessors.
-            _fields = null;
+
+			// Must invalidate the fields cache. See note in #accessors.
+			_fields = null;
 		}
 
 		// ----------------------------
