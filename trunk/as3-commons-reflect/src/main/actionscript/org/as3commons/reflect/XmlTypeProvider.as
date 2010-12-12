@@ -240,7 +240,7 @@ package org.as3commons.reflect {
 				var metaDataArgs:Array = [];
 
 				for each (var metaDataArgNode:XML in metaDataXML.arg) {
-					metaDataArgs.push(new MetaDataArgument(metaDataArgNode.@key, metaDataArgNode.@value));
+					metaDataArgs[metaDataArgs.length] = new MetaDataArgument(metaDataArgNode.@key, metaDataArgNode.@value);
 				}
 				metaData.addMetaData(new MetaData(metaDataXML.@name, metaDataArgs));
 			}

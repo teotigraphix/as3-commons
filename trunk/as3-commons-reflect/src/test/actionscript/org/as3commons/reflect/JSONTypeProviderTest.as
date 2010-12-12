@@ -12,12 +12,12 @@ package org.as3commons.reflect {
 		}
 
 		public function testConstructor():void {
-			//var td:JSONTypeProvider = new JSONTypeProvider();
+			var td:JSONTypeProvider = new JSONTypeProvider();
 		}
 
 		public function testGetType():void {
-			//var td:JSONTypeProvider = new JSONTypeProvider();
-			//td.getType(FullTestClass, ApplicationDomain.currentDomain);
+			var td:JSONTypeProvider = new JSONTypeProvider();
+			td.getType(FullTestClass, ApplicationDomain.currentDomain);
 		}
 
 	}
