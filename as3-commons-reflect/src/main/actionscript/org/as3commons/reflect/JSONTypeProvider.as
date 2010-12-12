@@ -7,6 +7,7 @@ package org.as3commons.reflect {
 	import org.as3commons.lang.ClassUtils;
 
 	public class JSONTypeProvider extends AbstractTypeProvider {
+		private static const ALIAS_NOT_AVAILABLE:String = "Alias not available when using JSONTypeProvider";
 
 		private var _describeTypeJSON:Function;
 
@@ -44,7 +45,7 @@ package org.as3commons.reflect {
 			type.isDynamic = instanceInfo.isDynamic;
 			type.isFinal = instanceInfo.isFinal;
 			type.isStatic = instanceInfo.isStatic;
-			type.alias = instanceInfo.alias;
+			type.alias = ALIAS_NOT_AVAILABLE;
 			type.isInterface = false;
 			type.constructor = parseConstructor(type, instanceInfo.traits.constructor, applicationDomain);
 			type.accessors = parseAccessors(type, instanceInfo.traits.accessors, applicationDomain, false).concat(parseAccessors(type, classInfo.traits.accessors, applicationDomain, true));

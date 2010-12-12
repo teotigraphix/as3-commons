@@ -1,4 +1,5 @@
 package org.as3commons.reflect {
+	import flash.net.registerClassAlias;
 	import flash.system.ApplicationDomain;
 
 	import flexunit.framework.TestCase;
