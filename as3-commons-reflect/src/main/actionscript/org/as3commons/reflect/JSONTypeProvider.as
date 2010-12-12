@@ -26,9 +26,8 @@ package org.as3commons.reflect {
 		}
 
 		override public function getType(cls:Class, applicationDomain:ApplicationDomain):Type {
-			throw new Error("This class is completely unfinished, do NOT use");
 			var type:Type = new Type(applicationDomain);
-			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(cls);
+			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(cls, true);
 
 			// Add the Type to the cache before assigning any values to prevent looping.
 			// Due to the work-around implemented for constructor argument types
@@ -37,18 +36,19 @@ package org.as3commons.reflect {
 			// Therefore it is important to seed the cache before calling
 			// getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
 			typeCache.put(fullyQualifiedClassName, type);
-			var description:Object = _describeTypeJSON(cls, DescribeType.INCLUDE_TRAITS); //DescribeType.GET_FULL
+			var instanceInfo:Object = _describeTypeJSON(cls, DescribeType.GET_INSTANCE_INFO);
+			var classInfo:Object = _describeTypeJSON(cls, DescribeType.GET_CLASS_INFO);
 			type.fullName = fullyQualifiedClassName;
 			type.name = org.as3commons.lang.ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
 			type.clazz = cls;
-			type.isDynamic = description.isDynamic;
-			type.isFinal = description.isFinal;
-			type.isStatic = description.isStatic;
-			type.alias = "alias";
+			type.isDynamic = instanceInfo.isDynamic;
+			type.isFinal = instanceInfo.isFinal;
+			type.isStatic = instanceInfo.isStatic;
+			type.alias = instanceInfo.alias;
 			type.isInterface = false;
-			type.constructor = parseConstructor(type, description.constructor, applicationDomain);
-			type.accessors = parseAccessors(type, description.accessors, applicationDomain);
-			type.methods = null; //parseMethods(type, description, applicationDomain);
+			type.constructor = parseConstructor(type, instanceInfo.traits.constructor, applicationDomain);
+			type.accessors = parseAccessors(type, instanceInfo.traits.accessors, applicationDomain, false).concat(parseAccessors(type, classInfo.traits.accessors, applicationDomain, true));
+			type.methods = parseMethods(type, instanceInfo.traits.methods, applicationDomain, false).concat(parseMethods(type, classInfo.traits.methods, applicationDomain, true));
 			type.staticConstants = null; //parseMembers(Constant, description.constant, fullyQualifiedClassName, true, applicationDomain);
 			type.constants = null; //parseMembers(Constant, description.factory.constant, fullyQualifiedClassName, false, applicationDomain);
 			type.staticVariables = null; //parseMembers(Variable, description.variable, fullyQualifiedClassName, true, applicationDomain);
@@ -79,7 +79,7 @@ package org.as3commons.reflect {
 		}
 
 		protected function parseConstructor(type:Type, constructor:Array, applicationDomain:ApplicationDomain):Constructor {
-			if (constructor.length() > 0) {
+			if (constructor.length > 0) {
 				var params:Array = parseParameters(constructor, applicationDomain);
 				return new Constructor(type.fullName, applicationDomain, params);
 			} else {
@@ -87,22 +87,52 @@ package org.as3commons.reflect {
 			}
 		}
 
+		private function parseMethods(type:Type, methods:Array, applicationDomain:ApplicationDomain, isStatic:Boolean):Array {
+			var result:Array = [];
+
+			for each (var methodObj:Object in methods) {
+				var params:Array = parseParameters(methodObj.parameters, applicationDomain);
+				var method:Method = new Method(type.fullName, methodObj.name, isStatic, params, methodObj.returnType, applicationDomain);
+				method.as3commons_reflect::setNamespaceURI(methodObj.uri);
+				parseMetaData(methodObj.metadata, method);
+				result.push(method);
+			}
+			return result;
+		}
+
 		private function parseParameters(params:Array, applicationDomain:ApplicationDomain):Array {
-			var params:Array = [];
+			var result:Array = [];
 			var idx:int = 0;
 			for each (var paramObj:Object in params) {
 				var param:Parameter = new Parameter(idx++, paramObj.type, applicationDomain, paramObj.optional);
-				params[params.length] = param;
+				result[result.length] = param;
 			}
-			return params;
+			return result;
 		}
 
-		private function parseAccessors(type:Type, accessors:Array, applicationDomain:ApplicationDomain):Array {
-			//var classAccessors:Array = parseAccessorsByModifier(type, xml.accessor, true, applicationDomain);
-			//var instanceAccessors:Array = parseAccessorsByModifier(type, xml.factory.accessor, false, applicationDomain);
-			//return classAccessors.concat(instanceAccessors);
-			return [];
+		private function parseAccessors(type:Type, accessors:Array, applicationDomain:ApplicationDomain, isStatic:Boolean):Array {
+			var result:Array = [];
+
+			for each (var acc:Object in accessors) {
+				var accessor:Accessor = new Accessor(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
+				accessor.as3commons_reflect::setNamespaceURI(acc.uri);
+				parseMetaData(acc.metadata, accessor);
+				result[result.length] = accessor;
+			}
+			return result;
 		}
+
+		private function parseMetaData(metaDataNodes:Array, metaData:IMetaDataContainer):void {
+			for each (var metaDataObj:Object in metaDataNodes) {
+				var metaDataArgs:Array = [];
+
+				for each (var metaDataArgNode:Object in metaDataObj.arg) {
+					metaDataArgs[metaDataArgs.length] = new MetaDataArgument(metaDataArgNode.key, metaDataArgNode.value);
+				}
+				metaData.addMetaData(new MetaData(metaDataObj.name, metaDataArgs));
+			}
+		}
+
 
 	}
 }

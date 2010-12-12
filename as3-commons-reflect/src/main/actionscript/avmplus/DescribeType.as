@@ -3,8 +3,6 @@ package avmplus {
 
 	public final class DescribeType {
 
-		private static const AVMPLUSDESCRIBE_TYPE_JSON:String = "describeTypeJSON";
-
 		public static const HIDE_NSURI_METHODS:uint = avmplus.HIDE_NSURI_METHODS;
 		public static const INCLUDE_BASES:uint = avmplus.INCLUDE_BASES;
 		public static const INCLUDE_INTERFACES:uint = avmplus.INCLUDE_INTERFACES;
@@ -23,10 +21,11 @@ package avmplus {
 		public static const METHOD_FLAGS:uint = INCLUDE_TRAITS | INCLUDE_METHODS;
 		public static const VARIABLE_FLAGS:uint = INCLUDE_TRAITS | INCLUDE_VARIABLES;
 
-		public static const GET_FULL:uint = INCLUDE_BASES | INCLUDE_INTERFACES | INCLUDE_VARIABLES | INCLUDE_ACCESSORS | INCLUDE_METHODS | INCLUDE_METADATA | INCLUDE_CONSTRUCTOR | INCLUDE_TRAITS;
+		public static const GET_INSTANCE_INFO:uint = INCLUDE_BASES | INCLUDE_INTERFACES | INCLUDE_VARIABLES | INCLUDE_ACCESSORS | INCLUDE_METHODS | INCLUDE_METADATA | INCLUDE_CONSTRUCTOR | INCLUDE_TRAITS | USE_ITRAITS;
+		public static const GET_CLASS_INFO:uint = INCLUDE_INTERFACES | INCLUDE_VARIABLES | INCLUDE_ACCESSORS | INCLUDE_METHODS | INCLUDE_METADATA | INCLUDE_TRAITS | HIDE_OBJECT;
+
 
 		public static function getJSONFunction():Function {
-			throw new Error("This class is completely unfinished, do NOT use");
 			try {
 				return describeTypeJSON;
 			} catch (e:*) {
