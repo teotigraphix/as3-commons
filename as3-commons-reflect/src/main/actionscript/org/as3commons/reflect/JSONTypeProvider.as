@@ -51,14 +51,14 @@ package org.as3commons.reflect {
 			type.methods = parseMethods(type, instanceInfo.traits.methods, applicationDomain, false).concat(parseMethods(type, classInfo.traits.methods, applicationDomain, true));
 			type.staticConstants = parseMembers(Constant, classInfo.traits.variables, fullyQualifiedClassName, true, true, applicationDomain);
 			type.constants = parseMembers(Constant, instanceInfo.traits.variables, fullyQualifiedClassName, false, true, applicationDomain);
-			type.staticVariables = null; //parseMembers(Variable, description.variable, fullyQualifiedClassName, true, applicationDomain);
-			type.variables = null; //parseMembers(Variable, description.factory.variable, fullyQualifiedClassName, false, applicationDomain);
-			type.extendsClasses = null; //parseExtendsClasses(description.factory.extendsClass, type.applicationDomain);
-			//parseMetaData(description.factory[0].metadata, type);
-			type.interfaces = null; //parseImplementedInterfaces(description.factory.implementsInterface);
+			type.staticVariables = parseMembers(Variable, classInfo.traits.variables, fullyQualifiedClassName, true, false, applicationDomain);
+			type.variables = parseMembers(Variable, instanceInfo.traits.variables, fullyQualifiedClassName, false, false, applicationDomain);
+			type.extendsClasses = instanceInfo.traits.bases.concat();
+			parseMetaData(instanceInfo.traits.metadata, type);
+			type.interfaces = parseImplementedInterfaces(instanceInfo.traits.interfaces);
 
 			// Combine metadata from implemented interfaces
-			/*var numInterfaces:int = type.interfaces.length;
+			var numInterfaces:int = type.interfaces.length;
 			for (var i:int = 0; i < numInterfaces; i++) {
 				var interfaze:Type = Type.forName(type.interfaces[i], applicationDomain);
 				concatMetadata(type, interfaze.methods, "methods");
@@ -73,7 +73,7 @@ package org.as3commons.reflect {
 				}
 			}
 
-			type.createMetaDataLookup();*/
+			type.createMetaDataLookup();
 
 			return type;
 		}
@@ -85,6 +85,34 @@ package org.as3commons.reflect {
 			} else {
 				return new Constructor(type.fullName, applicationDomain);
 			}
+		}
+
+		private function concatMetadata(type:Type, metaDataContainers:Array, propertyName:String):void {
+			for each (var container:IMetaDataContainer in metaDataContainers) {
+				type[propertyName].some(function(item:MetaDataContainer, index:int, arr:Array):Boolean {
+					if (Object(item).name == Object(container).name) {
+						var metaDataList:Array = container.metaData;
+						var numMetaData:int = metaDataList.length;
+						for (var j:int = 0; j < numMetaData; j++) {
+							if (!item.hasExactMetaData(metaDataList[j])) {
+								item.addMetaData(metaDataList[j]);
+							}
+						}
+						return true;
+					}
+					return false;
+				});
+			}
+		}
+
+		private function parseImplementedInterfaces(interfacesDescription:Array):Array {
+			var result:Array = [];
+			if (interfacesDescription != null) {
+				for each (var fullyQualifiedInterfaceName:String in interfacesDescription) {
+					result[result.length] = org.as3commons.lang.ClassUtils.convertFullyQualifiedName(fullyQualifiedInterfaceName);
+				}
+			}
+			return result;
 		}
 
 		private function parseMethods(type:Type, methods:Array, applicationDomain:ApplicationDomain, isStatic:Boolean):Array {
@@ -126,7 +154,7 @@ package org.as3commons.reflect {
 			for each (var metaDataObj:Object in metaDataNodes) {
 				var metaDataArgs:Array = [];
 
-				for each (var metaDataArgNode:Object in metaDataObj.arg) {
+				for each (var metaDataArgNode:Object in metaDataObj.value) {
 					metaDataArgs[metaDataArgs.length] = new MetaDataArgument(metaDataArgNode.key, metaDataArgNode.value);
 				}
 				metaData.addMetaData(new MetaData(metaDataObj.name, metaDataArgs));
