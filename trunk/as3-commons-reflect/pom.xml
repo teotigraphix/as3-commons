@@ -186,7 +186,7 @@
 							<report>asdoc-report</report>
 						</reports>
 						<configuration>
-							<templateDirectory>../templates</templateDirectory>
+							<templateDirectory>C:\projects\as3-commons\as3-commons-reflect\templates</templateDirectory>
 							<reportOutputDirectory>target/site/docs/asdoc2</reportOutputDirectory>
 							<description>API documentation</description>
 							<mainTitle>API documentation</mainTitle>

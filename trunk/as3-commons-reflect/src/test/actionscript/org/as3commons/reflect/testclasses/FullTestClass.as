@@ -10,13 +10,13 @@ package org.as3commons.reflect.testclasses {
 
 		custom_namespace var custom:String = "yes";
 
-		[Bindable]
 		public var name:String;
 
 		public function get number():int {
 			return 0;
 		}
 
+		[Autowired]
 		public function get getset():Boolean {
 			return true;
 		}

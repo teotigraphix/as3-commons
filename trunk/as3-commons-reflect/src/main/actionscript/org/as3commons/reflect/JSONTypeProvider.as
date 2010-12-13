@@ -7,7 +7,7 @@ package org.as3commons.reflect {
 	import org.as3commons.lang.ClassUtils;
 
 	public class JSONTypeProvider extends AbstractTypeProvider {
-		private static const ALIAS_NOT_AVAILABLE:String = "Alias not available when using JSONTypeProvider";
+		public static const ALIAS_NOT_AVAILABLE:String = "Alias not available when using JSONTypeProvider";
 
 		private var _describeTypeJSON:Function;
 
@@ -46,7 +46,7 @@ package org.as3commons.reflect {
 			type.isFinal = instanceInfo.isFinal;
 			type.isStatic = instanceInfo.isStatic;
 			type.alias = ALIAS_NOT_AVAILABLE;
-			type.isInterface = false;
+			type.isInterface = (instanceInfo.traits.bases.length == 0);
 			type.constructor = parseConstructor(type, instanceInfo.traits.constructor, applicationDomain);
 			type.accessors = parseAccessors(type, instanceInfo.traits.accessors, applicationDomain, false).concat(parseAccessors(type, classInfo.traits.accessors, applicationDomain, true));
 			type.methods = parseMethods(type, instanceInfo.traits.methods, applicationDomain, false).concat(parseMethods(type, classInfo.traits.methods, applicationDomain, true));
@@ -127,7 +127,7 @@ package org.as3commons.reflect {
 				var method:Method = new Method(type.fullName, methodObj.name, isStatic, params, methodObj.returnType, applicationDomain);
 				method.as3commons_reflect::setNamespaceURI(methodObj.uri);
 				parseMetaData(methodObj.metadata, method);
-				result.push(method);
+				result[result.length] = method;
 			}
 			return result;
 		}
@@ -172,9 +172,6 @@ package org.as3commons.reflect {
 			var result:Array = [];
 
 			for each (var m:Object in members) {
-				if (m.declaredBy != type.fullName) {
-					continue;
-				}
 				if ((isConstant) && (m.access != AccessorAccess.READ_ONLY.name)) {
 					continue;
 				} else if ((!isConstant) && (m.access == AccessorAccess.READ_ONLY.name)) {
