@@ -79,6 +79,10 @@ package org.as3commons.reflect {
 		public static const VOID_NAME:String = "void";
 		private static const UNTYPED_NAME:String = "*";
 		private static const PRIVATE_NAME:String = 'private';
+		public static var typeProviderKind:TypeProviderKind;
+		{
+			typeProviderKind = TypeProviderKind.JSON;
+		}
 
 		private static var logger:ILogger = LoggerFactory.getClassLogger(Type);
 
@@ -165,9 +169,11 @@ package org.as3commons.reflect {
 		 */
 		public static function getTypeProvider():ITypeProvider {
 			if (typeProvider == null) {
-				try {
-					typeProvider = new JSONTypeProvider();
-				} catch (e:*) {
+				if (typeProviderKind === TypeProviderKind.JSON) {
+					try {
+						typeProvider = new JSONTypeProvider();
+					} catch (e:*) {
+					}
 				}
 				if (typeProvider == null) {
 					typeProvider = new XmlTypeProvider();

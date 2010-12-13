@@ -5,6 +5,7 @@ package org.as3commons.reflect {
 	import flexunit.framework.TestCase;
 
 	import org.as3commons.reflect.testclasses.FullTestClass;
+	import org.as3commons.reflect.testclasses.PublicClass;
 
 	public class JSONTypeProviderTest extends TestCase {
 

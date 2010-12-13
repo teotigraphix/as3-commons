@@ -25,16 +25,16 @@ package org.as3commons.reflect {
 	import flash.net.registerClassAlias;
 	import flash.utils.describeType;
 
+	import flexunit.framework.TestCase;
+
 	import mx.logging.LogEventLevel;
 
-	import org.as3commons.reflect.testclasses.DynamicFinalComplexClass;
-	import org.as3commons.reflect.testclasses.ComplexerClass;
 	import org.as3commons.reflect.testclasses.ComplexClass;
+	import org.as3commons.reflect.testclasses.ComplexerClass;
 	import org.as3commons.reflect.testclasses.ConstructorRecursionHazardClass;
+	import org.as3commons.reflect.testclasses.DynamicFinalComplexClass;
 	import org.as3commons.reflect.testclasses.PublicClass;
 	import org.as3commons.reflect.testclasses.PublicSubClass;
-
-	import flexunit.framework.TestCase;
 
 	/**
 	 * @author Christophe Herreman
@@ -46,6 +46,7 @@ package org.as3commons.reflect {
 		}
 
 		override public function setUp():void {
+			Type.typeProviderKind = TypeProviderKind.XML;
 			Type.getTypeProvider().clearCache();
 		}
 
@@ -62,7 +63,6 @@ package org.as3commons.reflect {
 		}
 
 		public function testClassAlias():void {
-			Type.getTypeProvider().clearCache();
 			registerClassAlias("this_is_an_alias", PublicClass);
 			var type:Type = Type.forClass(PublicClass);
 			assertEquals("this_is_an_alias", type.alias);
@@ -121,7 +121,6 @@ package org.as3commons.reflect {
 		}
 
 		public function testWithArgumentConstructorClass():void {
-
 			var type:Type = Type.forClass(ComplexClass);
 
 			var constructor:Constructor = type.constructor;
