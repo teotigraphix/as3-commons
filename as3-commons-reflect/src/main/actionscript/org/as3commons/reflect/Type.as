@@ -57,6 +57,13 @@ package org.as3commons.reflect {
 	 */
 	public class Type extends MetaDataContainer {
 
+		public static function reset():void {
+			if (typeProvider != null) {
+				typeProvider.clearCache();
+			}
+			typeProvider = null;
+		}
+
 		public static const UNTYPED:Type = new Type(ApplicationDomain.currentDomain);
 		{
 			UNTYPED.fullName = UNTYPED_NAME;
