@@ -57,6 +57,9 @@ package org.as3commons.reflect {
 	 */
 	public class Type extends MetaDataContainer {
 
+		/**
+		 * Clears the cache and set typeProvider to null.
+		 */
 		public static function reset():void {
 			if (typeProvider != null) {
 				typeProvider.clearCache();
