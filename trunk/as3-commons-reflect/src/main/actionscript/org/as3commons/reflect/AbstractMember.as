@@ -25,7 +25,7 @@ package org.as3commons.reflect {
 	import org.as3commons.lang.HashArray;
 
 	/**
-	 * Abstract base class for members of a <code>class</object>.
+	 * Abstract base class for members of a <code>Class</code>.
 	 *
 	 * @author Christophe Herreman
 	 * @author Andrew Lewisohn

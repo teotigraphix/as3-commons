@@ -28,7 +28,7 @@ package org.as3commons.reflect {
 
 		override public function getType(cls:Class, applicationDomain:ApplicationDomain):Type {
 			var type:Type = new Type(applicationDomain);
-			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(cls, true);
+			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(cls);
 
 			// Add the Type to the cache before assigning any values to prevent looping.
 			// Due to the work-around implemented for constructor argument types
@@ -50,10 +50,10 @@ package org.as3commons.reflect {
 			type.constructor = parseConstructor(type, instanceInfo.traits.constructor, applicationDomain);
 			type.accessors = parseAccessors(type, instanceInfo.traits.accessors, applicationDomain, false).concat(parseAccessors(type, classInfo.traits.accessors, applicationDomain, true));
 			type.methods = parseMethods(type, instanceInfo.traits.methods, applicationDomain, false).concat(parseMethods(type, classInfo.traits.methods, applicationDomain, true));
-			type.staticConstants = parseMembers(Constant, classInfo.traits.variables, fullyQualifiedClassName, true, true, applicationDomain);
-			type.constants = parseMembers(Constant, instanceInfo.traits.variables, fullyQualifiedClassName, false, true, applicationDomain);
-			type.staticVariables = parseMembers(Variable, classInfo.traits.variables, fullyQualifiedClassName, true, false, applicationDomain);
-			type.variables = parseMembers(Variable, instanceInfo.traits.variables, fullyQualifiedClassName, false, false, applicationDomain);
+			type.staticConstants = parseMembers(type, Constant, classInfo.traits.variables, fullyQualifiedClassName, true, true, applicationDomain);
+			type.constants = parseMembers(type, Constant, instanceInfo.traits.variables, fullyQualifiedClassName, false, true, applicationDomain);
+			type.staticVariables = parseMembers(type, Variable, classInfo.traits.variables, fullyQualifiedClassName, true, false, applicationDomain);
+			type.variables = parseMembers(type, Variable, instanceInfo.traits.variables, fullyQualifiedClassName, false, false, applicationDomain);
 			type.extendsClasses = instanceInfo.traits.bases.concat();
 			parseMetaData(instanceInfo.traits.metadata, type);
 			type.interfaces = parseImplementedInterfaces(instanceInfo.traits.interfaces);
@@ -120,6 +120,9 @@ package org.as3commons.reflect {
 			var result:Array = [];
 
 			for each (var methodObj:Object in methods) {
+				if (methodObj.declaredBy != type.fullName) {
+					continue;
+				}
 				var params:Array = parseParameters(methodObj.parameters, applicationDomain);
 				var method:Method = new Method(type.fullName, methodObj.name, isStatic, params, methodObj.returnType, applicationDomain);
 				method.as3commons_reflect::setNamespaceURI(methodObj.uri);
@@ -131,7 +134,7 @@ package org.as3commons.reflect {
 
 		private function parseParameters(params:Array, applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
-			var idx:int = 0;
+			var idx:int = 1;
 			for each (var paramObj:Object in params) {
 				var param:Parameter = new Parameter(idx++, paramObj.type, applicationDomain, paramObj.optional);
 				result[result.length] = param;
@@ -143,6 +146,9 @@ package org.as3commons.reflect {
 			var result:Array = [];
 
 			for each (var acc:Object in accessors) {
+				if (acc.declaredBy != type.fullName) {
+					continue;
+				}
 				var accessor:Accessor = new Accessor(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
 				accessor.as3commons_reflect::setNamespaceURI(acc.uri);
 				parseMetaData(acc.metadata, accessor);
@@ -162,10 +168,13 @@ package org.as3commons.reflect {
 			}
 		}
 
-		private function parseMembers(memberClass:Class, members:Array, declaringType:String, isStatic:Boolean, isConstant:Boolean, applicationDomain:ApplicationDomain):Array {
+		private function parseMembers(type:Type, memberClass:Class, members:Array, declaringType:String, isStatic:Boolean, isConstant:Boolean, applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
 
 			for each (var m:Object in members) {
+				if (m.declaredBy != type.fullName) {
+					continue;
+				}
 				if ((isConstant) && (m.access != AccessorAccess.READ_ONLY.name)) {
 					continue;
 				} else if ((!isConstant) && (m.access == AccessorAccess.READ_ONLY.name)) {

@@ -167,6 +167,39 @@
 		</plugins>
 
 	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flex-mojos.version}</version>
+				<inherited>true</inherited>
+				<reportSets>
+					<reportSet>
+						<id>flex-reports</id>
+						<reports>
+							<report>asdoc-report</report>
+						</reports>
+						<configuration>
+							<templateDirectory>../templates</templateDirectory>
+							<reportOutputDirectory>target/site/docs/asdoc2</reportOutputDirectory>
+							<description>API documentation</description>
+							<mainTitle>API documentation</mainTitle>
+							<windowTitle>API documentation</windowTitle>
+							<name>As3CommonsDocs</name>
+						</configuration>
+					</reportSet>
+				</reportSets>
+			</plugin>
+
+		</plugins>
+	</reporting>
+
 
 	<scm>
 		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</developerConnection>
