@@ -108,6 +108,17 @@
 					}<br />
 				</div>
 			</p>
+			
+			<p>
+				When Flash player 10.1 or higher is installed as3commons-reflect will make use of
+				the describeTypeJSON method available in these players. This will yield a small speed
+				optmization since no XML needs to be parsed.
+				The only limitation of describeTypeJSON is that any alias information (regarding the
+				registerAlias functionality) is not available. For this, or any other reason, ascommons-reflect
+				can be forced to use the regular describeType method by setting the static typeProviderKind
+				property on the Type class:
+				<div class="source">Type.typeProviderKind = TypeProviderKind.XML;</div>
+			</p>
 
 		</section>
 
