@@ -48,7 +48,7 @@ package org.as3commons.bytecode.swf {
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.SWFSpec;
 
-	public class SWFFileSerializer implements ISWFFileSerializer {
+	public class SWFFileIO implements ISWFFileIO {
 
 		public static const SWF_SIGNATURE_COMPRESSED:String = "CWS";
 		public static const SWF_SIGNATURE_UNCOMPRESSED:String = "FWS";
@@ -60,12 +60,12 @@ package org.as3commons.bytecode.swf {
 		private var _recordHeaderSerializer:RecordHeaderSerializer;
 		private var _structSerializerFactory:StructSerializerFactory;
 
-		public function SWFFileSerializer() {
+		public function SWFFileIO() {
 			super();
-			initSWFFileSerializer();
+			initSWFFileIO();
 		}
 
-		protected function initSWFFileSerializer():void {
+		protected function initSWFFileIO():void {
 			_unsupportedTagSerializer = new UnsupportedSerializer();
 			_recordHeaderSerializer = new RecordHeaderSerializer();
 			_structSerializerFactory = new StructSerializerFactory();

@@ -17,7 +17,6 @@ package org.as3commons.bytecode.reflect {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
-	import flash.utils.getDefinitionByName;
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ConstantPool;
@@ -30,14 +29,13 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
-	import org.as3commons.bytecode.swf.SWFFileSerializer;
+	import org.as3commons.bytecode.swf.SWFFileIO;
 	import org.as3commons.bytecode.tags.serialization.RecordHeaderSerializer;
 	import org.as3commons.bytecode.tags.struct.RecordHeader;
 	import org.as3commons.bytecode.util.AbcDeserializerBase;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.SWFSpec;
 	import org.as3commons.lang.Assert;
-	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Constructor;
 	import org.as3commons.reflect.MetaData;
@@ -68,7 +66,7 @@ package org.as3commons.bytecode.reflect {
 			_byteStream = AbcSpec.byteArray();
 			input.endian = Endian.LITTLE_ENDIAN;
 			var swfIdentifier:String = input.readUTFBytes(3);
-			var compressed:Boolean = (swfIdentifier == SWFFileSerializer.SWF_SIGNATURE_COMPRESSED);
+			var compressed:Boolean = (swfIdentifier == SWFFileIO.SWF_SIGNATURE_COMPRESSED);
 			var version:uint = input.readByte();
 			var filesize:uint = input.readUnsignedInt();
 

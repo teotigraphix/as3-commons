@@ -45,7 +45,7 @@ package org.as3commons.bytecode.swf {
 		 * Initializes the current <code>SWFFile</code>.
 		 */
 		protected function initSWFFile():void {
-			_signature = SWFFileSerializer.SWF_SIGNATURE_UNCOMPRESSED;
+			_signature = SWFFileIO.SWF_SIGNATURE_UNCOMPRESSED;
 			_version = 10;
 			_frameSize = new Rectangle();
 			_frameRate = 1;
