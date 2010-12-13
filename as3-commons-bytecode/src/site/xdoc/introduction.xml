@@ -27,8 +27,8 @@ var abcFile:AbcFile = ds.deserialize();</pre></div>
     <section name="Simple SWF deserialization and serialization"><p>Simple SWF
     files that only contain code (such as class libraries or resource
     modules), so no embedded images, sounds or whatever, can be directly
-    deserialized/serialized with the <code><a href="asdoc/org/as3commons/bytecode/swf/SWFFileSerializer.html" target="_blank">SWFFileSerializer</a></code> class:</p><div class="source"><pre>var ds:SWFSerializer = new SWFFileSerializer();
-var swfFile:SWFFile = ds.read(byteArray); <i>//Where the bytearray is a loaded SWF file (.swf, *not* .swc)</i>
+    deserialized/serialized with the <code><a href="asdoc/org/as3commons/bytecode/swf/SWFFileIO.html" target="_blank">SWFFileIO</a></code> class:</p><div class="source"><pre>var io:SWFFileIO = new SWFFileIO();
+var swfFile:SWFFile = io.read(byteArray); <i>//Where the bytearray is a loaded SWF file (.swf, *not* .swc)</i>
 </pre></div><p>By using the <code><a href="asdoc/org/as3commons/bytecode/swf/SWFFile.html" target="_blank">SWFFile</a></code>'s <code><a href="asdoc/org/as3commons/bytecode/swf/SWFFile.html#getTagsByType()" target="_blank">getTagsByType</a></code> method you can retrieve the
     different sorts of SWF tags and examine them:</p><div class="source"><pre>var abcTags:Array = swfFile.getTagsByType(DoABCTag);
 for each(var tag:DoABCTag in abcTags){
