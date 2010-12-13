@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.swf {
 	import flash.utils.ByteArray;
 
-	public interface ISWFFileSerializer {
+	public interface ISWFFileIO {
 
 		function read(input:ByteArray):SWFFile;
 
