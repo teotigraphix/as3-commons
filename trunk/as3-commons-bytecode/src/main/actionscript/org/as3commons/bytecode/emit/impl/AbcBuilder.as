@@ -20,7 +20,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -41,10 +41,10 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
+	import org.as3commons.bytecode.io.AbcSerializer;
 	import org.as3commons.bytecode.swf.AbcClassLoader;
 	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.util.AbcFileUtil;
-	import org.as3commons.bytecode.util.AbcSerializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Type;

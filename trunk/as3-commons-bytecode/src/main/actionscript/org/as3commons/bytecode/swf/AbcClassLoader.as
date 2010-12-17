@@ -24,8 +24,8 @@ package org.as3commons.bytecode.swf {
 	import flash.utils.Endian;
 
 	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.io.AbcSerializer;
 	import org.as3commons.bytecode.util.AbcFileUtil;
-	import org.as3commons.bytecode.util.AbcSerializer;
 
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.

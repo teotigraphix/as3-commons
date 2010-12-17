@@ -53,12 +53,11 @@ package org.as3commons.bytecode.swf {
 		public static const SWF_SIGNATURE_COMPRESSED:String = "CWS";
 		public static const SWF_SIGNATURE_UNCOMPRESSED:String = "FWS";
 
-		private var _tagSerializers:Dictionary;
-		private var _serializerInstances:Dictionary;
-		private var _unsupportedTagSerializer:UnsupportedSerializer;
-
-		private var _recordHeaderSerializer:RecordHeaderSerializer;
-		private var _structSerializerFactory:StructSerializerFactory;
+		protected var tagSerializers:Dictionary;
+		protected var serializerInstances:Dictionary;
+		protected var unsupportedTagSerializer:UnsupportedSerializer;
+		protected var recordHeaderSerializer:RecordHeaderSerializer;
+		protected var structSerializerFactory:StructSerializerFactory;
 
 		public function SWFFileIO() {
 			super();
@@ -66,32 +65,32 @@ package org.as3commons.bytecode.swf {
 		}
 
 		protected function initSWFFileIO():void {
-			_unsupportedTagSerializer = new UnsupportedSerializer();
-			_recordHeaderSerializer = new RecordHeaderSerializer();
-			_structSerializerFactory = new StructSerializerFactory();
-			_tagSerializers = new Dictionary();
-			_serializerInstances = new Dictionary();
-			_tagSerializers[EndTag.TAG_ID] = EndTagSerializer;
-			_tagSerializers[FileAttributesTag.TAG_ID] = FileAttributesSerializer;
-			_tagSerializers[FrameLabelTag.TAG_ID] = FrameLabelSerializer;
-			_tagSerializers[MetadataTag.TAG_ID] = MetadataSerializer;
-			_tagSerializers[ProductInfoTag.TAG_ID] = ProductInfoSerializer;
-			_tagSerializers[ScriptLimitsTag.TAG_ID] = ScriptLimitsSerializer;
-			_tagSerializers[SetBackgroundColorTag.TAG_ID] = SetBackgroundColorSerializer;
-			_tagSerializers[ShowFrameTag.TAG_ID] = ShowFrameSerializer;
-			_tagSerializers[SymbolClassTag.TAG_ID] = SymbolClassSerializer;
-			_tagSerializers[DoABCTag.TAG_ID] = DoABCSerializer;
+			unsupportedTagSerializer = new UnsupportedSerializer();
+			recordHeaderSerializer = new RecordHeaderSerializer();
+			structSerializerFactory = new StructSerializerFactory();
+			tagSerializers = new Dictionary();
+			serializerInstances = new Dictionary();
+			tagSerializers[EndTag.TAG_ID] = EndTagSerializer;
+			tagSerializers[FileAttributesTag.TAG_ID] = FileAttributesSerializer;
+			tagSerializers[FrameLabelTag.TAG_ID] = FrameLabelSerializer;
+			tagSerializers[MetadataTag.TAG_ID] = MetadataSerializer;
+			tagSerializers[ProductInfoTag.TAG_ID] = ProductInfoSerializer;
+			tagSerializers[ScriptLimitsTag.TAG_ID] = ScriptLimitsSerializer;
+			tagSerializers[SetBackgroundColorTag.TAG_ID] = SetBackgroundColorSerializer;
+			tagSerializers[ShowFrameTag.TAG_ID] = ShowFrameSerializer;
+			tagSerializers[SymbolClassTag.TAG_ID] = SymbolClassSerializer;
+			tagSerializers[DoABCTag.TAG_ID] = DoABCSerializer;
 		}
 
 		protected function createTagSerializer(tagId:uint):ITagSerializer {
-			if (_serializerInstances[tagId] == null) {
-				if (_tagSerializers[tagId] != null) {
-					_serializerInstances[tagId] = new _tagSerializers[tagId](_structSerializerFactory);
+			if (serializerInstances[tagId] == null) {
+				if (tagSerializers[tagId] != null) {
+					serializerInstances[tagId] = new tagSerializers[tagId](structSerializerFactory);
 				} else {
-					return _unsupportedTagSerializer;
+					return unsupportedTagSerializer;
 				}
 			}
-			return _serializerInstances[tagId] as ITagSerializer;
+			return serializerInstances[tagId] as ITagSerializer;
 		}
 
 		public function read(input:ByteArray):SWFFile {
@@ -138,7 +137,7 @@ package org.as3commons.bytecode.swf {
 		}
 
 		protected function readTag(input:ByteArray):ISWFTag {
-			var recordHeader:RecordHeader = _recordHeaderSerializer.read(input) as RecordHeader;
+			var recordHeader:RecordHeader = recordHeaderSerializer.read(input) as RecordHeader;
 			var serializer:ITagSerializer = createTagSerializer(recordHeader.id);
 			if (serializer != null) {
 				return serializer.read(input, recordHeader);
@@ -156,7 +155,7 @@ package org.as3commons.bytecode.swf {
 			ba.position = 0;
 
 			var recordHeader:RecordHeader = new RecordHeader(tag.id, ba.length, (ba.length > RecordHeaderSerializer.LONG_TAG));
-			_recordHeaderSerializer.write(output, recordHeader);
+			recordHeaderSerializer.write(output, recordHeader);
 			output.writeBytes(ba);
 			ba = null;
 		}

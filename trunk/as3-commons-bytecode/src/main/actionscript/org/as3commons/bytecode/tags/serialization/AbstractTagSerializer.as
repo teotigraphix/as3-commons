@@ -27,7 +27,7 @@ package org.as3commons.bytecode.tags.serialization {
 			return _structSerializerFactory;
 		}
 
-		public function AbstractTagSerializer(serializerFactory:IStructSerializerFactory) {
+		public function AbstractTagSerializer(serializerFactory:IStructSerializerFactory = null) {
 			super();
 			_structSerializerFactory = serializerFactory;
 		}

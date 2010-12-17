@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.util {
+package org.as3commons.bytecode.io {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.lang.Assert;
@@ -21,9 +21,8 @@ package org.as3commons.bytecode.util {
 	/**
 	 * Determines the way that an <code>AbcDeserializer</code> handles method bodies.
 	 * @author Roland Zwaga
-	 *
 	 */
-	public final class MethodBodyExtractionMethod {
+	public final class MethodBodyExtractionKind {
 
 		private static var _enumCreated:Boolean = false;
 		private static const _items:Dictionary = new Dictionary();
@@ -31,15 +30,15 @@ package org.as3commons.bytecode.util {
 		/**
 		 * Fully parses and verifies the methodbody.
 		 */
-		public static const PARSE:MethodBodyExtractionMethod = new MethodBodyExtractionMethod(PARSE_VALUE);
+		public static const PARSE:MethodBodyExtractionKind = new MethodBodyExtractionKind(PARSE_VALUE);
 		/**
 		 * Skips the extraction of method bodies altogether.
 		 */
-		public static const SKIP:MethodBodyExtractionMethod = new MethodBodyExtractionMethod(SKIP_VALUE);
+		public static const SKIP:MethodBodyExtractionKind = new MethodBodyExtractionKind(SKIP_VALUE);
 		/**
 		 * Copies the method body into a separate <code>ByteArray</code>.
 		 */
-		public static const BYTEARRAY:MethodBodyExtractionMethod = new MethodBodyExtractionMethod(BYTEARRAY_VALUE);
+		public static const BYTEARRAY:MethodBodyExtractionKind = new MethodBodyExtractionKind(BYTEARRAY_VALUE);
 
 		private static const PARSE_VALUE:String = "parseMethodBody";
 		private static const SKIP_VALUE:String = "skipMethodBody";
@@ -51,7 +50,7 @@ package org.as3commons.bytecode.util {
 
 		private var _value:String;
 
-		public function MethodBodyExtractionMethod(val:String) {
+		public function MethodBodyExtractionKind(val:String) {
 			Assert.state(!_enumCreated, "The MethodBodyExtractionMethod enumeration has already been created");
 			Assert.hasText(val, "val argument must have text");
 			_value = val;
@@ -62,8 +61,8 @@ package org.as3commons.bytecode.util {
 			return _value;
 		}
 
-		public static function fromValue(val:String):MethodBodyExtractionMethod {
-			return _items[val] as MethodBodyExtractionMethod;
+		public static function fromValue(val:String):MethodBodyExtractionKind {
+			return _items[val] as MethodBodyExtractionKind;
 		}
 
 		public function toString():String {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.bytecode.util {
+package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
 
 	import flexunit.framework.TestCase;
@@ -23,6 +23,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.util.Assertions;
 
 	public class AbcDeserializerTest extends TestCase {
 		//NOTE: This is just used to dump the proxy template for inspection and comparison to weaved proxies 

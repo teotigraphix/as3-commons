@@ -16,19 +16,14 @@
 package org.as3commons.bytecode.emit.impl {
 
 	import flash.errors.IllegalOperationError;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.ClassInfo;
-	import org.as3commons.bytecode.abc.FunctionTrait;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.Op;
-	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
@@ -38,10 +33,9 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IMetaDataBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
-	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.ITypeBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
-	import org.as3commons.bytecode.util.AbcDeserializer;
+	import org.as3commons.bytecode.io.AbcDeserializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;

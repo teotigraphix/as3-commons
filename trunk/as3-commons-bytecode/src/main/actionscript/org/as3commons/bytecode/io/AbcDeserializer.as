@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.bytecode.util {
+package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
 
 	import org.as3commons.bytecode.abc.AbcFile;
@@ -23,6 +23,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.FunctionTrait;
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
@@ -40,6 +41,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.typeinfo.Metadata;
+	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
@@ -54,24 +56,26 @@ package org.as3commons.bytecode.util {
 	 * @see    AbcSerializer
 	 */
 	//TODO: Capture ranges for bytecode blocks so they can be checked in unit tests
-	public class AbcDeserializer extends AbcDeserializerBase {
+	public class AbcDeserializer extends AbstractAbcDeserializer implements IAbcDeserializer {
 
 		public static const __NEED_CONSTANTS_:String = "~~ need constants ~~";
 		public static const CONSTRUCTOR_BYTECODENAME:String = "constructor";
 		public static const STATIC_INITIALIZER_BYTECODENAME:String = "staticInitializer";
 		public static const SCRIPT_INITIALIZER_BYTECODENAME:String = "scriptInitializer";
 
+		private var _methodBodyExtractionMethod:MethodBodyExtractionKind;
+
 		public function AbcDeserializer(byteStream:ByteArray) {
 			super(byteStream);
-			methodBodyExtractionMethod = MethodBodyExtractionMethod.PARSE;
+			methodBodyExtractionMethod = MethodBodyExtractionKind.PARSE;
 		}
 
-		public var methodBodyExtractionMethod:MethodBodyExtractionMethod;
+		override public function get methodBodyExtractionMethod():MethodBodyExtractionKind {
+			return _methodBodyExtractionMethod;
+		}
 
-		private var _constantPoolEndPosition:uint = 0;
-
-		public function get constantPoolEndPosition():uint {
-			return _constantPoolEndPosition;
+		override public function set methodBodyExtractionMethod(value:MethodBodyExtractionKind):void {
+			_methodBodyExtractionMethod = value;
 		}
 
 		/**
@@ -96,7 +100,7 @@ package org.as3commons.bytecode.util {
 		 *
 		 * @return  The <code>AbcFile</code> represented by the bytecode block given to the constructor.
 		 */
-		public function deserialize(positionInByteArrayToReadFrom:int = 0):AbcFile {
+		override public function deserialize(positionInByteArrayToReadFrom:int = 0):AbcFile {
 			byteStream.position = positionInByteArrayToReadFrom;
 			var abcFile:AbcFile = new AbcFile();
 			var pool:ConstantPool = abcFile.constantPool;
@@ -107,17 +111,16 @@ package org.as3commons.bytecode.util {
 			abcFile.majorVersion = readU16();
 
 			deserializeConstantPool(pool);
-			_constantPoolEndPosition = _byteStream.position;
 
 			deserializeMethodInfos(abcFile, pool);
 
 //            trace("Metadata: " + _byteStream.position);
-			deserializeMetadata(pool, abcFile);
+			deserializeMetadata(abcFile, pool);
 
 //            trace("Classes: " + _byteStream.position);
-			var classCount:int = deserializeInstanceInfo(pool, abcFile);
+			var classCount:int = deserializeInstanceInfo(abcFile, pool);
 
-			deserializeClassInfos(pool, abcFile, classCount);
+			deserializeClassInfos(abcFile, pool, classCount);
 
 			trace("ClassInfos parsed by " + (new Date().getTime() - startTime) + " ms");
 
@@ -140,7 +143,7 @@ package org.as3commons.bytecode.util {
 			return abcFile;
 		}
 
-		private function deserializeClassInfos(pool:ConstantPool, abcFile:AbcFile, classCount:int):void {
+		public override function deserializeClassInfos(abcFile:AbcFile, pool:IConstantPool, classCount:int):void {
 			// class info
 			//	        trace("ClassInfo: " + _byteStream.position);
 			for (var classIndex:int = 0; classIndex < classCount; ++classIndex) {
@@ -161,7 +164,7 @@ package org.as3commons.bytecode.util {
 		}
 
 
-		private function deserializeMethodBodies(abcFile:AbcFile, pool:ConstantPool):void {
+		public override function deserializeMethodBodies(abcFile:AbcFile, pool:IConstantPool):void {
 			var methodBodyCount:int = readU30();
 			trace("methodBody count:" + methodBodyCount);
 			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; ++bodyIndex) {
@@ -188,9 +191,9 @@ package org.as3commons.bytecode.util {
 				methodBody.maxScopeDepth = readU30();
 
 				var codeLength:int = readU30();
-				if (methodBodyExtractionMethod === MethodBodyExtractionMethod.PARSE) {
+				if (methodBodyExtractionMethod === MethodBodyExtractionKind.PARSE) {
 					methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile);
-				} else if (methodBodyExtractionMethod === MethodBodyExtractionMethod.BYTEARRAY) {
+				} else if (methodBodyExtractionMethod === MethodBodyExtractionKind.BYTEARRAY) {
 					methodBody.rawOpcodes.writeBytes(byteStream, byteStream.position, codeLength);
 					byteStream.position += codeLength;
 				} else {
@@ -243,7 +246,7 @@ package org.as3commons.bytecode.util {
 		}
 
 
-		private function deserializeScriptInfos(abcFile:AbcFile):void {
+		public override function deserializeScriptInfos(abcFile:AbcFile):void {
 			var scriptCount:int = readU30();
 			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
 				var scriptInfo:ScriptInfo = new ScriptInfo();
@@ -255,7 +258,7 @@ package org.as3commons.bytecode.util {
 		}
 
 
-		private function deserializeInstanceInfo(pool:ConstantPool, abcFile:AbcFile):int {
+		public override function deserializeInstanceInfo(abcFile:AbcFile, pool:IConstantPool):int {
 			var classCount:int = readU30();
 			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
 				// instance_info  
@@ -284,7 +287,7 @@ package org.as3commons.bytecode.util {
 				//      class. The entry specified must be a QName. 
 				var classMultiname:BaseMultiname = pool.multinamePool[readU30()];
 
-				instanceInfo.classMultiname = convertToQualifiedName(classMultiname);
+				instanceInfo.classMultiname = MultinameUtil.convertToQualifiedName(classMultiname);
 				instanceInfo.superclassMultiname = pool.multinamePool[readU30()];
 				var instanceInfoFlags:int = readU8();
 				instanceInfo.isFinal = ClassConstant.FINAL.present(instanceInfoFlags);
@@ -308,7 +311,7 @@ package org.as3commons.bytecode.util {
 		}
 
 
-		protected function deserializeMetadata(pool:ConstantPool, abcFile:AbcFile):void {
+		public override function deserializeMetadata(abcFile:AbcFile, pool:IConstantPool):void {
 			var metadataCount:int = readU30();
 			for (var metadataIndex:int = 0; metadataIndex < metadataCount; ++metadataIndex) {
 				// metadata_info  
@@ -348,7 +351,7 @@ package org.as3commons.bytecode.util {
 		}
 
 
-		protected function deserializeMethodInfos(abcFile:AbcFile, pool:ConstantPool):void {
+		public override function deserializeMethodInfos(abcFile:AbcFile, pool:IConstantPool):void {
 			var methodCount:int = readU30();
 			//trace("MethodInfo count: " + methodCount);
 			for (var methodIndex:int = 0; methodIndex < methodCount; ++methodIndex) {
@@ -371,7 +374,7 @@ package org.as3commons.bytecode.util {
 				//trace("MethodInfo return type: " + methodInfo.returnType);
 				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
 					var mn:BaseMultiname = pool.multinamePool[readU30()];
-					var paramQName:QualifiedName = convertToQualifiedName(mn);
+					var paramQName:QualifiedName = MultinameUtil.convertToQualifiedName(mn);
 					var arg:Argument = new Argument(paramQName);
 					methodInfo.argumentCollection[methodInfo.argumentCollection.length] = arg;
 						//trace("MethodInfo param " + argumentIndex + ": " + arg.toString());
@@ -486,7 +489,7 @@ package org.as3commons.bytecode.util {
 			return -1;
 		}
 
-		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false):Array {
+		public override function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false):Array {
 			var traits:Array = [];
 			var pool:ConstantPool = abcFile.constantPool;
 			var methodInfos:Array = abcFile.methodInfo;
@@ -505,7 +508,7 @@ package org.as3commons.bytecode.util {
 				// }
 				var multiNameIndex:uint = readU30();
 				var traitName:BaseMultiname = pool.multinamePool[multiNameIndex];
-				var traitMultiname:QualifiedName = convertToQualifiedName(traitName);
+				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
 				switch (traitKind) {

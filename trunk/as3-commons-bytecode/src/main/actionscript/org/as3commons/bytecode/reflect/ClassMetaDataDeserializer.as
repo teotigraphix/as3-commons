@@ -24,7 +24,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.MethodFlag;
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
-	import org.as3commons.bytecode.util.AbcDeserializerBase;
+	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.reflect.MetaData;
 	import org.as3commons.reflect.as3commons_reflect;
 
@@ -70,7 +70,7 @@ package org.as3commons.bytecode.reflect {
 			var classNames:Array = [];
 			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
 				var classMultiname:BaseMultiname = constantPool.multinamePool[readU30()];
-				var qualifiedName:QualifiedName = convertToQualifiedName(classMultiname);
+				var qualifiedName:QualifiedName = MultinameUtil.convertToQualifiedName(classMultiname);
 				classNames[classNames.length] = qualifiedName.fullName;
 				typeCache.as3commons_reflect::addDefinitionName(qualifiedName.fullName);
 
