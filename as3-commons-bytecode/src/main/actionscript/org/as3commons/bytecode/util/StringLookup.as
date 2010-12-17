@@ -3,7 +3,19 @@ package org.as3commons.bytecode.util {
 
 	public class StringLookup {
 
-		private static const reservedWords:Array = ['hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'setPropertyIsEnumerable', 'toLocaleString', 'toString', 'valueOf', 'prototype', 'constructor'];
+		private static const UNDERSCORE:String = '_';
+		private static const RESERVED_WORDS:Dictionary = new Dictionary();
+		{
+			RESERVED_WORDS['_hasOwnProperty'] = true;
+			RESERVED_WORDS['_isPrototypeOf'] = true;
+			RESERVED_WORDS['_propertyIsEnumerable'] = true;
+			RESERVED_WORDS['_setPropertyIsEnumerable'] = true;
+			RESERVED_WORDS['_toLocaleString'] = true;
+			RESERVED_WORDS['_toString'] = true;
+			RESERVED_WORDS['_valueOf'] = true;
+			RESERVED_WORDS['_prototype'] = true;
+			RESERVED_WORDS['_constructor'] = true;
+		}
 		private var _internalLookup:Dictionary = new Dictionary();
 
 		private static const suffix:String = (9999 + Math.floor(Math.random() * 9999)).toString();
@@ -14,7 +26,7 @@ package org.as3commons.bytecode.util {
 		}
 
 		protected function makeValidKey(value:String):String {
-			if (reservedWords.indexOf(value) > -1) {
+			if (RESERVED_WORDS[UNDERSCORE + value] == true) {
 				return prefix + value + suffix;
 			}
 			return value;

@@ -24,9 +24,8 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
-	import org.as3commons.bytecode.util.AbcDeserializer;
+	import org.as3commons.bytecode.io.AbcDeserializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
-	import org.as3commons.lang.Assert;
 
 	public class CtorBuilder extends MethodBuilder implements ICtorBuilder {
 

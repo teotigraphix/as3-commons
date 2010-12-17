@@ -38,11 +38,18 @@ package org.as3commons.bytecode.abc {
 		public var majorVersion:int;
 		public var constantPool:ConstantPool;
 
+		/**
+		 * Creates a new <code>AbcFile</code> instance.
+		 *
+		 */
 		public function AbcFile() {
 			super();
 			initAbcFile();
 		}
 
+		/**
+		 * Initializes the current <code>AbcFile</code>.
+		 */
 		protected function initAbcFile():void {
 			constantPool = new ConstantPool();
 			_methodInfo = [];
@@ -63,7 +70,6 @@ package org.as3commons.bytecode.abc {
 			}
 			return -1;
 		}
-
 
 		public function addClassInfo(classInfo:ClassInfo):int {
 			Assert.notNull(classInfo);

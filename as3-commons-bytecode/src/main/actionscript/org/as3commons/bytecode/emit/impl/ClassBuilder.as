@@ -14,37 +14,25 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
-	import flash.utils.Dictionary;
 
-	import org.as3commons.bytecode.abc.AbcFile;
-	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
-	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.Multiname;
-	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
-	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.as3commons_bytecode;
-	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
-	import org.as3commons.bytecode.emit.IMetaDataBuilder;
-	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
-	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
-	import org.as3commons.bytecode.util.AbcDeserializer;
 	import org.as3commons.bytecode.util.EmitUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;

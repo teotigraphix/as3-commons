@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.bytecode.util {
+package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.Endian;
@@ -50,6 +50,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.typeinfo.ClassDefinition;
 	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.typeinfo.Method;
+	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.StringUtils;

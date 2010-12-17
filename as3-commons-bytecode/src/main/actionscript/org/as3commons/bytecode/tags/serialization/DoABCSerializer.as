@@ -16,11 +16,11 @@
 package org.as3commons.bytecode.tags.serialization {
 	import flash.utils.ByteArray;
 
+	import org.as3commons.bytecode.io.AbcDeserializer;
+	import org.as3commons.bytecode.io.AbcSerializer;
 	import org.as3commons.bytecode.tags.DoABCTag;
 	import org.as3commons.bytecode.tags.ISWFTag;
 	import org.as3commons.bytecode.tags.struct.RecordHeader;
-	import org.as3commons.bytecode.util.AbcDeserializer;
-	import org.as3commons.bytecode.util.AbcSerializer;
 	import org.as3commons.bytecode.util.SWFSpec;
 
 	public class DoABCSerializer extends AbstractTagSerializer {

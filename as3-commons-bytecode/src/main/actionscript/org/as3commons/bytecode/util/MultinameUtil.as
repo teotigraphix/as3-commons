@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.util {
+	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
+	import org.as3commons.bytecode.abc.MultinameG;
 	import org.as3commons.bytecode.abc.NamespaceSet;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
@@ -145,7 +147,7 @@ package org.as3commons.bytecode.util {
 		}
 
 		/**
-		 * Returns the package part of a fully qualifed name. Fully qualifed names are expected
+		 * Returns the package part of a fully qualified name. Fully qualifed names are expected
 		 * to be in either of these formats:
 		 * <ul>
 		 * <li>com.classes.test.MyClass</li>
@@ -163,6 +165,28 @@ package org.as3commons.bytecode.util {
 				var idx:int = fullName.lastIndexOf(MultinameUtil.PERIOD);
 				return fullName.substr(0, idx);
 			}
+		}
+
+		public static function convertToQualifiedName(classMultiname:BaseMultiname):QualifiedName {
+			if (classMultiname is QualifiedName) {
+				return classMultiname as QualifiedName;
+			}
+
+			var qualifiedName:QualifiedName = null;
+			if (classMultiname is Multiname) {
+				// A QualifiedName can only have one namespace, so we ensure that this is the case
+				// before attempting conversion
+				var classMultinameAsMultiname:Multiname = classMultiname as Multiname;
+				if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
+					qualifiedName = new QualifiedName(classMultinameAsMultiname.name, classMultinameAsMultiname.namespaceSet.namespaces[0]);
+				} else {
+					trace("Multiname " + classMultiname + " has more than 1 namespace in its namespace set - unable to convert to QualifiedName.");
+				}
+			} else if (classMultiname is MultinameG) {
+				qualifiedName = (classMultiname as MultinameG).qualifiedName;
+			}
+
+			return qualifiedName;
 		}
 
 	}

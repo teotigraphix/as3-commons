@@ -29,11 +29,12 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.bytecode.io.AbstractAbcDeserializer;
 	import org.as3commons.bytecode.swf.SWFFileIO;
 	import org.as3commons.bytecode.tags.serialization.RecordHeaderSerializer;
 	import org.as3commons.bytecode.tags.struct.RecordHeader;
-	import org.as3commons.bytecode.util.AbcDeserializerBase;
 	import org.as3commons.bytecode.util.AbcSpec;
+	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.bytecode.util.SWFSpec;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.AccessorAccess;
@@ -45,7 +46,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
 
-	public class ReflectionDeserializer extends AbcDeserializerBase {
+	public class ReflectionDeserializer extends AbstractAbcDeserializer {
 
 		private static const GETTER_SIGNATURE:String = "get";
 		private static const FORWARD_SLASH:String = '/';
@@ -162,12 +163,12 @@ package org.as3commons.bytecode.reflect {
 
 				var paramCount:int = readU30();
 
-				var returnTypeQName:QualifiedName = convertToQualifiedName(constantPool.multinamePool[readU30()]);
+				var returnTypeQName:QualifiedName = MultinameUtil.convertToQualifiedName(constantPool.multinamePool[readU30()]);
 				methodInfo.as3commons_reflect::setReturnType(returnTypeQName.fullName);
 
 				var params:Array = [];
 				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
-					var paramQName:QualifiedName = convertToQualifiedName(constantPool.multinamePool[readU30()]);
+					var paramQName:QualifiedName = MultinameUtil.convertToQualifiedName(constantPool.multinamePool[readU30()]);
 					var newParam:ByteCodeParameter = new ByteCodeParameter(argumentIndex, paramQName.fullName, applicationDomain);
 					newParam.as3commons_reflect::setName("argument " + argumentIndex.toString());
 					params[params.length] = newParam;
@@ -294,7 +295,7 @@ package org.as3commons.bytecode.reflect {
 				//      class. The entry specified must be a QName. 
 				var classMultiname:BaseMultiname = constantPool.multinamePool[readU30()];
 
-				var qualifiedName:QualifiedName = convertToQualifiedName(classMultiname);
+				var qualifiedName:QualifiedName = MultinameUtil.convertToQualifiedName(classMultiname);
 				instanceInfo.fullName = qualifiedName.fullName;
 				typeCache.as3commons_reflect::addDefinitionName(instanceInfo.fullName);
 				instanceInfo.name = qualifiedName.name;
@@ -314,7 +315,7 @@ package org.as3commons.bytecode.reflect {
 				var interfaceCount:int = readU30();
 				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
 					var mn:BaseMultiname = constantPool.multinamePool[readU30()];
-					var qName:QualifiedName = convertToQualifiedName(mn);
+					var qName:QualifiedName = MultinameUtil.convertToQualifiedName(mn);
 					instanceInfo.interfaces[instanceInfo.interfaces.length] = qName.fullName;
 				}
 				var constructorIndex:uint = readU30();
@@ -358,7 +359,7 @@ package org.as3commons.bytecode.reflect {
 				//  u30 metadata[metadata_count] 
 				// }
 				var traitName:BaseMultiname = pool.multinamePool[readU30()];
-				var traitMultiname:QualifiedName = convertToQualifiedName(traitName);
+				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
 				var namedMultiname:BaseMultiname = null;
@@ -371,7 +372,7 @@ package org.as3commons.bytecode.reflect {
 					case TraitKind.SLOT:
 						readU30();
 						namedMultiname = pool.multinamePool[readU30()];
-						qualifiedName = convertToQualifiedName(namedMultiname);
+						qualifiedName = MultinameUtil.convertToQualifiedName(namedMultiname);
 						var variable:ByteCodeVariable = new ByteCodeVariable(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
 						variable.as3commons_reflect::setIsStatic(isStatic);
 						metaDataContainer = variable;
@@ -392,7 +393,7 @@ package org.as3commons.bytecode.reflect {
 						// }
 						readU30();
 						namedMultiname = pool.multinamePool[readU30()];
-						qualifiedName = convertToQualifiedName(namedMultiname);
+						qualifiedName = MultinameUtil.convertToQualifiedName(namedMultiname);
 						var constant:ByteCodeConstant = new ByteCodeConstant(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
 						constant.as3commons_reflect::setIsStatic(isStatic);
 						metaDataContainer = constant;

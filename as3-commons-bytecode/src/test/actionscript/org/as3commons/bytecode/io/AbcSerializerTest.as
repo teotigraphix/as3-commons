@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.bytecode.util {
+package org.as3commons.bytecode.io {
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.utils.ByteArray;
@@ -34,6 +34,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.swf.AbcClassLoader;
 	import org.as3commons.bytecode.template.BaseClass;
+	import org.as3commons.bytecode.util.AbcSpec;
 
 	public class AbcSerializerTest extends TestCase {
 		private var _fixture:AbcSerializer;
