@@ -46,6 +46,15 @@
             	Parsing results are cached so that possibly resource expensive parsing won't occur next time for the same class.
             </p>
             
+            <p>
+            	Furthermore the library offers runtime class generation which could be used to create mocking or dynamic proxy libraries.
+            </p>
+
+            <p>
+            	The library is thoroughly tested and is being used in the
+            	<a href="http://www.springactionscript.org/">Spring Actionscript</a> project for its <a href="http://www.springactionscript.org/docs/reference/html/the_component_scanner.html">class scanning system</a>.
+            </p>
+            
         </section>
 
     </body>
