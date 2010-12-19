@@ -19,8 +19,33 @@ package org.as3commons.bytecode.testclasses {
 
 	public class TestProxiedClass extends EventDispatcher {
 
+		private var _getter:String = "testGetterValue";
+		private var _getterSetter:uint = 100;
+
+		public var ordinaryProperty:String = "ordinaryValue";
+
 		public function TestProxiedClass(target:IEventDispatcher = null) {
 			super(target);
+		}
+
+		public function returnString():String {
+			return "string";
+		}
+
+		public function returnInt():int {
+			return 10;
+		}
+
+		public function get getter():String {
+			return _getter;
+		}
+
+		public function get getterSetter():uint {
+			return _getterSetter;
+		}
+
+		public function set getterSetter(value:uint):void {
+			_getterSetter = value;
 		}
 	}
 }
