@@ -16,6 +16,8 @@
 package org.as3commons.bytecode.proxy {
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.bytecode.emit.IAbcBuilder;
+
 	/**
 	 * Dispatched when the proxy factory has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
 	 * @eventType flash.events.Event.COMPLETE
@@ -47,8 +49,15 @@ package org.as3commons.bytecode.proxy {
 		function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class = null, applicationDomain:ApplicationDomain = null):ClassProxyInfo;
 		/**
 		 *
+		 *
+		 */
+		function createProxyClasses():IAbcBuilder;
+
+		/**
 		 * @param applicationDomain The <code>ApplicationDomain</code> that will be used to load the generated proxies into. By default <code>ApplicationDomain.currentDomain</code> is used.
 		 */
-		function loadProxies(applicationDomain:ApplicationDomain = null):void;
+		function loadProxyClasses(applicationDomain:ApplicationDomain = null):void;
+
+		function createProxy(clazz:Class, constructorArgs:Array = null):Object;
 	}
 }

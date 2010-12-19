@@ -33,8 +33,36 @@ package org.as3commons.bytecode.reflect {
 			return _visibility;
 		}
 
+		// ----------------------------
+		// isOverride
+		// ----------------------------
+
+		private var _isOverride:Boolean = false;
+
+		public function get isOverride():Boolean {
+			return _isOverride;
+		}
+
+		// ----------------------------
+		// isFinal
+		// ----------------------------
+
+		private var _isFinal:Boolean = false;
+
+		public function get isFinal():Boolean {
+			return _isFinal;
+		}
+
 		as3commons_reflect function setVisibility(value:NamespaceKind):void {
 			_visibility = value;
+		}
+
+		as3commons_reflect function setIsFinal(value:Boolean):void {
+			_isFinal = value;
+		}
+
+		as3commons_reflect function setIsOverride(value:Boolean):void {
+			_isOverride = value;
 		}
 
 	}
