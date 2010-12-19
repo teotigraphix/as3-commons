@@ -654,8 +654,18 @@ package org.as3commons.reflect {
 		 *
 		 * @param name the name of the method
 		 */
-		public function getMethod(name:String):Method {
-			return _methods.get(name);
+		public function getMethod(name:String, namespace:String = null):Method {
+			if (namespace == null) {
+				return _methods.get(name);
+			} else {
+				var mthds:Array = _methods.getArray();
+				for each (var method:Method in mthds) {
+					if ((method.name == name) && (method.namespaceURI == namespace)) {
+						return method;
+					}
+				}
+				return null;
+			}
 		}
 
 		/**
@@ -664,12 +674,22 @@ package org.as3commons.reflect {
 		 *
 		 * @param name the name of the field
 		 */
-		public function getField(name:String):Field {
+		public function getField(name:String, namespace:String = null):Field {
 			//force _fields HashArray to be created
 			if (_fields == null) {
 				createFieldsHashArray();
 			}
-			return _fields.get(name);
+			if (namespace == null) {
+				return _fields.get(name);
+			} else {
+				var flds:Array = _fields.getArray();
+				for each (var field:Field in flds) {
+					if ((field.name == name) && (field.namespaceURI == namespace)) {
+						return field;
+					}
+				}
+				return null;
+			}
 		}
 
 		private var _metaDataLookup:Dictionary;

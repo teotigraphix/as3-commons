@@ -128,6 +128,16 @@ package org.as3commons.reflect {
 		}
 
 		// ----------------------------
+		// qName
+		// ----------------------------
+
+		private var _qName:QName;
+
+		public function get qName():QName {
+			return new QName(_namespaceURI, _name);
+		}
+
+		// ----------------------------
 		// namespaceURI
 		// ----------------------------
 
