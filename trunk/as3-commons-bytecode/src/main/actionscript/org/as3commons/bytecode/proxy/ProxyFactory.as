@@ -4,10 +4,20 @@ package org.as3commons.bytecode.proxy {
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.impl.AbcBuilder;
+	import org.as3commons.bytecode.reflect.ByteCodeAccessor;
+	import org.as3commons.bytecode.reflect.ByteCodeMethod;
+	import org.as3commons.bytecode.reflect.ByteCodeType;
+	import org.as3commons.bytecode.reflect.ByteCodeVariable;
+	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.ClassUtils;
+	import org.as3commons.reflect.Accessor;
+	import org.as3commons.reflect.Method;
+	import org.as3commons.reflect.Type;
+	import org.as3commons.reflect.Variable;
 
 	public class ProxyFactory extends EventDispatcher implements IProxyFactory {
 
@@ -56,9 +66,61 @@ package org.as3commons.bytecode.proxy {
 
 		protected function buildProxy(classProxyInfo:ClassProxyInfo, applicationDomain:ApplicationDomain):void {
 			var className:String = ClassUtils.getFullyQualifiedName(classProxyInfo.proxiedClass);
-			var classParts:Array = className.split('::');
-			var packageBuilder:IPackageBuilder = _abcBuilder.definePackage(classParts[0] + '.' + generateSuffix());
+			if (classProxyInfo.proxyAll == true) {
+				reflectMembers(classProxyInfo, className, applicationDomain);
+			}
+			var classParts:Array = className.split(MultinameUtil.DOUBLE_COLON);
+			var packageBuilder:IPackageBuilder = _abcBuilder.definePackage(classParts[0] + MultinameUtil.PERIOD + generateSuffix());
 			packageBuilder.defineClass(classParts[1], className);
 		}
+
+		protected function reflectMembers(classProxyInfo:ClassProxyInfo, className:String, applicationDomain:ApplicationDomain):void {
+			var type:Type;
+			if (ByteCodeType.getTypeProvider().getTypeCache().contains(className)) {
+				type = ByteCodeType.forName(className, applicationDomain);
+			} else {
+				type = Type.forName(className, applicationDomain);
+			}
+			var isProtected:Boolean;
+			var vsb:NamespaceKind;
+			for each (var method:Method in type.methods) {
+				isProtected = false;
+				if (method is ByteCodeMethod) {
+					vsb = ByteCodeMethod(method).visibility;
+					if (!isPublicOrProtected(vsb)) {
+						return;
+					}
+					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
+				}
+				classProxyInfo.proxyMethod(method.name, method.namespaceURI, isProtected);
+			}
+			for each (var accessor:Accessor in type.accessors) {
+				isProtected = false;
+				if (accessor is ByteCodeAccessor) {
+					vsb = ByteCodeAccessor(accessor).visibility;
+					if (!isPublicOrProtected(vsb)) {
+						return;
+					}
+					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
+				}
+				classProxyInfo.proxyAccessor(accessor.name, accessor.namespaceURI, isProtected);
+			}
+			for each (var variable:Variable in type.variables) {
+				isProtected = false;
+				if (variable is ByteCodeVariable) {
+					vsb = ByteCodeVariable(variable).visibility;
+					if (!isPublicOrProtected(vsb)) {
+						return;
+					}
+					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
+				}
+				classProxyInfo.proxyProperty(variable.name, variable.namespaceURI, isProtected);
+			}
+		}
+
+		protected function isPublicOrProtected(vsb:NamespaceKind):Boolean {
+			return ((vsb !== NamespaceKind.PACKAGE_NAMESPACE) && (vsb !== NamespaceKind.PROTECTED_NAMESPACE));
+		}
+
 	}
 }
