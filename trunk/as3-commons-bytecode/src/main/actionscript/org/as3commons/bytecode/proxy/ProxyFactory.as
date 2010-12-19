@@ -20,7 +20,9 @@ package org.as3commons.bytecode.proxy {
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 
+	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.as3commons_bytecode_proxy;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
@@ -50,6 +52,7 @@ package org.as3commons.bytecode.proxy {
 		private static const INTERCEPTOR_PROPERTYNAME:String = "methodInvocationInterceptor";
 		private var _abcBuilder:IAbcBuilder;
 		private var _domains:Dictionary;
+		private var _nsMultiname:BaseMultiname;
 
 		use namespace as3commons_bytecode_proxy;
 
@@ -245,6 +248,9 @@ package org.as3commons.bytecode.proxy {
 
 		protected function addMethodBody(methodBuilder:IMethodBuilder):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			methodBuilder.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.findpropstrict, [_nsMultiname]);
 			//TODO: generate the darn opcodes...
 		}
 
