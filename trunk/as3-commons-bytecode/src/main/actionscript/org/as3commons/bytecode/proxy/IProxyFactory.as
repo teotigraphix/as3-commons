@@ -58,6 +58,12 @@ package org.as3commons.bytecode.proxy {
 		 */
 		function loadProxyClasses(applicationDomain:ApplicationDomain = null):void;
 
+		/**
+		 *
+		 * @param clazz
+		 * @param constructorArgs
+		 * @return
+		 */
 		function createProxy(clazz:Class, constructorArgs:Array = null):Object;
 	}
 }

@@ -18,6 +18,7 @@ package org.as3commons.bytecode.proxy {
 
 	import flexunit.framework.TestCase;
 
+	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.util.ApplicationUtils;
@@ -51,10 +52,10 @@ package org.as3commons.bytecode.proxy {
 			}
 		}
 
-		public function testLoadProxies():void {
+		public function testCreateProxyClasses():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(TestProxiedClass, null, applicationDomain);
-			_proxyFactory.loadProxyClasses();
+			var builder:IAbcBuilder = _proxyFactory.createProxyClasses();
 		}
 
 	}

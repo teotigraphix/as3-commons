@@ -27,6 +27,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
+	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.impl.AbcBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
@@ -38,11 +39,15 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
+	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.AccessorAccess;
+	import org.as3commons.reflect.Method;
+	import org.as3commons.reflect.Variable;
 
 	public class ProxyFactory extends EventDispatcher implements IProxyFactory {
 
 		private static const CHARACTERS:String = "abcdefghijklmnopqrstuvwxys";
+		private static const INTERCEPTOR_PROPERTYNAME:String = "methodInvocationInterceptor";
 		private var _abcBuilder:IAbcBuilder;
 		private var _domains:Dictionary;
 
@@ -73,7 +78,7 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		public function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class = null, applicationDomain:ApplicationDomain = null):ClassProxyInfo {
-			methodInvocationInterceptorClass(methodInvocationInterceptorClass != null) ? methodInvocationInterceptorClass : BasicMethodInvocationInterceptor;
+			methodInvocationInterceptorClass = (methodInvocationInterceptorClass != null) ? methodInvocationInterceptorClass : BasicMethodInvocationInterceptor;
 			Assert.state(ClassUtils.isImplementationOf(methodInvocationInterceptorClass, IMethodInvocationInterceptor, applicationDomain) == true, "methodInvocationInterceptorClass argument must be a class that implements IMethodInvocationInterceptor");
 			applicationDomain = (applicationDomain != null) ? applicationDomain : ApplicationDomain.currentDomain;
 			if (_domains[applicationDomain] == null) {
@@ -116,14 +121,14 @@ package org.as3commons.bytecode.proxy {
 
 		protected function buildProxy(classProxyInfo:ClassProxyInfo, applicationDomain:ApplicationDomain):void {
 			var className:String = ClassUtils.getFullyQualifiedName(classProxyInfo.proxiedClass);
-			var type:ByteCodeType = ByteCodeType.forName(className, applicationDomain);
-			if (classProxyInfo.proxyAll == true) {
-				reflectMembers(classProxyInfo, type, applicationDomain);
-			}
+			var type:ByteCodeType = ByteCodeType.forName(className.replace(MultinameUtil.DOUBLE_COLON, MultinameUtil.PERIOD), applicationDomain);
 			var classParts:Array = className.split(MultinameUtil.DOUBLE_COLON);
 			var packageBuilder:IPackageBuilder = _abcBuilder.definePackage(classParts[0] + MultinameUtil.PERIOD + generateSuffix());
 			var classBuilder:IClassBuilder = packageBuilder.defineClass(classParts[1], className);
 			addInterceptorProperty(classBuilder);
+			if (classProxyInfo.proxyAll == true) {
+				reflectMembers(classProxyInfo, type, applicationDomain);
+			}
 			var memberInfo:MemberInfo;
 			for each (memberInfo in classProxyInfo.methods) {
 				proxyMethod(classBuilder, type, memberInfo);
@@ -137,52 +142,71 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		protected function addInterceptorProperty(classBuilder:IClassBuilder):void {
-
+			Assert.notNull(classBuilder, "classBuilder argument must not be null");
+			var className:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
+			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(INTERCEPTOR_PROPERTYNAME, className);
+			propertyBuilder.namespace = as3commons_bytecode_proxy;
 		}
 
 		protected function reflectMembers(classProxyInfo:ClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
+			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
 			var isProtected:Boolean;
 			var vsb:NamespaceKind;
-			for each (var method:ByteCodeMethod in type.methods) {
-				if ((method.isStatic) || (method.isFinal)) {
-					continue;
+			for each (var method:Method in type.methods) {
+				var byteCodeMethod:ByteCodeMethod = method as ByteCodeMethod;
+				if (byteCodeMethod != null) {
+					if ((byteCodeMethod.isStatic) || (byteCodeMethod.isFinal)) {
+						continue;
+					}
+					vsb = byteCodeMethod.visibility;
+					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
+					if (!isPublicOrProtected(vsb)) {
+						return;
+					}
+					classProxyInfo.proxyMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI, isProtected);
 				}
-				vsb = method.visibility;
-				isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
-				if (!isPublicOrProtected(vsb)) {
-					return;
-				}
-				classProxyInfo.proxyMethod(method.name, method.namespaceURI, isProtected);
 			}
-			for each (var accessor:ByteCodeAccessor in type.accessors) {
-				if ((accessor.isStatic) || (accessor.isFinal)) {
-					continue;
+			for each (var accessor:Accessor in type.accessors) {
+				var byteCodeAccessor:ByteCodeAccessor = accessor as ByteCodeAccessor;
+				if (byteCodeAccessor != null) {
+					if ((byteCodeAccessor.isStatic) || (byteCodeAccessor.isFinal)) {
+						continue;
+					}
+					vsb = byteCodeAccessor.visibility;
+					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
+					if (!isPublicOrProtected(vsb)) {
+						return;
+					}
+					classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI, isProtected);
 				}
-				vsb = accessor.visibility;
-				isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
-				if (!isPublicOrProtected(vsb)) {
-					return;
-				}
-				classProxyInfo.proxyAccessor(accessor.name, accessor.namespaceURI, isProtected);
 			}
-			for each (var variable:ByteCodeVariable in type.variables) {
-				if ((variable.isStatic) || (variable.isFinal)) {
-					continue;
+			for each (var variable:Variable in type.variables) {
+				var byteCodeVariable:ByteCodeVariable = variable as ByteCodeVariable;
+				if (byteCodeVariable != null) {
+					if ((byteCodeVariable.isStatic) || (byteCodeVariable.isFinal)) {
+						continue;
+					}
+					vsb = byteCodeVariable.visibility;
+					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
+					if (!isPublicOrProtected(vsb)) {
+						return;
+					}
+					classProxyInfo.proxyProperty(byteCodeVariable.name, byteCodeVariable.namespaceURI, isProtected);
 				}
-				vsb = variable.visibility;
-				isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
-				if (!isPublicOrProtected(vsb)) {
-					return;
-				}
-				classProxyInfo.proxyProperty(variable.name, variable.namespaceURI, isProtected);
 			}
 		}
 
-		protected function isPublicOrProtected(vsb:NamespaceKind):Boolean {
-			return ((vsb !== NamespaceKind.PACKAGE_NAMESPACE) && (vsb !== NamespaceKind.PROTECTED_NAMESPACE));
+		protected function isPublicOrProtected(namespaceKind:NamespaceKind):Boolean {
+			Assert.notNull(namespaceKind, "namespaceKind argument must not be null");
+			return ((namespaceKind === NamespaceKind.PACKAGE_NAMESPACE) || (namespaceKind === NamespaceKind.PROTECTED_NAMESPACE));
 		}
 
 		protected function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo):void {
+			Assert.notNull(classBuilder, "classBuilder argument must not be null");
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(memberInfo, "memberInfo argument must not be null");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(memberInfo.qName.localName, memberInfo.qName.uri);
 			methodBuilder.isOverride = true;
 			var method:ByteCodeMethod = type.getMethod(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeMethod;
@@ -196,6 +220,9 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		protected function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo):void {
+			Assert.notNull(classBuilder, "classBuilder argument must not be null");
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(memberInfo, "memberInfo argument must not be null");
 			var accessor:ByteCodeAccessor = type.getField(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeAccessor;
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(accessor.name, accessor.type.fullName, accessor.initializedValue);
 			accessorBuilder.namespace = memberInfo.qName.uri;
@@ -205,6 +232,9 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		protected function proxyProperty(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo):void {
+			Assert.notNull(classBuilder, "classBuilder argument must not be null");
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(memberInfo, "memberInfo argument must not be null");
 			var variable:ByteCodeVariable = type.getField(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeVariable;
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(variable.name, variable.type.fullName, variable.initializedValue);
 			accessorBuilder.namespace = memberInfo.qName.uri;
@@ -214,14 +244,17 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		protected function addMethodBody(methodBuilder:IMethodBuilder):void {
+			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
 			//TODO: generate the darn opcodes...
 		}
 
 		protected function addAccessorBodies(accessorBuilder:IAccessorBuilder):void {
+			Assert.notNull(accessorBuilder, "accessorBuilder argument must not be null");
 			//TODO: generate the darn opcodes...
 		}
 
 		protected function addPropertyAccessorBodies(accessorBuilder:IAccessorBuilder):void {
+			Assert.notNull(accessorBuilder, "accessorBuilder argument must not be null");
 			//TODO: generate the darn opcodes...
 		}
 
