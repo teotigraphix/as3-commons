@@ -13,26 +13,14 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.proxy {
+package org.as3commons.bytecode.testclasses {
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 
-	internal class MemberInfo {
+	public class TestProxiedClass extends EventDispatcher {
 
-		private var _isProtected:Boolean;
-		private var _qName:QName;
-
-		public function MemberInfo(name:String, namespace:String = null, isProtected:Boolean = false) {
-			super();
-			_isProtected = isProtected;
-			_qName = new QName(namespace, name);
+		public function TestProxiedClass(target:IEventDispatcher = null) {
+			super(target);
 		}
-
-		public function get isProtected():Boolean {
-			return _isProtected;
-		}
-
-		public function get qName():QName {
-			return _qName;
-		}
-
 	}
 }
