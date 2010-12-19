@@ -207,6 +207,15 @@ package org.as3commons.bytecode.abc {
 			}
 		}
 
+		public function hasClass(className:String):Boolean {
+			for each (var info:InstanceInfo in instanceInfo) {
+				if (info.classMultiname.fullName == className) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public function toString():String {
 			var strings:Array = [constantPool, "Method Signatures (MethodInfo):", "\t" + _methodInfo.join("\n\t"), metadataInfo.join("\n"), _instanceInfo.join("\n"), _classInfo.join("\n"), _scriptInfo.join("\n"), _methodBodies.join("\n")];
 

@@ -20,6 +20,7 @@ package org.as3commons.bytecode.proxy {
 
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
+	import org.as3commons.bytecode.testclasses.ProxySubClass;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.util.ApplicationUtils;
 	import org.flexunit.asserts.assertStrictlyEquals;
@@ -31,6 +32,7 @@ package org.as3commons.bytecode.proxy {
 
 		public function ProxyFactoryTest(methodName:String = null) {
 			super(methodName);
+			ProxySubClass;
 		}
 
 		override public function setUp():void {
@@ -56,6 +58,7 @@ package org.as3commons.bytecode.proxy {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(TestProxiedClass, null, applicationDomain);
 			var builder:IAbcBuilder = _proxyFactory.createProxyClasses();
+			assertNotNull(builder);
 		}
 
 	}

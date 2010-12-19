@@ -32,6 +32,14 @@ package org.as3commons.bytecode.testclasses {
 			return "string";
 		}
 
+		public function returnStringWithParameters(param:String):String {
+			return "string" + param;
+		}
+
+		public function voidWithParameters(param:String):void {
+			var p:String = param;
+		}
+
 		public function returnInt():int {
 			return 10;
 		}
