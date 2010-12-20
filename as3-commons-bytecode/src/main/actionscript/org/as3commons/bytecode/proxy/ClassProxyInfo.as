@@ -26,7 +26,6 @@ package org.as3commons.bytecode.proxy {
 	 */
 	public class ClassProxyInfo {
 
-		private var _proxyConstructor:Boolean;
 		private var _proxiedClass:Class;
 		private var _methodInvocationInterceptorClass:Class;
 		private var _methods:Array;
@@ -65,14 +64,6 @@ package org.as3commons.bytecode.proxy {
 
 		public function get proxyAll():Boolean {
 			return ((_methods.length + _accessors.length + _properties.length) == 0);
-		}
-
-		public function get proxyConstructor():Boolean {
-			return _proxyConstructor;
-		}
-
-		public function set proxyConstructor(value:Boolean):void {
-			_proxyConstructor = value;
 		}
 
 		public function proxyMethod(methodName:String, namespace:String = null, isProtected:Boolean = false):void {

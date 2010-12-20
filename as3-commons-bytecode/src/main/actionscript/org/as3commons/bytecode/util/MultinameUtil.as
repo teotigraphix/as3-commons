@@ -26,6 +26,7 @@ package org.as3commons.bytecode.util {
 	public final class MultinameUtil {
 
 		public static const DOUBLE_COLON:String = "::";
+		public static const SINGLE_COLON:String = ":";
 		public static const DOUBLE_COLON_REGEXP:RegExp = /[:]+/;
 		public static const PERIOD:String = ".";
 
