@@ -17,24 +17,39 @@ package org.as3commons.bytecode.interception {
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public class BasicMethodInvocationInterceptor extends EventDispatcher implements IMethodInvocationInterceptor {
 
 		private var _interceptors:Array;
 		private var _invocationClass:Class;
 
-		public function BasicMethodInvocationInterceptor(target:IEventDispatcher = null) {
-			super(target);
+		/**
+		 * Creates a new <code>BasicMethodInvocationInterceptor</code> instance.
+		 * @param target
+		 */
+		public function BasicMethodInvocationInterceptor() {
+			super();
+			initBasicMethodInvocationInterceptor();
+		}
+
+		private function initBasicMethodInvocationInterceptor():void {
 			_invocationClass = BasicMethodInvocation;
+			_interceptors = [];
 		}
 
 		public function intercept(targetInstance:Object, methodName:String, targetMethod:Function, arguments:Array = null):* {
-			var invoc:IMethodInvocation = new _invocationClass(targetInstance, methodName, targetMethod, arguments);
 			var proceed:Boolean = true;
-			for each (var interceptor:IInterceptor in _interceptors) {
-				interceptor.intercept(invoc);
-				proceed = invoc.proceed;
-				if (!proceed) {
-					break;
+			if ((_interceptors != null) && (_interceptors.length > 0)) {
+				var invoc:IMethodInvocation = new _invocationClass(targetInstance, methodName, targetMethod, arguments);
+				for each (var interceptor:IInterceptor in _interceptors) {
+					interceptor.intercept(invoc);
+					proceed = invoc.proceed;
+					if (!proceed) {
+						break;
+					}
 				}
 			}
 			if ((proceed) && (targetMethod != null)) {
