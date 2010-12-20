@@ -19,13 +19,43 @@ package org.as3commons.bytecode.interception {
 
 	public class BasicMethodInvocationInterceptor extends EventDispatcher implements IMethodInvocationInterceptor {
 
+		private var _interceptors:Array;
+		private var _invocationClass:Class;
+
 		public function BasicMethodInvocationInterceptor(target:IEventDispatcher = null) {
 			super(target);
+			_invocationClass = BasicMethodInvocation;
 		}
 
 		public function intercept(targetInstance:Object, methodName:String, targetMethod:Function, arguments:Array = null):* {
-			return null;
+			var invoc:IMethodInvocation = new _invocationClass(targetInstance, methodName, targetMethod, arguments);
+			var proceed:Boolean = true;
+			for each (var interceptor:IInterceptor in _interceptors) {
+				interceptor.intercept(invoc);
+				proceed = invoc.proceed;
+				if (!proceed) {
+					break;
+				}
+			}
+			if ((proceed) && (targetMethod != null)) {
+				targetMethod.apply(targetInstance, arguments);
+			}
 		}
 
+		public function get invocationClass():Class {
+			return _invocationClass;
+		}
+
+		public function set invocationClass(value:Class):void {
+			_invocationClass = value;
+		}
+
+		public function get interceptors():Array {
+			return _interceptors;
+		}
+
+		public function set interceptors(value:Array):void {
+			_interceptors = value;
+		}
 	}
 }

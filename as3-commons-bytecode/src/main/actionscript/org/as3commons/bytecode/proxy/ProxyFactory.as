@@ -57,10 +57,16 @@ package org.as3commons.bytecode.proxy {
 
 	public class ProxyFactory extends EventDispatcher implements IProxyFactory {
 
+		//private static constants
 		private static const CHARACTERS:String = "abcdefghijklmnopqrstuvwxys";
 		private static const INTERCEPTOR_PROPERTYNAME:String = "methodInvocationInterceptor";
 		private static const NS_FILENAME_SUFFIX:String = '.as$4';
 		private static const MULTINAME_NAME:String = "intercept";
+		private static const AS3COMMONSBYTECODEPROXY:String = "as3commons_bytecode_proxy";
+		private static const ORGAS3COMMONSBYTECODE:String = "org.as3commons.bytecode";
+		private static const CONSTRUCTOR:String = "constructor";
+
+		//private variables
 		private var _abcBuilder:IAbcBuilder;
 		private var _domains:Dictionary;
 		private var _namespaceQualifiedName:QualifiedName = new QualifiedName("Namespace", LNamespace.PUBLIC, MultinameKind.QNAME);
@@ -191,7 +197,7 @@ package org.as3commons.bytecode.proxy {
 			var className:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(INTERCEPTOR_PROPERTYNAME, className);
 			propertyBuilder.namespace = as3commons_bytecode_proxy;
-			return new QualifiedName("as3commons_bytecode_proxy", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode"));
+			return new QualifiedName(AS3COMMONSBYTECODEPROXY, new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, ORGAS3COMMONSBYTECODE));
 		}
 
 		protected function addConstructor(classBuilder:IClassBuilder, type:ByteCodeType, classProxyInfo:ClassProxyInfo, nsMultiname:Multiname):ICtorBuilder {
@@ -226,7 +232,7 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.setlocal, [paramLocal]) //
 				.addOpcode(Opcode.getlocal_1) //
 				.addOpcode(Opcode.getlocal_0) //
-				.addOpcode(Opcode.pushstring, ["constructor"]) //
+				.addOpcode(Opcode.pushstring, [CONSTRUCTOR]) //
 				.addOpcode(Opcode.pushnull) //
 				.addOpcode(Opcode.getlocal, [paramLocal]) //
 				.addOpcode(Opcode.callproperty, [multiName, 4]) //
