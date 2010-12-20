@@ -25,6 +25,7 @@ package org.as3commons.bytecode.interception {
 		private var _targetInstance:Object;
 		private var _targetMethodName:String;
 		private var _targetMethod:Function;
+		private var _proceed:Boolean = true;
 		private var _arguments:Array;
 		private var _returnValue:*;
 
@@ -43,7 +44,6 @@ package org.as3commons.bytecode.interception {
 		protected function initBasicMethodInvocation(instance:Object, methodName:String, method:Function, args:Array):void {
 			Assert.notNull(instance, "instance argument must not be null");
 			Assert.hasText(methodName, "methodName argument must not be empty or null");
-			Assert.notNull(method, "method argument must not be null");
 			_targetInstance = instance;
 			_targetMethodName = methodName;
 			_targetMethod = method;
@@ -73,5 +73,14 @@ package org.as3commons.bytecode.interception {
 		public function set returnValue(value:*):void {
 			_returnValue = value;
 		}
+
+		public function get proceed():Boolean {
+			return _proceed;
+		}
+
+		public function set proceed(value:Boolean):void {
+			_proceed = value;
+		}
+
 	}
 }

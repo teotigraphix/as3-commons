@@ -15,18 +15,7 @@
 */
 package org.as3commons.bytecode.interception {
 
-	/**
-	 *
-	 * @author Roland Zwaga
-	 */
-	public interface IMethodInvocation {
-		function get targetInstance():Object;
-		function get targetMethodName():String;
-		function get targetMethod():Function;
-		function get arguments():Array;
-		function get proceed():Boolean;
-		function set proceed(value:Boolean):void;
-		function get returnValue():*;
-		function set returnValue(value:*):void;
+	public interface IInterceptor {
+		function intercept(invocation:IMethodInvocation):void;
 	}
 }
