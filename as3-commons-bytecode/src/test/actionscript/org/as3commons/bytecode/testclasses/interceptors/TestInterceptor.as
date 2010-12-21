@@ -13,15 +13,18 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.testclasses {
+package org.as3commons.bytecode.testclasses.interceptors {
+	import org.as3commons.bytecode.interception.IInterceptor;
+	import org.as3commons.bytecode.interception.IMethodInvocation;
 
-	public class SimpleClassWithOneConstructorArgument {
+	public class TestInterceptor implements IInterceptor {
 
-		public var string:String;
-
-		public function SimpleClassWithOneConstructorArgument(str:String) {
+		public function TestInterceptor() {
 			super();
-			string = str;
+		}
+
+		public function intercept(invocation:IMethodInvocation):void {
+			invocation.arguments[0] = 'intercepted';
 		}
 	}
 }

@@ -177,7 +177,7 @@ package org.as3commons.bytecode.proxy {
 				} else {
 					interceptorInstance = IMethodInvocationInterceptor(_methodInvocationInterceptorFunction(clazz, constructorArgs, proxyInfo.methodInvocationInterceptorClass));
 				}
-				constructorArgs.splice(0, 0, interceptorInstance);
+				constructorArgs = (constructorArgs != null) ? [interceptorInstance].concat(constructorArgs) : [interceptorInstance];
 				return ClassUtils.newInstance(cls, constructorArgs);
 			}
 			return null;
@@ -238,7 +238,7 @@ package org.as3commons.bytecode.proxy {
 			for each (var name:String in extendedClasses) {
 				nsa[nsa.length] = new LNamespace(NamespaceKind.STATIC_PROTECTED_NAMESPACE, name);
 			}
-			nsa[nsa.length] = new LNamespace(NamespaceKind.STATIC_PROTECTED_NAMESPACE, BuiltIns.OBJECT.name);
+			//nsa[nsa.length] = new LNamespace(NamespaceKind.STATIC_PROTECTED_NAMESPACE, BuiltIns.OBJECT.name);
 			var nss:NamespaceSet = new NamespaceSet(nsa);
 			return new Multiname(MULTINAME_NAME, nss, MultinameKind.MULTINAME);
 		}
@@ -394,6 +394,7 @@ package org.as3commons.bytecode.proxy {
 		protected function addMethodBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
 			var len:int = methodBuilder.arguments.length;
+			var methodQName:QualifiedName = createMethodQName(methodBuilder);
 			methodBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
@@ -407,7 +408,7 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.getlocal_0) //
-				.addOpcode(Opcode.getsuper, [createMethodQName(methodBuilder)]);
+				.addOpcode(Opcode.getsuper, [methodQName]);
 			if (len > 0) {
 				for (var i:int = 0; i < len; ++i) {
 					methodBuilder.addOpcode(Opcode.getlocal, [(i + 1)]);

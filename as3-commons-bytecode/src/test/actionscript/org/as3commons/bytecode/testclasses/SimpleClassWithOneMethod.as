@@ -15,13 +15,17 @@
 */
 package org.as3commons.bytecode.testclasses {
 
-	public class SimpleClassWithOneConstructorArgument {
+	public class SimpleClassWithOneMethod {
 
-		public var string:String;
+		private var _str:String;
 
-		public function SimpleClassWithOneConstructorArgument(str:String) {
+		public function SimpleClassWithOneMethod(str:String) {
 			super();
-			string = str;
+			_str = str;
+		}
+
+		public function returnString():String {
+			return "originalString";
 		}
 	}
 }

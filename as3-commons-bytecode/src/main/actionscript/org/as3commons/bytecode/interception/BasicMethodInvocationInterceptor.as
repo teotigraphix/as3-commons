@@ -42,8 +42,9 @@ package org.as3commons.bytecode.interception {
 
 		public function intercept(targetInstance:Object, methodName:String, targetMethod:Function, arguments:Array = null):* {
 			var proceed:Boolean = true;
+			var invoc:IMethodInvocation;
 			if ((_interceptors != null) && (_interceptors.length > 0)) {
-				var invoc:IMethodInvocation = new _invocationClass(targetInstance, methodName, targetMethod, arguments);
+				invoc = new _invocationClass(targetInstance, methodName, targetMethod, arguments);
 				for each (var interceptor:IInterceptor in _interceptors) {
 					interceptor.intercept(invoc);
 					proceed = invoc.proceed;
@@ -53,7 +54,9 @@ package org.as3commons.bytecode.interception {
 				}
 			}
 			if ((proceed) && (targetMethod != null)) {
-				targetMethod.apply(targetInstance, arguments);
+				return targetMethod.apply(targetInstance, arguments);
+			} else if ((!proceed) && (targetMethod != null) && (invoc != null)) {
+				return invoc.returnValue;
 			}
 		}
 
