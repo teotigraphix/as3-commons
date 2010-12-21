@@ -77,6 +77,9 @@ package org.as3commons.bytecode.proxy {
 	 */
 	public class ProxyFactory extends EventDispatcher implements IProxyFactory {
 
+		//used namespaces
+		use namespace as3commons_bytecode_proxy;
+
 		//private static constants
 		private static const CHARACTERS:String = "abcdefghijklmnopqrstuvwxys";
 		private static const INTERCEPTOR_PROPERTYNAME:String = "methodInvocationInterceptor";
@@ -93,14 +96,20 @@ package org.as3commons.bytecode.proxy {
 		private var _namespaceQualifiedName:QualifiedName = new QualifiedName("Namespace", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _arrayQualifiedName:QualifiedName = new QualifiedName("Array", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _interceptorRTQName:RuntimeQualifiedName = new RuntimeQualifiedName("methodInvocationInterceptor", MultinameKind.RTQNAME);
+		private var _methodInvocationInterceptorFunction:Function;
 
-		use namespace as3commons_bytecode_proxy;
+		public function get methodInvocationInterceptorFunction():Function {
+			return _methodInvocationInterceptorFunction;
+		}
+
+		public function set methodInvocationInterceptorFunction(value:Function):void {
+			_methodInvocationInterceptorFunction = value;
+		}
 
 		public function ProxyFactory() {
 			super();
 			initProxyFactory();
 		}
-
 
 		public function get domains():Dictionary {
 			return _domains;
@@ -162,7 +171,12 @@ package org.as3commons.bytecode.proxy {
 			var proxyInfo:ProxyInfo = _classProxyLookup[clazz] as ProxyInfo;
 			if (proxyInfo != null) {
 				var cls:Class = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
-				var interceptorInstance:IMethodInvocationInterceptor = new proxyInfo.methodInvocationInterceptorClass();
+				var interceptorInstance:IMethodInvocationInterceptor;
+				if (_methodInvocationInterceptorFunction == null) {
+					interceptorInstance = new proxyInfo.methodInvocationInterceptorClass();
+				} else {
+					interceptorInstance = IMethodInvocationInterceptor(_methodInvocationInterceptorFunction(clazz, constructorArgs, proxyInfo.methodInvocationInterceptorClass));
+				}
 				constructorArgs.splice(0, 0, interceptorInstance);
 				return ClassUtils.newInstance(cls, constructorArgs);
 			}
@@ -189,7 +203,7 @@ package org.as3commons.bytecode.proxy {
 			var ctorBuilder:ICtorBuilder = addConstructor(classBuilder, type, classProxyInfo, nsMultiname);
 			addConstructorBody(ctorBuilder, bytecodeQname, nsMultiname);
 			var accessorBuilder:IAccessorBuilder;
-			if (classProxyInfo.proxyAll == true) {
+			if ((classProxyInfo.proxyAll == true) && (classProxyInfo.onlyProxyConstructor == false)) {
 				reflectMembers(classProxyInfo, type, applicationDomain);
 			}
 			var memberInfo:MemberInfo;

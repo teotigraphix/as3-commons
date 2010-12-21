@@ -65,5 +65,16 @@ package org.as3commons.bytecode.proxy {
 		 * @return
 		 */
 		function createProxy(clazz:Class, constructorArgs:Array = null):Object;
+
+		/**
+		 * An optional function that will be invoked to create the necessary <code>IMethodInvocationInterceptor</code> instance.
+		 * <p>The method will need to have this signature:</p>
+		 * <pre>function(proxiedClass:Class, constructorArgs:Array, methodInvocationInterceptorClass:Class):IMethodInvocationInterceptor</pre>
+		 */
+		function get methodInvocationInterceptorFunction():Function;
+		/**
+		 * @private
+		 */
+		function set methodInvocationInterceptorFunction(value:Function):void;
 	}
 }

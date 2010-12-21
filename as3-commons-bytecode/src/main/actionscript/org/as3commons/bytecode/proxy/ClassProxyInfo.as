@@ -31,6 +31,7 @@ package org.as3commons.bytecode.proxy {
 		private var _methods:Array;
 		private var _accessors:Array;
 		private var _properties:Array;
+		private var _onlyProxyConstructor:Boolean = false;
 
 		/**
 		 * Creates a new <code>ClassProxyInfo</code> instance.
@@ -64,6 +65,14 @@ package org.as3commons.bytecode.proxy {
 
 		public function get proxyAll():Boolean {
 			return ((_methods.length + _accessors.length + _properties.length) == 0);
+		}
+
+		public function get onlyProxyConstructor():Boolean {
+			return _onlyProxyConstructor;
+		}
+
+		public function set onlyProxyConstructor(value:Boolean):void {
+			_onlyProxyConstructor = value;
 		}
 
 		public function proxyMethod(methodName:String, namespace:String = null, isProtected:Boolean = false):void {

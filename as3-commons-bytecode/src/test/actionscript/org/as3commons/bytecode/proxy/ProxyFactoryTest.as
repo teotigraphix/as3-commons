@@ -20,9 +20,12 @@ package org.as3commons.bytecode.proxy {
 	import flexunit.framework.TestCase;
 
 	import org.as3commons.bytecode.emit.IAbcBuilder;
+	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
+	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithOneConstructorArgument;
+	import org.as3commons.bytecode.testclasses.TestInterceptor;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.util.ApplicationUtils;
 	import org.flexunit.asserts.assertStrictlyEquals;
@@ -67,15 +70,23 @@ package org.as3commons.bytecode.proxy {
 		public function testLoadProxyClassForClassWithOneCtorParam():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, applicationDomain);
+			classProxyInfo.onlyProxyConstructor = true;
 			_proxyFactory.createProxyClasses();
+			_proxyFactory.methodInvocationInterceptorFunction = createInterceptor;
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleComplete, 1000));
 			_proxyFactory.loadProxyClasses();
+		}
+
+		protected function createInterceptor(proxiedClass:Class, constructorArgs:Array, methodInvocationInterceptorClass:Class):IMethodInvocationInterceptor {
+			var interceptor:BasicMethodInvocationInterceptor = new methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
+			interceptor.interceptors[interceptor.interceptors.length] = new TestInterceptor();
+			return interceptor;
 		}
 
 		protected function handleComplete(event:Event):void {
 			var instance:SimpleClassWithOneConstructorArgument = _proxyFactory.createProxy(SimpleClassWithOneConstructorArgument, ["testarg"]) as SimpleClassWithOneConstructorArgument;
 			assertNotNull(instance);
-			assertTrue(true);
+			assertEquals('intercepted', instance.string);
 		}
 
 	}
