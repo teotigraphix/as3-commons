@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Introduction to as3commons-reflect</title>
+		<author email="mp@yoolab.com">Martino Piccinato</author>
+	</properties>
+	<body>
+
+		<section name="Introduction">
+
+			<p>
+				The 2 most important classes in this library are the Type and
+				ClassUtils classes.
+				The <a href="asdoc/org/as3commons/reflect/Type.html">Type</a> class will give you all the information
+				of a class while the
+				<a href="asdoc/org/as3commons/reflect/ClassUtils.html">ClassUtils</a> class contains utility
+				methods for working with class objects.
+			</p>
+
+			<p>
+				Using as3commons-reflect is really easy, after reading this short
+				introduction
+				the only thing you might need is having a look at the
+				<a href="asdoc/index.html">API</a>
+				to navigate through the properties and methods exposed by the
+				library. Here below
+				we give some short instructions on how to use the
+				library.
+			</p>
+
+			<p>
+				Assuming you have a class called Person in the package
+				com.company.domain)
+				you want to use reflection on, you start by
+				getting its "Type" in one of the
+				following methods:
+				<br />
+				<br />
+				By class...
+
+				<div class="source">
+					var type:Type = Type.forClass(Person);
+					</div>
+
+				... by instance
+
+				<div class="source">
+					var person:Person = new Person();
+					<br />
+					var type:Type = Type.forInstance(person);
+				</div>
+
+				... or by class name...
+				<div class="source">
+					var type:Type = Type.forName("com.company.domain.Person");
+					<br />
+					// or var type:Type = Type.forName("com.company.domain::Person");
+				</div>
+
+				Once you have a type instance you can get access to all variables,
+				constants,
+				accessors (getters/setters) and methods defined by that type and the
+				properties
+				of the type:
+				<div class="source">
+					type.alias<br />
+					type.accessors<br />
+					type.constants<br />
+					type.constructor<br />
+					type.fields<br />
+					type.fullName<br />
+					type.isDynamic<br />
+					type.isFinal<br />
+					type.isStatic<br />
+					type.isInterface<br />
+					type.methods<br />
+					type.name<br />
+					type.staticConstants<br />
+					type.staticVariables<br />
+					type.variables<br />
+					type.extendsClasses<br />
+					<br />
+					<em>//Method and field acces:</em><br />
+					method:Method = type.methods[0];<br />
+					method:Method = type.getMethod("myMethodName");<br />
+					retType:Type = method.getReturnType();<br />
+					method.invoke(object, [arg1, arg2]);<br />
+					<br />
+					accessor:Accessor = type.accessors[0];<br />
+					accessor:Accessor = type.getField("myAccessorName") as Accessor;<br />
+					<br />
+					<em>//Metadata retrieval and querying:</em><br/>
+					metadata:Metadata = accessor.getMetadata("myMetadata");<br />
+					arg:MetadataArgument = metadata.getArgument("myArg");<br />
+					var has:Boolean = accessor.hasMetadata("myMetadata");<br />
+					var argument:MetaDataArgument = new MetaDataArgument("myArg","myValue");<br/>
+					var metaDataInstance:MetaData = new MetaData("myMetadata",[argument]);<br />
+					var hasExact:Boolean = accessor.hasExactMetadata(metaDataInstance);<br />
+					<br />
+					var containers:Array = type.getMetaDataContainers("Bindable");<br />
+					for each(var metadataContainer:IMetaDataContainer in containers){<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;if (metadataContainer is Method){<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//do something...<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;} else if (metadataContainer is Field){<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//do something else...<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;...<br />
+					}<br />
+				</div>
+			</p>
+			
+			<p>
+				When Flash player 10.1 or higher is installed as3commons-reflect will make use of
+				the describeTypeJSON method available in these players. This will yield a small speed
+				optmization since no XML needs to be parsed.
+				The only limitation of describeTypeJSON is that any alias information (regarding the
+				registerAlias functionality) is not available. For this, or any other reason, ascommons-reflect
+				can be forced to use the regular describeType method by setting the static typeProviderKind
+				property on the Type class:
+				<div class="source">Type.typeProviderKind = TypeProviderKind.XML;</div>
+			</p>
+
+		</section>
+
+	</body>
+</document>
+
