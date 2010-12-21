@@ -39,6 +39,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
+	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.emit.impl.AbcBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
@@ -55,6 +56,25 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.reflect.Method;
 	import org.as3commons.reflect.Variable;
 
+	/**
+	 * Dispatched when the proxy factory has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
+	 * @eventType flash.events.Event.COMPLETE
+	 */
+	[Event(name="complete", type="flash.events.Event")]
+	/**
+	 * Dispatched when the proxy factory has encountered an IO related error.
+	 * @eventType flash.events.IOErrorEvent.IO_ERROR
+	 */
+	[Event(name="ioError", type="flash.events.IOErrorEvent")]
+	/**
+	 * Dispatched when the proxy factory has encountered a SWF verification error.
+	 * @eventType flash.events.IOErrorEvent.VERIFY_ERROR
+	 */
+	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public class ProxyFactory extends EventDispatcher implements IProxyFactory {
 
 		//private static constants
@@ -67,6 +87,7 @@ package org.as3commons.bytecode.proxy {
 		private static const CONSTRUCTOR:String = "constructor";
 
 		//private variables
+		private var _classProxyLookup:Dictionary;
 		private var _abcBuilder:IAbcBuilder;
 		private var _domains:Dictionary;
 		private var _namespaceQualifiedName:QualifiedName = new QualifiedName("Namespace", LNamespace.PUBLIC, MultinameKind.QNAME);
@@ -88,6 +109,7 @@ package org.as3commons.bytecode.proxy {
 		protected function initProxyFactory():void {
 			_abcBuilder = new AbcBuilder();
 			_domains = new Dictionary();
+			_classProxyLookup = new Dictionary();
 		}
 
 		protected function generateSuffix():String {
@@ -116,14 +138,20 @@ package org.as3commons.bytecode.proxy {
 			for (var domain:* in _domains) {
 				var infos:Array = _domains[domain] as Array;
 				for each (var info:ClassProxyInfo in infos) {
-					buildProxy(info, domain);
+					var proxyInfo:ProxyInfo = buildProxy(info, domain);
+					_classProxyLookup[info.proxiedClass] = proxyInfo;
+					proxyInfo.methodInvocationInterceptorClass = info.methodInvocationInterceptorClass;
 				}
 			}
+			_domains = new Dictionary();
 			return _abcBuilder;
 		}
 
 		public function loadProxyClasses(applicationDomain:ApplicationDomain = null):void {
 			applicationDomain = (applicationDomain != null) ? applicationDomain : ApplicationDomain.currentDomain;
+			for (var cls:* in _classProxyLookup) {
+				ProxyInfo(_classProxyLookup[cls]).applicationDomain = applicationDomain;
+			}
 			_abcBuilder.addEventListener(Event.COMPLETE, redispatch);
 			_abcBuilder.addEventListener(IOErrorEvent.IO_ERROR, redispatch);
 			_abcBuilder.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch);
@@ -131,6 +159,13 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		public function createProxy(clazz:Class, constructorArgs:Array = null):Object {
+			var proxyInfo:ProxyInfo = _classProxyLookup[clazz] as ProxyInfo;
+			if (proxyInfo != null) {
+				var cls:Class = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
+				var interceptorInstance:IMethodInvocationInterceptor = new proxyInfo.methodInvocationInterceptorClass();
+				constructorArgs.splice(0, 0, interceptorInstance);
+				return ClassUtils.newInstance(cls, constructorArgs);
+			}
 			return null;
 		}
 
@@ -141,14 +176,15 @@ package org.as3commons.bytecode.proxy {
 			dispatchEvent(event);
 		}
 
-		protected function buildProxy(classProxyInfo:ClassProxyInfo, applicationDomain:ApplicationDomain):void {
+		protected function buildProxy(classProxyInfo:ClassProxyInfo, applicationDomain:ApplicationDomain):ProxyInfo {
 			var className:String = ClassUtils.getFullyQualifiedName(classProxyInfo.proxiedClass);
 			var type:ByteCodeType = ByteCodeType.forName(className.replace(MultinameUtil.DOUBLE_COLON, MultinameUtil.PERIOD), applicationDomain);
 			var classParts:Array = className.split(MultinameUtil.DOUBLE_COLON);
 			var packageName:String = classParts[0] + MultinameUtil.PERIOD + generateSuffix();
 			var packageBuilder:IPackageBuilder = _abcBuilder.definePackage(packageName);
 			var classBuilder:IClassBuilder = packageBuilder.defineClass(classParts[1], className);
-			var nsMultiname:Multiname = createMultiname(packageName + MultinameUtil.SINGLE_COLON + classParts[1], classParts.join(MultinameUtil.SINGLE_COLON), type.extendsClasses);
+			var proxyClassName:String = packageName + MultinameUtil.SINGLE_COLON + classParts[1];
+			var nsMultiname:Multiname = createMultiname(proxyClassName, classParts.join(MultinameUtil.SINGLE_COLON), type.extendsClasses);
 			var bytecodeQname:QualifiedName = addInterceptorProperty(classBuilder);
 			var ctorBuilder:ICtorBuilder = addConstructor(classBuilder, type, classProxyInfo, nsMultiname);
 			addConstructorBody(ctorBuilder, bytecodeQname, nsMultiname);
@@ -166,9 +202,10 @@ package org.as3commons.bytecode.proxy {
 				addAccessorBodies(accessorBuilder, nsMultiname, bytecodeQname);
 			}
 			for each (memberInfo in classProxyInfo.properties) {
-				var accessorBuilder = proxyProperty(classBuilder, type, memberInfo)
+				accessorBuilder = proxyProperty(classBuilder, type, memberInfo)
 				addPropertyAccessorBodies(accessorBuilder, nsMultiname, bytecodeQname);
 			}
+			return new ProxyInfo(proxyClassName.split(MultinameUtil.SINGLE_COLON).join(MultinameUtil.PERIOD));
 		}
 
 		protected function createMultiname(generatedClassName:String, proxiedClassName:String, extendedClasses:Array):Multiname {
@@ -212,7 +249,7 @@ package org.as3commons.bytecode.proxy {
 
 		protected function addConstructorBody(ctorBuilder:ICtorBuilder, bytecodeQname:QualifiedName, multiName:Multiname):void {
 			var len:int = ctorBuilder.arguments.length;
-			var paramLocal:int = len + 1;
+			var paramLocal:int = len;
 			ctorBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
@@ -342,10 +379,40 @@ package org.as3commons.bytecode.proxy {
 
 		protected function addMethodBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			var len:int = methodBuilder.arguments.length;
 			methodBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
-				.addOpcode(Opcode.findpropstrict, [multiName]);
-			//TODO: generate the darn opcodes...
+				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
+				.addOpcode(Opcode.getproperty, [bytecodeQname]) //
+				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
+				.addOpcode(Opcode.findpropstrict, [_interceptorRTQName]) //
+				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
+				.addOpcode(Opcode.getproperty, [bytecodeQname]) //
+				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
+				.addOpcode(Opcode.getproperty, [_interceptorRTQName]) //
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.getsuper, [createMethodQName(methodBuilder)]);
+			if (len > 0) {
+				for (var i:int = 0; i < len; ++i) {
+					methodBuilder.addOpcode(Opcode.getlocal, [(i + 1)]);
+				}
+				methodBuilder.addOpcode(Opcode.newarray, [len - 1]) //
+				methodBuilder.addOpcode(Opcode.callproperty, [multiName, 4]);
+			} else {
+				methodBuilder.addOpcode(Opcode.callproperty, [multiName, 3]);
+			}
+			if (methodBuilder.returnType == BuiltIns.VOID.fullName) {
+				methodBuilder.addOpcode(Opcode.pop).addOpcode(Opcode.returnvoid);
+			} else {
+				methodBuilder.addOpcode(Opcode.returnvalue);
+			}
+		}
+
+		protected function createMethodQName(methodBuilder:IMethodBuilder):QualifiedName {
+			var ns:LNamespace = (methodBuilder.visibility == MemberVisibility.PUBLIC) ? LNamespace.PUBLIC : new LNamespace(NamespaceKind.PROTECTED_NAMESPACE, "");
+			return new QualifiedName(methodBuilder.name, ns);
 		}
 
 		protected function addAccessorBodies(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {

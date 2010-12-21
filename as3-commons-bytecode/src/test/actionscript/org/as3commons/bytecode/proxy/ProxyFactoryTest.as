@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy {
+	import flash.events.Event;
 	import flash.system.ApplicationDomain;
 
 	import flexunit.framework.TestCase;
@@ -21,9 +22,11 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
+	import org.as3commons.bytecode.testclasses.SimpleClassWithOneConstructorArgument;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.util.ApplicationUtils;
 	import org.flexunit.asserts.assertStrictlyEquals;
+	import org.flexunit.async.Async;
 	import org.flexunit.internals.namespaces.classInternal;
 
 	public class ProxyFactoryTest extends TestCase {
@@ -59,6 +62,20 @@ package org.as3commons.bytecode.proxy {
 			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(TestProxiedClass, null, applicationDomain);
 			var builder:IAbcBuilder = _proxyFactory.createProxyClasses();
 			assertNotNull(builder);
+		}
+
+		public function testLoadProxyClassForClassWithOneCtorParam():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, applicationDomain);
+			_proxyFactory.createProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		protected function handleComplete(event:Event):void {
+			var instance:SimpleClassWithOneConstructorArgument = _proxyFactory.createProxy(SimpleClassWithOneConstructorArgument, ["testarg"]) as SimpleClassWithOneConstructorArgument;
+			assertNotNull(instance);
+			assertTrue(true);
 		}
 
 	}

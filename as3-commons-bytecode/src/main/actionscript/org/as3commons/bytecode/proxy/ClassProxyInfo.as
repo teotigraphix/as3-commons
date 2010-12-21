@@ -24,7 +24,7 @@ package org.as3commons.bytecode.proxy {
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class ClassProxyInfo {
+	public final class ClassProxyInfo {
 
 		private var _proxiedClass:Class;
 		private var _methodInvocationInterceptorClass:Class;
