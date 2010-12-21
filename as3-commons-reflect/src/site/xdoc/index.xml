@@ -10,11 +10,11 @@
             <div id="downloadbox">
                 <h5>Get latest stable</h5>
                 <p>
-                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-reflect/1.3.3/as3commons-reflect-1.3.3.swc">
+                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-reflect/1.3.3.1/as3commons-reflect-1.3.3.1.swc">
                         <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
                         Download
                     </a>
-                    latest stable (1.3.3)
+                    latest stable (1.3.3.1)
                 </p>
                 <br/>
                 <h5>Get lastest development snapshot</h5>
@@ -39,6 +39,11 @@
             	accessors, methods, metadata etc. etc. by parsing the xml returned by 
             	<code>flash.utils.describeType</code>. Parsing results are cached so that
             	possibly resource expensive parsing won't occur next time for the same class.
+            </p>
+            
+            <p>
+            	When Flash player 10.1 or higher is installed, instead of using the native describeType
+            	method the new describeTypeJSON method is used to retrieve the type information.
             </p>
             
             <p>
