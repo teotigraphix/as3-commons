@@ -16,8 +16,8 @@
 package org.as3commons.bytecode.interception {
 	import flexunit.framework.TestCase;
 
-	import org.as3commons.bytecode.testclasses.TestBlockingInterceptor;
-	import org.as3commons.bytecode.testclasses.TestInterceptor;
+	import org.as3commons.bytecode.testclasses.interceptors.TestBlockingInterceptor;
+	import org.as3commons.bytecode.testclasses.interceptors.TestInterceptor;
 
 	public class BasicMethodInvocationInterceptorTest extends TestCase {
 
