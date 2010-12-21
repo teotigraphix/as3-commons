@@ -29,14 +29,18 @@ package org.as3commons.reflect.testclasses {
 	 * </p>
 	 */
 	public class ComplexClass {
-			
+
 		private var _name:String;
 		private var _number:Number;
-			
+
 		public function ComplexClass(name:String, number:Number, otherParameters:Array = null) {
 			this._name = name;
 			this._number = number;
 		}
-	
+
+		public function simpleMethod():void {
+
+		}
+
 	}
 }

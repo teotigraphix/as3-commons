@@ -120,9 +120,9 @@ package org.as3commons.reflect {
 			var result:Array = [];
 
 			for each (var methodObj:Object in methods) {
-				if (methodObj.declaredBy != type.fullName) {
+				/*if (methodObj.declaredBy != type.fullName) {
 					continue;
-				}
+				}*/
 				var params:Array = parseParameters(methodObj.parameters, applicationDomain);
 				var method:Method = new Method(type.fullName, methodObj.name, isStatic, params, methodObj.returnType, applicationDomain);
 				method.as3commons_reflect::setNamespaceURI(methodObj.uri);
@@ -146,9 +146,9 @@ package org.as3commons.reflect {
 			var result:Array = [];
 
 			for each (var acc:Object in accessors) {
-				if (acc.declaredBy != type.fullName) {
+				/*if (acc.declaredBy != type.fullName) {
 					continue;
-				}
+				}*/
 				var accessor:Accessor = new Accessor(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
 				accessor.as3commons_reflect::setNamespaceURI(acc.uri);
 				parseMetaData(acc.metadata, accessor);
