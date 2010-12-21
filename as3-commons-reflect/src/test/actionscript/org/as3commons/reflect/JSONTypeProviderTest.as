@@ -34,7 +34,7 @@ package org.as3commons.reflect {
 			assertFalse(type.isStatic);
 			//accessors
 			assertEquals(JSONTypeProvider.ALIAS_NOT_AVAILABLE, type.alias);
-			assertEquals(3, type.accessors.length);
+			assertEquals(4, type.accessors.length);
 			//constructor
 			assertStrictlyEquals(type, type.constructor.declaringType);
 			assertEquals(2, type.constructor.parameters.length);
@@ -57,7 +57,7 @@ package org.as3commons.reflect {
 			//interfaces
 			assertEquals(1, type.interfaces.length);
 			//methods
-			assertEquals(8, type.methods.length);
+			assertEquals(11, type.methods.length);
 			var m:Method = type.getMethod("someMethodWithRestParams");
 			var i:int = 0;
 		}
