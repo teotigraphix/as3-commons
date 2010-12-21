@@ -68,8 +68,8 @@
 			<tr>
 				<td><strong>Reflect</strong></td>
 				<td>A reflection API for ActionScript 3.0. Being a pure actionscript library it can be used for any Flash/Flex/AIR project. It functions as a wrapper for the native describeType and describeTypeJSON methods. Results are statically cached to improve performance.</td>
-				<td>1.3.3</td>
-				<td>13 Dec 2010</td>
+				<td>1.3.3.1</td>
+				<td>21 Dec 2010</td>
 			</tr>
 			<tr>
 				<td><strong>Serialization</strong></td>
