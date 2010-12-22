@@ -96,6 +96,7 @@ package org.as3commons.bytecode.proxy {
 		private var _namespaceQualifiedName:QualifiedName = new QualifiedName("Namespace", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _arrayQualifiedName:QualifiedName = new QualifiedName("Array", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _interceptorRTQName:RuntimeQualifiedName = new RuntimeQualifiedName("methodInvocationInterceptor", MultinameKind.RTQNAME);
+		private var _interceptQName:QualifiedName = new QualifiedName("intercept", new LNamespace(NamespaceKind.NAMESPACE, "org.as3commons.bytecode.interception:IMethodInvocationInterceptor"));
 		private var _methodInvocationInterceptorFunction:Function;
 
 		public function get methodInvocationInterceptorFunction():Function {
@@ -275,25 +276,37 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
 				.addOpcode(Opcode.getlocal_1) //
 				.addOpcode(Opcode.setproperty, [_interceptorRTQName]);
-			for (var i:int = 1; i < len; ++i) {
-				ctorBuilder.addOpcode(Opcode.getlocal, [(i + 1)]);
+			if (len > 1) {
+				for (var i:int = 1; i < len; ++i) {
+					ctorBuilder.addOpcode(Opcode.getlocal, [(i + 1)]);
+				}
+				ctorBuilder.addOpcode(Opcode.newarray, [len - 1]) //
+					.addOpcode(Opcode.coerce, [_arrayQualifiedName]) //
+					.addOpcode(Opcode.setlocal, [paramLocal]) //
+					.addOpcode(Opcode.getlocal_1) //
+					.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.pushstring, [CONSTRUCTOR]) //
+					.addOpcode(Opcode.pushnull) //
+					.addOpcode(Opcode.getlocal, [paramLocal]) //
+					.addOpcode(Opcode.callproperty, [multiName, 4]) //
+					.addOpcode(Opcode.pop) //
+					.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.getlocal, [paramLocal]) //
+					.addOpcode(Opcode.pushbyte, [0]) //
+					.addOpcode(Opcode.getproperty, [new MultinameL(multiName.namespaceSet)]) //
+					.addOpcode(Opcode.constructsuper, [len - 1]) //
+					.addOpcode(Opcode.returnvoid);
+			} else {
+				ctorBuilder.addOpcode(Opcode.getlocal_1) //
+					.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.pushstring, [CONSTRUCTOR]) //
+					.addOpcode(Opcode.pushnull) //
+					.addOpcode(Opcode.callproperty, [_interceptQName, 3]) //
+					.addOpcode(Opcode.pop) //
+					.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.constructsuper, [0]) //
+					.addOpcode(Opcode.returnvoid); //
 			}
-			ctorBuilder.addOpcode(Opcode.newarray, [len - 1]) //
-				.addOpcode(Opcode.coerce, [_arrayQualifiedName]) //
-				.addOpcode(Opcode.setlocal, [paramLocal]) //
-				.addOpcode(Opcode.getlocal_1) //
-				.addOpcode(Opcode.getlocal_0) //
-				.addOpcode(Opcode.pushstring, [CONSTRUCTOR]) //
-				.addOpcode(Opcode.pushnull) //
-				.addOpcode(Opcode.getlocal, [paramLocal]) //
-				.addOpcode(Opcode.callproperty, [multiName, 4]) //
-				.addOpcode(Opcode.pop) //
-				.addOpcode(Opcode.getlocal_0) //
-				.addOpcode(Opcode.getlocal, [paramLocal]) //
-				.addOpcode(Opcode.pushbyte, [0]) //
-				.addOpcode(Opcode.getproperty, [new MultinameL(multiName.namespaceSet)]) //
-				.addOpcode(Opcode.constructsuper, [len - 1]) //
-				.addOpcode(Opcode.returnvoid); //
 		}
 
 		protected function reflectMembers(classProxyInfo:ClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {

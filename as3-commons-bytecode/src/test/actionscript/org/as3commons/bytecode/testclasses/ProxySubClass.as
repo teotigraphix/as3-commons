@@ -23,11 +23,12 @@ package org.as3commons.bytecode.testclasses {
 
 		as3commons_bytecode_proxy var methodInvocationInterceptor:IMethodInvocationInterceptor;
 
-		public function ProxySubClass(interceptor:IMethodInvocationInterceptor, target:IEventDispatcher = null) {
+		public function ProxySubClass(interceptor:IMethodInvocationInterceptor /*, target:IEventDispatcher = null*/) {
 			as3commons_bytecode_proxy::methodInvocationInterceptor = interceptor;
-			var params:Array = [target];
-			interceptor.intercept(this, "constructor", null, params);
-			super(params[0])
+			//var params:Array = [target];
+			interceptor.intercept(this, "constructor", null);
+			//interceptor.intercept(this, "constructor", null, params);
+			super( /*params[0]*/)
 		}
 
 		override public function returnString():String {

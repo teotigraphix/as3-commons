@@ -105,7 +105,7 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		protected function handleMethodTestComplete(event:Event):void {
-			var instance:SimpleClassWithOneMethod = _proxyFactory.createProxy(SimpleClassWithOneMethod, ['testarg']) as SimpleClassWithOneMethod;
+			var instance:SimpleClassWithOneMethod = _proxyFactory.createProxy(SimpleClassWithOneMethod) as SimpleClassWithOneMethod;
 			assertNotNull(instance);
 			assertEquals('interceptedReturnValue', instance.returnString());
 		}
