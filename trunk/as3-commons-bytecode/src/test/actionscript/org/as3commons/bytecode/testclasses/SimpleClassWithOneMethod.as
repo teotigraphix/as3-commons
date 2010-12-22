@@ -17,11 +17,8 @@ package org.as3commons.bytecode.testclasses {
 
 	public class SimpleClassWithOneMethod {
 
-		private var _str:String;
-
-		public function SimpleClassWithOneMethod(str:String) {
+		public function SimpleClassWithOneMethod() {
 			super();
-			_str = str;
 		}
 
 		public function returnString():String {
