@@ -361,7 +361,7 @@ package org.as3commons.bytecode.proxy {
 
 		protected function isPublicOrProtectedOrCustom(namespaceKind:NamespaceKind):Boolean {
 			Assert.notNull(namespaceKind, "namespaceKind argument must not be null");
-			return ((namespaceKind === NamespaceKind.PACKAGE_NAMESPACE) || (namespaceKind === NamespaceKind.PROTECTED_NAMESPACE) || (namespaceKind === NamespaceKind.NAMESPACE);
+			return ((namespaceKind === NamespaceKind.PACKAGE_NAMESPACE) || (namespaceKind === NamespaceKind.PROTECTED_NAMESPACE) || (namespaceKind === NamespaceKind.NAMESPACE));
 		}
 
 		protected function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo):IMethodBuilder {
