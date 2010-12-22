@@ -323,7 +323,7 @@ package org.as3commons.bytecode.proxy {
 					}
 					vsb = byteCodeMethod.visibility;
 					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
-					if (!isPublicOrProtected(vsb)) {
+					if (!isPublicOrProtectedOrCustom(vsb)) {
 						return;
 					}
 					classProxyInfo.proxyMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI, isProtected);
@@ -337,7 +337,7 @@ package org.as3commons.bytecode.proxy {
 					}
 					vsb = byteCodeAccessor.visibility;
 					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
-					if (!isPublicOrProtected(vsb)) {
+					if (!isPublicOrProtectedOrCustom(vsb)) {
 						return;
 					}
 					classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI, isProtected);
@@ -351,7 +351,7 @@ package org.as3commons.bytecode.proxy {
 					}
 					vsb = byteCodeVariable.visibility;
 					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
-					if (!isPublicOrProtected(vsb)) {
+					if (!isPublicOrProtectedOrCustom(vsb)) {
 						return;
 					}
 					classProxyInfo.proxyProperty(byteCodeVariable.name, byteCodeVariable.namespaceURI, isProtected);
@@ -359,9 +359,9 @@ package org.as3commons.bytecode.proxy {
 			}
 		}
 
-		protected function isPublicOrProtected(namespaceKind:NamespaceKind):Boolean {
+		protected function isPublicOrProtectedOrCustom(namespaceKind:NamespaceKind):Boolean {
 			Assert.notNull(namespaceKind, "namespaceKind argument must not be null");
-			return ((namespaceKind === NamespaceKind.PACKAGE_NAMESPACE) || (namespaceKind === NamespaceKind.PROTECTED_NAMESPACE));
+			return ((namespaceKind === NamespaceKind.PACKAGE_NAMESPACE) || (namespaceKind === NamespaceKind.PROTECTED_NAMESPACE) || (namespaceKind === NamespaceKind.NAMESPACE);
 		}
 
 		protected function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo):IMethodBuilder {
