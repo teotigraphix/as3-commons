@@ -22,6 +22,7 @@ package org.as3commons.bytecode.interception {
 	 */
 	public class BasicMethodInvocation implements IMethodInvocation {
 
+		private var _kind:InvocationKind;
 		private var _targetInstance:Object;
 		private var _targetMethodName:String;
 		private var _targetMethod:Function;
@@ -36,18 +37,24 @@ package org.as3commons.bytecode.interception {
 		 * @param method
 		 * @param args
 		 */
-		public function BasicMethodInvocation(instance:Object, methodName:String, method:Function, args:Array = null) {
+		public function BasicMethodInvocation(instance:Object, kind:InvocationKind, methodName:String, method:Function, args:Array = null) {
 			super();
-			initBasicMethodInvocation(instance, methodName, method, args);
+			initBasicMethodInvocation(instance, kind, methodName, method, args);
 		}
 
-		protected function initBasicMethodInvocation(instance:Object, methodName:String, method:Function, args:Array):void {
+		protected function initBasicMethodInvocation(instance:Object, kind:InvocationKind, methodName:String, method:Function, args:Array):void {
 			Assert.notNull(instance, "instance argument must not be null");
+			Assert.notNull(kind, "kind argument must not be null");
 			Assert.hasText(methodName, "methodName argument must not be empty or null");
+			_kind = kind;
 			_targetInstance = instance;
 			_targetMethodName = methodName;
 			_targetMethod = method;
 			_arguments = args;
+		}
+
+		public function get kind():InvocationKind {
+			return _kind;
 		}
 
 		public function get targetInstance():Object {

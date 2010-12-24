@@ -22,11 +22,13 @@ package org.as3commons.bytecode.proxy {
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.MultinameL;
 	import org.as3commons.bytecode.abc.NamespaceSet;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.RuntimeQualifiedName;
+	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
@@ -41,6 +43,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.emit.impl.AbcBuilder;
+	import org.as3commons.bytecode.emit.impl.MethodBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 	import org.as3commons.bytecode.reflect.ByteCodeAccessor;
@@ -95,9 +98,14 @@ package org.as3commons.bytecode.proxy {
 		private var _domains:Dictionary;
 		private var _namespaceQualifiedName:QualifiedName = new QualifiedName("Namespace", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _arrayQualifiedName:QualifiedName = new QualifiedName("Array", LNamespace.PUBLIC, MultinameKind.QNAME);
+		private var _invocationKindQualifiedName:QualifiedName = new QualifiedName("InvocationKind", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.interception"), MultinameKind.QNAME);
 		private var _interceptorRTQName:RuntimeQualifiedName = new RuntimeQualifiedName("methodInvocationInterceptor", MultinameKind.RTQNAME);
 		private var _interceptQName:QualifiedName = new QualifiedName("intercept", new LNamespace(NamespaceKind.NAMESPACE, "org.as3commons.bytecode.interception:IMethodInvocationInterceptor"));
 		private var _methodInvocationInterceptorFunction:Function;
+		private var _ConstructorKindQName:QualifiedName = new QualifiedName("CONSTRUCTOR", LNamespace.PUBLIC);
+		private var _MethodKindQName:QualifiedName = new QualifiedName("METHOD", LNamespace.PUBLIC);
+		private var _GetterKindQName:QualifiedName = new QualifiedName("GETTER", LNamespace.PUBLIC);
+		private var _SetterKindQName:QualifiedName = new QualifiedName("SETTER", LNamespace.PUBLIC);
 
 		public function get methodInvocationInterceptorFunction():Function {
 			return _methodInvocationInterceptorFunction;
@@ -213,12 +221,7 @@ package org.as3commons.bytecode.proxy {
 				addMethodBody(methodBuilder, nsMultiname, bytecodeQname);
 			}
 			for each (memberInfo in classProxyInfo.accessors) {
-				accessorBuilder = proxyAccessor(classBuilder, type, memberInfo);
-				addAccessorBodies(accessorBuilder, nsMultiname, bytecodeQname);
-			}
-			for each (memberInfo in classProxyInfo.properties) {
-				accessorBuilder = proxyProperty(classBuilder, type, memberInfo)
-				addPropertyAccessorBodies(accessorBuilder, nsMultiname, bytecodeQname);
+				accessorBuilder = proxyAccessor(classBuilder, type, memberInfo, nsMultiname, bytecodeQname);
 			}
 			return new ProxyInfo(proxyClassName.split(MultinameUtil.SINGLE_COLON).join(MultinameUtil.PERIOD));
 		}
@@ -285,23 +288,30 @@ package org.as3commons.bytecode.proxy {
 					.addOpcode(Opcode.setlocal, [paramLocal]) //
 					.addOpcode(Opcode.getlocal_1) //
 					.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
+					.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
+					.addOpcode(Opcode.getproperty, [_ConstructorKindQName]) //
 					.addOpcode(Opcode.pushstring, [CONSTRUCTOR]) //
-					.addOpcode(Opcode.pushnull) //
 					.addOpcode(Opcode.getlocal, [paramLocal]) //
 					.addOpcode(Opcode.callproperty, [multiName, 4]) //
 					.addOpcode(Opcode.pop) //
-					.addOpcode(Opcode.getlocal_0) //
-					.addOpcode(Opcode.getlocal, [paramLocal]) //
-					.addOpcode(Opcode.pushbyte, [0]) //
-					.addOpcode(Opcode.getproperty, [new MultinameL(multiName.namespaceSet)]) //
-					.addOpcode(Opcode.constructsuper, [len - 1]) //
+					.addOpcode(Opcode.getlocal_0);
+				for (i = 0; i < len - 1; ++i) {
+					ctorBuilder.addOpcode(Opcode.getlocal, [paramLocal]) //
+						.addOpcode(Opcode.pushbyte, [i]) //
+						.addOpcode(Opcode.getproperty, [new MultinameL(multiName.namespaceSet)]) //
+				}
+				ctorBuilder.addOpcode(Opcode.constructsuper, [len - 1]) //
 					.addOpcode(Opcode.returnvoid);
 			} else {
 				ctorBuilder.addOpcode(Opcode.getlocal_1) //
 					.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
+					.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
+					.addOpcode(Opcode.getproperty, [_ConstructorKindQName]) //
 					.addOpcode(Opcode.pushstring, [CONSTRUCTOR]) //
 					.addOpcode(Opcode.pushnull) //
-					.addOpcode(Opcode.callproperty, [_interceptQName, 3]) //
+					.addOpcode(Opcode.callproperty, [_interceptQName, 4]) //
 					.addOpcode(Opcode.pop) //
 					.addOpcode(Opcode.getlocal_0) //
 					.addOpcode(Opcode.constructsuper, [0]) //
@@ -343,20 +353,6 @@ package org.as3commons.bytecode.proxy {
 					classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI, isProtected);
 				}
 			}
-			for each (var variable:Variable in type.variables) {
-				var byteCodeVariable:ByteCodeVariable = variable as ByteCodeVariable;
-				if (byteCodeVariable != null) {
-					if ((byteCodeVariable.isStatic) || (byteCodeVariable.isFinal)) {
-						continue;
-					}
-					vsb = byteCodeVariable.visibility;
-					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
-					if (!isPublicOrProtectedOrCustom(vsb)) {
-						return;
-					}
-					classProxyInfo.proxyProperty(byteCodeVariable.name, byteCodeVariable.namespaceURI, isProtected);
-				}
-			}
 		}
 
 		protected function isPublicOrProtectedOrCustom(namespaceKind:NamespaceKind):Boolean {
@@ -380,7 +376,7 @@ package org.as3commons.bytecode.proxy {
 			return methodBuilder;
 		}
 
-		protected function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo):IAccessorBuilder {
+		protected function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName):IAccessorBuilder {
 			Assert.notNull(classBuilder, "classBuilder argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(memberInfo, "memberInfo argument must not be null");
@@ -389,18 +385,13 @@ package org.as3commons.bytecode.proxy {
 			accessorBuilder.namespace = memberInfo.qName.uri;
 			accessorBuilder.isOverride = true;
 			accessorBuilder.access = accessor.access;
-			return accessorBuilder;
-		}
-
-		protected function proxyProperty(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo):IAccessorBuilder {
-			Assert.notNull(classBuilder, "classBuilder argument must not be null");
-			Assert.notNull(type, "type argument must not be null");
-			Assert.notNull(memberInfo, "memberInfo argument must not be null");
-			var variable:ByteCodeVariable = type.getField(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeVariable;
-			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(variable.name, variable.type.fullName, variable.initializedValue);
-			accessorBuilder.namespace = memberInfo.qName.uri;
-			accessorBuilder.isOverride = true;
-			accessorBuilder.access = AccessorAccess.READ_WRITE;
+			accessorBuilder.createPrivateProperty = false;
+			accessorBuilder.createGetterFunction = function(accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait):IMethodBuilder {
+				return createGetter(accessorBuilder, multiName, bytecodeQname);
+			}
+			accessorBuilder.createSetterFunction = function(accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait):IMethodBuilder {
+				return createSetter(accessorBuilder, multiName, bytecodeQname);
+			}
 			return accessorBuilder;
 		}
 
@@ -419,17 +410,23 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_interceptorRTQName]) //
 				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
+				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
+				.addOpcode(Opcode.getproperty, [_MethodKindQName]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
-				.addOpcode(Opcode.getlocal_0) //
-				.addOpcode(Opcode.getsuper, [methodQName]);
 			if (len > 0) {
 				for (var i:int = 0; i < len; ++i) {
 					methodBuilder.addOpcode(Opcode.getlocal, [(i + 1)]);
 				}
 				methodBuilder.addOpcode(Opcode.newarray, [len - 1]) //
-				methodBuilder.addOpcode(Opcode.callproperty, [multiName, 4]);
+					.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.getsuper, [methodQName]) //
+					.addOpcode(Opcode.callproperty, [multiName, 5]);
 			} else {
-				methodBuilder.addOpcode(Opcode.callproperty, [multiName, 3]);
+				methodBuilder.addOpcode(Opcode.pushnull) //
+					.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.getsuper, [methodQName]) //
+					.addOpcode(Opcode.callproperty, [multiName, 5]);
 			}
 			if (methodBuilder.returnType == BuiltIns.VOID.fullName) {
 				methodBuilder.addOpcode(Opcode.pop).addOpcode(Opcode.returnvoid);
@@ -438,19 +435,79 @@ package org.as3commons.bytecode.proxy {
 			}
 		}
 
+		protected function createMethod(accessorBuilder:IAccessorBuilder):IMethodBuilder {
+			var mb:MethodBuilder = new MethodBuilder();
+			mb.name = accessorBuilder.name;
+			mb.namespace = accessorBuilder.namespace;
+			mb.isFinal = accessorBuilder.isFinal;
+			mb.isOverride = accessorBuilder.isOverride;
+			mb.packageName = accessorBuilder.packageName;
+			return mb;
+		}
+
+		protected function createGetter(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):IMethodBuilder {
+			var mb:IMethodBuilder = createMethod(accessorBuilder);
+			mb.isOverride = true;
+			mb.returnType = accessorBuilder.type;
+			addGetterBody(mb, multiName, bytecodeQname);
+			return mb;
+		}
+
+		protected function createSetter(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):IMethodBuilder {
+			var mb:IMethodBuilder = createMethod(accessorBuilder);
+			mb.isOverride = true;
+			mb.returnType = BuiltIns.VOID.fullName;
+			mb.defineArgument(accessorBuilder.type);
+			addSetterBody(mb, multiName, bytecodeQname);
+			return mb;
+		}
+
+		protected function addGetterBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
+			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			var methodQName:QualifiedName = createMethodQName(methodBuilder);
+			methodBuilder.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
+				.addOpcode(Opcode.getproperty, [bytecodeQname]) //
+				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
+				.addOpcode(Opcode.findpropstrict, [_interceptorRTQName]) //
+				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
+				.addOpcode(Opcode.getproperty, [bytecodeQname]) //
+				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
+				.addOpcode(Opcode.getproperty, [_interceptorRTQName]) //
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
+				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
+				.addOpcode(Opcode.getproperty, [_GetterKindQName]) //
+				.addOpcode(Opcode.pushstring, [methodBuilder.name + '/get']) //
+				.addOpcode(Opcode.callproperty, [multiName, 3]);
+		}
+
+		protected function addSetterBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
+			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			var methodQName:QualifiedName = createMethodQName(methodBuilder);
+			methodBuilder.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
+				.addOpcode(Opcode.getproperty, [bytecodeQname]) //
+				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
+				.addOpcode(Opcode.findpropstrict, [_interceptorRTQName]) //
+				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
+				.addOpcode(Opcode.getproperty, [bytecodeQname]) //
+				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
+				.addOpcode(Opcode.getproperty, [_interceptorRTQName]) //
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
+				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
+				.addOpcode(Opcode.getproperty, [_SetterKindQName]) //
+				.addOpcode(Opcode.pushstring, [methodBuilder.name + '/set']) //
+				.addOpcode(Opcode.getlocal_1).addOpcode(Opcode.newarray, [1]).addOpcode(Opcode.callproperty, [multiName, 4]) //
+				.addOpcode(Opcode.pop).addOpcode(Opcode.returnvoid);
+		}
+
 		protected function createMethodQName(methodBuilder:IMethodBuilder):QualifiedName {
 			var ns:LNamespace = (methodBuilder.visibility == MemberVisibility.PUBLIC) ? LNamespace.PUBLIC : new LNamespace(NamespaceKind.PROTECTED_NAMESPACE, "");
 			return new QualifiedName(methodBuilder.name, ns);
-		}
-
-		protected function addAccessorBodies(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
-			Assert.notNull(accessorBuilder, "accessorBuilder argument must not be null");
-			//TODO: generate the darn opcodes...
-		}
-
-		protected function addPropertyAccessorBodies(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
-			Assert.notNull(accessorBuilder, "accessorBuilder argument must not be null");
-			//TODO: generate the darn opcodes...
 		}
 
 	}

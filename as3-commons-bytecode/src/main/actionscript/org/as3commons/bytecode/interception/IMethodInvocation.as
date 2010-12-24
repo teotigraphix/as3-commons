@@ -20,6 +20,7 @@ package org.as3commons.bytecode.interception {
 	 * @author Roland Zwaga
 	 */
 	public interface IMethodInvocation {
+		function get kind():InvocationKind;
 		function get targetInstance():Object;
 		function get targetMethodName():String;
 		function get targetMethod():Function;

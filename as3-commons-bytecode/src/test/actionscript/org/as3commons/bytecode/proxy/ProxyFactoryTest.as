@@ -24,9 +24,11 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
+	import org.as3commons.bytecode.testclasses.SimpleClassWithAccessors;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithOneConstructorArgument;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithOneMethod;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
+	import org.as3commons.bytecode.testclasses.interceptors.TestAccessorInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestMethodInterceptor;
 	import org.as3commons.bytecode.util.ApplicationUtils;
@@ -41,6 +43,7 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		override public function setUp():void {
+			ByteCodeType.getTypeProvider().clearCache();
 			ByteCodeType.fromLoader(ApplicationUtils.application.loaderInfo);
 			_proxyFactory = new ProxyFactory();
 		}
@@ -86,6 +89,23 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
+		public function testLoadProxyClassForClassAccessors():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithAccessors, null, applicationDomain);
+			classProxyInfo.proxyAccessor("getter");
+			classProxyInfo.proxyAccessor("setter");
+			_proxyFactory.createProxyClasses();
+			_proxyFactory.methodInvocationInterceptorFunction = createAccessorInterceptor;
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleAccessorTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		protected function createAccessorInterceptor(proxiedClass:Class, constructorArgs:Array, methodInvocationInterceptorClass:Class):IMethodInvocationInterceptor {
+			var interceptor:BasicMethodInvocationInterceptor = new methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
+			interceptor.interceptors[interceptor.interceptors.length] = new TestAccessorInterceptor();
+			return interceptor;
+		}
+
 		protected function createConstructorInterceptor(proxiedClass:Class, constructorArgs:Array, methodInvocationInterceptorClass:Class):IMethodInvocationInterceptor {
 			var interceptor:BasicMethodInvocationInterceptor = new methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
 			interceptor.interceptors[interceptor.interceptors.length] = new TestInterceptor();
@@ -108,6 +128,14 @@ package org.as3commons.bytecode.proxy {
 			var instance:SimpleClassWithOneMethod = _proxyFactory.createProxy(SimpleClassWithOneMethod) as SimpleClassWithOneMethod;
 			assertNotNull(instance);
 			assertEquals('interceptedReturnValue', instance.returnString());
+		}
+
+		protected function handleAccessorTestComplete(event:Event):void {
+			var instance:SimpleClassWithAccessors = _proxyFactory.createProxy(SimpleClassWithAccessors) as SimpleClassWithAccessors;
+			assertNotNull(instance);
+			assertEquals(100, instance.getter);
+			instance.setter = 1000;
+			assertEquals(100, instance.checkSetter());
 		}
 
 	}

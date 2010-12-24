@@ -103,6 +103,11 @@ public function set count(value:int):void {
     	This private property is used to store the actual value of the accessor.</p>
     	<p>To use a custom <code><a href="asdoc/org/as3commons/bytecode/emit/IPropertyBuilder.html" target="_blank">IPropertyBuilder</a></code> for this create one and assign it to the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html#property" target="_blank">IAccessorBuilder.property</a></code> property:</p>
     	<div class="source"><pre>accessorBuilder.property = new PropertyBuilder("count","int",1000);</pre></div>
+    	<p>To completely override the creation of the getter and setter methods the <code>createGetterFunction</code> and <code>createSetterFunction</code> properties are available.<br/>
+    	The methods assigned to these properties need to have this signature:</p>
+    	<div class="source"><pre>function(accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait):IMethodBuilder</pre></div>
+    	<p>When either of theese properties are assigned the <code>IAccessorBuilder</code> will delegate the creation of the <code>IMethodBuilder</code> instances to their respective assigned methods.<br/>
+    	Use these methods to create a valid <code>IMethodBuilder</code> and its method body.</p>
     	<p>Visibility and namespace assignment is the same as for property generation.</p>
     	<p>Other properties that can be set on the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html" target="_blank">IAccessorBuilder</a></code> include:</p>
     	<ul>

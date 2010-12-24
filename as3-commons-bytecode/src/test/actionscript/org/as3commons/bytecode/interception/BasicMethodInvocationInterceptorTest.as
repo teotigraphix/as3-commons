@@ -18,6 +18,7 @@ package org.as3commons.bytecode.interception {
 
 	import org.as3commons.bytecode.testclasses.interceptors.TestBlockingInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestInterceptor;
+	import org.as3commons.bytecode.testclasses.interceptors.TestMethodInterceptor;
 
 	public class BasicMethodInvocationInterceptorTest extends TestCase {
 
@@ -45,6 +46,12 @@ package org.as3commons.bytecode.interception {
 			assertEquals('intercepted', _testResult);
 		}
 
+		public function testInterceptWithoutInterceptorThatChangesReturnValue():void {
+			_interceptor.interceptors[_interceptor.interceptors.length] = new TestMethodInterceptor();
+			var returnValue:String = _interceptor.intercept(this, "testMethod", testMethod);
+			assertEquals('interceptedReturnValue', returnValue);
+		}
+
 		public function testInterceptWithoutBlockingInterceptor():void {
 			_interceptor.interceptors[_interceptor.interceptors.length] = new TestBlockingInterceptor();
 			_interceptor.intercept(this, "testMethod", testMethod, ['test']);
@@ -53,6 +60,10 @@ package org.as3commons.bytecode.interception {
 
 		protected function testMethod(str:String):void {
 			_testResult = str;
+		}
+
+		protected function testMethodWithReturnValue():String {
+			return "test";
 		}
 	}
 }

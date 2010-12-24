@@ -24,7 +24,7 @@ package org.as3commons.bytecode.testclasses {
 
 		public var ordinaryProperty:String = "ordinaryValue";
 
-		public function TestProxiedClass(target:IEventDispatcher = null) {
+		public function TestProxiedClass(target:IEventDispatcher = null, somethingElse:Object = null) {
 			super(target);
 		}
 
@@ -38,6 +38,10 @@ package org.as3commons.bytecode.testclasses {
 
 		public function voidWithParameters(param:String):void {
 			var p:String = param;
+		}
+
+		public function voidWithRestParameters(... params):void {
+
 		}
 
 		public function returnInt():int {

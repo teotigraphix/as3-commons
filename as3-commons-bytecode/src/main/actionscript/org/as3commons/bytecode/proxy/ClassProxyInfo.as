@@ -83,10 +83,6 @@ package org.as3commons.bytecode.proxy {
 			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace, isProtected);
 		}
 
-		public function proxyProperty(propertyName:String, namespace:String = null, isProtected:Boolean = false):void {
-			_properties[_properties.length] = new MemberInfo(propertyName, namespace, isProtected);
-		}
-
 		public function get methods():Array {
 			return _methods;
 		}
@@ -95,8 +91,5 @@ package org.as3commons.bytecode.proxy {
 			return _accessors;
 		}
 
-		public function get properties():Array {
-			return _properties;
-		}
 	}
 }
