@@ -32,6 +32,7 @@ package org.as3commons.bytecode.proxy {
 		private var _accessors:Array;
 		private var _properties:Array;
 		private var _onlyProxyConstructor:Boolean = false;
+		private var _makeDynamic:Boolean = false;
 
 		/**
 		 * Creates a new <code>ClassProxyInfo</code> instance.
@@ -61,6 +62,14 @@ package org.as3commons.bytecode.proxy {
 			_methods = [];
 			_accessors = [];
 			_properties = [];
+		}
+
+		public function get makeDynamic():Boolean {
+			return _makeDynamic;
+		}
+
+		public function set makeDynamic(value:Boolean):void {
+			_makeDynamic = value;
 		}
 
 		public function get proxyAll():Boolean {

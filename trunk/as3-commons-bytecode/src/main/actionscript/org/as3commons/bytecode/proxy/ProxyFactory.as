@@ -20,9 +20,7 @@ package org.as3commons.bytecode.proxy {
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 
-	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.LNamespace;
-	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.MultinameL;
 	import org.as3commons.bytecode.abc.NamespaceSet;
@@ -46,18 +44,16 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.emit.impl.MethodBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
+	import org.as3commons.bytecode.proxy.error.ProxyError;
 	import org.as3commons.bytecode.reflect.ByteCodeAccessor;
 	import org.as3commons.bytecode.reflect.ByteCodeMethod;
 	import org.as3commons.bytecode.reflect.ByteCodeParameter;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
-	import org.as3commons.bytecode.reflect.ByteCodeVariable;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.reflect.Accessor;
-	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Method;
-	import org.as3commons.reflect.Variable;
 
 	/**
 	 * Dispatched when the proxy factory has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
@@ -202,10 +198,15 @@ package org.as3commons.bytecode.proxy {
 		protected function buildProxy(classProxyInfo:ClassProxyInfo, applicationDomain:ApplicationDomain):ProxyInfo {
 			var className:String = ClassUtils.getFullyQualifiedName(classProxyInfo.proxiedClass);
 			var type:ByteCodeType = ByteCodeType.forName(className.replace(MultinameUtil.DOUBLE_COLON, MultinameUtil.PERIOD), applicationDomain);
+			if (type.isFinal) {
+				throw new ProxyError(ProxyError.FINAL_CLASS_ERROR, className);
+			}
 			var classParts:Array = className.split(MultinameUtil.DOUBLE_COLON);
 			var packageName:String = classParts[0] + MultinameUtil.PERIOD + generateSuffix();
 			var packageBuilder:IPackageBuilder = _abcBuilder.definePackage(packageName);
 			var classBuilder:IClassBuilder = packageBuilder.defineClass(classParts[1], className);
+			classBuilder.isDynamic = classProxyInfo.makeDynamic;
+			classBuilder.isFinal = true;
 			var proxyClassName:String = packageName + MultinameUtil.SINGLE_COLON + classParts[1];
 			var nsMultiname:Multiname = createMultiname(proxyClassName, classParts.join(MultinameUtil.SINGLE_COLON), type.extendsClasses);
 			var bytecodeQname:QualifiedName = addInterceptorProperty(classBuilder);
@@ -367,6 +368,9 @@ package org.as3commons.bytecode.proxy {
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(memberInfo.qName.localName, memberInfo.qName.uri);
 			methodBuilder.isOverride = true;
 			var method:ByteCodeMethod = type.getMethod(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeMethod;
+			if (method.isFinal) {
+				throw new ProxyError(ProxyError.FINAL_METHOD_ERROR, method.name);
+			}
 			if (method != null) {
 				methodBuilder.returnType = method.returnType.fullName;
 				for each (var arg:ByteCodeParameter in method.parameters) {
@@ -381,6 +385,9 @@ package org.as3commons.bytecode.proxy {
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(memberInfo, "memberInfo argument must not be null");
 			var accessor:ByteCodeAccessor = type.getField(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeAccessor;
+			if (accessor.isFinal) {
+				throw new ProxyError(ProxyError.FINAL_ACCESSOR_ERROR, accessor.name);
+			}
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(accessor.name, accessor.type.fullName, accessor.initializedValue);
 			accessorBuilder.namespace = memberInfo.qName.uri;
 			accessorBuilder.isOverride = true;

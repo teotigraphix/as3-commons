@@ -94,6 +94,7 @@ package org.as3commons.bytecode.proxy {
 			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithAccessors, null, applicationDomain);
 			classProxyInfo.proxyAccessor("getter");
 			classProxyInfo.proxyAccessor("setter");
+			classProxyInfo.makeDynamic = true;
 			_proxyFactory.createProxyClasses();
 			_proxyFactory.methodInvocationInterceptorFunction = createAccessorInterceptor;
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleAccessorTestComplete, 1000));
@@ -132,6 +133,8 @@ package org.as3commons.bytecode.proxy {
 
 		protected function handleAccessorTestComplete(event:Event):void {
 			var instance:SimpleClassWithAccessors = _proxyFactory.createProxy(SimpleClassWithAccessors) as SimpleClassWithAccessors;
+			instance['dynamicProperty'] = "test";
+			assertEquals("test", instance['dynamicProperty']);
 			assertNotNull(instance);
 			assertEquals(100, instance.getter);
 			instance.setter = 1000;
