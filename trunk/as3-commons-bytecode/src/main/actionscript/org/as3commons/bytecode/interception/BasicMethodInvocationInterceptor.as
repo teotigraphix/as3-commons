@@ -43,28 +43,38 @@ package org.as3commons.bytecode.interception {
 		public function intercept(targetInstance:Object, kind:InvocationKind, methodName:String, arguments:Array = null, targetMethod:Function = null):* {
 			var proceed:Boolean = true;
 			var invoc:IMethodInvocation;
-			var prefix:String = methodName.substr(0, 3);
 			if ((_interceptors != null) && (_interceptors.length > 0)) {
 				invoc = new _invocationClass(targetInstance, kind, methodName, targetMethod, arguments);
 				for each (var interceptor:IInterceptor in _interceptors) {
 					interceptor.intercept(invoc);
-					proceed = invoc.proceed;
-					if (!proceed) {
-						break;
+					if (!invoc.proceed) {
+						proceed = false;
 					}
 				}
 				arguments = invoc.arguments;
 			}
-			if ((proceed) && (targetMethod != null)) {
-				return targetMethod.apply(targetInstance, arguments);
-			} else if ((!proceed) && (targetMethod != null) && (invoc != null)) {
-				return invoc.returnValue;
-			} else if ((!proceed) && (prefix == "get")) {
-				return invoc.returnValue;
-			} else if ((proceed) && (prefix == "get")) {
-				return targetInstance[methodName.substr(3, methodName.length)];
-			} else if ((proceed) && (prefix == "set")) {
-				targetInstance[methodName.substr(3, methodName.length)] = arguments[0];
+			switch (kind) {
+				case InvocationKind.METHOD:
+					if (proceed) {
+						return targetMethod.apply(targetInstance, arguments);
+					} else {
+						return invoc.returnValue;
+					}
+					break;
+				case InvocationKind.GETTER:
+					if (proceed) {
+						return invoc.returnValue;
+					} else {
+						return targetInstance[methodName];
+					}
+					break;
+				case InvocationKind.SETTER:
+					if (proceed) {
+						targetInstance[methodName] = arguments[0];
+					}
+					break;
+				default:
+					break;
 			}
 		}
 

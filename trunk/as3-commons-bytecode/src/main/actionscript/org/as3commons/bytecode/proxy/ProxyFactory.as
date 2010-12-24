@@ -479,7 +479,7 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_GetterKindQName]) //
-				.addOpcode(Opcode.pushstring, [methodBuilder.name + '/get']) //
+				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.callproperty, [multiName, 3]);
 		}
 
@@ -500,7 +500,7 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_SetterKindQName]) //
-				.addOpcode(Opcode.pushstring, [methodBuilder.name + '/set']) //
+				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.getlocal_1).addOpcode(Opcode.newarray, [1]).addOpcode(Opcode.callproperty, [multiName, 4]) //
 				.addOpcode(Opcode.pop).addOpcode(Opcode.returnvoid);
 		}
