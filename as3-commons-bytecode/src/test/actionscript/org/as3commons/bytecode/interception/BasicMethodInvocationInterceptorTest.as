@@ -36,25 +36,25 @@ package org.as3commons.bytecode.interception {
 		}
 
 		public function testInterceptWithoutInterceptors():void {
-			_interceptor.intercept(this, "testMethod", testMethod, ['test']);
+			_interceptor.intercept(this, InvocationKind.METHOD, new QName("", "testMethod"), ['test'], testMethod);
 			assertEquals('test', _testResult);
 		}
 
-		public function testInterceptWithoutInterceptorThatChangesParameter():void {
+		public function testInterceptWithInterceptorThatChangesParameter():void {
 			_interceptor.interceptors[_interceptor.interceptors.length] = new TestInterceptor();
-			_interceptor.intercept(this, "testMethod", testMethod, ['test']);
+			_interceptor.intercept(this, InvocationKind.METHOD, new QName("", "testMethod"), ['test'], testMethod);
 			assertEquals('intercepted', _testResult);
 		}
 
-		public function testInterceptWithoutInterceptorThatChangesReturnValue():void {
+		public function testInterceptWithInterceptorThatChangesReturnValue():void {
 			_interceptor.interceptors[_interceptor.interceptors.length] = new TestMethodInterceptor();
-			var returnValue:String = _interceptor.intercept(this, "testMethod", testMethod);
+			var returnValue:String = _interceptor.intercept(this, InvocationKind.METHOD, new QName("", "testMethod"), null, testMethod);
 			assertEquals('interceptedReturnValue', returnValue);
 		}
 
-		public function testInterceptWithoutBlockingInterceptor():void {
+		public function testInterceptWithBlockingInterceptor():void {
 			_interceptor.interceptors[_interceptor.interceptors.length] = new TestBlockingInterceptor();
-			_interceptor.intercept(this, "testMethod", testMethod, ['test']);
+			_interceptor.intercept(this, InvocationKind.METHOD, new QName("", "testMethod"), ['test'], testMethod);
 			assertNull(_testResult);
 		}
 
