@@ -27,32 +27,32 @@ package org.as3commons.bytecode.testclasses {
 		public function ProxySubClass(interceptor:IMethodInvocationInterceptor, target:IEventDispatcher = null, somethingElse:Object = null) {
 			as3commons_bytecode_proxy::methodInvocationInterceptor = interceptor;
 			var params:Array = [target, somethingElse];
-			interceptor.intercept(this, InvocationKind.CONSTRUCTOR, "constructor", params);
+			interceptor.intercept(this, InvocationKind.CONSTRUCTOR, null, params);
 			super(params[0], params[1]);
 		}
 
 		override public function returnString():String {
-			return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, "returnString", null, super.returnString);
+			return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "returnString"), null, super.returnString);
 		}
 
 		override public function returnStringWithParameters(param:String):String {
-			return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, "returnStringWithParameters", [param], super.returnStringWithParameters);
+			return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "returnStringWithParameters"), [param], super.returnStringWithParameters);
 		}
 
 		override public function voidWithParameters(param:String):void {
-			as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, "voidWithParameters", [param], super.voidWithParameters);
+			as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "voidWithParameters"), [param], super.voidWithParameters);
 		}
 
 		override public function get getterSetter():uint {
-			return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.GETTER, "getterSetter/get");
+			return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.GETTER, new QName("", "getterSetter"), [super.getterSetter]);
 		}
 
 		override public function set getterSetter(value:uint):void {
-			as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.SETTER, "getterSetter/set", [value]);
+			super.getterSetter = as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.SETTER, new QName("", "getterSetter"), [value]);
 		}
 
 		override public function voidWithRestParameters(... params):void {
-			as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, "voidWithRestParameters", params, super.voidWithRestParameters);
+			as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "voidWithRestParameters"), params, super.voidWithRestParameters);
 		}
 
 	}

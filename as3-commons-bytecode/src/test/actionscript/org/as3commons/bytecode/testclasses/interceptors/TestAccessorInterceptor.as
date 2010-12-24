@@ -17,6 +17,7 @@ package org.as3commons.bytecode.testclasses.interceptors {
 
 	import org.as3commons.bytecode.interception.IInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
+	import org.as3commons.bytecode.interception.InvocationKind;
 	import org.as3commons.lang.StringUtils;
 
 	public class TestAccessorInterceptor implements IInterceptor {
@@ -25,11 +26,12 @@ package org.as3commons.bytecode.testclasses.interceptors {
 		}
 
 		public function intercept(invocation:IMethodInvocation):void {
-			if (StringUtils.startsWith(invocation.targetMethodName, 'get/')) {
+			if (invocation.kind === InvocationKind.GETTER) {
 				invocation.proceed = false;
 				invocation.returnValue = 100;
-			} else if (StringUtils.startsWith(invocation.targetMethodName, 'set/')) {
-				invocation.arguments[0] = 100;
+			} else if (invocation.kind === InvocationKind.SETTER) {
+				invocation.proceed = false;
+				invocation.returnValue = 100;
 			}
 		}
 	}

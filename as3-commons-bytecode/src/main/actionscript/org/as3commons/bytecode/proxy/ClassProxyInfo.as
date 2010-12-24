@@ -84,12 +84,12 @@ package org.as3commons.bytecode.proxy {
 			_onlyProxyConstructor = value;
 		}
 
-		public function proxyMethod(methodName:String, namespace:String = null, isProtected:Boolean = false):void {
-			_methods[_methods.length] = new MemberInfo(methodName, namespace, isProtected);
+		public function proxyMethod(methodName:String, namespace:String = null):void {
+			_methods[_methods.length] = new MemberInfo(methodName, namespace);
 		}
 
-		public function proxyAccessor(accessorName:String, namespace:String = null, isProtected:Boolean = false):void {
-			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace, isProtected);
+		public function proxyAccessor(accessorName:String, namespace:String = null):void {
+			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace);
 		}
 
 		public function get methods():Array {

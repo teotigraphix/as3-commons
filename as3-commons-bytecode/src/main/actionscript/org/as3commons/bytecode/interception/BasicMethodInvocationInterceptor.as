@@ -40,11 +40,11 @@ package org.as3commons.bytecode.interception {
 			_interceptors = [];
 		}
 
-		public function intercept(targetInstance:Object, kind:InvocationKind, methodName:String, arguments:Array = null, targetMethod:Function = null):* {
+		public function intercept(targetInstance:Object, kind:InvocationKind, member:QName, arguments:Array = null, targetMethod:Function = null):* {
 			var proceed:Boolean = true;
 			var invoc:IMethodInvocation;
 			if ((_interceptors != null) && (_interceptors.length > 0)) {
-				invoc = new _invocationClass(targetInstance, kind, methodName, targetMethod, arguments);
+				invoc = new _invocationClass(targetInstance, kind, member, targetMethod, arguments);
 				for each (var interceptor:IInterceptor in _interceptors) {
 					interceptor.intercept(invoc);
 					if (!invoc.proceed) {
@@ -62,15 +62,11 @@ package org.as3commons.bytecode.interception {
 					}
 					break;
 				case InvocationKind.GETTER:
-					if (proceed) {
-						return invoc.returnValue;
-					} else {
-						return targetInstance[methodName];
-					}
-					break;
 				case InvocationKind.SETTER:
 					if (proceed) {
-						targetInstance[methodName] = arguments[0];
+						return arguments[0];
+					} else {
+						return invoc.returnValue;
 					}
 					break;
 				default:
