@@ -24,6 +24,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.MultinameL;
 	import org.as3commons.bytecode.abc.NamespaceSet;
+	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.RuntimeQualifiedName;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
@@ -52,7 +53,9 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
+	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.Accessor;
+	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Method;
 
 	/**
@@ -82,7 +85,7 @@ package org.as3commons.bytecode.proxy {
 		//private static constants
 		private static const CHARACTERS:String = "abcdefghijklmnopqrstuvwxys";
 		private static const INTERCEPTOR_PROPERTYNAME:String = "methodInvocationInterceptor";
-		private static const NS_FILENAME_SUFFIX:String = '.as$4';
+		private static const NS_FILENAME_SUFFIX:String = '.as$666';
 		private static const MULTINAME_NAME:String = "intercept";
 		private static const AS3COMMONSBYTECODEPROXY:String = "as3commons_bytecode_proxy";
 		private static const ORGAS3COMMONSBYTECODE:String = "org.as3commons.bytecode";
@@ -102,6 +105,7 @@ package org.as3commons.bytecode.proxy {
 		private var _MethodKindQName:QualifiedName = new QualifiedName("METHOD", LNamespace.PUBLIC);
 		private var _GetterKindQName:QualifiedName = new QualifiedName("GETTER", LNamespace.PUBLIC);
 		private var _SetterKindQName:QualifiedName = new QualifiedName("SETTER", LNamespace.PUBLIC);
+		private var _qnameQname:QualifiedName = new QualifiedName("QName", LNamespace.PUBLIC);
 
 		public function get methodInvocationInterceptorFunction():Function {
 			return _methodInvocationInterceptorFunction;
@@ -292,7 +296,7 @@ package org.as3commons.bytecode.proxy {
 					.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
 					.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 					.addOpcode(Opcode.getproperty, [_ConstructorKindQName]) //
-					.addOpcode(Opcode.pushstring, [CONSTRUCTOR]) //
+					.addOpcode(Opcode.pushnull) //
 					.addOpcode(Opcode.getlocal, [paramLocal]) //
 					.addOpcode(Opcode.callproperty, [multiName, 4]) //
 					.addOpcode(Opcode.pop) //
@@ -310,7 +314,7 @@ package org.as3commons.bytecode.proxy {
 					.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
 					.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 					.addOpcode(Opcode.getproperty, [_ConstructorKindQName]) //
-					.addOpcode(Opcode.pushstring, [CONSTRUCTOR]) //
+					.addOpcode(Opcode.pushnull) //
 					.addOpcode(Opcode.pushnull) //
 					.addOpcode(Opcode.callproperty, [_interceptQName, 4]) //
 					.addOpcode(Opcode.pop) //
@@ -337,7 +341,7 @@ package org.as3commons.bytecode.proxy {
 					if (!isPublicOrProtectedOrCustom(vsb)) {
 						return;
 					}
-					classProxyInfo.proxyMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI, isProtected);
+					classProxyInfo.proxyMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI);
 				}
 			}
 			for each (var accessor:Accessor in type.accessors) {
@@ -351,7 +355,7 @@ package org.as3commons.bytecode.proxy {
 					if (!isPublicOrProtectedOrCustom(vsb)) {
 						return;
 					}
-					classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI, isProtected);
+					classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI);
 				}
 			}
 		}
@@ -371,6 +375,7 @@ package org.as3commons.bytecode.proxy {
 			if (method.isFinal) {
 				throw new ProxyError(ProxyError.FINAL_METHOD_ERROR, method.name);
 			}
+			methodBuilder.visibility = (method.visibility === NamespaceKind.PACKAGE_NAMESPACE) ? MemberVisibility.PUBLIC : MemberVisibility.PROTECTED;
 			if (method != null) {
 				methodBuilder.returnType = method.returnType.fullName;
 				for each (var arg:ByteCodeParameter in method.parameters) {
@@ -420,7 +425,10 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_MethodKindQName]) //
+				.addOpcode(Opcode.findpropstrict, [_qnameQname]) //
+				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespace) ? methodBuilder.namespace : ""]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
+				.addOpcode(Opcode.constructprop, [_qnameQname, 2]) //
 			if (len > 0) {
 				for (var i:int = 0; i < len; ++i) {
 					methodBuilder.addOpcode(Opcode.getlocal, [(i + 1)]);
@@ -465,7 +473,7 @@ package org.as3commons.bytecode.proxy {
 			mb.isOverride = true;
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(accessorBuilder.type);
-			addSetterBody(mb, multiName, bytecodeQname);
+			addSetterBody(mb, accessorBuilder, multiName, bytecodeQname);
 			return mb;
 		}
 
@@ -486,15 +494,25 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_GetterKindQName]) //
+				.addOpcode(Opcode.findpropstrict, [_qnameQname]) //
+				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespace) ? methodBuilder.namespace : ""]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
-				.addOpcode(Opcode.callproperty, [multiName, 3]);
+				.addOpcode(Opcode.constructprop, [_qnameQname, 2]) //
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.getsuper, [createMethodQName(methodBuilder)]) //
+				.addOpcode(Opcode.newarray, [1]) //
+				.addOpcode(Opcode.callproperty, [multiName, 4]) //
+				.addOpcode(Opcode.returnvalue);
 		}
 
-		protected function addSetterBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
+		protected function addSetterBody(methodBuilder:IMethodBuilder, accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
+			var argLen:int = 1;
+			var superSetter:QualifiedName = createMethodQName(methodBuilder);
 			methodBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
 				.addOpcode(Opcode.getproperty, [bytecodeQname]) //
 				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
@@ -507,9 +525,20 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_SetterKindQName]) //
+				.addOpcode(Opcode.findpropstrict, [_qnameQname]) //
+				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespace) ? methodBuilder.namespace : ""]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
-				.addOpcode(Opcode.getlocal_1).addOpcode(Opcode.newarray, [1]).addOpcode(Opcode.callproperty, [multiName, 4]) //
-				.addOpcode(Opcode.pop).addOpcode(Opcode.returnvoid);
+				.addOpcode(Opcode.constructprop, [_qnameQname, 2]) //
+				.addOpcode(Opcode.getlocal_1);
+			if (accessorBuilder.access === AccessorAccess.READ_WRITE) {
+				methodBuilder.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.getsuper, [superSetter]);
+				argLen = 2;
+			}
+			methodBuilder.addOpcode(Opcode.newarray, [argLen]) //
+				.addOpcode(Opcode.callproperty, [multiName, 4]) //
+				.addOpcode(Opcode.setsuper, [superSetter]) //
+				.addOpcode(Opcode.returnvoid);
 		}
 
 		protected function createMethodQName(methodBuilder:IMethodBuilder):QualifiedName {

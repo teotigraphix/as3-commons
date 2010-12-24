@@ -24,7 +24,7 @@ package org.as3commons.bytecode.interception {
 
 		private var _kind:InvocationKind;
 		private var _targetInstance:Object;
-		private var _targetMethodName:String;
+		private var _targetMember:QName;
 		private var _targetMethod:Function;
 		private var _proceed:Boolean = true;
 		private var _arguments:Array;
@@ -37,18 +37,17 @@ package org.as3commons.bytecode.interception {
 		 * @param method
 		 * @param args
 		 */
-		public function BasicMethodInvocation(instance:Object, kind:InvocationKind, methodName:String, method:Function, args:Array = null) {
+		public function BasicMethodInvocation(instance:Object, kind:InvocationKind, member:QName, method:Function, args:Array = null) {
 			super();
-			initBasicMethodInvocation(instance, kind, methodName, method, args);
+			initBasicMethodInvocation(instance, kind, member, method, args);
 		}
 
-		protected function initBasicMethodInvocation(instance:Object, kind:InvocationKind, methodName:String, method:Function, args:Array):void {
+		protected function initBasicMethodInvocation(instance:Object, kind:InvocationKind, member:QName, method:Function, args:Array):void {
 			Assert.notNull(instance, "instance argument must not be null");
 			Assert.notNull(kind, "kind argument must not be null");
-			Assert.hasText(methodName, "methodName argument must not be empty or null");
 			_kind = kind;
 			_targetInstance = instance;
-			_targetMethodName = methodName;
+			_targetMember = member;
 			_targetMethod = method;
 			_arguments = args;
 		}
@@ -61,8 +60,8 @@ package org.as3commons.bytecode.interception {
 			return _targetInstance;
 		}
 
-		public function get targetMethodName():String {
-			return _targetMethodName;
+		public function get targetMember():QName {
+			return _targetMember;
 		}
 
 		public function get targetMethod():Function {

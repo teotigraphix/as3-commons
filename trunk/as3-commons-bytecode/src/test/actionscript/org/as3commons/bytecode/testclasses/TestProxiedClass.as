@@ -17,6 +17,8 @@ package org.as3commons.bytecode.testclasses {
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 
+	import org.as3commons.bytecode.as3commons_bytecode;
+
 	public class TestProxiedClass extends EventDispatcher {
 
 		private var _getter:String = "testGetterValue";
@@ -44,7 +46,7 @@ package org.as3commons.bytecode.testclasses {
 
 		}
 
-		public function returnInt():int {
+		as3commons_bytecode function returnInt():int {
 			return 10;
 		}
 

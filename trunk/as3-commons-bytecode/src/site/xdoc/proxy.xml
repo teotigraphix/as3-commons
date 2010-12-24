@@ -7,6 +7,50 @@
 
   <body>
   	<section name="Introduction">
+  		<p>
+			Based on the emit API as3commons-bytecode also offers a proxy API that allows for runtime dynamic proxy generation.<br/>
+			Dynamic proxies can offer a basic AOP interception mechanism, a proxy class is nothing more than a subclass of a class that is required to be proxied.<br/>
+			This subclass is injected with a so-called method invocation interceptor, in as3commons-bytecode this interceptor is described in the <code><a href="asdoc/org/as3commons/bytecode/intercept/IMethodInvocationInteceptor.html" target="_blank">IMethodInvocationInteceptor</a></code> interface.<br/>
+			Now the constructor or any method or accessor can be override in this subclass and its arguments and/or return value can be intercepted and delegated to any number of <code><a href="asdoc/org/as3commons/bytecode/intercept/IInterceptor.html" target="_blank">IInterceptor</a></code> instances.<br/>
+			So, in practice this would mean something like this, imagine this method:
+  		</p>
+  		<div class="source"><pre>public function returnMyName():String {
+	return "John Doe";
+}</pre></div>
+		<p>In the dynamic proxy class this method would be overriden like this:</p>
+  		<div class="source"><pre>public function returnMyName():String {
+	return methodInvocationInterceptor(this, InvocationKind.METHOD, "returnMyName", null, super.returnMyName);
+}</pre></div>
+		<p>As3commons-bytecode offers a simple implementation of the <code><a href="asdoc/org/as3commons/bytecode/intercept/IMethodInvocationInteceptor.html" target="_blank">IMethodInvocationInteceptor</a></code> interface which is injected by default.<br/>
+		This implementation is called <code><a href="asdoc/org/as3commons/bytecode/intercept/BasicMethodInvocationInterceptor.html" target="_blank">BasicMethodInvocationInterceptor</a></code> and holds an array of <code><a href="asdoc/org/as3commons/bytecode/intercept/IInterceptor.html" target="_blank">IInterceptor</a></code> instances
+		which will be invoked each time that the <code>returnMyName()</code> method is invoked.</p>
+		<p>To intercept the <code>returnMyName()</code> and change its return value, an <code><a href="asdoc/org/as3commons/bytecode/intercept/IInterceptor.html" target="_blank">IInterceptor</a></code> implementation could look like this:</p>
+  		<div class="source"><pre>public class MethodInterceptor implements IInterceptor {
+
+	public function TestMethodInterceptor() {
+		super();
+	}
+
+	public function intercept(invocation:IMethodInvocation):void {
+		invocation.proceed = false;
+		invocation.returnValue = "Lady Gaga";
+	}
+}
+</pre></div>
+	<p>The <code><a href="asdoc/org/as3commons/bytecode/intercept/BasicMethodInvocationInterceptor.html" target="_blank">BasicMethodInvocationInterceptor</a></code> wraps all the necessary information in an <code><a href="asdoc/org/as3commons/bytecode/intercept/IMethodInvocation.html" target="_blank">IMethodInvocation</a></code> instance and
+	passes it on to the <code><a href="asdoc/org/as3commons/bytecode/intercept/IInterceptor.html" target="_blank">IInterceptor</a></code>.intercept() method.</p>
+	<p>Setting the <code>proceed</code> property on the <code><a href="asdoc/org/as3commons/bytecode/intercept/IMethodInvocation.html" target="_blank">IMethodInvocation</a></code> to false will prevent the original method in the proxied class from being invoked, and in this case to be
+	replaced by the value return by this <code><a href="asdoc/org/as3commons/bytecode/intercept/IInterceptor.html" target="_blank">IInterceptor</a></code> implementation.</p>
+	<p>Interception works on constructors, methods and accessors that have either a public, protected or custom visibility. Setting <code>proceed</code> to false while intercepting a constructor will not prevent the super constructor from being invoked though. It is, however, of course possible to intercept and change constructor arguments.</p>
+  	</section>
+  	<section name="Getting started">
+  		The generation of dynamic proxy classes relies on the bytecode based reflection, sadly information such as the value of optional arguments is
+  		not available through regular reflection but is necessary to correctly create a valid subclass.<br/>
+  	</section>
+  	<section name="Defining proxies">
+  		The main entry point for runtime dynamic proxy generation is the <code><a href="asdoc/org/as3commons/bytecode/proxy/IProxyFactory.html" target="_blank">IProxyFactory</a></code> interface.<br/>
+  		To make use of this create an instance of the <code><a href="asdoc/org/as3commons/bytecode/proxy/ProxyFactory.html" target="_blank">ProxyFactory</a></code> class:<br/>
+  		<div class="source"><pre>var proxyFactory:IProxyFactory = new ProxyFactory();</pre></div>
   	</section>
   </body>
 </document>

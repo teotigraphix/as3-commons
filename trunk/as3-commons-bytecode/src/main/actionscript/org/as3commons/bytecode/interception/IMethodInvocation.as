@@ -22,7 +22,7 @@ package org.as3commons.bytecode.interception {
 	public interface IMethodInvocation {
 		function get kind():InvocationKind;
 		function get targetInstance():Object;
-		function get targetMethodName():String;
+		function get targetMember():QName;
 		function get targetMethod():Function;
 		function get arguments():Array;
 		function get proceed():Boolean;

@@ -27,6 +27,6 @@ package org.as3commons.bytecode.interception {
 		 * @param arguments
 		 * @return
 		 */
-		function intercept(targetInstance:Object, kind:InvocationKind, memberName:String, arguments:Array = null, method:Function = null):*;
+		function intercept(targetInstance:Object, kind:InvocationKind, member:QName, arguments:Array = null, method:Function = null):*;
 	}
 }
