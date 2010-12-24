@@ -52,6 +52,9 @@ package org.as3commons.bytecode.emit.impl {
 		private var _property:IPropertyBuilder;
 		private var _getterMethodInfo:MethodInfo;
 		private var _setterMethodInfo:MethodInfo;
+		private var _createPrivateProperty:Boolean = true;
+		private var _createGetterFunction:Function;
+		private var _createSetterFunction:Function;
 
 		as3commons_bytecode function setGetter(getterMethodInfo:MethodInfo):void {
 			Assert.notNull(getterMethodInfo, "getterMethodInfo argument must not be null");
@@ -95,19 +98,29 @@ package org.as3commons.bytecode.emit.impl {
 			var mb:IMethodBuilder;
 			var mi:MethodInfo;
 
-			var trait:SlotOrConstantTrait = createSlotTrait();
+			var trait:SlotOrConstantTrait = (_createPrivateProperty) ? createSlotTrait() : null;
 
-			result[result.length] = trait;
+			if (trait != null) {
+				result[result.length] = trait;
+			}
 
 			if ((_access === AccessorAccess.READ_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
-				mb = createGetter(trait);
+				if (_createGetterFunction == null) {
+					mb = createGetter(trait);
+				} else {
+					mb = _createGetterFunction(this, trait);
+				}
 				mi = mb.build();
 				mi.methodName = createAccessorName(GETTER_SUFFIX);
 				result[result.length] = mi;
 				mb.trait.traitKind = TraitKind.GETTER;
 			}
 			if ((_access === AccessorAccess.WRITE_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
-				mb = createSetter(trait);
+				if (_createSetterFunction == null) {
+					mb = createSetter(trait);
+				} else {
+					mb = _createSetterFunction(this, trait);
+				}
 				mi = mb.build();
 				mi.methodName = createAccessorName(SETTER_SUFFIX);
 				result[result.length] = mi;
@@ -153,17 +166,51 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		/**
+		 * @inheritDoc
+		 */
+		public function get createPrivateProperty():Boolean {
+			return _createPrivateProperty;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set createPrivateProperty(value:Boolean):void {
+			_createPrivateProperty = value;
+		}
+
+		/**
 		 * Creates a default <code>IMethodBuilder</code> to be used for the getter or setter method.
 		 * @return The specified <code>IMethodBuilder</code>
 		 */
 		protected function createMethod(methodInfo:MethodInfo):IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.name = name;
+			mb.namespace = namespace;
+			mb.isFinal = isFinal;
+			mb.isOverride = isOverride;
+			mb.isStatic = isStatic;
 			mb.packageName = packageName;
 			if (methodInfo != null) {
 				mb.as3commons_bytecode::setMethodInfo(methodInfo);
 			}
 			return mb;
+		}
+
+		public function get createGetterFunction():Function {
+			return _createGetterFunction;
+		}
+
+		public function set createGetterFunction(value:Function):void {
+			_createGetterFunction = value;
+		}
+
+		public function get createSetterFunction():Function {
+			return _createSetterFunction;
+		}
+
+		public function set createSetterFunction(value:Function):void {
+			_createSetterFunction = value;
 		}
 
 		/**

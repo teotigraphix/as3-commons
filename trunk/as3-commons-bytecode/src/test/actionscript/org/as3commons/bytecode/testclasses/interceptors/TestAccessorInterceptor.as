@@ -14,20 +14,23 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.testclasses.interceptors {
+
 	import org.as3commons.bytecode.interception.IInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
-	import org.as3commons.bytecode.testclasses.ProxySubClass;
+	import org.as3commons.lang.StringUtils;
 
-	public class TestMethodInterceptor implements IInterceptor {
-
-		public function TestMethodInterceptor() {
+	public class TestAccessorInterceptor implements IInterceptor {
+		public function TestAccessorInterceptor() {
 			super();
-			ProxySubClass;
 		}
 
 		public function intercept(invocation:IMethodInvocation):void {
-			invocation.proceed = false;
-			invocation.returnValue = "interceptedReturnValue";
+			if (StringUtils.startsWith(invocation.targetMethodName, 'get/')) {
+				invocation.proceed = false;
+				invocation.returnValue = 100;
+			} else if (StringUtils.startsWith(invocation.targetMethodName, 'set/')) {
+				invocation.arguments[0] = 100;
+			}
 		}
 	}
 }

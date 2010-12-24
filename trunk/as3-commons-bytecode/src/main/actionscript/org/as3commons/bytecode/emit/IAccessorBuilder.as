@@ -44,5 +44,37 @@ package org.as3commons.bytecode.emit {
 		 */
 		function set property(value:IPropertyBuilder):void;
 
+		/**
+		 * Determines if a private variable should be created automatically to hold
+		 * the accessor's value.
+		 * @default true
+		 */
+		function get createPrivateProperty():Boolean;
+		/**
+		 * @private
+		 */
+		function set createPrivateProperty(value:Boolean):void;
+
+		/**
+		 * Method that will be invoked to create the <code>IMethodBuilder</code> for the getter method.
+		 * <p>The method needs to have this signature:</p>
+		 * <p><pre>function(accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait):IMethodBuilder</pre></p>
+		 */
+		function get createGetterFunction():Function;
+		/**
+		 * @private
+		 */
+		function set createGetterFunction(value:Function):void;
+
+		/**
+		 * Method that will be invoked to create the <code>IMethodBuilder</code> for the setter method.
+		 * <p>The method needs to have this signature:</p>
+		 * <p><pre>function(accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait):IMethodBuilder</pre></p>
+		 */
+		function get createSetterFunction():Function;
+		/**
+		 * @private
+		 */
+		function set createSetterFunction(value:Function):void;
 	}
 }
