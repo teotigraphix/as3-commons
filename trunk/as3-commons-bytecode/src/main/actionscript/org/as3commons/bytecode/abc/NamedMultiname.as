@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.abc {
 
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IEquals;
 
 	/**
@@ -29,6 +30,7 @@ package org.as3commons.bytecode.abc {
 
 		public function NamedMultiname(kindValue:MultinameKind, name:String) {
 			super(kindValue);
+			Assert.notNull(name, "name argument must not be null");
 			_name = name;
 		}
 

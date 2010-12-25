@@ -42,7 +42,7 @@
 	<p>Setting the <code>proceed</code> property on the <code><a href="asdoc/org/as3commons/bytecode/interception/IMethodInvocation.html" target="_blank">IMethodInvocation</a></code> to false will prevent the original method in the proxied class from being invoked, and in this case to be
 	replaced by the value returned by this <code><a href="asdoc/org/as3commons/bytecode/interception/IInterceptor.html" target="_blank">IInterceptor</a></code> implementation.</p>
 	<p>This example is of course rather pointless, but real-world scenarios that might benefit from this approach include cross-cutting concerns such as logging, security and validation.</p>
-	<p>Interception works on constructors, methods and accessors that have either have a public, protected or custom namespace scope. Setting <code>proceed</code> to false while intercepting a constructor will not prevent the super constructor from being invoked though. It is, however, of course possible to intercept and change constructor arguments.</p>
+	<p>Interception works on constructors, methods and accessors that have have a public scope. Setting <code>proceed</code> to false while intercepting a constructor will not prevent the super constructor from being invoked though. It is, however, of course possible to intercept and change constructor arguments.</p>
   	</section>
   	<section name="Getting started">
   		The generation of dynamic proxy classes relies on the bytecode based reflection. This is because, unfortunately, information such as the value of optional arguments is
@@ -58,7 +58,7 @@
   		<p>Now, to define a proxy for a specified class invoke the defineProxy() method:</p>
   		<div class="source"><pre>var classProxyInfo:ClassProxyInfo = proxyFactory.defineProxy(MyClass);</pre></div>
   		<p>This method returns a <code>ClassProxyInfo</code> instance which allows further definition of the proxy.<br/>
-  		Its also possible to ignore the <code>ClassProxyInfo</code> instance entirely, in which case every public, protected or custom namespace scoped member of the specified class will be proxied.</p>
+  		Its also possible to ignore the <code>ClassProxyInfo</code> instance entirely, in which case every public scoped member of the specified class will be proxied.</p>
   		<p>Should this not be desirable these methods will define specific members for proxying:</p>
   		<div class="source"><pre>classProxyInfo.proxyMethod("myMethod");</pre></div>
   		<div class="source"><pre>classProxyInfo.proxyMethod("myAccessor");</pre></div>

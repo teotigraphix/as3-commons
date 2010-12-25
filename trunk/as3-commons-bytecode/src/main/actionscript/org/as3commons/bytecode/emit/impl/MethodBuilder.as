@@ -200,7 +200,6 @@ package org.as3commons.bytecode.emit.impl {
 		override protected function buildTrait():TraitInfo {
 			Assert.hasText(name, "name property must not be null or empty");
 			Assert.notNull(visibility, "visibility property must not be null");
-			Assert.notNull(VISIBILITY_LOOKUP[visibility], "visibility lookup must not be null");
 			var trait:MethodTrait = (methodInfo != null) ? MethodTrait(methodInfo.as3commonsByteCodeAssignedMethodTrait) : new MethodTrait();
 			trait.traitKind = TraitKind.METHOD;
 			trait.isFinal = isFinal;

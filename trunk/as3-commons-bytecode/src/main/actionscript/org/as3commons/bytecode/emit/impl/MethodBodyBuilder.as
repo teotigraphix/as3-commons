@@ -15,7 +15,6 @@
 */
 package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
-	import flash.sampler.NewObjectSample;
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
