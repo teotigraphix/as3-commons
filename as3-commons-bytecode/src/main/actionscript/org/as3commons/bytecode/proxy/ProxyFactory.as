@@ -67,7 +67,7 @@ package org.as3commons.bytecode.proxy {
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="getMethodInvocationInterceptor", "org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
+	[Event(name="getMethodInvocationInterceptor", type="org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
 	/**
 	 * @inheritDoc
 	 */
@@ -395,7 +395,8 @@ package org.as3commons.bytecode.proxy {
 
 		protected function isPublicOrProtectedOrCustom(namespaceKind:NamespaceKind):Boolean {
 			Assert.notNull(namespaceKind, "namespaceKind argument must not be null");
-			return ((namespaceKind === NamespaceKind.PACKAGE_NAMESPACE) || (namespaceKind === NamespaceKind.PROTECTED_NAMESPACE) || (namespaceKind === NamespaceKind.NAMESPACE));
+			//return ((namespaceKind === NamespaceKind.PACKAGE_NAMESPACE) || (namespaceKind === NamespaceKind.PROTECTED_NAMESPACE) || (namespaceKind === NamespaceKind.NAMESPACE));
+			return (namespaceKind === NamespaceKind.PACKAGE_NAMESPACE);
 		}
 
 		protected function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo):IMethodBuilder {
@@ -409,6 +410,7 @@ package org.as3commons.bytecode.proxy {
 				throw new ProxyError(ProxyError.FINAL_METHOD_ERROR, method.name);
 			}
 			methodBuilder.visibility = getMemberVisibility(method);
+			methodBuilder.namespace = method.namespaceURI;
 			if (method != null) {
 				methodBuilder.returnType = method.returnType.fullName;
 				for each (var arg:ByteCodeParameter in method.parameters) {

@@ -24,6 +24,8 @@ package org.as3commons.bytecode.testclasses {
 
 	public class ProxySubClass extends TestProxiedClass {
 
+		use namespace as3commons_bytecode_proxy;
+
 		as3commons_bytecode_proxy var methodInvocationInterceptor:IMethodInvocationInterceptor;
 
 		public function ProxySubClass(interceptor:IMethodInvocationInterceptor, target:IEventDispatcher = null, somethingElse:Object = null) {

@@ -14,17 +14,21 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy {
+	import assets.abc.custom_namespace;
+
 	import flash.events.Event;
 	import flash.system.ApplicationDomain;
 
 	import flexunit.framework.TestCase;
 
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithAccessors;
+	import org.as3commons.bytecode.testclasses.SimpleClassWithCustomNamespaceMethod;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithOneConstructorArgument;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithProtectedMethod;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
@@ -34,6 +38,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.testclasses.interceptors.TestMethodInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestProtectedInterceptor;
 	import org.as3commons.bytecode.util.ApplicationUtils;
+	import org.as3commons.reflect.Type;
 
 	public class ProxyFactoryTest extends TestCase {
 
@@ -91,7 +96,7 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
-		public function testLoadProxyClassForClassWithProtectedMethod():void {
+		/*public function testLoadProxyClassForClassWithProtectedMethod():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithProtectedMethod, null, applicationDomain);
 			classProxyInfo.proxyMethod("multiply");
@@ -99,7 +104,7 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createProtectedMethodInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleProtectedMethodTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}
+		}*/
 
 		public function testLoadProxyClassForClassWithTwoMethods():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
@@ -111,6 +116,16 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMethodTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
 		}
+
+		/*public function testLoadProxyClassForClassWithCustomnamespaceMethod():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithCustomNamespaceMethod, null, applicationDomain);
+			classProxyInfo.proxyMethod("custom");
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createMethodInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMethodCustomNamespaceTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}*/
 
 		public function testLoadProxyClassForClassAccessors():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
@@ -159,6 +174,13 @@ package org.as3commons.bytecode.proxy {
 			assertNotNull(instance);
 			assertEquals('interceptedReturnValue', instance.returnString());
 			assertEquals('interceptedReturnValue', instance.returnStringWithParam('test'));
+		}
+
+		protected function handleMethodCustomNamespaceTestComplete(event:Event):void {
+			var instance:SimpleClassWithCustomNamespaceMethod = _proxyFactory.createProxy(SimpleClassWithCustomNamespaceMethod) as SimpleClassWithCustomNamespaceMethod;
+			var instance2:SimpleClassWithCustomNamespaceMethod = new SimpleClassWithCustomNamespaceMethod();
+			assertNotNull(instance);
+			assertEquals('interceptedReturnValue', instance.as3commons_bytecode::custom());
 		}
 
 		protected function handleProtectedMethodTestComplete(event:Event):void {

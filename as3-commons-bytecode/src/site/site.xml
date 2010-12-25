@@ -24,7 +24,7 @@
     </menu>
 
     <menu name="Documentation">
-      <item name="Introduction" href="introduction.html" />
+      <item name="Bytecode reflection" href="introduction.html" />
       <item name="Runtime class generation" href="emit.html" />
       <item name="Dynamic proxy generation" href="proxy.html" />
       <!-- item name="Runtime class manipulation" href="weave.html" /-->
