@@ -61,5 +61,9 @@ package org.as3commons.bytecode.testclasses {
 		public function set getterSetter(value:uint):void {
 			_getterSetter = value;
 		}
+
+		protected function doSomething(value:int):void {
+
+		}
 	}
 }

@@ -274,6 +274,9 @@ package org.as3commons.bytecode.proxy {
 			return new QualifiedName(AS3COMMONSBYTECODEPROXY, new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, ORGAS3COMMONSBYTECODE));
 		}
 
+		//private static const AS3COMMONSBYTECODEPROXY:String = "as3commons_bytecode_proxy";
+		//private static const ORGAS3COMMONSBYTECODE:String = "org.as3commons.bytecode";
+
 		protected function addConstructor(classBuilder:IClassBuilder, type:ByteCodeType, classProxyInfo:ClassProxyInfo, nsMultiname:Multiname):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = classBuilder.defineConstructor();
 			var interceptorClassName:String = ClassUtils.getFullyQualifiedName(classProxyInfo.methodInvocationInterceptorClass);
@@ -300,7 +303,21 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.setproperty, [_interceptorRTQName]);
 			if (len > 1) {
 				for (var i:int = 1; i < len; ++i) {
-					ctorBuilder.addOpcode(Opcode.getlocal, [(i + 1)]);
+					var idx:int = i + 1;
+					switch (idx) {
+						case 1:
+							ctorBuilder.addOpcode(Opcode.getlocal_1);
+							break;
+						case 2:
+							ctorBuilder.addOpcode(Opcode.getlocal_2);
+							break;
+						case 3:
+							ctorBuilder.addOpcode(Opcode.getlocal_3);
+							break;
+						default:
+							ctorBuilder.addOpcode(Opcode.getlocal, [idx]);
+							break;
+					}
 				}
 				ctorBuilder.addOpcode(Opcode.newarray, [len - 1]) //
 					.addOpcode(Opcode.coerce, [_arrayQualifiedName]) //
@@ -467,20 +484,32 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.constructprop, [_qnameQname, 2]) //
 			if (len > 0) {
 				for (var i:int = 0; i < len; ++i) {
-					methodBuilder.addOpcode(Opcode.getlocal, [(i + 1)]);
+					var idx:int = i + 1;
+					switch (idx) {
+						case 1:
+							methodBuilder.addOpcode(Opcode.getlocal_1);
+							break;
+						case 2:
+							methodBuilder.addOpcode(Opcode.getlocal_2);
+							break;
+						case 3:
+							methodBuilder.addOpcode(Opcode.getlocal_3);
+							break;
+						default:
+							methodBuilder.addOpcode(Opcode.getlocal, [idx]);
+							break;
+					}
 				}
-				methodBuilder.addOpcode(Opcode.newarray, [len - 1]) //
-					.addOpcode(Opcode.getlocal_0) //
-					.addOpcode(Opcode.getsuper, [methodQName]) //
-					.addOpcode(Opcode.callproperty, [multiName, 5]);
+				methodBuilder.addOpcode(Opcode.newarray, [len]) //
 			} else {
-				methodBuilder.addOpcode(Opcode.pushnull) //
-					.addOpcode(Opcode.getlocal_0) //
-					.addOpcode(Opcode.getsuper, [methodQName]) //
-					.addOpcode(Opcode.callproperty, [multiName, 5]);
+				methodBuilder.addOpcode(Opcode.pushnull);
 			}
+			methodBuilder.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.getsuper, [methodQName]) //
+				.addOpcode(Opcode.callproperty, [multiName, 5]);
 			if (methodBuilder.returnType == BuiltIns.VOID.fullName) {
-				methodBuilder.addOpcode(Opcode.pop).addOpcode(Opcode.returnvoid);
+				methodBuilder.addOpcode(Opcode.pop) //
+					.addOpcode(Opcode.returnvoid);
 			} else {
 				methodBuilder.addOpcode(Opcode.returnvalue);
 			}
@@ -579,7 +608,7 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		protected function createMethodQName(methodBuilder:IMethodBuilder):QualifiedName {
-			var ns:LNamespace = (methodBuilder.visibility == MemberVisibility.PUBLIC) ? LNamespace.PUBLIC : new LNamespace(NamespaceKind.PROTECTED_NAMESPACE, "");
+			var ns:LNamespace = (methodBuilder.visibility == MemberVisibility.PUBLIC) ? LNamespace.PUBLIC : MultinameUtil.toLNamespace(methodBuilder.packageName, NamespaceKind.PROTECTED_NAMESPACE);
 			return new QualifiedName(methodBuilder.name, ns);
 		}
 

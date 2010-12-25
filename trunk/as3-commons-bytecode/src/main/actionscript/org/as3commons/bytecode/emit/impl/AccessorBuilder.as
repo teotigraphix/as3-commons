@@ -111,8 +111,9 @@ package org.as3commons.bytecode.emit.impl {
 				result[result.length] = trait;
 			}
 
+			var event:AccessorBuilderEvent
 			if ((_access === AccessorAccess.READ_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
-				var event:AccessorBuilderEvent = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_GETTER, this, trait);
+				event = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_GETTER, this, trait);
 				dispatchEvent(event);
 				mb = (event.builder != null) ? event.builder : createGetter(trait);
 				mi = mb.build();
@@ -121,7 +122,7 @@ package org.as3commons.bytecode.emit.impl {
 				mb.trait.traitKind = TraitKind.GETTER;
 			}
 			if ((_access === AccessorAccess.WRITE_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
-				var event:AccessorBuilderEvent = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_SETTER, this, trait);
+				event = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_SETTER, this, trait);
 				dispatchEvent(event);
 				mb = (event.builder != null) ? event.builder : createGetter(trait);
 				mi = mb.build();

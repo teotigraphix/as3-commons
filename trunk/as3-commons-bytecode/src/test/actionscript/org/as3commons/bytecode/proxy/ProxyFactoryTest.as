@@ -21,14 +21,13 @@ package org.as3commons.bytecode.proxy {
 
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
-	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithAccessors;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithOneConstructorArgument;
-	import org.as3commons.bytecode.testclasses.SimpleClassWithOneMethod;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithProtectedMethod;
+	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.testclasses.interceptors.TestAccessorInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestInterceptor;
@@ -102,10 +101,11 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
-		public function testLoadProxyClassForClassWithOneMethod():void {
+		public function testLoadProxyClassForClassWithTwoMethods():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
-			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneMethod, null, applicationDomain);
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithTwoMethods, null, applicationDomain);
 			classProxyInfo.proxyMethod("returnString");
+			classProxyInfo.proxyMethod("returnStringWithParam");
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createMethodInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMethodTestComplete, 1000));
@@ -155,9 +155,10 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		protected function handleMethodTestComplete(event:Event):void {
-			var instance:SimpleClassWithOneMethod = _proxyFactory.createProxy(SimpleClassWithOneMethod) as SimpleClassWithOneMethod;
+			var instance:SimpleClassWithTwoMethods = _proxyFactory.createProxy(SimpleClassWithTwoMethods) as SimpleClassWithTwoMethods;
 			assertNotNull(instance);
 			assertEquals('interceptedReturnValue', instance.returnString());
+			assertEquals('interceptedReturnValue', instance.returnStringWithParam('test'));
 		}
 
 		protected function handleProtectedMethodTestComplete(event:Event):void {

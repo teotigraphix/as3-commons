@@ -15,14 +15,19 @@
 */
 package org.as3commons.bytecode.testclasses {
 
-	public class SimpleClassWithOneMethod {
+	public class SimpleClassWithTwoMethods {
 
-		public function SimpleClassWithOneMethod() {
+		public function SimpleClassWithTwoMethods() {
 			super();
 		}
 
 		public function returnString():String {
 			return "originalString";
 		}
+
+		public function returnStringWithParam(param:String):String {
+			return "originalString" + param;
+		}
+
 	}
 }
