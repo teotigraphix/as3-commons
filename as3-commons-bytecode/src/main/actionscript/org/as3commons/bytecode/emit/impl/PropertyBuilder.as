@@ -102,12 +102,7 @@ package org.as3commons.bytecode.emit.impl {
 			trait.traitKind = (isConstant) ? TraitKind.CONST : TraitKind.SLOT;
 			trait.isStatic = isStatic;
 			trait.typeMultiname = MultinameUtil.toQualifiedName(_type);
-			var ns:LNamespace;
-			if (!(StringUtils.hasText(namespace))) {
-				ns = new LNamespace(NAMESPACEKIND_LOOKUP[visibility], "");
-			} else {
-				ns = new LNamespace(NamespaceKind.NAMESPACE, namespace);
-			}
+			var ns:LNamespace = createTraitNamespace();
 			trait.traitMultiname = new QualifiedName(name, ns);
 			if (_initialValue === undefined) {
 				trait.vindex = 0;

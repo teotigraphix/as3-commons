@@ -235,14 +235,14 @@ package org.as3commons.bytecode.emit.impl {
 			for each (var mi:MethodInfo in methods) {
 				if (MethodTrait(mi.as3commonsByteCodeAssignedMethodTrait).isStatic == false) {
 					instInfo.addTrait(mi.as3commonsByteCodeAssignedMethodTrait);
-					if (mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.name === NamespaceKind.PROTECTED_NAMESPACE.description) {
+					if (mi.as3commonsByteCodeAssignedMethodTrait.traitMultiname.nameSpace.kind === NamespaceKind.PROTECTED_NAMESPACE) {
 						instInfo.isProtected = true;
 					}
 				}
 			}
 			if (!instInfo.isProtected) {
 				for each (var slot:SlotOrConstantTrait in slots) {
-					if (slot.traitMultiname.nameSpace.name === NamespaceKind.PROTECTED_NAMESPACE.description) {
+					if (slot.traitMultiname.nameSpace.kind === NamespaceKind.PROTECTED_NAMESPACE) {
 						instInfo.isProtected = true;
 						break;
 					}

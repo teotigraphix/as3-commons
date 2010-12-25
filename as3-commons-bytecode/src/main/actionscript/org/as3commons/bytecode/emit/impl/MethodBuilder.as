@@ -23,6 +23,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.MethodFlag;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
@@ -210,10 +211,6 @@ package org.as3commons.bytecode.emit.impl {
 				trait.traitMultiname = traitMultiname;
 			}
 			return trait;
-		}
-
-		protected function createTraitNamespace():LNamespace {
-			return new LNamespace(NAMESPACEKIND_LOOKUP[visibility], "");
 		}
 
 		protected function createTraitMultiname(name:String, nameSpace:LNamespace):QualifiedName {

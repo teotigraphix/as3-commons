@@ -76,5 +76,6 @@ package org.as3commons.bytecode.emit.impl {
 			}
 			return result;
 		}
+
 	}
 }
