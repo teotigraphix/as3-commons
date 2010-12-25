@@ -17,8 +17,10 @@ package org.as3commons.bytecode.testclasses {
 	import flash.events.IEventDispatcher;
 
 	import org.as3commons.bytecode.as3commons_bytecode_proxy;
+	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.InvocationKind;
+	import org.as3commons.bytecode.testclasses.interceptors.TestProtectedInterceptor;
 
 	public class ProxySubClass extends TestProxiedClass {
 
@@ -53,6 +55,10 @@ package org.as3commons.bytecode.testclasses {
 
 		override public function voidWithRestParameters(... params):void {
 			as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "voidWithRestParameters"), params, super.voidWithRestParameters);
+		}
+
+		override protected function doSomething(value:int):void {
+			as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "doSomething"), [value], super.doSomething);
 		}
 
 	}

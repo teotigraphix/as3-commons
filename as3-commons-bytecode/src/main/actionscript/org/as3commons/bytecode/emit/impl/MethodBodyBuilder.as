@@ -105,6 +105,7 @@ package org.as3commons.bytecode.emit.impl {
 			stackModifiers[Opcode.setglobalslot] = -1;
 			stackModifiers[Opcode.iffalse] = -1;
 			stackModifiers[Opcode.iftrue] = -1;
+			stackModifiers[Opcode.lookupswitch] = -1;
 
 			stackModifiers[Opcode.ifeq] = -2;
 			stackModifiers[Opcode.ifge] = -2;
@@ -229,62 +230,40 @@ package org.as3commons.bytecode.emit.impl {
 						scope(1);
 						break;
 					case Opcode.call:
-						stack(1 - op.parameters[0] + 2);
+						stack(1 - (op.parameters[0] + 2));
 						break;
 					case Opcode.construct:
 					case Opcode.callmethod:
 					case Opcode.callstatic:
-						stack(1 - op.parameters[1] + 1);
+						stack(1 - (op.parameters[1] + 1));
 						break;
 					case Opcode.constructsuper:
 						stack(op.parameters[0] + 1);
 						break;
 					case Opcode.findproperty:
 					case Opcode.findpropstrict:
-						if (hasRuntimeNamespace(op.parameters[0])) {
-							stack(1);
-						}
-						if (hasRuntimeMultiname(op.parameters[0])) {
-							stack(1);
-						}
-						stack(1);
+						stack(1 - (0 + (hasRuntimeNamespace(op.parameters[0]) ? 1 : 0)) + (hasRuntimeMultiname(op.parameters[0]) ? 1 : 0));
 						break;
 					case Opcode.deleteproperty:
 					case Opcode.getdescendants:
 					case Opcode.getproperty:
 					case Opcode.getsuper:
+						stack(1 - (1 + (hasRuntimeNamespace(op.parameters[0]) ? 1 : 0)) + (hasRuntimeMultiname(op.parameters[0]) ? 1 : 0));
+						break;
 					case Opcode.initproperty:
 					case Opcode.setproperty:
 					case Opcode.setsuper:
-						if (hasRuntimeNamespace(op.parameters[0])) {
-							stack(1);
-						}
-						if (hasRuntimeMultiname(op.parameters[0])) {
-							stack(1);
-						}
-						stack(2);
+						stack(0 - (2 + (hasRuntimeNamespace(op.parameters[0]) ? 1 : 0)) + (hasRuntimeMultiname(op.parameters[0]) ? 1 : 0));
 						break;
 					case Opcode.callsuper:
 					case Opcode.callproperty:
 					case Opcode.constructprop:
 					case Opcode.callproplex:
-						if (hasRuntimeNamespace(op.parameters[0])) {
-							stack(1);
-						}
-						if (hasRuntimeMultiname(op.parameters[0])) {
-							stack(1);
-						}
-						stack(op.parameters[1]);
+						stack(1 - (1 + (hasRuntimeNamespace(op.parameters[0]) ? 1 : 0) + (hasRuntimeMultiname(op.parameters[0]) ? 1 : 0) + op.parameters[1]));
 						break;
 					case Opcode.callsupervoid:
 					case Opcode.callpropvoid:
-						if (hasRuntimeNamespace(op.parameters[0])) {
-							stack(1);
-						}
-						if (hasRuntimeMultiname(op.parameters[0])) {
-							stack(1);
-						}
-						stack(op.parameters[1] + 1);
+						stack(0 - (1 + (hasRuntimeNamespace(op.parameters[0]) ? 1 : 0) + (hasRuntimeMultiname(op.parameters[0]) ? 1 : 0) + op.parameters[1]));
 						break;
 					case Opcode.newarray:
 						stack(1 - op.parameters[0]);

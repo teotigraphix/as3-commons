@@ -23,6 +23,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IEmitObject;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.lang.StringUtils;
 
 	/**
 	 * Base class for all emit builder classes, provides stubs for all the shared properties.
@@ -118,6 +119,9 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		public function set namespace(value:String):void {
 			_namespace = value;
+			if (StringUtils.hasText(_namespace)) {
+				visibility = MemberVisibility.NAMESPACE;
+			}
 		}
 
 		/**
@@ -156,23 +160,21 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		protected function createTraitNamespace():LNamespace {
-			var idx:int = packageName.lastIndexOf(MultinameUtil.PERIOD);
-			var nsName:String = packageName.substr(0, idx) + MultinameUtil.SINGLE_COLON + packageName.substr(idx + 1, packageName.length);
 			switch (visibility) {
 				case MemberVisibility.PUBLIC:
 					return new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "");
 					break;
 				case MemberVisibility.PRIVATE:
-					return new LNamespace(NamespaceKind.PRIVATE_NAMESPACE, nsName);
+					return MultinameUtil.toLNamespace(packageName, NamespaceKind.PRIVATE_NAMESPACE);
 					break;
 				case MemberVisibility.INTERNAL:
-					return new LNamespace(NamespaceKind.PACKAGE_INTERNAL_NAMESPACE, nsName);
+					return MultinameUtil.toLNamespace(packageName, NamespaceKind.PACKAGE_INTERNAL_NAMESPACE);
 					break;
 				case MemberVisibility.NAMESPACE:
-					return new LNamespace(NamespaceKind.PACKAGE_INTERNAL_NAMESPACE, namespace);
+					return new LNamespace(NamespaceKind.NAMESPACE, namespace);
 					break;
 				case MemberVisibility.PROTECTED:
-					return new LNamespace(NamespaceKind.PROTECTED_NAMESPACE, nsName);
+					return MultinameUtil.toLNamespace(packageName, NamespaceKind.PROTECTED_NAMESPACE);
 					break;
 			}
 			return null
