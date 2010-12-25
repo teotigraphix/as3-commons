@@ -17,10 +17,12 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.errors.IllegalOperationError;
 	import flash.utils.Dictionary;
 
+	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.emit.IEmitObject;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.util.MultinameUtil;
 
 	/**
 	 * Base class for all emit builder classes, provides stubs for all the shared properties.
@@ -42,14 +44,6 @@ package org.as3commons.bytecode.emit.impl {
 			VISIBILITY_LOOKUP[MemberVisibility.INTERNAL] = INTERNAL_NAMESPACE_NAME;
 			VISIBILITY_LOOKUP[MemberVisibility.PROTECTED] = PROTECTED_NAMESPACE_NAME;
 		}
-		protected static const NAMESPACEKIND_LOOKUP:Dictionary = new Dictionary();
-		{
-			NAMESPACEKIND_LOOKUP[MemberVisibility.PUBLIC] = NamespaceKind.PACKAGE_NAMESPACE;
-			NAMESPACEKIND_LOOKUP[MemberVisibility.PRIVATE] = NamespaceKind.PRIVATE_NAMESPACE;
-			NAMESPACEKIND_LOOKUP[MemberVisibility.INTERNAL] = NamespaceKind.PACKAGE_INTERNAL_NAMESPACE;
-			NAMESPACEKIND_LOOKUP[MemberVisibility.PROTECTED] = NamespaceKind.PROTECTED_NAMESPACE;
-		}
-
 
 		private var _packageName:String;
 		private var _name:String;
@@ -159,6 +153,29 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		protected function buildTrait():TraitInfo {
 			throw new IllegalOperationError(NOT_IMPLEMENTED_ERROR);
+		}
+
+		protected function createTraitNamespace():LNamespace {
+			var idx:int = packageName.lastIndexOf(MultinameUtil.PERIOD);
+			var nsName:String = packageName.substr(0, idx) + MultinameUtil.SINGLE_COLON + packageName.substr(idx + 1, packageName.length);
+			switch (visibility) {
+				case MemberVisibility.PUBLIC:
+					return new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "");
+					break;
+				case MemberVisibility.PRIVATE:
+					return new LNamespace(NamespaceKind.PRIVATE_NAMESPACE, nsName);
+					break;
+				case MemberVisibility.INTERNAL:
+					return new LNamespace(NamespaceKind.PACKAGE_INTERNAL_NAMESPACE, nsName);
+					break;
+				case MemberVisibility.NAMESPACE:
+					return new LNamespace(NamespaceKind.PACKAGE_INTERNAL_NAMESPACE, namespace);
+					break;
+				case MemberVisibility.PROTECTED:
+					return new LNamespace(NamespaceKind.PROTECTED_NAMESPACE, nsName);
+					break;
+			}
+			return null
 		}
 
 	}
