@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
+
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
@@ -29,13 +32,17 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
+	import flash.events.Event;
 
 	public class PropertyBuilder extends EmitMember implements IPropertyBuilder {
+
+		private var _eventDispatcher:IEventDispatcher;
 
 		private var _trait:SlotOrConstantTrait;
 
 		public function PropertyBuilder() {
 			super();
+			_eventDispatcher = new EventDispatcher();
 		}
 
 		private var _type:String;
@@ -109,6 +116,27 @@ package org.as3commons.bytecode.emit.impl {
 				trait.defaultValue = _initialValue;
 			}
 			return trait;
+		}
+
+
+		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+			_eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
+		}
+
+		public function dispatchEvent(event:Event):Boolean {
+			return _eventDispatcher.dispatchEvent(event);
+		}
+
+		public function hasEventListener(type:String):Boolean {
+			return _eventDispatcher.hasEventListener(type);
+		}
+
+		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
+			_eventDispatcher.removeEventListener(type, listener, useCapture);
+		}
+
+		public function willTrigger(type:String):Boolean {
+			return _eventDispatcher.willTrigger(type);
 		}
 
 	}

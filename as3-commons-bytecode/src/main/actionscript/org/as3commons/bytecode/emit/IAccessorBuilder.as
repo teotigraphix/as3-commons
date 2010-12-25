@@ -18,6 +18,14 @@ package org.as3commons.bytecode.emit {
 	import org.as3commons.reflect.AccessorAccess;
 
 	/**
+	 *
+	 */
+	[Event(name="buildGetter", type="org.as3commons.bytecode.emit.event.AccessorBuilderEvent")]
+	/**
+	 *
+	 */
+	[Event(name="buildSetter", type="org.as3commons.bytecode.emit.event.AccessorBuilderEvent")]
+	/**
 	 * Describes an object that can generate an accessor (getter/setter) method for a generated class.
 	 * @author Roland Zwaga
 	 */
@@ -54,27 +62,5 @@ package org.as3commons.bytecode.emit {
 		 * @private
 		 */
 		function set createPrivateProperty(value:Boolean):void;
-
-		/**
-		 * Method that will be invoked to create the <code>IMethodBuilder</code> for the getter method.
-		 * <p>The method needs to have this signature:</p>
-		 * <p><pre>function(accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait):IMethodBuilder</pre></p>
-		 */
-		function get createGetterFunction():Function;
-		/**
-		 * @private
-		 */
-		function set createGetterFunction(value:Function):void;
-
-		/**
-		 * Method that will be invoked to create the <code>IMethodBuilder</code> for the setter method.
-		 * <p>The method needs to have this signature:</p>
-		 * <p><pre>function(accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait):IMethodBuilder</pre></p>
-		 */
-		function get createSetterFunction():Function;
-		/**
-		 * @private
-		 */
-		function set createSetterFunction(value:Function):void;
 	}
 }
