@@ -29,6 +29,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.emit.event.AccessorBuilderEvent;
 	import org.as3commons.bytecode.emit.util.BuildUtil;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.util.MultinameUtil;
@@ -37,6 +38,14 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.as3commons_reflect;
 
+	/**
+	 *
+	 */
+	[Event(name="buildGetter", type="org.as3commons.bytecode.emit.event.AccessorBuilderEvent")]
+	/**
+	 *
+	 */
+	[Event(name="buildSetter", type="org.as3commons.bytecode.emit.event.AccessorBuilderEvent")]
 	/**
 	 * Generates a setter and/or getter method along with an optional private property
 	 * that together form an accessor on a class.
@@ -53,8 +62,6 @@ package org.as3commons.bytecode.emit.impl {
 		private var _getterMethodInfo:MethodInfo;
 		private var _setterMethodInfo:MethodInfo;
 		private var _createPrivateProperty:Boolean = true;
-		private var _createGetterFunction:Function;
-		private var _createSetterFunction:Function;
 
 		as3commons_bytecode function setGetter(getterMethodInfo:MethodInfo):void {
 			Assert.notNull(getterMethodInfo, "getterMethodInfo argument must not be null");
@@ -105,22 +112,18 @@ package org.as3commons.bytecode.emit.impl {
 			}
 
 			if ((_access === AccessorAccess.READ_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
-				if (_createGetterFunction == null) {
-					mb = createGetter(trait);
-				} else {
-					mb = _createGetterFunction(this, trait);
-				}
+				var event:AccessorBuilderEvent = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_GETTER, this, trait);
+				dispatchEvent(event);
+				mb = (event.builder != null) ? event.builder : createGetter(trait);
 				mi = mb.build();
 				mi.methodName = createAccessorName(GETTER_SUFFIX);
 				result[result.length] = mi;
 				mb.trait.traitKind = TraitKind.GETTER;
 			}
 			if ((_access === AccessorAccess.WRITE_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
-				if (_createSetterFunction == null) {
-					mb = createSetter(trait);
-				} else {
-					mb = _createSetterFunction(this, trait);
-				}
+				var event:AccessorBuilderEvent = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_SETTER, this, trait);
+				dispatchEvent(event);
+				mb = (event.builder != null) ? event.builder : createGetter(trait);
 				mi = mb.build();
 				mi.methodName = createAccessorName(SETTER_SUFFIX);
 				result[result.length] = mi;
@@ -195,22 +198,6 @@ package org.as3commons.bytecode.emit.impl {
 				mb.as3commons_bytecode::setMethodInfo(methodInfo);
 			}
 			return mb;
-		}
-
-		public function get createGetterFunction():Function {
-			return _createGetterFunction;
-		}
-
-		public function set createGetterFunction(value:Function):void {
-			_createGetterFunction = value;
-		}
-
-		public function get createSetterFunction():Function {
-			return _createSetterFunction;
-		}
-
-		public function set createSetterFunction(value:Function):void {
-			_createSetterFunction = value;
 		}
 
 		/**

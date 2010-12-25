@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
+	import flash.events.IEventDispatcher;
 
 	/**
 	 * Describes an object that can generate a property on a class or interface to be used in an <code>AbcFile</code>.
 	 * @author Roland Zwaga
 	 */
-	public interface IPropertyBuilder extends IEmitMember {
+	public interface IPropertyBuilder extends IEmitMember, IEventDispatcher {
 		/**
 		 * If <code>true</code> the generated property will be marked as a constant.
 		 */

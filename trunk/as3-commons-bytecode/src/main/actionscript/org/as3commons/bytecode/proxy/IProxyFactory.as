@@ -19,6 +19,19 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 
 	/**
+	 * Dispatched before a proxy class is created, it allows the creation of a <code>IMethodInvocationInterceptor</code> to be
+	 * delegated to an event handler. The event handler needs to assign a valid <code>IMethodInvocationInterceptor</code> instance
+	 * to the <code>ProxyFactoryEvent.methodInvocationInterceptor</code> property in order for it to be used for the newly created proxy.
+	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR
+	 */
+	[Event(name="getMethodInvocationInterceptor", "org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
+	/**
+	 * Dispatched after the proxy has been build, the <code>IClassBuilder</code> instance assigned to the <code>ProxyFactoryEvent.classBuilder</code> property
+	 * can be further customized in the handlers for this event.
+	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.AFTER_PROXY_BUILD
+	 */
+	[Event(name="afterProxyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
+	/**
 	 * Dispatched when the proxy factory has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
 	 * @eventType flash.events.Event.COMPLETE
 	 */
@@ -48,33 +61,24 @@ package org.as3commons.bytecode.proxy {
 		 */
 		function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class = null, applicationDomain:ApplicationDomain = null):ClassProxyInfo;
 		/**
-		 *
-		 *
+		 * Generates the definitions for all proxied class.
+		 * @return The <code>IAbcBuilder</code> instance that contains all the definitions for the proxies.
 		 */
-		function createProxyClasses():IAbcBuilder;
+		function generateProxyClasses():IAbcBuilder;
 
 		/**
+		 * Loads the generated classes into the VM.
 		 * @param applicationDomain The <code>ApplicationDomain</code> that will be used to load the generated proxies into. By default <code>ApplicationDomain.currentDomain</code> is used.
 		 */
 		function loadProxyClasses(applicationDomain:ApplicationDomain = null):void;
 
 		/**
-		 *
+		 * Creates a proxy instance for the specified <code>Class</code>. This method can only be invoked after the <code>defineProxy()</code> and <code>createProxyClasses()</code> methods
+		 * have been invoked.
 		 * @param clazz
 		 * @param constructorArgs
 		 * @return
 		 */
 		function createProxy(clazz:Class, constructorArgs:Array = null):Object;
-
-		/**
-		 * An optional function that will be invoked to create the necessary <code>IMethodInvocationInterceptor</code> instance.
-		 * <p>The method will need to have this signature:</p>
-		 * <pre>function(proxiedClass:Class, constructorArgs:Array, methodInvocationInterceptorClass:Class):IMethodInvocationInterceptor</pre>
-		 */
-		function get methodInvocationInterceptorFunction():Function;
-		/**
-		 * @private
-		 */
-		function set methodInvocationInterceptorFunction(value:Function):void;
 	}
 }
