@@ -17,6 +17,7 @@ package org.as3commons.bytecode.reflect {
 	import flash.display.LoaderInfo;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
@@ -30,6 +31,9 @@ package org.as3commons.bytecode.reflect {
 	 */
 	public class ByteCodeTypeProvider extends AbstractTypeProvider {
 
+		private static var _byteArrays:Dictionary = new Dictionary(true);
+		private static var _metaLookupByteArrays:Dictionary = new Dictionary(true);
+
 		public function ByteCodeTypeProvider() {
 			typeCache = new ByteCodeTypeCache();
 			super();
@@ -38,6 +42,12 @@ package org.as3commons.bytecode.reflect {
 		override public function getType(cls:Class, applicationDomain:ApplicationDomain):Type {
 			Assert.notNull(cls, "cls argument must not be null");
 			return getTypeCache().get(ClassUtils.getFullyQualifiedName(cls, true));
+		}
+
+		override public function clearCache():void {
+			_byteArrays = new Dictionary(true);
+			_metaLookupByteArrays = new Dictionary(true);
+			super.clearCache();
 		}
 
 		public function metaDataLookupFromLoader(loader:LoaderInfo):Object {
@@ -66,16 +76,22 @@ package org.as3commons.bytecode.reflect {
 
 		public function metaDataLookupFromByteArray(input:ByteArray):Object {
 			Assert.notNull(input, "input argument must not be null");
-			var deserializer:ClassMetaDataDeserializer = new ClassMetaDataDeserializer();
-			deserializer.read(getTypeCache() as ByteCodeTypeCache, input);
+			deserializeMetadata(input);
 			return (getTypeCache() as ByteCodeTypeCache).metaDataLookup;
 		}
 
 		public function definitionNamesFromByteArray(input:ByteArray):Array {
 			Assert.notNull(input, "input argument must not be null");
-			var deserializer:ClassMetaDataDeserializer = new ClassMetaDataDeserializer();
-			deserializer.read(getTypeCache() as ByteCodeTypeCache, input);
+			deserializeMetadata(input);
 			return (getTypeCache() as ByteCodeTypeCache).definitionNames;
+		}
+
+		protected function deserializeMetadata(input:ByteArray):void {
+			if (_metaLookupByteArrays[input] == null) {
+				_metaLookupByteArrays[input] = true;
+				var deserializer:ClassMetaDataDeserializer = new ClassMetaDataDeserializer();
+				deserializer.read(getTypeCache() as ByteCodeTypeCache, input);
+			}
 		}
 
 		public function fromLoader(loader:LoaderInfo, applicationDomain:ApplicationDomain = null):void {
@@ -92,6 +108,10 @@ package org.as3commons.bytecode.reflect {
 
 		public function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain = null, isLoaderBytes:Boolean = true):void {
 			Assert.notNull(input, "input argument must not be null");
+			if (_byteArrays[input] != null) {
+				return;
+			}
+			_byteArrays[input] = true;
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var initialPosition:int = input.position;
 			try {

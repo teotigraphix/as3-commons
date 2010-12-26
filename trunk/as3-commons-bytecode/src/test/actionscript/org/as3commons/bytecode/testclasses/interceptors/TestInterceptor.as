@@ -17,13 +17,16 @@ package org.as3commons.bytecode.testclasses.interceptors {
 	import org.as3commons.bytecode.interception.IInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
 
-	public class TestInterceptor implements IInterceptor {
+	public class TestInterceptor extends AssertingInterceptor {
 
 		public function TestInterceptor() {
 			super();
 		}
 
-		public function intercept(invocation:IMethodInvocation):void {
+		override public function intercept(invocation:IMethodInvocation):void {
+			super.intercept(invocation);
+			assertNotNull(invocation.arguments);
+			assertEquals(1, invocation.arguments.length);
 			invocation.arguments[0] = 'intercepted';
 		}
 	}

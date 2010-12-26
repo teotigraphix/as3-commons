@@ -14,8 +14,9 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy {
+	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
-
+	
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 
 	/**
@@ -50,7 +51,7 @@ package org.as3commons.bytecode.proxy {
 	 * Describes an object capable of creating runtime dynamic proxy classes.
 	 * @author Roland Zwaga
 	 */
-	public interface IProxyFactory {
+	public interface IProxyFactory extends IEventDispatcher {
 
 		/**
 		 *

@@ -15,17 +15,16 @@
 */
 package org.as3commons.bytecode.testclasses.interceptors {
 
-	import org.as3commons.bytecode.interception.IInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
 	import org.as3commons.bytecode.interception.InvocationKind;
-	import org.as3commons.lang.StringUtils;
 
-	public class TestAccessorInterceptor implements IInterceptor {
+	public class TestAccessorInterceptor extends AssertingInterceptor {
 		public function TestAccessorInterceptor() {
 			super();
 		}
 
-		public function intercept(invocation:IMethodInvocation):void {
+		override public function intercept(invocation:IMethodInvocation):void {
+			super.intercept(invocation);
 			if (invocation.kind === InvocationKind.GETTER) {
 				invocation.proceed = false;
 				invocation.returnValue = 100;
