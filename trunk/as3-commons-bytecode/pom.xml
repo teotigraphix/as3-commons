@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-bytecode</artifactId>
 	<packaging>swc</packaging>
-	<version>0.9</version>
+	<version>0.9.1-SNAPSHOT</version>
 	<name>AS3Commons ByteCode</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
