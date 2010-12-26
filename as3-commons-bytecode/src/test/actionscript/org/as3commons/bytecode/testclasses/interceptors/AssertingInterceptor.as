@@ -14,21 +14,20 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.testclasses.interceptors {
-	import flexunit.framework.TestCase;
-
 	import org.as3commons.bytecode.interception.IInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
+	import org.as3commons.lang.Assert;
 
-	public class AssertingInterceptor extends TestCase implements IInterceptor {
+	public class AssertingInterceptor implements IInterceptor {
 
 		public function AssertingInterceptor() {
 			super();
 		}
 
 		public function intercept(invocation:IMethodInvocation):void {
-			assertNotNull(invocation);
-			assertNotNull(invocation.targetInstance);
-			assertNotNull(invocation.kind);
+			Assert.notNull(invocation);
+			Assert.notNull(invocation.targetInstance);
+			Assert.notNull(invocation.kind);
 		}
 	}
 }

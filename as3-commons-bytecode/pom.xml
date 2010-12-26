@@ -91,9 +91,9 @@
 	</build>
 
 	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.8.5</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.8.5</url>
-		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.8.5</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9</url>
+		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9</connection>
 	</scm>
 
 	<distributionManagement>
