@@ -18,8 +18,7 @@ package org.as3commons.bytecode.interception {
 	import flash.events.IEventDispatcher;
 
 	/**
-	 *
-	 * @author Roland Zwaga
+	 * @inheritDoc
 	 */
 	public class BasicMethodInvocationInterceptor extends EventDispatcher implements IMethodInvocationInterceptor {
 
@@ -35,11 +34,17 @@ package org.as3commons.bytecode.interception {
 			initBasicMethodInvocationInterceptor();
 		}
 
-		private function initBasicMethodInvocationInterceptor():void {
+		/**
+		 * Initializes the current <code>BasicMethodInvocationInterceptor</code> instance.
+		 */
+		protected function initBasicMethodInvocationInterceptor():void {
 			_invocationClass = BasicMethodInvocation;
 			_interceptors = [];
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function intercept(targetInstance:Object, kind:InvocationKind, member:QName, arguments:Array = null, targetMethod:Function = null):* {
 			var proceed:Boolean = true;
 			var invoc:IMethodInvocation;
@@ -74,18 +79,30 @@ package org.as3commons.bytecode.interception {
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get invocationClass():Class {
 			return _invocationClass;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function set invocationClass(value:Class):void {
 			_invocationClass = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get interceptors():Array {
 			return _interceptors;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set interceptors(value:Array):void {
 			_interceptors = value;
 		}

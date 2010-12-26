@@ -15,7 +15,6 @@
  */
 package org.as3commons.bytecode.emit.impl {
 	import flash.events.Event;
-
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 
@@ -47,11 +46,11 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function testBuild():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyTest");
-			/*var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
+			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
 			methodBuilder.name = "testMe";
-			var methodBodyBuilder:IMethodBodyBuilder = methodBuilder.defineMethodBody();
-			methodBodyBuilder.addOpcode(new Op(Opcode.getlocal_0));
-			methodBodyBuilder.addOpcode(new Op(Opcode.returnvoid));*/
+			methodBuilder.addOpcode(Opcode.getlocal_0);
+			methodBuilder.addOpcode(Opcode.pushscope);
+			methodBuilder.addOpcode(Opcode.returnvoid);
 			var abcFile:AbcFile = _abcBuilder.build();
 			_loader.addEventListener(Event.COMPLETE, addAsync(successHandler, 5000), false, 0, true);
 			_loader.loadAbcFile(abcFile);

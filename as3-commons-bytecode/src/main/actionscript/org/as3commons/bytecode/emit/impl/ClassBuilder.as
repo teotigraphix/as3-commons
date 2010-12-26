@@ -210,7 +210,7 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo = createInstanceInfo(slotTraits, methods, hierarchyDepth);
 			classInfo.classMultiname = instanceInfo.classMultiname;
 			instanceInfo.classInfo = classInfo;
-			var metadata:Array = buildMetadata();
+			classInfo.metadata = buildMetadata();
 
 			for each (var st:SlotOrConstantTrait in slotTraits) {
 				if (st.isStatic) {
@@ -219,7 +219,7 @@ package org.as3commons.bytecode.emit.impl {
 					instanceInfo.addTrait(st);
 				}
 			}
-			return [classInfo, instanceInfo, methods, metadata];
+			return [classInfo, instanceInfo, methods, classInfo.metadata];
 		}
 
 		protected function createSlots():Array {

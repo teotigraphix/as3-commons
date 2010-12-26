@@ -15,7 +15,17 @@
 */
 package org.as3commons.bytecode.interception {
 
+	/**
+	 * Describes an object that can examine an <code>IMethodInvocation</code> and optionally
+	 * change its properties according to some kind of custom business logic.
+	 * @author Roland Zwaga
+	 */
 	public interface IInterceptor {
+		/**
+		 * Method that may contain custom business logic that determines if and how to alter the
+		 * values contained in the specified <code>IMethodInvocation</code> instance.
+		 * @param invocation The specified <code>IMethodInvocation</code> instance.
+		 */
 		function intercept(invocation:IMethodInvocation):void;
 	}
 }

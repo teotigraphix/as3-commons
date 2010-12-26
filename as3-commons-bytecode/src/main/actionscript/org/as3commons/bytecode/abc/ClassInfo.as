@@ -27,6 +27,8 @@ package org.as3commons.bytecode.abc {
 
 		public var classMultiname:QualifiedName;
 
+		public var metadata:Array;
+
 		public function ClassInfo() {
 			super();
 		}

@@ -16,6 +16,8 @@
 package org.as3commons.bytecode.interception {
 
 	/**
+	 * Describes an object that acts as a registry of <code>IInterceptor</code> instances capable
+	 * of intercepting the invocation of a method and potentially change its parameters and return value.
 	 * @author Roland Zwaga
 	 */
 	public interface IMethodInvocationInterceptor {

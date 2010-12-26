@@ -17,8 +17,7 @@ package org.as3commons.bytecode.interception {
 	import org.as3commons.lang.Assert;
 
 	/**
-	 *
-	 * @author Roland Zwaga
+	 * @inheritDoc
 	 */
 	public class BasicMethodInvocation implements IMethodInvocation {
 
@@ -42,6 +41,14 @@ package org.as3commons.bytecode.interception {
 			initBasicMethodInvocation(instance, kind, member, method, args);
 		}
 
+		/**
+		 * Initializes the current <code>BasicMethodInvocation</code> instance.
+		 * @param instance
+		 * @param kind
+		 * @param member
+		 * @param method
+		 * @param args
+		 */
 		protected function initBasicMethodInvocation(instance:Object, kind:InvocationKind, member:QName, method:Function, args:Array):void {
 			Assert.notNull(instance, "instance argument must not be null");
 			Assert.notNull(kind, "kind argument must not be null");
@@ -52,38 +59,65 @@ package org.as3commons.bytecode.interception {
 			_arguments = args;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get kind():InvocationKind {
 			return _kind;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get targetInstance():Object {
 			return _targetInstance;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get targetMember():QName {
 			return _targetMember;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get targetMethod():Function {
 			return _targetMethod;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get arguments():Array {
 			return _arguments;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get returnValue():* {
 			return _returnValue;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set returnValue(value:*):void {
 			_returnValue = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get proceed():Boolean {
 			return _proceed;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set proceed(value:Boolean):void {
 			_proceed = value;
 		}

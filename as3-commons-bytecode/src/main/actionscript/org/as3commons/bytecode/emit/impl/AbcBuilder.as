@@ -345,6 +345,9 @@ package org.as3commons.bytecode.emit.impl {
 			trait.classInfo = classInfo;
 			trait.traitKind = TraitKind.CLASS;
 			trait.traitMultiname = MultinameUtil.toQualifiedName(className);
+			for each (var metadata:Metadata in classInfo.metadata) {
+				trait.metadata[trait.metadata.length] = metadata;
+			}
 			return trait;
 		}
 
