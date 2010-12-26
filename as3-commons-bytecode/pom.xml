@@ -11,7 +11,8 @@
 	<name>AS3Commons ByteCode</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
-			ABC bytecode parsing and publishing and bytecode based reflection API for ActionScript 3.0, formerly known as Loom. (http://code.google.com/p/loom-as3/)
+			ABC bytecode parsing and publishing and bytecode based reflection API for ActionScript 3.0, formerly known as Loom. (http://code.google.com/p/loom-as3/).
+			It includes API's to generate classes at runtime and create dynamic proxy classes.
 	</description>
 	<inceptionYear>2010</inceptionYear>
 
