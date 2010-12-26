@@ -59,6 +59,8 @@ package org.as3commons.bytecode.emit.impl {
 		private function successHandler(event:Event):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyTest") as Class;
 			assertNotNull(cls);
+			var instance:Object = new cls();
+			assertNotNull(instance);
 		}
 	}
 }
