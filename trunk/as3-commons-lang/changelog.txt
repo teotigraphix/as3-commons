@@ -3,6 +3,14 @@ AS3COMMONS LANG CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 0.3.2 (00.00.0000)
+-----------------------------------
+
+Package org.commons.lang
+
+* Added isInformalImplementationOf() method to ClassUtils (Thanks Zachary)
+
+
 
 Changes in version 0.3 (29.08.2010)
 -----------------------------------
