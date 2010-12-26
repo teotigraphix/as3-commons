@@ -21,7 +21,8 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.lang.Assert;
 
 	/**
-	 *
+	 * Contains all the necessary information for an <code>IProxyFactory</code> to generate
+	 * a proxy class.
 	 * @author Roland Zwaga
 	 */
 	public final class ClassProxyInfo {
@@ -42,10 +43,16 @@ package org.as3commons.bytecode.proxy {
 			initClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
 		}
 
+		/**
+		 * The class for which a proxy will be generated.
+		 */
 		public function get proxiedClass():Class {
 			return _proxiedClass;
 		}
 
+		/**
+		 * The <code>Class</code> that will be injected into the proxy class as the main interceptor mechanism.
+		 */
 		public function get methodInvocationInterceptorClass():Class {
 			return _methodInvocationInterceptorClass;
 		}
@@ -64,38 +71,72 @@ package org.as3commons.bytecode.proxy {
 			_properties = [];
 		}
 
+		/**
+		 * Determines if the proxy class will be marked as dynamic.
+		 */
 		public function get makeDynamic():Boolean {
 			return _makeDynamic;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set makeDynamic(value:Boolean):void {
 			_makeDynamic = value;
 		}
 
+		/**
+		 * Determines whether the <code>IProxyFactory</code> should proxy all members of the proxied class.
+		 */
 		public function get proxyAll():Boolean {
 			return ((_methods.length + _accessors.length + _properties.length) == 0);
 		}
 
+		/**
+		 * Determines whether the <code>IProxyFactory</code> should only generate a proxy for the constructor.
+		 * (No other members will be proxied).
+		 */
 		public function get onlyProxyConstructor():Boolean {
 			return _onlyProxyConstructor;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set onlyProxyConstructor(value:Boolean):void {
 			_onlyProxyConstructor = value;
 		}
 
+		/**
+		 * Marks the specified method and optional namespace for proxying.
+		 * @param methodName The specified method name.
+		 * @param namespace Optionally the custom namespace of the specified method.
+		 */
 		public function proxyMethod(methodName:String, namespace:String = null):void {
 			_methods[_methods.length] = new MemberInfo(methodName, namespace);
 		}
 
+		/**
+		 * Marks the specified accessor and optional namespace for proxying.
+		 * @param accessorName The specified accessor name.
+		 * @param namespace Optionally the custom namespace of the specified accessor.
+		 */
 		public function proxyAccessor(accessorName:String, namespace:String = null):void {
 			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace);
 		}
 
+		/**
+		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the methods
+		 * that will be proxied for the specified class.
+		 */
 		public function get methods():Array {
 			return _methods;
 		}
 
+		/**
+		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the accessors
+		 * that will be proxied for the specified class.
+		 */
 		public function get accessors():Array {
 			return _accessors;
 		}

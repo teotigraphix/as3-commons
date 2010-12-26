@@ -14,7 +14,6 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy {
-	import assets.abc.custom_namespace;
 
 	import flash.events.Event;
 	import flash.system.ApplicationDomain;
@@ -29,6 +28,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithAccessors;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithCustomNamespaceMethod;
+	import org.as3commons.bytecode.testclasses.SimpleClassWithMetadata;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithOneConstructorArgument;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithProtectedMethod;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
@@ -38,6 +38,9 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.testclasses.interceptors.TestMethodInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestProtectedInterceptor;
 	import org.as3commons.bytecode.util.ApplicationUtils;
+	import org.as3commons.reflect.Accessor;
+	import org.as3commons.reflect.MetaData;
+	import org.as3commons.reflect.Method;
 	import org.as3commons.reflect.Type;
 
 	public class ProxyFactoryTest extends TestCase {
@@ -139,6 +142,17 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
+		public function testLoadProxyClassForClassWithMetadata():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithMetadata, null, applicationDomain);
+			classProxyInfo.proxyMethod("simpleMethod");
+			classProxyInfo.proxyAccessor("getter");
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createAccessorInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMetadataTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
 		protected function createAccessorInterceptor(event:ProxyFactoryEvent):void {
 			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
 			interceptor.interceptors[interceptor.interceptors.length] = new TestAccessorInterceptor();
@@ -200,5 +214,28 @@ package org.as3commons.bytecode.proxy {
 			assertEquals(100, instance.checkSetter());
 		}
 
+		protected function handleMetadataTestComplete(event:Event):void {
+			var instance:SimpleClassWithMetadata = _proxyFactory.createProxy(SimpleClassWithMetadata) as SimpleClassWithMetadata;
+			var type:Type = Type.forInstance(instance);
+			assertTrue(type.hasMetaData('Transient'));
+			var metadata:MetaData = type.getMetaData('Transient')[0];
+			assertEquals(1, metadata.arguments.length);
+			assertEquals('arg', metadata.arguments[0].key);
+			assertEquals('classtest', metadata.arguments[0].value);
+
+			var method:Method = type.getMethod('simpleMethod');
+			assertTrue(method.hasMetaData('Transient'));
+			metadata = method.getMetaData('Transient')[0];
+			assertEquals(1, metadata.arguments.length);
+			assertEquals('arg', metadata.arguments[0].key);
+			assertEquals('methodtest', metadata.arguments[0].value);
+
+			var accessor:Accessor = type.getField('getter') as Accessor;
+			assertTrue(accessor.hasMetaData('Transient'));
+			metadata = accessor.getMetaData('Transient')[0];
+			assertEquals(1, metadata.arguments.length);
+			assertEquals('arg', metadata.arguments[0].key);
+			assertEquals('accessortest', metadata.arguments[0].value);
+		}
 	}
 }

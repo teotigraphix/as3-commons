@@ -18,14 +18,30 @@ package org.as3commons.bytecode.interception {
 
 	import org.as3commons.lang.Assert;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public final class InvocationKind {
 
 		private static const ITEMS:Dictionary = new Dictionary();
 		private static var _enumCreated:Boolean = false;
 
+		/**
+		 * Determines interception of a constructor method.
+		 */
 		public static const CONSTRUCTOR:InvocationKind = new InvocationKind(CONSTRUCTOR_NAME);
+		/**
+		 * Determines interception of a method.
+		 */
 		public static const METHOD:InvocationKind = new InvocationKind(METHOD_NAME);
+		/**
+		 * Determines interception of a getter method.
+		 */
 		public static const GETTER:InvocationKind = new InvocationKind(GETTER_NAME);
+		/**
+		 * Determines interception of a setter method.
+		 */
 		public static const SETTER:InvocationKind = new InvocationKind(SETTER_NAME);
 
 		private static const CONSTRUCTOR_NAME:String = "constructorInterception";

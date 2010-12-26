@@ -15,11 +15,20 @@
 */
 package org.as3commons.bytecode.proxy {
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	internal class MemberInfo {
 
 		private var _qName:QName;
 
-		public function MemberInfo(name:String, namespace:String = null) {
+		/**
+		 * Creates a new <code>MemberInfo</code> instance.
+		 * @param name
+		 * @param namespace
+		 */
+		public function MemberInfo(name:String, namespace:String = "") {
 			super();
 			_qName = new QName(namespace, name);
 		}

@@ -24,10 +24,8 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.MultinameL;
 	import org.as3commons.bytecode.abc.NamespaceSet;
-	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.RuntimeQualifiedName;
-	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
@@ -37,13 +35,14 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
-	import org.as3commons.bytecode.emit.IEmitObject;
+	import org.as3commons.bytecode.emit.IMetadataContainer;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.emit.event.AccessorBuilderEvent;
 	import org.as3commons.bytecode.emit.impl.AbcBuilder;
+	import org.as3commons.bytecode.emit.impl.MetaDataArgument;
 	import org.as3commons.bytecode.emit.impl.MethodBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
@@ -60,8 +59,12 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.reflect.AbstractMember;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.AccessorAccess;
+	import org.as3commons.reflect.MetaData;
+	import org.as3commons.reflect.MetaDataArgument;
+	import org.as3commons.reflect.MetaDataContainer;
 	import org.as3commons.reflect.Method;
 
 	/**
@@ -120,15 +123,24 @@ package org.as3commons.bytecode.proxy {
 		private var _SetterKindQName:QualifiedName = new QualifiedName("SETTER", LNamespace.PUBLIC);
 		private var _qnameQname:QualifiedName = new QualifiedName("QName", LNamespace.PUBLIC);
 
+		/**
+		 * Creates a new <code>ProxyFactory</code> instance.
+		 */
 		public function ProxyFactory() {
 			super();
 			initProxyFactory();
 		}
 
+		/**
+		 * A <code>Dictionary</code> lookup of <code>ApplicationDomain</code>-&gt;<code>Array</code>-of-<code>ClassProxyInfo</code>.
+		 */
 		public function get domains():Dictionary {
 			return _domains;
 		}
 
+		/**
+		 * Initializes the current <code>ProxyFactory</code>.
+		 */
 		protected function initProxyFactory():void {
 			_abcBuilder = new AbcBuilder();
 			_domains = new Dictionary();
@@ -137,6 +149,10 @@ package org.as3commons.bytecode.proxy {
 			LOGGER.debug("ProxyFactory created and initialized");
 		}
 
+		/**
+		 * Generates a sequence of 20 random lower capital characters.
+		 * @return The generated sequence of characters.
+		 */
 		protected function generateSuffix():String {
 			var len:int = 20;
 			var result:Array = new Array(20);
@@ -146,6 +162,9 @@ package org.as3commons.bytecode.proxy {
 			return result.join('');
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class = null, applicationDomain:ApplicationDomain = null):ClassProxyInfo {
 			methodInvocationInterceptorClass = (methodInvocationInterceptorClass != null) ? methodInvocationInterceptorClass : BasicMethodInvocationInterceptor;
 			Assert.state(ClassUtils.isImplementationOf(methodInvocationInterceptorClass, IMethodInvocationInterceptor, applicationDomain) == true, "methodInvocationInterceptorClass argument must be a class that implements IMethodInvocationInterceptor");
@@ -160,6 +179,9 @@ package org.as3commons.bytecode.proxy {
 			return info;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function generateProxyClasses():IAbcBuilder {
 			for (var domain:* in _domains) {
 				var infos:Array = _domains[domain] as Array;
@@ -174,6 +196,9 @@ package org.as3commons.bytecode.proxy {
 			return _abcBuilder;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function loadProxyClasses(applicationDomain:ApplicationDomain = null):void {
 			applicationDomain = (applicationDomain != null) ? applicationDomain : ApplicationDomain.currentDomain;
 			for (var cls:* in _classProxyLookup) {
@@ -183,21 +208,32 @@ package org.as3commons.bytecode.proxy {
 			_abcBuilder.addEventListener(IOErrorEvent.IO_ERROR, redispatch);
 			_abcBuilder.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch);
 			_abcBuilder.buildAndLoad(applicationDomain);
+			LOGGER.debug("Loading proxies into application domain {0}", applicationDomain);
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function createProxy(clazz:Class, constructorArgs:Array = null):Object {
 			var proxyInfo:ProxyInfo = _classProxyLookup[clazz] as ProxyInfo;
 			if (proxyInfo != null) {
-				var cls:Class = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
+				if (proxyInfo.proxyClass == null) {
+					proxyInfo.proxyClass = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
+				}
 				var event:ProxyFactoryEvent = new ProxyFactoryEvent(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, null, clazz, constructorArgs, proxyInfo.methodInvocationInterceptorClass);
 				dispatchEvent(event);
 				var interceptorInstance:IMethodInvocationInterceptor = (event.methodInvocationInterceptor != null) ? event.methodInvocationInterceptor : new proxyInfo.methodInvocationInterceptorClass();
 				constructorArgs = (constructorArgs != null) ? [interceptorInstance].concat(constructorArgs) : [interceptorInstance];
-				return ClassUtils.newInstance(cls, constructorArgs);
+				LOGGER.debug("Created proxy for class {0} with arguments: {1}", clazz, constructorArgs);
+				return ClassUtils.newInstance(proxyInfo.proxyClass, constructorArgs);
 			}
 			return null;
 		}
 
+		/**
+		 * Redispatches the specified event.
+		 * @param event The specified event.
+		 */
 		protected function redispatch(event:Event):void {
 			_abcBuilder.removeEventListener(Event.COMPLETE, redispatch);
 			_abcBuilder.removeEventListener(IOErrorEvent.IO_ERROR, redispatch);
@@ -205,6 +241,13 @@ package org.as3commons.bytecode.proxy {
 			dispatchEvent(event);
 		}
 
+		/**
+		 * Generates the <code>Class</code> specified by the <code>ClassProxyInfo</code> using the emit API.
+		 * @param classProxyInfo The specified <code>ClassProxyInfo</code>.
+		 * @param applicationDomain The application domain the proxied <code>Class</code> belongs to.
+		 * @return A <code>ProxyInfo</code> instance.
+		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied class is marked as final.
+		 */
 		protected function buildProxyClass(classProxyInfo:ClassProxyInfo, applicationDomain:ApplicationDomain):ProxyInfo {
 			var className:String = ClassUtils.getFullyQualifiedName(classProxyInfo.proxiedClass);
 			var type:ByteCodeType = ByteCodeType.forName(className.replace(MultinameUtil.DOUBLE_COLON, MultinameUtil.PERIOD), applicationDomain);
@@ -214,31 +257,63 @@ package org.as3commons.bytecode.proxy {
 			var classParts:Array = className.split(MultinameUtil.DOUBLE_COLON);
 			var packageName:String = classParts[0] + MultinameUtil.PERIOD + generateSuffix();
 			var packageBuilder:IPackageBuilder = _abcBuilder.definePackage(packageName);
+
 			var classBuilder:IClassBuilder = packageBuilder.defineClass(classParts[1], className);
+			addMetadata(classBuilder, type.metaData);
 			classBuilder.isDynamic = classProxyInfo.makeDynamic;
 			classBuilder.isFinal = true;
+
 			var proxyClassName:String = packageName + MultinameUtil.SINGLE_COLON + classParts[1];
 			var nsMultiname:Multiname = createMultiname(proxyClassName, classParts.join(MultinameUtil.SINGLE_COLON), type.extendsClasses);
 			var bytecodeQname:QualifiedName = addInterceptorProperty(classBuilder);
-			var ctorBuilder:ICtorBuilder = addConstructor(classBuilder, type, classProxyInfo, nsMultiname);
+			var ctorBuilder:ICtorBuilder = addConstructor(classBuilder, type, classProxyInfo);
 			addConstructorBody(ctorBuilder, bytecodeQname, nsMultiname);
+
 			var accessorBuilder:IAccessorBuilder;
 			if ((classProxyInfo.proxyAll == true) && (classProxyInfo.onlyProxyConstructor == false)) {
 				reflectMembers(classProxyInfo, type, applicationDomain);
 			}
+
 			var memberInfo:MemberInfo;
 			for each (memberInfo in classProxyInfo.methods) {
 				var methodBuilder:IMethodBuilder = proxyMethod(classBuilder, type, memberInfo);
 				addMethodBody(methodBuilder, nsMultiname, bytecodeQname);
 			}
+
 			for each (memberInfo in classProxyInfo.accessors) {
 				accessorBuilder = proxyAccessor(classBuilder, type, memberInfo, nsMultiname, bytecodeQname);
 			}
+
 			dispatchEvent(new ProxyFactoryEvent(ProxyFactoryEvent.AFTER_PROXY_BUILD, classBuilder, classProxyInfo.proxiedClass));
 			LOGGER.debug("Generated proxy class {0} for class {1}", proxyClassName, classProxyInfo.proxiedClass);
 			return new ProxyInfo(proxyClassName.split(MultinameUtil.SINGLE_COLON).join(MultinameUtil.PERIOD));
 		}
 
+		/**
+		 * Adds the metadata from the specified <code>Array</code> of <code>MetaData</code> instances
+		 * to the specified <code>IMetadataContainer</code> instance.
+		 * @param metadaContainer The specified <code>IMetadataContainer</code> instance.
+		 * @param metadatas The specified <code>Array</code> of <code>MetaData</code> instances
+		 */
+		protected function addMetadata(metadaContainer:IMetadataContainer, metadatas:Array):void {
+			for each (var metadata:MetaData in metadatas) {
+				var args:Array = [];
+				for each (var arg:org.as3commons.reflect.MetaDataArgument in metadata.arguments) {
+					args[args.length] = new org.as3commons.bytecode.emit.impl.MetaDataArgument(arg.key, arg.value);
+					metadaContainer.defineMetaData(metadata.name, args);
+				}
+			}
+		}
+
+		/**
+		 * Creates a valid <code>Multiname</code> for the specified class name, proxied class name and all of its
+		 * super classes defined by the extendedClasses <code>Array</code> which is used as the parameter for the <code>Opcode.callproperty</code>
+		 * opcode in the generated method bodies.
+		 * @param generatedClassName The specified class name.
+		 * @param proxiedClassName The specified proxied class name.
+		 * @param extendedClasses The specified extendedClasses <code>Array</code>.
+		 * @return A valid <code>Multiname</code> instance.
+		 */
 		protected function createMultiname(generatedClassName:String, proxiedClassName:String, extendedClasses:Array):Multiname {
 			if (_generatedMultinames[generatedClassName] != null) {
 				return _generatedMultinames[generatedClassName] as Multiname;
@@ -266,6 +341,14 @@ package org.as3commons.bytecode.proxy {
 			}
 		}
 
+		/**
+		 * Defines a property called 'methodInvocationInterceptor' on the specified <code>IClassBuilder</code>
+		 * and scopes it to the <code>as3commons_bytecode_proxy</code> namespace. It the returns a valid <code>QualifiedName</code>
+		 * instance that can be used as a parameter for <code>Opcode.findproperty</code> and <code>Opcode.getproperty</code> opcodes
+		 * in the generated method bodies.
+		 * @param classBuilder The specified <code>IClassBuilder</code>.
+		 * @return The specified <code>QualifiedName</code>.
+		 */
 		protected function addInterceptorProperty(classBuilder:IClassBuilder):QualifiedName {
 			Assert.notNull(classBuilder, "classBuilder argument must not be null");
 			var className:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
@@ -274,10 +357,16 @@ package org.as3commons.bytecode.proxy {
 			return new QualifiedName(AS3COMMONSBYTECODEPROXY, new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, ORGAS3COMMONSBYTECODE));
 		}
 
-		//private static const AS3COMMONSBYTECODEPROXY:String = "as3commons_bytecode_proxy";
-		//private static const ORGAS3COMMONSBYTECODE:String = "org.as3commons.bytecode";
-
-		protected function addConstructor(classBuilder:IClassBuilder, type:ByteCodeType, classProxyInfo:ClassProxyInfo, nsMultiname:Multiname):ICtorBuilder {
+		/**
+		 * Defines a constructor on the specified <code>IClassBuilder</code> with the same arguments as the proxied class
+		 * plus one extra argument that represents the <code>IMethodInvocationInterceptor</code> which will be injected into
+		 * the proxy instance.
+		 * @param classBuilder The specified <code>IClassBuilder</code>.
+		 * @param type The <code>ByteCodeType</code> instance used to retrieve the constructor argument information.
+		 * @param classProxyInfo The <code>ClassProxyInfo</code> that specified the <code>IMethodInvocationInterceptor</code> class.
+		 * @return A <code>ICtorBuilder</code> instance that represents the generated constructor.
+		 */
+		protected function addConstructor(classBuilder:IClassBuilder, type:ByteCodeType, classProxyInfo:ClassProxyInfo):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = classBuilder.defineConstructor();
 			var interceptorClassName:String = ClassUtils.getFullyQualifiedName(classProxyInfo.methodInvocationInterceptorClass);
 			ctorBuilder.defineArgument(interceptorClassName);
@@ -287,6 +376,25 @@ package org.as3commons.bytecode.proxy {
 			return ctorBuilder;
 		}
 
+		/**
+		* Creates the necessary opcodes that represent the constructor's method body. It assigns the first parameter (the <code>IMethodInvocationInterceptor</code> instance)
+		* to the <code>methodInvocationInterceptor</code> property generated by the <code>addInterceptorProperty()</code> method, then it invokes the <code>intercept()</code>
+		* method on the <code>IMethodInvocationInterceptor</code> instance and passes the current instance, <code>InvocationKind.CONSTRUCTOR</code>, null and an <code>Array</code>
+		* that holds the constructor arguments to it.
+		* <p>The actionscript for such a constructor would look like this:</p>
+		* <listing version="3.0">
+		* public function ProxySubClass(interceptor:IMethodInvocationInterceptor, target:IEventDispatcher = null, somethingElse:Object = null) {
+		* 	as3commons_bytecode_proxy::methodInvocationInterceptor = interceptor;
+		* 	var params:Array = [target, somethingElse];
+		* 	interceptor.intercept(this, InvocationKind.CONSTRUCTOR, null, params);
+		* 	super(params[0], params[1]);
+		* }
+		* </listing>
+		* <p>This allows the constructor arguments to be potentially changed by an <code>IInterceptor</code> instance.</p>
+		* @param ctorBuilder The specified <code>ICtorBuilder</code> instance that will receieve the generated method body.
+		* @param bytecodeQname The <code>QualifiedName</code> instance which is used for the <code>Opcode.findpropstrict</code> and <code>Opcode.getproperty</code> to retrieve the <code>as3commons_bytecode_proxy</code> namespace.
+		* @param multiName The <code>Multiname</code> instance used as the parameter for the <code>Opcode.callproperty</code> opcode.
+		*/
 		protected function addConstructorBody(ctorBuilder:ICtorBuilder, bytecodeQname:QualifiedName, multiName:Multiname):void {
 			var len:int = ctorBuilder.arguments.length;
 			var paramLocal:int = len;
@@ -356,22 +464,23 @@ package org.as3commons.bytecode.proxy {
 			LOGGER.debug("Constructor generated");
 		}
 
+		/**
+		 * Uses the specified <code>ByteCodeType</code> to populate the specified <code>ClassProxyInfo</code> instance with all the public members
+		 * of the class specified by the <code>ClassProxyInfo.proxiedClass</code> property.
+		 * @param classProxyInfo The specified <code>ClassProxyInfo</code> instance.
+		 * @param type The specified <code>ByteCodeType</code> instance.
+		 * @param applicationDomain The <code>ApplicationDOmain</code> that the <code>ClassProxyInfo.proxiedClass</code> belongs to.
+		 */
 		protected function reflectMembers(classProxyInfo:ClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
 			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
-			var isProtected:Boolean;
 			var vsb:NamespaceKind;
 			for each (var method:Method in type.methods) {
 				var byteCodeMethod:ByteCodeMethod = method as ByteCodeMethod;
 				if (byteCodeMethod != null) {
-					if ((byteCodeMethod.isStatic) || (byteCodeMethod.isFinal)) {
+					if (!isEligibleForProxy(byteCodeMethod)) {
 						continue;
-					}
-					vsb = byteCodeMethod.visibility;
-					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
-					if (!isPublicOrProtectedOrCustom(vsb)) {
-						return;
 					}
 					classProxyInfo.proxyMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI);
 				}
@@ -379,13 +488,8 @@ package org.as3commons.bytecode.proxy {
 			for each (var accessor:Accessor in type.accessors) {
 				var byteCodeAccessor:ByteCodeAccessor = accessor as ByteCodeAccessor;
 				if (byteCodeAccessor != null) {
-					if ((byteCodeAccessor.isStatic) || (byteCodeAccessor.isFinal)) {
+					if (!isEligibleForProxy(byteCodeAccessor)) {
 						continue;
-					}
-					vsb = byteCodeAccessor.visibility;
-					isProtected = (vsb === NamespaceKind.PROTECTED_NAMESPACE);
-					if (!isPublicOrProtectedOrCustom(vsb)) {
-						return;
 					}
 					classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI);
 				}
@@ -393,12 +497,29 @@ package org.as3commons.bytecode.proxy {
 			LOGGER.debug("ClassInfoProxy for class {0} populated based on reflection", classProxyInfo.proxiedClass);
 		}
 
-		protected function isPublicOrProtectedOrCustom(namespaceKind:NamespaceKind):Boolean {
-			Assert.notNull(namespaceKind, "namespaceKind argument must not be null");
+		/**
+		 * Determines if the specified <code>NamespaceKind</code> can be proxied or not.
+		 * @param namespaceKind The specified <code>NamespaceKind</code>.
+		 * @return <code>True</code> if the specified <code>NamespaceKind</code> can be proxied.
+		 */
+		protected function isEligibleForProxy(member:MetaDataContainer):Boolean {
+			Assert.notNull(member, "member argument must not be null");
 			//return ((namespaceKind === NamespaceKind.PACKAGE_NAMESPACE) || (namespaceKind === NamespaceKind.PROTECTED_NAMESPACE) || (namespaceKind === NamespaceKind.NAMESPACE));
-			return (namespaceKind === NamespaceKind.PACKAGE_NAMESPACE);
+			if ((member['isStatic'] == true) || (member['isFinal'] == true)) {
+				return false;
+			}
+			return (NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE);
 		}
 
+		/**
+		 * Creates an overridden method on the specified <code>IClassBuilder</code> instance. Which method is determined by the specified <code>MemberInfo</code>
+		 * instance.
+		 * @param classBuilder The specified <code>IClassBuilder</code> instance.
+		 * @param type The specified <code>ByteCodeType</code> instance.
+		 * @param memberInfo The specified <code>MemberInfo</code> instance.
+		 * @return The <code>IMethodBuilder</code> representing the generated method.
+		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied method is marked as final.
+		 */
 		protected function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo):IMethodBuilder {
 			Assert.notNull(classBuilder, "classBuilder argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
@@ -409,6 +530,7 @@ package org.as3commons.bytecode.proxy {
 			if (method.isFinal) {
 				throw new ProxyError(ProxyError.FINAL_METHOD_ERROR, method.name);
 			}
+			addMetadata(methodBuilder, method.metaData);
 			methodBuilder.visibility = getMemberVisibility(method);
 			methodBuilder.namespace = method.namespaceURI;
 			if (method != null) {
@@ -420,6 +542,11 @@ package org.as3commons.bytecode.proxy {
 			return methodBuilder;
 		}
 
+		/**
+		 * Translates the specified <code>member.visibility</code> value to a valid <code>MemberVisibility</code> enum instance.
+		 * @param member The specified <code>IVisibleMember</code> instance.
+		 * @return A valid <code>MemberVisibility</code> enum instance.
+		 */
 		protected function getMemberVisibility(member:IVisibleMember):MemberVisibility {
 			switch (member.visibility) {
 				case NamespaceKind.PACKAGE_NAMESPACE:
@@ -437,6 +564,17 @@ package org.as3commons.bytecode.proxy {
 			}
 		}
 
+		/**
+		 * Creates an overridden accessor on the specified <code>IClassBuilder</code> instance. Which accessor is determined by the specified <code>MemberInfo</code>
+		 * instance.
+		 * @param classBuilder The specified <code>IClassBuilder</code> instance.
+		 * @param type The specified <code>ByteCodeType</code> instance.
+		 * @param memberInfo The specified <code>MemberInfo</code> instance.
+		 * @param multiName The specified <code>Multiname</code> instance.
+		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
+		 * @return The <code>IAccessorBuilder</code> representing the generated accessor.
+		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied accessor is marked as final.
+		 */
 		protected function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName):IAccessorBuilder {
 			Assert.notNull(classBuilder, "classBuilder argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
@@ -446,6 +584,7 @@ package org.as3commons.bytecode.proxy {
 				throw new ProxyError(ProxyError.FINAL_ACCESSOR_ERROR, accessor.name);
 			}
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(accessor.name, accessor.type.fullName, accessor.initializedValue);
+			addMetadata(accessorBuilder, accessor.metaData);
 			accessorBuilder.namespace = memberInfo.qName.uri;
 			accessorBuilder.isOverride = true;
 			accessorBuilder.access = accessor.access;
@@ -462,6 +601,31 @@ package org.as3commons.bytecode.proxy {
 			return accessorBuilder;
 		}
 
+		/**
+		 * Generates a method body that passes the method's arguments to the generated <code>methodInvocationInterceptor</code> property value's <code>intercept</code> method,
+		 * along with a reference to the current instance, a <code>QName</code> for the current method, and a reference to the super method instance.
+		 * <p>The actionscript would look like this:</code>
+		 * <listing version="3.0">
+		 * override public function returnStringWithParameters(param:String):String {
+		 *  return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "returnStringWithParameters"), [param], super.returnStringWithParameters);
+		 * }
+		 * </listing>
+		 * <p>A method without parameters will be generated like this:</p>
+		 * <listing version="3.0">
+		 * override public function returnString():String {
+		 *  return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "returnString"), null, super.returnString);
+		 * }
+		 * </listing>
+		 * <p>And, lastly, a method without a return value would end up looking like this:</p>
+		 * <listing version="3.0">
+		 * override public function voidWithParameters(param:String):void {
+		 *  as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "voidWithParameters"), [param], super.voidWithParameters);
+		 * }
+		 * </listing>
+		 * @param methodBuilder The specified <code>IMethodBuilder</code> instance.
+		 * @param multiName The specified <code>Multiname</code> instance.
+		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
+		 */
 		protected function addMethodBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
 			var len:int = methodBuilder.arguments.length;
@@ -517,34 +681,69 @@ package org.as3commons.bytecode.proxy {
 			}
 		}
 
+		/**
+		 * Creates a basic <code>IMethodBuilder</code> for the specified <code>IAccessorBuilder</code>,
+		 * it uses the <code>IAccessorBuilder</code> to retrieve the name, namespace, isFinal, and packageName
+		 * values.
+		 * @param accessorBuilder The specified <code>IAccessorBuilder</code> instance.
+		 * @return The new <code>IMethodBuilder</code> instance.
+		 */
 		protected function createMethod(accessorBuilder:IAccessorBuilder):IMethodBuilder {
 			Assert.notNull(accessorBuilder, "accessorBuilder argument must not be null");
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.name = accessorBuilder.name;
 			mb.namespace = accessorBuilder.namespace;
 			mb.isFinal = accessorBuilder.isFinal;
-			mb.isOverride = accessorBuilder.isOverride;
+			mb.isOverride = true;
 			mb.packageName = accessorBuilder.packageName;
 			return mb;
 		}
 
+		/**
+		 * Generates a getter method for the specified <code>IAccessorBuilder</code> instance.
+		 * <p>The specified <code>Multiname</code> and <code>QualifiedName</code> instances are passed on to the <code>addGetterBody()</code> method.
+		 * @param accessorBuilder The specified <code>IAccessorBuilder</code> instance.
+		 * @param multiName The specified <code>Multiname</code> instance.
+		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
+		 * @return The new <code>IMethodBuilder</code> instance.
+		 */
 		protected function createGetter(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod(accessorBuilder);
-			mb.isOverride = true;
 			mb.returnType = accessorBuilder.type;
 			addGetterBody(mb, multiName, bytecodeQname);
 			return mb;
 		}
 
+		/**
+		 * Generates a setter method for the specified <code>IAccessorBuilder</code> instance.
+		 * <p>The specified <code>Multiname</code> and <code>QualifiedName</code> instances are passed on to the <code>addSetterBody()</code> method.
+		 * @param accessorBuilder The specified <code>IAccessorBuilder</code> instance.
+		 * @param multiName The specified <code>Multiname</code> instance.
+		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
+		 * @return The new <code>IMethodBuilder</code> instance.
+		 */
 		protected function createSetter(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod(accessorBuilder);
-			mb.isOverride = true;
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(accessorBuilder.type);
 			addSetterBody(mb, accessorBuilder, multiName, bytecodeQname);
 			return mb;
 		}
 
+		/**
+		 * Generates a method body for a getter method in the specified <code>IMethodBuilder</code> instance.
+		 * <p>The actionscript for the generated body would look like this:</p>
+		 * <listing version="3.0">
+		 * override public function get getter():uint {
+		 *  return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.GETTER, new QName("", "getter"), [super.getter]);
+		 * }
+		 * </listing>
+		 * <p>It will pass the current value of the getter in the arguments <code>Array</code> so that it may be examined by any <code>IInterceptor</code>
+		 * instances.</p>
+		 * @param methodBuilder The specified <code>IMethodBuilder</code> instance.
+		 * @param multiName The specified <code>Multiname</code> instance.
+		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
+		 */
 		protected function addGetterBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
@@ -573,6 +772,26 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.returnvalue);
 		}
 
+		/**
+		 * Generates a method body for a setter method in the specified <code>IMethodBuilder</code> instance.
+		 * <p>The actionscript for the generated body would look like this:</p>
+		 * <listing version="3.0">
+		 * override public function set setter(value:uint):void {
+		 *  super.getterSetter = as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.SETTER, new QName("", "setter"), [value, super.setter]);
+		 * }
+		 * </listing>
+		 * <p>If the specified accessor is read and write enabled it will pass the current value of the getter as the second argument, the first argument is the new value.</p>
+		 * <p>In the case of a write only accessor the code will be generated like this:</p>
+		 * <listing version="3.0">
+		 * override public function set setter(value:uint):void {
+		 *  super.getterSetter = as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.SETTER, new QName("", "setter"), [value]);
+		 * }
+		 * </listing>
+		 * <p>In this case the intercepting logic needs to be able to return a valid value for the setter method in the case where the nw value is rejected by some kind of business rule.</p>
+		 * @param methodBuilder The specified <code>IMethodBuilder</code> instance.
+		 * @param multiName The specified <code>Multiname</code> instance.
+		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
+		 */
 		protected function addSetterBody(methodBuilder:IMethodBuilder, accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
@@ -609,8 +828,25 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.returnvoid);
 		}
 
+		/**
+		 * Creates a <code>QualifiedName</code> instance for the specified <code>IMethodBuilder</code> to be used
+		 * a the parameter for the <code>Opcode.getsuper</code> opcode.
+		 * @param methodBuilder The specified <code>IMethodBuilder</code>.
+		 * @return The new <code>QualifiedName</code> instance.
+		 */
 		protected function createMethodQName(methodBuilder:IMethodBuilder):QualifiedName {
-			var ns:LNamespace = (methodBuilder.visibility == MemberVisibility.PUBLIC) ? LNamespace.PUBLIC : MultinameUtil.toLNamespace(methodBuilder.packageName, NamespaceKind.PROTECTED_NAMESPACE);
+			var ns:LNamespace;
+			switch (methodBuilder.visibility) {
+				case MemberVisibility.PUBLIC:
+					ns = LNamespace.PUBLIC;
+					break;
+				case MemberVisibility.PROTECTED:
+					ns = MultinameUtil.toLNamespace(methodBuilder.packageName, NamespaceKind.PROTECTED_NAMESPACE);
+					break;
+				case MemberVisibility.NAMESPACE:
+					ns = new LNamespace(NamespaceKind.NAMESPACE, methodBuilder.namespace);
+					break;
+			}
 			return new QualifiedName(methodBuilder.name, ns);
 		}
 

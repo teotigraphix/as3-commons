@@ -18,18 +18,33 @@ package org.as3commons.bytecode.proxy {
 
 	import org.as3commons.lang.Assert;
 
+	/**
+	 * Contains the the necessary information for an <code>IProxyFactory</code> to
+	 * create an instance of a proxy class.
+	 * @author Roland Zwaga
+	 */
 	internal final class ProxyInfo {
 
+		public var proxyClass:Class;
 		public var proxyClassName:String;
 		public var applicationDomain:ApplicationDomain;
 		public var methodInvocationInterceptorClass:Class;
 
+		/**
+		 * Creates a new <code>ProxyInfo</code> instance.
+		 * @param className
+		 *
+		 */
 		public function ProxyInfo(className:String) {
 			super();
 			initProxyInfo(className);
 		}
 
-		private function initProxyInfo(className:String):void {
+		/**
+		 * Initializes the current <code>ProxyInfo</code> instance.
+		 * @param className
+		 */
+		protected function initProxyInfo(className:String):void {
 			Assert.hasText(className, "className argument must not be empty or null");
 			proxyClassName = className;
 		}
