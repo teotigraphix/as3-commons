@@ -258,6 +258,62 @@ package org.as3commons.lang {
 		}
 
 		/**
+		 * Returns whether the passed in <code>Class</code> object contains all of the functions specified
+		 * by the given interface, regardless of whether or not the class formally implements the interface.
+		 *
+		 * @param clazz the class to check for an implemented interface
+		 * @param interfaze the interface that the clazz argument should implement
+		 *
+		 * @return true if the clazz object implements the methods of the given interface; false if not
+		 */
+		public static function isInformalImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			var result:Boolean = true;
+			
+			if (clazz == null) {
+				result = false;
+			} else {
+				var classDescription:XML = getFromObject(clazz, applicationDomain);
+				var interfaceDescription:XML = getFromObject(interfaze, applicationDomain);
+				
+				// Test whether the interface's accessors have equivalent matches in the class
+				var interfaceAccessors:XMLList = interfaceDescription.factory.accessor;
+				for each (var interfaceAccessor:XML in interfaceAccessors) {
+					var accessorMatchesInClass:XMLList = classDescription.factory.accessor.(@name == interfaceAccessor.@name && @access == interfaceAccessor.@access && @type == interfaceAccessor.@type)
+					if (accessorMatchesInClass.length() < 1) {
+						result = false;
+						break;
+					}
+				}
+				
+				// Test whether the interface's methods and their parameters are found in the class
+				var interfaceMethods:XMLList = interfaceDescription.factory.method;
+				for each (var interfaceMethod:XML in interfaceMethods) {
+					var methodMatchesInClass:XMLList = classDescription.factory.method.(@name == interfaceMethod.@name && @returnType == interfaceMethod.@returnType);
+					if (methodMatchesInClass.length() < 1) {
+						result = false;
+						break;
+					}
+					var interfaceMethodParameters:XMLList = interfaceMethod.parameter;
+					var classMethodParameters:XMLList = methodMatchesInClass.parameter;
+					if (interfaceMethodParameters.length() != classMethodParameters.length()) {
+						result = false;
+					}
+					for each (var interfaceParameter:XML in interfaceMethodParameters) {
+						var parameterMatchesInClass:XMLList = methodMatchesInClass.parameter.(@index == interfaceParameter.@index && @type == interfaceParameter.@type && @optional == interfaceParameter.@optional);
+						if (parameterMatchesInClass.length() < 1) {
+							result = false;
+							break;
+						}
+					}
+				}
+				
+			}
+			
+			return result;
+		}
+
+		/**
 		 * Returns whether the passed in Class object is an interface.
 		 *
 		 * @param clazz the class to check

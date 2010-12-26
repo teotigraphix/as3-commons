@@ -23,6 +23,9 @@ package org.as3commons.lang {
 	
 	import org.as3commons.lang.testclasses.ComplexClass;
 	import org.as3commons.lang.testclasses.ISubInterface;
+	import org.as3commons.lang.testclasses.IncompleteInterfaceImplementation;
+	import org.as3commons.lang.testclasses.IncorrectInterfaceImplementation;
+	import org.as3commons.lang.testclasses.InformalInterfaceImplementation;
 	import org.as3commons.lang.testclasses.Interface;
 	import org.as3commons.lang.testclasses.InterfaceImplementation;
 	import org.as3commons.lang.testclasses.PublicClass;
@@ -259,6 +262,26 @@ package org.as3commons.lang {
 		
 		public function testIsImplementationOf_shouldReturnFalseForSameInterface():void {
 			assertFalse(ClassUtils.isImplementationOf(Interface, Interface));
+		}
+		
+		// --------------------------------------------------------------------
+		// isInformalImplementationOf
+		// --------------------------------------------------------------------
+		
+		public function testIsInformalImplementationOf_shouldReturnTrueForInterfaceImplementation():void {
+			assertTrue(ClassUtils.isInformalImplementationOf(InterfaceImplementation, Interface));
+		}
+		
+		public function testIsInformalImplementationOf_shouldReturnTrueForInformalInterfaceImplementation():void {
+			assertTrue(ClassUtils.isInformalImplementationOf(InformalInterfaceImplementation, Interface));
+		}
+		
+		public function testIsInformalImplementationOf_shouldReturnFalseForIncompleteInterfaceImplementation():void {
+			assertFalse(ClassUtils.isInformalImplementationOf(IncompleteInterfaceImplementation, Interface));
+		}
+		
+		public function testIsInformalImplementationOf_shouldReturnFalseForIncorrectInterfaceImplementation():void {
+			assertFalse(ClassUtils.isInformalImplementationOf(IncorrectInterfaceImplementation, Interface));
 		}
 		
 		// --------------------------------------------------------------------
