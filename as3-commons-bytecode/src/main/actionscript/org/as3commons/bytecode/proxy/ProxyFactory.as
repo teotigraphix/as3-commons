@@ -150,7 +150,7 @@ package org.as3commons.bytecode.proxy {
 		}
 
 		/**
-		 * Generates a sequence of 20 random lower capital characters.
+		 * Generates a sequence of 20 random lower case characters.
 		 * @return The generated sequence of characters.
 		 */
 		protected function generateSuffix():String {
@@ -260,7 +260,11 @@ package org.as3commons.bytecode.proxy {
 
 			var classBuilder:IClassBuilder = packageBuilder.defineClass(classParts[1], className);
 			addMetadata(classBuilder, type.metaData);
-			classBuilder.isDynamic = classProxyInfo.makeDynamic;
+			if ((type.isDynamic == false) && (classProxyInfo.makeDynamic == true)){
+				classBuilder.isDynamic = true;
+			} else {
+				classBuilder.isDynamic = type.isDynamic;
+			}
 			classBuilder.isFinal = true;
 
 			var proxyClassName:String = packageName + MultinameUtil.SINGLE_COLON + classParts[1];

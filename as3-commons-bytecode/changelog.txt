@@ -3,10 +3,11 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 0.9-SNAPSHOT (00.00.0000)
+Changes in version 0.9-SNAPSHOT (26.12.2010)
 -----------------------------------
 
 General
+* Added a check in ByteCodeTypeProvider that prevents a bytearray from being deserialized twice.
 * Fixed generation of class level metadata on generated classes
 * Fixed protected and custom namespace serialization for class members
 * Fixed maximum stack calculation for method bodies

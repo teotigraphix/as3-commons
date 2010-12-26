@@ -17,11 +17,14 @@ package org.as3commons.bytecode.testclasses.interceptors {
 	import org.as3commons.bytecode.interception.IInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
 
-	public class TestBlockingInterceptor implements IInterceptor {
+	public class TestBlockingInterceptor extends AssertingInterceptor {
+
 		public function TestBlockingInterceptor() {
+			super();
 		}
 
-		public function intercept(invocation:IMethodInvocation):void {
+		override public function intercept(invocation:IMethodInvocation):void {
+			super.intercept(invocation);
 			invocation.proceed = false;
 		}
 	}
