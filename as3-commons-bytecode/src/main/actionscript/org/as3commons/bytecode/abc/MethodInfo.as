@@ -38,6 +38,7 @@ package org.as3commons.bytecode.abc {
 		public var argumentCollection:Array;
 		public var returnType:BaseMultiname;
 		public var methodName:String;
+		public var scopeName:String;
 
 		/**
 		 * The <code>method_info</code> entries written by the compiler have never had a name when I have parsed them, so

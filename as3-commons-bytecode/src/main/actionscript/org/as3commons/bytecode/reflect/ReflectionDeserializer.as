@@ -176,7 +176,11 @@ package org.as3commons.bytecode.reflect {
 				var nameCount:uint = params.length;
 
 				var methodNameIndex:int = readU30();
-				var methodName:String = (methodNameIndex > 0) ? makeMethodName(constantPool.stringPool[methodNameIndex]) : "";
+				var methodName:String = (methodNameIndex > 0) ? constantPool.stringPool[methodNameIndex] : "";
+				methodInfo.as3commons_reflect::setScopeName(MultinameUtil.extractNamespaceNameFromMethodName(methodName));
+				if (methodName.length > 0) {
+					methodName = makeMethodName(methodName);
+				}
 				methodInfo.as3commons_reflect::setName(methodName);
 				var flags:uint = readU8();
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_OPTIONAL) == true) {

@@ -3,7 +3,13 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 0.9-SNAPSHOT (26.12.2010)
+Changes in version 0.9.1 (00.00.0000)
+-----------------------------------
+
+General
+* Fixed proxying of protected members
+
+Changes in version 0.9 (26.12.2010)
 -----------------------------------
 
 General

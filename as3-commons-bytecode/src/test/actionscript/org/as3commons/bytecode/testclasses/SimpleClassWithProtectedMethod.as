@@ -30,5 +30,24 @@ package org.as3commons.bytecode.testclasses {
 		public function doMultiply():void {
 			multiply(1000);
 		}
+
+		public function get stringVal():String {
+			return stringValue;
+		}
+
+		public var stringV:String = "testString2";
+		public var stringVal2:String = "testString2";
+
+		protected function get stringValue():String {
+			return stringV;
+		}
+
+		protected function set stringValue2(value:String):void {
+			stringVal2 = value;
+		}
+
+		public function setStringValue2(value:String):void {
+			stringValue2 = value;
+		}
 	}
 }

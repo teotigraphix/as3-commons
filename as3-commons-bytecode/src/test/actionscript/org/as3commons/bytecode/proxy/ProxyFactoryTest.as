@@ -17,6 +17,7 @@ package org.as3commons.bytecode.proxy {
 
 	import flash.events.Event;
 	import flash.system.ApplicationDomain;
+	import flash.utils.describeType;
 
 	import flexunit.framework.TestCase;
 
@@ -99,15 +100,17 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
-		/*public function testLoadProxyClassForClassWithProtectedMethod():void {
+		public function testLoadProxyClassForClassWithProtectedMethod():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithProtectedMethod, null, applicationDomain);
 			classProxyInfo.proxyMethod("multiply");
+			classProxyInfo.proxyAccessor("stringValue");
+			classProxyInfo.proxyAccessor("stringValue2");
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createProtectedMethodInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleProtectedMethodTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}*/
+		}
 
 		public function testLoadProxyClassForClassWithTwoMethods():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
@@ -199,9 +202,11 @@ package org.as3commons.bytecode.proxy {
 
 		protected function handleProtectedMethodTestComplete(event:Event):void {
 			var instance:SimpleClassWithProtectedMethod = _proxyFactory.createProxy(SimpleClassWithProtectedMethod) as SimpleClassWithProtectedMethod;
+			var xml:XML = describeType(instance);
 			assertNotNull(instance);
 			instance.doMultiply();
-			assertEquals(100, instance.result);
+			assertEquals(1000, instance.result);
+			assertEquals("intercepted", instance.stringVal);
 		}
 
 		protected function handleAccessorTestComplete(event:Event):void {

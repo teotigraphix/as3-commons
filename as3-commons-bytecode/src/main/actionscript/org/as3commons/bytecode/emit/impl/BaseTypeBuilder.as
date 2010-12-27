@@ -119,7 +119,7 @@ package org.as3commons.bytecode.emit.impl {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.packageName = packageName + MultinameUtil.PERIOD + this.name;
 			mb.name = name;
-			mb.namespace = nameSpace;
+			mb.namespaceURI = nameSpace;
 			var trait:TraitInfo;
 			if (instanceInfo != null) {
 				trait = instanceInfo.getMethodTraitByName(name);
@@ -141,7 +141,7 @@ package org.as3commons.bytecode.emit.impl {
 			for each (var ab:IAccessorBuilder in _accessorBuilders) {
 				if (ab.name == name) {
 					if (nameSpace != null) {
-						if (nameSpace == ab.namespace) {
+						if (nameSpace == ab.namespaceURI) {
 							idx++;
 							break;
 						}
@@ -162,7 +162,7 @@ package org.as3commons.bytecode.emit.impl {
 			for each (var mb:IMethodBuilder in _methodBuilders) {
 				if (mb.name == name) {
 					if (nameSpace != null) {
-						if (mb.namespace == nameSpace) {
+						if (mb.namespaceURI == nameSpace) {
 							idx++;
 							break;
 						}

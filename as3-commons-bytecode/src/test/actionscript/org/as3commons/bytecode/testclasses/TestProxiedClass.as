@@ -30,6 +30,14 @@ package org.as3commons.bytecode.testclasses {
 			super(target);
 		}
 
+		protected function get someAccessor():String {
+			return null;
+		}
+
+		protected function set someAccessor(value:String):void {
+
+		}
+
 		public function returnString():String {
 			return "string";
 		}

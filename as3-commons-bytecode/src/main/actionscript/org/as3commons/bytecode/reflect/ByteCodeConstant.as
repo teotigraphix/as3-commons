@@ -66,6 +66,20 @@ package org.as3commons.bytecode.reflect {
 			return _visibility;
 		}
 
+		// ----------------------------
+		// namespaceName
+		// ----------------------------
+
+		private var _namespaceName:String = "";
+
+		public function get namespaceName():String {
+			return _namespaceName;
+		}
+
+		as3commons_reflect function setNamespaceName(value:String):void {
+			_namespaceName = value;
+		}
+
 		as3commons_reflect function setVisibility(value:NamespaceKind):void {
 			_visibility = value;
 		}
