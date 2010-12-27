@@ -22,6 +22,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.lang.StringUtils;
 
 	public final class MultinameUtil {
 
@@ -29,6 +30,7 @@ package org.as3commons.bytecode.util {
 		public static const SINGLE_COLON:String = ":";
 		public static const DOUBLE_COLON_REGEXP:RegExp = /[:]+/;
 		public static const PERIOD:String = ".";
+		public static const FORWARD_SLASH:String = "/";
 
 		public static function toQualifiedName(className:String, kind:NamespaceKind = null):QualifiedName {
 			var name:QualifiedName;
@@ -188,6 +190,21 @@ package org.as3commons.bytecode.util {
 			}
 
 			return qualifiedName;
+		}
+
+		public static function extractNamespaceNameFromMethodName(methodName:String):String {
+			if (!StringUtils.hasText(methodName)) {
+				return "";
+			}
+			var parts:Array = methodName.split(FORWARD_SLASH);
+			if (parts.length > 1) {
+				var name:String = String(parts[1]);
+				var nameParts:Array = name.split(SINGLE_COLON);
+				nameParts.pop();
+				return nameParts.join(SINGLE_COLON);
+			} else {
+				return "";
+			}
 		}
 
 	}

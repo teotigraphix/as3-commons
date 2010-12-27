@@ -282,7 +282,7 @@ package org.as3commons.bytecode.emit.impl {
 			for each (var pb:IPropertyBuilder in _propertyBuilders) {
 				if (pb.name == name) {
 					if (nameSpace != null) {
-						if (pb.namespace == nameSpace) {
+						if (pb.namespaceURI == nameSpace) {
 							idx++;
 							break;
 						}

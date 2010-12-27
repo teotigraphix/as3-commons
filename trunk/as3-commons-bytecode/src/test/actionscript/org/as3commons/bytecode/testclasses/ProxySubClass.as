@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.testclasses {
 	import flash.events.IEventDispatcher;
 
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.as3commons_bytecode_proxy;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
@@ -24,8 +25,6 @@ package org.as3commons.bytecode.testclasses {
 
 	public class ProxySubClass extends TestProxiedClass {
 
-		use namespace as3commons_bytecode_proxy;
-
 		as3commons_bytecode_proxy var methodInvocationInterceptor:IMethodInvocationInterceptor;
 
 		public function ProxySubClass(interceptor:IMethodInvocationInterceptor, target:IEventDispatcher = null, somethingElse:Object = null) {
@@ -33,6 +32,22 @@ package org.as3commons.bytecode.testclasses {
 			var params:Array = [target, somethingElse];
 			interceptor.intercept(this, InvocationKind.CONSTRUCTOR, null, params);
 			super(params[0], params[1]);
+		}
+
+		private function privateFunc():void {
+
+		}
+
+		internal function internalFunc():void {
+
+		}
+
+		override protected function get someAccessor():String {
+			return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.GETTER, new QName("", "someAccessor"), [super.someAccessor]);
+		}
+
+		override protected function set someAccessor(value:String):void {
+			super.someAccessor = as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.SETTER, new QName("", "someAccessor"), [value, super.someAccessor]);
 		}
 
 		override public function returnString():String {
@@ -62,6 +77,11 @@ package org.as3commons.bytecode.testclasses {
 		override protected function doSomething(value:int):void {
 			as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "doSomething"), [value], super.doSomething);
 		}
+
+	/*as3commons_bytecode function returnInt():int {
+		return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName(as3commons_bytecode, "returnInt"), null, super.as3commons_bytecode::returnInt);
+	}*/
+
 
 	}
 }

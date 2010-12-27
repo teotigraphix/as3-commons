@@ -260,7 +260,7 @@ package org.as3commons.bytecode.proxy {
 
 			var classBuilder:IClassBuilder = packageBuilder.defineClass(classParts[1], className);
 			addMetadata(classBuilder, type.metaData);
-			if ((type.isDynamic == false) && (classProxyInfo.makeDynamic == true)){
+			if ((type.isDynamic == false) && (classProxyInfo.makeDynamic == true)) {
 				classBuilder.isDynamic = true;
 			} else {
 				classBuilder.isDynamic = type.isDynamic;
@@ -357,7 +357,7 @@ package org.as3commons.bytecode.proxy {
 			Assert.notNull(classBuilder, "classBuilder argument must not be null");
 			var className:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(INTERCEPTOR_PROPERTYNAME, className);
-			propertyBuilder.namespace = as3commons_bytecode_proxy;
+			propertyBuilder.namespaceURI = as3commons_bytecode_proxy;
 			return new QualifiedName(AS3COMMONSBYTECODEPROXY, new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, ORGAS3COMMONSBYTECODE));
 		}
 
@@ -531,12 +531,15 @@ package org.as3commons.bytecode.proxy {
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(memberInfo.qName.localName, memberInfo.qName.uri);
 			methodBuilder.isOverride = true;
 			var method:ByteCodeMethod = type.getMethod(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeMethod;
+			if (method == null) {
+				throw new ProxyError(ProxyError.METHOD_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
+			}
 			if (method.isFinal) {
 				throw new ProxyError(ProxyError.FINAL_METHOD_ERROR, method.name);
 			}
 			addMetadata(methodBuilder, method.metaData);
 			methodBuilder.visibility = getMemberVisibility(method);
-			methodBuilder.namespace = method.namespaceURI;
+			methodBuilder.namespaceURI = method.namespaceURI;
 			if (method != null) {
 				methodBuilder.returnType = method.returnType.fullName;
 				for each (var arg:ByteCodeParameter in method.parameters) {
@@ -584,12 +587,15 @@ package org.as3commons.bytecode.proxy {
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(memberInfo, "memberInfo argument must not be null");
 			var accessor:ByteCodeAccessor = type.getField(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeAccessor;
+			if (accessor == null) {
+				throw new ProxyError(ProxyError.ACCESSOR_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
+			}
 			if (accessor.isFinal) {
 				throw new ProxyError(ProxyError.FINAL_ACCESSOR_ERROR, accessor.name);
 			}
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(accessor.name, accessor.type.fullName, accessor.initializedValue);
 			addMetadata(accessorBuilder, accessor.metaData);
-			accessorBuilder.namespace = memberInfo.qName.uri;
+			accessorBuilder.namespaceURI = memberInfo.qName.uri;
 			accessorBuilder.isOverride = true;
 			accessorBuilder.access = accessor.access;
 			accessorBuilder.createPrivateProperty = false;
@@ -649,7 +655,7 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_MethodKindQName]) //
 				.addOpcode(Opcode.findpropstrict, [_qnameQname]) //
-				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespace) ? methodBuilder.namespace : ""]) //
+				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespaceURI) ? methodBuilder.namespaceURI : ""]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.constructprop, [_qnameQname, 2]) //
 			if (len > 0) {
@@ -696,10 +702,11 @@ package org.as3commons.bytecode.proxy {
 			Assert.notNull(accessorBuilder, "accessorBuilder argument must not be null");
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.name = accessorBuilder.name;
-			mb.namespace = accessorBuilder.namespace;
+			mb.namespaceURI = accessorBuilder.namespaceURI;
 			mb.isFinal = accessorBuilder.isFinal;
 			mb.isOverride = true;
 			mb.packageName = accessorBuilder.packageName;
+			mb.visibility = accessorBuilder.visibility;
 			return mb;
 		}
 
@@ -766,7 +773,7 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_GetterKindQName]) //
 				.addOpcode(Opcode.findpropstrict, [_qnameQname]) //
-				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespace) ? methodBuilder.namespace : ""]) //
+				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespaceURI) ? methodBuilder.namespaceURI : ""]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.constructprop, [_qnameQname, 2]) //
 				.addOpcode(Opcode.getlocal_0) //
@@ -817,7 +824,7 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 				.addOpcode(Opcode.getproperty, [_SetterKindQName]) //
 				.addOpcode(Opcode.findpropstrict, [_qnameQname]) //
-				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespace) ? methodBuilder.namespace : ""]) //
+				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespaceURI) ? methodBuilder.namespaceURI : ""]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.constructprop, [_qnameQname, 2]) //
 				.addOpcode(Opcode.getlocal_1);
@@ -845,14 +852,21 @@ package org.as3commons.bytecode.proxy {
 					ns = LNamespace.PUBLIC;
 					break;
 				case MemberVisibility.PROTECTED:
-					ns = MultinameUtil.toLNamespace(methodBuilder.packageName, NamespaceKind.PROTECTED_NAMESPACE);
+					ns = MultinameUtil.toLNamespace(removeProxyPackage(methodBuilder.packageName), NamespaceKind.PROTECTED_NAMESPACE);
 					break;
 				case MemberVisibility.NAMESPACE:
-					ns = new LNamespace(NamespaceKind.NAMESPACE, methodBuilder.namespace);
+					ns = new LNamespace(NamespaceKind.NAMESPACE, methodBuilder.namespaceURI);
 					break;
 			}
 			return new QualifiedName(methodBuilder.name, ns);
 		}
 
+		protected function removeProxyPackage(packageName:String):String {
+			Assert.hasText(packageName, "packageName argument must not be empty or null");
+			var parts:Array = packageName.split(MultinameUtil.PERIOD);
+			parts.splice(parts.length - 2, 1)
+			var newPackage:String = parts.join(MultinameUtil.PERIOD);
+			return newPackage;
+		}
 	}
 }

@@ -56,6 +56,7 @@ package org.as3commons.bytecode.emit.impl {
 		public static const PRIVATE_VAR_NAME_TEMPLATE:String = "_{0}";
 		public static const GETTER_SUFFIX:String = '/get';
 		public static const SETTER_SUFFIX:String = '/set';
+		public static const ACCESSOR_NAME:String = '{0}/{1}{2}{3}';
 
 		private var _access:AccessorAccess;
 		private var _property:IPropertyBuilder;
@@ -152,8 +153,24 @@ package org.as3commons.bytecode.emit.impl {
 		 *
 		 */
 		protected function createAccessorName(suffix:String):String {
-			return name + suffix;
+			var scope:String = "";
+			switch (visibility) {
+				case MemberVisibility.PROTECTED:
+					scope = "protected:"
+					break;
+				case MemberVisibility.PRIVATE:
+					scope = "private:"
+					break;
+				case MemberVisibility.NAMESPACE:
+					scope = namespaceName + ":"
+					break;
+				case MemberVisibility.INTERNAL:
+					scope = packageName.split(MultinameUtil.SINGLE_COLON)[0] + ":"
+					break;
+			}
+			return StringUtils.substitute(ACCESSOR_NAME, packageName, scope, name, suffix);
 		}
+
 
 		/**
 		 * @inheritDoc
@@ -190,7 +207,7 @@ package org.as3commons.bytecode.emit.impl {
 		protected function createMethod(methodInfo:MethodInfo):IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.name = name;
-			mb.namespace = namespace;
+			mb.namespaceURI = namespaceURI;
 			mb.isFinal = isFinal;
 			mb.isOverride = isOverride;
 			mb.isStatic = isStatic;

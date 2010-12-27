@@ -39,7 +39,7 @@ package org.as3commons.bytecode.emit.impl {
 
 	public class MethodBuilder extends EmitMember implements IMethodBuilder {
 
-		public static const METHOD_NAME:String = "{0}/{1}";
+		public static const METHOD_NAME:String = "{0}/{1}{2}";
 
 		private var _returnType:String = BuiltIns.VOID.fullName;
 		private var _arguments:Array = [];
@@ -191,7 +191,22 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		protected function createMethodName(methodInfo:MethodInfo):String {
-			return StringUtils.substitute(METHOD_NAME, packageName, name);
+			var scope:String = "";
+			switch (visibility) {
+				case MemberVisibility.PROTECTED:
+					scope = "protected:"
+					break;
+				case MemberVisibility.PRIVATE:
+					scope = "private:"
+					break;
+				case MemberVisibility.NAMESPACE:
+					scope = namespaceName + ":"
+					break;
+				case MemberVisibility.INTERNAL:
+					scope = packageName.split(MultinameUtil.SINGLE_COLON)[0] + ":"
+					break;
+			}
+			return StringUtils.substitute(METHOD_NAME, packageName, scope, name);
 		}
 
 		/**

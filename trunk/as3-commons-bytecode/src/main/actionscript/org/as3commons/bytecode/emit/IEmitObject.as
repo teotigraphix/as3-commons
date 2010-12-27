@@ -50,11 +50,19 @@ package org.as3commons.bytecode.emit {
 		/**
 		 * The namespace URL that the current <code>IEmitObject</code> belongs to.
 		 */
-		function get namespace():String;
+		function get namespaceURI():String;
 		/**
 		 * @private
 		 */
-		function set namespace(value:String):void;
+		function set namespaceURI(value:String):void;
+		/**
+		 * The namespace name that the current <code>IEmitObject</code> belongs to.
+		 */
+		function get namespaceName():String;
+		/**
+		 * @private
+		 */
+		function set namespaceName(value:String):void;
 		/**
 		 * The <code>TraitInfo</code> that is associated with the current <code>IEmitObject</code>, this is
 		 * usually generated automatically and needs not to be set.

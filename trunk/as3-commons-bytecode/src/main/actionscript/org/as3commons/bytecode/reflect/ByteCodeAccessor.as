@@ -69,6 +69,20 @@ package org.as3commons.bytecode.reflect {
 			return _initializedValue;
 		}
 
+		// ----------------------------
+		// namespaceName
+		// ----------------------------
+
+		private var _scopeName:String = "";
+
+		public function get scopeName():String {
+			return _scopeName;
+		}
+
+		as3commons_reflect function setScopeName(value:String):void {
+			_scopeName = value;
+		}
+
 		as3commons_reflect function setIsFinal(value:Boolean):void {
 			_isFinal = value;
 		}

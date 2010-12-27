@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.testclasses.interceptors {
 	import org.as3commons.bytecode.interception.IInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
+	import org.as3commons.bytecode.interception.InvocationKind;
 	import org.as3commons.lang.Assert;
 
 	public class TestProtectedInterceptor extends AssertingInterceptor {
@@ -26,9 +27,14 @@ package org.as3commons.bytecode.testclasses.interceptors {
 
 		override public function intercept(invocation:IMethodInvocation):void {
 			super.intercept(invocation);
-			Assert.notNull(invocation.arguments);
-			Assert.state(1 == invocation.arguments.length);
-			invocation.arguments[0] = 100;
+			if (invocation.kind === InvocationKind.METHOD) {
+				//Assert.notNull(invocation.arguments);
+				//Assert.state(1 == invocation.arguments.length);
+				invocation.arguments[0] = 100;
+			} else if (invocation.kind === InvocationKind.GETTER) {
+				invocation.proceed = false;
+				invocation.returnValue = "intercepted";
+			}
 		}
 	}
 }

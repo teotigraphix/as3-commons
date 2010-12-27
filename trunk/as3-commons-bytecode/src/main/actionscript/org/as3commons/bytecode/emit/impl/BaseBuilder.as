@@ -49,6 +49,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _packageName:String;
 		private var _name:String;
 		private var _namespace:String;
+		private var _namespaceName:String;
 		private var _visibility:MemberVisibility;
 		private var _trait:TraitInfo;
 
@@ -110,19 +111,34 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get namespace():String {
+		public function get namespaceURI():String {
 			return _namespace;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set namespace(value:String):void {
+		public function set namespaceURI(value:String):void {
 			_namespace = value;
 			if (StringUtils.hasText(_namespace)) {
 				visibility = MemberVisibility.NAMESPACE;
 			}
 		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get namespaceName():String {
+			return _namespaceName;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set namespaceName(value:String):void {
+			_namespaceName = value;
+		}
+
 
 		/**
 		 * @inheritDoc
@@ -171,7 +187,7 @@ package org.as3commons.bytecode.emit.impl {
 					return MultinameUtil.toLNamespace(packageName, NamespaceKind.PACKAGE_INTERNAL_NAMESPACE);
 					break;
 				case MemberVisibility.NAMESPACE:
-					return new LNamespace(NamespaceKind.NAMESPACE, namespace);
+					return new LNamespace(NamespaceKind.NAMESPACE, namespaceURI);
 					break;
 				case MemberVisibility.PROTECTED:
 					return MultinameUtil.toLNamespace(packageName, NamespaceKind.PROTECTED_NAMESPACE);
