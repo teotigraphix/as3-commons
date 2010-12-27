@@ -217,6 +217,7 @@ package org.as3commons.reflect {
 			_variables = [];
 			_extendsClasses = [];
 			_interfaces = [];
+			_parameters = [];
 			_applicationDomain = applicationDomain;
 		}
 
@@ -399,6 +400,16 @@ package org.as3commons.reflect {
 		 */
 		public function set isInterface(value:Boolean):void {
 			_isInterface = value;
+		}
+
+		// ----------------------------
+		// parameters
+		// ----------------------------
+
+		private var _parameters:Array;
+
+		public function get parameters():Array {
+			return _parameters;
 		}
 
 		// ----------------------------

@@ -41,6 +41,10 @@ package org.as3commons.reflect {
 			var classInfo:Object = _describeTypeJSON(cls, DescribeType.GET_CLASS_INFO);
 			type.fullName = fullyQualifiedClassName;
 			type.name = org.as3commons.lang.ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
+			var param:Class = org.as3commons.lang.ClassUtils.getClassParameterFromFullyQualifiedName(instanceInfo.name, applicationDomain);
+			if (param != null) {
+				type.parameters[type.parameters.length] = param;
+			}
 			type.clazz = cls;
 			type.isDynamic = instanceInfo.isDynamic;
 			type.isFinal = instanceInfo.isFinal;
