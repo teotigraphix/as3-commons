@@ -269,13 +269,13 @@ package org.as3commons.lang {
 		public static function isInformalImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Boolean = true;
-			
+
 			if (clazz == null) {
 				result = false;
 			} else {
 				var classDescription:XML = getFromObject(clazz, applicationDomain);
 				var interfaceDescription:XML = getFromObject(interfaze, applicationDomain);
-				
+
 				// Test whether the interface's accessors have equivalent matches in the class
 				var interfaceAccessors:XMLList = interfaceDescription.factory.accessor;
 				for each (var interfaceAccessor:XML in interfaceAccessors) {
@@ -285,7 +285,7 @@ package org.as3commons.lang {
 						break;
 					}
 				}
-				
+
 				// Test whether the interface's methods and their parameters are found in the class
 				var interfaceMethods:XMLList = interfaceDescription.factory.method;
 				for each (var interfaceMethod:XML in interfaceMethods) {
@@ -307,9 +307,9 @@ package org.as3commons.lang {
 						}
 					}
 				}
-				
+
 			}
-			
+
 			return result;
 		}
 
@@ -442,6 +442,8 @@ package org.as3commons.lang {
 		 * The default value for the interval to clear the describe type cache.
 		 */
 		public static const CLEAR_CACHE_INTERVAL:uint = 60000;
+		private static const AS3VEC_SUFFIX:String = '__AS3__.vec';
+		private static const LESS_THAN:String = '<';
 
 		/**
 		 * The interval (in miliseconds) at which the cache will be cleared. Note that this value is only used
@@ -464,6 +466,24 @@ package org.as3commons.lang {
 
 			if (_timer && _timer.running) {
 				_timer.stop();
+			}
+		}
+
+		/**
+		 *
+		 * @param fullName
+		 * @param applicationDomain
+		 * @return
+		 */
+		public static function getClassParameterFromFullyQualifiedName(fullName:String, applicationDomain:ApplicationDomain = null):Class {
+			applicationDomain = (applicationDomain != null) ? applicationDomain : ApplicationDomain.currentDomain;
+			if (StringUtils.startsWith(fullName, AS3VEC_SUFFIX)) {
+				var startIdx:int = fullName.indexOf(LESS_THAN) + 1;
+				var len:int = (fullName.length - startIdx) - 1;
+				var className:String = fullName.substr(startIdx, len);
+				return forName(className, applicationDomain);
+			} else {
+				return null;
 			}
 		}
 
@@ -540,7 +560,7 @@ package org.as3commons.lang {
 			// the class name using getQualifiedClassName. It however saves us a check on the
 			// given className which might be in two forms.
 
-			// getQualifiedClassName(getDefinitionByName(className)) is faster then converting the
+			// getQualifiedClassName(getDefinitionByName(className)) is faster than converting the
 			// string using conventional methods.
 			return getFromObject(classDefinition, applicationDomain);
 		}
