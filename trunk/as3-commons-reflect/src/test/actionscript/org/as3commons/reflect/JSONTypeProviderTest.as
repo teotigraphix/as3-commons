@@ -26,6 +26,14 @@ package org.as3commons.reflect {
 			assertTrue(type.isInterface);
 		}
 
+		public function testClassParameters():void {
+			var type:Type = Type.forInstance(new String());
+			assertEquals(0, type.parameters.length);
+			type = Type.forInstance(new Vector.<Type>());
+			assertEquals(1, type.parameters.length);
+			assertStrictlyEquals(Type, type.parameters[0]);
+		}
+
 		public function testGetType():void {
 			var type:Type = Type.forClass(FullTestClass, ApplicationDomain.currentDomain);
 			assertFalse(type.isInterface);

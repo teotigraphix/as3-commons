@@ -83,6 +83,10 @@ package org.as3commons.reflect {
 			var description:XML = ReflectionUtils.getTypeDescription(cls);
 			type.fullName = fullyQualifiedClassName;
 			type.name = org.as3commons.lang.ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
+			var param:Class = org.as3commons.lang.ClassUtils.getClassParameterFromFullyQualifiedName(description.@name, applicationDomain);
+			if (param != null) {
+				type.parameters[type.parameters.length] = param;
+			}
 			type.clazz = cls;
 			type.isDynamic = (description.@isDynamic.toString() == "true");
 			type.isFinal = (description.@isFinal.toString() == "true");

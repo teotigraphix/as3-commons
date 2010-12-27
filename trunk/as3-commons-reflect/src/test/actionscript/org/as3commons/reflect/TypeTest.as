@@ -190,5 +190,13 @@ package org.as3commons.reflect {
 			//assertFalse(Type.forInstance(new ComplexClass("",0)).isFinal);
 		}
 
+		public function testClassParameters():void {
+			var type:Type = Type.forInstance(new String());
+			assertEquals(0, type.parameters.length);
+			type = Type.forInstance(new Vector.<Type>());
+			assertEquals(1, type.parameters.length);
+			assertStrictlyEquals(Type, type.parameters[0]);
+		}
+
 	}
 }
