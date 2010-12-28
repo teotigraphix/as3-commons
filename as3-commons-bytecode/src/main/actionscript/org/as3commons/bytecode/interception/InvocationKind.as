@@ -19,7 +19,7 @@ package org.as3commons.bytecode.interception {
 	import org.as3commons.lang.Assert;
 
 	/**
-	 *
+	 * Enumeration that determines the kind of invocation that is being intercepted.
 	 * @author Roland Zwaga
 	 */
 	public final class InvocationKind {

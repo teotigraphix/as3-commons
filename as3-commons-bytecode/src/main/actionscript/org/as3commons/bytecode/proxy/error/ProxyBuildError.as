@@ -18,13 +18,35 @@ package org.as3commons.bytecode.proxy.error {
 
 	import org.as3commons.lang.StringUtils;
 
+	/**
+	 * Thrown when certain errors are encountered during proxy generation.
+	 * @author Roland Zwaga
+	 */
 	public class ProxyBuildError extends Error {
 
+		/**
+		 * Thrown when a class that is marked as final is trying to be proxied.
+		 */
 		public static const FINAL_CLASS_ERROR:uint = 0x01;
+		/**
+		 * Thrown when a method that is marked as final is trying to be proxied.
+		 */
 		public static const FINAL_METHOD_ERROR:uint = 0x02;
+		/**
+		 * Thrown when an accessor that is marked as final is trying to be proxied.
+		 */
 		public static const FINAL_ACCESSOR_ERROR:uint = 0x03;
+		/**
+		 * Thrown when a non-existent method is trying to be proxied.
+		 */
 		public static const METHOD_NOT_EXISTS:uint = 0x04;
+		/**
+		 * Thrown when a non-existent accessor is trying to be proxied.
+		 */
 		public static const ACCESSOR_NOT_EXISTS:uint = 0x05;
+		/**
+		 * Thrown when the <code>ProxyFactoryBuildEvent.methodBuilder</code> property has been set to null in an event handler.
+		 */
 		public static const METHOD_BUILDER_IS_NULL:uint = 0x06;
 
 		private static const messages:Dictionary = new Dictionary();
@@ -37,6 +59,12 @@ package org.as3commons.bytecode.proxy.error {
 			messages[METHOD_BUILDER_IS_NULL] = "IMethodBuilder returned by the {0}.methodBuilder instance was null";
 		}
 
+		/**
+		 * Creates a new <code>ProxyBuildError</code> instance.
+		 * @param id
+		 * @param className
+		 * @param memberName
+		 */
 		public function ProxyBuildError(id:uint, className:String = "", memberName:String = null) {
 			var message:String;
 			if (memberName == null) {
