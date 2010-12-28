@@ -129,6 +129,7 @@ package org.as3commons.bytecode.reflect {
 			var minorVersion:uint = readU16();
 			var majorVersion:uint = readU16();
 			var constantPool:ConstantPool = new ConstantPool();
+			constantPool.dupeCheck = false;
 			deserializeConstantPool(constantPool);
 			var methods:Array = readMethods(input, constantPool, _applicationDomain);
 			var metaData:Array = readMetaData(input, constantPool, _applicationDomain);
