@@ -539,7 +539,7 @@ package org.as3commons.bytecode.proxy {
 			if ((member['isStatic'] == true) || (member['isFinal'] == true)) {
 				return false;
 			}
-			return (NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE);
+			return ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE));
 		}
 
 		/**
