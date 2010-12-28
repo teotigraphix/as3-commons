@@ -51,6 +51,7 @@ package org.as3commons.bytecode.abc {
 		private static const NAME_PROPERTYNAME:String = "name";
 		private static const LOCKED_CONSTANTPOOL_ERROR:String = "Constantpool is locked";
 
+		private var _dupeCheck:Boolean = true;
 		private var _integerPool:Array;
 		private var _integerLookup:Dictionary;
 		private var _uintPool:Array;
@@ -79,6 +80,15 @@ package org.as3commons.bytecode.abc {
 		public function ConstantPool() {
 			super();
 			reset();
+		}
+
+
+		public function get dupeCheck():Boolean {
+			return _dupeCheck;
+		}
+
+		public function set dupeCheck(value:Boolean):void {
+			_dupeCheck = value;
 		}
 
 		public function reset():void {
@@ -272,14 +282,16 @@ package org.as3commons.bytecode.abc {
 			}
 
 			var multinameIndex:int = -1;
-			_multinamePool.every(function(element:IEquals, index:int, array:Array):Boolean {
-				if (element.equals(multiname)) {
-					multinameIndex = index;
-					return false;
-				} else {
-					return true;
-				}
-			});
+			if (_dupeCheck) {
+				_multinamePool.every(function(element:IEquals, index:int, array:Array):Boolean {
+					if (element.equals(multiname)) {
+						multinameIndex = index;
+						return false;
+					} else {
+						return true;
+					}
+				});
+			}
 
 			if (multinameIndex == -1) {
 				if (!locked) {
@@ -301,19 +313,12 @@ package org.as3commons.bytecode.abc {
 				addString(object.name);
 			}
 
-			var key:String = object.toString();
-			var n:* = lookup[key];
-			var matchingIndex:int = (n != null) ? n : -1;
-			/*if (object is IEquals) {
-				pool.every(function(element:Object, index:int, array:Array):Boolean {
-					if (element.equals(object)) {
-						matchingIndex = index;
-						return false;
-					} else {
-						return true;
-					}
-				});
-			}*/
+			var matchingIndex:int = -1;
+			if (_dupeCheck) {
+				var key:String = object.toString();
+				var n:* = lookup[key];
+				matchingIndex = (n != null) ? n : -1;
+			}
 
 			if (matchingIndex == -1) {
 				if (!locked) {
@@ -544,7 +549,6 @@ package org.as3commons.bytecode.abc {
 
 		/**
 		 * Creates a printable representation of this object instance.
-		 *
 		 * @return    This constant pool instance represented as a <code>String</code>.
 		 */
 		public function toString():String {

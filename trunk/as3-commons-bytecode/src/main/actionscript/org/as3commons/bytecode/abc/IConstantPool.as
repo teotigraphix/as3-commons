@@ -24,6 +24,8 @@ package org.as3commons.bytecode.abc {
 		function getConstantPoolItem(constantKindValue:uint, poolIndex:uint):*;
 		function getConstantPoolItemIndex(constantKindValue:ConstantKind, item:*):int;
 		function addItemToPool(constantKindValue:ConstantKind, item:*):int;
+		function get dupeCheck():Boolean;
+		function set dupeCheck(value:Boolean):void;
 		function get integerPool():Array;
 		function get uintPool():Array;
 		function get doublePool():Array;
