@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.proxy {
 	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
-	
+
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 
 	/**
@@ -27,11 +27,35 @@ package org.as3commons.bytecode.proxy {
 	 */
 	[Event(name="getMethodInvocationInterceptor", "org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
 	/**
+	 * Dispatched before a getter body will be built, the <code>IMethodBuilder</code> instance assigned to the <code>ProxyFactoryEvent.builder</code> property
+	 * can be used to add a custom method body.
+	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.BEFORE_GETTER_BODY_BUILD
+	 */
+	[Event(name="beforeGetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * Dispatched before a setter body will be built, the <code>IMethodBuilder</code> instance assigned to the <code>ProxyFactoryEvent.builder</code> property
+	 * can be used to add a custom method body.
+	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.BEFORE_SETTER_BODY_BUILD
+	 */
+	[Event(name="beforeSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * Dispatched before a method body will be built, the <code>IMethodBuilder</code> instance assigned to the <code>ProxyFactoryEvent.builder</code> property
+	 * can be used to add a custom method body.
+	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.BEFORE_METHOD_BODY_BUILD
+	 */
+	[Event(name="beforeMethodBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * Dispatched before the constructor body will be built, the <code>ICtorBuilder</code> instance assigned to the <code>ProxyFactoryEvent.builder</code> property
+	 * can be used to add a custom method body.
+	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.BEFORE_CONSTRUCTOR_BODY_BUILD
+	 */
+	[Event(name="beforeConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
 	 * Dispatched after the proxy has been build, the <code>IClassBuilder</code> instance assigned to the <code>ProxyFactoryEvent.classBuilder</code> property
 	 * can be further customized in the handlers for this event.
 	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.AFTER_PROXY_BUILD
 	 */
-	[Event(name="afterProxyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
+	[Event(name="afterProxyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * Dispatched when the proxy factory has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
 	 * @eventType flash.events.Event.COMPLETE

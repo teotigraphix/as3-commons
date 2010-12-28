@@ -18,13 +18,14 @@ package org.as3commons.bytecode.proxy.error {
 
 	import org.as3commons.lang.StringUtils;
 
-	public class ProxyError extends Error {
+	public class ProxyBuildError extends Error {
 
 		public static const FINAL_CLASS_ERROR:uint = 0x01;
 		public static const FINAL_METHOD_ERROR:uint = 0x02;
 		public static const FINAL_ACCESSOR_ERROR:uint = 0x03;
 		public static const METHOD_NOT_EXISTS:uint = 0x04;
 		public static const ACCESSOR_NOT_EXISTS:uint = 0x05;
+		public static const METHOD_BUILDER_IS_NULL:uint = 0x06;
 
 		private static const messages:Dictionary = new Dictionary();
 		{
@@ -33,9 +34,10 @@ package org.as3commons.bytecode.proxy.error {
 			messages[FINAL_ACCESSOR_ERROR] = "Accessor {0} is marked as final, cannot override in the subclass";
 			messages[METHOD_NOT_EXISTS] = "Method {1} was not found on proxied class {0}";
 			messages[ACCESSOR_NOT_EXISTS] = "Accessor {1} was not found on proxied class {0}";
+			messages[METHOD_BUILDER_IS_NULL] = "IMethodBuilder returned by the {0}.methodBuilder instance was null";
 		}
 
-		public function ProxyError(id:uint, className:String = "", memberName:String = null) {
+		public function ProxyBuildError(id:uint, className:String = "", memberName:String = null) {
 			var message:String;
 			if (memberName == null) {
 				message = StringUtils.substitute(String(messages[id]), className);

@@ -25,10 +25,8 @@ package org.as3commons.bytecode.proxy.event {
 	 */
 	public class ProxyFactoryEvent extends Event {
 
-		public static const AFTER_PROXY_BUILD:String = "afterProxyBuild";
 		public static const GET_METHOD_INVOCATION_INTERCEPTOR:String = "getMethodInvocationInterceptor";
 
-		private var _classBuilder:IClassBuilder;
 		private var _methodInvocationInterceptor:IMethodInvocationInterceptor;
 		private var _methodInvocationInterceptorClass:Class;
 		private var _proxiedClass:Class;
@@ -37,18 +35,15 @@ package org.as3commons.bytecode.proxy.event {
 		/**
 		 * Creates a new <code>ProxyFactoryEvent</code> instance.
 		 * @param type
-		 * @param classBuilder
 		 * @param bubbles
 		 * @param cancelable
 		 */
-		public function ProxyFactoryEvent(type:String, classBuilder:IClassBuilder = null, proxiedClass:Class = null, constructorArguments:Array = null, methodInvocationInterceptorClass:Class = null, bubbles:Boolean = false, cancelable:Boolean = false) {
+		public function ProxyFactoryEvent(type:String, proxiedClass:Class, constructorArguments:Array = null, methodInvocationInterceptorClass:Class = null, bubbles:Boolean = false, cancelable:Boolean = false) {
 			super(type, bubbles, cancelable);
-			_classBuilder = classBuilder;
 			_proxiedClass = proxiedClass;
 			_constructorArguments = constructorArguments;
 			_methodInvocationInterceptorClass = methodInvocationInterceptorClass;
 		}
-
 
 		public function get methodInvocationInterceptorClass():Class {
 			return _methodInvocationInterceptorClass;
@@ -76,12 +71,8 @@ package org.as3commons.bytecode.proxy.event {
 			_methodInvocationInterceptor = value;
 		}
 
-		public function get classBuilder():IClassBuilder {
-			return _classBuilder;
-		}
-
 		override public function clone():Event {
-			var event:ProxyFactoryEvent = new ProxyFactoryEvent(this.type, this.classBuilder, this.proxiedClass, this.constructorArguments, this.methodInvocationInterceptorClass, this.bubbles, this.cancelable);
+			var event:ProxyFactoryEvent = new ProxyFactoryEvent(this.type, this.proxiedClass, this.constructorArguments, this.methodInvocationInterceptorClass, this.bubbles, this.cancelable);
 			event.methodInvocationInterceptor = this.methodInvocationInterceptor;
 			return event;
 		}

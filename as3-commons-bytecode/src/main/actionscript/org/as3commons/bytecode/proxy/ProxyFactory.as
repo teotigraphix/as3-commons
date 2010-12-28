@@ -42,11 +42,13 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.emit.event.AccessorBuilderEvent;
 	import org.as3commons.bytecode.emit.impl.AbcBuilder;
+	import org.as3commons.bytecode.emit.impl.BaseBuilder;
 	import org.as3commons.bytecode.emit.impl.MetaDataArgument;
 	import org.as3commons.bytecode.emit.impl.MethodBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
-	import org.as3commons.bytecode.proxy.error.ProxyError;
+	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
+	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeAccessor;
 	import org.as3commons.bytecode.reflect.ByteCodeMethod;
@@ -74,7 +76,23 @@ package org.as3commons.bytecode.proxy {
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="afterProxyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
+	[Event(name="beforeGetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="beforeSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="beforeMethodBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="beforeConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="afterProxyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
@@ -220,7 +238,7 @@ package org.as3commons.bytecode.proxy {
 				if (proxyInfo.proxyClass == null) {
 					proxyInfo.proxyClass = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
 				}
-				var event:ProxyFactoryEvent = new ProxyFactoryEvent(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, null, clazz, constructorArgs, proxyInfo.methodInvocationInterceptorClass);
+				var event:ProxyFactoryEvent = new ProxyFactoryEvent(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, clazz, constructorArgs, proxyInfo.methodInvocationInterceptorClass);
 				dispatchEvent(event);
 				var interceptorInstance:IMethodInvocationInterceptor = (event.methodInvocationInterceptor != null) ? event.methodInvocationInterceptor : new proxyInfo.methodInvocationInterceptorClass();
 				constructorArgs = (constructorArgs != null) ? [interceptorInstance].concat(constructorArgs) : [interceptorInstance];
@@ -252,7 +270,7 @@ package org.as3commons.bytecode.proxy {
 			var className:String = ClassUtils.getFullyQualifiedName(classProxyInfo.proxiedClass);
 			var type:ByteCodeType = ByteCodeType.forName(className.replace(MultinameUtil.DOUBLE_COLON, MultinameUtil.PERIOD), applicationDomain);
 			if (type.isFinal) {
-				throw new ProxyError(ProxyError.FINAL_CLASS_ERROR, className);
+				throw new ProxyBuildError(ProxyBuildError.FINAL_CLASS_ERROR, className);
 			}
 			var classParts:Array = className.split(MultinameUtil.DOUBLE_COLON);
 			var packageName:String = classParts[0] + MultinameUtil.PERIOD + generateSuffix();
@@ -288,7 +306,7 @@ package org.as3commons.bytecode.proxy {
 				accessorBuilder = proxyAccessor(classBuilder, type, memberInfo, nsMultiname, bytecodeQname);
 			}
 
-			dispatchEvent(new ProxyFactoryEvent(ProxyFactoryEvent.AFTER_PROXY_BUILD, classBuilder, classProxyInfo.proxiedClass));
+			dispatchEvent(new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_PROXY_BUILD, null, classBuilder, classProxyInfo.proxiedClass));
 			LOGGER.debug("Generated proxy class {0} for class {1}", proxyClassName, classProxyInfo.proxiedClass);
 			return new ProxyInfo(proxyClassName.split(MultinameUtil.SINGLE_COLON).join(MultinameUtil.PERIOD));
 		}
@@ -400,6 +418,15 @@ package org.as3commons.bytecode.proxy {
 		* @param multiName The <code>Multiname</code> instance used as the parameter for the <code>Opcode.callproperty</code> opcode.
 		*/
 		protected function addConstructorBody(ctorBuilder:ICtorBuilder, bytecodeQname:QualifiedName, multiName:Multiname):void {
+			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_CONSTRUCTOR_BODY_BUILD, ctorBuilder);
+			dispatchEvent(event);
+			ctorBuilder = event.methodBuilder as ICtorBuilder;
+			if (ctorBuilder == null) {
+				throw new ProxyBuildError(ProxyBuildError.METHOD_BUILDER_IS_NULL, "ProxyFactoryBuildEvent");
+			}
+			if (ctorBuilder.opcodes.length > 0) {
+				return;
+			}
 			var len:int = ctorBuilder.arguments.length;
 			var paramLocal:int = len;
 			ctorBuilder.addOpcode(Opcode.getlocal_0) //
@@ -532,10 +559,10 @@ package org.as3commons.bytecode.proxy {
 			methodBuilder.isOverride = true;
 			var method:ByteCodeMethod = type.getMethod(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeMethod;
 			if (method == null) {
-				throw new ProxyError(ProxyError.METHOD_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
+				throw new ProxyBuildError(ProxyBuildError.METHOD_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
 			}
 			if (method.isFinal) {
-				throw new ProxyError(ProxyError.FINAL_METHOD_ERROR, method.name);
+				throw new ProxyBuildError(ProxyBuildError.FINAL_METHOD_ERROR, method.name);
 			}
 			addMetadata(methodBuilder, method.metaData);
 			methodBuilder.visibility = getMemberVisibility(method);
@@ -588,10 +615,10 @@ package org.as3commons.bytecode.proxy {
 			Assert.notNull(memberInfo, "memberInfo argument must not be null");
 			var accessor:ByteCodeAccessor = type.getField(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeAccessor;
 			if (accessor == null) {
-				throw new ProxyError(ProxyError.ACCESSOR_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
+				throw new ProxyBuildError(ProxyBuildError.ACCESSOR_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
 			}
 			if (accessor.isFinal) {
-				throw new ProxyError(ProxyError.FINAL_ACCESSOR_ERROR, accessor.name);
+				throw new ProxyBuildError(ProxyBuildError.FINAL_ACCESSOR_ERROR, accessor.name);
 			}
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(accessor.name, accessor.type.fullName, accessor.initializedValue);
 			addMetadata(accessorBuilder, accessor.metaData);
@@ -638,6 +665,15 @@ package org.as3commons.bytecode.proxy {
 		 */
 		protected function addMethodBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD, methodBuilder);
+			dispatchEvent(event);
+			methodBuilder = event.methodBuilder;
+			if (methodBuilder == null) {
+				throw new ProxyBuildError(ProxyBuildError.METHOD_BUILDER_IS_NULL, "ProxyFactoryBuildEvent");
+			}
+			if (methodBuilder.opcodes.length > 0) {
+				return;
+			}
 			var len:int = methodBuilder.arguments.length;
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
 			methodBuilder.addOpcode(Opcode.getlocal_0) //
@@ -757,6 +793,15 @@ package org.as3commons.bytecode.proxy {
 		 */
 		protected function addGetterBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, methodBuilder);
+			dispatchEvent(event);
+			methodBuilder = event.methodBuilder;
+			if (methodBuilder == null) {
+				throw new ProxyBuildError(ProxyBuildError.METHOD_BUILDER_IS_NULL, "ProxyFactoryBuildEvent");
+			}
+			if (methodBuilder.opcodes.length > 0) {
+				return;
+			}
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
 			methodBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
@@ -805,6 +850,15 @@ package org.as3commons.bytecode.proxy {
 		 */
 		protected function addSetterBody(methodBuilder:IMethodBuilder, accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD, methodBuilder);
+			dispatchEvent(event);
+			methodBuilder = event.methodBuilder;
+			if (methodBuilder == null) {
+				throw new ProxyBuildError(ProxyBuildError.METHOD_BUILDER_IS_NULL, "ProxyFactoryBuildEvent");
+			}
+			if (methodBuilder.opcodes.length > 0) {
+				return;
+			}
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
 			var argLen:int = 1;
 			var superSetter:QualifiedName = createMethodQName(methodBuilder);
