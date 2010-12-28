@@ -3,7 +3,7 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 0.9.1 (00.00.0000)
+Changes in version 0.9.1 (28.12.2010)
 -----------------------------------
 
 General
