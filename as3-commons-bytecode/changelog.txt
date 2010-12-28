@@ -7,7 +7,8 @@ Changes in version 0.9.1 (00.00.0000)
 -----------------------------------
 
 General
-* Fixed proxying of protected members
+* Fixed proxying of protected members.
+* Added ProxyFactoryBuildEvent to easily enable custom ctor/method/accessor body creation.
 
 Changes in version 0.9 (26.12.2010)
 -----------------------------------
@@ -43,13 +44,14 @@ Changes in version 0.7 (28.10.2010)
 
 General
 * Bunch of tweaks and bugfixes in the bytecode serialization and parsing
+* Debugged support for all available opcodes
 * Start of the emit API
 
 Changes in version 0.6 (06.09.2010)
 -----------------------------------
 
 General
-* Serialization and parsing of Abc bytecode fullyfunctional
+* Serialization and parsing of Abc bytecode fully functional
 * Added some functionality to load and parse SWF files
 * Implemented some of the more basic SWF tags
 
