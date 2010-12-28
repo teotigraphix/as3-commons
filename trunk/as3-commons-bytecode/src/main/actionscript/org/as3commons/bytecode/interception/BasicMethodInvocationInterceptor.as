@@ -80,21 +80,24 @@ package org.as3commons.bytecode.interception {
 		}
 
 		/**
-		 * @inheritDoc
+		 * A reference to the <code>Class</code> (an implementation of <code>IMethodInvocation</code>) that is used
+		 * to aggregate the interception data and passed on to the registered <code>IInterceptors</code>.
+		 * @default BasicMethodInvocation
 		 */
 		public function get invocationClass():Class {
 			return _invocationClass;
 		}
 
 		/**
-		 * @inheritDoc
+		 * @private
 		 */
 		public function set invocationClass(value:Class):void {
 			_invocationClass = value;
 		}
 
 		/**
-		 * @inheritDoc
+		 * An <code>Array</code> of <code>IInterceptor</code> instances that will be invoked for each
+		 * <code>intercept()</code> invocation.
 		 */
 		public function get interceptors():Array {
 			return _interceptors;

@@ -22,12 +22,14 @@ package org.as3commons.bytecode.interception {
 	 */
 	public interface IMethodInvocationInterceptor {
 		/**
-		 *
-		 * @param instance
-		 * @param methodNamem
-		 * @param method
-		 * @param arguments
-		 * @return
+		 * Intercepts an invocation and potentially delegates it to any <code>IIntercepters</code> instances that have been registred with
+		 * the current <code>IMethodInvocationInterceptor</code>.
+		 * @param targetInstance The object instance whose method is being intercepted.
+		 * @param kind The kind of invocation that is being intercepted.
+		 * @param member The <code>QName</code> for the method or accessor that is being intercepted. Is <code>null</code> when a constructor is being constructed.
+		 * @param arguments Optional array of arguments that have been passed to the method.
+		 * @param method A reference to the method that is being intercepted, <code>null</code> when a constructor or accessor is being intercepted.
+		 * @return The return value for the specified method. May be undefined for <code>void</code> methods or constructors.
 		 */
 		function intercept(targetInstance:Object, kind:InvocationKind, member:QName, arguments:Array = null, method:Function = null):*;
 	}

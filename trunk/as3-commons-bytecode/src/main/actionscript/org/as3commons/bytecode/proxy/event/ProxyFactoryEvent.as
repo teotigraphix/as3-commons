@@ -20,11 +20,14 @@ package org.as3commons.bytecode.proxy.event {
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 
 	/**
-	 *
+	 * Dispatched during various stages of proxy instantiation.
 	 * @author Roland Zwaga
 	 */
 	public class ProxyFactoryEvent extends Event {
 
+		/**
+		 * Dispatched before a proxy class is instantiated to obtain an optional reference to an <code>IMethodInvocationInterceptor</code> instance.
+		 */
 		public static const GET_METHOD_INVOCATION_INTERCEPTOR:String = "getMethodInvocationInterceptor";
 
 		private var _methodInvocationInterceptor:IMethodInvocationInterceptor;
@@ -45,20 +48,30 @@ package org.as3commons.bytecode.proxy.event {
 			_methodInvocationInterceptorClass = methodInvocationInterceptorClass;
 		}
 
+		/**
+		 * A reference to the <code>Class</code> (an <code>IMethodInvocationInterceptor</code> implementation) that has been configured for the specified <code>proxiedClass</code>.
+		 */
 		public function get methodInvocationInterceptorClass():Class {
 			return _methodInvocationInterceptorClass;
 		}
 
+		/**
+		 * The <code>Class</code> for which a proxy is being instantiated.
+		 */
 		public function get proxiedClass():Class {
 			return _proxiedClass;
 		}
 
+		/**
+		 * Optional array of constructor arguments for the proxy instance.
+		 */
 		public function get constructorArguments():Array {
 			return _constructorArguments;
 		}
 
 		/**
-		 *
+		 * If not null the <code>IMethodInvocationInterceptor</code> instance assigned to this property will be injected
+		 * into the proxy instance.
 		 */
 		public function get methodInvocationInterceptor():IMethodInvocationInterceptor {
 			return _methodInvocationInterceptor;
@@ -71,6 +84,10 @@ package org.as3commons.bytecode.proxy.event {
 			_methodInvocationInterceptor = value;
 		}
 
+		/**
+		 * Returns an exact copy of the current <code>ProxyFactoryEvent</code>.
+		 * @return An exact copy of the current <code>ProxyFactoryEvent</code>.
+		 */
 		override public function clone():Event {
 			var event:ProxyFactoryEvent = new ProxyFactoryEvent(this.type, this.proxiedClass, this.constructorArguments, this.methodInvocationInterceptorClass, this.bubbles, this.cancelable);
 			event.methodInvocationInterceptor = this.methodInvocationInterceptor;
