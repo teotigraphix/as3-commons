@@ -43,9 +43,9 @@
 	<p>Setting the <code>proceed</code> property on the <code><a href="asdoc/org/as3commons/bytecode/interception/IMethodInvocation.html" target="_blank">IMethodInvocation</a></code> to false will prevent the original method in the proxied class from being invoked, and in this case to be
 	replaced by the value returned by this <code><a href="asdoc/org/as3commons/bytecode/interception/IInterceptor.html" target="_blank">IInterceptor</a></code> implementation.</p>
 	<p>This example is of course rather pointless, but real-world scenarios that might benefit from this approach include cross-cutting concerns such as logging, security, validation, caching and transactions.</p>
-	<p>Interception works on constructors, methods and accessors that have have a public scope. Setting <code>proceed</code> to false while intercepting a constructor will not prevent the super constructor from being invoked though. It is, however, of course possible to intercept and change constructor arguments.</p>
+	<p>Interception works on constructors, methods and accessors that have have a public or protected scope. Setting <code>proceed</code> to false while intercepting a constructor will <strong>not</strong> prevent the super constructor from being invoked though. It is, however, of course possible to intercept and change the constructor's arguments.</p>
 	<blockquote><strong><em>
-		For the moment only public members can be proxied. In theory protected and custom namespace scoped members should be possible to proxy as well (since the proxy is nothing more than a subclass) but some issues crept up during development that prevented this support in the current release. Protected and custom namespaces are planned to be
+		For the moment only public and protected members can be proxied. In theory custom namespace scoped members should be possible to proxy as well (since the proxy is nothing more than a subclass) but some issues crept up during development that prevented this support in the current release. Custom namespaces are planned to be
 		supported in the future though.
 	</em></strong></blockquote>
 	<p>Now, this is all nice and sweet, but how does this all come together in practice? In the following sections the various steps for generating proxy classes and injecting interceptors is explained.</p>
@@ -76,7 +76,7 @@
   		<p>Now, to define a proxy for a specified class invoke the defineProxy() method:</p>
   		<div class="source"><pre>var classProxyInfo:ClassProxyInfo = proxyFactory.defineProxy(MyClass);</pre></div>
   		<p>This method returns a <code><a href="asdoc/org/as3commons/bytecode/proxy/ClassProxyInfo.html" target="_blank">ClassProxyInfo</a></code> instance which allows further definition of the proxy.<br/>
-  		Its also possible to ignore the <code><a href="asdoc/org/as3commons/bytecode/proxy/ClassProxyInfo.html" target="_blank">ClassProxyInfo</a></code> instance entirely, in which case every public scoped member on the specified class will be proxied.</p>
+  		Its also possible to ignore the <code><a href="asdoc/org/as3commons/bytecode/proxy/ClassProxyInfo.html" target="_blank">ClassProxyInfo</a></code> instance entirely, in which case every public and protected scoped member on the specified class will be proxied. (Bytecode reflection is used here to obtain the information)</p>
   		<p>Should this not be desirable these methods will define specific members for proxying:</p>
   		<div class="source"><pre>classProxyInfo.proxyMethod("myMethod");</pre></div>
   		<div class="source"><pre>classProxyInfo.proxyMethod("myAccessor");</pre></div>
@@ -86,6 +86,7 @@
   		<div class="source"><pre>classProxyInfo.makeDynamic = true;</pre></div>
   		<p>This is the equivalent for setting the <code>dynamic</code> keyword on a class definition:</p>
   		<div class="source"><pre>public dynamic MyClass { /**/ }</pre></div>
+  		<p>(Of course, when the original class is already marked as dynamic this will override the <code>makeDynamic</code> value.)</p>
   	</section>
   	
   	<section name="Generating the proxy classes">
@@ -93,15 +94,47 @@
   		<div class="source"><pre>var abcBuilder:IAbcBuilder = proxyFactory.generateProxyClasses();</pre></div>
   		<p>The <code>generateProxyClasses()</code> method returns the <code><a href="asdoc/org/as3commons/bytecode/emit/IAbcBuilder.html" target="_blank">IAbcBuilder</a></code> that has been populated by the <code><a href="asdoc/org/as3commons/bytecode/proxy/IProxyFactory.html" target="_blank">IProxyFactory</a></code> enabling
   		further modification and augmentation of the generated classes. Consult the <a href="emit.html" target="_blank">emit documentation</a> for more information on this.</p>
-  		<p>To intercept the creation of a specific proxy class add an event listener for the <code>ProxyFactoryEvent.AFTER_PROXY_BUILD</code> event, the instance of this event
+  		<subsection name="Intercepting a class builder">
+  		<p>To intercept the creation of a specific proxy class add an event listener for the <code>ProxyFactoryBuildEvent.AFTER_PROXY_BUILD</code> event, the instance of this event
   		contains a reference to the <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html" target="_blank">IClassBuilder</a></code> that is used to generate the specified class:</p>
-  		<div class="source"><pre>proxyFactory.addEventListener(ProxyFactoryEvent.AFTER_PROXY_BUILD, afterProxyBuilderHandler);
+  		<div class="source"><pre>proxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_PROXY_BUILD, afterProxyBuilderHandler);
 
-function afterProxyBuilderHandler(event:ProxyFactoryEvent):void {
+function afterProxyBuilderHandler(event:ProxyFactoryBuildEvent):void {
 	var clazz:Class = event.proxiedClass;
 	var builder:IClassBuilder = event.classBuilder;
 	/* further logic ommited... */
 }</pre></div>
+		</subsection>
+		<subsection name="Intercepting the constructor method body creation">
+			<p>The <code>ProxyFactoryBuildEvent.BEFORE_CONSTRUCTOR_BODY_BUILD</code> event enables a developer to completely override the constructor method body creation.<br/>
+			Add a listener for the specified event and use the <code>ProxyFactoryBuildEvent.methodBuilder</code> property to modify the <code>ICtorBuilder</code> instance.</p>
+			<div class="source"><pre>proxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_CONSTRUCTOR_BODY_BUILD, beforeConstructorBuildHandler);
+
+function beforeConstructorBuildHandler(event:ProxyFactoryBuildEvent):void {
+	var builder:ICtorBuilder = event.methodBuilder as ICtorBuilder;
+	/* further logic ommited... */
+}</pre></div>
+		</subsection>
+		<subsection name="Intercepting method body creation">
+			<p>The <code>ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD</code> event enables a developer to completely override method body creation.<br/>
+			Add a listener for the specified event and use the <code>ProxyFactoryBuildEvent.methodBuilder</code> property to modify the <code>IMethodBuilder</code> instance.</p>
+			<div class="source"><pre>proxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD, beforeMethodBuildHandler);
+
+function beforeMethodBuildHandler(event:ProxyFactoryBuildEvent):void {
+	var builder:IMethodBuilder = event.methodBuilder;
+	/* further logic ommited... */
+}</pre></div>
+		</subsection>
+		<subsection name="Intercepting accessor body creation">
+			<p>The <code>ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD</code> and <code>ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD</code> events enable a developer to completely override accessor body creation.<br/>
+			Add a listener for the specified events and use the <code>ProxyFactoryBuildEvent.methodBuilder</code> property to modify the <code>IMethodBuilder</code> instance.</p>
+			<div class="source"><pre>proxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, beforeGetterBuildHandler);
+
+function beforeGetterBuildHandler(event:ProxyFactoryBuildEvent):void {
+	var builder:IMethodBuilder = event.methodBuilder;
+	/* further logic ommited... */
+}</pre></div>
+		</subsection>
   	</section>
   	
   	<section name="Loading the proxy classes into the AVM">

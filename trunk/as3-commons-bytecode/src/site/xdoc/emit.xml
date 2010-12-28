@@ -103,9 +103,10 @@ public function set count(value:int):void {
     	This private property is used to store the actual value of the accessor.</p>
     	<p>To use a custom <code><a href="asdoc/org/as3commons/bytecode/emit/IPropertyBuilder.html" target="_blank">IPropertyBuilder</a></code> for this create one and assign it to the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html#property" target="_blank">IAccessorBuilder.property</a></code> property:</p>
     	<div class="source"><pre>accessorBuilder.property = new PropertyBuilder("count","int",1000);</pre></div>
-    	<p>To completely override the creation of the getter and setter methods add listeners for the <code>AccessorBuilderEvent.BUILD_GETTER</code> and <code>AccessorBuilderEvent.BUILD_SETTER</code> events.<br/>
+    	<subsection name="Overriding accessor body creation">
+    	<p>To completely override the creation of the getter and setter method bodies add listeners for the <code>AccessorBuilderEvent.BUILD_GETTER</code> and <code>AccessorBuilderEvent.BUILD_SETTER</code> events.<br/>
     	When either of these events are handled the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html" target="_blank">IAccessorBuilder</a></code> will delegate the creation of the <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html" target="_blank">IMethodBuilder</a></code> instances to the event handlers assigned to these events.<br/>
-    	In these event handlers logic can be placed to create a valid <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html" target="_blank">IMethodBuilder</a></code> and its method body, after creation such an instance needs to be assigned to the <code><a href="asdoc/org/as3commons/bytecode/emit/event/AccessorBuilderEvent.html#builder" target="_blank">AccessorBilderEvent.builder</a></code> property.</p>
+    	In these event handlers logic can be placed to create a valid <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html" target="_blank">IMethodBuilder</a></code> and its method body, after creation such an instance needs to be assigned to the <code><a href="asdoc/org/as3commons/bytecode/emit/event/AccessorBuilderEvent.html#builder" target="_blank">AccessorBuilderEvent.builder</a></code> property.</p>
     	<div class="source"><pre>accessorBuilder.addEventLister(AccessorBuilderEvent.BUILD_GETTER, buildGetterHandler);
 public function buildGetterHandler(event:AccessorBuilderEvent):void {
 	var methodBuilder:IMethodBuilder = new MethodBuilder():
@@ -113,6 +114,7 @@ public function buildGetterHandler(event:AccessorBuilderEvent):void {
 	event.builder = methodBuilder;
 }
 </pre></div>
+	</subsection>
     	<p>Visibility and namespace assignment is the same as for property generation.</p>
     	<p>Other properties that can be set on the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html" target="_blank">IAccessorBuilder</a></code> include:</p>
     	<ul>
