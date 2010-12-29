@@ -105,5 +105,14 @@ package org.as3commons.bytecode.proxy {
 		 * @return
 		 */
 		function createProxy(clazz:Class, constructorArgs:Array = null):Object;
+
+		/**
+		 * Returns a <code>ProxyInfo</code> instance associated with thw specified proxied class,
+		 * or null if none can be found. This information is only available after the <code>generateProxyClasses()</code>
+		 * method has been invoked.
+		 * @param clazz The proxied class
+		 * @return A <code>ProxyInfo</code> instance associated with thw specified proxied class.
+		 */
+		function getProxyInfoForClass(proxiedClass:Class):ProxyInfo;
 	}
 }

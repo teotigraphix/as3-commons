@@ -157,36 +157,36 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function setMethodFlags(methodInfo:MethodInfo, setDXNS:Boolean, needActivation:Boolean, needArguments:Boolean):void {
 			if (hasOptionalArguments) {
-				MethodFlag.addFlag(methodInfo.flags, MethodFlag.HAS_OPTIONAL);
+				methodInfo.flags = MethodFlag.addFlag(methodInfo.flags, MethodFlag.HAS_OPTIONAL);
 			} else {
-				MethodFlag.removeFlag(methodInfo.flags, MethodFlag.HAS_OPTIONAL);
+				methodInfo.flags = MethodFlag.removeFlag(methodInfo.flags, MethodFlag.HAS_OPTIONAL);
 			}
 
 			if (_methodBodyBuilder != null) {
 
 				if (_methodBodyBuilder.setDXNS) {
-					MethodFlag.addFlag(methodInfo.flags, MethodFlag.SET_DXNS);
+					methodInfo.flags = MethodFlag.addFlag(methodInfo.flags, MethodFlag.SET_DXNS);
 				} else {
-					MethodFlag.removeFlag(methodInfo.flags, MethodFlag.SET_DXNS);
+					methodInfo.flags = MethodFlag.removeFlag(methodInfo.flags, MethodFlag.SET_DXNS);
 				}
 
 				if (_methodBodyBuilder.needActivation) {
-					MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_ACTIVATION);
+					methodInfo.flags = MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_ACTIVATION);
 				} else {
-					MethodFlag.removeFlag(methodInfo.flags, MethodFlag.NEED_ACTIVATION);
+					methodInfo.flags = MethodFlag.removeFlag(methodInfo.flags, MethodFlag.NEED_ACTIVATION);
 				}
 
 				if (_methodBodyBuilder.needArguments) {
-					MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_ARGUMENTS);
+					methodInfo.flags = MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_ARGUMENTS);
 				} else {
-					MethodFlag.removeFlag(methodInfo.flags, MethodFlag.NEED_ARGUMENTS);
+					methodInfo.flags = MethodFlag.removeFlag(methodInfo.flags, MethodFlag.NEED_ARGUMENTS);
 				}
 			}
 
 			if (hasRestArguments) {
-				MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_REST);
+				methodInfo.flags = MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_REST);
 			} else {
-				MethodFlag.removeFlag(methodInfo.flags, MethodFlag.NEED_REST);
+				methodInfo.flags = MethodFlag.removeFlag(methodInfo.flags, MethodFlag.NEED_REST);
 			}
 		}
 

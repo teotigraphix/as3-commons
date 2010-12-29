@@ -122,5 +122,9 @@ package org.as3commons.bytecode.interception {
 			_proceed = value;
 		}
 
+		public function toString():String {
+			return "BasicMethodInvocation{_kind:" + _kind + ", _targetInstance:" + _targetInstance + ", _targetMember:" + _targetMember + ", _targetMethod:" + _targetMethod + ", _proceed:" + _proceed + ", _arguments:[" + _arguments + "], _returnValue:" + _returnValue + "}";
+		}
+
 	}
 }

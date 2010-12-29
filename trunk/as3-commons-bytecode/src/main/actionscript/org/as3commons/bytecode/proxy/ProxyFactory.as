@@ -205,6 +205,7 @@ package org.as3commons.bytecode.proxy {
 				var infos:Array = _domains[domain] as Array;
 				for each (var info:ClassProxyInfo in infos) {
 					var proxyInfo:ProxyInfo = buildProxyClass(info, domain);
+					proxyInfo.proxiedClass = info.proxiedClass;
 					_classProxyLookup[info.proxiedClass] = proxyInfo;
 					proxyInfo.methodInvocationInterceptorClass = info.methodInvocationInterceptorClass;
 				}
@@ -212,6 +213,13 @@ package org.as3commons.bytecode.proxy {
 			_domains = new Dictionary();
 			LOGGER.debug("Finished generating proxy classes");
 			return _abcBuilder;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getProxyInfoForClass(proxiedClass:Class):ProxyInfo {
+			return _classProxyLookup[proxiedClass] as ProxyInfo;
 		}
 
 		/**
@@ -240,7 +248,12 @@ package org.as3commons.bytecode.proxy {
 				}
 				var event:ProxyFactoryEvent = new ProxyFactoryEvent(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, clazz, constructorArgs, proxyInfo.methodInvocationInterceptorClass);
 				dispatchEvent(event);
-				var interceptorInstance:IMethodInvocationInterceptor = (event.methodInvocationInterceptor != null) ? event.methodInvocationInterceptor : new proxyInfo.methodInvocationInterceptorClass();
+				var interceptorInstance:IMethodInvocationInterceptor;
+				if (event.methodInvocationInterceptor != null) {
+					interceptorInstance = event.methodInvocationInterceptor;
+				} else {
+					interceptorInstance = new proxyInfo.methodInvocationInterceptorClass();
+				}
 				constructorArgs = (constructorArgs != null) ? [interceptorInstance].concat(constructorArgs) : [interceptorInstance];
 				LOGGER.debug("Created proxy for class {0} with arguments: {1}", clazz, constructorArgs);
 				return ClassUtils.newInstance(proxyInfo.proxyClass, constructorArgs);
@@ -567,11 +580,9 @@ package org.as3commons.bytecode.proxy {
 			addMetadata(methodBuilder, method.metaData);
 			methodBuilder.visibility = getMemberVisibility(method);
 			methodBuilder.namespaceURI = method.namespaceURI;
-			if (method != null) {
-				methodBuilder.returnType = method.returnType.fullName;
-				for each (var arg:ByteCodeParameter in method.parameters) {
-					methodBuilder.defineArgument(arg.type.fullName, arg.isOptional, arg.defaultValue);
-				}
+			methodBuilder.returnType = method.returnType.fullName;
+			for each (var arg:ByteCodeParameter in method.parameters) {
+				methodBuilder.defineArgument(arg.type.fullName, arg.isOptional, arg.defaultValue);
 			}
 			return methodBuilder;
 		}

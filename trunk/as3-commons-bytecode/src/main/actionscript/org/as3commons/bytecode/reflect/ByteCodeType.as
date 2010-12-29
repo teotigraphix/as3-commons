@@ -253,13 +253,19 @@ package org.as3commons.bytecode.reflect {
 				}
 				if (parentType != null) {
 					for each (var method:Method in parentType.methods) {
-						tempMethods[tempMethods.length] = method;
+						if (!objectExists(method, tempMethods)) {
+							tempMethods[tempMethods.length] = method;
+						}
 					}
 					for each (var variable:Variable in parentType.variables) {
-						this.variables[this.variables.length] = variable;
+						if (!objectExists(variable, variables)) {
+							this.variables[this.variables.length] = variable;
+						}
 					}
 					for each (var acc:Accessor in parentType.accessors) {
-						this.accessors[this.accessors.length] = acc;
+						if (!objectExists(acc, accessors)) {
+							this.accessors[this.accessors.length] = acc;
+						}
 					}
 					for each (var constant:Constant in parentType.constants) {
 						this.constants[this.constants.length] = constant;
@@ -268,6 +274,15 @@ package org.as3commons.bytecode.reflect {
 					this.createMetaDataLookup();
 				}
 			}
+		}
+
+		protected function objectExists(objectToCheck:Object, methods:Array):Boolean {
+			for each (var obj:Object in methods) {
+				if ((obj.name == objectToCheck.name) && (obj.namespaceURI == objectToCheck.namespaceURI)) {
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

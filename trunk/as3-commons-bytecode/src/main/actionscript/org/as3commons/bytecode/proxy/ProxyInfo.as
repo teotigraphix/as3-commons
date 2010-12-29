@@ -16,15 +16,20 @@
 package org.as3commons.bytecode.proxy {
 	import flash.system.ApplicationDomain;
 
+	import mx.core.IFactory;
+
+	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.ClassUtils;
 
 	/**
 	 * Contains the the necessary information for an <code>IProxyFactory</code> to
 	 * create an instance of a proxy class.
 	 * @author Roland Zwaga
 	 */
-	internal final class ProxyInfo {
+	public final class ProxyInfo {
 
+		public var proxiedClass:Class;
 		public var proxyClass:Class;
 		public var proxyClassName:String;
 		public var applicationDomain:ApplicationDomain;

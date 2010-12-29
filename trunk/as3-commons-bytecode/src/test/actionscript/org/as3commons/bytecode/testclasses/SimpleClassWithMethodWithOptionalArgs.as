@@ -15,20 +15,14 @@
 */
 package org.as3commons.bytecode.testclasses {
 
-	[Transient(arg="classtest")]
-	public class SimpleClassWithMetadata {
-		public function SimpleClassWithMetadata() {
+	public class SimpleClassWithMethodWithOptionalArgs {
+
+		public function SimpleClassWithMethodWithOptionalArgs() {
 			super();
 		}
 
-		[Transient(arg="methodtest")]
-		public function simpleMethod():void {
+		public function methodWithOptionalArgs(arg1:String, arg2:Boolean = true):void {
 
-		}
-
-		[Transient(arg="accessortest")]
-		public function get getter():String {
-			return "stuff";
 		}
 	}
 }

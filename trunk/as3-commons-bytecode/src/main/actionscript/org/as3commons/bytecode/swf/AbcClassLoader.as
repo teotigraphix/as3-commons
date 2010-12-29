@@ -70,15 +70,13 @@ package org.as3commons.bytecode.swf {
 		 */
 		protected function initAbcLoader():void {
 			_loader = new Loader();
-			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
-				dispatchEvent(event);
-			});
-			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, function(event:Event):void {
-				dispatchEvent(event);
-			});
-			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.VERIFY_ERROR, function(event:Event):void {
-				dispatchEvent(event);
-			});
+			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, redispatch);
+			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, redispatch);
+			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch);
+		}
+
+		protected function redispatch(event:Event):void {
+			dispatchEvent(event);
 		}
 
 		/**
