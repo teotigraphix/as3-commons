@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <properties>
+    <title>Manipulation of existing classes using the emit API</title>
+    <author email="scab@dds.nl">Roland Zwaga</author>
+  </properties>
+
+  <body>
+  	<section name="Introduction">
+  		<p>Besides class generation its also possible to load an existing swf file and manipulate its Abc
+  		content using the emit API.</p>
+  		<p>This part of the library aims to be a foundation for bytecode weaving AOP libraries.</p>
+  	</section>
+  </body>
+</document>
