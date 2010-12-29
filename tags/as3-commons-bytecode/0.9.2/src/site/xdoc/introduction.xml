@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <properties>
+    <title>Introduction to as3commons-bytecode</title>
+
+    <author email="scab@dds.nl">Roland Zwaga</author>
+  </properties>
+
+  <body>
+    <section name="Introduction"><p>The as3commons-bytecode library offers a
+    set of classes and interfaces which can help a developer work with SWF
+    files in general and Abc bytecode in particular. Its not neccessarily
+    meant as an all purpose SWF library, it focuses mostly on the Abc
+    side of things.</p><p>It does include SWF serialization and
+    deserialization functionality, but this only supports a small selection of
+    the SWF tags that can be present in a SWF file.</p>
+    <p>For an allround SWF publishing library check out <a href="http://github.com/claus/as3swf" target="_blank">Claus Wahlers' excellent as3swf library</a>.</p></section>
+
+    <section name="Abc deserialization and serialization"><p>To deserialize a
+    DoABC tag use the AbcDeserializer class:</p><div class="source"><pre>var ds:AbcDeserializer = new AbcDeserializer(byteStream); <i>//The bytestream contains the DoAbc file
+    and its assumed to be at the right position.</i>
+var abcFile:AbcFile = ds.deserialize();</pre></div>
+	<p>The <code><a href="asdoc/org/as3commons/bytecode/abc/AbcFile.html" target="_blank">AbcFile</a></code> instance will contain
+    a full code representation of the DoABCTag. Including: The constantpool,
+    class info, method info, etc.</p></section>
+
+    <section name="Simple SWF deserialization and serialization"><p>Simple SWF
+    files that only contain code (such as class libraries or resource
+    modules), so no embedded images, sounds or whatever, can be directly
+    deserialized/serialized with the <code><a href="asdoc/org/as3commons/bytecode/swf/SWFFileIO.html" target="_blank">SWFFileIO</a></code> class:</p><div class="source"><pre>var io:SWFFileIO = new SWFFileIO();
+var swfFile:SWFFile = io.read(byteArray); <i>//Where the bytearray is a loaded SWF file (.swf, *not* .swc)</i>
+</pre></div><p>By using the <code><a href="asdoc/org/as3commons/bytecode/swf/SWFFile.html" target="_blank">SWFFile</a></code>'s <code><a href="asdoc/org/as3commons/bytecode/swf/SWFFile.html#getTagsByType()" target="_blank">getTagsByType</a></code> method you can retrieve the
+    different sorts of SWF tags and examine them:</p><div class="source"><pre>var abcTags:Array = swfFile.getTagsByType(DoABCTag);
+for each(var tag:DoABCTag in abcTags){
+  var abcFile:AbcFile = tag.abcFile;
+  processAbcFile(abcFile);
+}</pre></div><p>The SWF tags that are supported by as3commons-bytecode
+    are:</p><ul>
+        <li>DoABC</li>
+
+        <li>EndTag</li>
+
+        <li>FileAttributes</li>
+
+        <li>FrameLabel</li>
+
+        <li>Metadata</li>
+
+        <li>ProductInfo</li>
+
+        <li>ScriptLimits</li>
+
+        <li>SetBackgroundColor</li>
+
+        <li>ShowFrameTag</li>
+
+        <li>SymbolClass</li>
+      </ul>
+      <p>Other tags will be loaded by an <code><a href="asdoc/org/as3commons/bytecode/tags/UnsupportedTag.html" target="_blank">UnsupportedTag</a></code> instance.</p>
+      </section>
+
+    <section name="Bytecode based reflection"><p>The most important class for
+    reflection is <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeType.html" target="_blank">ByteCodeType</a></code> which will parse the currently
+    loaded bytecode and populate its cache with <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeType.html" target="_blank">ByteCodeType</a></code>
+    instances for each class that was parsed.</p> <p>There are two static
+    methods on the <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeType.html" target="_blank">ByteCodeType</a></code>:<br />
+    <code>ByteCodeType.fromLoader(loader:LoaderInfo)</code><br /> and
+    <code>ByteCodeType.fromByteArray(input:ByteArray,
+    applicationDomain:ApplicationDomain = null)</code></p> <p>Both methods
+    have the same end result, they just start off with a different
+    parameter.<br /> When using <code>fromLoader()</code> simply pass a valid
+    <code>LoaderInfo</code> instance to it and it will pass its
+    <code>.bytes</code> and <code>.applicationDomain</code> to the
+    <code>fromByteArray()</code> method.</p> <p>For example like this: <div
+    class="source"> ByteCodeType.fromLoader(Application.loaderInfo); </div> Or
+    in Flex 4: <div class="source">
+    ByteCodeType.fromLoader(FlexGlobals.topLevelApplication.loaderInfo);
+    </div> When RSL's have been loaded, use the
+    <code>systemManager.preloadedRSLs</code> property to loop through the
+    loaderInfo instances of each RSL: <div class="source">
+        <pre>for (var info:* in systemManager.preloadedRSLs) {
+  ByteCodeType.fromLoader(info);
+}</pre>
+      </div> </p> <p>When a SWF has been loaded manually, pass it as a
+    <code>ByteArray</code> to the <code>fromByteArray()</code> method along
+    with an associated <code>ApplicationDomain</code>. <div class="source">
+        <pre>[Embed(source="someswf.swf", mimeType="application/octet-stream")]
+private var swfInput:Class;
+function parseSWF():void {
+  var ba:ByteArray = new swfInput() as ByteArray;
+  ByteCodeType.fromByteArray(ba, ApplicationDomain.currentDomain);
+}</pre>
+      </div> </p> <p>After parsing <code>ByteCodeTypes</code> can be retrieved
+    by calling these static methods: <ul>
+        <li>forInstance(instance:*, applicationDomain:ApplicationDomain =
+        null)</li>
+
+        <li>forClass(clazz:Class, applicationDomain:ApplicationDomain =
+        null)</li>
+
+        <li>forName(name:String, applicationDomain:ApplicationDomain =
+        null)</li>
+      </ul> </p> <p>To loop through all the generated
+    <code>ByteCodeTypes</code> use the <code>getKeys()</code> method on the
+    <code>TypeCache</code> instance: <div class="source">
+        <pre>var typeCache:TypeCache = ByteCodeType.getTypeProvider().getTypeCache();
+for each (var key:String in keys) {
+  var type:ByteCodeType = typeCache.get(key) as ByteCodeType; /* ... do something... */
+}</pre>
+      </div> </p></section>
+
+    <section name="Metadata scan"><p>Having the full bytecode reflection data
+    is not always useful and the time it takes to parse and extract the data
+    might not always be worth the loading time.</p> <p>There is also a more
+    lightweight way of extracting just some bits and pieces from the bytecode
+    that normally isn't available through <code>describeType()</code>.</p>
+    <p>Here is a way to generate a lookup for class-level metadata annotations
+    and their corresponding class names: <div class="source">
+        <pre>var metaDataLookup:Object = ByteCodeType.metaDataLookupFromLoader(loader);
+var definitionNames:Array = metaDataLookup['mixin'];
+for(var i:uint=0; i &lt; definitionNames.length;i++){
+  var type:Type = Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
+}</pre>
+      </div> </p> <p>Generating this list using
+    <code>metaDataLookupFromLoader(loader)</code> is much, much faster than
+    reading all of the reflection data.</p> <p>The list can later be accessed
+    using the <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeTypeCache.html#metaDataLookup" target="_blank">ByteCodeTypeCache.metaDataLookup</a></code> property or using
+    the <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeTypeCache.html#getClassesWithMetaData()" target="_blank">ByteCodeTypeCache.getClassesWithMetaData(metaDataName)</a></code>
+    method.</p> <p>At the same time a full list of definition names contained
+    within the specified bytecode will be populated.<br /> To retrieve this
+    list use this <code>ByteCodeTypeCache</code> property:
+    <div class="source"><pre>var typeCache:ByteCodeTypeCache = ByteCodeType.getTypeProvider().getTypeCache() as ByteCodeTypeCache;
+var definitionNames:Array = typeCache.definitionNames;
+for(var i:uint=0; i &lt; definitionNames.length;i++){
+  var type:Type = Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
+}</pre>
+      </div> </p>
+    <p>Or use this, slighty less verbose, method instead:<div class="source">
+	<pre>var definitionNames:Array = ByteCodeType.definitionNamesFromLoader(loader);</pre>
+    </div></p>
+      
+    <p>Notice that to retrieve the type information the regular
+    as3commons-reflect <code>Type</code> is used. Combining as3commons-bytecode
+    and -reflect can yield the most efficient result in this way.</p>
+    <blockquote><strong>Note:</strong> the definitionNames list and metadata lookup property
+    are of course also generated when the full bytecode reflection data is
+    generated.</blockquote></section>
+  </body>
+</document>
