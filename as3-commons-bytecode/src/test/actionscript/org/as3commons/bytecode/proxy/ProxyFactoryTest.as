@@ -263,7 +263,6 @@ package org.as3commons.bytecode.proxy {
 			assertEquals('interceptedGetterValue', instance.as3commons_bytecode::customProp);
 			instance.as3commons_bytecode::customSetProp = "test";
 			assertEquals('interceptedSetterValue', instance.checkCustomSetter());
-
 		}
 
 		protected function handleProtectedMethodTestComplete(event:Event):void {
