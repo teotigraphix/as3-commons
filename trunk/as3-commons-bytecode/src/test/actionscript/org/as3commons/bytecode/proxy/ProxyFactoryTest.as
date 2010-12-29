@@ -138,7 +138,7 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
-		public function testLoadProxyClassForCanvas():void {
+		/*public function testLoadProxyClassForCanvas():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			for (var info:* in ApplicationUtils.application.systemManager.preloadedRSLs) {
 				ByteCodeType.fromLoader(info);
@@ -148,7 +148,7 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createCanvasInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleCanvasTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}
+		}*/
 
 		/*public function testLoadProxyClassForClassWithCustomnamespaceMethod():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
