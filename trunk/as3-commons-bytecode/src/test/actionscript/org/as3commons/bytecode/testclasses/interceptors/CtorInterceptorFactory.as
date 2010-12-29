@@ -13,33 +13,21 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.testclasses {
-	import org.as3commons.bytecode.as3commons_bytecode;
+package org.as3commons.bytecode.testclasses.interceptors {
+	import mx.core.IFactory;
 
-	public class SimpleClassWithCustomNamespaceMethod {
+	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 
-		private var _customProp:String;
-		private var _customSetProp:String;
+	public class CtorInterceptorFactory implements IFactory {
 
-		public function SimpleClassWithCustomNamespaceMethod() {
+		public function CtorInterceptorFactory() {
 			super();
 		}
 
-		as3commons_bytecode function custom():String {
-			return "customValue";
+		public function newInstance():* {
+			var interceptor:BasicMethodInvocationInterceptor = new BasicMethodInvocationInterceptor();
+			interceptor.interceptors[interceptor.interceptors.length] = new TestInterceptor();
+			return interceptor;
 		}
-
-		as3commons_bytecode function get customProp():String {
-			return _customProp;
-		}
-
-		as3commons_bytecode function set customSetProp(value:String):void {
-			_customSetProp = value;
-		}
-
-		public function checkCustomSetter():String {
-			return _customSetProp;
-		}
-
 	}
 }

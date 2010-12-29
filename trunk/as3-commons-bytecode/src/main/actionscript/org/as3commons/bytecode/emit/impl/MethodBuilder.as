@@ -200,7 +200,7 @@ package org.as3commons.bytecode.emit.impl {
 					scope = "private:"
 					break;
 				case MemberVisibility.NAMESPACE:
-					scope = namespaceName + ":"
+					scope = scopeName + ":"
 					break;
 				case MemberVisibility.INTERNAL:
 					scope = packageName.split(MultinameUtil.SINGLE_COLON)[0] + ":"

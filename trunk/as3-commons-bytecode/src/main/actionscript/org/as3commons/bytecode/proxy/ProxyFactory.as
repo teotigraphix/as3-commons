@@ -206,6 +206,7 @@ package org.as3commons.bytecode.proxy {
 				for each (var info:ClassProxyInfo in infos) {
 					var proxyInfo:ProxyInfo = buildProxyClass(info, domain);
 					proxyInfo.proxiedClass = info.proxiedClass;
+					proxyInfo.interceptorFactory = info.interceptorFactory;
 					_classProxyLookup[info.proxiedClass] = proxyInfo;
 					proxyInfo.methodInvocationInterceptorClass = info.methodInvocationInterceptorClass;
 				}
@@ -252,7 +253,11 @@ package org.as3commons.bytecode.proxy {
 				if (event.methodInvocationInterceptor != null) {
 					interceptorInstance = event.methodInvocationInterceptor;
 				} else {
-					interceptorInstance = new proxyInfo.methodInvocationInterceptorClass();
+					if (proxyInfo.interceptorFactory == null) {
+						interceptorInstance = new proxyInfo.methodInvocationInterceptorClass();
+					} else {
+						interceptorInstance = proxyInfo.interceptorFactory.newInstance();
+					}
 				}
 				constructorArgs = (constructorArgs != null) ? [interceptorInstance].concat(constructorArgs) : [interceptorInstance];
 				LOGGER.debug("Created proxy for class {0} with arguments: {1}", clazz, constructorArgs);
@@ -548,11 +553,10 @@ package org.as3commons.bytecode.proxy {
 		 */
 		protected function isEligibleForProxy(member:MetaDataContainer):Boolean {
 			Assert.notNull(member, "member argument must not be null");
-			//return ((namespaceKind === NamespaceKind.PACKAGE_NAMESPACE) || (namespaceKind === NamespaceKind.PROTECTED_NAMESPACE) || (namespaceKind === NamespaceKind.NAMESPACE));
 			if ((member['isStatic'] == true) || (member['isFinal'] == true)) {
 				return false;
 			}
-			return ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE));
+			return ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.NAMESPACE));
 		}
 
 		/**
@@ -580,6 +584,7 @@ package org.as3commons.bytecode.proxy {
 			addMetadata(methodBuilder, method.metaData);
 			methodBuilder.visibility = getMemberVisibility(method);
 			methodBuilder.namespaceURI = method.namespaceURI;
+			methodBuilder.scopeName = method.scopeName;
 			methodBuilder.returnType = method.returnType.fullName;
 			for each (var arg:ByteCodeParameter in method.parameters) {
 				methodBuilder.defineArgument(arg.type.fullName, arg.isOptional, arg.defaultValue);
@@ -633,7 +638,8 @@ package org.as3commons.bytecode.proxy {
 			}
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(accessor.name, accessor.type.fullName, accessor.initializedValue);
 			addMetadata(accessorBuilder, accessor.metaData);
-			accessorBuilder.namespaceURI = memberInfo.qName.uri;
+			accessorBuilder.namespaceURI = accessor.namespaceURI;
+			accessorBuilder.scopeName = accessor.scopeName;
 			accessorBuilder.isOverride = true;
 			accessorBuilder.access = accessor.access;
 			accessorBuilder.createPrivateProperty = false;
@@ -750,6 +756,7 @@ package org.as3commons.bytecode.proxy {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.name = accessorBuilder.name;
 			mb.namespaceURI = accessorBuilder.namespaceURI;
+			mb.scopeName = accessorBuilder.scopeName;
 			mb.isFinal = accessorBuilder.isFinal;
 			mb.isOverride = true;
 			mb.packageName = accessorBuilder.packageName;

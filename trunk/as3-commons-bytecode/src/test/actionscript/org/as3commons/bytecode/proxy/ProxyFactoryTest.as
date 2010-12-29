@@ -38,6 +38,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.testclasses.SimpleClassWithProtectedMethod;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
+	import org.as3commons.bytecode.testclasses.interceptors.CtorInterceptorFactory;
 	import org.as3commons.bytecode.testclasses.interceptors.TestAccessorInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestCanvasInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestInterceptor;
@@ -96,6 +97,16 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
+		public function testLoadProxyClassForClassWithOneCtorParamWithInterceptorFactory():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, applicationDomain);
+			classProxyInfo.interceptorFactory = new CtorInterceptorFactory();
+			classProxyInfo.onlyProxyConstructor = true;
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleConstructorTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
 		public function testLoadProxyClassForClassWithMethodWithOptionalArg():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithMethodWithOptionalArgs, null, applicationDomain);
@@ -150,15 +161,17 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}*/
 
-		/*public function testLoadProxyClassForClassWithCustomnamespaceMethod():void {
+		public function testLoadProxyClassForClassWithCustomnamespaceMethod():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithCustomNamespaceMethod, null, applicationDomain);
-			classProxyInfo.proxyMethod("custom");
+			classProxyInfo.proxyMethod("custom", "http://www.as3commons.org/bytecode");
+			classProxyInfo.proxyAccessor("customProp", "http://www.as3commons.org/bytecode");
+			classProxyInfo.proxyAccessor("customSetProp", "http://www.as3commons.org/bytecode");
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createMethodInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMethodCustomNamespaceTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}*/
+		}
 
 		public function testLoadProxyClassForClassAccessors():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
@@ -247,7 +260,10 @@ package org.as3commons.bytecode.proxy {
 			var instance:SimpleClassWithCustomNamespaceMethod = _proxyFactory.createProxy(SimpleClassWithCustomNamespaceMethod) as SimpleClassWithCustomNamespaceMethod;
 			var instance2:SimpleClassWithCustomNamespaceMethod = new SimpleClassWithCustomNamespaceMethod();
 			assertNotNull(instance);
-			assertEquals('interceptedReturnValue', instance.as3commons_bytecode::custom());
+			assertEquals('interceptedGetterValue', instance.as3commons_bytecode::customProp);
+			instance.as3commons_bytecode::customSetProp = "test";
+			assertEquals('interceptedSetterValue', instance.checkCustomSetter());
+
 		}
 
 		protected function handleProtectedMethodTestComplete(event:Event):void {

@@ -128,14 +128,14 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get namespaceName():String {
+		public function get scopeName():String {
 			return _namespaceName;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set namespaceName(value:String):void {
+		public function set scopeName(value:String):void {
 			_namespaceName = value;
 		}
 

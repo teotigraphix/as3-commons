@@ -3,6 +3,17 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 0.9.2 (29.12.2010)
+-----------------------------------
+
+General
+* Fixed setting of method flags and subsequently serializing methods with optional arguments
+* Added getProxyInfoForClass() method to IProxyFactory
+* Added interceptorFactory method to ClassProxyInfo
+* Fixed merging of member colections in ByteCodeType (no more duplicates)
+* Fixed proxying of custom namespace scoped members
+* Fixed properly setting namespaceURI and scopeName on BytecodeAccessor
+
 Changes in version 0.9.1 (28.12.2010)
 -----------------------------------
 
