@@ -46,11 +46,11 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public static function addFlag(flagsValueFromMethodInfo:uint, flagToAdd:MethodFlag):uint {
-			return (flagsValueFromMethodInfo |= flagToAdd.value);
+			return (!flagPresent(flagsValueFromMethodInfo, flagToAdd)) ? (flagsValueFromMethodInfo |= flagToAdd.value) : flagsValueFromMethodInfo;
 		}
 
 		public static function removeFlag(flagsValueFromMethodInfo:uint, flagToAdd:MethodFlag):uint {
-			return (flagsValueFromMethodInfo &= flagToAdd.value);
+			return (flagPresent(flagsValueFromMethodInfo, flagToAdd)) ? (flagsValueFromMethodInfo &= flagToAdd.value) : flagsValueFromMethodInfo;
 		}
 
 		public function get value():uint {

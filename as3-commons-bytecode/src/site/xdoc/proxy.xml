@@ -144,7 +144,7 @@ function beforeGetterBuildHandler(event:ProxyFactoryBuildEvent):void {
 proxyFactory.addEventListener(IOErrorEvent.VERIFY_ERROR, handleVerifyError);
 proxyFactory.loadProxyClasses();
 
-function handleLoaded(event:Complete):void {
+function handleLoaded(event:Event):void {
 	//classes loaded successfully
 }
 

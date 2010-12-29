@@ -21,6 +21,9 @@ package org.as3commons.bytecode.proxy {
 
 	import flexunit.framework.TestCase;
 
+	import mx.containers.Canvas;
+	import mx.managers.SystemManager;
+
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
@@ -30,13 +33,16 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.testclasses.SimpleClassWithAccessors;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithCustomNamespaceMethod;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithMetadata;
+	import org.as3commons.bytecode.testclasses.SimpleClassWithMethodWithOptionalArgs;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithOneConstructorArgument;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithProtectedMethod;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.testclasses.interceptors.TestAccessorInterceptor;
+	import org.as3commons.bytecode.testclasses.interceptors.TestCanvasInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestMethodInterceptor;
+	import org.as3commons.bytecode.testclasses.interceptors.TestOptionalArgInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestProtectedInterceptor;
 	import org.as3commons.bytecode.util.ApplicationUtils;
 	import org.as3commons.reflect.Accessor;
@@ -90,6 +96,15 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
+		public function testLoadProxyClassForClassWithMethodWithOptionalArg():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithMethodWithOptionalArgs, null, applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createOptionalArgInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleOptionalArgTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
 		public function testLoadProxyClassForClassWithoutCtorParams():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, applicationDomain);
@@ -120,6 +135,18 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createMethodInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMethodTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		public function testLoadProxyClassForCanvas():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			for (var info:* in ApplicationUtils.application.systemManager.preloadedRSLs) {
+				ByteCodeType.fromLoader(info);
+			}
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(Canvas, null, applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createCanvasInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleCanvasTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
 		}
 
@@ -156,6 +183,12 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
+		protected function createCanvasInterceptor(event:ProxyFactoryEvent):void {
+			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
+			interceptor.interceptors[interceptor.interceptors.length] = new TestCanvasInterceptor();
+			event.methodInvocationInterceptor = interceptor;
+		}
+
 		protected function createAccessorInterceptor(event:ProxyFactoryEvent):void {
 			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
 			interceptor.interceptors[interceptor.interceptors.length] = new TestAccessorInterceptor();
@@ -174,10 +207,27 @@ package org.as3commons.bytecode.proxy {
 			event.methodInvocationInterceptor = interceptor;
 		}
 
+		protected function createOptionalArgInterceptor(event:ProxyFactoryEvent):void {
+			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
+			interceptor.interceptors[interceptor.interceptors.length] = new TestOptionalArgInterceptor();
+			event.methodInvocationInterceptor = interceptor;
+		}
+
 		protected function createMethodInterceptor(event:ProxyFactoryEvent):void {
 			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
 			interceptor.interceptors[interceptor.interceptors.length] = new TestMethodInterceptor();
 			event.methodInvocationInterceptor = interceptor;
+		}
+
+		protected function handleCanvasTestComplete(event:Event):void {
+			var instance:Canvas = _proxyFactory.createProxy(Canvas) as Canvas;
+			assertNotNull(instance);
+		}
+
+		protected function handleOptionalArgTestComplete(event:Event):void {
+			var instance:SimpleClassWithMethodWithOptionalArgs = _proxyFactory.createProxy(SimpleClassWithMethodWithOptionalArgs) as SimpleClassWithMethodWithOptionalArgs;
+			assertNotNull(instance);
+			instance.methodWithOptionalArgs("test");
 		}
 
 		protected function handleConstructorTestComplete(event:Event):void {

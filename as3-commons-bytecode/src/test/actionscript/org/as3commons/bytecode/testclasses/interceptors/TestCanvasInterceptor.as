@@ -13,22 +13,18 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.testclasses {
+package org.as3commons.bytecode.testclasses.interceptors {
+	import org.as3commons.bytecode.interception.IInterceptor;
+	import org.as3commons.bytecode.interception.IMethodInvocation;
 
-	[Transient(arg="classtest")]
-	public class SimpleClassWithMetadata {
-		public function SimpleClassWithMetadata() {
+	public class TestCanvasInterceptor implements IInterceptor {
+
+		public function TestCanvasInterceptor() {
 			super();
 		}
 
-		[Transient(arg="methodtest")]
-		public function simpleMethod():void {
-
-		}
-
-		[Transient(arg="accessortest")]
-		public function get getter():String {
-			return "stuff";
+		public function intercept(invocation:IMethodInvocation):void {
+			trace("invocation:" + invocation);
 		}
 	}
 }
