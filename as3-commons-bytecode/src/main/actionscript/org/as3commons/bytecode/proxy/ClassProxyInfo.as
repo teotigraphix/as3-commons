@@ -18,6 +18,8 @@ package org.as3commons.bytecode.proxy {
 	import flash.system.Capabilities;
 	import flash.system.System;
 
+	import mx.core.IFactory;
+
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -34,6 +36,7 @@ package org.as3commons.bytecode.proxy {
 		private var _properties:Array;
 		private var _onlyProxyConstructor:Boolean = false;
 		private var _makeDynamic:Boolean = false;
+		private var _interceptorFactory:IFactory;
 
 		/**
 		 * Creates a new <code>ClassProxyInfo</code> instance.
@@ -41,6 +44,15 @@ package org.as3commons.bytecode.proxy {
 		public function ClassProxyInfo(proxiedClass:Class, methodInvocationInterceptorClass:Class = null) {
 			super();
 			initClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
+		}
+
+
+		public function get interceptorFactory():IFactory {
+			return _interceptorFactory;
+		}
+
+		public function set interceptorFactory(value:IFactory):void {
+			_interceptorFactory = value;
 		}
 
 		/**

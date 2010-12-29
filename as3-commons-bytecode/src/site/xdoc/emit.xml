@@ -72,8 +72,12 @@ var packageBuilder:IPackageBuilder = abcBuilder.definePackage("com.classes.gener
     	<div class="source"><pre>public var name:String = "defaultName";</pre></div>
     	<p>By default the generated property will be public, to change this use the <code>IPropertyBuilder.visibility</code> property:</p>
     	<div class="source"><pre>propertyBuilder.visibility = MemberVisibility.PRIVATE;</pre></div>
-    	<p>To assign a custom namespace to the property, assign the specified namespace URL to the <code><a href="asdoc/org/as3commons/bytecode/emit/IEmitObject.html#namespace" target="_blank">IPropertyBuilder.namespace</a></code> property:</p>
-    	<div class="source"><pre>propertyBuilder.namespace = "http://www.somedomain.com/customnamespace";</pre></div>
+    	<p>To assign a custom namespace to the property, assign the specified namespace URL to the <code><a href="asdoc/org/as3commons/bytecode/emit/IEmitObject.html#namespace" target="_blank">IPropertyBuilder.namespace</a></code> property and the name to the <code><a href="asdoc/org/as3commons/bytecode/emit/IEmitObject.html#scopeName" target="_blank">IPropertyBuilder.scopeName</a></code> property:</p>
+    	<div class="source"><pre>propertyBuilder.namespace = "http://www.somedomain.com/customnamespace";
+propertyBuilder.scopeName = "my_custom_namespace";
+</pre></div>
+	<p>This assumes that the namespace would have been declared like this:</p>
+	<div class="source"><pre>public namespace my_custom_namespace = "http://www.somedomain.com/customnamespace";</pre></div>
     	<p>Other properties that can be set on the <code><a href="asdoc/org/as3commons/bytecode/emit/IPropertyBuilder.html" target="_blank">IPropertyBuilder</a></code> include:</p>
     	<ul>
     		<li>isOverride</li>

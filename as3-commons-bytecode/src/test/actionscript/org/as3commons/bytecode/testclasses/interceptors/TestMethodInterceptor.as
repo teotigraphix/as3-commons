@@ -15,6 +15,7 @@
 */
 package org.as3commons.bytecode.testclasses.interceptors {
 	import org.as3commons.bytecode.interception.IMethodInvocation;
+	import org.as3commons.bytecode.interception.InvocationKind;
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
 
 	public class TestMethodInterceptor extends AssertingInterceptor {
@@ -26,8 +27,16 @@ package org.as3commons.bytecode.testclasses.interceptors {
 
 		override public function intercept(invocation:IMethodInvocation):void {
 			super.intercept(invocation);
-			invocation.proceed = false;
-			invocation.returnValue = "interceptedReturnValue";
+			if (invocation.kind === InvocationKind.METHOD) {
+				invocation.proceed = false;
+				invocation.returnValue = "interceptedReturnValue";
+			} else if (invocation.kind === InvocationKind.GETTER) {
+				invocation.proceed = false;
+				invocation.returnValue = "interceptedGetterValue";
+			} else if (invocation.kind === InvocationKind.SETTER) {
+				invocation.proceed = false;
+				invocation.returnValue = "interceptedSetterValue";
+			}
 		}
 	}
 }

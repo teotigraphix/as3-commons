@@ -43,11 +43,7 @@
 	<p>Setting the <code>proceed</code> property on the <code><a href="asdoc/org/as3commons/bytecode/interception/IMethodInvocation.html" target="_blank">IMethodInvocation</a></code> to false will prevent the original method in the proxied class from being invoked, and in this case to be
 	replaced by the value returned by this <code><a href="asdoc/org/as3commons/bytecode/interception/IInterceptor.html" target="_blank">IInterceptor</a></code> implementation.</p>
 	<p>This example is of course rather pointless, but real-world scenarios that might benefit from this approach include cross-cutting concerns such as logging, security, validation, caching and transactions.</p>
-	<p>Interception works on constructors, methods and accessors that have have a public or protected scope. Setting <code>proceed</code> to false while intercepting a constructor will <strong>not</strong> prevent the super constructor from being invoked though. It is, however, of course possible to intercept and change the constructor's arguments.</p>
-	<blockquote><strong><em>
-		For the moment only public and protected members can be proxied. In theory custom namespace scoped members should be possible to proxy as well (since the proxy is nothing more than a subclass) but some issues crept up during development that prevented this support in the current release. Custom namespaces are planned to be
-		supported in the future though.
-	</em></strong></blockquote>
+	<p>Interception works on constructors, methods and accessors that have have a public, protected or custom namespace scope. Setting <code>proceed</code> to false while intercepting a constructor will <strong>not</strong> prevent the super constructor from being invoked though. It is, however, of course possible to intercept and change the constructor's arguments.</p>
 	<p>Now, this is all nice and sweet, but how does this all come together in practice? In the following sections the various steps for generating proxy classes and injecting interceptors is explained.</p>
   	</section>
   	
@@ -76,7 +72,7 @@
   		<p>Now, to define a proxy for a specified class invoke the defineProxy() method:</p>
   		<div class="source"><pre>var classProxyInfo:ClassProxyInfo = proxyFactory.defineProxy(MyClass);</pre></div>
   		<p>This method returns a <code><a href="asdoc/org/as3commons/bytecode/proxy/ClassProxyInfo.html" target="_blank">ClassProxyInfo</a></code> instance which allows further definition of the proxy.<br/>
-  		Its also possible to ignore the <code><a href="asdoc/org/as3commons/bytecode/proxy/ClassProxyInfo.html" target="_blank">ClassProxyInfo</a></code> instance entirely, in which case every public and protected scoped member on the specified class will be proxied. (Bytecode reflection is used here to obtain the information)</p>
+  		Its also possible to ignore the <code><a href="asdoc/org/as3commons/bytecode/proxy/ClassProxyInfo.html" target="_blank">ClassProxyInfo</a></code> instance entirely, in which case every public, protected and custom namespace scoped member on the specified class will be proxied. (Bytecode reflection is used here to obtain the information)</p>
   		<p>Should this not be desirable these methods will define specific members for proxying:</p>
   		<div class="source"><pre>classProxyInfo.proxyMethod("myMethod");</pre></div>
   		<div class="source"><pre>classProxyInfo.proxyMethod("myAccessor");</pre></div>
@@ -172,6 +168,23 @@ function getMethodInterceptor(event:ProxyFactoryEvent):void {
 	interceptor.interceptors[interceptor.interceptors.length] = new MyInterceptor();
 	event.methodInvocationInterceptor = interceptor;
 }</pre></div>
+		<p>Another way to delegate the creation of an <code><a href="asdoc/org/as3commons/bytecode/interception/IMethodInvocationInterceptor.html" target="_blank">IMethodInvocationInterceptor</a></code> is to assign an <code>IFactory</code> instance to the <code>ClassProxyInfo</code> instance returned by the <code>defineProxy()</code> method:</p>
+		<div class="source"><pre>var classProxyInfo:ClassProxyInfo = proxyFactory.defineProxy(MyClass);
+classProxyInfo.interceptorFactory = new MyInterceptorFactory();
+
+public class MyInterceptorFactory:IFactory {
+
+	public function MyInterceptorFactory() {
+		super();
+	}
+
+	public function newInstance():* {
+		var interceptor:BasicMethodInvocationInterceptor = new BasicMethodInvocationInterceptor();
+		interceptor.interceptors[interceptor.interceptors.length] = new MyInterceptor();
+		return interceptor;
+	}
+}
+</pre></div>
   	</section>
   	
 	<section name="A practical example">

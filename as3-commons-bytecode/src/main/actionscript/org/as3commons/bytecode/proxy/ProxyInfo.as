@@ -34,6 +34,7 @@ package org.as3commons.bytecode.proxy {
 		public var proxyClassName:String;
 		public var applicationDomain:ApplicationDomain;
 		public var methodInvocationInterceptorClass:Class;
+		public var interceptorFactory:IFactory;
 
 		/**
 		 * Creates a new <code>ProxyInfo</code> instance.

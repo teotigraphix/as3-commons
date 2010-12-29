@@ -162,7 +162,7 @@ package org.as3commons.bytecode.emit.impl {
 					scope = "private:"
 					break;
 				case MemberVisibility.NAMESPACE:
-					scope = namespaceName + ":"
+					scope = scopeName + ":"
 					break;
 				case MemberVisibility.INTERNAL:
 					scope = packageName.split(MultinameUtil.SINGLE_COLON)[0] + ":"
@@ -208,6 +208,7 @@ package org.as3commons.bytecode.emit.impl {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.name = name;
 			mb.namespaceURI = namespaceURI;
+			mb.scopeName = scopeName;
 			mb.isFinal = isFinal;
 			mb.isOverride = isOverride;
 			mb.isStatic = isStatic;

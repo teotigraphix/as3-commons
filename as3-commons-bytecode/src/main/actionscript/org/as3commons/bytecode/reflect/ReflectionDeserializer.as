@@ -514,6 +514,8 @@ package org.as3commons.bytecode.reflect {
 				}
 			}
 			var result:ByteCodeAccessor = new ByteCodeAccessor(methodName, accAccess, accessorType, instanceInfo.fullName, false, instanceInfo.applicationDomain);
+			result.as3commons_reflect::setScopeName(method.scopeName);
+			result.as3commons_reflect::setNamespaceURI(method.namespaceURI);
 			result.as3commons_reflect::setIsStatic(isStatic);
 			instanceInfo.accessors[instanceInfo.accessors.length] = result;
 			return result;
