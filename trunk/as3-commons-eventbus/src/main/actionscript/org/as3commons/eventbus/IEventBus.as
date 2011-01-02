@@ -33,64 +33,64 @@ package org.as3commons.eventbus {
 	 */
 	public interface IEventBus {
 		/**
-		 * Adds the given listener object as a listener to all events send via the event bus.
+		 * Adds the given listener object as a listener to all events sent through the event bus.
 		 */
-		function addListener(listener:IEventBusListener, useWeakReference:Boolean = false):void;
+		function addListener(listener:IEventBusListener, useWeakReference:Boolean = false, topic:Object = null):void;
 		/**
 		 * Removes the given listener from the event bus.
 		 * @param listener
 		 */
-		function removeListener(listener:IEventBusListener):void;
+		function removeListener(listener:IEventBusListener, topic:Object = null):void;
 
 		/**
 		 * Adds the given listener function as an event handler to the given event type.
 		 * @param type the type of event to listen to
 		 * @param listener the event handler function
 		 */
-		function addEventListener(type:String, listener:Function, useWeakReference:Boolean = false):void;
+		function addEventListener(type:String, listener:Function, useWeakReference:Boolean = false, topic:Object = null):void;
 		/**
 		 * Removes the given listener function as an event handler from the given event type.
 		 * @param type
 		 * @param listener
 		 */
-		function removeEventListener(type:String, listener:Function):void;
+		function removeEventListener(type:String, listener:Function, topic:Object = null):void;
 
 		/**
 		 * Adds a proxied event handler as a listener to the specified event type.
 		 * @param type the type of event to listen to
 		 * @param proxy a proxy method invoker for the event handler
 		 */
-		function addEventListenerProxy(type:String, proxy:MethodInvoker, useWeakReference:Boolean = false):void;
+		function addEventListenerProxy(type:String, proxy:MethodInvoker, useWeakReference:Boolean = false, topic:Object = null):void;
 		/**
 		 * Removes a proxied event handler as a listener from the specified event type.
 		 */
-		function removeEventListenerProxy(type:String, proxy:MethodInvoker):void;
+		function removeEventListenerProxy(type:String, proxy:MethodInvoker, topic:Object = null):void;
 
 		/**
 		 * Adds a listener function for events of a specific <code>Class</code>.
 		 * @param eventClass The specified <code>Class</code>.
 		 * @param listener The specified listener function.
 		 */
-		function addEventClassListener(eventClass:Class, listener:Function, useWeakReference:Boolean = false):void;
+		function addEventClassListener(eventClass:Class, listener:Function, useWeakReference:Boolean = false, topic:Object = null):void;
 		/**
 		 * Removes a listener function for events of a specific Class.
 		 * @param eventClass The specified <code>Class</code>.
 		 * @param listener The specified listener function.
 		 */
-		function removeEventClassListener(eventClass:Class, listener:Function):void;
+		function removeEventClassListener(eventClass:Class, listener:Function, topic:Object = null):void;
 
 		/**
 		 * Adds a proxied event handler as a listener for events of a specific <code>Class</code>.
 		 * @param eventClass The specified <code>Class</code>.
 		 * @param proxy The specified listener function.
 		 */
-		function addEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, useWeakReference:Boolean = false):void;
+		function addEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, useWeakReference:Boolean = false, topic:Object = null):void;
 		/**
 		 * Removes a proxied event handler as a listener for events of a specific <code>Class</code>.
 		 * @param eventClass The specified <code>Class</code>.
 		 * @param proxy The specified listener function.
 		 */
-		function removeEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker):void;
+		function removeEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, topic:Object = null):void;
 
 		/**
 		 * Removes all types of listeners.
@@ -111,18 +111,21 @@ package org.as3commons.eventbus {
 
 		function removeAllInterceptors():void;
 
+		/**
+		 * Removes all event listeners and interceptors from the current <code>IEventBus</code> instance.
+		 */
 		function clear():void;
 
 		/**
 		 * Dispatches the specified <code>Event</code> on the event bus.
 		 * @param event The specified <code>Event</code>.
 		 */
-		function dispatchEvent(event:Event):void;
+		function dispatchEvent(event:Event, topic:Object = null):void;
 		/**
 		 * Convenience method for dispatching an event. This will create an <code>Event</code> instance with the given
 		 * type and call <code>dispatchEvent()</code> on the event bus.
 		 * @param type the type of the event to dispatch
 		 */
-		function dispatch(type:String):void;
+		function dispatch(type:String, topic:Object = null):void;
 	}
 }

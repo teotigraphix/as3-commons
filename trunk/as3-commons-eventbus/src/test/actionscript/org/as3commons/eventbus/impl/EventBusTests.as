@@ -43,6 +43,14 @@ package org.as3commons.eventbus.impl {
 			assertEquals(1, _eventBus.numListeners);
 		}
 
+		public function testAddTopicListener():void {
+			var topic:String = "testTopic";
+			assertEquals(0, _eventBus.getNumTopicListeners(topic));
+			_eventBus.addListener(new MockEventBusListener(), false, topic);
+			assertEquals(1, _eventBus.getNumTopicListeners(topic));
+			assertEquals(0, _eventBus.numListeners);
+		}
+
 		public function testRemoveListener():void {
 			var listener:IEventBusListener = new MockEventBusListener();
 			assertEquals(0, _eventBus.numListeners);

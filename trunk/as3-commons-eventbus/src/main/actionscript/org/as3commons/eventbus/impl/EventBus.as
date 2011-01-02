@@ -21,6 +21,8 @@ package org.as3commons.eventbus.impl {
 	import org.as3commons.eventbus.IEventBus;
 	import org.as3commons.eventbus.IEventBusListener;
 	import org.as3commons.eventbus.IEventInterceptor;
+	import org.as3commons.lang.ObjectUtils;
+	import org.as3commons.lang.StringUtils;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.reflect.MethodInvoker;
@@ -39,7 +41,7 @@ package org.as3commons.eventbus.impl {
 	 * @author Christophe Herreman
 	 * @author Roland Zwaga
 	 */
-	public class EventBus implements IEventBus {
+	public class EventBus implements IEventBus, IEventBusListener {
 
 		private static var LOGGER:ILogger = LoggerFactory.getClassLogger(EventBus);
 
@@ -58,8 +60,19 @@ package org.as3commons.eventbus.impl {
 		/** The IEventBusListener objects that listen to all events on the event bus. */
 		protected var listeners:ListenerCollection = new ListenerCollection();
 
+		/** A map of topic/eventlistener collection. */
+		protected var topicListeners:Dictionary = new Dictionary();
+		/** A weak map of topic/eventlistener collection. */
+		protected var weakTopicListeners:Dictionary = new Dictionary(true);
+
 		/** A map of event types/names with there corresponding handler functions. */
 		protected var eventListeners:Object /* <String, ListenerCollection> */ = {};
+
+		/** A map of topic/eventTypeDictionary  */
+		protected var typedEventTopicLookup:Dictionary = new Dictionary();
+
+		/** A weakly referenced map of topic/eventTypeDictionary  */
+		protected var weakTypedEventTopicLookup:Dictionary = new Dictionary(true);
 
 		/** A map of event types/names with there corresponding proxied handler functions. */
 		protected var eventListenerProxies:Object /* <String, ListenerCollection> */ = {};
@@ -107,6 +120,11 @@ package org.as3commons.eventbus.impl {
 			return listeners.length;
 		}
 
+		public function getNumTopicListeners(topic:Object):int {
+			var list:ListenerCollection = getListenerCollection(topic)
+			return (list != null) ? list.length : 0;
+		}
+
 		public function get numEventListeners():int {
 			var idx:int = 0;
 			for (var s:* in eventListeners) {
@@ -148,58 +166,59 @@ package org.as3commons.eventbus.impl {
 
 
 		/**
-		 * Adds the given listener object as a listener to all events send via the event bus.
+		 * @inheritDoc
 		 */
-		public function addListener(listener:IEventBusListener, useWeakReference:Boolean = false):void {
-			if (!listener || (listeners.indexOf(listener) > -1)) {
+		public function onEvent(event:Event):void {
+			dispatchEvent(event);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function addListener(listener:IEventBusListener, useWeakReference:Boolean = false, topic:Object = null):void {
+			var lst:ListenerCollection = getListenerCollection(topic);
+			if (!listener || (lst.indexOf(listener) > -1)) {
 				return;
 			}
-			listeners.add(listener, useWeakReference);
+			lst.add(listener, useWeakReference);
 			LOGGER.debug("Added IEventBusListener " + listener);
 		}
 
 		/**
-		 * Removes the given listener from the event bus.
-		 * @param listener
+		 * @inheritDoc
 		 */
-		public function removeListener(listener:IEventBusListener):void {
+		public function removeListener(listener:IEventBusListener, topic:Object = null):void {
 			listeners.remove(listener);
 			LOGGER.debug("Removed IEventBusListener " + listener);
 		}
 
 		/**
-		 * Adds the given listener function as an event handler to the given event type.
-		 * @param type the type of event to listen to
-		 * @param listener the event handler function
+		 * @inheritDoc
 		 */
-		public function addEventListener(type:String, listener:Function, useWeakReference:Boolean = false):void {
-			var eventListeners:ListenerCollection = getEventListenersForEventType(type);
-			if (eventListeners.indexOf(listener) == -1) {
+		public function addEventListener(type:String, listener:Function, useWeakReference:Boolean = false, topic:Object = null):void {
+			var eventListeners:ListenerCollection = getEventListenersForEventType(type, topic);
+			if (eventListeners.indexOf(listener) < 0) {
 				eventListeners.add(listener, useWeakReference);
 				LOGGER.debug("Added eventbus listener " + listener + " for type " + type);
 			}
 		}
 
 		/**
-		 * Removes the given listener function as an event handler from the given event type.
-		 * @param type
-		 * @param listener
+		 * @inheritDoc
 		 */
-		public function removeEventListener(type:String, listener:Function):void {
-			var eventListenerCollection:ListenerCollection = getEventListenersForEventType(type);
+		public function removeEventListener(type:String, listener:Function, topic:Object = null):void {
+			var eventListenerCollection:ListenerCollection = getEventListenersForEventType(type, topic);
 			eventListenerCollection.remove(listener);
 			if (eventListenerCollection.length == 0) {
-				delete this.eventListeners[type];
+				deleteEventListener(type, topic);
 			}
-			LOGGER.debug("Removed eventbus listener " + listener + " for type " + type);
+			LOGGER.debug("Removed eventbus listener " + listener + " for type " + type + " and topic " + topic);
 		}
 
 		/**
-		 * Adds a proxied event handler as a listener to the specified event type.
-		 * @param type the type of event to listen to
-		 * @param proxy a proxy method invoker for the event handler
+		 * @inheritDoc
 		 */
-		public function addEventListenerProxy(type:String, proxy:MethodInvoker, useWeakReference:Boolean = false):void {
+		public function addEventListenerProxy(type:String, proxy:MethodInvoker, useWeakReference:Boolean = false, topic:Object = null):void {
 			var eventListenerProxies:ListenerCollection = getEventListenerProxiesForEventType(type);
 			if (eventListenerProxies.indexOf(proxy) == -1) {
 				eventListenerProxies.add(proxy, useWeakReference);
@@ -208,9 +227,9 @@ package org.as3commons.eventbus.impl {
 		}
 
 		/**
-		 * Removes a proxied event handler as a listener from the specified event type.
+		 * @inheritDoc
 		 */
-		public function removeEventListenerProxy(type:String, proxy:MethodInvoker):void {
+		public function removeEventListenerProxy(type:String, proxy:MethodInvoker, topic:Object = null):void {
 			var eventListenerProxyCollection:ListenerCollection = getEventListenerProxiesForEventType(type);
 			eventListenerProxyCollection.remove(proxy);
 			if (eventListenerProxyCollection.length == 0) {
@@ -220,11 +239,9 @@ package org.as3commons.eventbus.impl {
 		}
 
 		/**
-		 * Adds a listener function for events of a specific <code>Class</code>.
-		 * @param eventClass The specified <code>Class</code>.
-		 * @param listener The specified listener function.
+		 * @inheritDoc
 		 */
-		public function addEventClassListener(eventClass:Class, listener:Function, useWeakReference:Boolean = false):void {
+		public function addEventClassListener(eventClass:Class, listener:Function, useWeakReference:Boolean = false, topic:Object = null):void {
 			var listeners:ListenerCollection = (classListeners[eventClass] == null) ? new ListenerCollection() : classListeners[eventClass] as ListenerCollection;
 			if (listeners.indexOf(listener) < 0) {
 				listeners.add(listener, useWeakReference);
@@ -234,11 +251,9 @@ package org.as3commons.eventbus.impl {
 		}
 
 		/**
-		 * Removes a listener function for events of a specific Class.
-		 * @param eventClass The specified <code>Class</code>.
-		 * @param listener The specified listener function.
+		 * @inheritDoc
 		 */
-		public function removeEventClassListener(eventClass:Class, listener:Function):void {
+		public function removeEventClassListener(eventClass:Class, listener:Function, topic:Object = null):void {
 			var listeners:ListenerCollection = classListeners[eventClass] as ListenerCollection;
 			if (listeners != null) {
 				listeners.remove(listener);
@@ -250,11 +265,9 @@ package org.as3commons.eventbus.impl {
 		}
 
 		/**
-		 * Adds a proxied event handler as a listener for events of a specific <code>Class</code>.
-		 * @param eventClass The specified <code>Class</code>.
-		 * @param proxy The specified listener function.
+		 * @inheritDoc
 		 */
-		public function addEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, useWeakReference:Boolean = false):void {
+		public function addEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, useWeakReference:Boolean = false, topic:Object = null):void {
 			var proxies:ListenerCollection = (classProxyListeners[eventClass] == null) ? new ListenerCollection() : classProxyListeners[eventClass] as ListenerCollection;
 			if (proxies.indexOf(proxy) < 0) {
 				proxies.add(proxy, useWeakReference);
@@ -264,11 +277,9 @@ package org.as3commons.eventbus.impl {
 		}
 
 		/**
-		 * Removes a proxied event handler as a listener for events of a specific <code>Class</code>.
-		 * @param eventClass The specified <code>Class</code>.
-		 * @param proxy The specified listener function.
+		 * @inheritDoc
 		 */
-		public function removeEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker):void {
+		public function removeEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, topic:Object = null):void {
 			var proxies:ListenerCollection = classProxyListeners[eventClass] as ListenerCollection;
 			if (proxies != null) {
 				proxies.remove(proxy);
@@ -280,7 +291,7 @@ package org.as3commons.eventbus.impl {
 		}
 
 		/**
-		 * Clears the entire <code>EventBus</code> by removing all types of listeners.
+		 * @inheritDoc
 		 */
 		public function removeAllListeners():void {
 			classListeners = new Dictionary();
@@ -291,31 +302,49 @@ package org.as3commons.eventbus.impl {
 			LOGGER.debug("All eventbus listeners were removed");
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function addEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor):void {
 			var interceptors:Array = getClassInterceptorsForEventClass(eventClass);
 			interceptors[interceptors.length] = interceptor;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function addEventInterceptor(type:String, interceptor:IEventInterceptor):void {
 			var interceptors:Array = getInterceptorsForEventType(type);
 			interceptors[interceptors.length] = interceptor;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function addInterceptor(interceptor:IEventInterceptor):void {
 			interceptors[interceptors.length] = interceptor;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function clear():void {
 			removeAllListeners();
 			removeAllInterceptors();
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function removeAllInterceptors():void {
 			eventClassInterceptors = new Dictionary();
 			eventInterceptors = {};
 			interceptors = [];
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function removeEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor):void {
 			var clsInterceptors:Array = getClassInterceptorsForEventClass(eventClass);
 			var idx:int = clsInterceptors.indexOf(interceptor);
@@ -327,6 +356,9 @@ package org.as3commons.eventbus.impl {
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function removeEventInterceptor(type:String, interceptor:IEventInterceptor):void {
 			var evtInterceptors:Array = getInterceptorsForEventType(type);
 			var idx:int = evtInterceptors.indexOf(interceptor);
@@ -338,6 +370,9 @@ package org.as3commons.eventbus.impl {
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function removeInterceptor(interceptor:IEventInterceptor):void {
 			var idx:int = interceptors.indexOf(interceptor);
 			if (idx > -1) {
@@ -346,16 +381,15 @@ package org.as3commons.eventbus.impl {
 		}
 
 		/**
-		 * Dispatches the specified <code>Event</code> on the event bus.
-		 * @param event The specified <code>Event</code>.
+		 * @inheritDoc
 		 */
-		public function dispatchEvent(event:Event):void {
+		public function dispatchEvent(event:Event, topic:Object = null):void {
 			if (!event) {
 				return;
 			}
 
 			if (interceptGlobal(event) == false) {
-				notifyEventBusListeners(event);
+				notifyEventBusListeners(event, topic);
 
 				if (specificEventIntercepted(event) == false) {
 					notifySpecificEventListeners(event);
@@ -371,20 +405,32 @@ package org.as3commons.eventbus.impl {
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function interceptGlobal(event:Event):Boolean {
 			return intercept(interceptors, event);
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function specificEventIntercepted(event:Event):Boolean {
 			var interceptors:Array = eventInterceptors[event.type];
 			return intercept(interceptors, event);
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function classIntercepted(eventClass:Class, event:Event):Boolean {
 			var interceptors:Array = eventClassInterceptors[eventClass];
 			return intercept(interceptors, event);
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function intercept(interceptors:Array, event:Event):Boolean {
 			if (interceptors != null) {
 				for each (var interceptor:IEventInterceptor in interceptors) {
@@ -396,6 +442,9 @@ package org.as3commons.eventbus.impl {
 			return false;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function notifySpecificClassListenerProxies(eventClass:Class, event:Event):void {
 			// notify proxies for a specific event Class
 			var proxies:ListenerCollection = classProxyListeners[eventClass] as ListenerCollection;
@@ -413,6 +462,9 @@ package org.as3commons.eventbus.impl {
 		}
 
 
+		/**
+		 * @inheritDoc
+		 */
 		public function notifySpecificClassListeners(eventClass:Class, event:Event):void {
 			// notify listeners for a specific event Class
 			var funcs:ListenerCollection = classListeners[eventClass];
@@ -427,6 +479,9 @@ package org.as3commons.eventbus.impl {
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function notifyProxies(event:Event):void {
 			// notify all proxies
 			var eventListenerProxies:ListenerCollection = eventListenerProxies[event.type];
@@ -443,6 +498,9 @@ package org.as3commons.eventbus.impl {
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function notifySpecificEventListeners(event:Event):void {
 			// notify all specific event listeners
 			var eventListeners:ListenerCollection = eventListeners[event.type];
@@ -458,25 +516,27 @@ package org.as3commons.eventbus.impl {
 			}
 		}
 
-		public function notifyEventBusListeners(event:Event):void {
+		/**
+		 * @inheritDoc
+		 */
+		public function notifyEventBusListeners(event:Event, topic:Object = null):void {
 			// notify all event bus listeners
-			var len:uint = listeners.length;
+			var lst:ListenerCollection = getListenerCollection(topic);
+			var len:uint = lst.length;
 			for (var i:uint = 0; i < len; i++) {
-				var listener:IEventBusListener = listeners.get(i) as IEventBusListener;
+				var listener:IEventBusListener = lst.get(i) as IEventBusListener;
 				if (listener != null) {
 					listener.onEvent(event);
-					LOGGER.debug("Notified eventbus listener " + listener + " of event " + event);
+					LOGGER.debug("Notified eventbus listener " + listener + " of event " + event + " for topic " + topic);
 				}
 			}
 		}
 
 
 		/**
-		 * Convenience method for dispatching an event. This will create an Event instance with the given
-		 * type and call dispatchEvent() on the event bus.
-		 * @param type the type of the event to dispatch
+		 * @inheritDoc
 		 */
-		public function dispatch(type:String):void {
+		public function dispatch(type:String, topic:Object = null):void {
 			dispatchEvent(new Event(type));
 		}
 
@@ -500,11 +560,60 @@ package org.as3commons.eventbus.impl {
 			return eventInterceptors[type];
 		}
 
-		protected function getEventListenersForEventType(eventType:String):ListenerCollection {
-			if (!eventListeners[eventType]) {
-				eventListeners[eventType] = new ListenerCollection();
+		protected function getEventListenersForEventType(eventType:String, topic:Object):ListenerCollection {
+			if (topic == null) {
+				if (!eventListeners[eventType]) {
+					eventListeners[eventType] = new ListenerCollection();
+				}
+				return ListenerCollection(eventListeners[eventType]);
+			} else {
+				var eventTypeLookup:Dictionary = getEventTopicLookup(topic);
+				if (!eventTypeLookup[eventType]) {
+					eventTypeLookup[eventType] = new ListenerCollection();
+				}
+				return ListenerCollection(eventTypeLookup[eventType]);
 			}
-			return eventListeners[eventType];
+		}
+
+		protected function deleteEventListener(eventType:String, topic:Object):void {
+			if (topic == null) {
+				delete eventListeners[eventType];
+			} else {
+				var eventTypeLookup:Dictionary = getEventTopicLookup(topic);
+				delete eventTypeLookup[eventType];
+			}
+		}
+
+		protected function getEventTopicLookup(topic:Object):Dictionary {
+			if (ObjectUtils.isSimple(topic)) {
+				if (typedEventTopicLookup[topic] == null) {
+					typedEventTopicLookup[topic] = new Dictionary();
+				}
+				return Dictionary(typedEventTopicLookup[topic]);
+			} else {
+				if (weakTypedEventTopicLookup[topic] == null) {
+					weakTypedEventTopicLookup[topic] = new Dictionary();
+				}
+				return Dictionary(weakTypedEventTopicLookup[topic]);
+			}
+		}
+
+		protected function getListenerCollection(topic:Object):ListenerCollection {
+			if (topic == null) {
+				return listeners;
+			} else {
+				if (ObjectUtils.isSimple(topic)) {
+					if (topicListeners[topic] == null) {
+						topicListeners[topic] = new ListenerCollection();
+					}
+					return topicListeners[topic] as ListenerCollection;
+				} else {
+					if (weakTopicListeners[topic] == null) {
+						weakTopicListeners[topic] = new ListenerCollection();
+					}
+					return weakTopicListeners[topic] as ListenerCollection;
+				}
+			}
 		}
 
 		protected function getEventListenerProxiesForEventType(eventType:String):ListenerCollection {
