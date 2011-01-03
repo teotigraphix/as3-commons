@@ -23,12 +23,12 @@ package org.as3commons.eventbus.impl {
 	import org.as3commons.eventbus.IEventInterceptor;
 	import org.as3commons.reflect.MethodInvoker;
 
-	public class EventBusTests extends TestCase {
+	public class EventBusTest extends TestCase {
 
 		private var _eventReceived:Boolean = false;
 		private var _eventBus:EventBus;
 
-		public function EventBusTests(methodName:String = null) {
+		public function EventBusTest(methodName:String = null) {
 			super(methodName);
 		}
 
