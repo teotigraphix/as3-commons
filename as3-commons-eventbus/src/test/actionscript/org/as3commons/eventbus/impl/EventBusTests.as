@@ -38,9 +38,9 @@ package org.as3commons.eventbus.impl {
 		}
 
 		public function testAddListener():void {
-			assertEquals(0, _eventBus.numListeners);
+			assertEquals(0, _eventBus.getNumListeners());
 			_eventBus.addListener(new MockEventBusListener());
-			assertEquals(1, _eventBus.numListeners);
+			assertEquals(1, _eventBus.getNumListeners());
 		}
 
 		public function testAddTopicListener():void {
@@ -48,22 +48,22 @@ package org.as3commons.eventbus.impl {
 			assertEquals(0, _eventBus.getNumTopicListeners(topic));
 			_eventBus.addListener(new MockEventBusListener(), false, topic);
 			assertEquals(1, _eventBus.getNumTopicListeners(topic));
-			assertEquals(0, _eventBus.numListeners);
+			assertEquals(0, _eventBus.getNumListeners());
 		}
 
 		public function testRemoveListener():void {
 			var listener:IEventBusListener = new MockEventBusListener();
-			assertEquals(0, _eventBus.numListeners);
+			assertEquals(0, _eventBus.getNumListeners());
 			_eventBus.addListener(listener);
-			assertEquals(1, _eventBus.numListeners);
+			assertEquals(1, _eventBus.getNumListeners());
 			_eventBus.removeListener(listener);
-			assertEquals(0, _eventBus.numListeners);
+			assertEquals(0, _eventBus.getNumListeners());
 		}
 
 		public function testRemoveTopicListener():void {
 			var topic:String = "testTopic";
 			var listener:IEventBusListener = new MockEventBusListener();
-			assertEquals(0, _eventBus.numListeners);
+			assertEquals(0, _eventBus.getNumListeners());
 			assertEquals(0, _eventBus.getNumTopicListeners(topic));
 			_eventBus.addListener(listener, false, topic);
 			assertEquals(1, _eventBus.getNumTopicListeners(topic));
@@ -72,33 +72,104 @@ package org.as3commons.eventbus.impl {
 		}
 
 		public function testAddEventListener():void {
-			assertEquals(0, _eventBus.numEventListeners);
+			assertEquals(0, _eventBus.getNumEventListeners());
 			_eventBus.addEventListener("testType", new Function());
-			assertEquals(1, _eventBus.numEventListeners);
+			assertEquals(1, _eventBus.getNumEventListeners());
+			_eventBus.addEventListener("testType", new Function());
+			assertEquals(2, _eventBus.getNumEventListeners());
+		}
+
+		public function testAddTopicEventListener():void {
+			var topic:String = "testTopic";
+			assertEquals(0, _eventBus.getNumTopicEventListeners(topic));
+			_eventBus.addEventListener("testType", new Function(), false, topic);
+			assertEquals(1, _eventBus.getNumTopicEventListeners(topic));
+			_eventBus.addEventListener("testType", new Function(), false, topic);
+			assertEquals(2, _eventBus.getNumTopicEventListeners(topic));
+			topic = "testTopic2";
+			_eventBus.addEventListener("testType", new Function(), false, topic);
+			assertEquals(1, _eventBus.getNumTopicEventListeners(topic));
 		}
 
 		public function testRemoveEventListener():void {
 			var f:Function = new Function();
-			assertEquals(0, _eventBus.numEventListeners);
+			assertEquals(0, _eventBus.getNumEventListeners());
 			_eventBus.addEventListener("testType", f);
-			assertEquals(1, _eventBus.numEventListeners);
+			assertEquals(1, _eventBus.getNumEventListeners());
 			_eventBus.removeEventListener("testType", f);
-			assertEquals(0, _eventBus.numEventListeners);
+			assertEquals(0, _eventBus.getNumEventListeners());
+		}
+
+		public function testRemoveTopicEventListener():void {
+			var topic:String = "testTopic";
+			var f:Function = new Function();
+			assertEquals(0, _eventBus.getNumTopicEventListeners(topic));
+			_eventBus.addEventListener("testType", f, false, topic);
+			assertEquals(1, _eventBus.getNumTopicEventListeners(topic));
+			_eventBus.removeEventListener("testType", f, topic);
+			assertEquals(0, _eventBus.getNumTopicEventListeners(topic));
 		}
 
 		public function testAddEventListenerProxy():void {
-			assertEquals(0, _eventBus.numEventListenerProxies);
+			assertEquals(0, _eventBus.getNumEventListenerProxies());
 			_eventBus.addEventListenerProxy("testType", new MethodInvoker());
-			assertEquals(1, _eventBus.numEventListenerProxies);
+			assertEquals(1, _eventBus.getNumEventListenerProxies());
+		}
+
+		public function testAddTopicEventListenerProxy():void {
+			var topic:String = "testTopic";
+			assertEquals(0, _eventBus.getNumTopicEventListenerProxies(topic));
+			_eventBus.addEventListenerProxy("testType", new MethodInvoker(), false, topic);
+			assertEquals(1, _eventBus.getNumTopicEventListenerProxies(topic));
+			_eventBus.addEventListenerProxy("testType", new MethodInvoker(), false, topic);
+			assertEquals(2, _eventBus.getNumTopicEventListenerProxies(topic));
+		}
+
+		public function testAddClassEventListener():void {
+			assertEquals(0, _eventBus.getNumClassListeners());
+			_eventBus.addEventClassListener(MockCustomEvent, new Function());
+			assertEquals(1, _eventBus.getNumClassListeners());
+			_eventBus.addEventClassListener(MockCustomEvent, new Function());
+			assertEquals(2, _eventBus.getNumClassListeners());
+		}
+
+		public function testAddTopicClassEventListener():void {
+			var topic:String = "testTopic";
+			assertEquals(0, _eventBus.getNumTopicClassListeners(topic));
+			_eventBus.addEventClassListener(MockCustomEvent, new Function(), false, topic);
+			assertEquals(1, _eventBus.getNumTopicClassListeners(topic));
+			_eventBus.addEventClassListener(MockCustomEvent, new Function(), false, topic);
+			assertEquals(2, _eventBus.getNumTopicClassListeners(topic));
+		}
+
+		public function testRemoveClassEventListener():void {
+			var f:Function = new Function();
+			assertEquals(0, _eventBus.getNumClassListeners());
+			_eventBus.addEventClassListener(MockCustomEvent, f);
+			assertEquals(1, _eventBus.getNumClassListeners());
+			_eventBus.removeEventClassListener(MockCustomEvent, f);
+			assertEquals(0, _eventBus.getNumClassListeners());
+		}
+
+		public function testRemoveTopicClassEventListener():void {
+			var topic:String = "testTopic";
+			var f:Function = new Function();
+			assertEquals(0, _eventBus.getNumTopicClassListeners(topic));
+			_eventBus.addEventClassListener(MockCustomEvent, f, topic);
+			assertEquals(1, _eventBus.getNumTopicClassListeners(topic));
+			_eventBus.removeEventClassListener(MockCustomEvent, f, topic);
+			assertEquals(0, _eventBus.getNumTopicClassListeners(topic));
 		}
 
 		public function testRemoveEventListenerProxy():void {
 			var m:MethodInvoker = new MethodInvoker();
-			assertEquals(0, _eventBus.numEventListenerProxies);
+			assertEquals(0, _eventBus.getNumEventListenerProxies());
 			_eventBus.addEventListenerProxy("testType", m);
-			assertEquals(1, _eventBus.numEventListenerProxies);
+			assertEquals(1, _eventBus.getNumEventListenerProxies());
 			_eventBus.removeEventListenerProxy("testType", m);
-			assertEquals(0, _eventBus.numEventListenerProxies);
+			assertEquals(0, _eventBus.getNumEventListenerProxies());
+			_eventBus.removeEventListenerProxy("testType", m);
+			assertEquals(0, _eventBus.getNumEventListenerProxies());
 		}
 
 		public function testDispatchToEventBusListener():void {
@@ -139,62 +210,62 @@ package org.as3commons.eventbus.impl {
 			_eventBus.addEventListener("testType", new Function());
 			_eventBus.addEventListenerProxy("testType", new MethodInvoker());
 			_eventBus.addListener(new MockEventBusListener());
-			assertEquals(1, _eventBus.numClassListeners);
-			assertEquals(1, _eventBus.numClassProxyListeners);
-			assertEquals(1, _eventBus.numEventListeners);
-			assertEquals(1, _eventBus.numEventListenerProxies);
-			assertEquals(1, _eventBus.numListeners);
+			assertEquals(1, _eventBus.getNumClassListeners());
+			assertEquals(1, _eventBus.getNumClassProxyListeners());
+			assertEquals(1, _eventBus.getNumEventListeners());
+			assertEquals(1, _eventBus.getNumEventListenerProxies());
+			assertEquals(1, _eventBus.getNumListeners());
 			_eventBus.removeAllListeners();
-			assertEquals(0, _eventBus.numClassListeners);
-			assertEquals(0, _eventBus.numClassProxyListeners);
-			assertEquals(0, _eventBus.numEventListeners);
-			assertEquals(0, _eventBus.numEventListenerProxies);
-			assertEquals(0, _eventBus.numListeners);
+			assertEquals(0, _eventBus.getNumClassListeners());
+			assertEquals(0, _eventBus.getNumClassProxyListeners());
+			assertEquals(0, _eventBus.getNumEventListeners());
+			assertEquals(0, _eventBus.getNumEventListenerProxies());
+			assertEquals(0, _eventBus.getNumListeners());
 		}
 
 		public function testAddEventClassInterceptor():void {
-			assertEquals(0, _eventBus.numEventClassInterceptors);
+			assertEquals(0, _eventBus.getNumEventClassInterceptors());
 			_eventBus.addEventClassInterceptor(MockCustomEvent, new MockInterceptor(true));
-			assertEquals(1, _eventBus.numEventClassInterceptors);
+			assertEquals(1, _eventBus.getNumEventClassInterceptors());
 		}
 
 		public function testAddEventInterceptor():void {
-			assertEquals(0, _eventBus.numEventInterceptors);
+			assertEquals(0, _eventBus.getNumEventInterceptors());
 			_eventBus.addEventInterceptor("testType", new MockInterceptor(true));
-			assertEquals(1, _eventBus.numEventInterceptors);
+			assertEquals(1, _eventBus.getNumEventInterceptors());
 		}
 
 		public function testAddInterceptor():void {
-			assertEquals(0, _eventBus.numInterceptors);
+			assertEquals(0, _eventBus.getNumInterceptors());
 			_eventBus.addInterceptor(new MockInterceptor(true));
-			assertEquals(1, _eventBus.numInterceptors);
+			assertEquals(1, _eventBus.getNumInterceptors());
 		}
 
 		public function testRemoveEventClassInterceptor():void {
 			var ic:IEventInterceptor = new MockInterceptor(true);
-			assertEquals(0, _eventBus.numEventClassInterceptors);
+			assertEquals(0, _eventBus.getNumEventClassInterceptors());
 			_eventBus.addEventClassInterceptor(MockCustomEvent, ic);
-			assertEquals(1, _eventBus.numEventClassInterceptors);
+			assertEquals(1, _eventBus.getNumEventClassInterceptors());
 			_eventBus.removeEventClassInterceptor(MockCustomEvent, ic);
-			assertEquals(0, _eventBus.numEventClassInterceptors);
+			assertEquals(0, _eventBus.getNumEventClassInterceptors());
 		}
 
 		public function testRemoveEventInterceptor():void {
 			var ic:IEventInterceptor = new MockInterceptor(true);
-			assertEquals(0, _eventBus.numEventInterceptors);
+			assertEquals(0, _eventBus.getNumEventInterceptors());
 			_eventBus.addEventInterceptor("testType", ic);
-			assertEquals(1, _eventBus.numEventInterceptors);
+			assertEquals(1, _eventBus.getNumEventInterceptors());
 			_eventBus.removeEventInterceptor("testType", ic);
-			assertEquals(0, _eventBus.numEventInterceptors);
+			assertEquals(0, _eventBus.getNumEventInterceptors());
 		}
 
 		public function testRemoveInterceptor():void {
 			var ic:IEventInterceptor = new MockInterceptor(true);
-			assertEquals(0, _eventBus.numInterceptors);
+			assertEquals(0, _eventBus.getNumInterceptors());
 			_eventBus.addInterceptor(ic);
-			assertEquals(1, _eventBus.numInterceptors);
+			assertEquals(1, _eventBus.getNumInterceptors());
 			_eventBus.removeInterceptor(ic);
-			assertEquals(0, _eventBus.numInterceptors);
+			assertEquals(0, _eventBus.getNumInterceptors());
 		}
 
 		public function eventBusTestListener(event:Event):void {
