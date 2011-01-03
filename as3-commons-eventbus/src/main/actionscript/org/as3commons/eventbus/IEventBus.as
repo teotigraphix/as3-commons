@@ -95,21 +95,21 @@ package org.as3commons.eventbus {
 		/**
 		 * Removes all types of listeners.
 		 */
-		function removeAllListeners():void;
+		function removeAllListeners(topic:Object = null):void;
 
-		function addInterceptor(interceptor:IEventInterceptor):void;
+		function addInterceptor(interceptor:IEventInterceptor, topic:Object = null):void;
 
-		function removeInterceptor(interceptor:IEventInterceptor):void;
+		function removeInterceptor(interceptor:IEventInterceptor, topic:Object = null):void;
 
-		function addEventInterceptor(type:String, interceptor:IEventInterceptor):void;
+		function addEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object = null):void;
 
-		function removeEventInterceptor(type:String, interceptor:IEventInterceptor):void;
+		function removeEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object = null):void;
 
-		function addEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor):void;
+		function addEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor, topic:Object = null):void;
 
-		function removeEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor):void;
+		function removeEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor, topic:Object = null):void;
 
-		function removeAllInterceptors():void;
+		function removeAllInterceptors(topic:Object = null):void;
 
 		/**
 		 * Removes all event listeners and interceptors from the current <code>IEventBus</code> instance.
