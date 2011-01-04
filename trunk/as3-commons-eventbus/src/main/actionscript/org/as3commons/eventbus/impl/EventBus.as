@@ -446,30 +446,33 @@ package org.as3commons.eventbus.impl {
 			if (!event) {
 				return;
 			}
-
-			if (interceptGlobal(event, topic) == false) {
+			var eventClass:Class = Object(event).constructor as Class;
+			if (interceptGlobal(event, eventClass, topic) == false) {
 				notifyEventBusListeners(event, topic);
 
-				if (specificEventIntercepted(event, topic) == false) {
-					notifySpecificEventListeners(event, topic);
-					notifyProxies(event, topic);
-				}
+				notifySpecificEventListeners(event, topic);
+				notifyProxies(event, topic);
 
-				var eventClass:Class = Object(event).constructor as Class;
-
-				if (classIntercepted(eventClass, event, topic) == false) {
-					notifySpecificClassListeners(eventClass, event, topic);
-					notifySpecificClassListenerProxies(eventClass, event, topic);
-				}
+				notifySpecificClassListeners(eventClass, event, topic);
+				notifySpecificClassListenerProxies(eventClass, event, topic);
 			}
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function interceptGlobal(event:Event, topic:Object):Boolean {
+		public function interceptGlobal(event:Event, eventClass:Class, topic:Object):Boolean {
 			var interceptorList:Array = getInterceptorList(topic);
-			return intercept(interceptorList, event);
+			if (intercept(interceptorList, event)) {
+				return true;
+			}
+			if (specificEventIntercepted(event, topic)) {
+				return true;
+			}
+			if (classIntercepted(eventClass, event, topic)) {
+				return true;
+			}
+			return false;
 		}
 
 		/**
@@ -494,7 +497,8 @@ package org.as3commons.eventbus.impl {
 		public function intercept(interceptors:Array, event:Event):Boolean {
 			if (interceptors != null) {
 				for each (var interceptor:IEventInterceptor in interceptors) {
-					if (interceptor.intercept(event) == true) {
+					interceptor.intercept(event);
+					if (interceptor.blockEvent) {
 						return true;
 					}
 				}
@@ -591,7 +595,6 @@ package org.as3commons.eventbus.impl {
 				}
 			}
 		}
-
 
 		/**
 		 * @inheritDoc

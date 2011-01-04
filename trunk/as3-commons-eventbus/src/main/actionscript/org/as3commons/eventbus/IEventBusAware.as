@@ -15,11 +15,18 @@
 */
 package org.as3commons.eventbus {
 
-	import flash.events.Event;
-
-	public interface IEventInterceptor {
-		function get blockEvent():Boolean;
-		function set blockEvent(value:Boolean):void;
-		function intercept(event:Event):void;
+	/**
+	 * Describes an object that holds a reference to an <code>IEventBus</code> instance.
+	 * @author Roland Zwaga
+	 */
+	public interface IEventBusAware {
+		/**
+		 * The specified <code>IEventBus</code> instance.
+		 */
+		function get eventBus():IEventBus;
+		/**
+		 * @private
+		 */
+		function set eventBus(value:IEventBus):void;
 	}
 }

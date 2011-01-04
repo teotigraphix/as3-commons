@@ -49,6 +49,9 @@ package org.as3commons.eventbus.impl {
 			_eventBus.addListener(new MockEventBusListener(), false, topic);
 			assertEquals(1, _eventBus.getNumTopicListeners(topic));
 			assertEquals(0, _eventBus.getNumListeners());
+			_eventBus.addListener(new MockEventBusListener(), false);
+			assertEquals(1, _eventBus.getNumTopicListeners(topic));
+			assertEquals(1, _eventBus.getNumListeners());
 		}
 
 		public function testRemoveListener():void {
@@ -321,6 +324,54 @@ package org.as3commons.eventbus.impl {
 			assertTrue(_eventReceived);
 		}
 
+		public function testSpecificEventIntercept():void {
+			_eventBus.addEventListener("testType", eventBusTestListener, false);
+			_eventBus.addEventListener("testType2", eventBusTestListener, false);
+			_eventBus.addEventInterceptor("testType", new MockInterceptor(true));
+			assertFalse(_eventReceived);
+			_eventBus.dispatch("testType");
+			assertFalse(_eventReceived);
+			_eventReceived = false;
+			_eventBus.dispatch("testType2");
+			assertTrue(_eventReceived);
+		}
+
+		public function testSpecificEventInterceptWithTopic():void {
+			var topic:String = "testTopic";
+			_eventBus.addEventListener("testType", eventBusTestListener, false, topic);
+			_eventBus.addEventListener("testType2", eventBusTestListener, false);
+			_eventBus.addEventInterceptor("testType", new MockInterceptor(true), topic);
+			assertFalse(_eventReceived);
+			_eventBus.dispatch("testType");
+			assertFalse(_eventReceived);
+			_eventBus.dispatch("testType", topic);
+			assertFalse(_eventReceived);
+			_eventReceived = false;
+			_eventBus.dispatch("testType2");
+			assertTrue(_eventReceived);
+			_eventReceived = false;
+			_eventBus.dispatch("testType2", topic);
+			assertFalse(_eventReceived);
+		}
+
+		public function testSpecificEventInterceptWithComplexTypedTopic():void {
+			var topic:EventBus = new EventBus();
+			_eventBus.addEventListener("testType", eventBusTestListener, false, topic);
+			_eventBus.addEventListener("testType2", eventBusTestListener, false);
+			_eventBus.addEventInterceptor("testType", new MockInterceptor(true), topic);
+			assertFalse(_eventReceived);
+			_eventBus.dispatch("testType");
+			assertFalse(_eventReceived);
+			_eventBus.dispatch("testType", topic);
+			assertFalse(_eventReceived);
+			_eventReceived = false;
+			_eventBus.dispatch("testType2");
+			assertTrue(_eventReceived);
+			_eventReceived = false;
+			_eventBus.dispatch("testType2", topic);
+			assertFalse(_eventReceived);
+		}
+
 		public function eventBusTestListener(event:Event):void {
 			_eventReceived = true;
 		}
@@ -356,13 +407,20 @@ class MockCustomEvent extends Event {
 
 class MockInterceptor implements IEventInterceptor {
 
-	private var _result:Boolean;
+	private var _blockEvent:Boolean;
 
-	public function MockInterceptor(result:Boolean) {
-		_result = result;
+	public function MockInterceptor(block:Boolean) {
+		_blockEvent = block;
 	}
 
-	public function intercept(event:Event):Boolean {
-		return _result;
+	public function get blockEvent():Boolean {
+		return _blockEvent;
+	}
+
+	public function set blockEvent(value:Boolean):void {
+		_blockEvent = value;
+	}
+
+	public function intercept(event:Event):void {
 	}
 }
