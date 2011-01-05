@@ -91,10 +91,18 @@ package org.as3commons.bytecode.util {
 			return value;
 		}
 
+		public static function skipU8(bytes:ByteArray):void {
+			bytes.position++;
+		}
+
 		public static function readU16(bytes:ByteArray):uint {
 			var value:uint = readU8(bytes) | readU8(bytes) << EIGHT;
 			assertWithinRange(value < MAX_U16);
 			return value;
+		}
+
+		public static function skipU16(bytes:ByteArray):void {
+			bytes.position += 2;
 		}
 
 		public static function readS24(bytes:ByteArray):int {
@@ -103,8 +111,18 @@ package org.as3commons.bytecode.util {
 			return value;
 		}
 
+		public static function skipS24(bytes:ByteArray):void {
+			bytes.readUnsignedByte();
+			bytes.readUnsignedByte()
+			bytes.readByte();
+		}
+
 		public static function readS32(bytes:ByteArray):int {
 			return readU32(bytes);
+		}
+
+		public static function skipS32(bytes:ByteArray):void {
+			skipU32(bytes);
 		}
 
 		public static function readU30(bytes:ByteArray):uint {
@@ -113,12 +131,24 @@ package org.as3commons.bytecode.util {
 			return value;
 		}
 
+		public static function skipU30(bytes:ByteArray):void {
+			skipU32(bytes);
+		}
+
 		public static function readStringInfo(bytes:ByteArray):String {
 			return bytes.readUTFBytes(readU32(bytes));
 		}
 
+		public static function skipStringInfo(bytes:ByteArray):void {
+			bytes.position += readU32(bytes);
+		}
+
 		public static function readD64(bytes:ByteArray):Number {
 			return bytes.readDouble();
+		}
+
+		public static function skipD64(bytes:ByteArray):void {
+			bytes.readDouble();
 		}
 
 		public static function readU32(byteArray:ByteArray):uint {
@@ -164,6 +194,34 @@ package org.as3commons.bytecode.util {
 
 			nextByte = byteArray.readUnsignedByte() << TWENTY_EIGHT;
 			return result & 0x0fffffff | nextByte;
+		}
+
+		public static function skipU32(byteArray:ByteArray):void {
+			var result:int = byteArray.readUnsignedByte();
+
+			if (!(result & 0x00000080)) {
+				return;
+			}
+
+			var nextByte:int = byteArray.readUnsignedByte() << SEVEN;
+			result = result & 0x0000007f | nextByte;
+			if (!(result & 0x00004000)) {
+				return;
+			}
+
+			nextByte = byteArray.readUnsignedByte() << FOURTEEN;
+			result = result & 0x00003fff | nextByte;
+			if (!(result & 0x00200000)) {
+				return;
+			}
+
+			nextByte = byteArray.readUnsignedByte() << TWENTY_ONE;
+			result = result & 0x001fffff | nextByte;
+			if (!(result & 0x10000000)) {
+				return;
+			}
+
+			byteArray.readUnsignedByte();
 		}
 
 		/**

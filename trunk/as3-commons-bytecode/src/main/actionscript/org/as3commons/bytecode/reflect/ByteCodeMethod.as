@@ -23,11 +23,42 @@ package org.as3commons.bytecode.reflect {
 
 	public class ByteCodeMethod extends Method implements IVisibleMember {
 
+		private var _maxStack:uint;
+		private var _localCount:uint;
+		private var _initScopeDepth:uint;
+		private var _maxScopeDepth:uint;
+		private var _bodyLength:uint;
+		private var _bodyStartPosition:uint;
+
 		public function ByteCodeMethod(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metaData:HashArray = null) {
 			super(declaringType, name, isStatic, parameters, returnType, applicationDomain, metaData);
 		}
 
 		private var _visibility:NamespaceKind = NamespaceKind.PACKAGE_NAMESPACE;
+
+		public function get maxStack():uint {
+			return _maxStack;
+		}
+
+		public function get localCount():uint {
+			return _localCount;
+		}
+
+		public function get initScopeDepth():uint {
+			return _initScopeDepth;
+		}
+
+		public function get maxScopeDepth():uint {
+			return _maxScopeDepth;
+		}
+
+		public function get bodyLength():uint {
+			return _bodyLength;
+		}
+
+		public function get bodyStartPosition():uint {
+			return _bodyStartPosition;
+		}
 
 		public function get visibility():NamespaceKind {
 			return _visibility;
@@ -79,5 +110,28 @@ package org.as3commons.bytecode.reflect {
 			_isOverride = value;
 		}
 
+		as3commons_reflect function setMaxStack(value:uint):void {
+			_maxStack = value;
+		}
+
+		as3commons_reflect function setLocalCount(value:uint):void {
+			_localCount = value;
+		}
+
+		as3commons_reflect function setInitScopeDepth(value:uint):void {
+			_initScopeDepth = value;
+		}
+
+		as3commons_reflect function setMaxScopeDepth(value:uint):void {
+			_maxScopeDepth = value;
+		}
+
+		as3commons_reflect function setBodyLength(value:uint):void {
+			_bodyLength = value;
+		}
+
+		as3commons_reflect function setBodyStartPosition(value:uint):void {
+			_bodyStartPosition = value;
+		}
 	}
 }

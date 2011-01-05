@@ -408,7 +408,7 @@ package org.as3commons.bytecode.proxy {
 		 */
 		protected function addConstructor(classBuilder:IClassBuilder, type:ByteCodeType, classProxyInfo:ClassProxyInfo):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = classBuilder.defineConstructor();
-			var interceptorClassName:String = ClassUtils.getFullyQualifiedName(classProxyInfo.methodInvocationInterceptorClass);
+			var interceptorClassName:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
 			ctorBuilder.defineArgument(interceptorClassName);
 			for each (var param:ByteCodeParameter in type.constructor.parameters) {
 				ctorBuilder.defineArgument(param.type.fullName, param.isOptional, param.defaultValue);

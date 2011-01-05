@@ -39,10 +39,12 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.testclasses.interceptors.CtorInterceptorFactory;
+	import org.as3commons.bytecode.testclasses.interceptors.CustomInterceptorFactory;
 	import org.as3commons.bytecode.testclasses.interceptors.TestAccessorInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestCanvasInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestMethodInterceptor;
+	import org.as3commons.bytecode.testclasses.interceptors.TestMethodInvocationInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestOptionalArgInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestProtectedInterceptor;
 	import org.as3commons.bytecode.util.ApplicationUtils;
@@ -104,6 +106,16 @@ package org.as3commons.bytecode.proxy {
 			classProxyInfo.onlyProxyConstructor = true;
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleConstructorTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		public function testLoadProxyClassForClassWithOneCtorParamWithInterceptorFactoryThatReturnsTestMethodInvocationInterceptor():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, applicationDomain);
+			classProxyInfo.interceptorFactory = new CustomInterceptorFactory();
+			classProxyInfo.onlyProxyConstructor = true;
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleCustomFactoryConstructorTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
 		}
 
@@ -247,6 +259,12 @@ package org.as3commons.bytecode.proxy {
 			var instance:SimpleClassWithOneConstructorArgument = _proxyFactory.createProxy(SimpleClassWithOneConstructorArgument, ["testarg"]) as SimpleClassWithOneConstructorArgument;
 			assertNotNull(instance);
 			assertEquals('intercepted', instance.string);
+		}
+
+		protected function handleCustomFactoryConstructorTestComplete(event:Event):void {
+			var instance:SimpleClassWithOneConstructorArgument = _proxyFactory.createProxy(SimpleClassWithOneConstructorArgument, ["testarg"]) as SimpleClassWithOneConstructorArgument;
+			assertNotNull(instance);
+			assertEquals('testarg', instance.string);
 		}
 
 		protected function handleMethodTestComplete(event:Event):void {
