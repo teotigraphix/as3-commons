@@ -7,4 +7,6 @@ Changes in version 1.0 (14.11.2010)
 -----------------------------------
 
 General
+* Added support for topic-based event filtering
+* Added IInterceptor interface and interception mechanism in EventBus
 * initial commit, directly copied from Spring Actionscript sources with minor refactorings
