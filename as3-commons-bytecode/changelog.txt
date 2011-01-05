@@ -3,6 +3,13 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 0.9.3 (29.12.2010)
+-----------------------------------
+
+* Added support for proxying of interfaces (will create a class that implements the interface)
+* Several speed optimizations in classmetadatadeserializer
+* Fix: constructor argument is now typed to IMethodInvocationInterceptor instead of the concrete class
+
 Changes in version 0.9.2 (29.12.2010)
 -----------------------------------
 

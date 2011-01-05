@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import flash.errors.IllegalOperationError;
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
@@ -261,6 +262,7 @@ package org.as3commons.bytecode.abc {
 		 * @see   NamedMultiname
 		 */
 		public function addMultiname(multiname:BaseMultiname):int {
+			//validateMultiname(multiname);
 			if (multiname is NamedMultiname) {
 				addString(NamedMultiname(multiname).name);
 			}
@@ -302,6 +304,30 @@ package org.as3commons.bytecode.abc {
 			}
 
 			return multinameIndex;
+		}
+
+		protected function validateMultiname(multiname:BaseMultiname):void {
+			if (multiname.kind == null) {
+				throw new IllegalOperationError("Illegal multiname: " + multiname.toString());
+			}
+			switch (true) {
+				case (multiname is QualifiedName):
+					var qName:QualifiedName = QualifiedName(multiname);
+					if (qName.name == null) {
+						throw new IllegalOperationError("Illegal QualifiedName: " + qName.toString());
+					}
+					if (qName.nameSpace == null) {
+						throw new IllegalOperationError("Illegal QualifiedName: " + qName.toString());
+					}
+					if (!validateNamespace(qName.nameSpace)) {
+						throw new IllegalOperationError("Illegal QualifiedName: " + qName.toString());
+					}
+					break;
+			}
+		}
+
+		protected function validateNamespace(namesp:LNamespace):Boolean {
+			return !(namesp.name == null);
 		}
 
 		/**

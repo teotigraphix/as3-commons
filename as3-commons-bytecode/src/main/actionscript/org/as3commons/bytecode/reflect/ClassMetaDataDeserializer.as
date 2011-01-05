@@ -40,25 +40,25 @@ package org.as3commons.bytecode.reflect {
 			for (var methodIndex:int = 0; methodIndex < methodCount; ++methodIndex) {
 				var paramCount:uint = readU30(); //paramcount;
 
-				readU30(); //returnTypeQName
+				skipU30(); //returnTypeQName
 
 				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
-					readU30(); //paramQName
+					skipU30(); //paramQName
 				}
 
-				readU30(); //methodNameIndex
+				skipU30(); //methodNameIndex
 				var flags:uint = readU8();
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_OPTIONAL) == true) {
 					var optionInfoCount:int = readU30();
 					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
-						readU30(); //valueIndexInConstantconstantPool
+						skipU30(); //valueIndexInConstantconstantPool
 						input.position++;
 					}
 				}
 
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_PARAM_NAMES) == true) {
 					for (var nameIndex:uint = 0; nameIndex < paramCount; ++nameIndex) {
-						readU30(); //paramName
+						skipU30(); //paramName
 					}
 				}
 			}
@@ -74,16 +74,16 @@ package org.as3commons.bytecode.reflect {
 				classNames[classNames.length] = qualifiedName.fullName;
 				typeCache.as3commons_reflect::addDefinitionName(qualifiedName.fullName);
 
-				readU30(); //superName
+				skipU30(); //superName
 				var instanceInfoFlags:uint = readU8(); //instanceInfoFlags
 				if (ClassConstant.PROTECTED_NAMESPACE.present(instanceInfoFlags)) {
-					readU30(); //protectedNamespace
+					skipU30(); //protectedNamespace
 				}
 				var interfaceCount:int = readU30();
 				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
-					readU30(); //BaseMultiname
+					skipU30(); //BaseMultiname
 				}
-				readU30(); //constructorIndex
+				skipU30(); //constructorIndex
 				gatherMetaData(classNames, constantPool, methods, metadatas, false, typeCache);
 			}
 
@@ -95,13 +95,13 @@ package org.as3commons.bytecode.reflect {
 				//  traits_info traits[trait_count] 
 				// }
 				var className:String = classNames[classIndex];
-				readU30(); //StaticConstructor
+				skipU30(); //StaticConstructor
 				gatherMetaData(classNames, constantPool, methods, metadatas, true, typeCache);
 			}
 
 			var scriptCount:int = readU30();
 			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
-				readU30();
+				skipU30();
 				gatherMetaData(classNames, constantPool, methods, metadatas, true, typeCache);
 			}
 
@@ -119,14 +119,14 @@ package org.as3commons.bytecode.reflect {
 				//  u30 metadata_count 
 				//  u30 metadata[metadata_count] 
 				// }
-				readU30(); //traitName
+				skipU30(); //traitName
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
 				var vindex:uint = 0;
 				switch (traitKind) {
 					case TraitKind.SLOT:
-						readU30();
-						readU30(); //namedMultiname
+						skipU30();
+						skipU30(); //namedMultiname
 						vindex = readU30();
 						if (vindex != 0) {
 							readU8(); //vkind
@@ -140,8 +140,8 @@ package org.as3commons.bytecode.reflect {
 						//  u30 vindex 
 						//  u8  vkind  
 						// }
-						readU30();
-						readU30(); //namedMultiname
+						skipU30();
+						skipU30(); //namedMultiname
 						vindex = readU30();
 						if (vindex != 0) {
 							readU8(); //vkind
@@ -150,18 +150,10 @@ package org.as3commons.bytecode.reflect {
 
 					case TraitKind.METHOD:
 					case TraitKind.FUNCTION:
-						readU30(); //skip disp_id
-						readU30(); //method
-						break;
 					case TraitKind.GETTER:
 					case TraitKind.SETTER:
-						// trait_method 
-						// { 
-						//  u30 disp_id 
-						//  u30 method 
-						// }
-						readU30(); //skip disp_id
-						readU30(); //accessorMethod
+						skipU30(); //skip disp_id
+						skipU30(); //accessorMethod
 						break;
 
 					case TraitKind.CLASS:
@@ -170,7 +162,7 @@ package org.as3commons.bytecode.reflect {
 						//  u30 slot_id 
 						//  u30 classi 
 						// }
-						readU30();
+						skipU30();
 						className = classNames[readU30()];
 						break;
 				}

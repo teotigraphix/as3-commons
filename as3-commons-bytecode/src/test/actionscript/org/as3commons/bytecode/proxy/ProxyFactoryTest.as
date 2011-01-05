@@ -29,6 +29,8 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
+	import org.as3commons.bytecode.testclasses.Flavour;
+	import org.as3commons.bytecode.testclasses.IFlavour;
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithAccessors;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithCustomNamespaceMethod;
@@ -43,6 +45,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.testclasses.interceptors.TestAccessorInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestCanvasInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestInterceptor;
+	import org.as3commons.bytecode.testclasses.interceptors.TestInterfaceMethodInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestMethodInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestMethodInvocationInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestOptionalArgInterceptor;
@@ -161,6 +164,15 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
+		public function testProxyInterface():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(IFlavour, null, applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createInterfaceMethodInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleFlavourTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
 		/*public function testLoadProxyClassForCanvas():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			for (var info:* in ApplicationUtils.application.systemManager.preloadedRSLs) {
@@ -242,6 +254,22 @@ package org.as3commons.bytecode.proxy {
 			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
 			interceptor.interceptors[interceptor.interceptors.length] = new TestMethodInterceptor();
 			event.methodInvocationInterceptor = interceptor;
+		}
+
+		protected function createInterfaceMethodInterceptor(event:ProxyFactoryEvent):void {
+			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
+			interceptor.interceptors[interceptor.interceptors.length] = new TestInterfaceMethodInterceptor();
+			event.methodInvocationInterceptor = interceptor;
+		}
+
+		protected function handleFlavourTestComplete(event:Event):void {
+			var instance:IFlavour = _proxyFactory.createProxy(IFlavour) as IFlavour;
+			assertNotNull(instance);
+			instance.combine(null);
+			assertEquals("interceptedReturnValue", instance.toString());
+			assertEquals("interceptedGetterValue", instance.name);
+			assertEquals(1, instance.ingredients.length);
+			assertEquals("interceptedGetterValue", instance.ingredients[0]);
 		}
 
 		protected function handleCanvasTestComplete(event:Event):void {
