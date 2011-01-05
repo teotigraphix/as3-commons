@@ -1,0 +1,80 @@
+AS3COMMONS-BYTECODE CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+Changes in version 0.9.3 (05.01.2011)
+-----------------------------------
+
+* Added support for proxying interfaces (will create a class that implements the interface)
+* Several speed optimizations in classmetadatadeserializer
+* Fix: constructor argument is now typed to IMethodInvocationInterceptor instead of the concrete class
+
+Changes in version 0.9.2 (29.12.2010)
+-----------------------------------
+
+General
+* Fixed setting of method flags and subsequently serializing methods with optional arguments
+* Added getProxyInfoForClass() method to IProxyFactory
+* Added interceptorFactory method to ClassProxyInfo
+* Fixed merging of member colections in ByteCodeType (no more duplicates)
+* Fixed proxying of custom namespace scoped members
+* Fixed properly setting namespaceURI and scopeName on BytecodeAccessor
+
+Changes in version 0.9.1 (28.12.2010)
+-----------------------------------
+
+General
+* Fixed proxying of protected members.
+* Added ProxyFactoryBuildEvent to easily enable custom ctor/method/accessor body creation.
+
+Changes in version 0.9 (26.12.2010)
+-----------------------------------
+
+General
+* Added a check in ByteCodeTypeProvider that prevents a bytearray from being deserialized twice.
+* Fixed generation of class level metadata on generated classes
+* Fixed protected and custom namespace serialization for class members
+* Fixed maximum stack calculation for method bodies
+* Added proxy.* and interception.* packages for generating runtime dynamic proxy classes
+* Added defineClass and defineInterface methods to IAbcBuilder to build classes and interfaces with fully qualified names
+* Added support for manipulating existing classes in an Abc file
+* Added alchemy specific opcodes
+* Added buildAndExport() method to IAbcBuilder and implementation in AbcBuilder
+
+
+Changes in version 0.8.5 (14.11.2010)
+-----------------------------------
+
+General
+* Further maturation of the emit API, implemented backpatching (resolving of opcode jumps)
+and added an asm parser/converter to enable importing of method bodies defined by string.
+
+Changes in version 0.8.1 (02.11.2010)
+-----------------------------------
+
+General
+* First iteration of the emit API, simple class generation implemented
+
+
+Changes in version 0.7 (28.10.2010)
+-----------------------------------
+
+General
+* Bunch of tweaks and bugfixes in the bytecode serialization and parsing
+* Debugged support for all available opcodes
+* Start of the emit API
+
+Changes in version 0.6 (06.09.2010)
+-----------------------------------
+
+General
+* Serialization and parsing of Abc bytecode fully functional
+* Added some functionality to load and parse SWF files
+* Implemented some of the more basic SWF tags
+
+Changes in version 0.5 (27.06.2010)
+-----------------------------------
+
+General
+* initial commit, only bytecode based reflection functional
