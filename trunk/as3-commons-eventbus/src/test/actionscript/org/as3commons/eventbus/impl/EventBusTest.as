@@ -379,8 +379,6 @@ package org.as3commons.eventbus.impl {
 	}
 }
 
-//import flash.events.Event;
-//import org.springextensions.actionscript.core.event.IEventBusListener;
 import flash.events.Event;
 
 import org.as3commons.eventbus.IEventBusListener;
