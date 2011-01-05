@@ -83,6 +83,10 @@
   		<p>This is the equivalent for setting the <code>dynamic</code> keyword on a class definition:</p>
   		<div class="source"><pre>public dynamic MyClass { /**/ }</pre></div>
   		<p>(Of course, when the original class is already marked as dynamic this will override the <code>makeDynamic</code> value.)</p>
+  		<subsection name="Interface proxies">
+  			<p>It is possible to create a proxy for an interface as well. In this case a <code>Class</code> that inherits from <code>Object</code> is created that implements the specified interface.</p>
+  			<p>This functionality makes the most sense for a mocking scenario.</p>
+  		</subsection>
   	</section>
   	
   	<section name="Generating the proxy classes">
