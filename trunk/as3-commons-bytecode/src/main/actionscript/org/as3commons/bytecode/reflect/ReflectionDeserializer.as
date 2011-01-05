@@ -346,6 +346,7 @@ package org.as3commons.bytecode.reflect {
 			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
 				skipU30();
 				readTraitsInfo(instances, null, constantPool, methods, metadatas, true, typeCache, applicationDomain);
+					//skipTraitsInfo();
 			}
 
 			var methodBodyCount:int = readU30();

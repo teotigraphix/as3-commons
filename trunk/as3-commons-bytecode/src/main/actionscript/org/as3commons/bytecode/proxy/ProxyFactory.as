@@ -294,7 +294,7 @@ package org.as3commons.bytecode.proxy {
 			var packageName:String = classParts[0] + MultinameUtil.PERIOD + generateSuffix();
 			var packageBuilder:IPackageBuilder = _abcBuilder.definePackage(packageName);
 
-			var classBuilder:IClassBuilder = packageBuilder.defineClass(classParts[1], className);
+			var classBuilder:IClassBuilder = packageBuilder.defineClass(classParts[1], (type.isInterface ? null : className));
 			addMetadata(classBuilder, type.metaData);
 			if ((type.isDynamic == false) && (classProxyInfo.makeDynamic == true)) {
 				classBuilder.isDynamic = true;
@@ -302,6 +302,9 @@ package org.as3commons.bytecode.proxy {
 				classBuilder.isDynamic = type.isDynamic;
 			}
 			classBuilder.isFinal = true;
+			if (type.isInterface) {
+				classBuilder.implementInterface(type.fullName);
+			}
 
 			var proxyClassName:String = packageName + MultinameUtil.SINGLE_COLON + classParts[1];
 			var nsMultiname:Multiname = createMultiname(proxyClassName, classParts.join(MultinameUtil.SINGLE_COLON), type.extendsClasses);
@@ -317,7 +320,7 @@ package org.as3commons.bytecode.proxy {
 			var memberInfo:MemberInfo;
 			for each (memberInfo in classProxyInfo.methods) {
 				var methodBuilder:IMethodBuilder = proxyMethod(classBuilder, type, memberInfo);
-				addMethodBody(methodBuilder, nsMultiname, bytecodeQname);
+				addMethodBody(methodBuilder, nsMultiname, bytecodeQname, type.isInterface);
 			}
 
 			for each (memberInfo in classProxyInfo.accessors) {
@@ -573,7 +576,7 @@ package org.as3commons.bytecode.proxy {
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(memberInfo, "memberInfo argument must not be null");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(memberInfo.qName.localName, memberInfo.qName.uri);
-			methodBuilder.isOverride = true;
+			methodBuilder.isOverride = (!type.isInterface);
 			var method:ByteCodeMethod = type.getMethod(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeMethod;
 			if (method == null) {
 				throw new ProxyBuildError(ProxyBuildError.METHOD_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
@@ -582,7 +585,7 @@ package org.as3commons.bytecode.proxy {
 				throw new ProxyBuildError(ProxyBuildError.FINAL_METHOD_ERROR, method.name);
 			}
 			addMetadata(methodBuilder, method.metaData);
-			methodBuilder.visibility = getMemberVisibility(method);
+			methodBuilder.visibility = (!type.isInterface) ? getMemberVisibility(method) : MemberVisibility.PUBLIC;
 			methodBuilder.namespaceURI = method.namespaceURI;
 			methodBuilder.scopeName = method.scopeName;
 			methodBuilder.returnType = method.returnType.fullName;
@@ -640,17 +643,17 @@ package org.as3commons.bytecode.proxy {
 			addMetadata(accessorBuilder, accessor.metaData);
 			accessorBuilder.namespaceURI = accessor.namespaceURI;
 			accessorBuilder.scopeName = accessor.scopeName;
-			accessorBuilder.isOverride = true;
+			accessorBuilder.isOverride = (!type.isInterface);
 			accessorBuilder.access = accessor.access;
 			accessorBuilder.createPrivateProperty = false;
-			accessorBuilder.visibility = getMemberVisibility(accessor);
+			accessorBuilder.visibility = (!type.isInterface) ? getMemberVisibility(accessor) : MemberVisibility.PUBLIC;
 			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_GETTER, function(event:AccessorBuilderEvent):void {
 				accessorBuilder.removeEventListener(AccessorBuilderEvent.BUILD_GETTER, arguments.callee);
-				event.builder = createGetter(event.accessorBuilder, multiName, bytecodeQname);
+				event.builder = createGetter(event.accessorBuilder, multiName, bytecodeQname, type.isInterface);
 			});
 			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_SETTER, function(event:AccessorBuilderEvent):void {
 				accessorBuilder.removeEventListener(AccessorBuilderEvent.BUILD_SETTER, arguments.callee);
-				event.builder = createSetter(event.accessorBuilder, multiName, bytecodeQname);
+				event.builder = createSetter(event.accessorBuilder, multiName, bytecodeQname, type.isInterface);
 			});
 			return accessorBuilder;
 		}
@@ -680,7 +683,7 @@ package org.as3commons.bytecode.proxy {
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 */
-		protected function addMethodBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
+		protected function addMethodBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
 			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD, methodBuilder);
 			dispatchEvent(event);
@@ -733,9 +736,13 @@ package org.as3commons.bytecode.proxy {
 			} else {
 				methodBuilder.addOpcode(Opcode.pushnull);
 			}
-			methodBuilder.addOpcode(Opcode.getlocal_0) //
-				.addOpcode(Opcode.getsuper, [methodQName]) //
-				.addOpcode(Opcode.callproperty, [multiName, 5]);
+			if (!isInterface) {
+				methodBuilder.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.getsuper, [methodQName]);
+			} else {
+				methodBuilder.addOpcode(Opcode.pushnull);
+			}
+			methodBuilder.addOpcode(Opcode.callproperty, [multiName, 5]);
 			if (methodBuilder.returnType == BuiltIns.VOID.fullName) {
 				methodBuilder.addOpcode(Opcode.pop) //
 					.addOpcode(Opcode.returnvoid);
@@ -758,7 +765,7 @@ package org.as3commons.bytecode.proxy {
 			mb.namespaceURI = accessorBuilder.namespaceURI;
 			mb.scopeName = accessorBuilder.scopeName;
 			mb.isFinal = accessorBuilder.isFinal;
-			mb.isOverride = true;
+			mb.isOverride = accessorBuilder.isOverride;
 			mb.packageName = accessorBuilder.packageName;
 			mb.visibility = accessorBuilder.visibility;
 			return mb;
@@ -772,10 +779,10 @@ package org.as3commons.bytecode.proxy {
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 * @return The new <code>IMethodBuilder</code> instance.
 		 */
-		protected function createGetter(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):IMethodBuilder {
+		protected function createGetter(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod(accessorBuilder);
 			mb.returnType = accessorBuilder.type;
-			addGetterBody(mb, multiName, bytecodeQname);
+			addGetterBody(mb, multiName, bytecodeQname, isInterface);
 			return mb;
 		}
 
@@ -787,11 +794,11 @@ package org.as3commons.bytecode.proxy {
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 * @return The new <code>IMethodBuilder</code> instance.
 		 */
-		protected function createSetter(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):IMethodBuilder {
+		protected function createSetter(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod(accessorBuilder);
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(accessorBuilder.type);
-			addSetterBody(mb, accessorBuilder, multiName, bytecodeQname);
+			addSetterBody(mb, accessorBuilder, multiName, bytecodeQname, isInterface);
 			return mb;
 		}
 
@@ -809,7 +816,7 @@ package org.as3commons.bytecode.proxy {
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 */
-		protected function addGetterBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
+		protected function addGetterBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
 			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, methodBuilder);
 			dispatchEvent(event);
@@ -839,9 +846,13 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespaceURI) ? methodBuilder.namespaceURI : ""]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.constructprop, [_qnameQname, 2]) //
-				.addOpcode(Opcode.getlocal_0) //
-				.addOpcode(Opcode.getsuper, [createMethodQName(methodBuilder)]) //
-				.addOpcode(Opcode.newarray, [1]) //
+			if (!isInterface) {
+				methodBuilder.addOpcode(Opcode.getlocal_0) //
+					.addOpcode(Opcode.getsuper, [createMethodQName(methodBuilder)]) //
+			} else {
+				methodBuilder.addOpcode(Opcode.pushnull);
+			}
+			methodBuilder.addOpcode(Opcode.newarray, [1]) //
 				.addOpcode(Opcode.callproperty, [multiName, 4]) //
 				.addOpcode(Opcode.returnvalue);
 		}
@@ -866,7 +877,7 @@ package org.as3commons.bytecode.proxy {
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 */
-		protected function addSetterBody(methodBuilder:IMethodBuilder, accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
+		protected function addSetterBody(methodBuilder:IMethodBuilder, accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
 			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD, methodBuilder);
 			dispatchEvent(event);
@@ -879,7 +890,7 @@ package org.as3commons.bytecode.proxy {
 			}
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
 			var argLen:int = 1;
-			var superSetter:QualifiedName = createMethodQName(methodBuilder);
+			var superSetter:QualifiedName = (!isInterface) ? createMethodQName(methodBuilder) : null;
 			methodBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.getlocal_0) //
@@ -900,15 +911,17 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.constructprop, [_qnameQname, 2]) //
 				.addOpcode(Opcode.getlocal_1);
-			if (accessorBuilder.access === AccessorAccess.READ_WRITE) {
+			if ((accessorBuilder.access === AccessorAccess.READ_WRITE) && (superSetter != null)) {
 				methodBuilder.addOpcode(Opcode.getlocal_0) //
 					.addOpcode(Opcode.getsuper, [superSetter]);
 				argLen = 2;
 			}
 			methodBuilder.addOpcode(Opcode.newarray, [argLen]) //
-				.addOpcode(Opcode.callproperty, [multiName, 4]) //
-				.addOpcode(Opcode.setsuper, [superSetter]) //
-				.addOpcode(Opcode.returnvoid);
+				.addOpcode(Opcode.callproperty, [multiName, 4]);
+			if (!isInterface) {
+				methodBuilder.addOpcode(Opcode.setsuper, [superSetter]);
+			}
+			methodBuilder.addOpcode(Opcode.returnvoid);
 		}
 
 		/**
