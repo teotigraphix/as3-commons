@@ -126,8 +126,8 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		public function readABCTag(typeCache:ByteCodeTypeCache, input:ByteArray):void {
-			var minorVersion:uint = readU16();
-			var majorVersion:uint = readU16();
+			skipU16();
+			skipU16();
 			var constantPool:ConstantPool = new ConstantPool();
 			constantPool.dupeCheck = false;
 			deserializeConstantPool(constantPool);
@@ -344,10 +344,31 @@ package org.as3commons.bytecode.reflect {
 
 			var scriptCount:int = readU30();
 			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
-				readU30();
+				skipU30();
 				readTraitsInfo(instances, null, constantPool, methods, metadatas, true, typeCache, applicationDomain);
 			}
 
+			var methodBodyCount:int = readU30();
+			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; ++bodyIndex) {
+				method = methods[readU30()];
+				method.as3commons_reflect::setMaxStack(readU30());
+				method.as3commons_reflect::setLocalCount(readU30());
+				method.as3commons_reflect::setInitScopeDepth(readU30());
+				method.as3commons_reflect::setMaxScopeDepth(readU30());
+				method.as3commons_reflect::setBodyLength(readU30());
+				method.as3commons_reflect::setBodyStartPosition(_byteStream.position);
+				_byteStream.position += method.bodyLength;
+
+				var exceptionCount:int = readU30();
+				for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
+					skipU30();
+					skipU30();
+					skipU30();
+					skipU30();
+					skipU30();
+				}
+				skipTraitsInfo();
+			}
 		}
 
 		public function readTraitsInfo(instanceInfos:Array, instanceInfo:ByteCodeType, pool:ConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache, applicationDomain:ApplicationDomain):Array {
@@ -381,7 +402,9 @@ package org.as3commons.bytecode.reflect {
 						var variable:ByteCodeVariable = new ByteCodeVariable(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
 						variable.as3commons_reflect::setIsStatic(isStatic);
 						metaDataContainer = variable;
-						instanceInfo.variables[instanceInfo.variables.length] = variable;
+						if (instanceInfo != null) {
+							instanceInfo.variables[instanceInfo.variables.length] = variable;
+						}
 						vindex = readU30();
 						if (vindex != 0) {
 							vkind = ConstantKind.determineKind(readU8()).value;
@@ -469,6 +492,37 @@ package org.as3commons.bytecode.reflect {
 				}
 			}
 			return methods;
+		}
+
+		public function skipTraitsInfo():void {
+			var traitCount:int = readU30();
+			for (var traitIndex:int = 0; traitIndex < traitCount; ++traitIndex) {
+				var trait:TraitInfo;
+				skipU30();
+				var traitKindValue:int = readU8();
+				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
+				var vindex:uint = 0;
+				var vkind:uint = 0;
+				switch (traitKind) {
+					case TraitKind.SLOT:
+					case TraitKind.CONST:
+						skipU30();
+						skipU30();
+						vindex = readU30();
+						if (vindex != 0) {
+							skipU8();
+						}
+						break;
+					case TraitKind.METHOD:
+					case TraitKind.FUNCTION:
+					case TraitKind.GETTER:
+					case TraitKind.SETTER:
+					case TraitKind.CLASS:
+						skipU30();
+						skipU30();
+						break;
+				}
+			}
 		}
 
 		private function addMetaData(metadata:Array, container:MetaDataContainer, typeCache:ByteCodeTypeCache):void {
