@@ -267,6 +267,15 @@ metadataArgument.value = "objectName";</pre></div>
 }</pre></div>
     </section>
     
+    <section name="Generating namespaces">
+    	<p>To generate a new namespace use the <code>defineNamespace()</code> method on the <code>IPackageBuilder</code>.</p>
+    	<div class="source"><pre>abcBuilder.addPackage("com.myclasses.namespaces").addNamespace('my_custom_namespace','http://www.mynamespaces.com/custom');</pre></div>
+	<p>The actionscript source equivalent of this statement would look like this:</p>
+	<div class="source"><pre>package com.myclasses.namespaces {
+  public namespace my_custom_namespace = "http://www.mynamespaces.com/custom";
+}</pre></div>
+    </section>
+    
     <section name="Loading the generated classes into the AVM">
     	<p>Finally, after defining the necessary classes and interfaces they need to be loaded into the AVM so they can
     	be instantiated.<br/>
