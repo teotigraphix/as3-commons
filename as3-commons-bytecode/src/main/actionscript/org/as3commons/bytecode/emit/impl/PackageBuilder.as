@@ -19,7 +19,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
@@ -29,6 +29,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
+	import org.as3commons.bytecode.emit.INamespaceBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
@@ -44,10 +45,12 @@ package org.as3commons.bytecode.emit.impl {
 	public class PackageBuilder implements IPackageBuilder {
 
 		private var _classBuilders:Array;
+		private var _namespaceBuilders:Array;
 		private var _interfaceBuilders:Array;
 		private var _abcFile:AbcFile;
 		private var _eventDispatcher:IEventDispatcher;
 		private var _classBuilderLookup:Dictionary;
+		private var _namespaceBuilderLookup:Dictionary;
 
 		/**
 		 * Creates a new <code>PackageBuilder</code> instance.
@@ -63,8 +66,10 @@ package org.as3commons.bytecode.emit.impl {
 			_eventDispatcher = new EventDispatcher();
 			_packageName = removeTrailingPeriod(name);
 			_classBuilders = [];
+			_namespaceBuilders = [];
 			_interfaceBuilders = [];
 			_classBuilderLookup = new Dictionary();
+			_namespaceBuilderLookup = new Dictionary();
 			_abcFile = abcFile;
 		}
 
@@ -75,6 +80,20 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		public function get packageName():String {
 			return _packageName;
+		}
+
+
+		public function defineNamespace(scopeName:String,URI:String):INamespaceBuilder {
+			var nsb:NamespaceBuilder = _namespaceBuilderLookup[scopeName];
+			if (nsb == null){
+				nsb = new NamespaceBuilder();
+				nsb.packageName = packageName;
+				nsb.scopeName = scopeName;
+				nsb.URI = URI;
+				_namespaceBuilderLookup[scopeName] = nsb;
+				_namespaceBuilders[_namespaceBuilders.length] = nsb;
+			}
+			return nsb;
 		}
 
 		/**

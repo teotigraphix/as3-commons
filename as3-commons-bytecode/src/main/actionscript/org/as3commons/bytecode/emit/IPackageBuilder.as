@@ -42,6 +42,13 @@ package org.as3commons.bytecode.emit {
 		 */
 		function defineInterface(name:String, superInterfaceNames:Array = null):IInterfaceBuilder;
 		/**
+		 * 
+		 * @param name
+		 * @param URI
+		 * @return 
+		 */
+		function defineNamespace(scopeName:String,URI:String):INamespaceBuilder;
+		/**
 		 * Internally used build method, this method should never be called by third parties.
 		 * @param applicationDomain
 		 * @return
