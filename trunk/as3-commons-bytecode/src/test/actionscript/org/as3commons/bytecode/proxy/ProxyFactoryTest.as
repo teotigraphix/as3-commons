@@ -39,6 +39,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.testclasses.SimpleClassWithOneConstructorArgument;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithProtectedMethod;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
+	import org.as3commons.bytecode.testclasses.SimpleClassWithoutConstructorArgument;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.testclasses.interceptors.CtorInterceptorFactory;
 	import org.as3commons.bytecode.testclasses.interceptors.CustomInterceptorFactory;
@@ -220,6 +221,28 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.loadProxyClasses();
 		}
 
+		public function testDefineMultipleProxies():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			_proxyFactory.defineProxy(Flavour, null, applicationDomain);
+			_proxyFactory.defineProxy(IFlavour, null, applicationDomain);
+			_proxyFactory.defineProxy(SimpleClassWithAccessors, null, applicationDomain);
+			_proxyFactory.defineProxy(SimpleClassWithCustomNamespaceMethod, null, applicationDomain);
+			_proxyFactory.defineProxy(SimpleClassWithMetadata, null, applicationDomain);
+			_proxyFactory.defineProxy(SimpleClassWithMethodWithOptionalArgs, null, applicationDomain);
+			_proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, applicationDomain);
+			_proxyFactory.defineProxy(SimpleClassWithoutConstructorArgument, null, applicationDomain);
+			_proxyFactory.defineProxy(SimpleClassWithProtectedMethod, null, applicationDomain);
+			_proxyFactory.defineProxy(SimpleClassWithTwoMethods, null, applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createAccessorInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMultipleProxiesTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		protected function handleMultipleProxiesTestComplete(event:Event):void {
+			assertTrue(true);
+		}
+
 		protected function createCanvasInterceptor(event:ProxyFactoryEvent):void {
 			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
 			interceptor.interceptors[interceptor.interceptors.length] = new TestCanvasInterceptor();
@@ -265,7 +288,8 @@ package org.as3commons.bytecode.proxy {
 		protected function handleFlavourTestComplete(event:Event):void {
 			var instance:IFlavour = _proxyFactory.createProxy(IFlavour) as IFlavour;
 			assertNotNull(instance);
-			instance.combine(null);
+			instance.add(instance);
+			instance.combine(1, 2, 3, 4);
 			assertEquals("interceptedReturnValue", instance.toString());
 			assertEquals("interceptedGetterValue", instance.name);
 			assertEquals(1, instance.ingredients.length);

@@ -46,6 +46,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function testBuild():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyTest");
+			_abcBuilder.definePackage("com.myclasses.test").defineNamespace("my_namespace_test", "http://www.test.com/mytestnamespace");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
 			methodBuilder.name = "testMe";
 			methodBuilder.addOpcode(Opcode.getlocal_0);

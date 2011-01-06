@@ -31,6 +31,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.ScriptInfo;
+	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
@@ -275,6 +276,8 @@ package org.as3commons.bytecode.emit.impl {
 					abcFile.addMetadataInfo(Metadata(inst));
 				} else if (inst is Array) {
 					addAbcObjects((inst as Array), abcFile, applicationDomain, index);
+				} else if (inst is SlotOrConstantTrait) {
+					addNamespace(abcFile, SlotOrConstantTrait(inst));
 				}
 			}
 			return index;
@@ -309,6 +312,13 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		protected function addScriptInfo(abcFile:AbcFile, instanceInfo:InstanceInfo, applicationDomain:ApplicationDomain, index:uint):void {
 			var scriptInfo:ScriptInfo = createClassScriptInfo(instanceInfo.classMultiname.fullName, instanceInfo.superclassMultiname, instanceInfo.classInfo, applicationDomain, index, instanceInfo.isInterface);
+			abcFile.addScriptInfo(scriptInfo);
+			addMethodInfo(abcFile, scriptInfo.scriptInitializer);
+		}
+
+		protected function addNamespace(abcFile:AbcFile, slot:SlotOrConstantTrait):void {
+			var scriptInfo:ScriptInfo = createNamespaceScriptInfo();
+			scriptInfo.traits[scriptInfo.traits.length] = slot;
 			abcFile.addScriptInfo(scriptInfo);
 			addMethodInfo(abcFile, scriptInfo.scriptInitializer);
 		}
@@ -367,6 +377,25 @@ package org.as3commons.bytecode.emit.impl {
 			mi.methodBody = mb.buildBody();
 			mi.methodBody.methodSignature = mi;
 			return mi;
+		}
+
+		protected function createNamespaceScriptInitializer():MethodInfo {
+			var mi:MethodInfo = new MethodInfo();
+			mi.methodName = "";
+			mi.returnType = MultinameUtil.toQualifiedName(BuiltIns.ANY.fullName, NamespaceKind.NAMESPACE);
+			var mb:IMethodBodyBuilder = new MethodBodyBuilder();
+			mb.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.returnvoid);
+			mi.methodBody = mb.buildBody();
+			mi.methodBody.methodSignature = mi;
+			return mi;
+		}
+
+		protected function createNamespaceScriptInfo():ScriptInfo {
+			var scriptInfo:ScriptInfo = new ScriptInfo();
+			scriptInfo.scriptInitializer = createNamespaceScriptInitializer();
+			return scriptInfo;
 		}
 
 		/**

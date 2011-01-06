@@ -19,7 +19,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
-	
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
@@ -83,9 +83,9 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 
-		public function defineNamespace(scopeName:String,URI:String):INamespaceBuilder {
+		public function defineNamespace(scopeName:String, URI:String):INamespaceBuilder {
 			var nsb:NamespaceBuilder = _namespaceBuilderLookup[scopeName];
-			if (nsb == null){
+			if (nsb == null) {
 				nsb = new NamespaceBuilder();
 				nsb.packageName = packageName;
 				nsb.scopeName = scopeName;
@@ -148,6 +148,9 @@ package org.as3commons.bytecode.emit.impl {
 			}
 			for each (var ib:IInterfaceBuilder in _interfaceBuilders) {
 				result[result.length] = ib.build(applicationDomain);
+			}
+			for each (var nsb:INamespaceBuilder in _namespaceBuilders) {
+				result[result.length] = nsb.build();
 			}
 			return result;
 		}
