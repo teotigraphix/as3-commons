@@ -25,6 +25,8 @@ package org.as3commons.bytecode.testclasses {
 		function set liked(value:Boolean):void;
 
 		function combine(... rest):void;
+		
+		function add(flavour:IFlavour):void;
 
 		function toString():String;
 

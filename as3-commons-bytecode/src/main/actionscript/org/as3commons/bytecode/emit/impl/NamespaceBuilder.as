@@ -15,9 +15,15 @@
 */
 package org.as3commons.bytecode.emit.impl {
 
+	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
+	import org.as3commons.bytecode.abc.enum.BuiltIns;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.INamespaceBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.util.MultinameUtil;
 
 	public class NamespaceBuilder implements INamespaceBuilder {
 
@@ -28,15 +34,15 @@ package org.as3commons.bytecode.emit.impl {
 		public function NamespaceBuilder() {
 			super();
 		}
-		
+
 		public function get packageName():String {
 			return _packageName;
 		}
-		
+
 		public function set packageName(value:String):void {
 			_packageName = value;
 		}
-		
+
 		public function get scopeName():String {
 			return _scopeName;
 		}
@@ -54,7 +60,13 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function build():SlotOrConstantTrait {
-			return null;
+			var slot:SlotOrConstantTrait = new SlotOrConstantTrait();
+			var ns:LNamespace = new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, packageName);
+			slot.traitMultiname = new QualifiedName(scopeName, ns);
+			slot.defaultValue = new LNamespace(NamespaceKind.NAMESPACE, URI);
+			slot.traitKind = TraitKind.SLOT;
+			slot.typeMultiname = MultinameUtil.toQualifiedName(BuiltIns.ANY.fullName, NamespaceKind.NAMESPACE);
+			return slot;
 		}
 	}
 }
