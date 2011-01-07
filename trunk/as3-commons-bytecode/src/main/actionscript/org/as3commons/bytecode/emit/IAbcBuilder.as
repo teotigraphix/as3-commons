@@ -18,7 +18,7 @@ package org.as3commons.bytecode.emit {
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
-	
+
 	import org.as3commons.bytecode.abc.AbcFile;
 
 	/**
@@ -63,6 +63,13 @@ package org.as3commons.bytecode.emit {
 		 * @return The specified <code>IInterfaceBuilder</code> instance.
 		 */
 		function defineInterface(fullName:String, superInterfaceNames:Array = null):IInterfaceBuilder;
+		/**
+		 *
+		 * @param fullScopeName
+		 * @param URI
+		 * @return
+		 */
+		function defineNamespace(fullScopeName:String, URI:String):INamespaceBuilder;
 		/**
 		 * Builds an <code>AbcFile</code> using the previously defined <code>IPackageBuilder</code> instances.
 		 * @param applicationDomain The applicationDomain that has access to the super classes that are defined

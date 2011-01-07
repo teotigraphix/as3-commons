@@ -49,6 +49,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Type;
+	import org.as3commons.bytecode.emit.INamespaceBuilder;
 
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
@@ -204,6 +205,18 @@ package org.as3commons.bytecode.emit.impl {
 			var packageBuilder:IPackageBuilder = definePackage(packageName);
 			return packageBuilder.defineInterface(classname, superInterfaceNames);
 		}
+
+
+		/**
+		 * @inheritDoc
+		 */
+		public function defineNamespace(fullScopeName:String, URI:String):INamespaceBuilder {
+			fullScopeName = AbcFileUtil.normalizeFullName(fullScopeName);
+			var packageName:String = MultinameUtil.extractPackageName(fullScopeName);
+			var scopeName:String = fullScopeName.substr(fullScopeName.lastIndexOf(MultinameUtil.PERIOD), fullScopeName.length);
+			return definePackage(packageName).defineNamespace(scopeName, URI);
+		}
+
 
 		/**
 		 *

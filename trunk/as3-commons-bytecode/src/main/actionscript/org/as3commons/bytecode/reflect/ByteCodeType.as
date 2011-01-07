@@ -284,5 +284,39 @@ package org.as3commons.bytecode.reflect {
 			}
 			return false;
 		}
+
+		/**
+		 * Returns the <code>ByteCodeTypeCache</code> that contains all the <code>ByteCodeType</code> instances
+		 * that have been extracted.
+		 */
+		public function getCache():ByteCodeTypeCache {
+			return getTypeProvider().getTypeCache() as ByteCodeTypeCache;
+		}
+
+		/**
+		 * List of all fully qualified definition names that have been encountered in all
+		 * the bytecode that was scanned.
+		 */
+		public function get definitionNames():Array {
+			return getCache().definitionNames;
+		}
+
+		/**
+		 * A lookup of metadata name -&gt; <code>Array</code> of class names.
+		 * <p>For example, to retrieve all the names of classes that are annotated with the [Mixin] metadata:</p>
+		 * <p>var classnames:Array = ByteCodeType..getClassesWithMetaData('Mixin');</p>
+		 */
+		public function get metaDataLookup():Object {
+			return getCache().metaDataLookup;
+		}
+
+		/**
+		 * Returns an <code>Array</code> of class names that have been annotated with the specified metadata name.
+		 * @param metaDataName The specified metadata name.
+		 * @return an <code>Array</code> of class names.
+		 */
+		public function getClassesWithMetaData(metaDataName:String):Array {
+			return getCache().getClassesWithMetaData(metaDataName);
+		}
 	}
 }
