@@ -12,7 +12,7 @@
     </section>
     <section name="EventBus listeners">
     	<p>There are a number of different ways to subscribe to events that are dispatched through the EventBus:</p>
-    	<subsection name="The IEventBusListener interface">
+    	<subsection name="Global listeners using the IEventBusListener interface">
 	    	<p>The first is to listen to all events that are dispatched through the <code>EventBus</code>. This is possible through the EventBus.addListener() method. This method expects an <code>IEventBusListener</code> instance as an argument. The <code>IEventBusListener</code> interface looks like this:</p>
     		<div class="source"><pre>public interface IEventBusListener {
 
@@ -65,6 +65,10 @@
 }</pre></div>
 	<p>The intercept() method will be invoked for each event that passes through the <code>EventBus</code> and adheres to the registration parameters of the <code>IEventInterceptor</code>.</p>
 	<p>To prevent the event to continue to be dispatched the <code>blockEvent</code> property can be set to true.</p>
+    </section>
+    <section name="EventBus chaining">    
+    	<p>The <code>EventBus</code> itself is also an implementation of <code>IEventBusListener</code>. Therefore it is possible to chain multiple <code>EventBus</code> instances by adding an <code>EventBus</code> as a global listener to another <code>EventBus</code>.</p>
+    	<p>In that case every event dispatched by the <code>EventBus</code> will be redispatched by the listening <code>EventBus</code>.</p>
     </section>
   </body>
 </document>
