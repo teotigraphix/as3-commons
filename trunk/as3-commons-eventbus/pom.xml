@@ -11,6 +11,7 @@
 	<name>AS3Commons EventBus</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>The EventBus is used as a publish/subscribe event mechanism that lets objects communicate with eachother in a loosely coupled way.
+	It offers event subscription based on event name, event class or for specific topics. To prevent certain events from dispatching an interception mechanism is in place.
 	</description>
 	<inceptionYear>2010</inceptionYear>
 
