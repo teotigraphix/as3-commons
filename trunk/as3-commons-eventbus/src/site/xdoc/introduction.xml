@@ -41,7 +41,7 @@
 		<p>In the simplest case a topic is just a <code>String</code>:</p>
 		<div class="source"><pre>eventBus.addListener(eventBusListener, false, "myTopic");</pre></div>
 		<p>This topic however can also be a complex object, in which case the topic can be used as a general context.</p>
-		<p>For instance, the object could be a security token in which case a listener can only be added for a certain topic if it has received this token instance.</p>
+		<p>For instance, the object could be a security token in which case a listener can only be added for a certain secure events if it has received this token instance.</p>
 	</subsection>
     </section>
     <section name="EventBus dispatchers">
@@ -69,6 +69,11 @@
     <section name="EventBus chaining">    
     	<p>The <code>EventBus</code> itself is also an implementation of <code>IEventBusListener</code>. Therefore it is possible to chain multiple <code>EventBus</code> instances by adding an <code>EventBus</code> as a global listener to another <code>EventBus</code>.</p>
     	<p>In that case every event dispatched by the <code>EventBus</code> will be redispatched by the listening <code>EventBus</code>.</p>
+    	<div class="source"><pre>var eventBus1:EventBus = new EventBus();
+var eventBus2:EventBus = new EventBus();
+eventBus1.addListener(eventBus2, true);
+eventBus1.dispatchEvent(new MyCustomEvent());
+//MyCustomEvent will now also be dispatched through eventBus2...</pre></div>
     </section>
   </body>
 </document>
