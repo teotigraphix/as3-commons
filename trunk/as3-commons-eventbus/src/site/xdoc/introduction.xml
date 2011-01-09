@@ -41,7 +41,7 @@
 		<p>In the simplest case a topic is just a <code>String</code>:</p>
 		<div class="source"><pre>eventBus.addListener(eventBusListener, false, "myTopic");</pre></div>
 		<p>This topic however can also be a complex object, in which case the topic can be used as a general context.</p>
-		<p>For instance, the object could be a security tokenm in which case a listener can only be added for a certain topic if it has received this security token.</p>
+		<p>For instance, the object could be a security token in which case a listener can only be added for a certain topic if it has received this token instance.</p>
 	</subsection>
     </section>
     <section name="EventBus dispatchers">
