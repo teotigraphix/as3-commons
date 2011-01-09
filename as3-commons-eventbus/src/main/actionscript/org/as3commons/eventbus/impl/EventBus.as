@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2010 the original author or authors.
+ * Copyright 2007-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -451,7 +451,7 @@ package org.as3commons.eventbus.impl {
 				notifyEventBusListeners(event, topic);
 
 				notifySpecificEventListeners(event, topic);
-				notifyProxies(event, topic);
+				notifySpecificEventListenerProxies(event, topic);
 
 				notifySpecificClassListeners(eventClass, event, topic);
 				notifySpecificClassListenerProxies(eventClass, event, topic);
@@ -546,7 +546,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function notifyProxies(event:Event, topic:Object):void {
+		public function notifySpecificEventListenerProxies(event:Event, topic:Object):void {
 			// notify all proxies
 			var eventListenerProxies:ListenerCollection = getEventListenerProxiesForEventType(event.type, topic);
 			if (eventListenerProxies != null) {
