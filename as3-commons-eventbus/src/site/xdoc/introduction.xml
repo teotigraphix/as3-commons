@@ -23,7 +23,7 @@
     	</subsection>
     	<subsection name="Event type listeners">
 		<p>The second method is to only listen for events of a specific type. Use the EventBus.addEventListener() method for this task. The addEventListener() method expects two arguments, the first is a string representing the event type, and the second is a <code>Function</code> instance which will be invoked after every event dispatch of the specified type.</p>
-		<p>Instead of a <code>Function</code> it is also possible to supply a proxy instead. This is what the addEventListenerProxy() method is for. Instead of a <code>Function</code> this expects a <code>MethodInvoker</code> instance. The <code>MethodInvoker</code> class is part of the <a href="http://www.as3commons.org/as3-commons-reflect/asdoc/index.html">as3-commons-reflect</code> project.</p>
+		<p>Instead of a <code>Function</code> it is also possible to supply a proxy instead. This is what the addEventListenerProxy() method is for. Instead of a <code>Function</code> this expects a <code>MethodInvoker</code> instance. The <code>MethodInvoker</code> class is part of the <a href="http://www.as3commons.org/as3-commons-reflect/asdoc/index.html">as3-commons-reflect</a> project.</p>
     	</subsection>
     	<subsection name="Event class listeners">
     		<p>The last option is to add a listener for events of a certain class. To get this to happen use the addEventClassListener() or addEventClassListenerProxy() methods. The same arguments apply to these as for their addEventListener() and addEventListenerProxy() neighbours, except they expect a <code>Class</code> instance instead of a type.</p>
