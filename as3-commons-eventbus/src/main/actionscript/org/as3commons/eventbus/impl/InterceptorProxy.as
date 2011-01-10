@@ -20,7 +20,7 @@ package org.as3commons.eventbus.impl {
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.MethodInvoker;
 
-	public class InterceptorProxy implements IEventInterceptor {
+	public class InterceptorProxy extends AbstractEventInterceptor {
 
 		private var _methodInvoker:MethodInvoker;
 		private var _blockEvent:Boolean;
@@ -38,15 +38,7 @@ package org.as3commons.eventbus.impl {
 			_methodInvoker.method = methodName;
 		}
 
-		public function get blockEvent():Boolean {
-			return _blockEvent;
-		}
-
-		public function set blockEvent(value:Boolean):void {
-			_blockEvent = value;
-		}
-
-		public function intercept(event:Event):void {
+		override public function intercept(event:Event):void {
 			_methodInvoker.arguments = [event];
 			_blockEvent = _methodInvoker.invoke();
 		}

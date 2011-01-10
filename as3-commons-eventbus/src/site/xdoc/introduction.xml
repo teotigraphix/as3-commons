@@ -9,6 +9,8 @@
     <section name="Introduction">
     	<p>In a de-coupled environment, its not always easy to let various components communicate with each other. In order to make this task slightly easier AS3Commons offers the EventBus.</p>
     	<p>The <code>EventBus</code> is used as a publish/subscribe event mechanism that lets objects communicate with eachother in a loosely coupled way.</p>
+    	<p>A dependency injection mechanism can be used to inject a shared <code>EventBus</code> instance into the various necessary application components.</p>
+    	<p>Multiple <code>EventBus</code> instances can operate independently of each other or can optionally be chained to allow for inter-application or -module communication.</p>
     </section>
     <section name="EventBus listeners">
     	<p>There are a number of different ways to subscribe to events that are dispatched through the EventBus:</p>
@@ -34,6 +36,7 @@
 	</subsection>
 	<subsection name="Adding weak listeners">
 		<p>Each add*() method has an extra optional argument called <code>useWeakReference</code> that defaults to <code>false</code>. Setting this to <code>true</code> determines that the event listener will be added using a weak reference, which will make it eligible for garbage collection if no other non-weak references exist for it anymore.</p>
+		<div class="source"><pre>eventBus.addListener(listener, true)</pre></div>
 	</subsection>
 	<subsection name="Filtering events using topics">
 		<p>Each add*() and remove*() method has one last extra optional argument: <code>topic:Object</code>.</p>
@@ -57,6 +60,13 @@
     <section name="EventBus intercepting">
     	<p>To prevent events from passing through the <code>EventBus</code>, or to change their properties before they do, an <code>IEventBus</code> implementation can accept <code>IEventInterceptors</code> to be registered.</p>
     	<p>The registration of <code>IEventInterceptors</code> is almost the same as for event listeners, they can be added globally, for specific event types or specific classes and for specific topics.</p>
+    	<div class="source"><pre>eventBus.addInterceptor(interceptor);
+eventBus.addEventInterceptor("myCustomEvent", interceptor);
+eventBus.addEventClassInterceptor(MyCustomEvent, interceptor);
+//And for topic specific interception:
+eventBus.addInterceptor(interceptor, "myTopic");
+eventBus.addEventInterceptor("myCustomEvent", interceptor, "myTopic");
+eventBus.addEventClassInterceptor(MyCustomEvent, interceptor, "myTopic");</pre></div>
     	<p>The <code>IEventInterceptor</code> interface is a very simple one and looks like this:</p>
     	<div class="source"><pre>public interface IEventInterceptor {
 	function get blockEvent():Boolean;

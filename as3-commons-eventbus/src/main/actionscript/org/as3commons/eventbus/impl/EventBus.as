@@ -447,7 +447,7 @@ package org.as3commons.eventbus.impl {
 				return;
 			}
 			var eventClass:Class = Object(event).constructor as Class;
-			if (interceptGlobal(event, eventClass, topic) == false) {
+			if (invokeInterceptors(event, eventClass, topic) == false) {
 				notifyEventBusListeners(event, topic);
 
 				notifySpecificEventListeners(event, topic);
@@ -461,7 +461,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function interceptGlobal(event:Event, eventClass:Class, topic:Object):Boolean {
+		public function invokeInterceptors(event:Event, eventClass:Class, topic:Object):Boolean {
 			var interceptorList:Array = getInterceptorList(topic);
 			if (intercept(interceptorList, event)) {
 				return true;
@@ -497,6 +497,7 @@ package org.as3commons.eventbus.impl {
 		public function intercept(interceptors:Array, event:Event):Boolean {
 			if (interceptors != null) {
 				for each (var interceptor:IEventInterceptor in interceptors) {
+					interceptor.eventBus = this;
 					interceptor.intercept(event);
 					if (interceptor.blockEvent) {
 						return true;
