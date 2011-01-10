@@ -383,6 +383,7 @@ import flash.events.Event;
 
 import org.as3commons.eventbus.IEventBusListener;
 import org.as3commons.eventbus.IEventInterceptor;
+import org.as3commons.eventbus.impl.AbstractEventInterceptor;
 
 class MockEventBusListener implements IEventBusListener {
 
@@ -403,22 +404,12 @@ class MockCustomEvent extends Event {
 	}
 }
 
-class MockInterceptor implements IEventInterceptor {
-
-	private var _blockEvent:Boolean;
+class MockInterceptor extends AbstractEventInterceptor {
 
 	public function MockInterceptor(block:Boolean) {
-		_blockEvent = block;
+		blockEvent = block;
 	}
 
-	public function get blockEvent():Boolean {
-		return _blockEvent;
-	}
-
-	public function set blockEvent(value:Boolean):void {
-		_blockEvent = value;
-	}
-
-	public function intercept(event:Event):void {
+	override public function intercept(event:Event):void {
 	}
 }
