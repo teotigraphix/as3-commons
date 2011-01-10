@@ -461,7 +461,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function invokeInterceptors(event:Event, eventClass:Class, topic:Object):Boolean {
+		protected function invokeInterceptors(event:Event, eventClass:Class, topic:Object):Boolean {
 			var interceptorList:Array = getInterceptorList(topic);
 			if (intercept(interceptorList, event)) {
 				return true;
@@ -478,7 +478,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function specificEventIntercepted(event:Event, topic:Object):Boolean {
+		protected function specificEventIntercepted(event:Event, topic:Object):Boolean {
 			var interceptors:Array = getInterceptorsForEventType(event.type, topic);
 			return intercept(interceptors, event);
 		}
@@ -486,7 +486,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function classIntercepted(eventClass:Class, event:Event, topic:Object):Boolean {
+		protected function classIntercepted(eventClass:Class, event:Event, topic:Object):Boolean {
 			var interceptors:Array = getClassInterceptorsForEventClass(eventClass, topic);
 			return intercept(interceptors, event);
 		}
@@ -494,7 +494,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function intercept(interceptors:Array, event:Event):Boolean {
+		protected function intercept(interceptors:Array, event:Event):Boolean {
 			if (interceptors != null) {
 				for each (var interceptor:IEventInterceptor in interceptors) {
 					interceptor.eventBus = this;
@@ -510,7 +510,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function notifySpecificClassListenerProxies(eventClass:Class, event:Event, topic:Object):void {
+		protected function notifySpecificClassListenerProxies(eventClass:Class, event:Event, topic:Object):void {
 			// notify proxies for a specific event Class
 			var proxies:ListenerCollection = getClassProxyListenerCollection(eventClass, topic);
 			if (proxies != null) {
@@ -530,7 +530,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function notifySpecificClassListeners(eventClass:Class, event:Event, topic:Object):void {
+		protected function notifySpecificClassListeners(eventClass:Class, event:Event, topic:Object):void {
 			// notify listeners for a specific event Class
 			var funcs:ListenerCollection = getClassListenerCollection(eventClass, topic);
 			if (funcs != null) {
@@ -547,7 +547,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function notifySpecificEventListenerProxies(event:Event, topic:Object):void {
+		protected function notifySpecificEventListenerProxies(event:Event, topic:Object):void {
 			// notify all proxies
 			var eventListenerProxies:ListenerCollection = getEventListenerProxiesForEventType(event.type, topic);
 			if (eventListenerProxies != null) {
@@ -566,7 +566,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function notifySpecificEventListeners(event:Event, topic:Object = null):void {
+		protected function notifySpecificEventListeners(event:Event, topic:Object = null):void {
 			// notify all specific event listeners
 			var eventListeners:ListenerCollection = getEventListenersForEventType(event.type, topic);
 			if (eventListeners != null) {
@@ -584,7 +584,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function notifyEventBusListeners(event:Event, topic:Object = null):void {
+		protected function notifyEventBusListeners(event:Event, topic:Object = null):void {
 			// notify all event bus listeners
 			var lst:ListenerCollection = getListenerCollection(topic);
 			var len:uint = lst.length;

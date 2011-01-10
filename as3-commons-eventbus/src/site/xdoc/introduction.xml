@@ -8,20 +8,20 @@
   <body>
     <section name="Introduction">
     	<p>In a de-coupled environment, its not always easy to let various components communicate with each other. In order to make this task slightly easier AS3Commons offers the EventBus.</p>
-    	<p>The <code>EventBus</code> is used as a publish/subscribe event mechanism that lets objects communicate with eachother in a loosely coupled way.</p>
-    	<p>A dependency injection mechanism can be used to inject a shared <code>EventBus</code> instance into the necessary application components.</p>
-    	<p>Multiple <code>EventBus</code> instances can operate independently of each other or can optionally be chained to allow for inter-application or -module communication.</p>
+    	<p>The <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> is used as a publish/subscribe event mechanism that lets objects communicate with eachother in a loosely coupled way.</p>
+    	<p>A dependency injection mechanism can be used to inject a shared <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> instance into the necessary application components.</p>
+    	<p>Multiple <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> instances can operate independently of each other or can optionally be chained to allow for inter-application or -module communication.</p>
     </section>
     <section name="EventBus listeners">
-    	<p>There are a number of different ways to subscribe to events that are dispatched through the EventBus:</p>
+    	<p>There are a number of different ways to subscribe to events that are dispatched through the <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a>:</p>
     	<subsection name="Global listeners using the IEventBusListener interface">
-	    	<p>The first is to listen to all events that are dispatched through the <code>EventBus</code>. This is possible through the EventBus.addListener() method. This method expects an <code>IEventBusListener</code> instance as an argument. The <code>IEventBusListener</code> interface looks like this:</p>
+	    	<p>The first is to listen to all events that are dispatched through the <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a>. This is possible through the EventBus.addListener() method. This method expects an <a href="asdoc/org/as3commons/eventbus/IEventBusListener.html"><code>IEventBusListener</code></a> instance as an argument. The <code>IEventBusListener</code> interface looks like this:</p>
     		<div class="source"><pre>public interface IEventBusListener {
 
  function onEvent(event:Event):void;
 
 }</pre></div>
-		<p>Every event dispatched by the EventBus will be passed into the <code>onEvent</code> method.</p>
+		<p>Every event dispatched by the <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> will be passed into the <code>onEvent</code> method.</p>
 		<div class="source"><pre>eventBus.addListener(listener);</pre></div>
     	</subsection>
     	<subsection name="Event type listeners">
@@ -55,7 +55,7 @@ eventBus.addEventListenerProxy("myCustomEvent", methodInvoker);</pre></div>
 	</subsection>
     </section>
     <section name="EventBus dispatchers">
-    	<p>This is the easiest part, to dispatch an event through an EventBus invoke either the <code>dispatchEvent()</code> or <code>dispatch()</code> methods. The former expects an <code>Event</code> instance while the latter expects a string that indicates a certain type of <code>Event</code>. This event will be created by this method and subsequently dispatched. For example:</p>
+    	<p>This is the easiest part, to dispatch an event through an<a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a>invoke either the <code>dispatchEvent()</code> or <code>dispatch()</code> methods. The former expects an <code>Event</code> instance while the latter expects a string that indicates a certain type of <code>Event</code>. This event will be created by this method and subsequently dispatched. For example:</p>
     	<div class="source"><pre>eventBus.dispatchEvent(new MyCustomEvent("myCustomEventType"));</pre></div>
     	<p>or:</p>
     	<div class="source"><pre>eventBus.dispatch("myCustomEventType");</pre></div>
@@ -65,7 +65,7 @@ eventBus.addEventListenerProxy("myCustomEvent", methodInvoker);</pre></div>
     	</subsection>
     </section>
     <section name="EventBus intercepting">
-    	<p>To prevent events from passing through the <code>EventBus</code>, or to change their properties before they do, an <code>IEventBus</code> implementation accepts <code>IEventInterceptors</code> registrations.</p>
+    	<p>To prevent events from passing through the <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a>, or to change their properties before they do, an <a href="asdoc/org/as3commons/eventbus/IEventBus.html"><code>IEventBus</code></a> implementation accepts <a href="asdoc/org/as3commons/eventbus/IEventInterceptor.html"><code>IEventInterceptor</code></a> registrations.</p>
     	<p>This process is almost the same as for event listeners: Interceptors can be added globally, for specific event types or specific classes and for specific topics.</p>
     	<div class="source"><pre>eventBus.addInterceptor(interceptor);
 eventBus.addEventInterceptor("myCustomEvent", interceptor);
@@ -80,15 +80,15 @@ eventBus.addEventClassInterceptor(MyCustomEvent, interceptor, "myTopic");</pre><
 	function set blockEvent(value:Boolean):void;
 	function intercept(event:Event):void;
 }</pre></div>
-	<p>The intercept() method will be invoked for each event that passes through the <code>EventBus</code> and that adheres to the registration parameters of the <code>IEventInterceptor</code>.</p>
+	<p>The intercept() method will be invoked for each event that passes through the <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> and that adheres to the registration parameters of the <a href="asdoc/org/as3commons/eventbus/IEventInterceptor.html"><code>IEventInterceptor</code></a>.</p>
 	<p>To prevent the event to continue to be dispatched the <code>blockEvent</code> property can be set to true.</p>
-	<p>An <code>IEventInterceptor</code> also receives a reference to the current <code>EventBus</code> each time its <code>intercept()</code> method is invoked, this allows an implementation to block certain events and replace them with a
+	<p>An <code>IEventInterceptor</code> also receives a reference to the current <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> each time its <code>intercept()</code> method is invoked, this allows an implementation to block certain events and replace them with a
 	different instance. Events could be split up into multiple events, etc.</p>
-	<p>AS3Comons-eventbus offers the AbstractEventInterceptor to be used as a general base class for event interceptors.</p>
+	<p>AS3Comons-eventbus offers the <a href="asdoc/org/as3commons/eventbus/impl/AbstractEventInterceptor.html"><code>AbstractEventInterceptor</code></a> to be used as a general base class for event interceptors.</p>
     </section>
     <section name="EventBus chaining">    
-    	<p>The <code>EventBus</code> itself is also an implementation of <code>IEventBusListener</code>. Therefore it is possible to chain multiple <code>EventBus</code> instances by adding an <code>EventBus</code> as a global listener to another <code>EventBus</code>.</p>
-    	<p>In that case every event dispatched by the <code>EventBus</code> will be redispatched by the listening <code>EventBus</code>.</p>
+    	<p>The <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> itself is also an implementation of <a href="asdoc/org/as3commons/eventbus/IEventBusListener.html"><code>IEventBusListener</code></a>. Therefore it is possible to chain multiple <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> instances by adding an <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> as a global listener to another <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a>.</p>
+    	<p>In that case every event dispatched by the <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> will be redispatched by the listening <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a>.</p>
     	<div class="source"><pre>var eventBus1:EventBus = new EventBus();
 var eventBus2:EventBus = new EventBus();
 eventBus1.addListener(eventBus2, true);
