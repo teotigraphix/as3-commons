@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <properties>
+    <title>Introduction to as3commons-eventbus</title>
+    <author email="scab@dds.nl">Roland Zwaga</author>
+  </properties>
+
+  <body>
+    <section name="Introduction">
+    	<p>In a de-coupled environment, its not always easy to let various components communicate with each other. In order to make this task slightly easier AS3Commons offers the EventBus.</p>
+    	<p>The <code>EventBus</code> is used as a publish/subscribe event mechanism that lets objects communicate with eachother in a loosely coupled way.</p>
+    	<p>A dependency injection mechanism can be used to inject a shared <code>EventBus</code> instance into the necessary application components.</p>
+    	<p>Multiple <code>EventBus</code> instances can operate independently of each other or can optionally be chained to allow for inter-application or -module communication.</p>
+    </section>
+    <section name="EventBus listeners">
+    	<p>There are a number of different ways to subscribe to events that are dispatched through the EventBus:</p>
+    	<subsection name="Global listeners using the IEventBusListener interface">
+	    	<p>The first is to listen to all events that are dispatched through the <code>EventBus</code>. This is possible through the EventBus.addListener() method. This method expects an <code>IEventBusListener</code> instance as an argument. The <code>IEventBusListener</code> interface looks like this:</p>
+    		<div class="source"><pre>public interface IEventBusListener {
+
+ function onEvent(event:Event):void;
+
+}</pre></div>
+		<p>Every event dispatched by the EventBus will be passed into the <code>onEvent</code> method.</p>
+		<div class="source"><pre>eventBus.addListener(listener);</pre></div>
+    	</subsection>
+    	<subsection name="Event type listeners">
+		<p>The second method is to only listen for events of a specific type. Use the EventBus.addEventListener() method for this task. The addEventListener() method expects two arguments, the first is a string representing the event type, and the second is a <code>Function</code> instance which will be invoked after every event dispatch of the specified type.</p>
+		<div class="source"><pre>eventBus.addEventListener("myCustomEvent", listenerFunction);</pre></div>
+		<p>Instead of a <code>Function</code> it is also possible to supply a proxy instead. This is what the addEventListenerProxy() method is for. Instead of a <code>Function</code> this expects a <code>MethodInvoker</code> instance. The <code>MethodInvoker</code> class is part of the <a href="http://www.as3commons.org/as3-commons-reflect/asdoc/index.html">as3-commons-reflect</a> project.</p>
+		<div class="source"><pre>var methodInvoker:MethodInvoker = new MethodInvoker();
+methodInvoker.target = someInstance;
+methodInvoker.method = "listenerMethodName";
+eventBus.addEventListenerProxy("myCustomEvent", methodInvoker);</pre></div>
+    	</subsection>
+    	<subsection name="Event class listeners">
+    		<p>The last option is to add a listener for events of a certain class. To get this to happen use the addEventClassListener() or addEventClassListenerProxy() methods. The same arguments apply to these as for their addEventListener() and addEventListenerProxy() neighbours, except they expect a <code>Class</code> instance instead of a type.</p>
+    		<div class="source"><pre>eventBus.addEventClassListener(MyCustomEvent, listenerFunction);</pre></div>
+    	</subsection>
+    	<subsection name="Removing listeners">
+    		<p>All these methods naturally have a removal counterpart: removeListener(), removeEventListener(), removeEventListenerProxy(), removeEventClassListener() and removeEventClassListenerProxy().</p>
+		<p>To clear all types of registered eventlisteners at once simply call the removeAll() method.</p>
+	</subsection>
+	<subsection name="Adding weak listeners">
+		<p>Each add*() method has an extra optional argument called <code>useWeakReference</code> that defaults to <code>false</code>. Setting this to <code>true</code> determines that the event listener will be added using a weak reference, which will make it eligible for garbage collection if no other non-weak references exist for it anymore.</p>
+		<div class="source"><pre>eventBus.addListener(listener, true)</pre></div>
+	</subsection>
+	<subsection name="Filtering events using topics">
+		<p>Each add*() and remove*() method has one last extra optional argument: <code>topic:Object</code>.</p>
+		<p>By setting this argument to a non-null value determines that the listener will only be invoked if an event associated with the same topic is dispatched.</p>
+		<p>In the simplest case a topic is just a <code>String</code>:</p>
+		<div class="source"><pre>eventBus.addListener(eventBusListener, false, "myTopic");</pre></div>
+		<p>This topic however can also be a complex object, in which case the topic can be used as a specific context.</p>
+		<p>For instance, the object could be a security token in which case a listener can only be added for a certain secure events if it has received this token instance.</p>
+	</subsection>
+    </section>
+    <section name="EventBus dispatchers">
+    	<p>This is the easiest part, to dispatch an event through an EventBus invoke either the <code>dispatchEvent()</code> or <code>dispatch()</code> methods. The former expects an <code>Event</code> instance while the latter expects a string that indicates a certain type of <code>Event</code>. This event will be created by this method and subsequently dispatched. For example:</p>
+    	<div class="source"><pre>eventBus.dispatchEvent(new MyCustomEvent("myCustomEventType"));</pre></div>
+    	<p>or:</p>
+    	<div class="source"><pre>eventBus.dispatch("myCustomEventType");</pre></div>
+    	<subsection name="Dispatching events using topics">
+    		<p>The <code>dispatchEvent()</code> and <code>dispatch()</code> methods have an optional topic argument, like the add*() and remove*() methods. Setting this topic will associate the dispatched event with the specified topic.</p>
+    		<div class="source"><pre>eventBus.dispatchEvent(new MyCustomEvent("myCustomEventType"), "myTopic");</pre></div>
+    	</subsection>
+    </section>
+    <section name="EventBus intercepting">
+    	<p>To prevent events from passing through the <code>EventBus</code>, or to change their properties before they do, an <code>IEventBus</code> implementation accepts <code>IEventInterceptors</code> registrations.</p>
+    	<p>This process is almost the same as for event listeners: Interceptors can be added globally, for specific event types or specific classes and for specific topics.</p>
+    	<div class="source"><pre>eventBus.addInterceptor(interceptor);
+eventBus.addEventInterceptor("myCustomEvent", interceptor);
+eventBus.addEventClassInterceptor(MyCustomEvent, interceptor);
+//And for topic specific interception:
+eventBus.addInterceptor(interceptor, "myTopic");
+eventBus.addEventInterceptor("myCustomEvent", interceptor, "myTopic");
+eventBus.addEventClassInterceptor(MyCustomEvent, interceptor, "myTopic");</pre></div>
+    	<p>The <code>IEventInterceptor</code> interface is a very simple one and looks like this:</p>
+    	<div class="source"><pre>public interface IEventInterceptor extends IEventBusAware {
+	function get blockEvent():Boolean;
+	function set blockEvent(value:Boolean):void;
+	function intercept(event:Event):void;
+}</pre></div>
+	<p>The intercept() method will be invoked for each event that passes through the <code>EventBus</code> and that adheres to the registration parameters of the <code>IEventInterceptor</code>.</p>
+	<p>To prevent the event to continue to be dispatched the <code>blockEvent</code> property can be set to true.</p>
+	<p>An <code>IEventInterceptor</code> also receives a reference to the current <code>EventBus</code> each time its <code>intercept()</code> method is invoked, this allows an implementation to block certain events and replace them with a
+	different instance. Events could be split up into multiple events, etc.</p>
+	<p>AS3Comons-eventbus offers the AbstractEventInterceptor to be used as a general base class for event interceptors.</p>
+    </section>
+    <section name="EventBus chaining">    
+    	<p>The <code>EventBus</code> itself is also an implementation of <code>IEventBusListener</code>. Therefore it is possible to chain multiple <code>EventBus</code> instances by adding an <code>EventBus</code> as a global listener to another <code>EventBus</code>.</p>
+    	<p>In that case every event dispatched by the <code>EventBus</code> will be redispatched by the listening <code>EventBus</code>.</p>
+    	<div class="source"><pre>var eventBus1:EventBus = new EventBus();
+var eventBus2:EventBus = new EventBus();
+eventBus1.addListener(eventBus2, true);
+eventBus1.dispatchEvent(new MyCustomEvent());
+//MyCustomEvent will now also be dispatched through eventBus2...</pre></div>
+    </section>
+  </body>
+</document>
