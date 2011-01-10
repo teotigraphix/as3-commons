@@ -17,7 +17,7 @@ package org.as3commons.eventbus {
 
 	import flash.events.Event;
 
-	public interface IEventInterceptor {
+	public interface IEventInterceptor extends IEventBusAware {
 		function get blockEvent():Boolean;
 		function set blockEvent(value:Boolean):void;
 		function intercept(event:Event):void;
