@@ -68,13 +68,15 @@ eventBus.addInterceptor(interceptor, "myTopic");
 eventBus.addEventInterceptor("myCustomEvent", interceptor, "myTopic");
 eventBus.addEventClassInterceptor(MyCustomEvent, interceptor, "myTopic");</pre></div>
     	<p>The <code>IEventInterceptor</code> interface is a very simple one and looks like this:</p>
-    	<div class="source"><pre>public interface IEventInterceptor {
+    	<div class="source"><pre>public interface IEventInterceptor extends IEventBusAware {
 	function get blockEvent():Boolean;
 	function set blockEvent(value:Boolean):void;
 	function intercept(event:Event):void;
 }</pre></div>
 	<p>The intercept() method will be invoked for each event that passes through the <code>EventBus</code> and adheres to the registration parameters of the <code>IEventInterceptor</code>.</p>
 	<p>To prevent the event to continue to be dispatched the <code>blockEvent</code> property can be set to true.</p>
+	<p>An <code>IEventInterceptor</code> also receives a reference to the current <code>EventBus</code> each time its <code>intercept()</code> method is invoked, this allows an implementation to block certain events and replace them with a
+	different instance. Events could be split up into multiple events, etc.</p>
     </section>
     <section name="EventBus chaining">    
     	<p>The <code>EventBus</code> itself is also an implementation of <code>IEventBusListener</code>. Therefore it is possible to chain multiple <code>EventBus</code> instances by adding an <code>EventBus</code> as a global listener to another <code>EventBus</code>.</p>
