@@ -50,7 +50,7 @@ eventBus.addEventListenerProxy("myCustomEvent", methodInvoker);</pre></div>
 		<p>By setting this argument to a non-null value determines that the listener will only be invoked if an event associated with the same topic is dispatched.</p>
 		<p>In the simplest case a topic is just a <code>String</code>:</p>
 		<div class="source"><pre>eventBus.addListener(eventBusListener, false, "myTopic");</pre></div>
-		<p>This topic however can also be a complex object, in which case the topic can be used as a general context.</p>
+		<p>This topic however can also be a complex object, in which case the topic can be used as a specific context.</p>
 		<p>For instance, the object could be a security token in which case a listener can only be added for a certain secure events if it has received this token instance.</p>
 	</subsection>
     </section>

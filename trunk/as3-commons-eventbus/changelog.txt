@@ -3,7 +3,7 @@ AS3COMMONS-EVENTBUS CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.0 (14.11.2010)
+Changes in version 1.0 (10.01.2011)
 -----------------------------------
 
 General
