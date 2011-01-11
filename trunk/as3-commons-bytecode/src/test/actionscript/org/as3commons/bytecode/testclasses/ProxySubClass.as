@@ -21,17 +21,29 @@ package org.as3commons.bytecode.testclasses {
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.InvocationKind;
+	import org.as3commons.bytecode.proxy.ProxyFactory;
+	import org.as3commons.bytecode.proxy.event.ProxyCreationEvent;
 	import org.as3commons.bytecode.testclasses.interceptors.TestProtectedInterceptor;
 
 	public class ProxySubClass extends TestProxiedClass {
 
 		as3commons_bytecode_proxy var methodInvocationInterceptor:IMethodInvocationInterceptor;
 
-		public function ProxySubClass(interceptor:IMethodInvocationInterceptor, target:IEventDispatcher = null, somethingElse:Object = null) {
-			as3commons_bytecode_proxy::methodInvocationInterceptor = interceptor;
+		/*public function ProxySubClass(target:IEventDispatcher = null, somethingElse:Object = null) {
+			var event:ProxyCreationEvent = new ProxyCreationEvent(ProxyCreationEvent.PROXY_CREATED, this);
+			ProxyFactory.proxyCreationDispatcher.dispatchEvent(event);
+			as3commons_bytecode_proxy::methodInvocationInterceptor = event.methodInvocationInterceptor;
 			var params:Array = [target, somethingElse];
-			interceptor.intercept(this, InvocationKind.CONSTRUCTOR, null, params);
+			event.methodInvocationInterceptor.intercept(this, InvocationKind.CONSTRUCTOR, null, params);
 			super(params[0], params[1]);
+		}*/
+
+		public function ProxySubClass() {
+			var event:ProxyCreationEvent = new ProxyCreationEvent(ProxyCreationEvent.PROXY_CREATED, this);
+			ProxyFactory.proxyCreationDispatcher.dispatchEvent(event);
+			as3commons_bytecode_proxy::methodInvocationInterceptor = event.methodInvocationInterceptor;
+			event.methodInvocationInterceptor.intercept(this, InvocationKind.CONSTRUCTOR, null, null);
+			super();
 		}
 
 		private function privateFunc():void {
