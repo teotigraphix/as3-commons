@@ -217,6 +217,7 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<testTimeout>10000</testTimeout>
 					<configurationReport>true</configurationReport>
 					<targetPlayer>${flashplayer.version}</targetPlayer>
 					<locales>
