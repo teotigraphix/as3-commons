@@ -20,6 +20,7 @@
 
 		<menu name="Modules">
 			<item name="Bytecode" href="as3-commons-bytecode/index.html" />
+			<item name="EventBus" href="as3-commons-eventbus/index.html" />
 			<item name="Lang" href="as3-commons-lang/index.html" />
 			<item name="Logging" href="as3-commons-logging/index.html" />
 			<item name="Reflect" href="as3-commons-reflect/index.html" />
