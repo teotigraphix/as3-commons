@@ -40,6 +40,7 @@ package org.as3commons.bytecode.emit.impl {
 		{
 			stackModifiers[Opcode.dup] = 1;
 			stackModifiers[Opcode.getglobalscope] = 1;
+			stackModifiers[Opcode.getlocal] = 1;
 			stackModifiers[Opcode.getlocal_0] = 1;
 			stackModifiers[Opcode.getlocal_1] = 1;
 			stackModifiers[Opcode.getlocal_2] = 1;
@@ -92,6 +93,7 @@ package org.as3commons.bytecode.emit.impl {
 			stackModifiers[Opcode.pushwith] = -1;
 			stackModifiers[Opcode.returnvalue] = -1;
 			stackModifiers[Opcode.rshift] = -1;
+			stackModifiers[Opcode.setlocal] = -1;
 			stackModifiers[Opcode.setlocal_0] = -1;
 			stackModifiers[Opcode.setlocal_1] = -1;
 			stackModifiers[Opcode.setlocal_2] = -1;
@@ -191,12 +193,12 @@ package org.as3commons.bytecode.emit.impl {
 			_maxScope = 0;
 			var mb:MethodBody = (_methodBody != null) ? _methodBody : new MethodBody();
 			mb.backPatches = [];
-			mb.localCount += extraLocalCount;
 			mb.initScopeDepth = initScopeDepth;
 			mb.opcodes = _opcodes.concat([]);
 			mb.exceptionInfos = _exceptionInfos.concat([]);
 			mb.traits = _traits.concat([]);
-			analyzeOpcodes(mb);
+			extraLocalCount += analyzeOpcodes(mb, extraLocalCount);
+			mb.localCount += extraLocalCount;
 			mb.maxStack = _maxStack;
 			mb.maxScopeDepth = _maxScope;
 			mb.backPatches = _backpatches.concat([]);
@@ -210,12 +212,34 @@ package org.as3commons.bytecode.emit.impl {
 			return _asm;
 		}
 
-		protected function analyzeOpcodes(methodBody:MethodBody):void {
+		protected function analyzeOpcodes(methodBody:MethodBody, localCount:int):int {
+			var argLen:int = localCount;
 			for each (var op:Op in _opcodes) {
 				if (stackModifiers[op.opcode] != null) {
 					stack(stackModifiers[op.opcode]);
 				}
 				switch (op.opcode) {
+					case Opcode.setlocal:
+						var idx:int = int(op.parameters[0]);
+						if (localCount < idx) {
+							localCount = idx;
+						}
+						break;
+					case Opcode.setlocal_1:
+						if (localCount < 1) {
+							localCount = 1;
+						}
+						break;
+					case Opcode.setlocal_2:
+						if (localCount < 2) {
+							localCount = 2;
+						}
+						break;
+					case Opcode.setlocal_3:
+						if (localCount < 3) {
+							localCount = 3;
+						}
+						break;
 					case Opcode.dxns:
 						_hasDXNS = true;
 						break;
@@ -272,6 +296,7 @@ package org.as3commons.bytecode.emit.impl {
 						break;
 				}
 			}
+			return localCount;
 		}
 
 		private function hasRuntimeMultiname(baseMultiname:BaseMultiname):Boolean {
