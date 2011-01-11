@@ -54,6 +54,10 @@ package org.as3commons.bytecode.testclasses {
 
 		}
 
+		public function arayWithRestParametersAndOneArg(str1:String, ... params):Array {
+			return [str1].concat(params);
+		}
+
 		as3commons_bytecode function returnInt():int {
 			return 10;
 		}

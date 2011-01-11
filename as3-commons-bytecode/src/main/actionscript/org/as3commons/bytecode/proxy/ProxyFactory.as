@@ -151,6 +151,7 @@ package org.as3commons.bytecode.proxy {
 		private var _GetterKindQName:QualifiedName = new QualifiedName("GETTER", LNamespace.PUBLIC);
 		private var _SetterKindQName:QualifiedName = new QualifiedName("SETTER", LNamespace.PUBLIC);
 		private var _qnameQname:QualifiedName = new QualifiedName("QName", LNamespace.PUBLIC);
+		private var _concatQName:QualifiedName = new QualifiedName("concat", LNamespace.BUILTIN);
 
 		/**
 		 * Creates a new <code>ProxyFactory</code> instance.
@@ -619,6 +620,7 @@ package org.as3commons.bytecode.proxy {
 			methodBuilder.namespaceURI = method.namespaceURI;
 			methodBuilder.scopeName = method.scopeName;
 			methodBuilder.returnType = method.returnType.fullName;
+			methodBuilder.hasRestArguments = method.hasRestArguments;
 			for each (var arg:ByteCodeParameter in method.parameters) {
 				methodBuilder.defineArgument(arg.type.fullName, arg.isOptional, arg.defaultValue);
 			}
@@ -762,7 +764,13 @@ package org.as3commons.bytecode.proxy {
 							break;
 					}
 				}
-				methodBuilder.addOpcode(Opcode.newarray, [len]) //
+				methodBuilder.addOpcode(Opcode.newarray, [len]);
+				if (methodBuilder.hasRestArguments) {
+					methodBuilder.addOpcode(Opcode.getlocal, [len + 1]);
+					methodBuilder.addOpcode(Opcode.callproperty, [_concatQName, 1]);
+				}
+			} else if (methodBuilder.hasRestArguments) {
+				methodBuilder.addOpcode(Opcode.getlocal_1);
 			} else {
 				methodBuilder.addOpcode(Opcode.pushnull);
 			}

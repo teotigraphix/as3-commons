@@ -29,21 +29,13 @@ package org.as3commons.bytecode.testclasses {
 
 		as3commons_bytecode_proxy var methodInvocationInterceptor:IMethodInvocationInterceptor;
 
-		/*public function ProxySubClass(target:IEventDispatcher = null, somethingElse:Object = null) {
+		public function ProxySubClass(target:IEventDispatcher = null, somethingElse:Object = null) {
 			var event:ProxyCreationEvent = new ProxyCreationEvent(ProxyCreationEvent.PROXY_CREATED, this);
 			ProxyFactory.proxyCreationDispatcher.dispatchEvent(event);
 			as3commons_bytecode_proxy::methodInvocationInterceptor = event.methodInvocationInterceptor;
 			var params:Array = [target, somethingElse];
 			event.methodInvocationInterceptor.intercept(this, InvocationKind.CONSTRUCTOR, null, params);
 			super(params[0], params[1]);
-		}*/
-
-		public function ProxySubClass() {
-			var event:ProxyCreationEvent = new ProxyCreationEvent(ProxyCreationEvent.PROXY_CREATED, this);
-			ProxyFactory.proxyCreationDispatcher.dispatchEvent(event);
-			as3commons_bytecode_proxy::methodInvocationInterceptor = event.methodInvocationInterceptor;
-			event.methodInvocationInterceptor.intercept(this, InvocationKind.CONSTRUCTOR, null, null);
-			super();
 		}
 
 		private function privateFunc():void {
@@ -84,6 +76,10 @@ package org.as3commons.bytecode.testclasses {
 
 		override public function voidWithRestParameters(... params):void {
 			as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "voidWithRestParameters"), params, super.voidWithRestParameters);
+		}
+
+		override public function arayWithRestParametersAndOneArg(str1:String, ... params):Array {
+			return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "voidWithRestParameters"), [str1].concat(params), super.arayWithRestParametersAndOneArg);
 		}
 
 		override protected function doSomething(value:int):void {
