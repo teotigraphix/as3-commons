@@ -214,6 +214,7 @@ package org.as3commons.bytecode.reflect {
 				}
 
 				methodInfo.as3commons_reflect::setParameters(params);
+				methodInfo.as3commons_reflect::setHasRestArguments(MethodFlag.flagPresent(flags, MethodFlag.NEED_REST));
 
 			}
 			return methods;

@@ -29,12 +29,18 @@ package org.as3commons.bytecode.reflect {
 		private var _maxScopeDepth:uint;
 		private var _bodyLength:uint;
 		private var _bodyStartPosition:uint;
+		private var _hasRestArguments:Boolean;
 
 		public function ByteCodeMethod(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metaData:HashArray = null) {
 			super(declaringType, name, isStatic, parameters, returnType, applicationDomain, metaData);
 		}
 
 		private var _visibility:NamespaceKind = NamespaceKind.PACKAGE_NAMESPACE;
+
+
+		public function get hasRestArguments():Boolean {
+			return _hasRestArguments;
+		}
 
 		public function get maxStack():uint {
 			return _maxStack;
@@ -132,6 +138,10 @@ package org.as3commons.bytecode.reflect {
 
 		as3commons_reflect function setBodyStartPosition(value:uint):void {
 			_bodyStartPosition = value;
+		}
+
+		as3commons_reflect function setHasRestArguments(value:Boolean):void {
+			_hasRestArguments = value;
 		}
 	}
 }
