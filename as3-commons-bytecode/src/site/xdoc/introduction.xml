@@ -129,7 +129,7 @@ for(var i:uint=0; i &lt; definitionNames.length;i++){
     method.</p> <p>At the same time a full list of definition names contained
     within the specified bytecode will be populated.<br /> To retrieve this
     list use this <code>ByteCodeTypeCache</code> property:
-    <div class="source"><pre>var typeCache:ByteCodeTypeCache = ByteCodeType.getTypeProvider().getTypeCache() as ByteCodeTypeCache;
+    <div class="source"><pre>var typeCache:ByteCodeTypeCache = ByteCodeType.getCache();
 var definitionNames:Array = typeCache.definitionNames;
 for(var i:uint=0; i &lt; definitionNames.length;i++){
   var type:Type = Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
@@ -143,7 +143,7 @@ for(var i:uint=0; i &lt; definitionNames.length;i++){
     as3commons-reflect <code>Type</code> is used. Combining as3commons-bytecode
     and -reflect can yield the most efficient result in this way.</p>
     <blockquote><strong>Note:</strong> the definitionNames list and metadata lookup property
-    are of course also generated when the full bytecode reflection data is
+    are of course also populated when the full bytecode reflection data is
     generated.</blockquote></section>
   </body>
 </document>
