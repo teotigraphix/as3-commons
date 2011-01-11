@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.proxy {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
@@ -48,6 +49,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
+	import org.as3commons.bytecode.proxy.event.ProxyCreationEvent;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeAccessor;
@@ -125,6 +127,9 @@ package org.as3commons.bytecode.proxy {
 		private static const ORGAS3COMMONSBYTECODE:String = "org.as3commons.bytecode";
 		private static const CONSTRUCTOR:String = "constructor";
 
+		//public static constants
+		public static var proxyCreationDispatcher:IEventDispatcher = new EventDispatcher();
+
 		//private variables
 		private var _generatedMultinames:Dictionary;
 		private var _classProxyLookup:Dictionary;
@@ -133,8 +138,14 @@ package org.as3commons.bytecode.proxy {
 		private var _namespaceQualifiedName:QualifiedName = new QualifiedName("Namespace", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _arrayQualifiedName:QualifiedName = new QualifiedName("Array", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _invocationKindQualifiedName:QualifiedName = new QualifiedName("InvocationKind", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.interception"), MultinameKind.QNAME);
+		private var _interceptorQName:QualifiedName = new QualifiedName("methodInvocationInterceptor", LNamespace.PUBLIC);
 		private var _interceptorRTQName:RuntimeQualifiedName = new RuntimeQualifiedName("methodInvocationInterceptor", MultinameKind.RTQNAME);
 		private var _interceptQName:QualifiedName = new QualifiedName("intercept", new LNamespace(NamespaceKind.NAMESPACE, "org.as3commons.bytecode.interception:IMethodInvocationInterceptor"));
+		private var _proxyEventQName:QualifiedName = new QualifiedName("ProxyCreationEvent", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.proxy.event"));
+		private var _proxyEventTypeQName:QualifiedName = new QualifiedName("PROXY_CREATED", LNamespace.PUBLIC);
+		private var _proxyFactoryQName:QualifiedName = new QualifiedName("ProxyFactory", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.proxy"));
+		private var _dispatchEventQName:QualifiedName = new QualifiedName("dispatchEvent", new LNamespace(NamespaceKind.NAMESPACE, "flash.events:IEventDispatcher"));
+		private var _proxyCreationDispatcherQName:QualifiedName = new QualifiedName("proxyCreationDispatcher", LNamespace.PUBLIC);
 		private var _ConstructorKindQName:QualifiedName = new QualifiedName("CONSTRUCTOR", LNamespace.PUBLIC);
 		private var _MethodKindQName:QualifiedName = new QualifiedName("METHOD", LNamespace.PUBLIC);
 		private var _GetterKindQName:QualifiedName = new QualifiedName("GETTER", LNamespace.PUBLIC);
@@ -247,20 +258,23 @@ package org.as3commons.bytecode.proxy {
 				if (proxyInfo.proxyClass == null) {
 					proxyInfo.proxyClass = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
 				}
-				var event:ProxyFactoryEvent = new ProxyFactoryEvent(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, clazz, constructorArgs, proxyInfo.methodInvocationInterceptorClass);
-				dispatchEvent(event);
-				var interceptorInstance:IMethodInvocationInterceptor;
-				if (event.methodInvocationInterceptor != null) {
-					interceptorInstance = event.methodInvocationInterceptor;
-				} else {
-					if (proxyInfo.interceptorFactory == null) {
-						interceptorInstance = new proxyInfo.methodInvocationInterceptorClass();
+				proxyCreationDispatcher.addEventListener(ProxyCreationEvent.PROXY_CREATED, function(event:ProxyCreationEvent):void {
+					proxyCreationDispatcher.removeEventListener(ProxyCreationEvent.PROXY_CREATED, arguments.callee);
+					var factoryEvent:ProxyFactoryEvent = new ProxyFactoryEvent(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, clazz, constructorArgs, proxyInfo.methodInvocationInterceptorClass);
+					dispatchEvent(factoryEvent);
+					var interceptorInstance:IMethodInvocationInterceptor;
+					if (factoryEvent.methodInvocationInterceptor != null) {
+						interceptorInstance = factoryEvent.methodInvocationInterceptor;
 					} else {
-						interceptorInstance = proxyInfo.interceptorFactory.newInstance();
+						if (proxyInfo.interceptorFactory == null) {
+							interceptorInstance = new proxyInfo.methodInvocationInterceptorClass();
+						} else {
+							interceptorInstance = proxyInfo.interceptorFactory.newInstance();
+						}
 					}
-				}
-				constructorArgs = (constructorArgs != null) ? [interceptorInstance].concat(constructorArgs) : [interceptorInstance];
-				LOGGER.debug("Created proxy for class {0} with arguments: {1}", clazz, constructorArgs);
+					event.methodInvocationInterceptor = interceptorInstance;
+				});
+				LOGGER.debug("Creating proxy for class {0} with arguments: {1}", clazz, constructorArgs);
 				return ClassUtils.newInstance(proxyInfo.proxyClass, constructorArgs);
 			}
 			return null;
@@ -411,8 +425,8 @@ package org.as3commons.bytecode.proxy {
 		 */
 		protected function addConstructor(classBuilder:IClassBuilder, type:ByteCodeType, classProxyInfo:ClassProxyInfo):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = classBuilder.defineConstructor();
-			var interceptorClassName:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
-			ctorBuilder.defineArgument(interceptorClassName);
+			//var interceptorClassName:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
+			//ctorBuilder.defineArgument(interceptorClassName);
 			for each (var param:ByteCodeParameter in type.constructor.parameters) {
 				ctorBuilder.defineArgument(param.type.fullName, param.isOptional, param.defaultValue);
 			}
@@ -449,9 +463,24 @@ package org.as3commons.bytecode.proxy {
 				return;
 			}
 			var len:int = ctorBuilder.arguments.length;
-			var paramLocal:int = len;
+			var paramLocal:int = len + 1;
+			var eventLocal:int = paramLocal++;
 			ctorBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
+				.addOpcode(Opcode.findpropstrict, [_proxyEventQName]) //
+				.addOpcode(Opcode.findpropstrict, [_proxyEventQName]) //
+				.addOpcode(Opcode.getproperty, [_proxyEventQName]) //
+				.addOpcode(Opcode.getproperty, [_proxyEventTypeQName]) //
+				.addOpcode(Opcode.getlocal_0) //
+				.addOpcode(Opcode.constructprop, [_proxyEventQName, 2]) //
+				.addOpcode(Opcode.coerce, [_proxyEventQName]) //
+				.addOpcode(Opcode.setlocal, [eventLocal]) //
+				.addOpcode(Opcode.findpropstrict, [_proxyFactoryQName]) //
+				.addOpcode(Opcode.getproperty, [_proxyFactoryQName]) //
+				.addOpcode(Opcode.getproperty, [_proxyCreationDispatcherQName]) //
+				.addOpcode(Opcode.getlocal, [eventLocal]) //
+				.addOpcode(Opcode.callproperty, [_dispatchEventQName, 1]) //
+				.addOpcode(Opcode.pop) //
 				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
 				.addOpcode(Opcode.getproperty, [bytecodeQname]) //
 				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
@@ -459,10 +488,11 @@ package org.as3commons.bytecode.proxy {
 				.addOpcode(Opcode.findpropstrict, [bytecodeQname]) //
 				.addOpcode(Opcode.getproperty, [bytecodeQname]) //
 				.addOpcode(Opcode.coerce, [_namespaceQualifiedName]) //
-				.addOpcode(Opcode.getlocal_1) //
+				.addOpcode(Opcode.getlocal, [eventLocal]) //
+				.addOpcode(Opcode.getproperty, [_interceptorQName]) //
 				.addOpcode(Opcode.setproperty, [_interceptorRTQName]);
-			if (len > 1) {
-				for (var i:int = 1; i < len; ++i) {
+			if (len > 0) {
+				for (var i:int = 0; i < len; ++i) {
 					var idx:int = i + 1;
 					switch (idx) {
 						case 1:
@@ -479,28 +509,28 @@ package org.as3commons.bytecode.proxy {
 							break;
 					}
 				}
-				ctorBuilder.addOpcode(Opcode.newarray, [len - 1]) //
+				ctorBuilder.addOpcode(Opcode.newarray, [len]) //
 					.addOpcode(Opcode.coerce, [_arrayQualifiedName]) //
 					.addOpcode(Opcode.setlocal, [paramLocal]) //
-					.addOpcode(Opcode.getlocal_1) //
+					.addOpcode(Opcode.getlocal, [eventLocal]) //
+					.addOpcode(Opcode.getproperty, [_interceptorQName]) //
 					.addOpcode(Opcode.getlocal_0) //
 					.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
 					.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
 					.addOpcode(Opcode.getproperty, [_ConstructorKindQName]) //
 					.addOpcode(Opcode.pushnull) //
 					.addOpcode(Opcode.getlocal, [paramLocal]) //
-					.addOpcode(Opcode.callproperty, [multiName, 4]) //
+					.addOpcode(Opcode.callproperty, [_interceptQName, 4]) //
 					.addOpcode(Opcode.pop) //
 					.addOpcode(Opcode.getlocal_0);
-				for (i = 0; i < len - 1; ++i) {
+				for (i = 0; i < len; ++i) {
 					ctorBuilder.addOpcode(Opcode.getlocal, [paramLocal]) //
 						.addOpcode(Opcode.pushbyte, [i]) //
 						.addOpcode(Opcode.getproperty, [new MultinameL(multiName.namespaceSet)]) //
 				}
-				ctorBuilder.addOpcode(Opcode.constructsuper, [len - 1]) //
-					.addOpcode(Opcode.returnvoid);
 			} else {
 				ctorBuilder.addOpcode(Opcode.getlocal_1) //
+					.addOpcode(Opcode.getproperty, [_interceptorQName]) //
 					.addOpcode(Opcode.getlocal_0) //
 					.addOpcode(Opcode.findpropstrict, [_invocationKindQualifiedName]) //
 					.addOpcode(Opcode.getproperty, [_invocationKindQualifiedName]) //
@@ -509,10 +539,10 @@ package org.as3commons.bytecode.proxy {
 					.addOpcode(Opcode.pushnull) //
 					.addOpcode(Opcode.callproperty, [_interceptQName, 4]) //
 					.addOpcode(Opcode.pop) //
-					.addOpcode(Opcode.getlocal_0) //
-					.addOpcode(Opcode.constructsuper, [0]) //
-					.addOpcode(Opcode.returnvoid); //
+					.addOpcode(Opcode.getlocal_0); //
 			}
+			ctorBuilder.addOpcode(Opcode.constructsuper, [len]) //
+				.addOpcode(Opcode.returnvoid);
 			LOGGER.debug("Constructor generated");
 		}
 

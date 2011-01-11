@@ -38,6 +38,7 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.testclasses.SimpleClassWithMethodWithOptionalArgs;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithOneConstructorArgument;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithProtectedMethod;
+	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoConstructorArguments;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithoutConstructorArgument;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
@@ -58,6 +59,10 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.reflect.Type;
 
 	public class ProxyFactoryTest extends TestCase {
+
+		{
+			ProxySubClass;
+		}
 
 		private var _proxyFactory:ProxyFactory;
 
@@ -100,6 +105,16 @@ package org.as3commons.bytecode.proxy {
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createConstructorInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleConstructorTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		public function testLoadProxyClassForClassWithTwoCtorParams():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:ClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithTwoConstructorArguments, null, applicationDomain);
+			classProxyInfo.onlyProxyConstructor = true;
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createConstructorInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleConstructorTwoParamsTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
 		}
 
@@ -309,6 +324,12 @@ package org.as3commons.bytecode.proxy {
 
 		protected function handleConstructorTestComplete(event:Event):void {
 			var instance:SimpleClassWithOneConstructorArgument = _proxyFactory.createProxy(SimpleClassWithOneConstructorArgument, ["testarg"]) as SimpleClassWithOneConstructorArgument;
+			assertNotNull(instance);
+			assertEquals('intercepted', instance.string);
+		}
+
+		protected function handleConstructorTwoParamsTestComplete(event:Event):void {
+			var instance:SimpleClassWithTwoConstructorArguments = _proxyFactory.createProxy(SimpleClassWithTwoConstructorArguments, ["testarg", 1]) as SimpleClassWithTwoConstructorArguments;
 			assertNotNull(instance);
 			assertEquals('intercepted', instance.string);
 		}

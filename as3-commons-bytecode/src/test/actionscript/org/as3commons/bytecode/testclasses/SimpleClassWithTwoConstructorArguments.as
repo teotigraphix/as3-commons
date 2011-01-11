@@ -13,22 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.testclasses.interceptors {
-	import org.as3commons.bytecode.interception.IInterceptor;
-	import org.as3commons.bytecode.interception.IMethodInvocation;
-	import org.as3commons.lang.Assert;
+package org.as3commons.bytecode.testclasses {
 
-	public class TestInterceptor extends AssertingInterceptor {
+	public class SimpleClassWithTwoConstructorArguments {
 
-		public function TestInterceptor() {
+		public var string:String;
+		public var integer:int;
+
+		public function SimpleClassWithTwoConstructorArguments(str1:String, int1:int) {
 			super();
-		}
-
-		override public function intercept(invocation:IMethodInvocation):void {
-			super.intercept(invocation);
-			Assert.notNull(invocation.arguments);
-			Assert.state(invocation.arguments.length > 0);
-			invocation.arguments[0] = 'intercepted';
+			string = str1;
+			integer = int1;
 		}
 	}
 }
