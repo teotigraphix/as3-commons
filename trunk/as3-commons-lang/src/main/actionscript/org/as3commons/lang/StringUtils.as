@@ -49,8 +49,8 @@ package org.as3commons.lang {
 		/**
 		 * <p>A RegExp containing the characters not allowed in a filename.</p>
 		 */
-		private static const FILENAME_CHARS_NOT_ALLOWED:RegExp = new RegExp("/|\\\\|:|\\\*|\\\?|<|>|\\||%|\"" );
-		
+		private static const FILENAME_CHARS_NOT_ALLOWED:RegExp = new RegExp("/|\\\\|:|\\\*|\\\?|<|>|\\||%|\"");
+
 		/**
 		 * <p>Returns a simple Initials like string.</p>
 		 *
@@ -1867,7 +1867,11 @@ package org.as3commons.lang {
 		 * @return <code>true</code> if only contains whitespace, and is non-null
 		 */
 		public static function endsWith(str:String, end:String):Boolean {
-			return testString(str, new RegExp(end + '$', ''));
+			if ((str != null) && (end != null) && (str.length >= end.length)) {
+				return (str.substr((str.length - end.length), str.length) == end);
+			} else {
+				return false;
+			}
 		}
 
 		/**
@@ -1887,7 +1891,11 @@ package org.as3commons.lang {
 		 * @return <code>true</code> if only contains whitespace, and is non-null
 		 */
 		public static function startsWith(str:String, start:String):Boolean {
-			return testString(str, new RegExp('^' + start, ''));
+			if ((str != null) && (start != null) && (str.length >= start.length)) {
+				return (str.substr(0, start.length) == start);
+			} else {
+				return false;
+			}
 		}
 
 		/**
@@ -2371,7 +2379,7 @@ package org.as3commons.lang {
 
 			return str;
 		}
-		
+
 		/**
 		 * Determines whether the specified filename is valid
 		 * @param fileName
@@ -2381,10 +2389,10 @@ package org.as3commons.lang {
 			if (!isEmpty(fileName)) {
 				return FILENAME_CHARS_NOT_ALLOWED.exec(fileName) == null;
 			}
-			return false ;
+			return false;
 		}
-		
-		
+
+
 
 	}
 }
