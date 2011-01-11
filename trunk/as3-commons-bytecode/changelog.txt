@@ -3,6 +3,14 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 0.9.4 (11.01.2011)
+-----------------------------------
+
+* Added support for proxying method that have rest arguments. (I.e. function(...rest):void)
+* Fixed bugs in maxStack and localCount calculation for method bodies
+* IMethodInvocationInterceptor instances are no longer injected as constructor arguments, enabling parameterless constructors for proxies. (Good for generating serialization objects)
+* Added ByteCodeType.definitonNames, ByteCodeType.metaDataLookup, ByteCodeType.getCache() and ByteCodeType.getClassesWithMetaData() shortcut methods.
+
 Changes in version 0.9.3 (05.01.2011)
 -----------------------------------
 
