@@ -20,6 +20,7 @@ package org.as3commons.bytecode.reflect {
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ConstantPool;
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.TraitInfo;
@@ -29,6 +30,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.io.AbstractAbcDeserializer;
 	import org.as3commons.bytecode.swf.SWFFileIO;
 	import org.as3commons.bytecode.tags.serialization.RecordHeaderSerializer;
@@ -178,7 +180,7 @@ package org.as3commons.bytecode.reflect {
 
 				var methodNameIndex:int = readU30();
 				var methodName:String = (methodNameIndex > 0) ? constantPool.stringPool[methodNameIndex] : "";
-				methodInfo.as3commons_reflect::setScopeName(MultinameUtil.extractNamespaceNameFromMethodName(methodName));
+				methodInfo.as3commons_reflect::setScopeName(MultinameUtil.extractNamespaceNameFromFullName(methodName));
 				if (methodName.length > 0) {
 					methodName = makeMethodName(methodName);
 				}
@@ -262,7 +264,7 @@ package org.as3commons.bytecode.reflect {
 			return metadatas;
 		}
 
-		public function readTypes(input:ByteArray, constantPool:ConstantPool, applicationDomain:ApplicationDomain, methods:Array, metadatas:Array, typeCache:ByteCodeTypeCache):void {
+		public function readTypes(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain, methods:Array, metadatas:Array, typeCache:ByteCodeTypeCache):void {
 			var classCount:int = readU30();
 			var instances:Array = [];
 			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
@@ -288,7 +290,7 @@ package org.as3commons.bytecode.reflect {
 				//  name 
 				//      The name field is an index into the multiname array of the constant pool; it provides a name for the 
 				//      class. The entry specified must be a QName. 
-				var instanceInfo:ByteCodeType = new ByteCodeType(input, applicationDomain);
+				var instanceInfo:ByteCodeType = new ByteCodeType(input, constantPool, applicationDomain);
 
 				// The AVM2 spec dictates that this should always be a QualifiedName, but when parsing SWFs I have come across
 				// Multinames with single namespaces (which are essentially QualifiedNames - the only reason to be a multiname
@@ -373,7 +375,7 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
-		public function readTraitsInfo(instanceInfos:Array, instanceInfo:ByteCodeType, pool:ConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache, applicationDomain:ApplicationDomain):Array {
+		public function readTraitsInfo(instanceInfos:Array, instanceInfo:ByteCodeType, pool:IConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache, applicationDomain:ApplicationDomain):Array {
 			var traitCount:int = readU30();
 			var methods:Array = [];
 			for (var traitIndex:int = 0; traitIndex < traitCount; ++traitIndex) {
@@ -403,6 +405,7 @@ package org.as3commons.bytecode.reflect {
 						qualifiedName = MultinameUtil.convertToQualifiedName(namedMultiname);
 						var variable:ByteCodeVariable = new ByteCodeVariable(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
 						variable.as3commons_reflect::setIsStatic(isStatic);
+						variable.as3commons_reflect::setScopeName(MultinameUtil.extractNamespaceNameFromFullName(traitMultiname.name));
 						metaDataContainer = variable;
 						if (instanceInfo != null) {
 							instanceInfo.variables[instanceInfo.variables.length] = variable;
@@ -444,6 +447,9 @@ package org.as3commons.bytecode.reflect {
 						method.as3commons_reflect::setIsStatic(isStatic);
 						methods[methods.length] = method;
 						metaDataContainer = method;
+						if (instanceInfo != null) {
+							method.as3commons_reflect::setDeclaringType(instanceInfo.fullName);
+						}
 						break;
 					case TraitKind.GETTER:
 					case TraitKind.SETTER:

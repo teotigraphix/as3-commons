@@ -49,6 +49,8 @@ package org.as3commons.bytecode.proxy.error {
 		 */
 		public static const METHOD_BUILDER_IS_NULL:uint = 0x06;
 
+		public static const INTRODUCED_CLASS_NOT_FOUND:uint = 0x07;
+
 		private static const messages:Dictionary = new Dictionary();
 		{
 			messages[FINAL_CLASS_ERROR] = "Proxied class {0} is marked as final, cannot create a subclass";
@@ -57,6 +59,7 @@ package org.as3commons.bytecode.proxy.error {
 			messages[METHOD_NOT_EXISTS] = "Method {1} was not found on proxied class {0}";
 			messages[ACCESSOR_NOT_EXISTS] = "Accessor {1} was not found on proxied class {0}";
 			messages[METHOD_BUILDER_IS_NULL] = "IMethodBuilder returned by the {0}.methodBuilder instance was null";
+			messages[INTRODUCED_CLASS_NOT_FOUND] = "Class {0} could not be found by ByteCodeType.forName(), unable to introduce";
 		}
 
 		/**

@@ -31,6 +31,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.testclasses.Flavour;
 	import org.as3commons.bytecode.testclasses.IFlavour;
+	import org.as3commons.bytecode.testclasses.ITestIntroduction;
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithAccessors;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithCustomNamespaceMethod;
@@ -42,6 +43,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoConstructorArguments;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithoutConstructorArgument;
+	import org.as3commons.bytecode.testclasses.TestIntroduction;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.testclasses.interceptors.CtorInterceptorFactory;
 	import org.as3commons.bytecode.testclasses.interceptors.CustomInterceptorFactory;
@@ -264,8 +266,26 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.loadProxyClasses();
 		}
 
+		public function testIntroduction():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
+			classProxyInfo.introduce("org.as3commons.bytecode.testclasses.TestIntroduction");
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleIntroductionTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
 		protected function handleMultipleProxiesTestComplete(event:Event):void {
 			assertTrue(true);
+		}
+
+		protected function handleIntroductionTestComplete(event:Event):void {
+			var test:TestIntroduction;
+			var instance:Flavour = _proxyFactory.createProxy(Flavour) as Flavour;
+			assertNotNull(instance);
+			var testInterface:ITestIntroduction = instance as ITestIntroduction;
+			assertNotNull(testInterface);
+			assertEquals("test", testInterface.getTest());
 		}
 
 		protected function createCanvasInterceptor(event:ProxyFactoryEvent):void {

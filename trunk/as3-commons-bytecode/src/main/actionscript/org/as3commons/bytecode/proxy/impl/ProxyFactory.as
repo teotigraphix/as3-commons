@@ -112,7 +112,7 @@ package org.as3commons.bytecode.proxy.impl {
 	 * Basic implementation of the <code>IProxyFactory</code> interface.
 	 * @author Roland Zwaga
 	 */
-	public class ProxyFactory extends EventDispatcher implements IProxyFactory {
+	public class ProxyFactory extends AbstractProxyFactory implements IProxyFactory {
 
 		private static const LOGGER:ILogger = LoggerFactory.getClassLogger(ProxyFactory);
 
@@ -137,6 +137,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _abcBuilder:IAbcBuilder;
 		private var _domains:Dictionary;
 		private var _classIntroducer:IClassIntroducer;
+		private var _methodProxyFactory:MethodProxyFactory;
 		private var _namespaceQualifiedName:QualifiedName = new QualifiedName("Namespace", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _arrayQualifiedName:QualifiedName = new QualifiedName("Array", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _invocationKindQualifiedName:QualifiedName = new QualifiedName("InvocationKind", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.interception"), MultinameKind.QNAME);
@@ -145,7 +146,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _interceptQName:QualifiedName = new QualifiedName("intercept", new LNamespace(NamespaceKind.NAMESPACE, "org.as3commons.bytecode.interception:IMethodInvocationInterceptor"));
 		private var _proxyEventQName:QualifiedName = new QualifiedName("ProxyCreationEvent", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.proxy.event"));
 		private var _proxyEventTypeQName:QualifiedName = new QualifiedName("PROXY_CREATED", LNamespace.PUBLIC);
-		private var _proxyFactoryQName:QualifiedName = new QualifiedName("ProxyFactory", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.proxy"));
+		private var _proxyFactoryQName:QualifiedName = new QualifiedName("ProxyFactory", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.proxy.impl"));
 		private var _dispatchEventQName:QualifiedName = new QualifiedName("dispatchEvent", new LNamespace(NamespaceKind.NAMESPACE, "flash.events:IEventDispatcher"));
 		private var _proxyCreationDispatcherQName:QualifiedName = new QualifiedName("proxyCreationDispatcher", LNamespace.PUBLIC);
 		private var _ConstructorKindQName:QualifiedName = new QualifiedName("CONSTRUCTOR", LNamespace.PUBLIC);
@@ -187,7 +188,8 @@ package org.as3commons.bytecode.proxy.impl {
 			_domains = new Dictionary();
 			_classProxyLookup = new Dictionary();
 			_generatedMultinames = new Dictionary();
-			_classIntroducer = new ClassIntroducer();
+			_methodProxyFactory = new MethodProxyFactory();
+			_classIntroducer = new ClassIntroducer(_methodProxyFactory);
 			LOGGER.debug("ProxyFactory created and initialized");
 		}
 
@@ -346,7 +348,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 			var memberInfo:MemberInfo;
 			for each (memberInfo in classProxyInfo.methods) {
-				var methodBuilder:IMethodBuilder = proxyMethod(classBuilder, type, memberInfo);
+				var methodBuilder:IMethodBuilder = _methodProxyFactory.proxyMethod(classBuilder, type, memberInfo);
 				addMethodBody(methodBuilder, nsMultiname, bytecodeQname, type.isInterface);
 			}
 
@@ -361,22 +363,6 @@ package org.as3commons.bytecode.proxy.impl {
 			dispatchEvent(new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_PROXY_BUILD, null, classBuilder, classProxyInfo.proxiedClass));
 			LOGGER.debug("Generated proxy class {0} for class {1}", proxyClassName, classProxyInfo.proxiedClass);
 			return new ProxyInfo(proxyClassName.split(MultinameUtil.SINGLE_COLON).join(MultinameUtil.PERIOD));
-		}
-
-		/**
-		 * Adds the metadata from the specified <code>Array</code> of <code>MetaData</code> instances
-		 * to the specified <code>IMetadataContainer</code> instance.
-		 * @param metadaContainer The specified <code>IMetadataContainer</code> instance.
-		 * @param metadatas The specified <code>Array</code> of <code>MetaData</code> instances
-		 */
-		protected function addMetadata(metadaContainer:IMetadataContainer, metadatas:Array):void {
-			for each (var metadata:MetaData in metadatas) {
-				var args:Array = [];
-				for each (var arg:org.as3commons.reflect.MetaDataArgument in metadata.arguments) {
-					args[args.length] = new org.as3commons.bytecode.emit.impl.MetaDataArgument(arg.key, arg.value);
-					metadaContainer.defineMetaData(metadata.name, args);
-				}
-			}
 		}
 
 		/**
@@ -609,46 +595,13 @@ package org.as3commons.bytecode.proxy.impl {
 			return ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.NAMESPACE));
 		}
 
-		/**
-		 * Creates an overridden method on the specified <code>IClassBuilder</code> instance. Which method is determined by the specified <code>MemberInfo</code>
-		 * instance.
-		 * @param classBuilder The specified <code>IClassBuilder</code> instance.
-		 * @param type The specified <code>ByteCodeType</code> instance.
-		 * @param memberInfo The specified <code>MemberInfo</code> instance.
-		 * @return The <code>IMethodBuilder</code> representing the generated method.
-		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied method is marked as final.
-		 */
-		protected function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo):IMethodBuilder {
-			Assert.notNull(classBuilder, "classBuilder argument must not be null");
-			Assert.notNull(type, "type argument must not be null");
-			Assert.notNull(memberInfo, "memberInfo argument must not be null");
-			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(memberInfo.qName.localName, memberInfo.qName.uri);
-			methodBuilder.isOverride = (!type.isInterface);
-			var method:ByteCodeMethod = type.getMethod(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeMethod;
-			if (method == null) {
-				throw new ProxyBuildError(ProxyBuildError.METHOD_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
-			}
-			if (method.isFinal) {
-				throw new ProxyBuildError(ProxyBuildError.FINAL_METHOD_ERROR, method.name);
-			}
-			addMetadata(methodBuilder, method.metaData);
-			methodBuilder.visibility = (!type.isInterface) ? getMemberVisibility(method) : MemberVisibility.PUBLIC;
-			methodBuilder.namespaceURI = method.namespaceURI;
-			methodBuilder.scopeName = method.scopeName;
-			methodBuilder.returnType = method.returnType.fullName;
-			methodBuilder.hasRestArguments = method.hasRestArguments;
-			for each (var arg:ByteCodeParameter in method.parameters) {
-				methodBuilder.defineArgument(arg.type.fullName, arg.isOptional, arg.defaultValue);
-			}
-			return methodBuilder;
-		}
 
 		/**
 		 * Translates the specified <code>member.visibility</code> value to a valid <code>MemberVisibility</code> enum instance.
 		 * @param member The specified <code>IVisibleMember</code> instance.
 		 * @return A valid <code>MemberVisibility</code> enum instance.
 		 */
-		protected function getMemberVisibility(member:IVisibleMember):MemberVisibility {
+		public static function getMemberVisibility(member:IVisibleMember):MemberVisibility {
 			switch (member.visibility) {
 				case NamespaceKind.PACKAGE_NAMESPACE:
 					return MemberVisibility.PUBLIC;
