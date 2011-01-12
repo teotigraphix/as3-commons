@@ -36,7 +36,7 @@ package org.as3commons.bytecode.abc {
 
 		public var minorVersion:int;
 		public var majorVersion:int;
-		public var constantPool:ConstantPool;
+		public var constantPool:IConstantPool;
 
 		/**
 		 * Creates a new <code>AbcFile</code> instance.
@@ -73,6 +73,7 @@ package org.as3commons.bytecode.abc {
 
 		public function addClassInfo(classInfo:ClassInfo):int {
 			Assert.notNull(classInfo);
+			constantPool.classInfo[constantPool.classInfo.length] = classInfo; 
 			return addUniquely(classInfo, _classInfo);
 		}
 

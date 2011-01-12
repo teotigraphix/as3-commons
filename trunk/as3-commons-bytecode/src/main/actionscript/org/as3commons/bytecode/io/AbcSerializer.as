@@ -16,8 +16,7 @@
 package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	import flash.utils.Endian;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -25,6 +24,7 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.FunctionTrait;
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
@@ -52,7 +52,6 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.typeinfo.Method;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.lang.Assert;
-	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -118,7 +117,7 @@ package org.as3commons.bytecode.io {
 
 		public function serializeMethodBodies(abcFile:AbcFile):void {
 			var methodBodies:Array = abcFile.methodBodies;
-			var pool:ConstantPool = abcFile.constantPool;
+			var pool:IConstantPool = abcFile.constantPool;
 
 			writeU30(methodBodies.length);
 			for each (var body:MethodBody in methodBodies) {
@@ -165,7 +164,7 @@ package org.as3commons.bytecode.io {
 
 		public function serializeTraits(traits:Array, abcFile:AbcFile):void {
 			writeU30(traits.length);
-			var pool:ConstantPool = abcFile.constantPool;
+			var pool:IConstantPool = abcFile.constantPool;
 
 			for each (var trait:TraitInfo in traits) {
 				// traits_info  
@@ -264,7 +263,7 @@ package org.as3commons.bytecode.io {
 		public function serializeClassAndInstanceInfo(abcFile:AbcFile):void {
 			var instanceInfo:Array = abcFile.instanceInfo;
 			var classInfo:Array = abcFile.classInfo;
-			var pool:ConstantPool = abcFile.constantPool;
+			var pool:IConstantPool = abcFile.constantPool;
 
 			// class_count u30
 			writeU30(classInfo.length); // class_count u30
@@ -320,7 +319,7 @@ package org.as3commons.bytecode.io {
 
 		public function serializeMetadataInfo(abcFile:AbcFile):void {
 			var metadataInfo:Array = abcFile.metadataInfo;
-			var pool:ConstantPool = abcFile.constantPool;
+			var pool:IConstantPool = abcFile.constantPool;
 
 			writeU30(metadataInfo.length);
 			for each (var metadataEntry:Metadata in metadataInfo) {
@@ -357,7 +356,7 @@ package org.as3commons.bytecode.io {
 			//  option_info options 
 			//  param_info param_names 
 			// }
-			var pool:ConstantPool = abcFile.constantPool;
+			var pool:IConstantPool = abcFile.constantPool;
 			var methodInfoArray:Array = abcFile.methodInfo;
 
 			writeU30(methodInfoArray.length); // u30 method_count
@@ -515,7 +514,7 @@ package org.as3commons.bytecode.io {
 		 * can happen since all the constants have to be added to the pool before it hits the bytecode
 		 * (after all, all the bytecode references the pool).
 		 */
-		public function serializeConstantPool(pool:ConstantPool, outputStream:ByteArray):void {
+		public function serializeConstantPool(pool:IConstantPool, outputStream:ByteArray):void {
 			//NOTE: Contrary to the spec, the number of entries in each numeric pool seems to be
 			// either (a) the number of entries + 1 if entries are present, or (b) 0 if no entries
 			// are present

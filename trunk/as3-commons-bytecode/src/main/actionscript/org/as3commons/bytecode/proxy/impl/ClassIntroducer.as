@@ -15,9 +15,10 @@
 */
 package org.as3commons.bytecode.proxy.impl {
 	import flash.utils.ByteArray;
-
+	
 	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.MethodBody;
+	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
@@ -78,11 +79,10 @@ package org.as3commons.bytecode.proxy.impl {
 			methodBody.maxStack = method.maxStack;
 			methodBody.localCount = method.localCount;
 			methodBody.maxScopeDepth = method.maxScopeDepth;
-			methodBody.rawOpcodes = AbcSpec.byteArray();
 			var originalPosition:int = type.byteArray.position;
 			try {
-				methodBody.rawOpcodes.writeBytes(type.byteArray, method.bodyStartPosition, method.bodyLength);
-				type.byteArray.position = (method.bodyStartPosition + method.bodyLength);
+				type.byteArray.position = method.bodyStartPosition;
+				methodBody.opcodes = Opcode.parse(type.byteArray, method.bodyLength, methodBody, type.constantPool);
 				methodBody.exceptionInfos = extractExceptionInfos(type.byteArray, type);
 			} finally {
 				type.byteArray.position = originalPosition;

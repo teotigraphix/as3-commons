@@ -15,7 +15,7 @@
 */
 package org.as3commons.bytecode.abc {
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 
 	public interface IConstantPool {
@@ -33,6 +33,9 @@ package org.as3commons.bytecode.abc {
 		function get namespacePool():Array;
 		function get namespaceSetPool():Array;
 		function get multinamePool():Array;
+		function get classInfo():Array;
+		function get locked():Boolean;
+		function set locked(value:Boolean):void;
 		function addMultiname(multiname:BaseMultiname):int;
 		function getStringPosition(string:String):int;
 		function getIntPosition(intValue:int):int;
