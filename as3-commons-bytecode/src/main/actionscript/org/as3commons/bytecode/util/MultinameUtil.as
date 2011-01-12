@@ -192,7 +192,7 @@ package org.as3commons.bytecode.util {
 			return qualifiedName;
 		}
 
-		public static function extractNamespaceNameFromMethodName(methodName:String):String {
+		public static function extractNamespaceNameFromFullName(methodName:String):String {
 			if (!StringUtils.hasText(methodName)) {
 				return "";
 			}

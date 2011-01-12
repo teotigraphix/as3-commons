@@ -72,6 +72,10 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
+		as3commons_bytecode function setMethodBody(methodBody:MethodBody):void {
+			methodBodyBuilder.as3commons_bytecode::setMethodBody(methodBody);
+		}
+
 		protected function get methodBodyBuilder():IMethodBodyBuilder {
 			if (_methodBodyBuilder == null) {
 				_methodBodyBuilder = new MethodBodyBuilder();

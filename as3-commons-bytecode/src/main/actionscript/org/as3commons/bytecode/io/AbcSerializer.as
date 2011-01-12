@@ -128,18 +128,17 @@ package org.as3commons.bytecode.io {
 				writeU30(body.initScopeDepth);
 				writeU30(body.maxScopeDepth);
 
-//        		trace("====> " + body.methodSignature.loomName);
-				var opcodesAsByteArray:ByteArray = Opcode.serialize(body.opcodes, body, abcFile);
-//        		trace(opcodesAsByteArray.length + ": " + body.methodSignature.loomName);
-				writeU30(opcodesAsByteArray.length);
-				var len:uint = opcodesAsByteArray.length;
-				for (var opcodeBytePosition:int = 0; opcodeBytePosition < len; ++opcodeBytePosition) {
-					writeU8(opcodesAsByteArray[opcodeBytePosition]);
+				if (body.rawOpcodes == null) {
+					var opcodesAsByteArray:ByteArray = Opcode.serialize(body.opcodes, body, abcFile);
+					writeU30(opcodesAsByteArray.length);
+					var len:uint = opcodesAsByteArray.length;
+					for (var opcodeBytePosition:int = 0; opcodeBytePosition < len; ++opcodeBytePosition) {
+						writeU8(opcodesAsByteArray[opcodeBytePosition]);
+					}
+				} else {
+					writeU30(body.rawOpcodes.length);
+					_outputStream.writeBytes(body.rawOpcodes);
 				}
-//        		for each (var opcode : int in body.opcodes)
-//        		{
-//        			writeU8(opcode);
-//        		}
 
 				writeU30(body.exceptionInfos.length);
 				for each (var exception:ExceptionInfo in body.exceptionInfos) {

@@ -187,6 +187,14 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function buildBody(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody {
+			if ((_methodBody != null) && (_methodBody.rawOpcodes != null)) {
+				if (initScopeDepth != _methodBody.initScopeDepth) {
+					var diff:int = (_methodBody.maxScopeDepth - _methodBody.initScopeDepth);
+					_methodBody.initScopeDepth = initScopeDepth;
+					_methodBody.maxScopeDepth = _methodBody.initScopeDepth + diff;
+				}
+				return _methodBody;
+			}
 			_currentStack = 0;
 			_maxStack = 0;
 			_currentScope = initScopeDepth;

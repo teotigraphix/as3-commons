@@ -380,7 +380,7 @@ package org.as3commons.bytecode.io {
 						//trace("MethodInfo param " + argumentIndex + ": " + arg.toString());
 				}
 				methodInfo.methodName = pool.stringPool[readU30()];
-				methodInfo.scopeName = MultinameUtil.extractNamespaceNameFromMethodName(methodInfo.methodName);
+				methodInfo.scopeName = MultinameUtil.extractNamespaceNameFromFullName(methodInfo.methodName);
 				//trace("Method name " + methodInfo.methodName);
 				methodInfo.flags = readU8();
 

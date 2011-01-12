@@ -18,7 +18,6 @@ package org.as3commons.bytecode.abc {
 
 	/**
 	 * as3commons-bytecode representation of <code>exception_info</code> in the ABC file format.
-	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Exception" in the AVM Spec (page 34)
 	 */
 	public class ExceptionInfo implements ICloneable {

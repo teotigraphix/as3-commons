@@ -16,9 +16,10 @@
 package org.as3commons.bytecode.reflect {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
-
+	
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ConstantPool;
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.ClassConstant;
 	import org.as3commons.bytecode.abc.enum.MethodFlag;
@@ -65,7 +66,7 @@ package org.as3commons.bytecode.reflect {
 			return null;
 		}
 
-		override public function readTypes(input:ByteArray, constantPool:ConstantPool, applicationDomain:ApplicationDomain, methods:Array, metadatas:Array, typeCache:ByteCodeTypeCache):void {
+		override public function readTypes(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain, methods:Array, metadatas:Array, typeCache:ByteCodeTypeCache):void {
 			var classCount:int = readU30();
 			var classNames:Array = [];
 			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
@@ -107,7 +108,7 @@ package org.as3commons.bytecode.reflect {
 
 		}
 
-		public function gatherMetaData(classNames:Array, pool:ConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache):void {
+		public function gatherMetaData(classNames:Array, pool:IConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache):void {
 			var traitCount:int = readU30();
 			for (var traitIndex:int = 0; traitIndex < traitCount; ++traitIndex) {
 				var className:String = null;
