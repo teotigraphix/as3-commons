@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.proxy {
+package org.as3commons.bytecode.proxy.impl {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
@@ -43,11 +43,13 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.emit.event.AccessorBuilderEvent;
 	import org.as3commons.bytecode.emit.impl.AbcBuilder;
-	import org.as3commons.bytecode.emit.impl.BaseBuilder;
 	import org.as3commons.bytecode.emit.impl.MetaDataArgument;
 	import org.as3commons.bytecode.emit.impl.MethodBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
+	import org.as3commons.bytecode.proxy.IClassIntroducer;
+	import org.as3commons.bytecode.proxy.IClassProxyInfo;
+	import org.as3commons.bytecode.proxy.IProxyFactory;
 	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
 	import org.as3commons.bytecode.proxy.event.ProxyCreationEvent;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
@@ -63,7 +65,6 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
-	import org.as3commons.reflect.AbstractMember;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.MetaData;
@@ -135,6 +136,7 @@ package org.as3commons.bytecode.proxy {
 		private var _classProxyLookup:Dictionary;
 		private var _abcBuilder:IAbcBuilder;
 		private var _domains:Dictionary;
+		private var _classIntroducer:IClassIntroducer;
 		private var _namespaceQualifiedName:QualifiedName = new QualifiedName("Namespace", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _arrayQualifiedName:QualifiedName = new QualifiedName("Array", LNamespace.PUBLIC, MultinameKind.QNAME);
 		private var _invocationKindQualifiedName:QualifiedName = new QualifiedName("InvocationKind", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.interception"), MultinameKind.QNAME);
@@ -161,6 +163,15 @@ package org.as3commons.bytecode.proxy {
 			initProxyFactory();
 		}
 
+
+		public function get classIntroducer():IClassIntroducer {
+			return _classIntroducer;
+		}
+
+		public function set classIntroducer(value:IClassIntroducer):void {
+			_classIntroducer = value;
+		}
+
 		/**
 		 * A <code>Dictionary</code> lookup of <code>ApplicationDomain</code>-&gt;<code>Array</code>-of-<code>ClassProxyInfo</code>.
 		 */
@@ -176,6 +187,7 @@ package org.as3commons.bytecode.proxy {
 			_domains = new Dictionary();
 			_classProxyLookup = new Dictionary();
 			_generatedMultinames = new Dictionary();
+			_classIntroducer = new ClassIntroducer();
 			LOGGER.debug("ProxyFactory created and initialized");
 		}
 
@@ -195,7 +207,7 @@ package org.as3commons.bytecode.proxy {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class = null, applicationDomain:ApplicationDomain = null):ClassProxyInfo {
+		public function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class = null, applicationDomain:ApplicationDomain = null):IClassProxyInfo {
 			methodInvocationInterceptorClass = (methodInvocationInterceptorClass != null) ? methodInvocationInterceptorClass : BasicMethodInvocationInterceptor;
 			Assert.state(ClassUtils.isImplementationOf(methodInvocationInterceptorClass, IMethodInvocationInterceptor, applicationDomain) == true, "methodInvocationInterceptorClass argument must be a class that implements IMethodInvocationInterceptor");
 			applicationDomain = (applicationDomain != null) ? applicationDomain : ApplicationDomain.currentDomain;
@@ -203,7 +215,7 @@ package org.as3commons.bytecode.proxy {
 				_domains[applicationDomain] = [];
 			}
 			var infos:Array = _domains[applicationDomain] as Array;
-			var info:ClassProxyInfo = new ClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
+			var info:IClassProxyInfo = new ClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
 			infos[infos.length] = info;
 			LOGGER.debug("Defined proxy class for {0}", proxiedClass);
 			return info;
@@ -215,7 +227,7 @@ package org.as3commons.bytecode.proxy {
 		public function generateProxyClasses():IAbcBuilder {
 			for (var domain:* in _domains) {
 				var infos:Array = _domains[domain] as Array;
-				for each (var info:ClassProxyInfo in infos) {
+				for each (var info:IClassProxyInfo in infos) {
 					var proxyInfo:ProxyInfo = buildProxyClass(info, domain);
 					proxyInfo.proxiedClass = info.proxiedClass;
 					proxyInfo.interceptorFactory = info.interceptorFactory;
@@ -299,7 +311,7 @@ package org.as3commons.bytecode.proxy {
 		 * @return A <code>ProxyInfo</code> instance.
 		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied class is marked as final.
 		 */
-		protected function buildProxyClass(classProxyInfo:ClassProxyInfo, applicationDomain:ApplicationDomain):ProxyInfo {
+		protected function buildProxyClass(classProxyInfo:IClassProxyInfo, applicationDomain:ApplicationDomain):ProxyInfo {
 			var className:String = ClassUtils.getFullyQualifiedName(classProxyInfo.proxiedClass);
 			var type:ByteCodeType = ByteCodeType.forName(className.replace(MultinameUtil.DOUBLE_COLON, MultinameUtil.PERIOD), applicationDomain);
 			if (type.isFinal) {
@@ -340,6 +352,10 @@ package org.as3commons.bytecode.proxy {
 
 			for each (memberInfo in classProxyInfo.accessors) {
 				accessorBuilder = proxyAccessor(classBuilder, type, memberInfo, nsMultiname, bytecodeQname);
+			}
+
+			for each (var introducedClassName:String in classProxyInfo.introductions) {
+				_classIntroducer.introduce(introducedClassName, classBuilder);
 			}
 
 			dispatchEvent(new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_PROXY_BUILD, null, classBuilder, classProxyInfo.proxiedClass));
@@ -424,7 +440,7 @@ package org.as3commons.bytecode.proxy {
 		 * @param classProxyInfo The <code>ClassProxyInfo</code> that specified the <code>IMethodInvocationInterceptor</code> class.
 		 * @return A <code>ICtorBuilder</code> instance that represents the generated constructor.
 		 */
-		protected function addConstructor(classBuilder:IClassBuilder, type:ByteCodeType, classProxyInfo:ClassProxyInfo):ICtorBuilder {
+		protected function addConstructor(classBuilder:IClassBuilder, type:ByteCodeType, classProxyInfo:IClassProxyInfo):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = classBuilder.defineConstructor();
 			//var interceptorClassName:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
 			//ctorBuilder.defineArgument(interceptorClassName);
@@ -554,7 +570,7 @@ package org.as3commons.bytecode.proxy {
 		 * @param type The specified <code>ByteCodeType</code> instance.
 		 * @param applicationDomain The <code>ApplicationDOmain</code> that the <code>ClassProxyInfo.proxiedClass</code> belongs to.
 		 */
-		protected function reflectMembers(classProxyInfo:ClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
+		protected function reflectMembers(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
 			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");

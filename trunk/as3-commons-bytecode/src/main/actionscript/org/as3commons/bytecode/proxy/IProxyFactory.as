@@ -18,6 +18,7 @@ package org.as3commons.bytecode.proxy {
 	import flash.system.ApplicationDomain;
 
 	import org.as3commons.bytecode.emit.IAbcBuilder;
+	import org.as3commons.bytecode.proxy.impl.ProxyInfo;
 
 	/**
 	 * Dispatched before a proxy class is created, it allows the creation of a <code>IMethodInvocationInterceptor</code> to be
@@ -84,7 +85,7 @@ package org.as3commons.bytecode.proxy {
 		 * @param applicationDomain The <code>ApplicationDomain</code> that contains the defintion of the specified <code>proxiedClass</code>.
 		 * @return
 		 */
-		function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class = null, applicationDomain:ApplicationDomain = null):ClassProxyInfo;
+		function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class = null, applicationDomain:ApplicationDomain = null):IClassProxyInfo;
 		/**
 		 * Generates the definitions for all proxied class.
 		 * @return The <code>IAbcBuilder</code> instance that contains all the definitions for the proxies.

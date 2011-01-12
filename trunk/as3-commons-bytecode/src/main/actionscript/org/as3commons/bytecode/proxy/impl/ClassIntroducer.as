@@ -13,29 +13,18 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.proxy {
+package org.as3commons.bytecode.proxy.impl {
+	import org.as3commons.bytecode.emit.IClassBuilder;
+	import org.as3commons.bytecode.proxy.IClassIntroducer;
 
-	/**
-	 *
-	 * @author Roland Zwaga
-	 */
-	internal class MemberInfo {
+	public class ClassIntroducer implements IClassIntroducer {
 
-		private var _qName:QName;
-
-		/**
-		 * Creates a new <code>MemberInfo</code> instance.
-		 * @param name
-		 * @param namespace
-		 */
-		public function MemberInfo(name:String, namespace:String = "") {
+		public function ClassIntroducer() {
 			super();
-			_qName = new QName(namespace, name);
 		}
 
-		public function get qName():QName {
-			return _qName;
-		}
+		public function introduce(className:String, classBuilder:IClassBuilder):void {
 
+		}
 	}
 }

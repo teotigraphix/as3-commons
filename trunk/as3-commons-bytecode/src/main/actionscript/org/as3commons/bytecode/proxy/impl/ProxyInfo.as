@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.proxy {
+package org.as3commons.bytecode.proxy.impl {
 	import flash.system.ApplicationDomain;
 
 	import mx.core.IFactory;
