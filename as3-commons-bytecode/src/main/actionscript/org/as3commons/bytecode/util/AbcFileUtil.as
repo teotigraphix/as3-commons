@@ -17,11 +17,12 @@ package org.as3commons.bytecode.util {
 
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ConstantPool;
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
@@ -128,7 +129,7 @@ package org.as3commons.bytecode.util {
 		 * @param pool2 The second <code>ConstantPool</code> instance.
 		 * @return The merged <code>ConstantPool</code> instance.
 		 */
-		public static function mergeConstantPools(pool1:ConstantPool, pool2:ConstantPool):ConstantPool {
+		public static function mergeConstantPools(pool1:IConstantPool, pool2:IConstantPool):IConstantPool {
 			var result:ConstantPool = new ConstantPool();
 			result.as3commons_bytecode::setDoublePool(pool1.doublePool.concat([]));
 			for each (var nr:Number in pool2.doublePool) {

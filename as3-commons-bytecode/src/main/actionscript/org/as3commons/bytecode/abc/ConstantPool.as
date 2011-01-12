@@ -66,11 +66,12 @@ package org.as3commons.bytecode.abc {
 		private var _namespaceSetPool:Array;
 		private var _namespaceSetLookup:Dictionary;
 		private var _multinamePool:Array;
+		private var _classInfo:Array;
 		private var _multinameLookup:Dictionary;
 
 		private var _lookup:Dictionary;
 
-		public var locked:Boolean = false;
+		private var _locked:Boolean = false;
 
 		/**
 		 * Constructs and initializes a fresh <code>ConstantPool</code> instance. All the pools
@@ -83,6 +84,13 @@ package org.as3commons.bytecode.abc {
 			reset();
 		}
 
+		public function get locked():Boolean {
+			return _locked;
+		}
+
+		public function set locked(value:Boolean):void {
+			_locked = value;
+		}
 
 		public function get dupeCheck():Boolean {
 			return _dupeCheck;
@@ -107,6 +115,7 @@ package org.as3commons.bytecode.abc {
 			_uintLookup[0] = 0;
 			_doublePool = [0];
 			_doubleLookup[0] = 0;
+			_classInfo = [];
 			_stringPool = [LNamespace.ASTERISK.name];
 			_stringLookup.set(LNamespace.ASTERISK.name, 0);
 
@@ -249,6 +258,14 @@ package org.as3commons.bytecode.abc {
 
 		as3commons_bytecode function setMultinamePool(value:Array):void {
 			_multinamePool = value;
+		}
+		
+		public function get classInfo():Array {
+			return _classInfo;
+		}
+
+		as3commons_bytecode function setClassInfo(value:Array):void {
+			_classInfo = value;
 		}
 
 		/**

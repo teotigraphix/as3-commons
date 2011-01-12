@@ -19,12 +19,13 @@ package org.as3commons.bytecode.abc.enum {
 	import flash.events.IEventDispatcher;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ByteCodeErrorEvent;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.Integer;
 	import org.as3commons.bytecode.abc.JumpTargetData;
 	import org.as3commons.bytecode.abc.LNamespace;
@@ -417,7 +418,7 @@ package org.as3commons.bytecode.abc.enum {
 		 * bytecode in the Ops. This method assumes that the ByteArray is positioned at the top of an
 		 * opcode block.
 		 */
-		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, abcFile:AbcFile):Array {
+		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, constantPool:IConstantPool):Array {
 			_opcodePositions = new Dictionary();
 			var ops:Array = [];
 			methodBody.backPatches = [];
@@ -427,7 +428,7 @@ package org.as3commons.bytecode.abc.enum {
 			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCodeLength);
 			try {
 				while (byteArray.position < positionAtEndOfBytecode) {
-					parseOpcode(byteArray, abcFile, ops, methodBody);
+					parseOpcode(byteArray, constantPool, ops, methodBody);
 				}
 				if (byteArray.position > positionAtEndOfBytecode) {
 					throw new Error("Opcode parsing read beyond end of method body");
@@ -444,13 +445,13 @@ package org.as3commons.bytecode.abc.enum {
 			return ops;
 		}
 
-		public static function parseOpcode(byteArray:ByteArray, abcFile:AbcFile, ops:Array, methodBody:MethodBody):void {
+		public static function parseOpcode(byteArray:ByteArray, constantPool:IConstantPool, ops:Array, methodBody:MethodBody):void {
 			var startPos:int = byteArray.position;
 			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
 			_opcodePositions[startPos] = opcode;
 			var argumentValues:Array = [];
 			for each (var argument:* in opcode.argumentTypes) {
-				parseOpcodeArguments(argument, byteArray, argumentValues, abcFile, methodBody);
+				parseOpcodeArguments(argument, byteArray, argumentValues, constantPool, methodBody);
 			}
 			var endPos:int = byteArray.position;
 
@@ -502,7 +503,7 @@ package org.as3commons.bytecode.abc.enum {
 			//trace(byteArray.position + "\t" + op);
 		}
 
-		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, argumentValues:Array, abcFile:AbcFile, methodBody:MethodBody):void {
+		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, argumentValues:Array, constantPool:IConstantPool, methodBody:MethodBody):void {
 			var argumentType:* = argument[0];
 			var readWritePair:ReadWritePair = argument[1];
 			var byteCodeValue:* = readWritePair.read(byteArray);
@@ -515,43 +516,43 @@ package org.as3commons.bytecode.abc.enum {
 					break;
 
 				case Integer:
-					constantPoolValue = abcFile.constantPool.integerPool[byteCodeValue];
+					constantPoolValue = constantPool.integerPool[byteCodeValue];
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case UnsignedInteger:
-					constantPoolValue = abcFile.constantPool.uintPool[byteCodeValue];
+					constantPoolValue = constantPool.uintPool[byteCodeValue];
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case Number:
-					constantPoolValue = abcFile.constantPool.doublePool[byteCodeValue];
+					constantPoolValue = constantPool.doublePool[byteCodeValue];
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case BaseMultiname:
-					constantPoolValue = abcFile.constantPool.multinamePool[byteCodeValue];
+					constantPoolValue = constantPool.multinamePool[byteCodeValue];
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case ClassInfo:
-					constantPoolValue = abcFile.classInfo[byteCodeValue];
+					constantPoolValue = constantPool.classInfo[byteCodeValue];
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case String:
-					constantPoolValue = abcFile.constantPool.stringPool[byteCodeValue];
+					constantPoolValue = constantPool.stringPool[byteCodeValue];
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case LNamespace:
-					constantPoolValue = abcFile.constantPool.namespacePool[byteCodeValue];
+					constantPoolValue = constantPool.namespacePool[byteCodeValue];
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;

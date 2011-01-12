@@ -103,7 +103,7 @@ package org.as3commons.bytecode.io {
 		override public function deserialize(positionInByteArrayToReadFrom:int = 0):AbcFile {
 			byteStream.position = positionInByteArrayToReadFrom;
 			var abcFile:AbcFile = new AbcFile();
-			var pool:ConstantPool = abcFile.constantPool;
+			var pool:IConstantPool = abcFile.constantPool;
 
 			var startTime:Number = new Date().getTime();
 
@@ -192,7 +192,7 @@ package org.as3commons.bytecode.io {
 
 				var codeLength:int = readU30();
 				if (methodBodyExtractionMethod === MethodBodyExtractionKind.PARSE) {
-					methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile);
+					methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile.constantPool);
 				} else if (methodBodyExtractionMethod === MethodBodyExtractionKind.BYTEARRAY) {
 					methodBody.rawOpcodes.writeBytes(byteStream, byteStream.position, codeLength);
 					byteStream.position += codeLength;
@@ -492,7 +492,7 @@ package org.as3commons.bytecode.io {
 
 		public override function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false):Array {
 			var traits:Array = [];
-			var pool:ConstantPool = abcFile.constantPool;
+			var pool:IConstantPool = abcFile.constantPool;
 			var methodInfos:Array = abcFile.methodInfo;
 			var metadata:Array = abcFile.metadataInfo;
 
@@ -612,7 +612,7 @@ package org.as3commons.bytecode.io {
 			return traits;
 		}
 
-		protected function getSlotOrConstantDefaultValue(pool:ConstantPool, poolIndex:uint, constantKind:ConstantKind):* {
+		protected function getSlotOrConstantDefaultValue(pool:IConstantPool, poolIndex:uint, constantKind:ConstantKind):* {
 			return pool.getConstantPoolItem(constantKind.value, poolIndex);
 		}
 
