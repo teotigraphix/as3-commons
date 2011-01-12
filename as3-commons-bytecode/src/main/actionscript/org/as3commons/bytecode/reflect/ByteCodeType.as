@@ -20,6 +20,7 @@ package org.as3commons.bytecode.reflect {
 
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
+	import org.as3commons.lang.SoftReference;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.Constant;
 	import org.as3commons.reflect.ITypeProvider;
@@ -32,8 +33,15 @@ package org.as3commons.bytecode.reflect {
 
 		private static var typeProvider:ITypeProvider;
 
-		public function ByteCodeType(applicationDomain:ApplicationDomain) {
+		private var _byteArray:SoftReference;
+
+		public function ByteCodeType(byteArray:ByteArray, applicationDomain:ApplicationDomain) {
 			super(applicationDomain);
+			_byteArray = new SoftReference(byteArray);
+		}
+
+		public function get byteArray():ByteArray {
+			return (_byteArray.value as ByteArray);
 		}
 
 		public static function getTypeProvider():ITypeProvider {

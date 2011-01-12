@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.proxy {
+package org.as3commons.bytecode.proxy.impl {
 	import flash.system.ApplicationDomain;
 	import flash.system.Capabilities;
 	import flash.system.System;
@@ -21,19 +21,20 @@ package org.as3commons.bytecode.proxy {
 	import mx.core.IFactory;
 
 	import org.as3commons.lang.Assert;
+	import org.as3commons.bytecode.proxy.IClassProxyInfo;
 
 	/**
 	 * Contains all the necessary information for an <code>IProxyFactory</code> to generate
 	 * a proxy class.
 	 * @author Roland Zwaga
 	 */
-	public final class ClassProxyInfo {
+	public final class ClassProxyInfo implements IClassProxyInfo {
 
 		private var _proxiedClass:Class;
 		private var _methodInvocationInterceptorClass:Class;
 		private var _methods:Array;
 		private var _accessors:Array;
-		private var _properties:Array;
+		private var _introductions:Array;
 		private var _onlyProxyConstructor:Boolean = false;
 		private var _makeDynamic:Boolean = false;
 		private var _interceptorFactory:IFactory;
@@ -45,7 +46,6 @@ package org.as3commons.bytecode.proxy {
 			super();
 			initClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
 		}
-
 
 		public function get interceptorFactory():IFactory {
 			return _interceptorFactory;
@@ -80,7 +80,7 @@ package org.as3commons.bytecode.proxy {
 			_methodInvocationInterceptorClass = methodInvocationInterceptorClass;
 			_methods = [];
 			_accessors = [];
-			_properties = [];
+			_introductions = [];
 		}
 
 		/**
@@ -101,7 +101,7 @@ package org.as3commons.bytecode.proxy {
 		 * Determines whether the <code>IProxyFactory</code> should proxy all members of the proxied class.
 		 */
 		public function get proxyAll():Boolean {
-			return ((_methods.length + _accessors.length + _properties.length) == 0);
+			return ((_methods.length + _accessors.length) == 0);
 		}
 
 		/**
@@ -137,6 +137,10 @@ package org.as3commons.bytecode.proxy {
 			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace);
 		}
 
+		public function introduce(className:String):void {
+			_introductions[_introductions.length] = className;
+		}
+
 		/**
 		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the methods
 		 * that will be proxied for the specified class.
@@ -153,5 +157,11 @@ package org.as3commons.bytecode.proxy {
 			return _accessors;
 		}
 
+		/**
+		 *
+		 */
+		public function get introductions():Array {
+			return _introductions;
+		}
 	}
 }
