@@ -309,7 +309,7 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 	<p>First there is the <code>IChangeTrackable</code> interface:</p>
 	<div class="source"><pre>public interface IChangeTrackable {
 	function get isDirty():Boolean;
-	function isDirty(value:Boolean):void;
+	function set isDirty(value:Boolean):void;
 }</pre></div>
 	<p>And the most basic implementation of this interface:</p>
 	<div class="source"><pre>public class PartialChangeTracker implements IChangeTrackable {
@@ -317,14 +317,14 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 	public function get isDirty():Boolean {
 		return _isDirty;
 	}
-	public function isDirty(value:Boolean):void {
+	public function set isDirty(value:Boolean):void {
 		_isDirty = value;
 	}
 }</pre></div>
 	<p>That's all that's needed, now the proxy can be defined with an introduction:</p>
 	<div class="source"><pre>var proxyFactory:IProxyFactory = new ProxyFactory();
 var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(Order);
-classProxyInfo.introduce(PartialChangeTracker);
+classProxyInfo.introduce("com.myclasses.proxy.intros.PartialChangeTracker");
 proxyFactory.generateProxyClasses();
 </pre></div>
 	<p>And that's it, if afterwards the proxy is instantiated, the instance can actually be cast to <code>IChangeTrackable</code>:</p>
