@@ -36,8 +36,8 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.emit.impl.AbcBuilder;
-	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
+	import org.as3commons.bytecode.interception.impl.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.proxy.IClassIntroducer;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
 	import org.as3commons.bytecode.proxy.IProxyFactory;

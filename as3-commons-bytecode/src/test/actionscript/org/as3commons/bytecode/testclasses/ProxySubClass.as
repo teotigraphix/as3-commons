@@ -18,7 +18,7 @@ package org.as3commons.bytecode.testclasses {
 
 	import org.as3commons.bytecode.as3commons_bytecode_proxy;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
-	import org.as3commons.bytecode.interception.InvocationKind;
+	import org.as3commons.bytecode.interception.impl.InvocationKind;
 	import org.as3commons.bytecode.proxy.event.ProxyCreationEvent;
 	import org.as3commons.bytecode.proxy.impl.ProxyFactory;
 

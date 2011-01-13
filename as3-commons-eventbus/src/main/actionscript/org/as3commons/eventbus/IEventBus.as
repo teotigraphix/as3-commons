@@ -120,12 +120,12 @@ package org.as3commons.eventbus {
 		 * Dispatches the specified <code>Event</code> on the event bus.
 		 * @param event The specified <code>Event</code>.
 		 */
-		function dispatchEvent(event:Event, topic:Object = null):void;
+		function dispatchEvent(event:Event, topic:Object = null):Boolean;
 		/**
 		 * Convenience method for dispatching an event. This will create an <code>Event</code> instance with the given
 		 * type and call <code>dispatchEvent()</code> on the event bus.
 		 * @param type the type of the event to dispatch
 		 */
-		function dispatch(type:String, topic:Object = null):void;
+		function dispatch(type:String, topic:Object = null):Boolean;
 	}
 }
