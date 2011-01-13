@@ -45,19 +45,21 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.reflect.Field;
 	import org.as3commons.reflect.Method;
 
-	public class ClassIntroducer implements IClassIntroducer {
+	public class ClassIntroducer extends AbstractProxyFactory implements IClassIntroducer {
 
 		private var _methodProxyFactory:MethodProxyFactory;
-		private var _opcodesWithMultinameArguments:Dictionary;
+		private var _accessorProxyFactory:AccessorProxyFactory;
 
-		public function ClassIntroducer(methodProxyFactory:MethodProxyFactory) {
+		public function ClassIntroducer(methodProxyFactory:MethodProxyFactory, accessorProxyFactory:AccessorProxyFactory) {
 			super();
-			initClassIntroducer(methodProxyFactory);
+			initClassIntroducer(methodProxyFactory, accessorProxyFactory);
 		}
 
-		protected function initClassIntroducer(methodProxyFactory:MethodProxyFactory):void {
+		protected function initClassIntroducer(methodProxyFactory:MethodProxyFactory, accessorProxyFactory:AccessorProxyFactory):void {
 			Assert.notNull(methodProxyFactory, "methodProxyFactory argument must not be null");
+			Assert.notNull(accessorProxyFactory, "accessorProxyFactory argument must not be null");
 			_methodProxyFactory = methodProxyFactory;
+			_accessorProxyFactory = accessorProxyFactory;
 		}
 
 		public function introduce(className:String, classBuilder:IClassBuilder):void {
@@ -174,10 +176,11 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		protected function introduceVariable(byteCodeVariable:ByteCodeVariable, classBuilder:IClassBuilder):void {
-			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(byteCodeVariable.name,byteCodeVariable.type.fullName,byteCodeVariable.initializedValue);
+			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(byteCodeVariable.name, byteCodeVariable.type.fullName, byteCodeVariable.initializedValue);
 			propertyBuilder.namespaceURI = byteCodeVariable.namespaceURI;
 			propertyBuilder.scopeName = byteCodeVariable.scopeName;
 			propertyBuilder.visibility = ProxyFactory.getMemberVisibility(byteCodeVariable);
+			addMetadata(propertyBuilder, byteCodeVariable.metaData);
 		}
 
 		protected function introduceAccessor(byteCodeAccessor:ByteCodeAccessor, classBuilder:IClassBuilder):void {
