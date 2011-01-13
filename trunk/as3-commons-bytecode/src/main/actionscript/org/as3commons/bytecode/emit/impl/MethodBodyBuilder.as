@@ -51,7 +51,7 @@ package org.as3commons.bytecode.emit.impl {
 			stackModifiers[Opcode.pushnull] = 1;
 			stackModifiers[Opcode.pushtrue] = 1;
 			stackModifiers[Opcode.pushundefined] = 1;
-			stackModifiers[Opcode.newcatch] = 1;
+			stackModifiers[Opcode.newcatch] = 2;
 			stackModifiers[Opcode.getglobalslot] = 1;
 			stackModifiers[Opcode.getlex] = 1;
 			stackModifiers[Opcode.getscopeobject] = 1;
