@@ -180,7 +180,7 @@ package org.as3commons.bytecode.proxy.impl {
 			propertyBuilder.namespaceURI = byteCodeVariable.namespaceURI;
 			propertyBuilder.scopeName = byteCodeVariable.scopeName;
 			propertyBuilder.visibility = ProxyFactory.getMemberVisibility(byteCodeVariable);
-			addMetadata(propertyBuilder, byteCodeVariable.metaData);
+			//addMetadata(propertyBuilder, byteCodeVariable.metaData);
 		}
 
 		protected function introduceAccessor(byteCodeAccessor:ByteCodeAccessor, classBuilder:IClassBuilder):void {
