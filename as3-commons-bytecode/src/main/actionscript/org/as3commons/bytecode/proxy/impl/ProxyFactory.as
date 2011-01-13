@@ -609,6 +609,9 @@ package org.as3commons.bytecode.proxy.impl {
 				case NamespaceKind.PROTECTED_NAMESPACE:
 					return MemberVisibility.PROTECTED;
 					break;
+				case NamespaceKind.PRIVATE_NAMESPACE:
+					return MemberVisibility.PRIVATE;
+					break;
 				case NamespaceKind.NAMESPACE:
 					return MemberVisibility.NAMESPACE;
 					break;
