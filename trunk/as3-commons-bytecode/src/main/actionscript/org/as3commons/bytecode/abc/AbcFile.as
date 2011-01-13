@@ -30,7 +30,6 @@ package org.as3commons.bytecode.abc {
 		private var _methodInfo:Array;
 		private var _metadataInfo:Array;
 		private var _instanceInfo:Array;
-		private var _classInfo:Array;
 		private var _scriptInfo:Array;
 		private var _methodBodies:Array;
 
@@ -55,14 +54,13 @@ package org.as3commons.bytecode.abc {
 			_methodInfo = [];
 			_metadataInfo = [];
 			_instanceInfo = [];
-			_classInfo = [];
 			_scriptInfo = [];
 			_methodBodies = [];
 		}
 
 		public function addClassInfoReference(classInfoReference:ClassInfoReference):int {
 			var idx:int = 0;
-			for each (var classInfo:ClassInfo in _classInfo) {
+			for each (var classInfo:ClassInfo in constantPool.classInfo) {
 				if (classInfo.classMultiname.equals(classInfoReference.classMultiName)) {
 					return idx;
 				}
@@ -73,8 +71,7 @@ package org.as3commons.bytecode.abc {
 
 		public function addClassInfo(classInfo:ClassInfo):int {
 			Assert.notNull(classInfo);
-			constantPool.classInfo[constantPool.classInfo.length] = classInfo; 
-			return addUniquely(classInfo, _classInfo);
+			return addUniquely(classInfo, constantPool.classInfo);
 		}
 
 		public function addClassInfos(classInfos:Array):void {
@@ -179,11 +176,11 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function get classInfo():Array {
-			return _classInfo;
+			return constantPool.classInfo;
 		}
 
 		as3commons_bytecode function setClassInfo(value:Array):void {
-			_classInfo = value;
+			constantPool.as3commons_bytecode::setClassInfo(value);
 		}
 
 		public function get scriptInfo():Array {
@@ -218,7 +215,7 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function toString():String {
-			var strings:Array = [constantPool, "Method Signatures (MethodInfo):", "\t" + _methodInfo.join("\n\t"), metadataInfo.join("\n"), _instanceInfo.join("\n"), _classInfo.join("\n"), _scriptInfo.join("\n"), _methodBodies.join("\n")];
+			var strings:Array = [constantPool, "Method Signatures (MethodInfo):", "\t" + _methodInfo.join("\n\t"), metadataInfo.join("\n"), _instanceInfo.join("\n"), constantPool.classInfo.join("\n"), _scriptInfo.join("\n"), _methodBodies.join("\n")];
 
 			return strings.join("\n");
 		}

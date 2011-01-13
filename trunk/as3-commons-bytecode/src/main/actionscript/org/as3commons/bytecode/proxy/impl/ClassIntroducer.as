@@ -15,9 +15,18 @@
 */
 package org.as3commons.bytecode.proxy.impl {
 	import flash.utils.ByteArray;
-	
+	import flash.utils.Dictionary;
+
+	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
+	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
+	import org.as3commons.bytecode.abc.Multiname;
+	import org.as3commons.bytecode.abc.MultinameG;
+	import org.as3commons.bytecode.abc.MultinameL;
+	import org.as3commons.bytecode.abc.NamespaceSet;
+	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IClassBuilder;
@@ -31,6 +40,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.reflect.ByteCodeVariable;
 	import org.as3commons.bytecode.util.AbcSpec;
+	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Field;
 	import org.as3commons.reflect.Method;
@@ -38,6 +48,7 @@ package org.as3commons.bytecode.proxy.impl {
 	public class ClassIntroducer implements IClassIntroducer {
 
 		private var _methodProxyFactory:MethodProxyFactory;
+		private var _opcodesWithMultinameArguments:Dictionary;
 
 		public function ClassIntroducer(methodProxyFactory:MethodProxyFactory) {
 			super();
@@ -83,11 +94,60 @@ package org.as3commons.bytecode.proxy.impl {
 			try {
 				type.byteArray.position = method.bodyStartPosition;
 				methodBody.opcodes = Opcode.parse(type.byteArray, method.bodyLength, methodBody, type.constantPool);
+				translateOpcodesNamespaces(methodBody.opcodes, makeScopeName(type.fullName), classBuilder.packageName + MultinameUtil.SINGLE_COLON + classBuilder.name);
 				methodBody.exceptionInfos = extractExceptionInfos(type.byteArray, type);
 			} finally {
 				type.byteArray.position = originalPosition;
 			}
 			methodBuilder.as3commons_bytecode::setMethodBody(methodBody);
+		}
+
+		protected function makeScopeName(fullName:String):String {
+			var idx:int = fullName.lastIndexOf(MultinameUtil.PERIOD);
+			var arr:Array = fullName.split('');
+			arr[idx] = MultinameUtil.SINGLE_COLON;
+			return arr.join('');
+		}
+
+		protected function translateOpcodesNamespaces(opcodes:Array, oldScopeName:String, newScopeName:String):void {
+			for each (var op:Op in opcodes) {
+				var len:int = op.parameters.length;
+				for (var i:int = 0; i < len; ++i) {
+					var param:* = op.parameters[i];
+					switch (true) {
+						case (param is Multiname):
+							translateNamespaceSet(Multiname(param).namespaceSet, oldScopeName, newScopeName);
+							break;
+						case (param is LNamespace):
+							translateNamespace(LNamespace(param), oldScopeName, newScopeName);
+							break;
+						case (param is MultinameG):
+							translateNamespace(MultinameG(param).qualifiedName.nameSpace, oldScopeName, newScopeName);
+							break;
+						case (param is MultinameL):
+							translateNamespaceSet(MultinameL(param).namespaceSet, oldScopeName, newScopeName);
+							break;
+						case (param is QualifiedName):
+							translateNamespace(QualifiedName(param).nameSpace, oldScopeName, newScopeName);
+							break;
+						case (param is NamespaceSet):
+							translateNamespaceSet(NamespaceSet(param), oldScopeName, newScopeName);
+							break;
+					}
+				}
+			}
+		}
+
+		protected function translateNamespaceSet(namespaceSet:NamespaceSet, oldScopeName:String, newScopeName:String):void {
+			for each (var ns:LNamespace in namespaceSet) {
+				translateNamespace(ns, oldScopeName, newScopeName);
+			}
+		}
+
+		protected function translateNamespace(ns:LNamespace, oldScopeName:String, newScopeName:String):void {
+			if (ns.name == oldScopeName) {
+				ns.name = newScopeName;
+			}
 		}
 
 		protected function extractExceptionInfos(input:ByteArray, type:ByteCodeType):Array {
