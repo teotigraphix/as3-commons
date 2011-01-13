@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy.impl {
+	import flash.events.IEventDispatcher;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
@@ -35,6 +36,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.proxy.IClassIntroducer;
 	import org.as3commons.bytecode.proxy.IProxyFactory;
 	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
+	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeAccessor;
 	import org.as3commons.bytecode.reflect.ByteCodeMethod;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
@@ -42,6 +44,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Field;
 	import org.as3commons.reflect.Method;
 
@@ -74,7 +77,7 @@ package org.as3commons.bytecode.proxy.impl {
 		protected function internalIntroduce(type:ByteCodeType, classBuilder:IClassBuilder):void {
 			classBuilder.implementInterfaces(type.interfaces);
 			for each (var field:Field in type.fields) {
-				introduceField(field, classBuilder);
+				introduceField(field, classBuilder, type);
 			}
 			for each (var method:Method in type.methods) {
 				if (method is ByteCodeMethod) {
@@ -86,6 +89,10 @@ package org.as3commons.bytecode.proxy.impl {
 		protected function introduceMethod(method:ByteCodeMethod, classBuilder:IClassBuilder, type:ByteCodeType):void {
 			var memberInfo:MemberInfo = new MemberInfo(method.name, method.namespaceURI);
 			var methodBuilder:IMethodBuilder = _methodProxyFactory.proxyMethod(classBuilder, type, memberInfo, false);
+			cloneMethod(methodBuilder, method, type, classBuilder);
+		}
+
+		private function cloneMethod(methodBuilder:IMethodBuilder, method:ByteCodeMethod, type:ByteCodeType, classBuilder:IClassBuilder):void {
 			methodBuilder.isOverride = false;
 			var methodBody:MethodBody = new MethodBody();
 			methodBody.initScopeDepth = method.initScopeDepth;
@@ -103,6 +110,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			methodBuilder.as3commons_bytecode::setMethodBody(methodBody);
 		}
+
 
 		protected function makeScopeName(fullName:String):String {
 			var idx:int = fullName.lastIndexOf(MultinameUtil.PERIOD);
@@ -167,9 +175,9 @@ package org.as3commons.bytecode.proxy.impl {
 			return exceptionInfos;
 		}
 
-		protected function introduceField(field:Field, classBuilder:IClassBuilder):void {
+		protected function introduceField(field:Field, classBuilder:IClassBuilder, type:ByteCodeType):void {
 			if (field is ByteCodeAccessor) {
-				introduceAccessor(ByteCodeAccessor(field), classBuilder);
+				introduceAccessor(ByteCodeAccessor(field), classBuilder, type);
 			} else if (field is ByteCodeVariable) {
 				introduceVariable(ByteCodeVariable(field), classBuilder);
 			}
@@ -183,7 +191,35 @@ package org.as3commons.bytecode.proxy.impl {
 			//addMetadata(propertyBuilder, byteCodeVariable.metaData);
 		}
 
-		protected function introduceAccessor(byteCodeAccessor:ByteCodeAccessor, classBuilder:IClassBuilder):void {
+		protected function introduceAccessor(byteCodeAccessor:ByteCodeAccessor, classBuilder:IClassBuilder, type:ByteCodeType):void {
+			var memberInfo:MemberInfo = new MemberInfo(byteCodeAccessor.name, byteCodeAccessor.namespaceURI);
+			if ((byteCodeAccessor.access === AccessorAccess.READ_ONLY) || (byteCodeAccessor.access === AccessorAccess.READ_WRITE)) {
+				var getterFunc:Function = function(event:ProxyFactoryBuildEvent):void {
+					if ((event.methodBuilder.name == byteCodeAccessor.name) && (event.methodBuilder.namespaceURI == byteCodeAccessor.namespaceURI)) {
+						IEventDispatcher(event.target).removeEventListener(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, getterFunc);
+						copyGetterBody(event.methodBuilder, byteCodeAccessor, classBuilder, type);
+					}
+				};
+				_accessorProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, getterFunc);
+			}
+			if ((byteCodeAccessor.access === AccessorAccess.WRITE_ONLY) || (byteCodeAccessor.access === AccessorAccess.READ_WRITE)) {
+				var setterFunc:Function = function(event:ProxyFactoryBuildEvent):void {
+					if ((event.methodBuilder.name == byteCodeAccessor.name) && (event.methodBuilder.namespaceURI == byteCodeAccessor.namespaceURI)) {
+						IEventDispatcher(event.target).removeEventListener(ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD, setterFunc);
+						copySetterBody(event.methodBuilder, byteCodeAccessor, classBuilder, type);
+					}
+				};
+				_accessorProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD, setterFunc);
+			}
+			_accessorProxyFactory.proxyAccessor(classBuilder, type, memberInfo, null, null, false);
+		}
+
+		private function copyGetterBody(methodBuilder:IMethodBuilder, byteCodeAccessor:ByteCodeAccessor, classBuilder:IClassBuilder, type:ByteCodeType):void {
+			cloneMethod(methodBuilder, byteCodeAccessor.getterMethod, type, classBuilder);
+		}
+
+		private function copySetterBody(methodBuilder:IMethodBuilder, byteCodeAccessor:ByteCodeAccessor, classBuilder:IClassBuilder, type:ByteCodeType):void {
+			cloneMethod(methodBuilder, byteCodeAccessor.setterMethod, type, classBuilder);
 		}
 	}
 }

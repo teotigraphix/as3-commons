@@ -272,6 +272,10 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 	interceptor.interceptors[interceptor.interceptors.length] = new ReductionInterceptor();
 	event.methodInvocationInterceptor = interceptor;
 }</pre></div>
+	<subsection name="Introductions">
+		<p>The last, and potentially most powerful, feature is called 'introductions'. .NET people might recognize this as 'partial classes'.</p>
+		<p>What this features offers is the ability to merge an existing class into a generated proxy class, adding its behavior to the resulting class.</p>
+	</subsection>
 	<subsection name="What is the purpose of all this?">
 		<p>The proxy API in as3commons-bytecode isn't meant as a complete end solution for all proxying needs. Instead it only offers the basic building blocks
 		on top of which a more elaborate proxying system can be built. Its target audience includes framework developers in that respect.</p>

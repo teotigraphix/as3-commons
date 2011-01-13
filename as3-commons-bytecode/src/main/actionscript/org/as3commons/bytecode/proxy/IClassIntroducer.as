@@ -15,8 +15,14 @@
 */
 package org.as3commons.bytecode.proxy {
 
+	import org.as3commons.bytecode.abc.Multiname;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public interface IClassIntroducer {
 		function introduce(className:String, classBuilder:IClassBuilder):void;
 	}

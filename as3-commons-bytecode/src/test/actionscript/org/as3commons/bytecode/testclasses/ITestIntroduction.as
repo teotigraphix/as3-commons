@@ -16,6 +16,8 @@
 package org.as3commons.bytecode.testclasses {
 
 	public interface ITestIntroduction {
+		function get testString():String;
+		function set testString(value:String):void;
 		function getTest():String;
 	}
 }

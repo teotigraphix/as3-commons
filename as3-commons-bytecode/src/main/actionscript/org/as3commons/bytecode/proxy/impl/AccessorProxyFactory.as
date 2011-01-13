@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy.impl {
+	import flash.events.IEventDispatcher;
+
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
@@ -57,7 +59,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @return The <code>IAccessorBuilder</code> representing the generated accessor.
 		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied accessor is marked as final.
 		 */
-		public function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName):void {
+		public function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName, failOnFinal:Boolean = true):void {
 			Assert.notNull(classBuilder, "classBuilder argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(memberInfo, "memberInfo argument must not be null");
@@ -65,7 +67,7 @@ package org.as3commons.bytecode.proxy.impl {
 			if (accessor == null) {
 				throw new ProxyBuildError(ProxyBuildError.ACCESSOR_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
 			}
-			if (accessor.isFinal) {
+			if ((accessor.isFinal) && (failOnFinal)) {
 				throw new ProxyBuildError(ProxyBuildError.FINAL_ACCESSOR_ERROR, accessor.name);
 			}
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(accessor.name, accessor.type.fullName, accessor.initializedValue);
@@ -76,14 +78,16 @@ package org.as3commons.bytecode.proxy.impl {
 			accessorBuilder.access = accessor.access;
 			accessorBuilder.createPrivateProperty = false;
 			accessorBuilder.visibility = (!type.isInterface) ? ProxyFactory.getMemberVisibility(accessor) : MemberVisibility.PUBLIC;
-			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_GETTER, function(event:AccessorBuilderEvent):void {
-				accessorBuilder.removeEventListener(AccessorBuilderEvent.BUILD_GETTER, arguments.callee);
+			var getterFunc:Function = function(event:AccessorBuilderEvent):void {
+				IEventDispatcher(event.target).removeEventListener(AccessorBuilderEvent.BUILD_GETTER, getterFunc);
 				event.builder = createGetter(event.accessorBuilder, multiName, bytecodeQname, type.isInterface);
-			});
-			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_SETTER, function(event:AccessorBuilderEvent):void {
-				accessorBuilder.removeEventListener(AccessorBuilderEvent.BUILD_SETTER, arguments.callee);
+			};
+			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_GETTER, getterFunc);
+			var setterFunc:Function = function(event:AccessorBuilderEvent):void {
+				IEventDispatcher(event.target).removeEventListener(AccessorBuilderEvent.BUILD_SETTER, setterFunc);
 				event.builder = createSetter(event.accessorBuilder, multiName, bytecodeQname, type.isInterface);
-			});
+			};
+			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_SETTER, setterFunc);
 		}
 
 		/**
@@ -223,6 +227,8 @@ package org.as3commons.bytecode.proxy.impl {
 			if (methodBuilder.opcodes.length > 0) {
 				return;
 			}
+			Assert.notNull(multiName, "multiName argument must not be null");
+			Assert.notNull(bytecodeQname, "bytecodeQname argument must not be null");
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
 			var argLen:int = 1;
 			var superSetter:QualifiedName = (!isInterface) ? createMethodQName(methodBuilder) : null;

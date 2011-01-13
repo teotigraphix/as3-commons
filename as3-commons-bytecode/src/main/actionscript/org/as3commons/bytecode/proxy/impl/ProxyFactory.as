@@ -23,29 +23,19 @@ package org.as3commons.bytecode.proxy.impl {
 
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
-	import org.as3commons.bytecode.abc.MultinameL;
 	import org.as3commons.bytecode.abc.NamespaceSet;
 	import org.as3commons.bytecode.abc.QualifiedName;
-	import org.as3commons.bytecode.abc.RuntimeQualifiedName;
-	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
-	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.as3commons_bytecode_proxy;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
-	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
-	import org.as3commons.bytecode.emit.IMetadataContainer;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
-	import org.as3commons.bytecode.emit.event.AccessorBuilderEvent;
 	import org.as3commons.bytecode.emit.impl.AbcBuilder;
-	import org.as3commons.bytecode.emit.impl.CtorBuilder;
-	import org.as3commons.bytecode.emit.impl.MetaDataArgument;
-	import org.as3commons.bytecode.emit.impl.MethodBuilder;
 	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 	import org.as3commons.bytecode.proxy.IClassIntroducer;
@@ -57,19 +47,14 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeAccessor;
 	import org.as3commons.bytecode.reflect.ByteCodeMethod;
-	import org.as3commons.bytecode.reflect.ByteCodeParameter;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.reflect.IVisibleMember;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
-	import org.as3commons.lang.StringUtils;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.reflect.Accessor;
-	import org.as3commons.reflect.AccessorAccess;
-	import org.as3commons.reflect.MetaData;
-	import org.as3commons.reflect.MetaDataArgument;
 	import org.as3commons.reflect.MetaDataContainer;
 	import org.as3commons.reflect.Method;
 
@@ -267,8 +252,8 @@ package org.as3commons.bytecode.proxy.impl {
 				if (proxyInfo.proxyClass == null) {
 					proxyInfo.proxyClass = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
 				}
-				proxyCreationDispatcher.addEventListener(ProxyCreationEvent.PROXY_CREATED, function(event:ProxyCreationEvent):void {
-					proxyCreationDispatcher.removeEventListener(ProxyCreationEvent.PROXY_CREATED, arguments.callee);
+				var proxyCreatedHandler:Function = function(event:ProxyCreationEvent):void {
+					IEventDispatcher(event.target).removeEventListener(ProxyCreationEvent.PROXY_CREATED, proxyCreatedHandler);
 					var factoryEvent:ProxyFactoryEvent = new ProxyFactoryEvent(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, clazz, constructorArgs, proxyInfo.methodInvocationInterceptorClass);
 					dispatchEvent(factoryEvent);
 					var interceptorInstance:IMethodInvocationInterceptor;
@@ -282,7 +267,8 @@ package org.as3commons.bytecode.proxy.impl {
 						}
 					}
 					event.methodInvocationInterceptor = interceptorInstance;
-				});
+				};
+				proxyCreationDispatcher.addEventListener(ProxyCreationEvent.PROXY_CREATED, proxyCreatedHandler);
 				LOGGER.debug("Creating proxy for class {0} with arguments: {1}", clazz, constructorArgs);
 				return ClassUtils.newInstance(proxyInfo.proxyClass, constructorArgs);
 			}

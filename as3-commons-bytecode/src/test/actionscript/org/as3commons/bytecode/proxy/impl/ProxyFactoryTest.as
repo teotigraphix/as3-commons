@@ -290,6 +290,7 @@ package org.as3commons.bytecode.proxy.impl {
 			var testInterface:ITestIntroduction = instance as ITestIntroduction;
 			assertNotNull(testInterface);
 			assertEquals("test", testInterface.getTest());
+			assertEquals("testString", testInterface.testString);
 		}
 
 		protected function createCanvasInterceptor(event:ProxyFactoryEvent):void {
