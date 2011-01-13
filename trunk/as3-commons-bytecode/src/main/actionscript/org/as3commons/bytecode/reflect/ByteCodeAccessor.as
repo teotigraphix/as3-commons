@@ -17,6 +17,7 @@ package org.as3commons.bytecode.reflect {
 
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.lang.HashArray;
 	import org.as3commons.reflect.Accessor;
@@ -70,13 +71,41 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		// ----------------------------
-		// namespaceName
+		// scopeName
 		// ----------------------------
 
 		private var _scopeName:String = "";
 
 		public function get scopeName():String {
 			return _scopeName;
+		}
+
+		// ----------------------------
+		// gettermethod
+		// ----------------------------
+
+		private var _getterMethod:ByteCodeMethod;
+
+		public function get getterMethod():ByteCodeMethod {
+			return _getterMethod;
+		}
+
+		// ----------------------------
+		// settermethod
+		// ----------------------------
+
+		private var _setterMethod:ByteCodeMethod;
+
+		public function get setterMethod():ByteCodeMethod {
+			return _setterMethod;
+		}
+
+		as3commons_reflect function setSetterMethod(value:ByteCodeMethod):void {
+			_setterMethod = value;
+		}
+
+		as3commons_reflect function setGetterMethod(value:ByteCodeMethod):void {
+			_getterMethod = value;
 		}
 
 		as3commons_reflect function setScopeName(value:String):void {

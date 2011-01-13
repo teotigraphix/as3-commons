@@ -559,13 +559,18 @@ package org.as3commons.bytecode.reflect {
 		private function addAccessor(instanceInfo:Type, method:ByteCodeMethod, isStatic:Boolean):ByteCodeAccessor {
 			var nameParts:Array = method.name.split(FORWARD_SLASH);
 			var methodName:String = String(nameParts[0]);
+			var getset:String = String(nameParts[nameParts.length - 1]);
 			for each (var acc:ByteCodeAccessor in instanceInfo.accessors) {
 				if (acc.name == methodName) {
 					acc.as3commons_reflect::setAccess(AccessorAccess.READ_WRITE);
+					if (getset == GETTER_SIGNATURE) {
+						acc.as3commons_reflect::setGetterMethod(method);
+					} else {
+						acc.as3commons_reflect::setSetterMethod(method);
+					}
 					return acc;
 				}
 			}
-			var getset:String = String(nameParts[1]);
 			var accAccess:AccessorAccess = (getset == GETTER_SIGNATURE) ? AccessorAccess.READ_ONLY : AccessorAccess.WRITE_ONLY;
 			var accessorType:String = '';
 			if (accAccess === AccessorAccess.READ_ONLY) {
@@ -576,6 +581,11 @@ package org.as3commons.bytecode.reflect {
 				}
 			}
 			var result:ByteCodeAccessor = new ByteCodeAccessor(methodName, accAccess, accessorType, instanceInfo.fullName, false, instanceInfo.applicationDomain);
+			if (getset == GETTER_SIGNATURE) {
+				result.as3commons_reflect::setGetterMethod(method);
+			} else {
+				result.as3commons_reflect::setSetterMethod(method);
+			}
 			result.as3commons_reflect::setScopeName(method.scopeName);
 			result.as3commons_reflect::setNamespaceURI(method.namespaceURI);
 			result.as3commons_reflect::setIsStatic(isStatic);

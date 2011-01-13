@@ -112,7 +112,7 @@ package org.as3commons.bytecode.emit.impl {
 				result[result.length] = trait;
 			}
 
-			var event:AccessorBuilderEvent
+			var event:AccessorBuilderEvent;
 			if ((_access === AccessorAccess.READ_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
 				event = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_GETTER, this, trait);
 				dispatchEvent(event);

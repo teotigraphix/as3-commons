@@ -18,6 +18,7 @@ package org.as3commons.bytecode.testclasses {
 	public class TestIntroduction implements ITestIntroduction {
 
 		private var _test:String = "test";
+		private var _testString:String = "testString";
 
 		public function TestIntroduction() {
 			super();
@@ -30,5 +31,14 @@ package org.as3commons.bytecode.testclasses {
 		public function getTest():String {
 			return internalGetTest();
 		}
+
+		public function get testString():String {
+			return _testString;
+		}
+
+		public function set testString(value:String):void {
+			_testString = value;
+		}
+
 	}
 }
