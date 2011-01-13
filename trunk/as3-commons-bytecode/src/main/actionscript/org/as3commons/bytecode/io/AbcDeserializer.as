@@ -221,10 +221,10 @@ package org.as3commons.bytecode.io {
 					exceptionInfo.exceptionEnabledFromCodePosition = readU30();
 					exceptionInfo.exceptionEnabledToCodePosition = readU30();
 					exceptionInfo.codePositionToJumpToOnException = readU30();
-					exceptionInfo.exceptionTypeName = pool.stringPool[readU30()];
-					Assert.notNull(exceptionInfo.exceptionTypeName, "exceptionInfo.exceptionTypeName returned null from constant pool");
-					exceptionInfo.nameOfVariableReceivingException = pool.stringPool[readU30()];
-					Assert.notNull(exceptionInfo.nameOfVariableReceivingException, "exceptionInfo.nameOfVariableReceivingException returned null from constant pool");
+					exceptionInfo.exceptionType = pool.multinamePool[readU30()];
+					Assert.notNull(exceptionInfo.exceptionType, "exceptionInfo.exceptionTypeName returned null from constant pool");
+					exceptionInfo.variableReceivingException = pool.multinamePool[readU30()];
+					Assert.notNull(exceptionInfo.variableReceivingException, "exceptionInfo.nameOfVariableReceivingException returned null from constant pool");
 					exceptionInfos[exceptionInfos.length] = exceptionInfo;
 				}
 

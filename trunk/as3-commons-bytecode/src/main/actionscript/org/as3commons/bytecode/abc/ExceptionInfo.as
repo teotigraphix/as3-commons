@@ -25,8 +25,8 @@ package org.as3commons.bytecode.abc {
 		public var exceptionEnabledFromCodePosition:int;
 		public var exceptionEnabledToCodePosition:int;
 		public var codePositionToJumpToOnException:int;
-		public var exceptionTypeName:String;
-		public var nameOfVariableReceivingException:String;
+		public var exceptionType:QualifiedName;
+		public var variableReceivingException:QualifiedName;
 
 		public function ExceptionInfo() {
 			super();
@@ -37,13 +37,13 @@ package org.as3commons.bytecode.abc {
 			clone.exceptionEnabledFromCodePosition = exceptionEnabledFromCodePosition;
 			clone.exceptionEnabledToCodePosition = exceptionEnabledToCodePosition;
 			clone.codePositionToJumpToOnException = codePositionToJumpToOnException;
-			clone.exceptionTypeName = exceptionTypeName;
-			clone.nameOfVariableReceivingException = nameOfVariableReceivingException;
+			clone.exceptionType = exceptionType;
+			clone.variableReceivingException = variableReceivingException;
 			return clone;
 		}
 
 		public function toString():String {
-			return "ExceptionInfo{exceptionEnabledFromCodePosition:" + exceptionEnabledFromCodePosition + ", exceptionEnabledToCodePosition:" + exceptionEnabledToCodePosition + ", codePositionToJumpToOnException:" + codePositionToJumpToOnException + ", exceptionTypeName:\"" + exceptionTypeName + "\", nameOfVariableReceivingException:\"" + nameOfVariableReceivingException + "\"}";
+			return "ExceptionInfo{exceptionEnabledFromCodePosition:" + exceptionEnabledFromCodePosition + ", exceptionEnabledToCodePosition:" + exceptionEnabledToCodePosition + ", codePositionToJumpToOnException:" + codePositionToJumpToOnException + ", exceptionTypeName:\"" + exceptionType + "\", nameOfVariableReceivingException:\"" + variableReceivingException + "\"}";
 		}
 
 
