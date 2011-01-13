@@ -168,8 +168,16 @@ package org.as3commons.reflect {
 			assertTrue(firstParameter.isOptional);
 			assertEquals(1, firstParameter.index);
 			assertEquals(String, firstParameter.type.clazz);
-			// Constructor should be called just once in any case
-			assertEquals(1, ConstructorRecursionHazardClass.constructorCalls);
+
+			//Assertion depends on which player version is used for the unit tests,
+			//player version 10.1 or higher no longer has the bug that needed to be worked around:
+			if (ReflectionUtils.playerHasConstructorBug()) {
+				// Constructor should be called just once in any case:
+				assertEquals(1, ConstructorRecursionHazardClass.constructorCalls);
+			} else {
+				// Constructor should not have been called:
+				assertEquals(0, ConstructorRecursionHazardClass.constructorCalls);
+			}
 		}
 
 		public function testIsInterfaceProperty():void {
