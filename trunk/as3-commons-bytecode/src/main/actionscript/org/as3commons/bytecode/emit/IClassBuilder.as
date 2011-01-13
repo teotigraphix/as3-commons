@@ -71,7 +71,7 @@ package org.as3commons.bytecode.emit {
 		 * @param initialValue The default value of the property. I.e. "My default value".
 		 * @return The specified <code>IPropertyBuilder</code> instance.
 		 */
-		function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder;
+		function defineProperty(propertyName:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder;
 
 		function removeProperty(name:String, nameSpace:String = null):void;
 	}

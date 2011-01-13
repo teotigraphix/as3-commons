@@ -17,7 +17,7 @@ package org.as3commons.bytecode.reflect {
 	import flash.display.LoaderInfo;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
-	
+
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
@@ -34,12 +34,12 @@ package org.as3commons.bytecode.reflect {
 
 		private static var typeProvider:ITypeProvider;
 
-		private var _byteArray:SoftReference;
+		private var _byteArray:ByteArray;
 		private var _constantPool:IConstantPool;
 
 		public function ByteCodeType(byteArray:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain) {
 			super(applicationDomain);
-			_byteArray = new SoftReference(byteArray);
+			_byteArray = byteArray;
 			_constantPool = constantPool;
 		}
 
@@ -48,7 +48,7 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		public function get byteArray():ByteArray {
-			return (_byteArray.value as ByteArray);
+			return _byteArray;
 		}
 
 		public static function getTypeProvider():ITypeProvider {

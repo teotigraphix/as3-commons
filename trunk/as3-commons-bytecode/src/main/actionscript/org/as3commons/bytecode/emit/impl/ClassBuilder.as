@@ -153,10 +153,10 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineProperty(name:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
+		public function defineProperty(propertyName:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
 			var vb:PropertyBuilder = new PropertyBuilder();
-			vb.packageName = packageName;
-			vb.name = name;
+			vb.packageName = packageName + MultinameUtil.SINGLE_COLON + this.name;
+			vb.name = propertyName;
 			vb.type = type;
 			vb.initialValue = initialValue;
 			var trait:SlotOrConstantTrait;

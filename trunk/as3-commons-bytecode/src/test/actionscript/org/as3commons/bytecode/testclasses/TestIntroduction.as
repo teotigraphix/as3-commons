@@ -16,15 +16,19 @@
 package org.as3commons.bytecode.testclasses {
 
 	public class TestIntroduction implements ITestIntroduction {
-		
+
 		private var _test:String = "test";
-		
+
 		public function TestIntroduction() {
 			super();
 		}
 
-		public function getTest():String {
+		private function internalGetTest():String {
 			return _test;
+		}
+
+		public function getTest():String {
+			return internalGetTest();
 		}
 	}
 }

@@ -115,10 +115,10 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineMethod(name:String = null, nameSpace:String = null):IMethodBuilder {
+		public function defineMethod(methodName:String = null, nameSpace:String = null):IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.packageName = packageName + MultinameUtil.PERIOD + this.name;
-			mb.name = name;
+			mb.name = methodName;
 			mb.namespaceURI = nameSpace;
 			var trait:TraitInfo;
 			if (instanceInfo != null) {
