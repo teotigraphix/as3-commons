@@ -42,7 +42,7 @@ package org.as3commons.bytecode.proxy.impl {
 			Assert.notNull(classBuilder, "classBuilder argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(memberInfo, "memberInfo argument must not be null");
-			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(memberInfo.qName.localName, memberInfo.qName.uri);
+			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(memberInfo.qName.localName,memberInfo.qName.uri);
 			methodBuilder.isOverride = (!type.isInterface);
 			var method:ByteCodeMethod = type.getMethod(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeMethod;
 			if (method == null) {

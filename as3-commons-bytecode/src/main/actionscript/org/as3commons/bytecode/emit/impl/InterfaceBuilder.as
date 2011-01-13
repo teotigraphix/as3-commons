@@ -35,7 +35,6 @@ package org.as3commons.bytecode.emit.impl {
 	public class InterfaceBuilder extends BaseTypeBuilder implements IInterfaceBuilder {
 
 		private static const INTERFACE_STATIC_METHOD_ERROR:String = "Interfaces cannot have static methods";
-		private static const DOUBLE_COLON:String = ':';
 
 		private var _extendingInterfacesNames:Array;
 

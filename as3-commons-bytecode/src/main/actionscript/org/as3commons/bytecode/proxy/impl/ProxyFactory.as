@@ -412,7 +412,7 @@ package org.as3commons.bytecode.proxy.impl {
 		protected function addInterceptorProperty(classBuilder:IClassBuilder):QualifiedName {
 			Assert.notNull(classBuilder, "classBuilder argument must not be null");
 			var className:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
-			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(INTERCEPTOR_PROPERTYNAME, className);
+			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(INTERCEPTOR_PROPERTYNAME,className);
 			propertyBuilder.namespaceURI = as3commons_bytecode_proxy;
 			return new QualifiedName(AS3COMMONSBYTECODEPROXY, new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, ORGAS3COMMONSBYTECODE));
 		}

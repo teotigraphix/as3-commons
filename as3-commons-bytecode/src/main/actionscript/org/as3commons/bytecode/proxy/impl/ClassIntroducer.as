@@ -174,7 +174,7 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		protected function introduceVariable(byteCodeVariable:ByteCodeVariable, classBuilder:IClassBuilder):void {
-			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(byteCodeVariable.name, byteCodeVariable.type.fullName, byteCodeVariable.initializedValue);
+			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(byteCodeVariable.name,byteCodeVariable.type.fullName,byteCodeVariable.initializedValue);
 			propertyBuilder.namespaceURI = byteCodeVariable.namespaceURI;
 			propertyBuilder.scopeName = byteCodeVariable.scopeName;
 			propertyBuilder.visibility = ProxyFactory.getMemberVisibility(byteCodeVariable);
