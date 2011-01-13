@@ -108,6 +108,7 @@ package org.as3commons.bytecode.io {
 
 			abcFile.constantPool.locked = true;
 			serializeConstantPool(abcFile.constantPool, _outputStream);
+			abcFile.constantPool.locked = false;
 
 			_outputStream.writeBytes(trailingOutputStream);
 
