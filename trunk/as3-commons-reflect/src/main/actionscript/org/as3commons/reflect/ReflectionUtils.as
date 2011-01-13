@@ -20,84 +20,102 @@
 * THE SOFTWARE.
 */
 package org.as3commons.reflect {
-import flash.utils.describeType;
+	import flash.system.Capabilities;
+	import flash.system.System;
+	import flash.utils.describeType;
 
-import org.as3commons.lang.ClassUtils;
+	import org.as3commons.lang.ClassUtils;
 
-/**
- * Static methods for returning information about Types.
- *
- * @author Christophe Herreman
- * @author Andrew Lewisohn
- */
-public class ReflectionUtils {
-	
-	//--------------------------------------------------------------------
-	//
-	// Class methods
-	//
-	//--------------------------------------------------------------------
-	
 	/**
-	 * Adds metadata from from interfaces to concrete implementations.
+	 * Static methods for returning information about Types.
+	 *
+	 * @author Christophe Herreman
+	 * @author Andrew Lewisohn
 	 */
-	public static function concatTypeMetadata(type:Type, metaDataContainers:Array, propertyName:String):void {
-		for each (var container:IMetaDataContainer in metaDataContainers) {
-			type[propertyName].some(function(item:Object, index:int, arr:Array):Boolean {
-				if (item.name == Object(container).name) {
-					var metaDataList:Array = container.metaData;
-					var numMetaData:int = metaDataList.length;
-					
-					for (var j:int = 0; j < numMetaData; j++) {
-						item.addMetaData(metaDataList[j]);
+	public class ReflectionUtils {
+
+		private static var _version:String;
+		private static var _isOldPlayer:Boolean = true;
+
+		//--------------------------------------------------------------------
+		//
+		// Class methods
+		//
+		//--------------------------------------------------------------------
+
+		/**
+		 * Adds metadata from from interfaces to concrete implementations.
+		 */
+		public static function concatTypeMetadata(type:Type, metaDataContainers:Array, propertyName:String):void {
+			for each (var container:IMetaDataContainer in metaDataContainers) {
+				type[propertyName].some(function(item:Object, index:int, arr:Array):Boolean {
+					if (item.name == Object(container).name) {
+						var metaDataList:Array = container.metaData;
+						var numMetaData:int = metaDataList.length;
+
+						for (var j:int = 0; j < numMetaData; j++) {
+							item.addMetaData(metaDataList[j]);
+						}
+						return true;
 					}
-					return true;
-				}
-				return false;
-			});
-		}
-	}
-	
-	/**
-	 * Get XML clazz description as given by flash.utils.describeType
-	 * using a workaround for bug http://bugs.adobe.com/jira/browse/FP-183
-	 * that in certain cases do not allow to retrieve complete constructor
-	 * description.
-	 */
-	public static function getTypeDescription(clazz:Class):XML {
-		var description:XML = describeType(clazz);
-		
-		// Workaround for bug http://bugs.adobe.com/jira/browse/FP-183
-		var constructorXML:XMLList = description.factory.constructor;
-		
-		if (constructorXML && constructorXML.length() > 0) {
-			var parametersXML:XMLList = constructorXML[0].parameter;
-			
-			if (parametersXML && parametersXML.length() > 0) {
-				// Instantiate class with all null arguments.
-				var args:Array = [];
-				
-				for (var n:int = 0; n < parametersXML.length(); n++) {
-					args.push(null);
-				}
-				
-				// As the constructor may throw Errors on null arguments arguments 
-				// surround it with a try/catch block
-				try {
-					org.as3commons.lang.ClassUtils.newInstance(clazz, args);
-				} catch (e:Error) {
-					// Logging is set to debug level as any Error ocurring here shouldn't 
-					// cause any problem to the application
-					// CH: not sure if we should log this as it seems be causing confusion to users, disabling for now
-					/*logger.debug("Error while instantiating class {0} with null arguments in order to retrieve constructor argument types: {1}, {2}" +
-					"\nMessage: {3}" + "\nStack trace: {4}", clazz, e.name, e.errorID, e.message, e.getStackTrace());*/
-				}
-				
-				description = describeType(clazz);
+					return false;
+				});
 			}
 		}
-		
-		return description;
+
+		/**
+		 * Get XML clazz description as given by flash.utils.describeType
+		 * using a workaround for bug http://bugs.adobe.com/jira/browse/FP-183
+		 * that in certain cases do not allow to retrieve complete constructor
+		 * description.
+		 */
+		public static function getTypeDescription(clazz:Class):XML {
+			var description:XML = describeType(clazz);
+
+			// Workaround for bug http://bugs.adobe.com/jira/browse/FP-183
+			var constructorXML:XMLList = description.factory.constructor;
+
+			if (constructorXML && constructorXML.length() > 0) {
+				var parametersXML:XMLList = constructorXML[0].parameter;
+
+				if (parametersXML && parametersXML.length() > 0) {
+					// Instantiate class with all null arguments.
+					var args:Array = [];
+
+					for (var n:int = 0; n < parametersXML.length(); n++) {
+						args.push(null);
+					}
+
+					if (playerHasConstructorBug()) {
+						try {
+							// As the constructor may throw Errors on null arguments arguments 
+							// surround it with a try/catch block
+							org.as3commons.lang.ClassUtils.newInstance(clazz, args);
+						} catch (e:Error) {
+							// Logging is set to debug level as any Error ocurring here shouldn't 
+							// cause any problem to the application
+							// CH: not sure if we should log this as it seems be causing confusion to users, disabling for now
+							/*logger.debug("Error while instantiating class {0} with null arguments in order to retrieve constructor argument types: {1}, {2}" +
+							"\nMessage: {3}" + "\nStack trace: {4}", clazz, e.name, e.errorID, e.message, e.getStackTrace());*/
+						}
+					}
+
+					description = describeType(clazz);
+				}
+			}
+
+			return description;
+		}
+
+		public static function playerHasConstructorBug():Boolean {
+			if (_version == null) {
+				_version = Capabilities.version.split(' ')[1];
+				var arr:Array = _version.split(',');
+				var major:int = int(arr[0]);
+				var minor:int = (String(arr[1]).length > 0) ? int(arr[1]) : 0;
+				_isOldPlayer = (major == 10) ? (minor < 1) : (major < 9);
+			}
+			return _isOldPlayer;
+		}
 	}
-}
 }
