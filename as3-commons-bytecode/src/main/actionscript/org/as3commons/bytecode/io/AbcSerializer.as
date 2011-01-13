@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -144,8 +144,8 @@ package org.as3commons.bytecode.io {
 					writeU30(exception.exceptionEnabledFromCodePosition);
 					writeU30(exception.exceptionEnabledToCodePosition);
 					writeU30(exception.codePositionToJumpToOnException);
-					writeU30(pool.addString(exception.exceptionTypeName));
-					writeU30(pool.addString(exception.nameOfVariableReceivingException));
+					writeU30(pool.addMultiname(exception.exceptionType));
+					writeU30(pool.addMultiname(exception.variableReceivingException));
 				}
 
 				serializeTraits(body.traits, abcFile);

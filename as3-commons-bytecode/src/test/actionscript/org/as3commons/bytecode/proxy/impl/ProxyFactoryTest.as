@@ -17,15 +17,19 @@ package org.as3commons.bytecode.proxy.impl {
 
 	import flash.events.Event;
 	import flash.system.ApplicationDomain;
+	import flash.utils.ByteArray;
 	import flash.utils.describeType;
 
 	import flexunit.framework.TestCase;
 
 	import mx.containers.Canvas;
 
+	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.interception.impl.BasicMethodInvocationInterceptor;
+	import org.as3commons.bytecode.io.AbcDeserializer;
+	import org.as3commons.bytecode.io.AbcSerializer;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
@@ -270,7 +274,11 @@ package org.as3commons.bytecode.proxy.impl {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
 			classProxyInfo.introduce("org.as3commons.bytecode.testclasses.TestIntroduction");
-			_proxyFactory.generateProxyClasses();
+			var abcBuilder:IAbcBuilder = _proxyFactory.generateProxyClasses();
+			//var abcFile:AbcFile = abcBuilder.build();
+			//var ba:ByteArray = new AbcSerializer().serializeAbcFile(abcFile);
+			//abcFile = new AbcDeserializer(ba).deserialize();
+
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
 		}
