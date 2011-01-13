@@ -161,11 +161,11 @@ package org.as3commons.bytecode.emit.impl {
 			vb.initialValue = initialValue;
 			var trait:SlotOrConstantTrait;
 			if (instanceInfo != null) {
-				trait = instanceInfo.getSlotTraitByName(name);
+				trait = instanceInfo.getSlotTraitByName(propertyName);
 				if (trait != null) {
 					vb.as3commons_bytecode::setTrait(trait);
 				} else if (classInfo != null) {
-					trait = classInfo.getSlotTraitByName(name);
+					trait = classInfo.getSlotTraitByName(propertyName);
 					if (trait != null) {
 						vb.as3commons_bytecode::setTrait(trait);
 					}
