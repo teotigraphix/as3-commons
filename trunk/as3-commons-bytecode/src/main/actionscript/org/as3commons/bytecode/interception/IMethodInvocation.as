@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.interception {
+	import org.as3commons.bytecode.interception.impl.InvocationKind;
 
 	/**
 	 * Contains all the necessary information for a method interception.

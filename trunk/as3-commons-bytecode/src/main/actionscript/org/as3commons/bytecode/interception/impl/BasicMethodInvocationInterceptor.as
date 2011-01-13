@@ -13,9 +13,12 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.interception {
+package org.as3commons.bytecode.interception.impl {
 	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
+
+	import org.as3commons.bytecode.interception.IInterceptor;
+	import org.as3commons.bytecode.interception.IMethodInvocation;
+	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 
 	/**
 	 * @inheritDoc

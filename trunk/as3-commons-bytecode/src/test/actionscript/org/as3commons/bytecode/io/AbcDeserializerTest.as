@@ -20,7 +20,7 @@ package org.as3commons.bytecode.io {
 
 	import org.as3commons.bytecode.TestConstants;
 	import org.as3commons.bytecode.abc.AbcFile;
-	import org.as3commons.bytecode.abc.ConstantPool;
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.util.Assertions;
@@ -45,7 +45,7 @@ package org.as3commons.bytecode.io {
 			assertEquals(46, abcFile.majorVersion);
 
 			// BEGIN CONSTANT POOL ASSERTIONS
-			var pool:ConstantPool = abcFile.constantPool;
+			var pool:IConstantPool = abcFile.constantPool;
 
 			// There are two integers in the pool: 0 and 10
 			assertEquals(1, pool.integerPool.length);
@@ -100,7 +100,7 @@ package org.as3commons.bytecode.io {
 			assertEquals(46, abcFile.majorVersion);
 
 			// BEGIN CONSTANT POOL ASSERTIONS
-			var pool:ConstantPool = abcFile.constantPool;
+			var pool:IConstantPool = abcFile.constantPool;
 
 			// There are two integers in the pool: 0 and 10
 			assertEquals(2, pool.integerPool.length);

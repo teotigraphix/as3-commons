@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.interception {
+package org.as3commons.bytecode.interception.impl {
 	import flexunit.framework.TestCase;
 
 	import org.as3commons.bytecode.testclasses.interceptors.TestBlockingInterceptor;

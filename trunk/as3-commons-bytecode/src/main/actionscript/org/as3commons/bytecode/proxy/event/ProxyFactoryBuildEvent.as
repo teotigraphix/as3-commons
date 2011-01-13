@@ -19,7 +19,7 @@ package org.as3commons.bytecode.proxy.event {
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.impl.BaseBuilder;
-	import org.as3commons.bytecode.interception.InvocationKind;
+	import org.as3commons.bytecode.interception.impl.InvocationKind;
 
 	/**
 	 * Dispatched at various stages of proxy building. Enables third parties to intercept certain

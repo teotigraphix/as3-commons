@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.interception {
+	import org.as3commons.bytecode.interception.impl.InvocationKind;
 
 	/**
 	 * Describes an object that acts as a registry of <code>IInterceptor</code> instances capable

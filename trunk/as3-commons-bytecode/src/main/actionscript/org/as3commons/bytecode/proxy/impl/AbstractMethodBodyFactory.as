@@ -28,7 +28,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 		protected var namespaceQualifiedName:QualifiedName = new QualifiedName("Namespace", LNamespace.PUBLIC, MultinameKind.QNAME);
 		protected var arrayQualifiedName:QualifiedName = new QualifiedName("Array", LNamespace.PUBLIC, MultinameKind.QNAME);
-		protected var invocationKindQualifiedName:QualifiedName = new QualifiedName("InvocationKind", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.interception"), MultinameKind.QNAME);
+		protected var invocationKindQualifiedName:QualifiedName = new QualifiedName("InvocationKind", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "org.as3commons.bytecode.interception.impl"), MultinameKind.QNAME);
 		protected var interceptorQName:QualifiedName = new QualifiedName("methodInvocationInterceptor", LNamespace.PUBLIC);
 		protected var interceptorRTQName:RuntimeQualifiedName = new RuntimeQualifiedName("methodInvocationInterceptor", MultinameKind.RTQNAME);
 		protected var interceptQName:QualifiedName = new QualifiedName("intercept", new LNamespace(NamespaceKind.NAMESPACE, "org.as3commons.bytecode.interception:IMethodInvocationInterceptor"));

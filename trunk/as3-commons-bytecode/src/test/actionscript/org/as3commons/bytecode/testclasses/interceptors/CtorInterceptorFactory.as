@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.testclasses.interceptors {
 	import mx.core.IFactory;
 
-	import org.as3commons.bytecode.interception.BasicMethodInvocationInterceptor;
+	import org.as3commons.bytecode.interception.impl.BasicMethodInvocationInterceptor;
 
 	public class CtorInterceptorFactory implements IFactory {
 

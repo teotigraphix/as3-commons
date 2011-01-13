@@ -442,9 +442,9 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function dispatchEvent(event:Event, topic:Object = null):void {
+		public function dispatchEvent(event:Event, topic:Object = null):Boolean {
 			if (!event) {
-				return;
+				return false;
 			}
 			var eventClass:Class = Object(event).constructor as Class;
 			if (invokeInterceptors(event, eventClass, topic) == false) {
@@ -455,7 +455,9 @@ package org.as3commons.eventbus.impl {
 
 				notifySpecificClassListeners(eventClass, event, topic);
 				notifySpecificClassListenerProxies(eventClass, event, topic);
+				return true;
 			}
+			return false;
 		}
 
 		/**
@@ -600,8 +602,8 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function dispatch(type:String, topic:Object = null):void {
-			dispatchEvent(new Event(type), topic);
+		public function dispatch(type:String, topic:Object = null):Boolean {
+			return dispatchEvent(new Event(type), topic);
 		}
 
 		// --------------------------------------------------------------------

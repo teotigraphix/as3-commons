@@ -694,7 +694,7 @@ package org.as3commons.bytecode.abc.enum {
 			ba.position = 0;
 			//abcFile = new AbcFile();
 			//methodBody = new MethodBody();
-			var opcodes:Array = Opcode.parse(ba, ba.length, methodBody, abcFile);
+			var opcodes:Array = Opcode.parse(ba, ba.length, methodBody, abcFile.constantPool);
 			assertEquals(1, opcodes.length);
 			assertTrue(opcodes[0] is Op);
 			assertStrictlyEquals(Op(opcodes[0]).opcode, opcode);

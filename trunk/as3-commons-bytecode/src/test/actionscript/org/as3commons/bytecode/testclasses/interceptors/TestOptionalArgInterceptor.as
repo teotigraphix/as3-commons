@@ -1,6 +1,6 @@
 package org.as3commons.bytecode.testclasses.interceptors {
 	import org.as3commons.bytecode.interception.IMethodInvocation;
-	import org.as3commons.bytecode.interception.InvocationKind;
+	import org.as3commons.bytecode.interception.impl.InvocationKind;
 	import org.as3commons.lang.Assert;
 
 	public class TestOptionalArgInterceptor extends AssertingInterceptor {
