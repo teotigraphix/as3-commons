@@ -29,11 +29,12 @@ package org.as3commons.bytecode.testclasses {
 		}
 
 		public function getTest():String {
-			try {
-				return internalGetTest();
-			} catch (e:Error) {
-				trace(e);
-			}
+			//try {
+			return internalGetTest();
+			//} catch (e:Error) {
+			//	trace(e);
+			//}
+			//return "";
 		}
 
 		public function get testString():String {

@@ -33,6 +33,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
+	import org.as3commons.bytecode.io.AbcDeserializer;
 	import org.as3commons.bytecode.proxy.IClassIntroducer;
 	import org.as3commons.bytecode.proxy.IProxyFactory;
 	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
@@ -103,8 +104,16 @@ package org.as3commons.bytecode.proxy.impl {
 			try {
 				type.byteArray.position = method.bodyStartPosition;
 				methodBody.opcodes = Opcode.parse(type.byteArray, method.bodyLength, methodBody, type.constantPool);
-				translateOpcodesNamespaces(methodBody.opcodes, makeScopeName(type.fullName), classBuilder.packageName + MultinameUtil.SINGLE_COLON + classBuilder.name);
-				methodBody.exceptionInfos = extractExceptionInfos(type.byteArray, type);
+				var newScopeName:String = classBuilder.packageName + MultinameUtil.SINGLE_COLON + classBuilder.name;
+				translateOpcodesNamespaces(methodBody.opcodes, makeScopeName(type.fullName), newScopeName);
+				methodBody.exceptionInfos = extractExceptionInfos(type.byteArray, type, newScopeName + '/' + classBuilder.name);
+				for each (var op:Op in methodBody.opcodes) {
+					var idx:int = AbcDeserializer.getExceptionInfoArgumentIndex(op);
+					if (idx > -1) {
+						var exceptionIndex:int = op.parameters[idx];
+						op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
+					}
+				}
 			} finally {
 				type.byteArray.position = originalPosition;
 			}
@@ -160,7 +169,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
-		protected function extractExceptionInfos(input:ByteArray, type:ByteCodeType):Array {
+		protected function extractExceptionInfos(input:ByteArray, type:ByteCodeType, newExceptionName:String):Array {
 			var exceptionInfos:Array = [];
 			var exceptionCount:int = AbcSpec.readU30(input);
 			for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
@@ -168,7 +177,8 @@ package org.as3commons.bytecode.proxy.impl {
 				exceptionInfo.exceptionEnabledFromCodePosition = AbcSpec.readU30(input);
 				exceptionInfo.exceptionEnabledToCodePosition = AbcSpec.readU30(input);
 				exceptionInfo.codePositionToJumpToOnException = AbcSpec.readU30(input);
-				exceptionInfo.exceptionTypeName = type.constantPool.stringPool[AbcSpec.readU30(input)];
+				AbcSpec.skipU30(input);
+				exceptionInfo.exceptionTypeName = newExceptionName;
 				exceptionInfo.nameOfVariableReceivingException = type.constantPool.stringPool[AbcSpec.readU30(input)];
 				exceptionInfos[exceptionInfos.length] = exceptionInfo;
 			}

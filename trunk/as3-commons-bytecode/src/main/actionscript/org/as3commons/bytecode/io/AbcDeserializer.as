@@ -483,7 +483,7 @@ package org.as3commons.bytecode.io {
 		}
 
 
-		protected function getExceptionInfoArgumentIndex(op:Op):int {
+		public static function getExceptionInfoArgumentIndex(op:Op):int {
 			if (op.opcode === Opcode.newcatch) {
 				return 0;
 			}
