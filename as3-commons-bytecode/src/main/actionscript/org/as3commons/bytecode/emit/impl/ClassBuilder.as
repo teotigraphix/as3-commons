@@ -165,7 +165,7 @@ package org.as3commons.bytecode.emit.impl {
 				if (trait != null) {
 					vb.as3commons_bytecode::setTrait(trait);
 				} else if (classInfo != null) {
-					trait = classInfo.getSlotTraitByName(propertyName);
+					trait = classInfo.getSlotTraitByName(propertyNamen);
 					if (trait != null) {
 						vb.as3commons_bytecode::setTrait(trait);
 					}

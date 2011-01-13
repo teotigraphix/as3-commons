@@ -122,11 +122,11 @@ package org.as3commons.bytecode.emit.impl {
 			mb.namespaceURI = nameSpace;
 			var trait:TraitInfo;
 			if (instanceInfo != null) {
-				trait = instanceInfo.getMethodTraitByName(name);
+				trait = instanceInfo.getMethodTraitByName(methodName);
 				if (trait != null) {
 					mb.as3commons_bytecode::setMethodInfo(MethodTrait(trait).traitMethod);
 				} else if (classInfo != null) {
-					trait = classInfo.getMethodTraitByName(name);
+					trait = classInfo.getMethodTraitByName(methodName);
 					if (trait != null) {
 						mb.as3commons_bytecode::setMethodInfo(MethodTrait(trait).traitMethod);
 					}
