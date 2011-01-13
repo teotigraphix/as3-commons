@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <properties>
+    <title>Runtime class generation using the emit API</title>
+    <author email="scab@dds.nl">Roland Zwaga</author>
+  </properties>
+
+  <body>
+    <section name="Introduction to the emit API">
+    	<p>As3commons-bytecode offers an API that enables a developer to generate classes at run-time.<br/>
+    	All the necessary classes for this functionality can be found in the <code><a href="asdoc/org/as3commons/bytecode/emit/package-detail.html" target="_blank">org.as3commons.bytecode.emit.*</a></code> package.<br/>
+    	This API can form the basis for mocking or run-time proxy libraries.</p>
+    </section>
+    
+    <section name="Sections">
+    	<ul>
+    		<li><a href="#Generating_classes">Generating class</a></li>
+    		<li><a href="#Generating_properties">Generating properties</a></li>
+    		<li><a href="#Generating_getters_and_setters">Generating getters and setters</a></li>
+    		<li><a href="#Generating_methods">Generating methods</a></li>
+    		<li><a href="#Defining_method_bodies">Defining method bodies</a></li>
+    		<li><a href="#asm">Defining method bodies using a string source</a></li>
+    		<li><a href="#Generating_a_constructor">Generating a constructor</a></li>
+    		<li><a href="#Generating_metadata">Generating metadata</a></li>
+    		<li><a href="#Generating_interfaces">Generating interfaces</a></li>
+    		<li><a href="#Loading_the_generated_classes_into_the_AVM">Loading the generated classes into the AVM</a></li>
+    		<li><a href="#Exporting_the_generated_classes_to_file">Exporting the generated classes to file</a></li>
+    	</ul>
+    </section>
+    
+    <section name="Generating classes">
+    	<p>The main entry point for run-time class generation is the <code><a href="asdoc/org/as3commons/bytecode/emit/IAbcBuilder.html" target="_blank">IAbcBuilder</a></code> interface.<br/>
+    	The <code><a href="asdoc/org/as3commons/bytecode/emit/impl/AbcBuilder.html" target="_blank">AbcBuilder</a></code> class is an implementation of this interface and accepts an optional <code><a href="asdoc/org/as3commons/bytecode/abc/AbcFile.html" target="_blank">AbcBuilder</a></code> instance for its constructor. When no <code><a href="asdoc/org/as3commons/bytecode/abc/AbcFile.html" target="_blank">AbcBuilder</a></code> is passed
+    	in it will create a new <code><a href="asdoc/org/as3commons/bytecode/abc/AbcFile.html" target="_blank">AbcBuilder</a></code> instance during its build process, otherwise the specified <code><a href="asdoc/org/as3commons/bytecode/abc/AbcFile.html" target="_blank">AbcBuilder</a></code> will be used to add the generated classes and
+    	interfaces to.</p>
+    	<p>Below is an example of a simple run-time class.<br/>
+    	Before defining a class there first needs to be a package definition:</p>
+    	<div class="source"><pre>var abcBuilder:IAbcBuilder = new AbcBuilder();
+var packageBuilder:IPackageBuilder = abcBuilder.definePackage("com.classes.generated");
+</pre>
+    	</div>
+    	<p>Once the package has been defined, a class can be defined:</p>
+    	<div class="source"><pre>var classBuilder:IClassBuilder = packageBuilder.defineClass("RuntimeClass");</pre></div>
+    	<p>A super class can also be defined, for this a fully qualified name is required:</p>
+    	<div class="source"><pre>var classBuilder:IClassBuilder = packageBuilder.defineClass("RuntimeByteArraySubClass","flash.utils.ByteArray");</pre></div>
+    	<p>To have the generated class implement one or more interfaces use the <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html#implementInterface()" target="_blank">IClassBuilder.implementInterface()</a></code> method, the interface
+    	names are assumed to be fully qualified names:</p>
+    	<div class="source"><pre>classBuilder.implementInterface("flash.events.IEventDispatcher");</pre></div>
+    	<blockquote>
+    		<strong>Note:</strong> Invoking <code>implementInterface()</code> does <strong>*not*</strong> automatically add the
+    		required methods to the class, this needs to be done manually.
+    	</blockquote>
+    	<p>Other properties that can be set on the <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html" target="_blank">IClassBuilder</a></code> include:</p>
+    	<ul>
+    		<li>isDynamic</li>
+    		<li>isFinal</li>
+    	</ul>
+    	<p>The actionscript source equivalent of the above statements would look like this:</p>
+    	<div class="source"><pre>package com.classes.generated {
+  public class RuntimeByteArraySubClass extends ByteArray implements IEventDispatcher {
+  }
+}</pre></div>
+    </section>
+    
+    <section name="Generating properties">
+    	<p>Next step is defining properties on the class. Use the <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html#defineProperty()" target="_blank">defineProperty()</a></code> method on the <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html" target="_blank">IClassBuilder</a></code> instance for this:</p>
+    	<div class="source"><pre>var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("name","String");</pre></div>
+    	<p>The first argument is the name of the property, the second is the type, this always needs to be a fully qualified name.<br/>
+    	To define a default value for the property add a third argument:</p>
+    	<div class="source"><pre>var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("name","String","defaultName");</pre></div>
+    	<p>The actionscript source equivalent of those statements would look like this:</p>
+    	<div class="source"><pre>public var name:String = "defaultName";</pre></div>
+    	<p>By default the generated property will be public, to change this use the <code>IPropertyBuilder.visibility</code> property:</p>
+    	<div class="source"><pre>propertyBuilder.visibility = MemberVisibility.PRIVATE;</pre></div>
+    	<p>To assign a custom namespace to the property, assign the specified namespace URL to the <code><a href="asdoc/org/as3commons/bytecode/emit/IEmitObject.html#namespace" target="_blank">IPropertyBuilder.namespace</a></code> property and the name to the <code><a href="asdoc/org/as3commons/bytecode/emit/IEmitObject.html#scopeName" target="_blank">IPropertyBuilder.scopeName</a></code> property:</p>
+    	<div class="source"><pre>propertyBuilder.namespace = "http://www.somedomain.com/customnamespace";
+propertyBuilder.scopeName = "my_custom_namespace";
+</pre></div>
+	<p>This assumes that the namespace would have been declared like this:</p>
+	<div class="source"><pre>public namespace my_custom_namespace = "http://www.somedomain.com/customnamespace";</pre></div>
+    	<p>Other properties that can be set on the <code><a href="asdoc/org/as3commons/bytecode/emit/IPropertyBuilder.html" target="_blank">IPropertyBuilder</a></code> include:</p>
+    	<ul>
+    		<li>isOverride</li>
+    		<li>isFinal</li>
+    		<li>isStatic</li>
+    		<li>isConstant</li>
+    	</ul>
+    </section>
+
+    <section name="Generating getters and setters">
+    	<p>Getters and setters, also known as accessors, are added using the <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html#defineAccessor()" target="_blank">defineAccessor()</a></code> method, its similar
+    	to the <code>defineProperty()</code> method:</p>
+    	<div class="source"><pre>var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor("count","int",100);</pre></div>
+    	<p>The actionscript source equivalent of this statement would look like this:</p>
+    	<div class="source"><pre>private var _count:int = 100;
+
+public function get count():int {
+  return _count;
+}
+
+public function set count(value:int):void {
+  _count =  value;
+}</pre></div>
+    	<p>By default the accessor will be read/write, this can be changed using the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html#access" target="_blank">access</a></code> property on the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html" target="_blank">IAccessorBuilder</a></code> interface:</p>
+    	<div class="source"><pre>accessorBuilder.access = AccessorAccess.READ_ONLY;</pre></div>
+    	<p>By default a private property will be generated with a name in the format <em>"_" + accessorName</em>.<br/>
+    	This private property is used to store the actual value of the accessor.</p>
+    	<p>To use a custom <code><a href="asdoc/org/as3commons/bytecode/emit/IPropertyBuilder.html" target="_blank">IPropertyBuilder</a></code> for this create one and assign it to the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html#property" target="_blank">IAccessorBuilder.property</a></code> property:</p>
+    	<div class="source"><pre>accessorBuilder.property = new PropertyBuilder("count","int",1000);</pre></div>
+    	<subsection name="Overriding accessor body creation">
+    	<p>To completely override the creation of the getter and setter method bodies add listeners for the <code>AccessorBuilderEvent.BUILD_GETTER</code> and <code>AccessorBuilderEvent.BUILD_SETTER</code> events.<br/>
+    	When either of these events are handled the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html" target="_blank">IAccessorBuilder</a></code> will delegate the creation of the <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html" target="_blank">IMethodBuilder</a></code> instances to the event handlers assigned to these events.<br/>
+    	In these event handlers logic can be placed to create a valid <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html" target="_blank">IMethodBuilder</a></code> and its method body, after creation such an instance needs to be assigned to the <code><a href="asdoc/org/as3commons/bytecode/emit/event/AccessorBuilderEvent.html#builder" target="_blank">AccessorBuilderEvent.builder</a></code> property.</p>
+    	<div class="source"><pre>accessorBuilder.addEventLister(AccessorBuilderEvent.BUILD_GETTER, buildGetterHandler);
+public function buildGetterHandler(event:AccessorBuilderEvent):void {
+	var methodBuilder:IMethodBuilder = new MethodBuilder():
+	//logic ommitted...
+	event.builder = methodBuilder;
+}
+</pre></div>
+	</subsection>
+    	<p>Visibility and namespace assignment is the same as for property generation.</p>
+    	<p>Other properties that can be set on the <code><a href="asdoc/org/as3commons/bytecode/emit/IAccessorBuilder.html" target="_blank">IAccessorBuilder</a></code> include:</p>
+    	<ul>
+    		<li>isOverride</li>
+    		<li>isFinal</li>
+    		<li>isStatic</li>
+    	</ul>
+    </section>
+
+    <section name="Generating methods">
+    	<p>The <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html" target="_blank">IMethodBuilder</a></code> interface supplies the required API to start adding methods to a generated class.</p>
+    	<p>To receive an instance of this interface invoke the <code>defineMethod()</code> on the <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html" target="_blank">IClassBuilder</a></code> instance:</p>
+    	<div class="source"><pre>var methodBuilder:IMethodBuilder = classBuilder.defineMethod("multiplyByHundred");</pre></div>
+    	<p>Setting visibility and namespaces on the method works the same way as for properties and accessors.</p>
+    	<p>To define method arguments invoke the <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html#defineArgument()" target="_blank">defineArgument()</a></code> method:</p>
+    	<div class="source"><pre>var argument:MethodArgument = methodBuilder.defineArgument("int");</pre></div>
+    	<p>Further properties for an argument are <code>isOptional</code> and <code>defaultValue</code>, their names are self-explanatory.</p>
+    	<p>By default a generated method has a return type of <code>void</code>, to change this set the <code>returnType</code> property:</p>
+    	<div class="source"><pre>methodBuilder.returnType = "int";</pre></div>
+    	<subsection name="Defining method bodies">
+    	<p>To add a method body a certain knowledge about AVM opcodes is required:</p>
+    	<div class="source"><pre>methodBuilder.addOpcode(Opcode.getlocal_0)
+             .addOpcode(Opcode.pushscope)
+             .addOpcode(Opcode.getlocal_1)
+             .addOpcode(Opcode.pushint, [100])
+             .addOpcode(Opcode.multiply)
+             .addOpcode(Opcode.setlocal_1)
+             .addOpcode(Opcode.getlocal_1)
+             .addOpcode(Opcode.returnvalue);</pre></div>
+        <p>For more information on AVM instructions follow this link: <a href="http://learn.adobe.com/wiki/display/AVM2/5.+AVM2+instructions" target="_blank">AVM2 instructions</a>.</p>
+	<p>The actionscript source equivalent of these statements would look like this:</p>
+    	<div class="source"><pre>public function multiplyByHundred(value:int):int {
+  value = (value * 100);
+  return value;
+}</pre></div>
+
+	<p>To define jumps between opcodes, for use in <em>if</em> statements for example, use the <code>defineJump</code> method.</p>
+	<p>Let's add an extra boolean argument to the method which will determine if the given integer value will be multiplied
+	by a hundred or a thousand:</p>
+	<div class="source"><pre>methodBuilder.defineArgument("Boolean");</pre></div>
+	<p>And then change the method body generation like this:</p>
+    	<div class="source"><pre>var iffalse:Op = new Op(Opcode.iffalse,[0]);
+var jump:Op = new Op(Opcode.jump,[0]);
+
+methodBuilder.addOpcode(Opcode.getlocal_0)
+             .addOpcode(Opcode.pushscope)
+             .addOpcode(Opcode.getlocal_2)
+             .addOp(iffalse)
+             .addOpcode(Opcode.getlocal_1)
+             .addOpcode(Opcode.pushbyte,[100])
+             .addOpcode(Opcode.multiply)
+             .addOpcode(Opcode.convert_i)
+             .addOpcode(Opcode.setlocal_1)
+             .addOp(jump)
+             .defineJump(iffalse, new Op(Opcode.getlocal_1))
+             .addOpcode(Opcode.pushshort,[1000])
+             .addOpcode(Opcode.multiply)
+             .addOpcode(Opcode.convert_i)
+             .addOpcode(Opcode.setlocal_1)
+             .defineJump(jump, new Op(Opcode.getlocal_1))
+             .addOpcode(Opcode.returnvalue);</pre></div>
+<p>The actionscript source equivalent of these statements would look like this:</p>
+    	<div class="source"><pre>public function multiplyByHundred(value:int, reallyDoIt:Boolean):int {
+  if (reallyDoIt) {
+    value = value * 100;
+  } else {
+    value = value * 1000;
+  }
+  return value;
+}</pre></div>
+	</subsection>
+	<subsection name="Defining method bodies using a string source" id="asm">
+		<p>A second way of adding the method body is by defining the assembly source fully as a string:</p>
+		<div class="source"><pre>var source:String = (&lt;![CDATA[<strong>
+		     getlocal_0
+		     pushscope
+		     getlocal_2
+		     iffalse L0
+		     getlocal_1
+		     pushbyte 100
+		     multiply
+		     convert_i
+		     setlocal_1
+		     jump L1
+		     L0:
+		     getlocal_1
+		     pushshort 1000
+		     multiply
+		     convert_i
+		     setlocal_1
+		     L1:
+		     getlocal_1
+		     returnvalue
+	</strong>]]&gt;).toString();
+
+methodBuilder.addAsmSource(source);</pre></div>
+		<p>The format of the source is quite similar to the results found in a <code><a href="http://blogs.adobe.com/gosmith/2008/02/disassembling_a_swf_with_swfdu_1.html" target="_blank">swfdump</a></code> output.</p>
+		<p>The source needs to adhere to a few simple rules:</p>
+		<ul>
+		<li>Each instruction and its operands need to be on a separate line.</li>
+		<li>Separate instructions and operands with spaces and/or tabs.</li>
+		<li>Labels are referenced by name. I.e. <strong>iffalse L1</strong></li>
+		<li>Labels are defined by a name suffixed by a colon. I.e. <strong>L1:</strong></li>
+		</ul>
+	</subsection>
+	<p>Any exceptions referenced in the opcode collection can be added using the <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html#defineExceptionInfo()" target="_blank">defineExceptionInfo()</a></code> method:</p>
+	<div class="source"><pre>var exceptionInfoBuilder:IExceptionInfoBuilder = methodBuilder.defineExceptionInfo();</pre></div>
+    	<p>Other properties that can be set on the <code>IMethodBuilder</code> include:</p>
+    	<ul>
+    		<li>isOverride</li>
+    		<li>isFinal</li>
+    		<li>isStatic</li>
+    	</ul>
+    </section>
+
+    <section name="Generating a constructor">
+    	<p>By default a parameterless constructor is generated for the class, if a different constructor is needed invoke the <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html#defineConstructor()" target="_blank">defineConstructor()</a></code>
+    	method and use the resulting <code><a href="asdoc/org/as3commons/bytecode/emit/ICtorBuilder.html" target="_blank">ICtorBuilder</a></code> instance to define it:</p>
+    	<div class="source"><pre>var ctorBuilder:ICtorBuilder = classBuilder.defineConstructor();</pre></div>
+    	<p>The <code><a href="asdoc/org/as3commons/bytecode/emit/ICtorBuilder.html" target="_blank">ICtorBuilder</a></code> instance works the same as an <code><a href="asdoc/org/as3commons/bytecode/emit/IMethodBuilder.html" target="_blank">IMethodBuilder</a></code> instance with the
+    	exception that any <code>returnType</code> or <code>visibility</code> assignments will be ignored.</p>
+    	<p>Multiple calls to <code><a href="asdoc/org/as3commons/bytecode/emit/IClassBuilder.html#defineConstructor()" target="_blank">defineConstructor()</a></code> will yield the same <code><a href="asdoc/org/as3commons/bytecode/emit/ICtorBuilder.html" target="_blank">ICtorBuilder</a></code> instance.</p>
+    </section>
+    
+    <section name="Generating metadata">
+    	<p>Methods, properties, accessors and classes themselves can be annotated with metadata using an <code><a href="asdoc/org/as3commons/bytecode/emit/IMetaDataBuilder.html" target="_blank">IMetadataBuilder</a></code> instance:</p>
+    	<div class="source"><pre>var metadataBuilder:IMetadataBuilder = methodBuilder.defineMetaData("Inject");</pre></div>
+    	<p>To add arguments to the metadata definition invoke the <code><a href="asdoc/org/as3commons/bytecode/emit/IMetaDataBuilder.html#defineArgument()" target="_blank">defineArgument()</a></code> method:</p>
+    	<div class="source"><pre>var metadataArgument:MetaDataArgument = metadataBuilder.defineArgument();
+metadataArgument.name = "name";
+metadataArgument.value = "objectName";</pre></div>
+	<p>The actionscript source equivalent of this statement would look like this:</p>
+	<div class="source"><pre>[Inject(name="objectName")]</pre></div>
+    </section>
+
+    <section name="Generating interfaces">
+    	<p>Generating interfaces is mostly the same as generating classes, with the exception that constructors and properties
+    	cannot be defined and any method or accessor that is added will automatically receive public visibility.</p>
+    	<div class="source"><pre>var interfaceBuilder:IInterfaceBuilder = packageBuilder.defineInterface("RuntimeInterface");</pre></div>
+    	<p>If the interface needs to extend other interfaces pass a list of their fully qualified names to the constructor like this:</p>
+    	<div class="source"><pre>var interfaceBuilder:IInterfaceBuilder = packageBuilder.defineInterface("RuntimeInterface",["flash.events.IEventDispatcher"]);</pre></div>
+	<p>The actionscript source equivalent of this statement would look like this:</p>
+	<div class="source"><pre>package com.classes.generated {
+  public interface RuntimeInterface extends IEventDispatcher {
+  }
+}</pre></div>
+    </section>
+    
+    <section name="Generating namespaces">
+    	<p>To generate a new namespace use the <code>defineNamespace()</code> method on the <code>IPackageBuilder</code>.</p>
+    	<div class="source"><pre>abcBuilder.addPackage("com.myclasses.namespaces").addNamespace('my_custom_namespace','http://www.mynamespaces.com/custom');</pre></div>
+	<p>The actionscript source equivalent of this statement would look like this:</p>
+	<div class="source"><pre>package com.myclasses.namespaces {
+  public namespace my_custom_namespace = "http://www.mynamespaces.com/custom";
+}</pre></div>
+    </section>
+    
+    <section name="Loading the generated classes into the AVM">
+    	<p>Finally, after defining the necessary classes and interfaces they need to be loaded into the AVM so they can
+    	be instantiated.<br/>
+    	There are two ways of doing this, the shortest way is using the <code><a href="asdoc/org/as3commons/bytecode/emit/IAbcBuilder.html#buildAndLoad()" target="_blank">buildAndLoad()</a></code> method on the <code><a href="asdoc/org/as3commons/bytecode/emit/IAbcBuilder.html" target="_blank">IAbcBuilder</a></code> instance.</p>
+    	<p>The process of loading class definitions is asynchronous so first these event listeners need to be added:</p>
+    	<div class="source"><pre>abcBuilder.addEventListener(Event.COMPLETE, loadedHandler);
+abcBuilder.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+abcBuilder.addEventListener(IOErrorEvent.VERIFY_ERROR, errorHandler);</pre></div>
+	<p>After that invoke the <code>buildAndLoad()</code> method:</p>
+	<div class="source"><pre>abcBuilder.buildAndLoad();</pre></div>
+	<p>In the <code>loadedHandler</code> method a reference to a generated class can be retrieved and instantiated like this:</p>
+	<div class="source"><pre>function loadedHandler(event:Event):void {
+  var clazz:Class = ApplicationDomain.currentDomain.getDefinition("com.classes.generated.RuntimeClass") as Class;
+  var instance:Object = new clazz();
+  var i:int = instance.multiplyByHundred(10);
+  // i == 1000
+}</pre></div>
+	<p>The <code><a href="asdoc/org/as3commons/bytecode/emit/IAbcBuilder.html#buildAndLoad()" target="_blank">buildAndLoad()</a></code> method has two optional arguments:</p>
+	<p><div class="source"><code>public function buildAndLoad(applicationDomain:ApplicationDomain = null, newApplicationDomain:ApplicationDomain = null):AbcFile;</code></div></p>
+	<p>The first <code>ApplicationDomain</code> argument will be the domain that contains any class definitions that are used
+	as superclasses in the generated classes. This domain will be used to retrieve reflection information about the superclasses
+	needed by the class generation process. If no <code>ApplicationDomain</code> is passed then <code>ApplicationDomain.currentDomain</code> will be used.</p> 
+	<p>The second <code>ApplicationDomain</code> argument will be used to load the generated classes into. Again, when no <code>ApplicationDomain</code> is passed
+	then <code>ApplicationDomain.currentDomain</code> will be used.</p> 
+	<p>The second way to load the generated classes is like this:</p>
+	<div class="source"><pre>var abcFile:AbcFile = abcBuilder.build();
+var abcLoader:AbcClassLoader = new AbcClassLoader();
+
+abcLoader.addEventListener(Event.COMPLETE, loadedHandler);
+abcLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+abcLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, errorHandler);
+
+abcLoader.loadAbcFile(abcFile);</pre></div>
+    </section>
+    
+    <section name="Exporting the generated classes to file">
+    	<p>If there is a need to persist the generated classes to disk, follow these steps:</p>
+    	<div class="source"><pre>var binarySwf:ByteArray = abcBuilder.buildAndExport();
+var file:FileReference = new FileReference();
+file.save(binarySwf, "MyGeneratedClasses.swf");
+</pre></div>
+    </section>
+
+  </body>
+</document>
