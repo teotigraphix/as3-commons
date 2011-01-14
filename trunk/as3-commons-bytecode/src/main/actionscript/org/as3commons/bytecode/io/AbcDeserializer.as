@@ -217,6 +217,8 @@ package org.as3commons.bytecode.io {
 					//  u30 target 
 					//  u30 exc_type 
 					//  u30 var_name 
+					// The AVM2 documentation is wrong again here, exc_type and var_name are
+					// indexes into the multiname pool instead of the string pool
 					// }
 					exceptionInfo.exceptionEnabledFromCodePosition = readU30();
 					exceptionInfo.exceptionEnabledToCodePosition = readU30();
