@@ -30,10 +30,11 @@ package org.as3commons.bytecode.emit.event {
 		private var _trait:SlotOrConstantTrait;
 		private var _builder:IMethodBuilder;
 
-		public function AccessorBuilderEvent(type:String, accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait, bubbles:Boolean = false, cancelable:Boolean = false) {
+		public function AccessorBuilderEvent(type:String, accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait, methodBuilder:IMethodBuilder, bubbles:Boolean = false, cancelable:Boolean = false) {
 			super(type, bubbles, cancelable);
 			_accessorBuilder = accessorBuilder;
 			_trait = trait;
+			_builder = methodBuilder;
 		}
 
 		public function get accessorBuilder():IAccessorBuilder {
@@ -53,9 +54,7 @@ package org.as3commons.bytecode.emit.event {
 		}
 
 		override public function clone():Event {
-			var event:AccessorBuilderEvent = new AccessorBuilderEvent(this.type, this.accessorBuilder, this.trait, this.bubbles, this.cancelable);
-			event.builder = this.builder;
-			return event;
+			return new AccessorBuilderEvent(this.type, this.accessorBuilder, this.trait, this.builder, this.bubbles, this.cancelable);
 		}
 
 	}
