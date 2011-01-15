@@ -30,7 +30,7 @@ package org.as3commons.bytecode.emit.event {
 		private var _trait:SlotOrConstantTrait;
 		private var _builder:IMethodBuilder;
 
-		public function AccessorBuilderEvent(type:String, accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait, methodBuilder:IMethodBuilder, bubbles:Boolean = false, cancelable:Boolean = false) {
+		public function AccessorBuilderEvent(type:String, accessorBuilder:IAccessorBuilder, trait:SlotOrConstantTrait, methodBuilder:IMethodBuilder = null, bubbles:Boolean = false, cancelable:Boolean = false) {
 			super(type, bubbles, cancelable);
 			_accessorBuilder = accessorBuilder;
 			_trait = trait;

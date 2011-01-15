@@ -75,11 +75,11 @@ package org.as3commons.bytecode.proxy.impl {
 
 		public function ProxyFactoryTest(methodName:String = null) {
 			super(methodName);
+			ByteCodeType.getTypeProvider().clearCache();
 			ProxySubClass;
 		}
 
 		override public function setUp():void {
-			ByteCodeType.getTypeProvider().clearCache();
 			ByteCodeType.fromLoader(ApplicationUtils.application.loaderInfo);
 			_proxyFactory = new ProxyFactory();
 		}
