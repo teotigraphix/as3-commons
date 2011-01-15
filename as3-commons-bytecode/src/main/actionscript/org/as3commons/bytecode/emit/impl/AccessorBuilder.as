@@ -125,7 +125,7 @@ package org.as3commons.bytecode.emit.impl {
 			if ((_access === AccessorAccess.WRITE_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
 				event = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_SETTER, this, trait);
 				dispatchEvent(event);
-				mb = (event.builder != null) ? event.builder : createGetter(trait);
+				mb = (event.builder != null) ? event.builder : createSetter(trait);
 				mi = mb.build();
 				mi.methodName = createAccessorName(SETTER_SUFFIX);
 				result[result.length] = mi;
