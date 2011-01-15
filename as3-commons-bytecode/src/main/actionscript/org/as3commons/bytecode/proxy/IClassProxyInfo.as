@@ -40,7 +40,7 @@ package org.as3commons.bytecode.proxy {
 
 		function proxyAccessor(accessorName:String, namespace:String = null):void;
 
-		function introduce(className:String):void;
+		function introduce(clazz:Class):void;
 
 		function get methods():Array;
 

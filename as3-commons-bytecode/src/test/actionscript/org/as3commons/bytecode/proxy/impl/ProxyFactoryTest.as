@@ -273,7 +273,7 @@ package org.as3commons.bytecode.proxy.impl {
 		public function testIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
-			classProxyInfo.introduce("org.as3commons.bytecode.testclasses.TestIntroduction");
+			classProxyInfo.introduce(TestIntroduction);
 			var abcBuilder:IAbcBuilder = _proxyFactory.generateProxyClasses();
 			//var abcFile:AbcFile = abcBuilder.build();
 			//var ba:ByteArray = new AbcSerializer().serializeAbcFile(abcFile);

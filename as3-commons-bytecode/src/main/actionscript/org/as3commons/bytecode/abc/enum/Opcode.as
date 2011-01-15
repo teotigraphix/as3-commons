@@ -19,7 +19,7 @@ package org.as3commons.bytecode.abc.enum {
 	import flash.events.IEventDispatcher;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ByteCodeErrorEvent;
@@ -607,16 +607,7 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public function op(opArguments:Array = null):Op {
-			if (opArguments == null) {
-				opArguments = [];
-			}
-
-			if (opArguments.length != this._argumentTypes.length) {
-				throw new Error(this.opcodeName + " requires " + this._argumentTypes.length + " arguments.");
-			}
-
-			Op.checkParameters(opArguments, this);
-
+			opArguments ||= [];
 			return new Op(this, opArguments);
 		}
 	}

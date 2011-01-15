@@ -324,7 +324,7 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 	<p>That's all that's needed, now the proxy can be defined with an introduction:</p>
 	<div class="source"><pre>var proxyFactory:IProxyFactory = new ProxyFactory();
 var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(Order);
-classProxyInfo.introduce("com.myclasses.proxy.intros.PartialChangeTracker");
+classProxyInfo.introduce(PartialChangeTracker);
 proxyFactory.generateProxyClasses();
 </pre></div>
 	<p>And that's it, if afterwards the proxy is instantiated, the instance can actually be cast to <code>IChangeTrackable</code>:</p>

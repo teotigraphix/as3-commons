@@ -20,8 +20,9 @@ package org.as3commons.bytecode.proxy.impl {
 
 	import mx.core.IFactory;
 
-	import org.as3commons.lang.Assert;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
+	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.ClassUtils;
 
 	/**
 	 * Contains all the necessary information for an <code>IProxyFactory</code> to generate
@@ -137,8 +138,8 @@ package org.as3commons.bytecode.proxy.impl {
 			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace);
 		}
 
-		public function introduce(className:String):void {
-			_introductions[_introductions.length] = className;
+		public function introduce(clazz:Class):void {
+			_introductions[_introductions.length] = ClassUtils.getFullyQualifiedName(clazz, true);
 		}
 
 		/**
