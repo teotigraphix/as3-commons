@@ -335,18 +335,20 @@ package org.as3commons.bytecode.emit.impl {
 		 * @inheritDoc
 		 */
 		public function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder {
-			_opcodes[opcodes.length] = new Op(opcode, params);
-			return this;
+			return addOp(new Op(opcode, params));
 		}
 
 		/**
 		 * @inheritDoc
 		 */
 		public function addOp(opcode:Op):IMethodBodyBuilder {
+			if (opcode.parameters.length != opcode.opcode.argumentTypes.length) {
+				throw new Error(opcode.opcode.opcodeName + " requires " + opcode.opcode.argumentTypes.length + " arguments.");
+			}
+			Op.checkParameters(opcode.parameters, opcode.opcode);
 			_opcodes[opcodes.length] = opcode;
 			return this;
 		}
-
 
 		/**
 		 * @inheritDoc

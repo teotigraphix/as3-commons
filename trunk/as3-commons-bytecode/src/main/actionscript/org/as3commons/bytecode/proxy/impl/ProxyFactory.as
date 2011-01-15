@@ -113,6 +113,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private static const AS3COMMONSBYTECODEPROXY:String = "as3commons_bytecode_proxy";
 		private static const ORGAS3COMMONSBYTECODE:String = "org.as3commons.bytecode";
 		private static const CONSTRUCTOR:String = "constructor";
+		private static const PROXY_PACKAGE_NAME_PREFIX:String = "as3commons_bytecode_generated_";
 
 		//public static constants
 		public static var proxyCreationDispatcher:IEventDispatcher = new EventDispatcher();
@@ -179,10 +180,10 @@ package org.as3commons.bytecode.proxy.impl {
 		protected function generateSuffix():String {
 			var len:int = 20;
 			var result:Array = new Array(20);
-			while (len--) {
-				result[len] = CHARACTERS.charAt(Math.floor(Math.random() * 26));
+			while (len) {
+				result[len--] = CHARACTERS.charAt(Math.floor(Math.random() * 26));
 			}
-			return result.join('');
+			return PROXY_PACKAGE_NAME_PREFIX + result.join('');
 		}
 
 		/**
