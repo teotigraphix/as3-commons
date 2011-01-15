@@ -49,7 +49,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _packageName:String;
 		private var _name:String;
 		private var _namespace:String;
-		private var _namespaceName:String;
+		private var _scopeName:String;
 		private var _visibility:MemberVisibility;
 		private var _trait:TraitInfo;
 
@@ -129,14 +129,14 @@ package org.as3commons.bytecode.emit.impl {
 		 * @inheritDoc
 		 */
 		public function get scopeName():String {
-			return _namespaceName;
+			return _scopeName;
 		}
 
 		/**
 		 * @private
 		 */
 		public function set scopeName(value:String):void {
-			_namespaceName = value;
+			_scopeName = value;
 		}
 
 

@@ -114,18 +114,20 @@ package org.as3commons.bytecode.emit.impl {
 
 			var event:AccessorBuilderEvent;
 			if ((_access === AccessorAccess.READ_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
-				event = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_GETTER, this, trait);
+				mb = createGetter(trait);
+				event = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_GETTER, this, trait, mb);
 				dispatchEvent(event);
-				mb = (event.builder != null) ? event.builder : createGetter(trait);
+				addGetterOpcodes(mb, trait);
 				mi = mb.build();
 				mi.methodName = createAccessorName(GETTER_SUFFIX);
 				result[result.length] = mi;
 				mb.trait.traitKind = TraitKind.GETTER;
 			}
 			if ((_access === AccessorAccess.WRITE_ONLY) || (_access === AccessorAccess.READ_WRITE)) {
-				event = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_SETTER, this, trait);
+				mb = createSetter(trait);
+				event = new AccessorBuilderEvent(AccessorBuilderEvent.BUILD_SETTER, this, trait, mb);
 				dispatchEvent(event);
-				mb = (event.builder != null) ? event.builder : createGetter(trait);
+				addSetterOpcodes(mb, trait);
 				mi = mb.build();
 				mi.methodName = createAccessorName(SETTER_SUFFIX);
 				result[result.length] = mi;
@@ -227,7 +229,6 @@ package org.as3commons.bytecode.emit.impl {
 		protected function createGetter(trait:SlotOrConstantTrait):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod(_getterMethodInfo);
 			mb.returnType = type;
-			addGetterOpcodes(mb, trait);
 			return mb;
 		}
 
@@ -253,7 +254,6 @@ package org.as3commons.bytecode.emit.impl {
 			var mb:IMethodBuilder = createMethod(_setterMethodInfo);
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(type);
-			addSetterOpcodes(mb, trait);
 			return mb;
 		}
 
@@ -278,6 +278,7 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		protected function createDefaultPropertyBuilder():IPropertyBuilder {
 			var vb:PropertyBuilder = new PropertyBuilder();
+			vb.packageName = this.packageName;
 			vb.visibility = MemberVisibility.PRIVATE;
 			vb.isConstant = isConstant;
 			vb.isFinal = isFinal;
