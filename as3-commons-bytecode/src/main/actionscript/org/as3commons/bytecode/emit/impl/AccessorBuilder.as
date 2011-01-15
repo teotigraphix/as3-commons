@@ -278,6 +278,7 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		protected function createDefaultPropertyBuilder():IPropertyBuilder {
 			var vb:PropertyBuilder = new PropertyBuilder();
+			vb.packageName = this.packageName;
 			vb.visibility = MemberVisibility.PRIVATE;
 			vb.isConstant = isConstant;
 			vb.isFinal = isFinal;
