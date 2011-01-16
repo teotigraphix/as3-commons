@@ -274,8 +274,13 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 	event.methodInvocationInterceptor = interceptor;
 }</pre></div>
 	<subsection name="Introductions">
-		<p>The last, and potentially most powerful, feature is called 'introductions'. .NET people might recognize this as 'partial classes'.</p>
+		<p>The last, and potentially most powerful, feature is called 'introductions', an AOP term. People might recognize this as 'Partial Classes' or 'Mixins' as well.</p>
 		<p>What this feature offers is the ability to merge an existing class into a generated proxy class, adding its behavior to the resulting class.</p>
+		<p>These introduced classes have a few limitations though:</p>
+		<ul>
+			<li>They cannot have any constructor logic or arguments.</i>
+			<li>They cannot have any inline member initialization. (i.e. var myMember:Array = new Array();)</i>
+		</ul>
 		<p>Let's take an actual example to illustrate just how this could work in the real world:</p>
 		<p>Let's take this ordinary boring value object:</p>
 		<div class="source"><pre>public class Order {
@@ -349,6 +354,128 @@ var dirty:Boolean = IChangeTrackable(order).isDirty;
 }</pre></div>
 	<p>And that's it, adding this <code>IInterceptor</code> to the <code>IMethodInvocationInterceptor</code> that's been injected into the proxy
 	will make the <code>Order</code> instance's changes trackable.</p>
+	</subsection>
+	<subsection name="Another introduction example">
+		<p>Here's an example that illustrates how to augment an <code>IEventDispatcher</code> implementation with an interface that offers
+		several enhancement methods.</p>
+		<p>Let's define the interface first:</p>
+		<div class="source"><pre>public interface IEventDispatcherEx {
+	function removeAll():void;
+	function removeListeners(eventType:String):void;
+	function getCountListeners(eventType:String=null):uint;
+	function getListeners(eventType:String=null):Array;
+}</pre></div>
+	<p>The implementation can look like this:</p>
+	<div class="source"><pre>public class EventDispatcherExImpl implements IEventDispatcherEx {
+	
+	as3commons_bytecode var listenersLookup:Dictionary;
+	
+	public function EventDispatcherExImpl() {
+		super();
+	}
+	
+	public function removeAll():void {
+		for each(var type:String in listenersLookup) {
+			var listeners:Array = this.as3commons_bytecode::listenersLookup[type] as Array;
+			for each(var func:Function in listeners) {
+				this['removeEventListener'](type, func);
+			}
+		}
+	}
+	
+	public function removeListeners(eventType:String):void {
+		var listeners:Array = this.as3commons_bytecode::listenersLookup[eventType] as Array;
+		if (listeners != null) {
+			for each(var func:Function in listeners) {
+				this['removeEventListener'](eventType, func);
+			}
+		}
+	}
+	
+	public function getCountListeners(eventType:String=null):uint {
+		var result:uint = 0;
+		if (eventType == null){
+			for each(var type:String in listenersLookup) {
+				var listeners:Array = this.as3commons_bytecode::listenersLookup[type] as Array;
+				result += listeners.length;
+			}
+		} else {
+			var listeners:Array = this.as3commons_bytecode::listenersLookup[eventType] as Array;
+			if (listeners != null) {
+				result += listeners.length;
+			}
+		}
+		return result;
+	}
+	
+	public function getListeners(eventType:String=null):Array {
+		return this.as3commons_bytecode::listenersLookup[type] as Array;
+	}
+}</pre></div>
+	<p>Note that the <code>listenersLookup</code> member is scoped to the as3commons_bytecode namespace. This is on purpose because this class is meant to be merged into another
+	class, scoping its members to a namespace reduces the risks of duplicate members in the generated class.</p>
+	<p>Now the class is ready to be introduced (merged) into a proxy class, let's suppose there is an <code>IEventDispatcher</code> implementation called <code>MyEventDispatcher</code>:</p>
+	<div class="source"><pre>var proxyfactory:IProxyFactory = new ProxyFactory();
+	var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyEventDispatcher);
+	classProxyInfo.introduce(EventDispatcherExImpl);
+	classProxyInfo.proxyMethod("addEventListener");
+	classProxyInfo.proxyMethod("removeEventListener");
+	proxyFactory.generateProxyClasses();
+</pre></div>
+	<p>Of course the mechanism to tie the introduced clas together with the proxy is done using an <code>IInterceptor</code>:</p>
+	<div class="source"><pre>public class EventDispatcherExInterceptor implements IInterceptor {
+	
+	public function EventDispatcherExInterceptor() {
+		super();
+	}
+	
+	public function intercept(invocation:IMethodInvocation):void {
+		if (invocation.kind === InvocationKind.METHOD) {
+			switch (invocation.targetMember.localName) {
+				case 'addEventListener':
+					interceptAddEventListener(invocation);
+					break;
+				case 'removeEventListener':
+					interceptRemoveEventListener(invocation);
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	
+	public function interceptAddEventListener(invocation:IMethodInvocation):void {
+		//Member initialization is handled here instead of in the introduced class:
+		if (invocation.targetInstance.as3commons_bytecode::listenersLookup == null) {
+			invocation.targetInstance.as3commons_bytecode::listenersLookup = new Dictionary();
+		}
+		var eventType:String = String(invocation.arguments[0]);
+		if (invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType] == null) {
+			invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType] = [];
+		}
+		var arr:Array = invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType];
+		arr[arr.length] = invocation.arguments[1];
+	}
+
+	public function interceptRemoveEventListener(invocation:IMethodInvocation):void {
+		//Member initialization is handled here instead of in the introduced class:
+		if (invocation.targetInstance.as3commons_bytecode::listenersLookup == null) {
+			invocation.targetInstance.as3commons_bytecode::listenersLookup = new Dictionary();
+		}
+		var eventType:String = String(invocation.arguments[0]);
+		if (invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType] != null) {
+			var arr:Array = invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType];
+			var idx:int = arr.indexOf(eventType);
+			arr.splice(idx, 1);
+		}
+		arr[arr.length] = invocation.arguments[1];
+	}
+
+}</pre></div>
+	<p>This is of course not a perfect implementation of such a mechanism, since the <code>EventDispatcherExImpl</code> doesn't take into account weak referenced event listeners or if the capture phase is ued or not,
+	but this example is not meant to showcase a perfect implementation, merely a pattern.</p>
+	<p>All of this could of course be solved in most cases by having the necessary classes inherit from a base class, but this is not always possible to achieve, in these cases
+	a dynamic proxy might offer a better solution.</p>
 	</subsection>
 	<subsection name="What is the purpose of all this?">
 		<p>The proxy API in as3commons-bytecode isn't meant as a complete end solution for all proxying needs. Instead it only offers the basic building blocks

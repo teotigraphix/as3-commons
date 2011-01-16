@@ -39,6 +39,8 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _onlyProxyConstructor:Boolean = false;
 		private var _makeDynamic:Boolean = false;
 		private var _interceptorFactory:IFactory;
+		private var _proxyAllAccessors:Boolean;
+		private var _proxyAllMethods:Boolean;
 
 		/**
 		 * Creates a new <code>ClassProxyInfo</code> instance.
@@ -46,6 +48,23 @@ package org.as3commons.bytecode.proxy.impl {
 		public function ClassProxyInfo(proxiedClass:Class, methodInvocationInterceptorClass:Class = null) {
 			super();
 			initClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
+		}
+
+
+		public function get proxyAllAccessors():Boolean {
+			return _proxyAllAccessors;
+		}
+
+		public function set proxyAllAccessors(value:Boolean):void {
+			_proxyAllAccessors = value;
+		}
+
+		public function get proxyAllMethods():Boolean {
+			return _proxyAllMethods;
+		}
+
+		public function set proxyAllMethods(value:Boolean):void {
+			_proxyAllMethods = value;
 		}
 
 		public function get interceptorFactory():IFactory {

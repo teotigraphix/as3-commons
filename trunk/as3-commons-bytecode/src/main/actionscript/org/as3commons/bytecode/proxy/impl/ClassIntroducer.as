@@ -68,6 +68,9 @@ package org.as3commons.bytecode.proxy.impl {
 
 		public function introduce(className:String, classBuilder:IClassBuilder):void {
 			var type:ByteCodeType = ByteCodeType.forName(className);
+			if (type.isInterface) {
+				throw new ProxyBuildError(ProxyBuildError.CANNOT_INTRODUCE_INTERFACE, className);
+			}
 			if (type != null) {
 				internalIntroduce(type, classBuilder);
 			} else {

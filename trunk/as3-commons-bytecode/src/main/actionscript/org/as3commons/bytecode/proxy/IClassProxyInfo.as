@@ -36,6 +36,14 @@ package org.as3commons.bytecode.proxy {
 
 		function set onlyProxyConstructor(value:Boolean):void;
 
+		function get proxyAllMethods():Boolean;
+
+		function set proxyAllMethods(value:Boolean):void;
+
+		function get proxyAllAccessors():Boolean;
+
+		function set proxyAllAccessors(value:Boolean):void;
+
 		function proxyMethod(methodName:String, namespace:String = null):void;
 
 		function proxyAccessor(accessorName:String, namespace:String = null):void;

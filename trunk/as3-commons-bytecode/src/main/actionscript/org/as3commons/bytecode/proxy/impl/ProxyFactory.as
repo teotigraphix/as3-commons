@@ -334,6 +334,12 @@ package org.as3commons.bytecode.proxy.impl {
 			if ((classProxyInfo.proxyAll == true) && (classProxyInfo.onlyProxyConstructor == false)) {
 				reflectMembers(classProxyInfo, type, applicationDomain);
 			}
+			if (classProxyInfo.proxyAllAccessors == true) {
+				reflectAccessors(classProxyInfo, type, applicationDomain);
+			}
+			if (classProxyInfo.proxyAllMethods == true) {
+				reflectMethods(classProxyInfo, type, applicationDomain);
+			}
 
 			var memberInfo:MemberInfo;
 			for each (memberInfo in classProxyInfo.methods) {
@@ -425,7 +431,15 @@ package org.as3commons.bytecode.proxy.impl {
 			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
-			var vsb:NamespaceKind;
+			reflectMethods(classProxyInfo, type, applicationDomain);
+			reflectAccessors(classProxyInfo, type, applicationDomain);
+			LOGGER.debug("ClassInfoProxy for class {0} populated based on reflection", classProxyInfo.proxiedClass);
+		}
+
+		protected function reflectMethods(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
+			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
 			for each (var method:Method in type.methods) {
 				var byteCodeMethod:ByteCodeMethod = method as ByteCodeMethod;
 				if (byteCodeMethod != null) {
@@ -435,6 +449,12 @@ package org.as3commons.bytecode.proxy.impl {
 					classProxyInfo.proxyMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI);
 				}
 			}
+		}
+
+		protected function reflectAccessors(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
+			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
 			for each (var accessor:Accessor in type.accessors) {
 				var byteCodeAccessor:ByteCodeAccessor = accessor as ByteCodeAccessor;
 				if (byteCodeAccessor != null) {
@@ -444,7 +464,6 @@ package org.as3commons.bytecode.proxy.impl {
 					classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI);
 				}
 			}
-			LOGGER.debug("ClassInfoProxy for class {0} populated based on reflection", classProxyInfo.proxiedClass);
 		}
 
 		/**
