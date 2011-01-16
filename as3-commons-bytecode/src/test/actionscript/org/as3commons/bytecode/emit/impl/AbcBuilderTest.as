@@ -32,7 +32,6 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.swf.AbcClassLoader;
 	import org.as3commons.reflect.AccessorAccess;
-	import org.flexunit.asserts.assertStrictlyEquals;
 
 	public class AbcBuilderTest extends TestCase {
 

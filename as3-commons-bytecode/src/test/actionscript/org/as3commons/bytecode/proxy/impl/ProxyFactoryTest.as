@@ -33,7 +33,9 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
+	import org.as3commons.bytecode.testclasses.EventDispatcherExImpl;
 	import org.as3commons.bytecode.testclasses.Flavour;
+	import org.as3commons.bytecode.testclasses.IEventDispatcherEx;
 	import org.as3commons.bytecode.testclasses.IFlavour;
 	import org.as3commons.bytecode.testclasses.ITestIntroduction;
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
@@ -47,10 +49,12 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoConstructorArguments;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithoutConstructorArgument;
+	import org.as3commons.bytecode.testclasses.TestEventDispatcher;
 	import org.as3commons.bytecode.testclasses.TestIntroduction;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.testclasses.interceptors.CtorInterceptorFactory;
 	import org.as3commons.bytecode.testclasses.interceptors.CustomInterceptorFactory;
+	import org.as3commons.bytecode.testclasses.interceptors.EventDispatcherExInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestAccessorInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestCanvasInterceptor;
 	import org.as3commons.bytecode.testclasses.interceptors.TestInterceptor;
@@ -275,11 +279,19 @@ package org.as3commons.bytecode.proxy.impl {
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
 			classProxyInfo.introduce(TestIntroduction);
 			var abcBuilder:IAbcBuilder = _proxyFactory.generateProxyClasses();
-			//var abcFile:AbcFile = abcBuilder.build();
-			//var ba:ByteArray = new AbcSerializer().serializeAbcFile(abcFile);
-			//abcFile = new AbcDeserializer(ba).deserialize();
-
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleIntroductionTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		public function testEventDispatcherIntroduction():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(TestEventDispatcher, null, applicationDomain);
+			classProxyInfo.introduce(EventDispatcherExImpl);
+			classProxyInfo.proxyMethod("addEventListener");
+			classProxyInfo.proxyMethod("removeEventListener");
+			var abcBuilder:IAbcBuilder = _proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createEventDispatcherIntroductionInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleEventDispatcherIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
 		}
 
@@ -287,8 +299,25 @@ package org.as3commons.bytecode.proxy.impl {
 			assertTrue(true);
 		}
 
+		protected function createEventDispatcherIntroductionInterceptor(event:ProxyFactoryEvent):void {
+			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
+			interceptor.interceptors[interceptor.interceptors.length] = new EventDispatcherExInterceptor();
+			event.methodInvocationInterceptor = interceptor;
+		}
+
+		protected function handleEventDispatcherIntroductionTestComplete(event:Event):void {
+			var instance:TestEventDispatcher = _proxyFactory.createProxy(TestEventDispatcher) as TestEventDispatcher;
+			assertNotNull(instance);
+			var testInterface:IEventDispatcherEx = instance as IEventDispatcherEx;
+			assertNotNull(testInterface);
+			var func1:Function = function(event:Event):void {
+			};
+			instance.addEventListener(Event.ACTIVATE, func1, false, 0, true);
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("flash.events:WeakFunctionClosure") as Class;
+			assertEquals(1, testInterface.getCountListeners(Event.ACTIVATE));
+		}
+
 		protected function handleIntroductionTestComplete(event:Event):void {
-			var test:TestIntroduction;
 			var instance:Flavour = _proxyFactory.createProxy(Flavour) as Flavour;
 			assertNotNull(instance);
 			var testInterface:ITestIntroduction = instance as ITestIntroduction;
