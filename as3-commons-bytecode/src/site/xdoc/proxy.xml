@@ -278,8 +278,8 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 		<p>What this feature offers is the ability to merge an existing class into a generated proxy class, adding its behavior to the resulting class.</p>
 		<p>These introduced classes have a few limitations though:</p>
 		<ul>
-			<li>They cannot have any constructor logic or arguments.</i>
-			<li>They cannot have any inline member initialization. (i.e. var myMember:Array = new Array();)</i>
+			<li>They cannot have any constructor logic or arguments.</li>
+			<li>They cannot have any inline member initialization. (i.e. var myMember:Array = new Array();)</li>
 		</ul>
 		<p>Let's take an actual example to illustrate just how this could work in the real world:</p>
 		<p>Let's take this ordinary boring value object:</p>
@@ -472,9 +472,9 @@ var dirty:Boolean = IChangeTrackable(order).isDirty;
 	}
 
 }</pre></div>
-	<p>This is of course not a perfect implementation of such a mechanism, since the <code>EventDispatcherExImpl</code> doesn't take into account weak referenced event listeners or if the capture phase is ued or not,
+	<p>This is not a perfect implementation of such a mechanism, since the <code>EventDispatcherExImpl</code> doesn't take into account weak referenced event listeners or if the capture phase is used or not,
 	but this example is not meant to showcase a perfect implementation, merely a pattern.</p>
-	<p>All of this could of course be solved in most cases by having the necessary classes inherit from a base class, but this is not always possible to achieve, in these cases
+	<p>All of this could, of course, be solved in most cases by having the necessary classes inherit from a base class, but this is not always possible to achieve, in these cases
 	a dynamic proxy might offer a better solution.</p>
 	</subsection>
 	<subsection name="What is the purpose of all this?">

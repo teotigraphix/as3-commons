@@ -313,7 +313,6 @@ package org.as3commons.bytecode.proxy.impl {
 			var func1:Function = function(event:Event):void {
 			};
 			instance.addEventListener(Event.ACTIVATE, func1, false, 0, true);
-			var cls:Class = ApplicationDomain.currentDomain.getDefinition("flash.events:WeakFunctionClosure") as Class;
 			assertEquals(1, testInterface.getCountListeners(Event.ACTIVATE));
 		}
 
