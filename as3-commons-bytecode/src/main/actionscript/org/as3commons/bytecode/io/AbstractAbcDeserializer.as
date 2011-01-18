@@ -218,9 +218,9 @@ package org.as3commons.bytecode.io {
 			//  u30 ns 
 			//  u30 name 
 			// }
-			var nameSpace:LNamespace = pool.namespacePool[readU30()];
+			var ns:LNamespace = pool.namespacePool[readU30()];
 			var name:String = pool.stringPool[readU30()];
-			return new QualifiedName(name, nameSpace, kind);
+			return new QualifiedName(name, ns, kind);
 		}
 
 		protected function extractNamespaces(pool:IConstantPool):void {
