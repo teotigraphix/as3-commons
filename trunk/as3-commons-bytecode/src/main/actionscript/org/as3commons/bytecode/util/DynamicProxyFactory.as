@@ -537,10 +537,10 @@ package org.as3commons.bytecode.util {
 		}
 
 		public function addNamespace(kind:NamespaceKind, name:String):LNamespace {
-			var nameSpace:LNamespace = new LNamespace(kind, name);
-			_abcFile.constantPool.addNamespace(nameSpace);
+			var ns:LNamespace = new LNamespace(kind, name);
+			_abcFile.constantPool.addNamespace(ns);
 
-			return nameSpace;
+			return ns;
 		}
 
 		public function addQualifiedName(name:String, nameSpace:LNamespace):QualifiedName {
