@@ -191,6 +191,15 @@ package org.as3commons.bytecode.reflect {
 			return _staticConstructor;
 		}
 
+		// ----------------------------
+		// instanceConstructor
+		// ----------------------------
+
+		private var _instanceConstructor:ByteCodeMethod;
+
+		public function get instanceConstructor():ByteCodeMethod {
+			return _instanceConstructor;
+		}
 
 		// ----------------------------
 		// isProtected
@@ -250,6 +259,10 @@ package org.as3commons.bytecode.reflect {
 
 		as3commons_reflect function setStaticConstructor(value:ByteCodeMethod):void {
 			_staticConstructor = value;
+		}
+
+		as3commons_reflect function setInstanceConstructor(value:ByteCodeMethod):void {
+			_instanceConstructor = value;
 		}
 
 		private var _initialized:Boolean = false;
