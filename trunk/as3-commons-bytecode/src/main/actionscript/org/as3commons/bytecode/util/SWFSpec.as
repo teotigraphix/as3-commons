@@ -177,7 +177,7 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function writeBoolean(input:ByteArray, value:Boolean):void {
-			return writeUB(input, 1, (value ? 1 : 0));
+			writeUB(input, 1, (value ? 1 : 0));
 		}
 
 		/**

@@ -30,7 +30,6 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
-	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.io.AbstractAbcDeserializer;
 	import org.as3commons.bytecode.swf.SWFFileIO;
 	import org.as3commons.bytecode.tags.serialization.RecordHeaderSerializer;
@@ -329,6 +328,7 @@ package org.as3commons.bytecode.reflect {
 				var constructorIndex:uint = readU30();
 				var method:ByteCodeMethod = methods[constructorIndex];
 				var constr:Constructor = new Constructor(instanceInfo.fullName, applicationDomain, method.parameters);
+				instanceInfo.as3commons_reflect::setInstanceConstructor(method);
 				instanceInfo.constructor = constr;
 				instanceInfo.methods = readTraitsInfo(instances, instanceInfo, constantPool, methods, metadatas, false, typeCache, applicationDomain);
 			}
@@ -443,7 +443,7 @@ package org.as3commons.bytecode.reflect {
 					case TraitKind.METHOD:
 					case TraitKind.FUNCTION:
 						readU30(); //skip disp_id
-						var method:Method = methodInfos[readU30()];
+						var method:ByteCodeMethod = methodInfos[readU30()];
 						method.as3commons_reflect::setIsStatic(isStatic);
 						methods[methods.length] = method;
 						metaDataContainer = method;
@@ -577,7 +577,7 @@ package org.as3commons.bytecode.reflect {
 				accessorType = method.as3commons_reflect::returnTypeName;
 			} else {
 				if (method.parameters.length > 0) {
-					accessorType = Parameter(method.parameters[0]).as3commons_reflect::typeName;
+					accessorType = ByteCodeParameter(method.parameters[0]).as3commons_reflect::typeName;
 				}
 			}
 			var result:ByteCodeAccessor = new ByteCodeAccessor(methodName, accAccess, accessorType, instanceInfo.fullName, false, instanceInfo.applicationDomain);

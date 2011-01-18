@@ -268,7 +268,7 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function skipU32():void {
-			return AbcSpec.skipU32(_byteStream);
+			AbcSpec.skipU32(_byteStream);
 		}
 
 		public function readU32():uint {
