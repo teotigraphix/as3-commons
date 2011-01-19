@@ -46,6 +46,8 @@ package org.as3commons.bytecode.abc.enum {
 	//TODO: Derive local_count etc. from opcodes. Page 15 of the AVM2 spec covers this in more detail.
 	public class Opcode {
 
+		private var _instance:Op;
+
 		private static var _enumCreated:Boolean = false;
 		private static const _ALL_OPCODES:Dictionary = new Dictionary();
 		private static const _opcodeNameLookup:Dictionary = new Dictionary();
@@ -607,8 +609,14 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public function op(opArguments:Array = null):Op {
-			opArguments ||= [];
-			return new Op(this, opArguments);
+			if ((this._argumentTypes != null) && (this._argumentTypes.length > 0)) {
+				return new Op(this, opArguments);
+			} else {
+				if (_instance == null) {
+					_instance = new Op(this);
+				}
+				return _instance;
+			}
 		}
 	}
 

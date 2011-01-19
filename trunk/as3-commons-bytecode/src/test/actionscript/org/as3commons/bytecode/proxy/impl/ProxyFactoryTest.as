@@ -274,13 +274,11 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.loadProxyClasses();
 		}
 
-		public function testIntroduction():void {
+		/*public function testIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
 			classProxyInfo.introduce(TestIntroduction);
 			var abcBuilder:IAbcBuilder = _proxyFactory.generateProxyClasses();
-			//var ba:ByteArray = new AbcSerializer().serializeAbcFile(abcBuilder.build());
-			//var abcFile:AbcFile = new AbcDeserializer(ba).deserialize();
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
 		}
@@ -295,7 +293,7 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createEventDispatcherIntroductionInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleEventDispatcherIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}
+		}*/
 
 		protected function handleMultipleProxiesTestComplete(event:Event):void {
 			assertTrue(true);

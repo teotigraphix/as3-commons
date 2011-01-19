@@ -684,7 +684,7 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public function doTestParse(opcode:Opcode, args:Array):void {
-			var op:Op = new Op(opcode, args);
+			var op:Op = opcode.op(args);
 			var abcFile:AbcFile = new AbcFile();
 			var methodBody:MethodBody = new MethodBody();
 			if (args[0] is ExceptionInfo) {
