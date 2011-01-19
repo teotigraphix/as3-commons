@@ -3,6 +3,19 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 0.9.6 (19.01.2011)
+-----------------------------------
+
+* Enhanced and fixed bugs in class introductions
+* Multiple bug fixes in ABC serialization/deserialization
+
+
+Changes in version 0.9.5 (14.01.2011)
+-----------------------------------
+
+* Added support for class introductions
+
+
 Changes in version 0.9.4 (11.01.2011)
 -----------------------------------
 
