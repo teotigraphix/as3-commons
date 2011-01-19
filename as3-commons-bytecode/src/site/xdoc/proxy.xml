@@ -278,8 +278,8 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 		<p>What this feature offers is the ability to merge an existing class into a generated proxy class, adding its behavior to the resulting class.</p>
 		<p>These introduced classes have a few limitations though:</p>
 		<ul>
-			<li>They cannot have any constructor logic or arguments.</li>
-			<li>They cannot have any inline member initialization. (i.e. var myMember:Array = new Array();)</li>
+			<li>They cannot have any constructor arguments.</li>
+			<li>They can only inherit from the <code>Object</code> class.</li>
 		</ul>
 		<p>Let's take an actual example to illustrate just how this could work in the real world:</p>
 		<p>Let's take this ordinary boring value object:</p>
