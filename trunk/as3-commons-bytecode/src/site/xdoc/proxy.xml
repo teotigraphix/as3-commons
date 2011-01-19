@@ -368,7 +368,7 @@ var dirty:Boolean = IChangeTrackable(order).isDirty;
 	<p>The implementation can look like this:</p>
 	<div class="source"><pre>public class EventDispatcherExImpl implements IEventDispatcherEx {
 	
-	as3commons_bytecode var listenersLookup:Dictionary;
+	as3commons_bytecode var listenersLookup:Dictionary = new Dictionary();
 	
 	public function EventDispatcherExImpl() {
 		super();
@@ -445,10 +445,6 @@ var dirty:Boolean = IChangeTrackable(order).isDirty;
 	}
 	
 	public function interceptAddEventListener(invocation:IMethodInvocation):void {
-		//Member initialization is handled here instead of in the introduced class:
-		if (invocation.targetInstance.as3commons_bytecode::listenersLookup == null) {
-			invocation.targetInstance.as3commons_bytecode::listenersLookup = new Dictionary();
-		}
 		var eventType:String = String(invocation.arguments[0]);
 		if (invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType] == null) {
 			invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType] = [];
@@ -458,10 +454,6 @@ var dirty:Boolean = IChangeTrackable(order).isDirty;
 	}
 
 	public function interceptRemoveEventListener(invocation:IMethodInvocation):void {
-		//Member initialization is handled here instead of in the introduced class:
-		if (invocation.targetInstance.as3commons_bytecode::listenersLookup == null) {
-			invocation.targetInstance.as3commons_bytecode::listenersLookup = new Dictionary();
-		}
 		var eventType:String = String(invocation.arguments[0]);
 		if (invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType] != null) {
 			var arr:Array = invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType];
