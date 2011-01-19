@@ -14,18 +14,32 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy {
-
 	import flash.events.IEventDispatcher;
 
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.emit.IClassBuilder;
+	import org.as3commons.bytecode.emit.IMethodBuilder;
+	import org.as3commons.bytecode.proxy.impl.MemberInfo;
+	import org.as3commons.bytecode.reflect.ByteCodeType;
 
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="beforeMethodBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="afterMethodBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
-	public interface IClassIntroducer extends IEventDispatcher {
-		function introduce(className:String, classBuilder:IClassBuilder):void;
+	public interface IMethodProxyFactory extends IEventDispatcher {
+
+		function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, failOnFinal:Boolean = true):IMethodBuilder;
+
+		function addMethodBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):void;
+
 	}
 }

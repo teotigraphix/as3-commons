@@ -16,9 +16,7 @@
 package org.as3commons.bytecode.proxy.impl {
 	import flash.events.IEventDispatcher;
 	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
 
-	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
@@ -34,8 +32,10 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.io.AbcDeserializer;
+	import org.as3commons.bytecode.proxy.IAccessorProxyFactory;
 	import org.as3commons.bytecode.proxy.IClassIntroducer;
-	import org.as3commons.bytecode.proxy.IProxyFactory;
+	import org.as3commons.bytecode.proxy.IConstructorProxyFactory;
+	import org.as3commons.bytecode.proxy.IMethodProxyFactory;
 	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeAccessor;
@@ -48,22 +48,25 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Field;
 	import org.as3commons.reflect.Method;
+	import org.as3commons.reflect.as3commons_reflect;
 
 	public class ClassIntroducer extends AbstractProxyFactory implements IClassIntroducer {
 
-		private var _methodProxyFactory:MethodProxyFactory;
-		private var _accessorProxyFactory:AccessorProxyFactory;
+		private var _methodProxyFactory:IMethodProxyFactory;
+		private var _accessorProxyFactory:IAccessorProxyFactory;
+		private var _constructorProxyFactory:IConstructorProxyFactory;
 
-		public function ClassIntroducer(methodProxyFactory:MethodProxyFactory, accessorProxyFactory:AccessorProxyFactory) {
+		public function ClassIntroducer(constructorProxyFactory:IConstructorProxyFactory, methodProxyFactory:IMethodProxyFactory, accessorProxyFactory:IAccessorProxyFactory) {
 			super();
-			initClassIntroducer(methodProxyFactory, accessorProxyFactory);
+			initClassIntroducer(constructorProxyFactory, methodProxyFactory, accessorProxyFactory);
 		}
 
-		protected function initClassIntroducer(methodProxyFactory:MethodProxyFactory, accessorProxyFactory:AccessorProxyFactory):void {
+		protected function initClassIntroducer(constructorProxyFactory:IConstructorProxyFactory, methodProxyFactory:IMethodProxyFactory, accessorProxyFactory:IAccessorProxyFactory):void {
 			Assert.notNull(methodProxyFactory, "methodProxyFactory argument must not be null");
 			Assert.notNull(accessorProxyFactory, "accessorProxyFactory argument must not be null");
 			_methodProxyFactory = methodProxyFactory;
 			_accessorProxyFactory = accessorProxyFactory;
+			_constructorProxyFactory = constructorProxyFactory;
 		}
 
 		public function introduce(className:String, classBuilder:IClassBuilder):void {
@@ -80,6 +83,13 @@ package org.as3commons.bytecode.proxy.impl {
 
 		protected function internalIntroduce(type:ByteCodeType, classBuilder:IClassBuilder):void {
 			classBuilder.implementInterfaces(type.interfaces);
+
+			//var newScopeName:String = classBuilder.packageName + MultinameUtil.SINGLE_COLON + classBuilder.name;
+			//deserializeMethodBody(type, type.instanceConstructor, newScopeName);
+			//var mergeConstructor:Function = function(event:ProxyFactoryBuildEvent):void {
+			//};
+			//_constructorProxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_CONSTRUCTOR_BODY_BUILD, mergeConstructor);
+
 			for each (var field:Field in type.fields) {
 				introduceField(field, classBuilder, type);
 			}
@@ -96,33 +106,43 @@ package org.as3commons.bytecode.proxy.impl {
 			cloneMethod(methodBuilder, method, type, classBuilder);
 		}
 
-		private function cloneMethod(methodBuilder:IMethodBuilder, method:ByteCodeMethod, type:ByteCodeType, classBuilder:IClassBuilder):void {
+		protected function cloneMethod(methodBuilder:IMethodBuilder, method:ByteCodeMethod, type:ByteCodeType, classBuilder:IClassBuilder):void {
 			methodBuilder.isOverride = false;
-			var methodBody:MethodBody = new MethodBody();
+			var newScopeName:String = classBuilder.packageName + MultinameUtil.SINGLE_COLON + classBuilder.name;
+			var oldScopeName:String = makeScopeName(type.fullName);
+			var methodBody:MethodBody = deserializeMethodBody(type, method, newScopeName);
 			methodBody.initScopeDepth = method.initScopeDepth;
 			methodBody.maxStack = method.maxStack;
 			methodBody.localCount = method.localCount;
 			methodBody.maxScopeDepth = method.maxScopeDepth;
-			var originalPosition:int = type.byteArray.position;
-			try {
-				type.byteArray.position = method.bodyStartPosition;
-				methodBody.opcodes = Opcode.parse(type.byteArray, method.bodyLength, methodBody, type.constantPool);
-				var newScopeName:String = classBuilder.packageName + MultinameUtil.SINGLE_COLON + classBuilder.name;
-				translateOpcodesNamespaces(methodBody.opcodes, makeScopeName(type.fullName), newScopeName);
-				methodBody.exceptionInfos = extractExceptionInfos(type.byteArray, type);
-				for each (var op:Op in methodBody.opcodes) {
-					var idx:int = AbcDeserializer.getExceptionInfoArgumentIndex(op);
-					if (idx > -1) {
-						var exceptionIndex:int = op.parameters[idx];
-						op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
-					}
-				}
-			} finally {
-				type.byteArray.position = originalPosition;
+			translateOpcodesNamespaces(methodBody.opcodes, oldScopeName, newScopeName);
+			for each (var info:ExceptionInfo in methodBody.exceptionInfos) {
+				translateNamespace(info.variableReceivingException.nameSpace, oldScopeName, newScopeName);
 			}
 			methodBuilder.as3commons_bytecode::setMethodBody(methodBody);
 		}
 
+		protected function deserializeMethodBody(type:ByteCodeType, method:ByteCodeMethod, newScopeName:String):MethodBody {
+			if (method.methodBody == null) {
+				method.as3commons_reflect::setMethodBody(new MethodBody());
+				var originalPosition:int = type.byteArray.position;
+				try {
+					type.byteArray.position = method.bodyStartPosition;
+					method.methodBody.opcodes = Opcode.parse(type.byteArray, method.bodyLength, method.methodBody, type.constantPool);
+					method.methodBody.exceptionInfos = extractExceptionInfos(type.byteArray, type);
+					for each (var op:Op in method.methodBody.opcodes) {
+						var idx:int = AbcDeserializer.getExceptionInfoArgumentIndex(op);
+						if (idx > -1) {
+							var exceptionIndex:int = op.parameters[idx];
+							op.parameters[idx] = method.methodBody.exceptionInfos[exceptionIndex];
+						}
+					}
+				} finally {
+					type.byteArray.position = originalPosition;
+				}
+			}
+			return MethodBody(method.methodBody.clone());
+		}
 
 		protected function makeScopeName(fullName:String):String {
 			var idx:int = fullName.lastIndexOf(MultinameUtil.PERIOD);

@@ -37,17 +37,33 @@ package org.as3commons.bytecode.proxy.event {
 		 */
 		public static const BEFORE_CONSTRUCTOR_BODY_BUILD:String = "beforeConstructorBodyBuild";
 		/**
+		 * Dispatched before the constructor body will be built.
+		 */
+		public static const AFTER_CONSTRUCTOR_BODY_BUILD:String = "afterConstructorBodyBuild";
+		/**
 		 * Dispatched before a method body will be built.
 		 */
 		public static const BEFORE_METHOD_BODY_BUILD:String = "beforeMethodBodyBuild";
+		/**
+		 * Dispatched before a method body will be built.
+		 */
+		public static const AFTER_METHOD_BODY_BUILD:String = "afterMethodBodyBuild";
 		/**
 		 * Dispatched before a getter body will be built.
 		 */
 		public static const BEFORE_GETTER_BODY_BUILD:String = "beforeGetterBodyBuild";
 		/**
+		 * Dispatched before a getter body will be built.
+		 */
+		public static const AFTER_GETTER_BODY_BUILD:String = "afterGetterBodyBuild";
+		/**
 		 * Dispatched before a setter body will be built.
 		 */
 		public static const BEFORE_SETTER_BODY_BUILD:String = "beforeSetterBodyBuild";
+		/**
+		 * Dispatched before a setter body will be built.
+		 */
+		public static const AFTER_SETTER_BODY_BUILD:String = "afterSetterBodyBuild";
 
 		private var _methodBuilder:IMethodBuilder;
 		private var _classBuilder:IClassBuilder;

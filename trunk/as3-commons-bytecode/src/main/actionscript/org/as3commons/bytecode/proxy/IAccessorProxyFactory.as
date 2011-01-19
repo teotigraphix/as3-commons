@@ -14,18 +14,17 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy {
-
 	import flash.events.IEventDispatcher;
 
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.emit.IClassBuilder;
+	import org.as3commons.bytecode.proxy.impl.MemberInfo;
+	import org.as3commons.bytecode.reflect.ByteCodeType;
 
-	/**
-	 *
-	 * @author Roland Zwaga
-	 */
-	public interface IClassIntroducer extends IEventDispatcher {
-		function introduce(className:String, classBuilder:IClassBuilder):void;
+	public interface IAccessorProxyFactory extends IEventDispatcher {
+
+		function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName, failOnFinal:Boolean = true):void;
+
 	}
 }

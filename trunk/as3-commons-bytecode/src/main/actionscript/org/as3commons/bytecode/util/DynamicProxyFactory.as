@@ -539,7 +539,6 @@ package org.as3commons.bytecode.util {
 		public function addNamespace(kind:NamespaceKind, name:String):LNamespace {
 			var ns:LNamespace = new LNamespace(kind, name);
 			_abcFile.constantPool.addNamespace(ns);
-
 			return ns;
 		}
 

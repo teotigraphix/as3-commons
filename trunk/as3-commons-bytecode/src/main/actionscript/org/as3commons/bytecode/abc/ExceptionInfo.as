@@ -37,8 +37,8 @@ package org.as3commons.bytecode.abc {
 			clone.exceptionEnabledFromCodePosition = exceptionEnabledFromCodePosition;
 			clone.exceptionEnabledToCodePosition = exceptionEnabledToCodePosition;
 			clone.codePositionToJumpToOnException = codePositionToJumpToOnException;
-			clone.exceptionType = exceptionType;
-			clone.variableReceivingException = variableReceivingException;
+			clone.exceptionType = exceptionType.clone() as QualifiedName;
+			clone.variableReceivingException = variableReceivingException.clone() as QualifiedName;
 			return clone;
 		}
 

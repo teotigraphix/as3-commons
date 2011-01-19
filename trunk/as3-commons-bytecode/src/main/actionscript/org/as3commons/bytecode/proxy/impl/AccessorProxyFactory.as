@@ -26,6 +26,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.emit.event.AccessorBuilderEvent;
 	import org.as3commons.bytecode.emit.impl.MethodBuilder;
+	import org.as3commons.bytecode.proxy.IAccessorProxyFactory;
 	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeAccessor;
@@ -42,7 +43,7 @@ package org.as3commons.bytecode.proxy.impl {
 	 * @inheritDoc
 	 */
 	[Event(name="beforeSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
-	public class AccessorProxyFactory extends AbstractMethodBodyFactory {
+	public class AccessorProxyFactory extends AbstractMethodBodyFactory implements IAccessorProxyFactory {
 
 		public function AccessorProxyFactory() {
 			super();
@@ -194,6 +195,9 @@ package org.as3commons.bytecode.proxy.impl {
 			methodBuilder.addOpcode(Opcode.newarray, [1]) //
 				.addOpcode(Opcode.callproperty, [multiName, 4]) //
 				.addOpcode(Opcode.returnvalue);
+
+			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_GETTER_BODY_BUILD, methodBuilder);
+			dispatchEvent(event);
 		}
 
 		/**
@@ -263,6 +267,8 @@ package org.as3commons.bytecode.proxy.impl {
 				methodBuilder.addOpcode(Opcode.setsuper, [superSetter]);
 			}
 			methodBuilder.addOpcode(Opcode.returnvoid);
+			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_SETTER_BODY_BUILD, methodBuilder);
+			dispatchEvent(event);
 		}
 
 	}

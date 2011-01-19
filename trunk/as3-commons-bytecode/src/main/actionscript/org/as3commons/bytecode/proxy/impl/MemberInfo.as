@@ -19,7 +19,7 @@ package org.as3commons.bytecode.proxy.impl {
 	 *
 	 * @author Roland Zwaga
 	 */
-	internal class MemberInfo {
+	public class MemberInfo {
 
 		private var _qName:QName;
 

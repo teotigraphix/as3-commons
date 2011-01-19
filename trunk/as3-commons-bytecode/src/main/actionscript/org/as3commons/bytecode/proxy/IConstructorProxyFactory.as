@@ -14,18 +14,31 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy {
-
 	import flash.events.IEventDispatcher;
 
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.emit.IClassBuilder;
+	import org.as3commons.bytecode.emit.ICtorBuilder;
+	import org.as3commons.bytecode.reflect.ByteCodeType;
 
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="beforeConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="afterConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
-	public interface IClassIntroducer extends IEventDispatcher {
-		function introduce(className:String, classBuilder:IClassBuilder):void;
+	public interface IConstructorProxyFactory extends IEventDispatcher {
+
+		function addConstructor(classBuilder:IClassBuilder, type:ByteCodeType, classProxyInfo:IClassProxyInfo):ICtorBuilder;
+
+		function addConstructorBody(ctorBuilder:ICtorBuilder, bytecodeQname:QualifiedName, multiName:Multiname):void;
+
 	}
 }

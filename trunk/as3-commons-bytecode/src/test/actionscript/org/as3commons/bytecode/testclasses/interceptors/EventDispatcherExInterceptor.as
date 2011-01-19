@@ -42,10 +42,10 @@ package org.as3commons.bytecode.testclasses.interceptors {
 		}
 
 		public function interceptAddEventListener(invocation:IMethodInvocation):void {
-			var eventType:String = String(invocation.arguments[0]);
 			if (invocation.targetInstance.as3commons_bytecode::listenersLookup == null) {
 				invocation.targetInstance.as3commons_bytecode::listenersLookup = new Dictionary();
 			}
+			var eventType:String = String(invocation.arguments[0]);
 			if (invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType] == null) {
 				invocation.targetInstance.as3commons_bytecode::listenersLookup[eventType] = [];
 			}

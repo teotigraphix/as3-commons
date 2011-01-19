@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.reflect {
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.lang.HashArray;
 	import org.as3commons.reflect.Method;
@@ -98,6 +99,20 @@ package org.as3commons.bytecode.reflect {
 
 		public function get scopeName():String {
 			return _scopeName;
+		}
+
+		// ----------------------------
+		// methodBody
+		// ----------------------------
+
+		private var _methodBody:MethodBody;
+
+		public function get methodBody():MethodBody {
+			return _methodBody;
+		}
+
+		as3commons_reflect function setMethodBody(value:MethodBody):void {
+			_methodBody = value;
 		}
 
 		as3commons_reflect function setScopeName(value:String):void {

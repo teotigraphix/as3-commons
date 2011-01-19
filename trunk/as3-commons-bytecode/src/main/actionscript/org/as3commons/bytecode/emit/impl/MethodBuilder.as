@@ -155,15 +155,20 @@ package org.as3commons.bytecode.emit.impl {
 			mi.returnType = MultinameUtil.toQualifiedName(_returnType);
 			mi.methodName = createMethodName(mi);
 			mi.as3commonsBytecodeName = name;
-			setMethodFlags(mi, setDXNS, needActivation, needArguments);
+			setMethodFlags(mi);
 			return mi;
 		}
 
-		protected function setMethodFlags(methodInfo:MethodInfo, setDXNS:Boolean, needActivation:Boolean, needArguments:Boolean):void {
+		protected function setMethodFlags(methodInfo:MethodInfo):void {
 			if (hasOptionalArguments) {
 				methodInfo.flags = MethodFlag.addFlag(methodInfo.flags, MethodFlag.HAS_OPTIONAL);
 			} else {
 				methodInfo.flags = MethodFlag.removeFlag(methodInfo.flags, MethodFlag.HAS_OPTIONAL);
+			}
+			if (hasRestArguments) {
+				methodInfo.flags = MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_REST);
+			} else {
+				methodInfo.flags = MethodFlag.removeFlag(methodInfo.flags, MethodFlag.NEED_REST);
 			}
 
 			if (_methodBodyBuilder != null) {
@@ -185,12 +190,6 @@ package org.as3commons.bytecode.emit.impl {
 				} else {
 					methodInfo.flags = MethodFlag.removeFlag(methodInfo.flags, MethodFlag.NEED_ARGUMENTS);
 				}
-			}
-
-			if (hasRestArguments) {
-				methodInfo.flags = MethodFlag.addFlag(methodInfo.flags, MethodFlag.NEED_REST);
-			} else {
-				methodInfo.flags = MethodFlag.removeFlag(methodInfo.flags, MethodFlag.NEED_REST);
 			}
 		}
 

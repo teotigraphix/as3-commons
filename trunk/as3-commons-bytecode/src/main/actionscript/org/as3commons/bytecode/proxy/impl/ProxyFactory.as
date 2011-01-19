@@ -38,8 +38,11 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.emit.impl.AbcBuilder;
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
 	import org.as3commons.bytecode.interception.impl.BasicMethodInvocationInterceptor;
+	import org.as3commons.bytecode.proxy.IAccessorProxyFactory;
 	import org.as3commons.bytecode.proxy.IClassIntroducer;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
+	import org.as3commons.bytecode.proxy.IConstructorProxyFactory;
+	import org.as3commons.bytecode.proxy.IMethodProxyFactory;
 	import org.as3commons.bytecode.proxy.IProxyFactory;
 	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
 	import org.as3commons.bytecode.proxy.event.ProxyCreationEvent;
@@ -69,7 +72,15 @@ package org.as3commons.bytecode.proxy.impl {
 	/**
 	 * @inheritDoc
 	 */
+	[Event(name="afterGetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
 	[Event(name="beforeSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="afterSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
@@ -77,7 +88,15 @@ package org.as3commons.bytecode.proxy.impl {
 	/**
 	 * @inheritDoc
 	 */
+	[Event(name="afterMethodBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
 	[Event(name="beforeConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="afterConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
@@ -124,9 +143,9 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _abcBuilder:IAbcBuilder;
 		private var _domains:Dictionary;
 		private var _classIntroducer:IClassIntroducer;
-		private var _methodProxyFactory:MethodProxyFactory;
-		private var _constructorProxyFactory:ConstructorProxyFactory;
-		private var _accessorProxyFactory:AccessorProxyFactory;
+		private var _methodProxyFactory:IMethodProxyFactory;
+		private var _constructorProxyFactory:IConstructorProxyFactory;
+		private var _accessorProxyFactory:IAccessorProxyFactory;
 
 		/**
 		 * Creates a new <code>ProxyFactory</code> instance.
@@ -136,8 +155,49 @@ package org.as3commons.bytecode.proxy.impl {
 			initProxyFactory();
 		}
 
+		public function get methodProxyFactory():IMethodProxyFactory {
+			if (_methodProxyFactory == null) {
+				methodProxyFactory = new MethodProxyFactory();
+			}
+			return _methodProxyFactory;
+		}
+
+		public function set methodProxyFactory(value:IMethodProxyFactory):void {
+			removeMethodProxyFactoryListeners(_methodProxyFactory);
+			_methodProxyFactory = value;
+			addMethodProxyFactoryListeners(_methodProxyFactory);
+		}
+
+		public function get constructorProxyFactory():IConstructorProxyFactory {
+			if (_constructorProxyFactory == null) {
+				constructorProxyFactory = new ConstructorProxyFactory();
+			}
+			return _constructorProxyFactory;
+		}
+
+		public function set constructorProxyFactory(value:IConstructorProxyFactory):void {
+			removeConstructorProxyFactoryListeners(_constructorProxyFactory);
+			_constructorProxyFactory = value;
+			addConstructorProxyFactoryListeners(_constructorProxyFactory);
+		}
+
+		public function get accessorProxyFactory():IAccessorProxyFactory {
+			if (_accessorProxyFactory == null) {
+				accessorProxyFactory = new AccessorProxyFactory();
+			}
+			return _accessorProxyFactory;
+		}
+
+		public function set accessorProxyFactory(value:IAccessorProxyFactory):void {
+			removeAccessorProxyFactoryListeners(_accessorProxyFactory);
+			_accessorProxyFactory = value;
+			addAccessorProxyFactoryListeners(_accessorProxyFactory);
+		}
 
 		public function get classIntroducer():IClassIntroducer {
+			if (_classIntroducer == null) {
+				_classIntroducer = new ClassIntroducer(constructorProxyFactory, methodProxyFactory, accessorProxyFactory);
+			}
 			return _classIntroducer;
 		}
 
@@ -160,13 +220,53 @@ package org.as3commons.bytecode.proxy.impl {
 			_domains = new Dictionary();
 			_classProxyLookup = new Dictionary();
 			_generatedMultinames = new Dictionary();
-			_methodProxyFactory = new MethodProxyFactory();
-			_constructorProxyFactory = new ConstructorProxyFactory();
-			_accessorProxyFactory = new AccessorProxyFactory();
-			_accessorProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, redispatchBuilderEvent);
-			_accessorProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD, redispatchBuilderEvent);
-			_classIntroducer = new ClassIntroducer(_methodProxyFactory, _accessorProxyFactory);
 			LOGGER.debug("ProxyFactory created and initialized");
+		}
+
+		protected function addConstructorProxyFactoryListeners(constructorProxyFactory:IConstructorProxyFactory):void {
+			if (constructorProxyFactory != null) {
+				constructorProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_CONSTRUCTOR_BODY_BUILD, redispatchBuilderEvent);
+				constructorProxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_CONSTRUCTOR_BODY_BUILD, redispatchBuilderEvent);
+			}
+		}
+
+		protected function addMethodProxyFactoryListeners(methodProxyFactory:IMethodProxyFactory):void {
+			if (methodProxyFactory != null) {
+				methodProxyFactory.removeEventListener(ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD, redispatchBuilderEvent);
+				methodProxyFactory.removeEventListener(ProxyFactoryBuildEvent.AFTER_METHOD_BODY_BUILD, redispatchBuilderEvent);
+			}
+		}
+
+		protected function removeMethodProxyFactoryListeners(methodProxyFactory:IMethodProxyFactory):void {
+			if (methodProxyFactory != null) {
+				methodProxyFactory.removeEventListener(ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD, redispatchBuilderEvent);
+				methodProxyFactory.removeEventListener(ProxyFactoryBuildEvent.AFTER_METHOD_BODY_BUILD, redispatchBuilderEvent);
+			}
+		}
+
+		protected function removeConstructorProxyFactoryListeners(constructorProxyFactory:IConstructorProxyFactory):void {
+			if (constructorProxyFactory != null) {
+				constructorProxyFactory.removeEventListener(ProxyFactoryBuildEvent.BEFORE_CONSTRUCTOR_BODY_BUILD, redispatchBuilderEvent);
+				constructorProxyFactory.removeEventListener(ProxyFactoryBuildEvent.AFTER_CONSTRUCTOR_BODY_BUILD, redispatchBuilderEvent);
+			}
+		}
+
+		protected function addAccessorProxyFactoryListeners(accessorProxyFactory:IAccessorProxyFactory):void {
+			if (accessorProxyFactory != null) {
+				accessorProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, redispatchBuilderEvent);
+				accessorProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD, redispatchBuilderEvent);
+				accessorProxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_GETTER_BODY_BUILD, redispatchBuilderEvent);
+				accessorProxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_SETTER_BODY_BUILD, redispatchBuilderEvent);
+			}
+		}
+
+		protected function removeAccessorProxyFactoryListeners(accessorProxyFactory:IAccessorProxyFactory):void {
+			if (accessorProxyFactory != null) {
+				accessorProxyFactory.removeEventListener(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, redispatchBuilderEvent);
+				accessorProxyFactory.removeEventListener(ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD, redispatchBuilderEvent);
+				accessorProxyFactory.removeEventListener(ProxyFactoryBuildEvent.AFTER_GETTER_BODY_BUILD, redispatchBuilderEvent);
+				accessorProxyFactory.removeEventListener(ProxyFactoryBuildEvent.AFTER_SETTER_BODY_BUILD, redispatchBuilderEvent);
+			}
 		}
 
 		protected function redispatchBuilderEvent(event:ProxyFactoryBuildEvent):void {
@@ -320,16 +420,8 @@ package org.as3commons.bytecode.proxy.impl {
 			var nsMultiname:Multiname = createMultiname(proxyClassName, classParts.join(MultinameUtil.SINGLE_COLON), type.extendsClasses);
 			var bytecodeQname:QualifiedName = addInterceptorProperty(classBuilder);
 
-			var ctorBuilder:ICtorBuilder = _constructorProxyFactory.addConstructor(classBuilder, type, classProxyInfo);
-			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_CONSTRUCTOR_BODY_BUILD, ctorBuilder);
-			dispatchEvent(event);
-			ctorBuilder = event.methodBuilder as ICtorBuilder;
-			if (ctorBuilder == null) {
-				throw new ProxyBuildError(ProxyBuildError.METHOD_BUILDER_IS_NULL, "ProxyFactoryBuildEvent");
-			}
-			if (ctorBuilder.opcodes.length < 1) {
-				_constructorProxyFactory.addConstructorBody(ctorBuilder, bytecodeQname, nsMultiname);
-			}
+			var ctorBuilder:ICtorBuilder = constructorProxyFactory.addConstructor(classBuilder, type, classProxyInfo);
+			constructorProxyFactory.addConstructorBody(ctorBuilder, bytecodeQname, nsMultiname);
 
 			if ((classProxyInfo.proxyAll == true) && (classProxyInfo.onlyProxyConstructor == false)) {
 				reflectMembers(classProxyInfo, type, applicationDomain);
@@ -342,8 +434,9 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 
 			var memberInfo:MemberInfo;
+			var event:ProxyFactoryBuildEvent;
 			for each (memberInfo in classProxyInfo.methods) {
-				var methodBuilder:IMethodBuilder = _methodProxyFactory.proxyMethod(classBuilder, type, memberInfo);
+				var methodBuilder:IMethodBuilder = methodProxyFactory.proxyMethod(classBuilder, type, memberInfo);
 				event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD, methodBuilder);
 				dispatchEvent(event);
 				methodBuilder = event.methodBuilder;
@@ -351,16 +444,18 @@ package org.as3commons.bytecode.proxy.impl {
 					throw new ProxyBuildError(ProxyBuildError.METHOD_BUILDER_IS_NULL, "ProxyFactoryBuildEvent");
 				}
 				if (methodBuilder.opcodes.length < 1) {
-					_methodProxyFactory.addMethodBody(methodBuilder, nsMultiname, bytecodeQname, type.isInterface);
+					methodProxyFactory.addMethodBody(methodBuilder, nsMultiname, bytecodeQname, type.isInterface);
 				}
+				event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_METHOD_BODY_BUILD, methodBuilder);
+				dispatchEvent(event);
 			}
 
 			for each (memberInfo in classProxyInfo.accessors) {
-				_accessorProxyFactory.proxyAccessor(classBuilder, type, memberInfo, nsMultiname, bytecodeQname);
+				accessorProxyFactory.proxyAccessor(classBuilder, type, memberInfo, nsMultiname, bytecodeQname);
 			}
 
 			for each (var introducedClassName:String in classProxyInfo.introductions) {
-				_classIntroducer.introduce(introducedClassName, classBuilder);
+				classIntroducer.introduce(introducedClassName, classBuilder);
 			}
 
 			dispatchEvent(new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_PROXY_BUILD, null, classBuilder, classProxyInfo.proxiedClass));
