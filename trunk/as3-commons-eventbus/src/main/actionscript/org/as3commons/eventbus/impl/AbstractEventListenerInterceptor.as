@@ -15,45 +15,52 @@
 */
 package org.as3commons.eventbus.impl {
 	import flash.errors.IllegalOperationError;
-	import flash.events.Event;
 
 	import org.as3commons.eventbus.IEventBus;
-	import org.as3commons.eventbus.IEventInterceptor;
+	import org.as3commons.eventbus.IEventListenerInterceptor;
+	import org.as3commons.reflect.MethodInvoker;
 
 	/**
-	 * Basic implementation of <code>IEventInterceptor</code> to be used as a base class.
+	 *
 	 * @author Roland Zwaga
 	 */
-	public class AbstractEventInterceptor extends AbstractEventBusAwareObject implements IEventInterceptor {
+	public class AbstractEventListenerInterceptor extends AbstractEventBusAwareObject implements IEventListenerInterceptor {
 
-		private var _blockEvent:Boolean;
+		private var _blockListener:Boolean;
 
 		/**
-		 * Creates a new <code>AbstractEventInterceptor</code> instance.
+		 * Creates a new <code>AbstractEventListenerInterceptor</code> instance.
 		 */
-		public function AbstractEventInterceptor() {
+		public function AbstractEventListenerInterceptor() {
 			super();
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function get blockEvent():Boolean {
-			return _blockEvent;
+		public function get blockListener():Boolean {
+			return _blockListener;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set blockEvent(value:Boolean):void {
-			_blockEvent = value;
+		public function set blockListener(value:Boolean):void {
+			_blockListener = value;
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function intercept(event:Event):void {
-			throw new IllegalOperationError("intercept() not implemented in abstract base class");
+		public function interceptListener(listener:Function):void {
+			throw new IllegalOperationError("interceptListener() not implemented in abstract base class");
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function interceptListenerProxy(proxy:MethodInvoker):void {
+			throw new IllegalOperationError("interceptListenerProxy() not implemented in abstract base class");
 		}
 
 	}
