@@ -249,6 +249,7 @@ package org.as3commons.bytecode.emit.impl {
 						}
 						break;
 					case Opcode.dxns:
+					case Opcode.dxnslate:
 						_hasDXNS = true;
 						break;
 					case Opcode.newactivation:

@@ -26,31 +26,35 @@ package org.as3commons.bytecode.proxy {
 	 * to the <code>ProxyFactoryEvent.methodInvocationInterceptor</code> property in order for it to be used for the newly created proxy.
 	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR
 	 */
-	[Event(name="getMethodInvocationInterceptor", "org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
+	[Event(name="getMethodInvocationInterceptor", type="org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
 	/**
 	 * Dispatched before a getter body will be built, the <code>IMethodBuilder</code> instance assigned to the <code>ProxyFactoryEvent.builder</code> property
 	 * can be used to add a custom method body.
 	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.BEFORE_GETTER_BODY_BUILD
 	 */
 	[Event(name="beforeGetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name="afterGetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * Dispatched before a setter body will be built, the <code>IMethodBuilder</code> instance assigned to the <code>ProxyFactoryEvent.builder</code> property
 	 * can be used to add a custom method body.
 	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.BEFORE_SETTER_BODY_BUILD
 	 */
 	[Event(name="beforeSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name="afterSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * Dispatched before a method body will be built, the <code>IMethodBuilder</code> instance assigned to the <code>ProxyFactoryEvent.builder</code> property
 	 * can be used to add a custom method body.
 	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.BEFORE_METHOD_BODY_BUILD
 	 */
 	[Event(name="beforeMethodBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name="afterMethodBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * Dispatched before the constructor body will be built, the <code>ICtorBuilder</code> instance assigned to the <code>ProxyFactoryEvent.builder</code> property
 	 * can be used to add a custom method body.
 	 * @eventType org.as3commons.bytecode.proxy.event.ProxyFactoryEvent.BEFORE_CONSTRUCTOR_BODY_BUILD
 	 */
 	[Event(name="beforeConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name="afterConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * Dispatched after the proxy has been build, the <code>IClassBuilder</code> instance assigned to the <code>ProxyFactoryEvent.classBuilder</code> property
 	 * can be further customized in the handlers for this event.

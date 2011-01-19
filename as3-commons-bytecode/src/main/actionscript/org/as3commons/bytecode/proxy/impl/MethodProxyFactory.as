@@ -27,8 +27,9 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.bytecode.proxy.IMethodProxyFactory;
 
-	public class MethodProxyFactory extends AbstractMethodBodyFactory {
+	public class MethodProxyFactory extends AbstractMethodBodyFactory implements IMethodProxyFactory {
 
 		public function MethodProxyFactory() {
 			super();

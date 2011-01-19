@@ -21,12 +21,15 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
+	import org.as3commons.bytecode.proxy.IConstructorProxyFactory;
+	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
+	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeParameter;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
 
-	public class ConstructorProxyFactory extends AbstractMethodBodyFactory {
+	public class ConstructorProxyFactory extends AbstractMethodBodyFactory implements IConstructorProxyFactory {
 
 		private static const LOGGER:ILogger = LoggerFactory.getClassLogger(ConstructorProxyFactory);
 
@@ -45,8 +48,6 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		public function addConstructor(classBuilder:IClassBuilder, type:ByteCodeType, classProxyInfo:IClassProxyInfo):ICtorBuilder {
 			var ctorBuilder:ICtorBuilder = classBuilder.defineConstructor();
-			//var interceptorClassName:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
-			//ctorBuilder.defineArgument(interceptorClassName);
 			for each (var param:ByteCodeParameter in type.constructor.parameters) {
 				ctorBuilder.defineArgument(param.type.fullName, param.isOptional, param.defaultValue);
 			}
@@ -73,6 +74,15 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param multiName The <code>Multiname</code> instance used as the parameter for the <code>Opcode.callproperty</code> opcode.
 		 */
 		public function addConstructorBody(ctorBuilder:ICtorBuilder, bytecodeQname:QualifiedName, multiName:Multiname):void {
+			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_CONSTRUCTOR_BODY_BUILD, ctorBuilder);
+			dispatchEvent(event);
+			ctorBuilder = event.methodBuilder as ICtorBuilder;
+			if (ctorBuilder == null) {
+				throw new ProxyBuildError(ProxyBuildError.METHOD_BUILDER_IS_NULL, "ProxyFactoryBuildEvent");
+			}
+			if (ctorBuilder.opcodes.length > 0) {
+				return;
+			}
 			var len:int = ctorBuilder.arguments.length;
 			var paramLocal:int = len + 1;
 			var eventLocal:int = paramLocal++;
@@ -155,6 +165,9 @@ package org.as3commons.bytecode.proxy.impl {
 			ctorBuilder.addOpcode(Opcode.constructsuper, [len]) //
 				.addOpcode(Opcode.returnvoid);
 			LOGGER.debug("Constructor generated");
+
+			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_CONSTRUCTOR_BODY_BUILD, ctorBuilder);
+			dispatchEvent(event);
 		}
 
 	}

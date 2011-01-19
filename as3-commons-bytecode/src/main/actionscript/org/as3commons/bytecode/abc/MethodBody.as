@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.abc {
 	import flash.utils.ByteArray;
 
+	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.StringUtils;
@@ -58,9 +59,9 @@ package org.as3commons.bytecode.abc {
 		public function addExceptionInfo(exceptionInfo:ExceptionInfo):uint {
 			var idx:int = exceptionInfos.indexOf(exceptionInfo);
 			if (idx < 0) {
-				idx = exceptionInfos.push(exceptionInfo);
+				idx = (exceptionInfos.push(exceptionInfo) - 1);
 			}
-			return idx;
+			return (idx);
 		}
 
 		public function toString():String {
@@ -79,7 +80,11 @@ package org.as3commons.bytecode.abc {
 			clone.localCount = localCount;
 			clone.initScopeDepth = initScopeDepth;
 			clone.maxScopeDepth = maxScopeDepth;
-			clone.exceptionInfos = CloneUtils.cloneList(exceptionInfos);
+			for each (var op:Op in clone.opcodes) {
+				if (op.opcode === Opcode.newcatch) {
+					clone.exceptionInfos[clone.exceptionInfos.length] = op.parameters[0];
+				}
+			}
 			clone.traits = CloneUtils.cloneList(traits);
 			return clone;
 		}
