@@ -50,7 +50,7 @@ package org.as3commons.bytecode.abc {
 					params[params.length] = obj;
 				}
 			}
-			return new Op(_opcode, params);
+			return _opcode.op(params);
 		}
 
 		public static function checkParameters(parameters:Array, opcode:Opcode):void {

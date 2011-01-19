@@ -119,7 +119,7 @@ package org.as3commons.bytecode.proxy.impl {
 				constructorBody.opcodes.splice(constrSuperIdx, 1);
 			}
 			if (constructorBody.opcodes.length > 0) {
-				constructorBody.opcodes[constructorBody.opcodes.length] = new Op(Opcode.getlocal_0);
+				constructorBody.opcodes[constructorBody.opcodes.length] = Opcode.getlocal_0.op();
 				var mergeConstructor:Function = function(event:ProxyFactoryBuildEvent):void {
 					var ctorBuilder:ICtorBuilder = event.methodBuilder as ICtorBuilder;
 					var trailingOpcodes:Array = ctorBuilder.opcodes.splice(2, ctorBuilder.opcodes.length);

@@ -451,7 +451,7 @@ package org.as3commons.bytecode.emit.impl {
 					.addOpcode(Opcode.getproperty, [mn]);
 				if (i < (len - 1)) {
 					mb.addOpcode(Opcode.pushscope);
-					popscopes[popscopes.length] = new Op(Opcode.popscope);
+					popscopes[popscopes.length] = Opcode.popscope.op();
 				}
 			}
 			mn = MultinameUtil.toQualifiedName(className);

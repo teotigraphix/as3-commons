@@ -336,7 +336,7 @@ package org.as3commons.bytecode.emit.impl {
 		 * @inheritDoc
 		 */
 		public function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder {
-			return addOp(new Op(opcode, params));
+			return addOp(opcode.op(params));
 		}
 
 		/**

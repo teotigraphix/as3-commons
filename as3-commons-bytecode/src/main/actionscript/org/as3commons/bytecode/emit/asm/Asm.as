@@ -234,12 +234,12 @@ package org.as3commons.bytecode.emit.asm {
 			for each (var token:AsmToken in tokens) {
 				switch (token.kind) {
 					case TokenKind.INSTRUCTION:
-						currentOp = new Op(Opcode.fromName(token.value));
+						currentOp = Opcode.fromName(token.value).op();
 						opcodes[opcodes.length] = currentOp;
 						currentParameterMethods = _params[currentOp.opcode];
 						break;
 					case TokenKind.LABEL:
-						currentOp = new Op(Opcode.label);
+						currentOp = Opcode.label.op();
 						opcodes[opcodes.length] = currentOp;
 						var lbl:String = token.value.substring(0, token.value.length - 1);
 						labelNameLookup[lbl] = currentOp;
