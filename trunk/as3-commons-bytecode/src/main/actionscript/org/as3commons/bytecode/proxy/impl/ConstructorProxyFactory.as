@@ -29,6 +29,18 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
 
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="beforeConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="afterConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public class ConstructorProxyFactory extends AbstractMethodBodyFactory implements IConstructorProxyFactory {
 
 		private static const LOGGER:ILogger = LoggerFactory.getClassLogger(ConstructorProxyFactory);
