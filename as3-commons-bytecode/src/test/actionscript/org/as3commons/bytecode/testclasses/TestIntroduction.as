@@ -19,9 +19,11 @@ package org.as3commons.bytecode.testclasses {
 
 		private var _test:String = "test";
 		private var _testString:String = "testString";
+		private var _testObject:SimpleClassWithAccessors;
 
 		public function TestIntroduction() {
 			super();
+			_testObject = new SimpleClassWithAccessors();
 		}
 
 		private function internalGetTest():String {
@@ -43,6 +45,10 @@ package org.as3commons.bytecode.testclasses {
 
 		public function set testString(value:String):void {
 			_testString = value;
+		}
+
+		public function get testObject():SimpleClassWithAccessors {
+			return _testObject;
 		}
 
 	}

@@ -29,6 +29,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IClassBuilder;
+	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.io.AbcDeserializer;
@@ -84,11 +85,49 @@ package org.as3commons.bytecode.proxy.impl {
 		protected function internalIntroduce(type:ByteCodeType, classBuilder:IClassBuilder):void {
 			classBuilder.implementInterfaces(type.interfaces);
 
-			//var newScopeName:String = classBuilder.packageName + MultinameUtil.SINGLE_COLON + classBuilder.name;
-			//deserializeMethodBody(type, type.instanceConstructor, newScopeName);
-			//var mergeConstructor:Function = function(event:ProxyFactoryBuildEvent):void {
-			//};
-			//_constructorProxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_CONSTRUCTOR_BODY_BUILD, mergeConstructor);
+			var newScopeName:String = classBuilder.packageName + MultinameUtil.SINGLE_COLON + classBuilder.name;
+			var oldScopeName:String = makeScopeName(type.fullName);
+			var constructorBody:MethodBody = deserializeMethodBody(type, type.instanceConstructor, newScopeName);
+			constructorBody.opcodes.pop();
+			var constrSuperIdx:int = 0;
+			var dropped:Array = [];
+			var foundPushscope:Boolean = false;
+			for each (var op:Op in constructorBody.opcodes) {
+				switch (op.opcode) {
+					case Opcode.debug:
+					case Opcode.debugfile:
+					case Opcode.debugline:
+						dropped[dropped.length] = constrSuperIdx;
+						break;
+					case Opcode.pushscope:
+						if (!foundPushscope) {
+							foundPushscope = true;
+							dropped[dropped.length] = (constrSuperIdx - 1);
+							dropped[dropped.length] = constrSuperIdx;
+						}
+						break;
+					case Opcode.constructsuper:
+						dropped[dropped.length] = (constrSuperIdx - 1);
+						dropped[dropped.length] = constrSuperIdx;
+						break;
+				}
+				constrSuperIdx++;
+				translateOpcodeNamespaces(op, oldScopeName, newScopeName);
+			}
+			dropped = dropped.reverse();
+			for each (constrSuperIdx in dropped) {
+				constructorBody.opcodes.splice(constrSuperIdx, 1);
+			}
+			if (constructorBody.opcodes.length > 0) {
+				constructorBody.opcodes[constructorBody.opcodes.length] = new Op(Opcode.getlocal_0);
+				var mergeConstructor:Function = function(event:ProxyFactoryBuildEvent):void {
+					var ctorBuilder:ICtorBuilder = event.methodBuilder as ICtorBuilder;
+					var trailingOpcodes:Array = ctorBuilder.opcodes.splice(2, ctorBuilder.opcodes.length);
+					ctorBuilder.opcodes.push.apply(ctorBuilder.opcodes, constructorBody.opcodes);
+					ctorBuilder.opcodes.push.apply(ctorBuilder.opcodes, trailingOpcodes);
+				};
+				_constructorProxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_CONSTRUCTOR_BODY_BUILD, mergeConstructor);
+			}
 
 			for each (var field:Field in type.fields) {
 				introduceField(field, classBuilder, type);
@@ -153,29 +192,33 @@ package org.as3commons.bytecode.proxy.impl {
 
 		protected function translateOpcodesNamespaces(opcodes:Array, oldScopeName:String, newScopeName:String):void {
 			for each (var op:Op in opcodes) {
-				var len:int = op.parameters.length;
-				for (var i:int = 0; i < len; ++i) {
-					var param:* = op.parameters[i];
-					switch (true) {
-						case (param is Multiname):
-							translateNamespaceSet(Multiname(param).namespaceSet, oldScopeName, newScopeName);
-							break;
-						case (param is LNamespace):
-							translateNamespace(LNamespace(param), oldScopeName, newScopeName);
-							break;
-						case (param is MultinameG):
-							translateNamespace(MultinameG(param).qualifiedName.nameSpace, oldScopeName, newScopeName);
-							break;
-						case (param is MultinameL):
-							translateNamespaceSet(MultinameL(param).namespaceSet, oldScopeName, newScopeName);
-							break;
-						case (param is QualifiedName):
-							translateNamespace(QualifiedName(param).nameSpace, oldScopeName, newScopeName);
-							break;
-						case (param is NamespaceSet):
-							translateNamespaceSet(NamespaceSet(param), oldScopeName, newScopeName);
-							break;
-					}
+				translateOpcodeNamespaces(op, oldScopeName, newScopeName);
+			}
+		}
+
+		protected function translateOpcodeNamespaces(op:Op, oldScopeName:String, newScopeName:String):void {
+			var len:int = op.parameters.length;
+			for (var i:int = 0; i < len; ++i) {
+				var param:* = op.parameters[i];
+				switch (true) {
+					case (param is Multiname):
+						translateNamespaceSet(Multiname(param).namespaceSet, oldScopeName, newScopeName);
+						break;
+					case (param is LNamespace):
+						translateNamespace(LNamespace(param), oldScopeName, newScopeName);
+						break;
+					case (param is MultinameG):
+						translateNamespace(MultinameG(param).qualifiedName.nameSpace, oldScopeName, newScopeName);
+						break;
+					case (param is MultinameL):
+						translateNamespaceSet(MultinameL(param).namespaceSet, oldScopeName, newScopeName);
+						break;
+					case (param is QualifiedName):
+						translateNamespace(QualifiedName(param).nameSpace, oldScopeName, newScopeName);
+						break;
+					case (param is NamespaceSet):
+						translateNamespaceSet(NamespaceSet(param), oldScopeName, newScopeName);
+						break;
 				}
 			}
 		}

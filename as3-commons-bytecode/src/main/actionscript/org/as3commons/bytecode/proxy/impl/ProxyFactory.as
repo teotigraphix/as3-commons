@@ -420,6 +420,10 @@ package org.as3commons.bytecode.proxy.impl {
 			var nsMultiname:Multiname = createMultiname(proxyClassName, classParts.join(MultinameUtil.SINGLE_COLON), type.extendsClasses);
 			var bytecodeQname:QualifiedName = addInterceptorProperty(classBuilder);
 
+			for each (var introducedClassName:String in classProxyInfo.introductions) {
+				classIntroducer.introduce(introducedClassName, classBuilder);
+			}
+
 			var ctorBuilder:ICtorBuilder = constructorProxyFactory.addConstructor(classBuilder, type, classProxyInfo);
 			constructorProxyFactory.addConstructorBody(ctorBuilder, bytecodeQname, nsMultiname);
 
@@ -452,10 +456,6 @@ package org.as3commons.bytecode.proxy.impl {
 
 			for each (memberInfo in classProxyInfo.accessors) {
 				accessorProxyFactory.proxyAccessor(classBuilder, type, memberInfo, nsMultiname, bytecodeQname);
-			}
-
-			for each (var introducedClassName:String in classProxyInfo.introductions) {
-				classIntroducer.introduce(introducedClassName, classBuilder);
 			}
 
 			dispatchEvent(new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_PROXY_BUILD, null, classBuilder, classProxyInfo.proxiedClass));
