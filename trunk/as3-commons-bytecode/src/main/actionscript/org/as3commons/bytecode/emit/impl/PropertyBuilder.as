@@ -51,6 +51,8 @@ package org.as3commons.bytecode.emit.impl {
 
 		private var _isConstant:Boolean;
 
+		private var _memberInitialization:MemberInitialization;
+
 		public function get type():String {
 			return _type;
 		}
@@ -132,6 +134,14 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function willTrigger(type:String):Boolean {
 			return _eventDispatcher.willTrigger(type);
+		}
+
+		public function get memberInitialization():MemberInitialization {
+			return _memberInitialization;
+		}
+
+		public function set memberInitialization(value:MemberInitialization):void {
+			_memberInitialization = value;
 		}
 
 	}

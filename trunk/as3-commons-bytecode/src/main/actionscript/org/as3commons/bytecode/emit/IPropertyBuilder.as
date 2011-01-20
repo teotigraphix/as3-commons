@@ -16,6 +16,8 @@
 package org.as3commons.bytecode.emit {
 	import flash.events.IEventDispatcher;
 
+	import org.as3commons.bytecode.emit.impl.MemberInitialization;
+
 	/**
 	 * Describes an object that can generate a property on a class or interface to be used in an <code>AbcFile</code>.
 	 * @author Roland Zwaga
@@ -45,6 +47,15 @@ package org.as3commons.bytecode.emit {
 		 * @private
 		 */
 		function set initialValue(value:*):void;
+
+		/**
+		 * Descibes how to initialize the property if it has a complex type.
+		 */
+		function get memberInitialization():MemberInitialization;
+		/**
+		 * @private
+		 */
+		function set memberInitialization(value:MemberInitialization):void;
 		/**
 		 * Internally used build method, this method should never be called by third parties.
 		 * @param applicationDomain

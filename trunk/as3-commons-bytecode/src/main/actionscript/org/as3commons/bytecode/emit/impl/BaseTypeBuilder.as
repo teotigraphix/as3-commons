@@ -355,7 +355,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function createInitializer(slot:SlotOrConstantTrait):Array {
 			var result:Array = [];
-			if (!(slot.defaultValue === undefined)) {
+			if (slot.defaultValue !== undefined) {
 				result[result.length] = Opcode.findproperty.op([slot.traitMultiname]);
 				result[result.length] = determinePushOpcode(slot).op([slot.defaultValue]);
 				result[result.length] = Opcode.initproperty.op([slot.traitMultiname]);

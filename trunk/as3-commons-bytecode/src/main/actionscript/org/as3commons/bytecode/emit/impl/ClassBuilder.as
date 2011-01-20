@@ -20,6 +20,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.system.ApplicationDomain;
 
 	import org.as3commons.bytecode.abc.InstanceInfo;
+	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.Multiname;
@@ -46,6 +47,7 @@ package org.as3commons.bytecode.emit.impl {
 	public class ClassBuilder extends BaseTypeBuilder implements IClassBuilder, IEventDispatcher {
 
 		public static const CONSTRUCTOR_NAME:String = "{0}.{1}/{1}";
+		private static const HIERARCHY_DEPTH_OFFSET:uint = 3;
 
 		private var _ctorBuilder:ICtorBuilder;
 		private var _propertyBuilders:Array;
@@ -195,7 +197,7 @@ package org.as3commons.bytecode.emit.impl {
 				dispatchEvent(evt);
 				extendedClasses = evt.extendedClasses;
 			}
-			return (3 + extendedClasses.length);
+			return (HIERARCHY_DEPTH_OFFSET + extendedClasses.length);
 		}
 
 		/**
