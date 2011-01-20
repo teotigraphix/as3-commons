@@ -14,12 +14,8 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy.impl {
-	import flash.system.ApplicationDomain;
-	import flash.system.Capabilities;
-	import flash.system.System;
 
-	import mx.core.IFactory;
-
+	import org.as3commons.bytecode.interception.IMethodInvocationInterceptorFactory;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
@@ -38,7 +34,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _introductions:Array;
 		private var _onlyProxyConstructor:Boolean = false;
 		private var _makeDynamic:Boolean = false;
-		private var _interceptorFactory:IFactory;
+		private var _interceptorFactory:IMethodInvocationInterceptorFactory;
 		private var _proxyAllAccessors:Boolean;
 		private var _proxyAllMethods:Boolean;
 
@@ -67,11 +63,11 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyAllMethods = value;
 		}
 
-		public function get interceptorFactory():IFactory {
+		public function get interceptorFactory():IMethodInvocationInterceptorFactory {
 			return _interceptorFactory;
 		}
 
-		public function set interceptorFactory(value:IFactory):void {
+		public function set interceptorFactory(value:IMethodInvocationInterceptorFactory):void {
 			_interceptorFactory = value;
 		}
 

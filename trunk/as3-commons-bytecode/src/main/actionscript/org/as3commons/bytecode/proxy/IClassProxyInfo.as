@@ -14,13 +14,13 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy {
-	import mx.core.IFactory;
+	import org.as3commons.bytecode.interception.IMethodInvocationInterceptorFactory;
 
 	public interface IClassProxyInfo {
 
-		function get interceptorFactory():IFactory;
+		function get interceptorFactory():IMethodInvocationInterceptorFactory;
 
-		function set interceptorFactory(value:IFactory):void;
+		function set interceptorFactory(value:IMethodInvocationInterceptorFactory):void;
 
 		function get proxiedClass():Class;
 
