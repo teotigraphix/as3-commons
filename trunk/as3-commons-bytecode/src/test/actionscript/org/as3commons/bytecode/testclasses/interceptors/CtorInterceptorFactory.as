@@ -25,7 +25,7 @@ package org.as3commons.bytecode.testclasses.interceptors {
 			super();
 		}
 
-		public function newInstance():IMethodInvocationInterceptor {
+		public function newInstance():* {
 			var interceptor:BasicMethodInvocationInterceptor = new BasicMethodInvocationInterceptor();
 			interceptor.interceptors[interceptor.interceptors.length] = new TestInterceptor();
 			return interceptor;
