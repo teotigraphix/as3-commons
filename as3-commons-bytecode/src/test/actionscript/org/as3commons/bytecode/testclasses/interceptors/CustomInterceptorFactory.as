@@ -14,15 +14,17 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.testclasses.interceptors {
-	import mx.core.IFactory;
 
-	public class CustomInterceptorFactory implements IFactory {
+	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
+	import org.as3commons.bytecode.interception.IMethodInvocationInterceptorFactory;
+
+	public class CustomInterceptorFactory implements IMethodInvocationInterceptorFactory {
 
 		public function CustomInterceptorFactory() {
 			super();
 		}
 
-		public function newInstance():* {
+		public function newInstance():IMethodInvocationInterceptor {
 			return new TestMethodInvocationInterceptor();
 		}
 	}

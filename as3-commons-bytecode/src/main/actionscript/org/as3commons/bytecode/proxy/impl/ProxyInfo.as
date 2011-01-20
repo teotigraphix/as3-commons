@@ -16,11 +16,8 @@
 package org.as3commons.bytecode.proxy.impl {
 	import flash.system.ApplicationDomain;
 
-	import mx.core.IFactory;
-
-	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
+	import org.as3commons.bytecode.interception.IMethodInvocationInterceptorFactory;
 	import org.as3commons.lang.Assert;
-	import org.as3commons.lang.ClassUtils;
 
 	/**
 	 * Contains the the necessary information for an <code>IProxyFactory</code> to
@@ -34,7 +31,7 @@ package org.as3commons.bytecode.proxy.impl {
 		public var proxyClassName:String;
 		public var applicationDomain:ApplicationDomain;
 		public var methodInvocationInterceptorClass:Class;
-		public var interceptorFactory:IFactory;
+		public var interceptorFactory:IMethodInvocationInterceptorFactory;
 
 		/**
 		 * Creates a new <code>ProxyInfo</code> instance.
