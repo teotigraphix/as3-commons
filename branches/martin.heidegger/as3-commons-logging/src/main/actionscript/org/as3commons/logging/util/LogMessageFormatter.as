@@ -211,11 +211,11 @@ package org.as3commons.logging.util {
 					}
 					// 9
 					else if( type == SWF_TYPE ) {
-						result += SWFInfo.URL;
+						result += SWF_URL;
 					}
 					// 10
 					else if( type == SHORT_SWF_TYPE ) {
-						result += SWFInfo.SHORT_URL;
+						result += SWF_SHORT_URL;
 					}
 					// 11
 					else { // NAME_TYPE
@@ -238,4 +238,6 @@ internal final class FormatNode {
 	public var content: String;
 	public var param: int;
 	public var type: int;
+	
+	public function FormatNode() {}
 }

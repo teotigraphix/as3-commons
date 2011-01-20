@@ -76,8 +76,8 @@ package org.as3commons.logging.util {
 			assertEquals( SWFInfo.URL_ERROR, new LogMessageFormatter( "{shortSWF}" ).format( null, null, null, null, null, null ) );
 			
 			SWFInfo.init( LogTests.STAGE );
-			assertEquals( SWFInfo.URL, new LogMessageFormatter( "{swf}" ).format( null, null, null, null, null, null ) );
-			assertEquals( SWFInfo.SHORT_URL, new LogMessageFormatter( "{shortSWF}" ).format( null, null, null, null, null, null ) );
+			assertEquals( SWF_URL, new LogMessageFormatter( "{swf}" ).format( null, null, null, null, null, null ) );
+			assertEquals( SWF_SHORT_URL, new LogMessageFormatter( "{shortSWF}" ).format( null, null, null, null, null, null ) );
 			SWFInfo.init( null );
 		}
 	}

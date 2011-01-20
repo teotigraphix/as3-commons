@@ -104,7 +104,7 @@ package org.as3commons.logging.setup.target {
 			_target.dispose();
 			
 			for each ( var file: File in _filesToDelete ) {
-				file.deleteFile();
+				//file.deleteFile();
 			}
 			
 			_filesToDelete = null;

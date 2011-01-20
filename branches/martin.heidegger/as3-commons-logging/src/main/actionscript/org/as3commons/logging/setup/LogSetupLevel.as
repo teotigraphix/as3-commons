@@ -1,6 +1,6 @@
-package org.as3commons.logging 
+package org.as3commons.logging.setup
 {
-
+	import org.as3commons.logging.Logger;
 	
 	/**
 	 * @author martin.heidegger
@@ -8,7 +8,7 @@ package org.as3commons.logging
 	public final class LogSetupLevel 
 	{
 		private static const _levels:Array = [];
-
+		
 		public static const NONE:LogSetupLevel       = getLevelByValue( 0x0001 );
 		public static const FATAL_ONLY:LogSetupLevel = getLevelByValue( 0x0002 );
 		public static const FATAL:LogSetupLevel      = NONE.or( FATAL_ONLY );
@@ -36,15 +36,19 @@ package org.as3commons.logging
 			_value = value;
 		}
 		
-		public function matches(toLevel:LogLevel):Boolean {
-			return (_value & toLevel.value) == toLevel.value;
+		public function applyTo(logger:Logger, target:ILogTarget):void {
+			logger.debugTarget = ((_value & DEBUG_ONLY._value) == DEBUG_ONLY._value) ? target : null;
+			logger.infoTarget = ((_value & INFO_ONLY._value) == INFO_ONLY._value) ? target : null;
+			logger.warnTarget = ((_value & WARN_ONLY._value) == WARN_ONLY._value) ? target : null;
+			logger.errorTarget = ((_value & ERROR_ONLY._value) == ERROR_ONLY._value) ? target : null;
+			logger.fatalTarget = ((_value & FATAL_ONLY._value) == FATAL_ONLY._value) ? target : null;
 		}
 		
-		public function or( otherLevel:LogSetupLevel ):LogSetupLevel {
-			return getLevelByValue( _value | otherLevel.value );
+		public function or(otherLevel:LogSetupLevel):LogSetupLevel {
+			return getLevelByValue( _value | otherLevel._value );
 		}
 		
-		public function get value(): int {
+		public function valueOf():int {
 			return _value;
 		}
 	}

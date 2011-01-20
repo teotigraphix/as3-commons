@@ -20,80 +20,68 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging {
+	
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ILogTarget;
-
+	
 	import flash.utils.getTimer;
-
+	
 	/**
-	 * Proxy for an ILogger implementation. This class is used internally by the LoggerFactory and
-	 * should not be used directly.
+	 * Proxy for an <code>ILogger</code> implementation. This class is used
+	 * by the <code>LoggerFactory</code> in the setup process.
 	 *
-	 * <p>A LoggerProxy is created for each logger requested from the factory. This allows us to replace
-	 * the ILogger implementations in the global logger factory when its internal factory changes.</p>
+	 * <p>A <code>Logger</code> instance is created for each logger requested from
+	 * the factory. The <code>Logger</code> instances do get augmented by the
+	 * Setup.</p>
 	 *
-	 * @author Martin Heidegger mh@leichtgewicht.at
+	 * @author Martin Heidegger
 	 * @author Christophe Herreman
+	 * @version 2
 	 */
 	public final class Logger implements ILogger {
 		
+		/** Time when class is created by the .swf loader. */
 		private static const _startTime: Number = new Date().getTime() - getTimer();
 		
-		/** The proxied logger. */
-		private var _logTarget:ILogTarget;
+		/** The logger for debug level, if not added (<code>== null</code>) debug is not enabled. */
+		public var debugTarget:ILogTarget;
 		
+		/** The logger for debug level, if not added (<code>== null</code>) debug is not enabled. */
+		public var infoTarget:ILogTarget;
+		
+		/** The logger for warn level, if not added (<code>== null</code>) debug is not enabled. */
+		public var warnTarget:ILogTarget;
+		
+		/** The logger for error level, if not added (<code>== null</code>) debug is not enabled. */
+		public var errorTarget:ILogTarget;
+		
+		/** The logger for fatal level, if not added (<code>== null</code>) debug is not enabled. */
+		public var fatalTarget:ILogTarget;
+		
+		/** Full name of the logger. */
 		private var _name:String;
-		private var _shortName:String;
 		
-		private var _debugEnabled:Boolean = false;
-		private var _infoEnabled:Boolean = false;
-		private var _warnEnabled:Boolean = false;
-		private var _errorEnabled:Boolean = false;
-		private var _fatalEnabled:Boolean = false;
+		/** Short name of the logger. */
+		private var _shortName:String;
 		
 		/**
 		 * Creates a new LoggerProxy.
 		 */
-		public function Logger(name:String, logger:ILogTarget=null, logTargetLevel: LogSetupLevel=null) {
+		public function Logger(name:String) {
 			_name = name;
-			_shortName = name.substr( name.lastIndexOf(".")+1 );
-			this.logTarget = logger;
-			this.logTargetLevel = logTargetLevel;
-		}
-		
-		public function set logTargetLevel(logTargetLevel:LogSetupLevel):void {
-			if( logTargetLevel ) {
-				_debugEnabled = logTargetLevel.matches( DEBUG );
-				_infoEnabled  = logTargetLevel.matches( INFO );
-				_warnEnabled  = logTargetLevel.matches( WARN );
-				_errorEnabled = logTargetLevel.matches( ERROR );
-				_fatalEnabled = logTargetLevel.matches( FATAL );
-			} else {
-				_debugEnabled =
-				_infoEnabled  =
-				_warnEnabled  =
-				_errorEnabled =
-				_fatalEnabled = false;
-			}
-		}
-		
-		/**
-		 * Sets the proxied logger.
-		 */
-		public function set logTarget(logTarget:ILogTarget):void {
-			_logTarget = logTarget;
+			_shortName = (_shortName=_name.substr( _name.lastIndexOf(".")+1));
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function debug(message:*, ... params:*):void {
-			if (_debugEnabled) {
-				_logTarget.log( _name, _shortName, DEBUG, _startTime+getTimer(), message, params );
+			if(debugTarget) {
+				debugTarget.log(_name, _shortName, DEBUG, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -101,8 +89,8 @@ package org.as3commons.logging {
 		 * @inheritDoc
 		 */
 		public function info(message:*, ... params:*):void {
-			if (_infoEnabled) {
-				_logTarget.log( _name, _shortName, INFO, _startTime+getTimer(), message, params);
+			if(infoTarget) {
+				infoTarget.log(_name, _shortName, INFO, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -110,8 +98,8 @@ package org.as3commons.logging {
 		 * @inheritDoc
 		 */
 		public function warn(message:*, ... params:*):void {
-			if (_warnEnabled) {
-				_logTarget.log( _name, _shortName, WARN, _startTime+getTimer(), message, params);
+			if(warnTarget) {
+				warnTarget.log(_name, _shortName, WARN, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -119,8 +107,8 @@ package org.as3commons.logging {
 		 * @inheritDoc
 		 */
 		public function error(message:*, ... params:*):void {
-			if (_errorEnabled) {
-				_logTarget.log( _name, _shortName, ERROR, _startTime+getTimer(), message, params);
+			if(errorTarget) {
+				errorTarget.log(_name, _shortName, ERROR, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -128,8 +116,8 @@ package org.as3commons.logging {
 		 * @inheritDoc
 		 */
 		public function fatal(message:*, ... params:*):void {
-			if (_fatalEnabled) {
-				_logTarget.log( _name, _shortName, FATAL, _startTime+getTimer(), message, params);
+			if(fatalTarget) {
+				fatalTarget.log(_name, _shortName, FATAL, _startTime+getTimer(), message, params);
 			}
 		}
 		
@@ -137,47 +125,63 @@ package org.as3commons.logging {
 		 * @inheritDoc
 		 */
 		public function get debugEnabled():Boolean {
-			return _debugEnabled;
+			return debugTarget != null;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function get infoEnabled():Boolean {
-			return _infoEnabled;
+			return infoTarget != null;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function get warnEnabled():Boolean {
-			return _warnEnabled;
+			return warnTarget != null;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function get errorEnabled():Boolean {
-			return _errorEnabled;
+			return errorTarget != null;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function get fatalEnabled():Boolean {
-			return _fatalEnabled;
+			return fatalTarget != null;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function get name():String {
 			return _name;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function get shortName():String {
 			return _shortName;
 		}
-
+		
+		/**
+		 * Sets all loggers to null;
+		 */
+		public function set allTargets(logTarget: ILogTarget): void {
+			debugTarget = infoTarget = warnTarget = errorTarget = fatalTarget = logTarget;
+		}
+		
+		/**
+		 * String representation of the Logger.
+		 */
 		public function toString(): String {
-			return "[Logger for '" + _name + "', target: " + ( _logTarget ? _logTarget : "null" ) + " ]";
+			return "[Logger name='" + _name + "']";
 		}
 	}
 }

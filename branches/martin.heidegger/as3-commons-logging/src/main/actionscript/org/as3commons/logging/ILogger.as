@@ -31,8 +31,10 @@ package org.as3commons.logging {
 	 * logging framework.</p>
 	 * 
 	 * @author Christophe Herreman
-	 * @author Martin Heidegger <mh@leichtgewicht.at>
+	 * @author Martin Heidegger
 	 * @see LoggerFactory
+	 * @see #getLogger()
+	 * @see #getNamedLogger()
 	 */
 	public interface ILogger {
 		
@@ -51,7 +53,7 @@ package org.as3commons.logging {
 		 * after the last ".".</p>
 		 * 
 		 * @example If the name is <code>com.some.MyClass</code> then the short
-		 *          name is <code>MyClass</code>
+		 *          name is <code>MyClass</code>.
 		 * 
 		 * @return short form of the name.
 		 * @see #name 

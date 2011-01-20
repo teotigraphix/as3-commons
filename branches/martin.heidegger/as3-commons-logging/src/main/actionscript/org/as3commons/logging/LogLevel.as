@@ -41,12 +41,11 @@ package org.as3commons.logging {
 			return _name;
 		}
 		
-		internal function get value(): int
-		{
+		public function valueOf(): int {
 			return _value;
 		}
 		
-		public function toString() : String {
+		public function toString(): String {
 			return "[LogLevel." + _name + "]";
 		}
 	}

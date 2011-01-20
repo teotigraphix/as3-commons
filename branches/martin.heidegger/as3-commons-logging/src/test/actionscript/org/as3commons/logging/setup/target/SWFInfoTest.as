@@ -3,6 +3,8 @@ package org.as3commons.logging.setup.target {
 
 	import org.as3commons.logging.LogTests;
 	import org.as3commons.logging.util.SWFInfo;
+	import org.as3commons.logging.util.SWF_SHORT_URL;
+	import org.as3commons.logging.util.SWF_URL;
 
 	/**
 	 * @author mh
@@ -12,19 +14,19 @@ package org.as3commons.logging.setup.target {
 			super(methodName);
 		}
 		public function testSetup(): void {
-			assertEquals( SWFInfo.URL, SWFInfo.URL_ERROR );
-			assertEquals( SWFInfo.SHORT_URL, SWFInfo.URL_ERROR );
+			assertEquals( SWF_URL, SWFInfo.URL_ERROR );
+			assertEquals( SWF_SHORT_URL, SWFInfo.URL_ERROR );
 			
 			SWFInfo.init( LogTests.STAGE );
 			
-			var url: String = LogTests.STAGE.loaderInfo.url;
-			assertEquals( url, SWFInfo.URL );
-			assertEquals( url.substring( url.lastIndexOf("/") + 1 ), SWFInfo.SHORT_URL );
+			var url : String = LogTests.STAGE.loaderInfo.url;
+			assertEquals(url, SWF_URL);
+			assertEquals( url.substring( url.lastIndexOf("/") + 1 ), SWF_SHORT_URL );
 			
 			SWFInfo.init( null );
 			
-			assertEquals( SWFInfo.URL, SWFInfo.URL_ERROR );
-			assertEquals( SWFInfo.SHORT_URL, SWFInfo.URL_ERROR );
+			assertEquals( SWF_URL, SWFInfo.URL_ERROR );
+			assertEquals( SWF_SHORT_URL, SWFInfo.URL_ERROR );
 		}
 	}
 }
