@@ -1,8 +1,7 @@
 package org.as3commons.logging.integration {
+	import org.as3commons.logging.getNamedLogger;
 	import mx.logging.LogEventLevel;
 	import mx.logging.ILogger;
-
-	import org.as3commons.logging.LoggerFactory;
 
 	import mx.logging.AbstractTarget;
 	import mx.logging.ILoggingTarget;
@@ -25,7 +24,7 @@ package org.as3commons.logging.integration {
 		override public function addLogger(logger:ILogger):void {
 			super.addLogger(logger);
 			if( logger ) {
-				_loggerMap[ logger ] = LoggerFactory.getNamedLogger(logger.category);
+				_loggerMap[ logger ] = getNamedLogger(logger.category);
 			}
 		}
 		

@@ -1,10 +1,16 @@
-package org.as3commons.logging { 
+package org.as3commons.logging.setup {
+	import org.as3commons.logging.getNamedLogger;
+	import org.as3commons.logging.getLogger;
+	import org.as3commons.logging.LOGGER_FACTORY;
+	import org.as3commons.logging.ILogSetup;
+	import org.as3commons.logging.ILogger;
+	import org.as3commons.logging.setup.LogSetupLevel;
+	import org.as3commons.logging.setup.LevelTargetSetup;
+	import org.as3commons.logging.setup.SimpleTargetSetup;
 	import org.as3commons.logging.level.*;
 	import org.as3commons.logging.setup.ILogTarget;
-	import org.as3commons.logging.setup.TargetSetup;
 	import org.as3commons.logging.util.AClass;
 	import org.as3commons.logging.util.alike;
-	import org.as3commons.logging.util.rest;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.MockitoTestCase;
 
@@ -24,24 +30,24 @@ package org.as3commons.logging {
 		[Before]
 		override public function setUp():void {
 			super.setUp();
-			LoggerFactory.setup = null;
-			_logger = LoggerFactory.getLogger("");
+			LOGGER_FACTORY.setup = null;
+			_logger = LOGGER_FACTORY.getLogger("");
 		}
 		
 		public function testAccess(): void {
-			assertStrictlyEquals(LoggerFactory.getLogger(""), LoggerFactory.getLogger(""));
-			assertStrictlyEquals(LoggerFactory.getLogger("test.more"), LoggerFactory.getLogger("test.more"));
-			assertStrictlyEquals(LoggerFactory.getLogger(null), LoggerFactory.getLogger(null));
-			assertStrictlyEquals(LoggerFactory.getLogger(null), LoggerFactory.getLogger("null") );
-			assertStrictlyEquals(LoggerFactory.getLogger(undefined), LoggerFactory.getLogger(undefined));
-			assertStrictlyEquals(LoggerFactory.getLogger(undefined), LoggerFactory.getLogger("void"));
+			assertStrictlyEquals(getLogger(""), getLogger(""));
+			assertStrictlyEquals(getLogger("test.more"), getLogger("test.more"));
+			assertStrictlyEquals(getLogger(null), getLogger(null));
+			assertStrictlyEquals(getLogger(null), getLogger("null") );
+			assertStrictlyEquals(getLogger(undefined), getLogger(undefined));
+			assertStrictlyEquals(getLogger(undefined), getLogger("void"));
 			
-			var aLogger: ILogger = LoggerFactory.getLogger( AClass );
-			var bLogger: ILogger = LoggerFactory.getLogger( new AClass );
-			var cLogger: ILogger = LoggerFactory.getLogger( getQualifiedClassName( AClass ).replace( "::", "." ) );
-			var dLogger: ILogger = LoggerFactory.getLogger( getQualifiedClassName( new AClass ).replace( "::", "." ) );
-			var gLogger: ILogger = LoggerFactory.getNamedLogger( getQualifiedClassName( AClass ).replace( "::", "." ) );
-			var hLogger: ILogger = LoggerFactory.getNamedLogger( getQualifiedClassName( new AClass ).replace( "::", "." ) );
+			var aLogger: ILogger = getLogger( AClass );
+			var bLogger: ILogger = getLogger( new AClass );
+			var cLogger: ILogger = getLogger( getQualifiedClassName( AClass ).replace( "::", "." ) );
+			var dLogger: ILogger = getLogger( getQualifiedClassName( new AClass ).replace( "::", "." ) );
+			var gLogger: ILogger = getNamedLogger( getQualifiedClassName( AClass ).replace( "::", "." ) );
+			var hLogger: ILogger = getNamedLogger( getQualifiedClassName( new AClass ).replace( "::", "." ) );
 			
 			assertFalse( _logger == aLogger );
 			
@@ -51,20 +57,9 @@ package org.as3commons.logging {
 			assertStrictlyEquals( gLogger, hLogger );
 		}
 		
-		public function testFactoryIntegration():void {
-			var setup: ILogSetup = mock(ILogSetup);
-			var testTarget: ILogTarget = new TestLogTarget();
-			given( setup.getTarget( any() ) ).willReturn( testTarget );
-			given( setup.getLevel( any() ) ).willReturn( null );
-			
-			LoggerFactory.setup = setup;
-			
-			rest( setup ).choose( setup.getLevel( any() ), setup.getTarget( any() ) );
-		}
-		
 		public function testEmptyCase(): void {
-			var setup: ILogSetup = new TargetSetup( null, LogSetupLevel.ALL );
-			LoggerFactory.setup = setup;
+			var setup : ILogSetup = new SimpleTargetSetup(null);
+			LOGGER_FACTORY.setup = setup;
 			
 			// None of these should throw an exception
 			_logger.debug( "hello world" );
@@ -78,8 +73,8 @@ package org.as3commons.logging {
 			var logTarget:ILogTarget = mock(ILogTarget);
 			var myObject:Object = {};
 			
-			var setup: TargetSetup = new TargetSetup(logTarget, LogSetupLevel.DEBUG);
-			LoggerFactory.setup = setup;
+			var setup: LevelTargetSetup = new LevelTargetSetup(logTarget, LogSetupLevel.DEBUG);
+			LOGGER_FACTORY.setup = setup;
 			verifyNothingCalled( logTarget );
 			if(    _logger.debugEnabled
 				&& _logger.infoEnabled
@@ -87,20 +82,20 @@ package org.as3commons.logging {
 				&& _logger.errorEnabled
 				&& _logger.fatalEnabled ) {
 				_logger.debug("debug1", 1, 2, myObject);
-				_logger.info("info1", 1, 2, myObject);
-				_logger.warn("warn1", 1, 2, myObject);
+				_logger.info( "info1",  1, 2, myObject);
+				_logger.warn( "warn1",  1, 2, myObject);
 				_logger.error("error1", 1, 2, myObject);
 				_logger.fatal("fatal1", 1, 2, myObject);
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq("debug1"), alike([1, 2, myObject]) ));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(INFO), anyOf(Number), eq( "info1" ), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN), anyOf(Number), eq( "warn1" ), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error1" ), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal1" ), alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq("debug1"), alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(INFO),  anyOf(Number), eq("info1"),  alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN),  anyOf(Number), eq("warn1"),  alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq("error1"), alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq("fatal1"), alike([1, 2, myObject])));
 			} else {
 				fail("The Logsystem tells logging is not properly enabled @ debug");
 			}
 			
-			LoggerFactory.setup = new TargetSetup(logTarget,LogSetupLevel.DEBUG_ONLY);
+			LOGGER_FACTORY.setup = new LevelTargetSetup(logTarget,LogSetupLevel.DEBUG_ONLY);
 			verifyNothingCalled( logTarget );
 			if(     _logger.debugEnabled
 				&& !_logger.infoEnabled
@@ -117,7 +112,7 @@ package org.as3commons.logging {
 				fail("The Logsystem tells logging is not properly enabled @ debug-only");
 			}
 			
-			LoggerFactory.setup = new TargetSetup( logTarget,LogSetupLevel.INFO);
+			LOGGER_FACTORY.setup = new LevelTargetSetup( logTarget,LogSetupLevel.INFO);
 			
 			verifyNothingCalled( logTarget );
 			if(    !_logger.debugEnabled
@@ -138,7 +133,7 @@ package org.as3commons.logging {
 				fail("The Logsystem tells logging is not enabled @ info.");
 			}
 			
-			LoggerFactory.setup = new TargetSetup( logTarget,LogSetupLevel.INFO_ONLY);
+			LOGGER_FACTORY.setup = new LevelTargetSetup( logTarget,LogSetupLevel.INFO_ONLY);
 			
 			verifyNothingCalled( logTarget );
 			if(    !_logger.debugEnabled
@@ -156,7 +151,7 @@ package org.as3commons.logging {
 				fail("The Logsystem tells logging is not properly enabled @ info-only");
 			}
 			
-			LoggerFactory.setup = new TargetSetup( logTarget,LogSetupLevel.WARN);
+			LOGGER_FACTORY.setup = new LevelTargetSetup( logTarget,LogSetupLevel.WARN);
 			
 			verifyNothingCalled( logTarget );
 			if(    !_logger.debugEnabled
@@ -177,7 +172,7 @@ package org.as3commons.logging {
 			}
 			
 			
-			LoggerFactory.setup = new TargetSetup( logTarget,LogSetupLevel.WARN_ONLY);
+			LOGGER_FACTORY.setup = new LevelTargetSetup( logTarget,LogSetupLevel.WARN_ONLY);
 			
 			verifyNothingCalled( logTarget );
 			if(    !_logger.debugEnabled
@@ -195,7 +190,7 @@ package org.as3commons.logging {
 				fail("The Logsystem tells logging is not properly enabled @ warn-only");
 			}
 			
-			LoggerFactory.setup = new TargetSetup( logTarget,LogSetupLevel.ERROR);
+			LOGGER_FACTORY.setup = new LevelTargetSetup( logTarget,LogSetupLevel.ERROR);
 			
 			verifyNothingCalled( logTarget );
 			if(    !_logger.debugEnabled
@@ -214,7 +209,7 @@ package org.as3commons.logging {
 				fail("The Logsystem tells logging is not enabled @ error.");
 			}
 			
-			LoggerFactory.setup = new TargetSetup( logTarget,LogSetupLevel.ERROR_ONLY);
+			LOGGER_FACTORY.setup = new LevelTargetSetup( logTarget,LogSetupLevel.ERROR_ONLY);
 			
 			verifyNothingCalled( logTarget );
 			if(    !_logger.debugEnabled
@@ -232,7 +227,7 @@ package org.as3commons.logging {
 				fail("The Logsystem tells logging is not properly enabled @ error-only");
 			}
 			
-			LoggerFactory.setup = new TargetSetup( logTarget,LogSetupLevel.FATAL);
+			LOGGER_FACTORY.setup = new LevelTargetSetup( logTarget,LogSetupLevel.FATAL);
 			
 			verifyNothingCalled( logTarget );
 			if(    !_logger.debugEnabled
@@ -250,7 +245,7 @@ package org.as3commons.logging {
 				fail("The Logsystem tells logging is not enabled @ fatal.");
 			}
 			
-			LoggerFactory.setup = new TargetSetup( logTarget,LogSetupLevel.NONE);
+			LOGGER_FACTORY.setup = new LevelTargetSetup( logTarget,LogSetupLevel.NONE);
 			
 			verifyNothingCalled( logTarget );
 			if(    !_logger.debugEnabled
@@ -270,7 +265,7 @@ package org.as3commons.logging {
 			}
 			
 			
-			LoggerFactory.setup = new TargetSetup( logTarget,LogSetupLevel.DEBUG_ONLY.or( LogSetupLevel.ERROR_ONLY ));
+			LOGGER_FACTORY.setup = new LevelTargetSetup( logTarget,LogSetupLevel.DEBUG_ONLY.or( LogSetupLevel.ERROR_ONLY ));
 			
 			verifyNothingCalled( logTarget );
 			if(     _logger.debugEnabled
@@ -302,7 +297,7 @@ package org.as3commons.logging {
 		[After]
 		override public function tearDown():void {
 			super.tearDown();
-			LoggerFactory.setup = null;
+			LOGGER_FACTORY.setup = null;
 		}
 	}
 }

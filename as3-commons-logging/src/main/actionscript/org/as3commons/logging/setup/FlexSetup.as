@@ -20,18 +20,15 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup {
+	import org.as3commons.logging.Logger;
 	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.LogSetupLevel;
 	import org.as3commons.logging.setup.target.FlexLogTarget;
-
-	import mx.logging.ILogger;
-	import mx.logging.Log;
-	import mx.logging.LogEventLevel;
 
 	/**
 	 * Logger factory that creates a logger from the Flex mx.logging.* package.
 	 *
 	 * @author Christophe Herreman
+	 * @author Martin Heidegger
 	 */
 	public class FlexSetup implements ILogSetup {
 		
@@ -39,39 +36,11 @@ package org.as3commons.logging.setup {
 		
 		private const _cache: Object = {};
 		
-		public function getTarget(name:String):ILogTarget {
-			return _cache[name] || ( _cache[name] = new FlexLogTarget( Log.getLogger(name) ) );
-		}
+		public function FlexSetup() {}
 		
-		public function getLevel(name:String):LogSetupLevel {
-			var target: ILogger = Log.getLogger(name);
-			try {
-				return fromFlexLevel( target["level"] );
-			} catch( error: Error ) {
-			}
-			// It might be possible to guess the logLevel with Log. methods
-			// but this doesn't apply to the ILogger instance.
-			return LogSetupLevel.ALL;
-		}
-		
-		private function fromFlexLevel(flexLevel:int):LogSetupLevel {
-			var result: LogSetupLevel = LogSetupLevel.NONE;
-			if( flexLevel & LogEventLevel.DEBUG == LogEventLevel.DEBUG ) {
-				result = result.or( LogSetupLevel.DEBUG );
-			}
-			if( flexLevel & LogEventLevel.INFO == LogEventLevel.INFO ) {
-				result = result.or( LogSetupLevel.INFO );
-			}
-			if( flexLevel & LogEventLevel.WARN == LogEventLevel.WARN ) {
-				result = result.or( LogSetupLevel.WARN );
-			}
-			if( flexLevel & LogEventLevel.ERROR == LogEventLevel.ERROR ) {
-				result = result.or( LogSetupLevel.ERROR );
-			}
-			if( flexLevel & LogEventLevel.FATAL == LogEventLevel.FATAL ) {
-				result = result.or( LogSetupLevel.FATAL );
-			}
-			return result;
+		public function applyTo(logger:Logger):void {
+			var name:String = logger.name;
+			FlexLogTarget( _cache[name] || ( _cache[name] = new FlexLogTarget( name ) ) ).applyTo(logger);
 		}
 	}
 }

@@ -1,5 +1,4 @@
 package org.as3commons.logging {
-	import mx.core.FlexGlobals;
 	import org.as3commons.logging.integration.FlexIntegrationTest;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
@@ -8,7 +7,11 @@ package org.as3commons.logging {
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ComplexSetupTest;
 	import org.as3commons.logging.setup.FlexSetupTest;
-	import org.as3commons.logging.setup.TargetSetupTest;
+	import org.as3commons.logging.setup.LogSetupTest;
+	import org.as3commons.logging.setup.LogTargetLevelTest;
+	import org.as3commons.logging.setup.SimpleTargetSetup;
+	import org.as3commons.logging.setup.SimpleTargetSetupTest;
+	import org.as3commons.logging.setup.LeveledTargetSetupTest;
 	import org.as3commons.logging.setup.target.AirTargetTest;
 	import org.as3commons.logging.setup.target.BufferTest;
 	import org.as3commons.logging.setup.target.FrameBufferTest;
@@ -99,9 +102,9 @@ package org.as3commons.logging {
 					+ getSize(LoggerFactory)
 					+ getSize(Logger)
 					+ getSize(LogLevel)
-					+ getSize(LogSetupLevel)
 					+ getSize(getLogger)
 					+ getSize(toLogName)
+					+ getSize(SimpleTargetSetup)
 					+ getSize(TraceTarget)
 					+ getSize(LogMessageFormatter)
 					+ getSize(SWFInfo)
@@ -126,7 +129,8 @@ package org.as3commons.logging {
 				new SWFInfoTest(),
 				new FlexIntegrationTest(),
 				new ComplexSetupTest(),
-				new TargetSetupTest(),
+				new SimpleTargetSetupTest(),
+				new LeveledTargetSetupTest(),
 				new FlexSetupTest(),
 				new FrameBufferTest(),
 				new BufferTest(),

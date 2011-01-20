@@ -1,12 +1,13 @@
-package org.as3commons.logging.integration {
-	import org.as3commons.logging.LoggerFactory;
+package org.as3commons.logging.integration
+{
+	import org.as3commons.logging.setup.SimpleTargetSetup;
+	import org.as3commons.logging.LOGGER_FACTORY;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ILogTarget;
-	import org.as3commons.logging.setup.TargetSetup;
 	import org.as3commons.logging.util.alike;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.integrations.eq;
@@ -31,8 +32,8 @@ package org.as3commons.logging.integration {
 		public function testNormal():void {
 			
 			var target: ILogTarget = mock( ILogTarget );
-			
-			LoggerFactory.setup = new TargetSetup( target );
+
+			LOGGER_FACTORY.setup = new SimpleTargetSetup(target);
 			
 			var flexLogger: FlexLogger = new FlexLogger( LogEventLevel.DEBUG );
 			Log.addTarget( flexLogger );

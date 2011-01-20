@@ -1,11 +1,8 @@
 package org.as3commons.logging.setup {
+	import org.as3commons.logging.Logger;
 	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.LogSetupLevel;
 	import org.as3commons.logging.util.verifyNothingCalled;
-	import org.mockito.integrations.any;
-	import org.mockito.integrations.eq;
 	import org.mockito.integrations.flexunit3.MockitoTestCase;
-	import org.mockito.integrations.given;
 	import org.mockito.integrations.inOrder;
 	import org.mockito.integrations.mock;
 
@@ -21,62 +18,103 @@ package org.as3commons.logging.setup {
 		public function testTargetRule(): void {
 			var dummy: ILogTarget = mock( ILogTarget );
 			var dummy2: ILogTarget = mock( ILogTarget );
+			var loggerA: Logger = new Logger("");
+			var loggerB: Logger = new Logger("something");
+			var loggerC: Logger = new Logger("test");
+			var loggerD: Logger = new Logger("test,funny");
+			var loggerE: Logger = new Logger("test,tommy");
+			
+			var traceSetup: SimpleTargetSetup = new SimpleTargetSetup(dummy);
+			traceSetup.applyTo(loggerA);
+			traceSetup.applyTo(loggerB);
+			traceSetup.applyTo(loggerC);
+			traceSetup.applyTo(loggerD);
+			traceSetup.applyTo(loggerE);
 			
 			var setup: ComplexSetup = new ComplexSetup();
-			
-			assertEquals( setup.getTarget(""), null );
-			assertStrictlyEquals( setup.getTarget(null), null );
-			assertStrictlyEquals( setup.getTarget(undefined), null );
-			assertEquals( setup.getLevel(""), null );
-			assertStrictlyEquals( setup.getLevel(null), null );
-			assertStrictlyEquals( setup.getLevel(undefined), null );
+			setup.applyTo(loggerA);
+			assertEquals(loggerA.debugTarget, null);
 			
 			setup.addTargetRule( /.*/, dummy );
 			
-			assertEquals( setup.getTarget( "" ), dummy );
-			assertStrictlyEquals( setup.getTarget( null ), dummy );
-			assertStrictlyEquals( setup.getTarget( undefined ), dummy );
+			setup.applyTo(loggerA);
+			setup.applyTo(loggerB);
+			setup.applyTo(loggerC);
+			setup.applyTo(loggerD);
+			setup.applyTo(loggerE);
 			
-			assertEquals( setup.getLevel( "" ), LogSetupLevel.ALL );
-			assertStrictlyEquals( setup.getLevel( null ), LogSetupLevel.ALL );
-			assertStrictlyEquals( setup.getLevel( undefined ), LogSetupLevel.ALL );
+			assertEquals(loggerA.debugTarget, dummy);
+			assertEquals(loggerB.debugTarget, dummy);
+			assertEquals(loggerC.debugTarget, dummy);
+			assertEquals(loggerD.debugTarget, dummy);
+			assertEquals(loggerE.debugTarget, dummy);
 			
 			setup.addTargetRule( /.*/, null );
 			
-			assertEquals( setup.getTarget( "" ), null );
-			assertStrictlyEquals( setup.getTarget( null ), null );
-			assertStrictlyEquals( setup.getTarget( undefined ), null );
+			setup.applyTo(loggerA);
+			setup.applyTo(loggerB);
+			setup.applyTo(loggerC);
+			setup.applyTo(loggerD);
+			setup.applyTo(loggerE);
 			
-			// Null should be returned if there is no target level to log to!
-			assertEquals( setup.getLevel( "" ), null );
-			assertStrictlyEquals( setup.getLevel( null ), null );
-			assertStrictlyEquals( setup.getLevel( undefined ), null );
+			assertEquals(loggerA.debugTarget, null);
+			assertEquals(loggerB.debugTarget, null);
+			assertEquals(loggerC.debugTarget, null);
+			assertEquals(loggerD.debugTarget, null);
+			assertEquals(loggerE.debugTarget, null);
 			
 			setup = new ComplexSetup();
 			setup.addTargetRule( /test/, dummy );
-			assertEquals( setup.getTarget("something"), null );
-			assertEquals( setup.getTarget("test"), dummy );
-			assertEquals( setup.getTarget("test,tommy"), dummy );
-			assertEquals( setup.getLevel("something"), null );
-			assertEquals( setup.getLevel("test"), LogSetupLevel.ALL );
+			setup.applyTo(loggerA);
+			setup.applyTo(loggerB);
+			setup.applyTo(loggerC);
+			setup.applyTo(loggerD);
+			setup.applyTo(loggerE);
+			
+			assertEquals(loggerA.debugTarget, null);
+			assertEquals(loggerB.debugTarget, null);
+			assertEquals(loggerC.debugTarget, dummy);
+			assertEquals(loggerD.debugTarget, dummy);
+			assertEquals(loggerE.debugTarget, dummy);
 			
 			setup.addTargetRule( /test,tommy/, null );
-			assertEquals( setup.getTarget("something"), null );
-			assertEquals( setup.getTarget("test"), dummy );
-			assertEquals( setup.getTarget("test,funny"), dummy );
-			assertEquals( setup.getTarget("test,tommy"), null );
+			setup.applyTo(loggerA);
+			setup.applyTo(loggerB);
+			setup.applyTo(loggerC);
+			setup.applyTo(loggerD);
+			setup.applyTo(loggerE);
+			
+			assertEquals(loggerA.debugTarget, null);
+			assertEquals(loggerB.debugTarget, null);
+			assertEquals(loggerC.debugTarget, dummy);
+			assertEquals(loggerD.debugTarget, dummy);
+			assertEquals(loggerE.debugTarget, null);
 			
 			setup.addNoLogRule( /test,funny/ );
-			assertEquals( setup.getTarget("something"), null );
-			assertEquals( setup.getTarget("test"), dummy );
-			assertEquals( setup.getTarget("test,tommy"), null );
-			assertEquals( setup.getTarget("test,funny"), null );
+			setup.applyTo(loggerA);
+			setup.applyTo(loggerB);
+			setup.applyTo(loggerC);
+			setup.applyTo(loggerD);
+			setup.applyTo(loggerE);
+			
+			assertEquals(loggerA.debugTarget, null);
+			assertEquals(loggerB.debugTarget, null);
+			assertEquals(loggerC.debugTarget, dummy);
+			assertEquals(loggerD.debugTarget, null);
+			assertEquals(loggerE.debugTarget, null);
 			
 			setup.addTargetRule( /tes/, dummy2 );
-			assertEquals( setup.getTarget("something"), null );
-			assertEquals( setup.getTarget("test"), dummy2 );
-			assertEquals( setup.getTarget("test,tommy"), dummy2 );
-			assertEquals( setup.getTarget("test,funny"), dummy2 );
+			setup.applyTo(loggerA);
+			setup.applyTo(loggerB);
+			setup.applyTo(loggerC);
+			setup.applyTo(loggerD);
+			setup.applyTo(loggerE);
+			
+			assertEquals(loggerA.debugTarget, null);
+			assertEquals(loggerB.debugTarget, null);
+			assertEquals(loggerC.debugTarget, dummy2);
+			assertEquals(loggerD.debugTarget, dummy2);
+			assertEquals(loggerE.debugTarget, dummy2);
 			
 			verifyNothingCalled( dummy );
 			verifyNothingCalled( dummy2 );
@@ -84,22 +122,17 @@ package org.as3commons.logging.setup {
 		
 		public function testTargetSetupIntegration(): void {
 			
-			var dummyTarget: ILogTarget = mock( ILogTarget );
 			var targetSetup: ILogSetup = mock( ILogSetup );
+			var loggerA: Logger = new Logger("mouse");
+			var loggerB: Logger = new Logger("adf");
 			
 			var setup: ComplexSetup = new ComplexSetup();
 			setup.addSetupRule( /^adf.*$/, targetSetup );
 			
-			given( targetSetup.getTarget( any() ) ).willReturn( dummyTarget );
-			given( targetSetup.getLevel( any() ) ).willReturn( LogSetupLevel.INFO );
+			setup.applyTo( loggerA );
+			setup.applyTo( loggerB );
 			
-			assertStrictlyEquals( setup.getTarget( "mouse" ), null );
-			assertStrictlyEquals( setup.getLevel( "mouse" ), null );
-			assertEquals( setup.getTarget("adf"), dummyTarget );
-			assertEquals( setup.getLevel("adf"), LogSetupLevel.INFO );
-			
-			inOrder().verify().that( targetSetup.getTarget( eq("adf") ) );
-			inOrder().verify().that( targetSetup.getLevel( eq("adf") ) );
+			inOrder().verify().that( targetSetup.applyTo( loggerB ) );
 			
 			verifyNothingCalled( targetSetup );
 		}
@@ -107,14 +140,17 @@ package org.as3commons.logging.setup {
 		public function testDispose(): void {
 			var dummy: ILogTarget = mock( ILogTarget );
 			var setup: ComplexSetup = new ComplexSetup();
+			var logger: Logger = new Logger("");
 			
 			setup.addNoLogRule( /.*/ );
 			setup.addTargetRule( /.*/, dummy );
 			
 			setup.dispose();
 			
-			assertStrictlyEquals( setup.getTarget( "" ) , null );
-			assertStrictlyEquals( setup.getLevel( "" ) , null );
+			setup.applyTo(logger);
+
+			assertStrictlyEquals( logger.debugTarget, null);
+			assertStrictlyEquals( logger.debugTarget, null);
 		}
 	}
 }

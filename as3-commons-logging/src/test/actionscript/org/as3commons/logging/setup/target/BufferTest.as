@@ -1,16 +1,15 @@
 package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.LogSetupLevel;
+	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.setup.ILogTarget;
+	import org.as3commons.logging.setup.SimpleTargetSetup;
 	import org.as3commons.logging.util.alike;
 	import org.as3commons.logging.util.verifyNothingCalled;
-	import org.mockito.integrations.any;
 	import org.mockito.integrations.eq;
 	import org.mockito.integrations.flexunit3.MockitoTestCase;
-	import org.mockito.integrations.given;
 	import org.mockito.integrations.inOrder;
 	import org.mockito.integrations.mock;
 
@@ -19,22 +18,20 @@ package org.as3commons.logging.setup.target {
 	 */
 	public class BufferTest extends MockitoTestCase {
 		public function BufferTest() {
-			super( [ ILogSetup ] );
+			super( [ ILogSetup, ILogTarget ] );
 		}
 		
 		public function testEmpty(): void {
 			var logCache: BufferTarget = new BufferTarget();
-			logCache.flushTo( null );
+			logCache.flush( null );
 		}
 
 		public function testNormal(): void {
 			var logCache: BufferTarget = new BufferTarget();
+			var factory: LoggerFactory = new LoggerFactory( new SimpleTargetSetup(logCache) );
 			
-			var setup: ILogSetup = mock( ILogSetup );
 			var target: ILogTarget = mock( ILogTarget );
-			
-			given( setup.getTarget( any() ) ).willReturn( target );
-			given( setup.getLevel( any() ) ).willReturn( LogSetupLevel.DEBUG_ONLY.or( LogSetupLevel.FATAL_ONLY ) );
+			var setup: ILogSetup = new SimpleTargetSetup( target );
 			
 			logCache.log( "debug", "test", DEBUG, 1234, "debug", [] );
 			
@@ -43,15 +40,11 @@ package org.as3commons.logging.setup.target {
 			
 			logCache.log( "fatal", "test", FATAL, 1, "fatal", [] );
 			
-			logCache.flushTo( setup );
+			factory.setup = setup;
 			
-			inOrder().verify().that( setup.getTarget( "debug" ) );
-			inOrder().verify().that( setup.getLevel( "debug" ) );
+			logCache.flush( factory );
+			
 			inOrder().verify().that( target.log( eq("debug"), eq("test"), eq(DEBUG), eq(1234), eq("debug"), alike([])));
-			inOrder().verify().that( setup.getTarget( "info" ) );
-			inOrder().verify().that( setup.getLevel( "info" ) );
-			inOrder().verify().that( setup.getTarget( "fatal" ) );
-			inOrder().verify().that( setup.getLevel( "fatal" ) );
 			inOrder().verify().that( target.log( eq("fatal"), eq("test"), eq(FATAL), eq(1), eq("fatal"), alike([])));
 			
 			verifyNothingCalled( setup );
@@ -59,14 +52,11 @@ package org.as3commons.logging.setup.target {
 			
 			logCache.log( "fatal", "test", FATAL, 123, "fatal", [] );
 			
-			logCache.flushTo( setup );
+			factory.setup = setup;
 			
-			inOrder().verify().that( setup.getTarget( "fatal" ) );
-			inOrder().verify().that( setup.getLevel( "fatal" ) );
-			inOrder().verify().that( target.log( eq("fatal"), eq("test"), eq(FATAL), eq(123), eq("fatal"), alike([])));
+			logCache.flush( factory );
 			
 			verifyNothingCalled( setup );
-			verifyNothingCalled( target );
 		}
 	}
 }

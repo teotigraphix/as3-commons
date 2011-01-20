@@ -1,20 +1,22 @@
 package org.as3commons.logging.setup.target {
-	import flash.events.OutputProgressEvent;
 	import org.as3commons.logging.LogLevel;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	import org.as3commons.logging.util.SWFInfo;
+	import org.as3commons.logging.util.SWF_SHORT_URL;
 
 	import flash.desktop.NativeApplication;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
+	import flash.events.OutputProgressEvent;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 
 	/**
-	 * @author mh
+	 * @author Martin Heidegger
+	 * @since 2
 	 */
 	public final class AirFileTarget extends EventDispatcher implements ILogTarget {
 		
@@ -53,8 +55,15 @@ package org.as3commons.logging.setup.target {
 				var descriptor: XML = NativeApplication.nativeApplication.applicationDescriptor;
 				var ns: Namespace = descriptor.namespace();
 				_stream.writeUTFBytes("#Version: 1.0\n" +
-									   "#Software: " + descriptor.ns::name + " v" + descriptor.ns::version + " (running in Adobe Air " + NativeApplication.nativeApplication.runtimeVersion + ", publisherID: " + NativeApplication.nativeApplication.publisherID + " )\n" +
-									   "#Date: " + date.dateUTC + "-" + MONTHS[ date.monthUTC ] + "-" + date.fullYearUTC + " " + date.hoursUTC + ":" + date.minutesUTC + ":" + date.secondsUTC + "." + date.millisecondsUTC + "\n"+
+									   "#Software: " + descriptor.ns::name + " v"
+									   + descriptor.ns::version + " (running in Adobe Air "
+									   + NativeApplication.nativeApplication.runtimeVersion
+									   + ", publisherID: " + NativeApplication.nativeApplication.publisherID
+									   + " )\n" +
+									   "#Date: " + date.dateUTC + "-" + MONTHS[ date.monthUTC ]
+									   + "-" + date.fullYearUTC + " " + date.hoursUTC
+									   + ":" + date.minutesUTC + ":" + date.secondsUTC
+									   + "." + date.millisecondsUTC + "\n"+
 									   "#Fields: time x-method x-name x-comment\n");
 			}
 			_stream.writeUTFBytes( _formatter.format( name, shortName, level, timeStamp, message, params ) + "\n" );
@@ -101,8 +110,8 @@ package org.as3commons.logging.setup.target {
 			if(no != -1) {
 				dateString += "." + no;
 			}
-			var file: String = SWFInfo.SHORT_URL;
-			if(file == SWFInfo.URL_ERROR) {
+			var file : String = SWF_SHORT_URL;
+			if (file == SWFInfo.URL_ERROR) {
 				file = "out";
 			}
 			return _filePattern.replace( DATE, dateString ).replace( FILE, file);

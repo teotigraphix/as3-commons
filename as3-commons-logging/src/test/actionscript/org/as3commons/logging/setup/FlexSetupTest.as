@@ -1,4 +1,5 @@
 package org.as3commons.logging.setup {
+	import org.as3commons.logging.Logger;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
@@ -27,11 +28,19 @@ package org.as3commons.logging.setup {
 			Log.addTarget( flexTarget );
 			
 			var setup: FlexSetup = new FlexSetup();
-			setup.getTarget( "com.mux" ).log( "pah", "pax", DEBUG, 123, "hello {0}", ["world"] );
-			setup.getTarget( "com.me.Example" ).log( "pah", "pax", INFO, 123, "{0} {1}", ["hello","world"] );
-			setup.getTarget( "com.ma.rup" ).log( "pah", "pax", WARN, 123, "{0} world", ["hello"] );
-			setup.getTarget( "com.ma.sup" ).log( "pah", "pax", ERROR, 123, "{1} {0}", ["world","hello"] );
-			setup.getTarget( "com.ma.rup" ).log( "pah", "pax", FATAL, 123, "hello world", [] );
+			var loggerA: Logger = new Logger( "com.mux" );
+			var loggerB: Logger = new Logger( "com.me.Example" );
+			var loggerC: Logger = new Logger( "com.ma.rup" );
+			var loggerD: Logger = new Logger( "com.ma.sup" );
+			setup.applyTo(loggerA);
+			setup.applyTo(loggerB);
+			setup.applyTo(loggerC);
+			setup.applyTo(loggerD);
+			loggerA.debugTarget.log( "pah", "pax", DEBUG, 123, "hello {0}", ["world"]);
+			loggerB.infoTarget.log( "pah", "pax", INFO, 123, "{0} {1}", ["hello","world"] );
+			loggerC.warnTarget.log( "pah", "pax", WARN, 123, "{0} world", ["hello"] );
+			loggerD.errorTarget.log( "pah", "pax", ERROR, 123, "{1} {0}", ["world","hello"] );
+			loggerC.fatalTarget.log( "pah", "pax", FATAL, 123, "hello world", [] );
 			
 			var event: LogEvent;
 			
