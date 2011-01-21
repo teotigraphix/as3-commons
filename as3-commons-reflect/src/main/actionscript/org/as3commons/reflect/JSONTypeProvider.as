@@ -28,7 +28,7 @@ package org.as3commons.reflect {
 
 		override public function getType(cls:Class, applicationDomain:ApplicationDomain):Type {
 			var type:Type = new Type(applicationDomain);
-			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(cls);
+			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(cls);
 
 			// Add the Type to the cache before assigning any values to prevent looping.
 			// Due to the work-around implemented for constructor argument types
@@ -40,8 +40,8 @@ package org.as3commons.reflect {
 			var instanceInfo:Object = _describeTypeJSON(cls, DescribeType.GET_INSTANCE_INFO);
 			var classInfo:Object = _describeTypeJSON(cls, DescribeType.GET_CLASS_INFO);
 			type.fullName = fullyQualifiedClassName;
-			type.name = org.as3commons.lang.ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
-			var param:Class = org.as3commons.lang.ClassUtils.getClassParameterFromFullyQualifiedName(instanceInfo.name, applicationDomain);
+			type.name = ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
+			var param:Class = ClassUtils.getClassParameterFromFullyQualifiedName(instanceInfo.name, applicationDomain);
 			if (param != null) {
 				type.parameters[type.parameters.length] = param;
 			}
@@ -114,7 +114,7 @@ package org.as3commons.reflect {
 			var result:Array = [];
 			if (interfacesDescription != null) {
 				for each (var fullyQualifiedInterfaceName:String in interfacesDescription) {
-					result[result.length] = org.as3commons.lang.ClassUtils.convertFullyQualifiedName(fullyQualifiedInterfaceName);
+					result[result.length] = ClassUtils.convertFullyQualifiedName(fullyQualifiedInterfaceName);
 				}
 			}
 			return result;

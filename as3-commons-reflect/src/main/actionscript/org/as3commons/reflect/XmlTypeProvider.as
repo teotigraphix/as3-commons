@@ -14,29 +14,10 @@
  * limitations under the License.
  */
 package org.as3commons.reflect {
-
 	import flash.system.ApplicationDomain;
 
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.StringUtils;
-	import org.as3commons.reflect.Accessor;
-	import org.as3commons.reflect.AccessorAccess;
-	import org.as3commons.reflect.Constant;
-	import org.as3commons.reflect.Constructor;
-	import org.as3commons.reflect.IMember;
-	import org.as3commons.reflect.IMetadataContainer;
-	import org.as3commons.reflect.INamespaceOwner;
-	import org.as3commons.reflect.ITypeProvider;
-	import org.as3commons.reflect.Metadata;
-	import org.as3commons.reflect.MetadataArgument;
-	import org.as3commons.reflect.MetadataContainer;
-	import org.as3commons.reflect.Method;
-	import org.as3commons.reflect.Parameter;
-	import org.as3commons.reflect.ReflectionUtils;
-	import org.as3commons.reflect.Type;
-	import org.as3commons.reflect.TypeCache;
-	import org.as3commons.reflect.Variable;
-	import org.as3commons.reflect.as3commons_reflect;
 
 	/**
 	 * describeType XML parser
@@ -71,7 +52,7 @@ package org.as3commons.reflect {
 
 		override public function getType(cls:Class, applicationDomain:ApplicationDomain):Type {
 			var type:Type = new Type(applicationDomain);
-			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(cls);
+			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(cls);
 
 			// Add the Type to the cache before assigning any values to prevent looping.
 			// Due to the work-around implemented for constructor argument types
@@ -82,8 +63,8 @@ package org.as3commons.reflect {
 			typeCache.put(fullyQualifiedClassName, type);
 			var description:XML = ReflectionUtils.getTypeDescription(cls);
 			type.fullName = fullyQualifiedClassName;
-			type.name = org.as3commons.lang.ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
-			var param:Class = org.as3commons.lang.ClassUtils.getClassParameterFromFullyQualifiedName(description.@name, applicationDomain);
+			type.name = ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
+			var param:Class = ClassUtils.getClassParameterFromFullyQualifiedName(description.@name, applicationDomain);
 			if (param != null) {
 				type.parameters[type.parameters.length] = param;
 			}
@@ -179,7 +160,7 @@ package org.as3commons.reflect {
 				var numInterfaces:int = interfacesDescription.length();
 				for (var i:int = 0; i < numInterfaces; i++) {
 					var fullyQualifiedInterfaceName:String = interfacesDescription[i].@type.toString();
-					fullyQualifiedInterfaceName = org.as3commons.lang.ClassUtils.convertFullyQualifiedName(fullyQualifiedInterfaceName);
+					fullyQualifiedInterfaceName = ClassUtils.convertFullyQualifiedName(fullyQualifiedInterfaceName);
 					result[result.length] = fullyQualifiedInterfaceName;
 				}
 			}
