@@ -26,11 +26,11 @@ package org.as3commons.reflect {
 	use namespace as3commons_reflect;
 
 	/**
-	 * Basic implementation of the IMetaDataContainer interface.
+	 * Basic implementation of the IMetadataContainer interface.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class MetaDataContainer implements IMetaDataContainer {
+	public class MetadataContainer implements IMetadataContainer {
 		private static const METADATA_NAME_PROPERTY:String = 'name';
 
 		// -------------------------------------------------------------------------
@@ -42,8 +42,8 @@ package org.as3commons.reflect {
 		/**
 		 * Constructor
 		 */
-		public function MetaDataContainer(metaData:HashArray = null) {
-			_metaData = (metaData == null ? new HashArray(METADATA_NAME_PROPERTY, true) : metaData);
+		public function MetadataContainer(metadata:HashArray = null) {
+			_metadata = (metadata == null ? new HashArray(METADATA_NAME_PROPERTY, true) : metadata);
 		}
 
 		// -------------------------------------------------------------------------
@@ -53,16 +53,16 @@ package org.as3commons.reflect {
 		// -------------------------------------------------------------------------
 
 		// ----------------------------
-		// metaData
+		// metadata
 		// ----------------------------
 
-		private var _metaData:HashArray;
+		private var _metadata:HashArray;
 
 		/**
 		 * @inheritDoc
 		 */
-		public function get metaData():Array {
-			return _metaData.getArray();
+		public function get metadata():Array {
+			return _metadata.getArray();
 		}
 
 		// -------------------------------------------------------------------------
@@ -74,32 +74,32 @@ package org.as3commons.reflect {
 		/**
 		 * @inheritDoc
 		 */
-		public function addMetaData(metaData:MetaData):void {
-			_metaData.push(metaData);
+		public function addMetadata(metadata:Metadata):void {
+			_metadata.push(metadata);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function getMetaData(key:String):Array {
-			var result:* = _metaData.get(key);
+		public function getMetadata(key:String):Array {
+			var result:* = _metadata.get(key);
 			return (result is Array) ? result : (result != null) ? [result] : result;
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function hasMetaData(key:String):Boolean {
-			return (getMetaData(key) != null);
+		public function hasMetadata(key:String):Boolean {
+			return (getMetadata(key) != null);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function hasExactMetaData(otherMetaData:MetaData):Boolean {
-			var metaDatas:Array = getMetaData(otherMetaData.name);
-			for each (var metaData:MetaData in metaDatas) {
-				if (metaData.equals(otherMetaData)) {
+		public function hasExactMetadata(otherMetadata:Metadata):Boolean {
+			var metadatas:Array = getMetadata(otherMetadata.name);
+			for each (var metadata:Metadata in metadatas) {
+				if (metadata.equals(otherMetadata)) {
 					return true;
 				}
 			}

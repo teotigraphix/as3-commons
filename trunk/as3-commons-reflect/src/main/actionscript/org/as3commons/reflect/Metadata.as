@@ -24,11 +24,11 @@ package org.as3commons.reflect {
 	import org.as3commons.lang.IEquals;
 
 	/**
-	 * A MetaData object contains information about a metadata element placed above a member of a class or instance.
+	 * A Metadata object contains information about a metadata element placed above a member of a class or instance.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class MetaData implements IEquals {
+	public class Metadata implements IEquals {
 
 		public static const TRANSIENT:String = "Transient";
 		public static const BINDABLE:String = "Bindable";
@@ -37,12 +37,12 @@ package org.as3commons.reflect {
 		private var _arguments:Array;
 
 		/**
-		 * Creates a new MetaData object.
+		 * Creates a new Metadata object.
 		 *
 		 * @param name the name of the metadata
-		 * @param arguments an array of MetaDataArgument object that describe this metadata object
+		 * @param arguments an array of MetadataArgument object that describe this metadata object
 		 */
-		public function MetaData(name:String, arguments:Array = null) {
+		public function Metadata(name:String, arguments:Array = null) {
 			_name = name;
 			_arguments = (arguments == null) ? [] : arguments;
 		}
@@ -55,26 +55,26 @@ package org.as3commons.reflect {
 		}
 
 		/**
-		 * Returns the MetaDataArgument objects that describe this metadata.
+		 * Returns the MetadataArgument objects that describe this metadata.
 		 */
 		public function get arguments():Array {
 			return _arguments;
 		}
 
 		/**
-		 * Returns whether this metadata contains a MetaDataArgument with the given key as its name.
+		 * Returns whether this metadata contains a MetadataArgument with the given key as its name.
 		 *
-		 * @return true if a MetaDataArgument was found; false otherwise
+		 * @return true if a MetadataArgument was found; false otherwise
 		 */
 		public function hasArgumentWithKey(key:String):Boolean {
 			return (getArgument(key) != null);
 		}
 
 		/**
-		 * Returns the MetaDataArgument for the given key. If none was found, null is returned.
+		 * Returns the MetadataArgument for the given key. If none was found, null is returned.
 		 */
-		public function getArgument(key:String):MetaDataArgument {
-			var result:MetaDataArgument;
+		public function getArgument(key:String):MetadataArgument {
+			var result:MetadataArgument;
 
 			for (var i:int = 0; i < _arguments.length; i++) {
 				if (_arguments[i].key == key) {
@@ -87,15 +87,15 @@ package org.as3commons.reflect {
 		}
 
 		public function equals(other:Object):Boolean {
-			Assert.state(other is MetaData, "other argument must be of type MetaData");
-			var otherMetaData:MetaData = MetaData(other);
-			if (otherMetaData.name == this.name) {
-				if (otherMetaData.arguments.length != this.arguments.length) {
+			Assert.state(other is Metadata, "other argument must be of type Metadata");
+			var otherMetadata:Metadata = Metadata(other);
+			if (otherMetadata.name == this.name) {
+				if (otherMetadata.arguments.length != this.arguments.length) {
 					return false;
 				}
 				if (this.arguments.length > 0) {
-					for each (var arg:MetaDataArgument in this.arguments) {
-						var otherArg:MetaDataArgument = otherMetaData.getArgument(arg.key);
+					for each (var arg:MetadataArgument in this.arguments) {
+						var otherArg:MetadataArgument = otherMetadata.getArgument(arg.key);
 						if (otherArg != null) {
 							if (!arg.equals(otherArg)) {
 								return false;
@@ -113,7 +113,7 @@ package org.as3commons.reflect {
 		}
 
 		public function toString():String {
-			return "[MetaData(" + name + ", " + arguments + ")]";
+			return "[Metadata(" + name + ", " + arguments + ")]";
 		}
 
 		as3commons_reflect function setName(value:String):void {
