@@ -140,7 +140,7 @@ package org.as3commons.reflect {
 		}
 
 		/**
-		 * Find a single MetaData of <code>metadataName</code> from the
+		 * Find a single Metadata of <code>metadataName</code> from the
 		 * supplied Class, traversing its interfaces and super classes
 		 * if no annotation can be found on the given class itself.
 		 *
@@ -159,7 +159,7 @@ package org.as3commons.reflect {
 		 * @param metadataName the name of the metadata for which to look
 		 * @return the metadata tag if found, or <code>null</code> if none is found
 		 */
-		public static function findClassMetadata(clazz:Class, metadataName:String, applicationDomain:ApplicationDomain = null):MetaData {
+		public static function findClassMetadata(clazz:Class, metadataName:String, applicationDomain:ApplicationDomain = null):Metadata {
 			Assert.notNull(clazz, "clazz must not be null.");
 			Assert.hasText(metadataName, "metadataName must not be empty or null.");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
@@ -168,16 +168,16 @@ package org.as3commons.reflect {
 
 			while (declaringClass != null) {
 				var type:Type = Type.forClass(declaringClass, applicationDomain);
-				if (type.hasMetaData(metadataName)) {
-					return type.getMetaData(metadataName)[0];
+				if (type.hasMetadata(metadataName)) {
+					return type.getMetadata(metadataName)[0];
 				}
 
 				var interfaces:Array = org.as3commons.lang.ClassUtils.getImplementedInterfaces(declaringClass, applicationDomain);
 				for each (var interfaze:Class in interfaces) {
 					type = Type.forClass(interfaze);
 
-					if (type.hasMetaData(metadataName)) {
-						return type.getMetaData(metadataName)[0];
+					if (type.hasMetadata(metadataName)) {
+						return type.getMetadata(metadataName)[0];
 					}
 				}
 
@@ -216,7 +216,7 @@ package org.as3commons.reflect {
 			var type:Type = Type.forClass(clazz, applicationDomain);
 
 			if (type.isInterface) {
-				if (type.hasMetaData(metadataName)) {
+				if (type.hasMetadata(metadataName)) {
 					return clazz;
 				} else {
 					return null;
@@ -228,7 +228,7 @@ package org.as3commons.reflect {
 			while (declaringClass != null) {
 				type = Type.forClass(declaringClass, applicationDomain);
 
-				if (type.hasMetaData(metadataName)) {
+				if (type.hasMetadata(metadataName)) {
 					return declaringClass;
 				}
 

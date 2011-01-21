@@ -28,25 +28,25 @@ package org.as3commons.reflect {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class MetaDataArgument implements IEquals {
+	public class MetadataArgument implements IEquals {
 
 		public var key:String;
 		public var value:String;
 
 		/**
-		 * Creates a new MetaDataArgument
+		 * Creates a new MetadataArgument
 		 *
 		 * @param key the metadata key
 		 * @param value the metadata value
 		 */
-		public function MetaDataArgument(key:String, value:String) {
+		public function MetadataArgument(key:String, value:String) {
 			this.key = key;
 			this.value = value;
 		}
 
 		public function equals(other:Object):Boolean {
-			Assert.state(other is MetaDataArgument, "other argument must be of type MetaDataArgument");
-			var otherArgument:MetaDataArgument = MetaDataArgument(other);
+			Assert.state(other is MetadataArgument, "other argument must be of type MetadataArgument");
+			var otherArgument:MetadataArgument = MetadataArgument(other);
 			return ((otherArgument.key == this.key) && (otherArgument.value == this.value));
 		}
 
