@@ -179,7 +179,7 @@ package org.as3commons.bytecode.io {
 				writeU30(pool.addMultiname(trait.traitMultiname));
 
 				// Assemble trait kind and flip flags for attributes
-				var traitKindAndAttributes:int = trait.traitKind.bitMask;
+				var traitKindAndAttributes:uint = trait.traitKind.bitMask;
 				traitKindAndAttributes = traitKindAndAttributes | ((trait.isFinal) ? (TraitAttributes.FINAL.bitMask << 4) : null);
 				traitKindAndAttributes = traitKindAndAttributes | ((trait.isOverride) ? (TraitAttributes.OVERRIDE.bitMask << 4) : null);
 				traitKindAndAttributes = traitKindAndAttributes | ((trait.hasMetadata) ? (TraitAttributes.METADATA.bitMask << 4) : null);

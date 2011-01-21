@@ -15,23 +15,20 @@
  */
 package org.as3commons.bytecode.emit.impl {
 	import flash.events.Event;
-	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 
 	import flexunit.framework.TestCase;
 
-	import org.as3commons.bytecode.abc.AbcFile;
-	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
-	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
-	import org.as3commons.bytecode.swf.AbcClassLoader;
 	import org.as3commons.reflect.AccessorAccess;
+	import org.as3commons.reflect.Field;
+	import org.as3commons.reflect.Method;
+	import org.as3commons.reflect.Type;
 
 	public class AbcBuilderTest extends TestCase {
 
@@ -60,6 +57,31 @@ package org.as3commons.bytecode.emit.impl {
 			assertEquals("test", instance.testString);
 			instance.testString = "test2";
 			assertEquals("test2", instance.testString);
+		}
+
+		public function testBuildClassWithMetadata():void {
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MySimplePropertyTest");
+			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testString", "String", "test");
+			propertyBuilder.defineMetaData("Custom");
+			var mb:IMethodBuilder = classBuilder.defineMethod("testMethod");
+			mb.defineMetaData("CustomMethod");
+			mb.addOpcode(Opcode.getlocal_0).addOpcode(Opcode.pushscope).addOpcode(Opcode.returnvoid);
+			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertyMetadataBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+			//var abcFile:AbcFile = _abcBuilder.build();
+			//var ba:ByteArray = new AbcSerializer().serializeAbcFile(abcFile);
+			//abcFile = new AbcDeserializer(ba).deserialize();
+		}
+
+		private function propertyMetadataBuildSuccessHandler(event:Event):void {
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyTest") as Class;
+			assertNotNull(cls);
+			var instance:Object = new cls();
+			var type:Type = Type.forInstance(instance);
+			var fld:Field = type.getField('testString');
+			assertTrue(fld.hasMetaData('Custom'));
+			var mthd:Method = type.getMethod('testMethod');
+			assertTrue(mthd.hasMetaData('CustomMethod'));
 		}
 
 		public function testBuildClassWithComplexProperty():void {

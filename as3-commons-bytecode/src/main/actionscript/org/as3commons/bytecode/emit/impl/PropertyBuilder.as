@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 
@@ -22,17 +23,13 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
-	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
-	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.util.EmitUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
-	import org.as3commons.lang.StringUtils;
-	import flash.events.Event;
 
 	public class PropertyBuilder extends EmitMember implements IPropertyBuilder {
 
