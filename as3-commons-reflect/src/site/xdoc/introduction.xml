@@ -93,12 +93,12 @@
 					metadata:Metadata = accessor.getMetadata("myMetadata");<br />
 					arg:MetadataArgument = metadata.getArgument("myArg");<br />
 					var has:Boolean = accessor.hasMetadata("myMetadata");<br />
-					var argument:MetaDataArgument = new MetaDataArgument("myArg","myValue");<br/>
-					var metaDataInstance:MetaData = new MetaData("myMetadata",[argument]);<br />
+					var argument:MetadataArgument = new MetadataArgument("myArg","myValue");<br/>
+					var metaDataInstance:Metadata = new Metadata("myMetadata",[argument]);<br />
 					var hasExact:Boolean = accessor.hasExactMetadata(metaDataInstance);<br />
 					<br />
-					var containers:Array = type.getMetaDataContainers("Bindable");<br />
-					for each(var metadataContainer:IMetaDataContainer in containers){<br />
+					var containers:Array = type.getMetadataContainers("Bindable");<br />
+					for each(var metadataContainer:IMetadataContainer in containers){<br />
 					&nbsp;&nbsp;&nbsp;&nbsp;if (metadataContainer is Method){<br />
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//do something...<br />
 					&nbsp;&nbsp;&nbsp;&nbsp;} else if (metadataContainer is Field){<br />
