@@ -24,12 +24,12 @@ package org.as3commons.reflect {
 	import org.as3commons.reflect.Constant;
 	import org.as3commons.reflect.Constructor;
 	import org.as3commons.reflect.IMember;
-	import org.as3commons.reflect.IMetaDataContainer;
+	import org.as3commons.reflect.IMetadataContainer;
 	import org.as3commons.reflect.INamespaceOwner;
 	import org.as3commons.reflect.ITypeProvider;
-	import org.as3commons.reflect.MetaData;
-	import org.as3commons.reflect.MetaDataArgument;
-	import org.as3commons.reflect.MetaDataContainer;
+	import org.as3commons.reflect.Metadata;
+	import org.as3commons.reflect.MetadataArgument;
+	import org.as3commons.reflect.MetadataContainer;
 	import org.as3commons.reflect.Method;
 	import org.as3commons.reflect.Parameter;
 	import org.as3commons.reflect.ReflectionUtils;
@@ -51,15 +51,15 @@ package org.as3commons.reflect {
 		/**
 		 *
 		 */
-		private function concatMetadata(type:Type, metaDataContainers:Array, propertyName:String):void {
-			for each (var container:IMetaDataContainer in metaDataContainers) {
-				type[propertyName].some(function(item:MetaDataContainer, index:int, arr:Array):Boolean {
+		private function concatMetadata(type:Type, metadataContainers:Array, propertyName:String):void {
+			for each (var container:IMetadataContainer in metadataContainers) {
+				type[propertyName].some(function(item:MetadataContainer, index:int, arr:Array):Boolean {
 					if (Object(item).name == Object(container).name) {
-						var metaDataList:Array = container.metaData;
-						var numMetaData:int = metaDataList.length;
-						for (var j:int = 0; j < numMetaData; j++) {
-							if (!item.hasExactMetaData(metaDataList[j])) {
-								item.addMetaData(metaDataList[j]);
+						var metadataList:Array = container.metadata;
+						var numMetadata:int = metadataList.length;
+						for (var j:int = 0; j < numMetadata; j++) {
+							if (!item.hasExactMetadata(metadataList[j])) {
+								item.addMetadata(metadataList[j]);
 							}
 						}
 						return true;
@@ -101,7 +101,7 @@ package org.as3commons.reflect {
 			type.staticVariables = parseMembers(Variable, description.variable, fullyQualifiedClassName, true, applicationDomain);
 			type.variables = parseMembers(Variable, description.factory.variable, fullyQualifiedClassName, false, applicationDomain);
 			type.extendsClasses = parseExtendsClasses(description.factory.extendsClass, type.applicationDomain);
-			parseMetaData(description.factory[0].metadata, type);
+			parseMetadata(description.factory[0].metadata, type);
 			type.interfaces = parseImplementedInterfaces(description.factory.implementsInterface);
 
 			// Combine metadata from implemented interfaces
@@ -110,17 +110,17 @@ package org.as3commons.reflect {
 				var interfaze:Type = Type.forName(type.interfaces[i], applicationDomain);
 				concatMetadata(type, interfaze.methods, "methods");
 				concatMetadata(type, interfaze.accessors, "accessors");
-				var interfaceMetaData:Array = interfaze.metaData;
-				var numMetaData:int = interfaceMetaData.length;
+				var interfaceMetadata:Array = interfaze.metadata;
+				var numMetadata:int = interfaceMetadata.length;
 
-				for (var j:int = 0; j < numMetaData; j++) {
-					if (!type.hasExactMetaData(interfaceMetaData[j])) {
-						type.addMetaData(interfaceMetaData[j]);
+				for (var j:int = 0; j < numMetadata; j++) {
+					if (!type.hasExactMetadata(interfaceMetadata[j])) {
+						type.addMetadata(interfaceMetadata[j]);
 					}
 				}
 			}
 
-			type.createMetaDataLookup();
+			type.createMetadataLookup();
 
 			return type;
 		}
@@ -166,7 +166,7 @@ package org.as3commons.reflect {
 				if (member is INamespaceOwner) {
 					INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.@uri.toString());
 				}
-				parseMetaData(m.metadata, member);
+				parseMetadata(m.metadata, member);
 				result[result.length] = member;
 			}
 			return result;
@@ -205,7 +205,7 @@ package org.as3commons.reflect {
 				var params:Array = parseParameters(methodXML.parameter, applicationDomain);
 				var method:Method = new Method(type.fullName, methodXML.@name, isStatic, params, methodXML.@returnType, applicationDomain);
 				method.as3commons_reflect::setNamespaceURI(methodXML.@uri);
-				parseMetaData(methodXML.metadata, method);
+				parseMetadata(methodXML.metadata, method);
 				result[result.length] = method;
 			}
 			return result;
@@ -230,23 +230,23 @@ package org.as3commons.reflect {
 				if (StringUtils.hasText(accessorXML.@uri)) {
 					accessor.as3commons_reflect::setNamespaceURI(accessorXML.@uri.toString());
 				}
-				parseMetaData(accessorXML.metadata, accessor);
+				parseMetadata(accessorXML.metadata, accessor);
 				result[result.length] = accessor;
 			}
 			return result;
 		}
 
 		/**
-		 * Parses MetaData objects from the given metaDataNodes XML data and adds them to the given metaData array.
+		 * Parses Metadata objects from the given metadataNodes XML data and adds them to the given metadata array.
 		 */
-		private function parseMetaData(metaDataNodes:XMLList, metaData:IMetaDataContainer):void {
-			for each (var metaDataXML:XML in metaDataNodes) {
-				var metaDataArgs:Array = [];
+		private function parseMetadata(metadataNodes:XMLList, metadata:IMetadataContainer):void {
+			for each (var metadataXML:XML in metadataNodes) {
+				var metadataArgs:Array = [];
 
-				for each (var metaDataArgNode:XML in metaDataXML.arg) {
-					metaDataArgs[metaDataArgs.length] = new MetaDataArgument(metaDataArgNode.@key, metaDataArgNode.@value);
+				for each (var metadataArgNode:XML in metadataXML.arg) {
+					metadataArgs[metadataArgs.length] = new MetadataArgument(metadataArgNode.@key, metadataArgNode.@value);
 				}
-				metaData.addMetaData(new MetaData(metaDataXML.@name, metaDataArgs));
+				metadata.addMetadata(new Metadata(metadataXML.@name, metadataArgs));
 			}
 		}
 	}

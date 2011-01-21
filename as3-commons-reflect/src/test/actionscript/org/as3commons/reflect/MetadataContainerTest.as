@@ -26,44 +26,44 @@ package org.as3commons.reflect {
 	/**
 	 * @author Christophe Herreman
 	 */
-	public class MetaDataContainerTest extends TestCase {
+	public class MetadataContainerTest extends TestCase {
 
 		/**
-		 * Creates a new MetaDataContainerTest.
+		 * Creates a new MetadataContainerTest.
 		 */
-		public function MetaDataContainerTest(methodName:String = null) {
+		public function MetadataContainerTest(methodName:String = null) {
 			super(methodName);
 		}
 
 
-		public function testHasMetaData_shouldReturnTrueIfMetaDataWasFound():void {
-			var metaDataContainer:MetaDataContainer = new MetaDataContainer();
-			metaDataContainer.addMetaData(new MetaData("testMetaData"));
-			assertTrue(metaDataContainer.hasMetaData("testMetaData"));
+		public function testHasMetadata_shouldReturnTrueIfMetadataWasFound():void {
+			var metadataContainer:MetadataContainer = new MetadataContainer();
+			metadataContainer.addMetadata(new Metadata("testMetadata"));
+			assertTrue(metadataContainer.hasMetadata("testMetadata"));
 		}
 
-		public function testHasMetaData_shouldReturnFalseIfNoMetaDataWasFound():void {
-			var metaDataContainer:MetaDataContainer = new MetaDataContainer();
-			metaDataContainer.addMetaData(new MetaData("testMetaData"));
-			assertFalse(metaDataContainer.hasMetaData("nonExistingMetaData"));
+		public function testHasMetadata_shouldReturnFalseIfNoMetadataWasFound():void {
+			var metadataContainer:MetadataContainer = new MetadataContainer();
+			metadataContainer.addMetadata(new Metadata("testMetadata"));
+			assertFalse(metadataContainer.hasMetadata("nonExistingMetadata"));
 		}
 
-		public function testHasExactMetaData_shouldReturnTrueIfMatchingMetaDataWasFound():void {
-			var metaDataContainer:MetaDataContainer = new MetaDataContainer();
-			var tm:MetaData = new MetaData("testMetaData");
-			tm.arguments.push(new MetaDataArgument("testKey", "testValue"));
-			metaDataContainer.addMetaData(tm);
-			var tm2:MetaData = new MetaData("testMetaData");
-			tm2.arguments.push(new MetaDataArgument("testKey", "testValue"));
-			assertTrue(metaDataContainer.hasExactMetaData(tm2));
+		public function testHasExactMetadata_shouldReturnTrueIfMatchingMetadataWasFound():void {
+			var metadataContainer:MetadataContainer = new MetadataContainer();
+			var tm:Metadata = new Metadata("testMetadata");
+			tm.arguments.push(new MetadataArgument("testKey", "testValue"));
+			metadataContainer.addMetadata(tm);
+			var tm2:Metadata = new Metadata("testMetadata");
+			tm2.arguments.push(new MetadataArgument("testKey", "testValue"));
+			assertTrue(metadataContainer.hasExactMetadata(tm2));
 		}
 
-		public function testHasExactMetaData_shouldReturnFalseIfNoMatchingMetaDataWasFound():void {
-			var metaDataContainer:MetaDataContainer = new MetaDataContainer();
-			metaDataContainer.addMetaData(new MetaData("testMetaData"));
-			var tm:MetaData = new MetaData("testMetaData");
-			tm.arguments.push(new MetaDataArgument("testKey", "testValue"));
-			assertFalse(metaDataContainer.hasExactMetaData(tm));
+		public function testHasExactMetadata_shouldReturnFalseIfNoMatchingMetadataWasFound():void {
+			var metadataContainer:MetadataContainer = new MetadataContainer();
+			metadataContainer.addMetadata(new Metadata("testMetadata"));
+			var tm:Metadata = new Metadata("testMetadata");
+			tm.arguments.push(new MetadataArgument("testKey", "testValue"));
+			assertFalse(metadataContainer.hasExactMetadata(tm));
 		}
 
 

@@ -49,8 +49,8 @@ package org.as3commons.reflect {
 		 * @param declaringType the type that declares the variable
 		 * @param isStatic whether or not this member is static (class member)
 		 */
-		public function Accessor(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metaData:HashArray = null) {
-			super(name, type, declaringType, isStatic, applicationDomain, metaData);
+		public function Accessor(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) {
+			super(name, type, declaringType, isStatic, applicationDomain, metadata);
 			_access = access;
 		}
 

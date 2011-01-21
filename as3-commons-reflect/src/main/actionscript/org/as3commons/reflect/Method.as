@@ -30,7 +30,7 @@ package org.as3commons.reflect {
 	 * @author Christophe Herreman
 	 * @author Andrew Lewisohn
 	 */
-	public class Method extends MetaDataContainer implements INamespaceOwner {
+	public class Method extends MetadataContainer implements INamespaceOwner {
 
 		// -------------------------------------------------------------------------
 		//
@@ -54,12 +54,12 @@ package org.as3commons.reflect {
 		/**
 		 * Creates a new <code>Method</code> instance.
 		 */
-		public function Method(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metaData:HashArray = null) {
-			super(metaData);
-			initMethod(declaringType, name, isStatic, parameters, returnType, applicationDomain, metaData);
+		public function Method(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metadata:HashArray = null) {
+			super(metadata);
+			initMethod(declaringType, name, isStatic, parameters, returnType, applicationDomain, metadata);
 		}
 
-		protected function initMethod(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metaData:HashArray):void {
+		protected function initMethod(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metadata:HashArray):void {
 			_declaringTypeName = declaringType;
 			_name = name;
 			_isStatic = isStatic;
