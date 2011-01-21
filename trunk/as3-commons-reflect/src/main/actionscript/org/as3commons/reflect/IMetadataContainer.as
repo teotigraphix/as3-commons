@@ -22,33 +22,33 @@
 package org.as3commons.reflect {
 
 	/**
-	 * Describes an object that holds MetaData objects.
+	 * Describes an object that holds Metadata objects.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public interface IMetaDataContainer {
+	public interface IMetadataContainer {
 
 		/**
-		 * Adds a MetaData object to this container.
+		 * Adds a Metadata object to this container.
 		 */
-		function addMetaData(metaData:MetaData):void;
+		function addMetadata(metadata:Metadata):void;
 
 		/**
 		 * Returns whether this object has meta data for the given key.
 		 */
-		function hasMetaData(key:String):Boolean;
+		function hasMetadata(key:String):Boolean;
 
-		function hasExactMetaData(otherMetaData:MetaData):Boolean;
+		function hasExactMetadata(otherMetadata:Metadata):Boolean;
 
 		/**
-		 * Returns the array of MetaData object that corresponds to the given key. If no MetaData object was found,
+		 * Returns the array of Metadata object that corresponds to the given key. If no Metadata object was found,
 		 * an empty array is returned.
 		 */
-		function getMetaData(key:String):Array;
+		function getMetadata(key:String):Array;
 
 		/**
 		 * Returns an array of all metadata objects in this container.
 		 */
-		function get metaData():Array;
+		function get metadata():Array;
 	}
 }
