@@ -55,7 +55,7 @@ package org.as3commons.reflect {
 	 * @author Martino Piccinato
 	 * @author Andrew Lewisohn
 	 */
-	public class Type extends MetaDataContainer {
+	public class Type extends MetadataContainer {
 
 		/**
 		 * Clears the cache and set typeProvider to null.
@@ -703,20 +703,20 @@ package org.as3commons.reflect {
 			}
 		}
 
-		private var _metaDataLookup:Dictionary;
+		private var _metadataLookup:Dictionary;
 
-		public function createMetaDataLookup():void {
-			_metaDataLookup = new Dictionary();
-			addToMetaDataLookup(_methods.getArray());
+		public function createMetadataLookup():void {
+			_metadataLookup = new Dictionary();
+			addToMetadataLookup(_methods.getArray());
 			if (_fields == null) {
 				createFieldsHashArray();
 			}
-			addToMetaDataLookup(_fields.getArray());
+			addToMetadataLookup(_fields.getArray());
 		}
 
 		/**
 		 * Retrieves an Array of <code>MetadataContainer</code> instances that are associated with the current <code>Type</code>
-		 * that contain <code>MetaData</code> with the specified name.
+		 * that contain <code>Metadata</code> with the specified name.
 		 * <p>Each <code>MetadataContainer</code> instance can be one of these subclasses:</p>
 		 * <ul>
 		 *   <li>Type</li>
@@ -725,25 +725,25 @@ package org.as3commons.reflect {
 		 *   <li>Constant</li>
 		 *   <li>Variable</li>
 		 * </ul>
-		 * @param name The specified <code>MetaData</code> name.
+		 * @param name The specified <code>Metadata</code> name.
 		 * @return An Array of <code>MetadataContainer</code> instances.
 		 */
-		public function getMetaDataContainers(name:String):Array {
-			if (_metaDataLookup != null) {
-				return _metaDataLookup[name] as Array;
+		public function getMetadataContainers(name:String):Array {
+			if (_metadataLookup != null) {
+				return _metadataLookup[name] as Array;
 			} else {
 				return null;
 			}
 		}
 
-		private function addToMetaDataLookup(containerList:Array):void {
-			for each (var container:MetaDataContainer in containerList) {
-				var metadatas:Array = container.metaData;
-				for each (var m:MetaData in metadatas) {
-					var arr:Array = _metaDataLookup[m.name];
+		private function addToMetadataLookup(containerList:Array):void {
+			for each (var container:MetadataContainer in containerList) {
+				var metadatas:Array = container.metadata;
+				for each (var m:Metadata in metadatas) {
+					var arr:Array = _metadataLookup[m.name];
 					if (arr == null) {
 						arr = [];
-						_metaDataLookup[m.name] = arr;
+						_metadataLookup[m.name] = arr;
 					}
 					arr[arr.length] = container;
 				}

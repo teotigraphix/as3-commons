@@ -7,20 +7,20 @@ package org.as3commons.reflect.testclasses {
 	 * @author Christophe
 	 * @since 13-jan-2009
 	 */
-	[ClassMetaData]
-	[ClassMetaData(key="value", key1="value1")]
-	[ClassMetaData(key="value2", key1="value3")]
-	public class MetaDataClass {
+	[ClassMetadata]
+	[ClassMetadata(key="value", key1="value1")]
+	[ClassMetadata(key="value2", key1="value3")]
+	public class MetadataClass {
 		
-		[VarMetaData]
-		[VarMetaData(key="value", key1="value1")]
-		[VarMetaData(key="value2", key1="value3")]
+		[VarMetadata]
+		[VarMetadata(key="value", key1="value1")]
+		[VarMetadata(key="value2", key1="value3")]
 		public var aVariable:String = "";
 		
 		/**
-		 * Creates a new MetaDataClass object.
+		 * Creates a new MetadataClass object.
 		 */
-		public function MetaDataClass()
+		public function MetadataClass()
 		{
 		}
 		

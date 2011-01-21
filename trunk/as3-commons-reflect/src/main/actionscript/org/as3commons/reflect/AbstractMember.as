@@ -30,7 +30,7 @@ package org.as3commons.reflect {
 	 * @author Christophe Herreman
 	 * @author Andrew Lewisohn
 	 */
-	public class AbstractMember extends MetaDataContainer implements IMember, INamespaceOwner {
+	public class AbstractMember extends MetadataContainer implements IMember, INamespaceOwner {
 
 		// -------------------------------------------------------------------------
 		//
@@ -65,10 +65,10 @@ package org.as3commons.reflect {
 		 * @param type the type of the member
 		 * @param declaringType the type that declares the member
 		 * @param isStatic whether this member is static
-		 * @param metadata an array of MetaData objects describing this member
+		 * @param metadata an array of Metadata objects describing this member
 		 */
-		public function AbstractMember(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metaData:HashArray = null) {
-			super(metaData);
+		public function AbstractMember(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) {
+			super(metadata);
 			_name = name;
 			_isStatic = isStatic;
 			typeName = type;

@@ -46,15 +46,15 @@ package org.as3commons.reflect {
 		/**
 		 * Adds metadata from from interfaces to concrete implementations.
 		 */
-		public static function concatTypeMetadata(type:Type, metaDataContainers:Array, propertyName:String):void {
-			for each (var container:IMetaDataContainer in metaDataContainers) {
+		public static function concatTypeMetadata(type:Type, metadataContainers:Array, propertyName:String):void {
+			for each (var container:IMetadataContainer in metadataContainers) {
 				type[propertyName].some(function(item:Object, index:int, arr:Array):Boolean {
 					if (item.name == Object(container).name) {
-						var metaDataList:Array = container.metaData;
-						var numMetaData:int = metaDataList.length;
+						var metadataList:Array = container.metadata;
+						var numMetadata:int = metadataList.length;
 
-						for (var j:int = 0; j < numMetaData; j++) {
-							item.addMetaData(metaDataList[j]);
+						for (var j:int = 0; j < numMetadata; j++) {
+							item.addMetadata(metadataList[j]);
 						}
 						return true;
 					}

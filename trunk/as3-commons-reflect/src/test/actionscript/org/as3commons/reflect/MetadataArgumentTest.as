@@ -8,29 +8,29 @@ package org.as3commons.reflect {
 	 * @author Christophe Herreman
 	 * @since 13-jan-2009
 	 */
-	public class MetaDataArgumentTest extends TestCase {
+	public class MetadataArgumentTest extends TestCase {
 
 		/**
-		 * Creates a new MetaDataArgumentTest object.
+		 * Creates a new MetadataArgumentTest object.
 		 */
-		public function MetaDataArgumentTest(methodName:String = null) {
+		public function MetadataArgumentTest(methodName:String = null) {
 			super(methodName);
 		}
 
 		public function testNew():void {
-			var a:MetaDataArgument = new MetaDataArgument("key", "value");
+			var a:MetadataArgument = new MetadataArgument("key", "value");
 			assertEquals("key", a.key);
 			assertEquals("value", a.value);
 		}
 
 		public function testEqualsPass():void {
-			var a:MetaDataArgument = new MetaDataArgument("key", "value");
-			assertTrue(a.equals(new MetaDataArgument("key", "value")));
+			var a:MetadataArgument = new MetadataArgument("key", "value");
+			assertTrue(a.equals(new MetadataArgument("key", "value")));
 		}
 
 		public function testEqualsFail():void {
-			var a:MetaDataArgument = new MetaDataArgument("key", "value");
-			assertFalse(a.equals(new MetaDataArgument("key", "value2")));
+			var a:MetadataArgument = new MetadataArgument("key", "value");
+			assertFalse(a.equals(new MetadataArgument("key", "value2")));
 		}
 	}
 }

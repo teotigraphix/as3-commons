@@ -26,7 +26,7 @@ package org.as3commons.reflect {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public interface IMember extends IMetaDataContainer {
+	public interface IMember extends IMetadataContainer {
 
 		/**
 		 * Returns the name of this member.
