@@ -3,16 +3,25 @@ AS3COMMONS-REFLECT CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.4 (XX.XX.2011)
+-----------------------------------
+
+* removed ClassUtils as it is now available in AS3Commons-Lang
+* renamed all references to "MetaData" to "Metadata"
+
+
 Changes in version 1.3.3.1 (21.12.2010)
 -------------------------------------
 
 * added optional namespace argument to Type.getMethod() and Type.getField() methods
 * fixed critical bug in type JSON reflection where only methods and accessors of the subclass were added to the type instead of all.
 
+
 Changes in version 1.3.3 (13.12.2010)
 -------------------------------------
 
 * added JSONTypeProvider implementation and enhanced Type to make use of it when the appropriate flash player is installed
+
 
 Changes in version 1.3.2 (10.12.2010)
 -------------------------------------
