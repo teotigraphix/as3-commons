@@ -214,14 +214,16 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.classInfo = classInfo;
 			classInfo.metadata = buildMetadata();
 
+			var metadata:Array = classInfo.metadata.concat();
 			for each (var st:SlotOrConstantTrait in slotTraits) {
+				metadata.push.apply(metadata, st.metadata);
 				if (st.isStatic) {
 					classInfo.addTrait(st);
 				} else {
 					instanceInfo.addTrait(st);
 				}
 			}
-			return [classInfo, instanceInfo, methods, classInfo.metadata];
+			return [classInfo, instanceInfo, methods, metadata];
 		}
 
 		protected function createSlots():Array {

@@ -142,6 +142,7 @@ package org.as3commons.bytecode.proxy.impl {
 							break;
 					}
 				}
+
 				ctorBuilder.addOpcode(Opcode.newarray, [len]) //
 					.addOpcode(Opcode.coerce, [arrayQualifiedName]) //
 					.addOpcode(Opcode.setlocal, [paramLocal]) //
