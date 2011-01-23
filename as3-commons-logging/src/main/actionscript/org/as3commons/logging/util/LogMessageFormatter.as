@@ -24,7 +24,7 @@ package org.as3commons.logging.util {
 	import org.as3commons.logging.LogLevel;
 	
 	/**
-	 * Utilities for working with log messages.
+	 * A Formatter that formats a message string using a pattern.
 	 *
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
