@@ -35,12 +35,13 @@ package org.as3commons.logging {
 	 * by the <code>LoggerFactory</code> in the setup process.
 	 *
 	 * <p>A <code>Logger</code> instance is created for each logger requested from
-	 * the factory. The <code>Logger</code> instances do get augmented by the
-	 * Setup.</p>
+	 * the factory. The <code>Logger</code> instances do get augmented by
+	 * <code>ILogSetup</code> in the setup process.</p>
 	 *
 	 * @author Martin Heidegger
 	 * @author Christophe Herreman
 	 * @version 2
+	 * @see org.as3commons.logging.ILogSetup
 	 */
 	public final class Logger implements ILogger {
 		
@@ -50,26 +51,28 @@ package org.as3commons.logging {
 		/** The logger for debug level, if not added (<code>== null</code>) debug is not enabled. */
 		public var debugTarget:ILogTarget;
 		
-		/** The logger for debug level, if not added (<code>== null</code>) debug is not enabled. */
+		/** The logger for debug level, if not added (<code>== null</code>) info is not enabled. */
 		public var infoTarget:ILogTarget;
 		
-		/** The logger for warn level, if not added (<code>== null</code>) debug is not enabled. */
+		/** The logger for warn level, if not added (<code>== null</code>) warn is not enabled. */
 		public var warnTarget:ILogTarget;
 		
-		/** The logger for error level, if not added (<code>== null</code>) debug is not enabled. */
+		/** The logger for error level, if not added (<code>== null</code>) error is not enabled. */
 		public var errorTarget:ILogTarget;
 		
-		/** The logger for fatal level, if not added (<code>== null</code>) debug is not enabled. */
+		/** The logger for fatal level, if not added (<code>== null</code>) fatal is not enabled. */
 		public var fatalTarget:ILogTarget;
 		
 		/** Full name of the logger. */
 		private var _name:String;
 		
-		/** Short name of the logger. */
+		/** Short name of the logger. (Generated from the passed-in name) */
 		private var _shortName:String;
 		
 		/**
-		 * Creates a new LoggerProxy.
+		 * Creates a new <code>Logger</code> Proxy.
+		 *
+		 * @param name Name of the logger
 		 */
 		public function Logger(name:String) {
 			_name = name;
@@ -171,7 +174,9 @@ package org.as3commons.logging {
 		}
 		
 		/**
-		 * Sets all loggers to null;
+		 * Sets all loggers to the passed-in logTarget.
+		 *
+		 * @param logTarget target to be used for all levels
 		 */
 		public function set allTargets(logTarget: ILogTarget): void {
 			debugTarget = infoTarget = warnTarget = errorTarget = fatalTarget = logTarget;

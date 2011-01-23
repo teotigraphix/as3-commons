@@ -46,32 +46,32 @@ package org.as3commons.logging {
 	 */
 	public class LoggerFactory {
 		
-		/*
-		 * @example We have the following 
-		 * <listing version="3.0">
-		 * implements org.as3commons.logging.*;
+		/**
+		 * Generates a name for the passed-in <code>input</code> with <code>
+		 * toLogName()</code> and generates the <code>ILogger</code> for that name.
 		 * 
-		 * class MyClass {
-		 *   private static var log:ILogger = getLogger(MyClass);
-		 *   
-		 *   public function foo(user:String, host:String): void {
-		 *     // Sending a log statement of level "debug"
-		 *     log.debug( "message" );
-		 *   }
-		 * }
-		 * </listing>
+		 * <p>Deprecated: Use org.as3commons.logging.getClassLogger</p>
 		 *
-		 * @param name the name of the logger
-		 * @return a logger with the given name
+		 * @param name Any Object can be used to generate the name
+		 * @return <code>ILogger</code> for the generated name.
 		 * @deprecated
+		 * @see org.as3commons.logging.util#toLogName()
 		 */
+		[Deprecated(replacement="org.as3commons.logging.getClassLogger()", since="2.0")]
 		public static function getClassLogger(input:*): ILogger {
 			return LOGGER_FACTORY.getLogger(toLogName(input));
 		}
 		
 		/**
-		 * Returns a logger for the given name.
+		 * Generates and returns a <code>ILogger</code> for the passed-in name.
+		 *
+		 * <p>Deprecated: Use org.as3commons.logging.getNamedLogger</p> 
+		 *
+		 * @param name Any String can be used as name
+		 * @return <code>ILogger</code> for that name.
+		 * @deprecated
 		 */
+		[Deprecated(replacement="org.as3commons.logging.getNamedLogger()", since="2.0")]
 		public static function getLogger(name:String):ILogger {
 			return LOGGER_FACTORY.getLogger(name);
 		}

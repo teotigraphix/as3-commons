@@ -14,7 +14,7 @@
 	<inceptionYear>2009</inceptionYear>
 
 	<properties>
-		<flex-sdk.version>4.5.0.17077</flex-sdk.version>
+		<flex-sdk.version>3.6.0.16321</flex-sdk.version><!--  3.5.a.12683 4.5.0.17077 -->
 		<flex-mojos.version>3.7.1</flex-mojos.version>
 	</properties>
 
