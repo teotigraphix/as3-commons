@@ -289,7 +289,7 @@ package org.as3commons.bytecode.reflect {
 				//  name 
 				//      The name field is an index into the multiname array of the constant pool; it provides a name for the 
 				//      class. The entry specified must be a QName. 
-				var instanceInfo:ByteCodeType = new ByteCodeType(input, constantPool, applicationDomain);
+				var instanceInfo:ByteCodeType = new ByteCodeType(applicationDomain, input, constantPool);
 
 				// The AVM2 spec dictates that this should always be a QualifiedName, but when parsing SWFs I have come across
 				// Multinames with single namespaces (which are essentially QualifiedNames - the only reason to be a multiname

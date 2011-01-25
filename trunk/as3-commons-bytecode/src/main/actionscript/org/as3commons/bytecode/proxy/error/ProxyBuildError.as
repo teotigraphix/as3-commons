@@ -53,6 +53,8 @@ package org.as3commons.bytecode.proxy.error {
 
 		public static const CANNOT_INTRODUCE_INTERFACE:uint = 0x08;
 
+		public static const PROXY_FACTORY_IS_BUSY_GENERATING:uint = 0x08;
+
 		private static const messages:Dictionary = new Dictionary();
 		{
 			messages[FINAL_CLASS_ERROR] = "Proxied class {0} is marked as final, cannot create a subclass";
@@ -63,6 +65,7 @@ package org.as3commons.bytecode.proxy.error {
 			messages[METHOD_BUILDER_IS_NULL] = "IMethodBuilder returned by the {0}.methodBuilder instance was null";
 			messages[INTRODUCED_CLASS_NOT_FOUND] = "Class {0} could not be found by ByteCodeType.forName(), unable to introduce";
 			messages[CANNOT_INTRODUCE_INTERFACE] = "Class {0} is an interface, only able to introduce concrete classes";
+			messages[PROXY_FACTORY_IS_BUSY_GENERATING] = "Cannot invoke loadProxyClasses() while the factory is still busy generating.{0}";
 		}
 
 		/**
