@@ -612,10 +612,7 @@ package org.as3commons.bytecode.abc.enum {
 			if ((this._argumentTypes != null) && (this._argumentTypes.length > 0)) {
 				return new Op(this, opArguments);
 			} else {
-				if (_instance == null) {
-					_instance = new Op(this);
-				}
-				return _instance;
+				return new Op(this);
 			}
 		}
 	}

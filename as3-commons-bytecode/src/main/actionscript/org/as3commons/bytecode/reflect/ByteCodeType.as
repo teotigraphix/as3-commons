@@ -37,7 +37,7 @@ package org.as3commons.bytecode.reflect {
 		private var _byteArray:ByteArray;
 		private var _constantPool:IConstantPool;
 
-		public function ByteCodeType(byteArray:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain) {
+		public function ByteCodeType(applicationDomain:ApplicationDomain, byteArray:ByteArray=null, constantPool:IConstantPool=null) {
 			super(applicationDomain);
 			_byteArray = byteArray;
 			_constantPool = constantPool;
@@ -317,7 +317,7 @@ package org.as3commons.bytecode.reflect {
 		 * Returns the <code>ByteCodeTypeCache</code> that contains all the <code>ByteCodeType</code> instances
 		 * that have been extracted.
 		 */
-		public function getCache():ByteCodeTypeCache {
+		public static function getCache():ByteCodeTypeCache {
 			return getTypeProvider().getTypeCache() as ByteCodeTypeCache;
 		}
 
@@ -325,7 +325,7 @@ package org.as3commons.bytecode.reflect {
 		 * List of all fully qualified definition names that have been encountered in all
 		 * the bytecode that was scanned.
 		 */
-		public function get definitionNames():Array {
+		public static function get definitionNames():Array {
 			return getCache().definitionNames;
 		}
 
@@ -334,7 +334,7 @@ package org.as3commons.bytecode.reflect {
 		 * <p>For example, to retrieve all the names of classes that are annotated with the [Mixin] metadata:</p>
 		 * <p>var classnames:Array = ByteCodeType..getClassesWithMetaData('Mixin');</p>
 		 */
-		public function get metaDataLookup():Object {
+		public static function get metaDataLookup():Object {
 			return getCache().metaDataLookup;
 		}
 
@@ -343,7 +343,7 @@ package org.as3commons.bytecode.reflect {
 		 * @param metaDataName The specified metadata name.
 		 * @return an <code>Array</code> of class names.
 		 */
-		public function getClassesWithMetaData(metaDataName:String):Array {
+		public static function getClassesWithMetaData(metaDataName:String):Array {
 			return getCache().getClassesWithMetaData(metaDataName);
 		}
 	}

@@ -138,6 +138,7 @@ package org.as3commons.bytecode.proxy.impl {
 		public static var proxyCreationDispatcher:IEventDispatcher = new EventDispatcher();
 
 		//private variables
+		private var _isGenerating:Boolean = false;
 		private var _generatedMultinames:Dictionary;
 		private var _classProxyLookup:Dictionary;
 		private var _abcBuilder:IAbcBuilder;
@@ -290,9 +291,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @inheritDoc
 		 */
 		public function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class = null, applicationDomain:ApplicationDomain = null):IClassProxyInfo {
-			methodInvocationInterceptorClass = (methodInvocationInterceptorClass != null) ? methodInvocationInterceptorClass : BasicMethodInvocationInterceptor;
+			methodInvocationInterceptorClass ||= BasicMethodInvocationInterceptor;
 			Assert.state(ClassUtils.isImplementationOf(methodInvocationInterceptorClass, IMethodInvocationInterceptor, applicationDomain) == true, "methodInvocationInterceptorClass argument must be a class that implements IMethodInvocationInterceptor");
-			applicationDomain = (applicationDomain != null) ? applicationDomain : ApplicationDomain.currentDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			if (_domains[applicationDomain] == null) {
 				_domains[applicationDomain] = [];
 			}
@@ -307,18 +308,23 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @inheritDoc
 		 */
 		public function generateProxyClasses():IAbcBuilder {
-			for (var domain:* in _domains) {
-				var infos:Array = _domains[domain] as Array;
-				for each (var info:IClassProxyInfo in infos) {
-					var proxyInfo:ProxyInfo = buildProxyClass(info, domain);
-					proxyInfo.proxiedClass = info.proxiedClass;
-					proxyInfo.interceptorFactory = info.interceptorFactory;
-					_classProxyLookup[info.proxiedClass] = proxyInfo;
-					proxyInfo.methodInvocationInterceptorClass = info.methodInvocationInterceptorClass;
+			_isGenerating = true;
+			try {
+				for (var domain:* in _domains) {
+					var infos:Array = _domains[domain] as Array;
+					for each (var info:IClassProxyInfo in infos) {
+						var proxyInfo:ProxyInfo = buildProxyClass(info, domain);
+						proxyInfo.proxiedClass = info.proxiedClass;
+						proxyInfo.interceptorFactory = info.interceptorFactory;
+						_classProxyLookup[info.proxiedClass] = proxyInfo;
+						proxyInfo.methodInvocationInterceptorClass = info.methodInvocationInterceptorClass;
+					}
 				}
+			} finally {
+				_isGenerating = false;
+				_domains = new Dictionary();
+				LOGGER.debug("Finished generating proxy classes");
 			}
-			_domains = new Dictionary();
-			LOGGER.debug("Finished generating proxy classes");
 			return _abcBuilder;
 		}
 
@@ -333,7 +339,10 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @inheritDoc
 		 */
 		public function loadProxyClasses(applicationDomain:ApplicationDomain = null):void {
-			applicationDomain = (applicationDomain != null) ? applicationDomain : ApplicationDomain.currentDomain;
+			if (_isGenerating) {
+				throw new ProxyBuildError(ProxyBuildError.PROXY_FACTORY_IS_BUSY_GENERATING);
+			}
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			for (var cls:* in _classProxyLookup) {
 				ProxyInfo(_classProxyLookup[cls]).applicationDomain = applicationDomain;
 			}
