@@ -180,17 +180,17 @@ package org.as3commons.bytecode.reflect {
 				// The value of the metadata_count field is the number of entries in the metadata array. That array 
 				// contains indices into the metadata array of the abcFile." 
 				if (traitKindValue & (TraitAttributes.METADATA.bitMask << 4)) {
-					addMetaData(metadata, className, typeCache);
+					addMetadata(metadata, className, typeCache);
 				}
 			}
 		}
 
-		private function addMetaData(metadata:Array, className:String, typeCache:ByteCodeTypeCache):void {
+		private function addMetadata(metadata:Array, className:String, typeCache:ByteCodeTypeCache):void {
 			var numberOfTraitMetadataItems:int = readU30();
 			for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; ++traitMetadataIndex) {
 				var md:Metadata = metadata[readU30()];
 				if (className != null) {
-					typeCache.as3commons_reflect::addToMetaDataCache(md.name, className);
+					typeCache.as3commons_reflect::addToMetadataCache(md.name, className);
 				}
 			}
 		}
