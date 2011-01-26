@@ -64,7 +64,11 @@ package org.as3commons.bytecode.interception.impl {
 			switch (kind) {
 				case InvocationKind.METHOD:
 					if (proceed) {
-						return targetMethod.apply(targetInstance, arguments);
+						if (targetMethod != null) {
+							return targetMethod.apply(targetInstance, arguments);
+						} else {
+							return invoc.returnValue;
+						}
 					} else {
 						return invoc.returnValue;
 					}

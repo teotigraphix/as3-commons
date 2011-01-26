@@ -6,8 +6,9 @@ Note: dates are in DD.MM.YYYY format
 Changes in version 1.0RC (00.00.0000)
 -----------------------------------
 
-* Made changes to IMethodInvocationInterceptor injection so that a generated class can be serialized and deserialized.
+* Made changes to IMethodInvocationInterceptor injection so that a generated class can be serialized and deserialized (for AMF purposes et al).
 * Renamed all instances of MetaData to Metadata.
+* Added support for complex property initializations in the emit.* API
 
 
 Changes in version 0.9.6 (19.01.2011)
