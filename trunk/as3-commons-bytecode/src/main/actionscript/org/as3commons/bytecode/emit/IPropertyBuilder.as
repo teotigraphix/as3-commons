@@ -62,5 +62,12 @@ package org.as3commons.bytecode.emit {
 		 * @return
 		 */
 		function build():Object;
+
+		/**
+		 * Creates opcodes for all member initializers. These opcodes can later be merged into the
+		 * constructor body.
+		 * @return An <code>Array</code> of <code>Op</code> instances.
+		 */
+		function buildPropertyInitializers():Array;
 	}
 }
