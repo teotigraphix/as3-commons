@@ -14,7 +14,7 @@
 	<inceptionYear>2009</inceptionYear>
 
 	<properties>
-		<flex-sdk.version>4.5.0.17855</flex-sdk.version>
+		<flex-sdk.version>4.1.0.16076</flex-sdk.version>
 		<flex-mojos.version>4.0-beta-3</flex-mojos.version>
 	</properties>
 
@@ -30,6 +30,7 @@
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<version>${flex-mojos.version}</version>
 				<extensions>true</extensions>
+				
 				<dependencies>
 					<dependency>
 						<groupId>com.adobe.flex</groupId>
@@ -38,6 +39,17 @@
 						<type>pom</type>
 					</dependency>
 				</dependencies>
+				
+				<executions>
+					<execution>
+						<id>flex-reports</id>
+						<goals>
+							<goal>asdoc-report</goal>
+						</goals>
+						<phase>site</phase>
+					</execution>
+				</executions>
+
 				<configuration>
 					<storepass></storepass>
 					<configurationReport>true</configurationReport>
@@ -51,8 +63,19 @@
 							<directory>src/main/actionscript</directory>
 						</source>
 					</includeAsClasses>
+
+					<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
+					<description>API documentation</description>
+					<mainTitle>API documentation</mainTitle>
+					<windowTitle>API documentation</windowTitle>
+					<name>As3CommonsDocs</name>
+					<keepXml>true</keepXml>
+					<dumpConfigAttach>true</dumpConfigAttach>
+					<showWarnings>true</showWarnings>
+					<lenient>true</lenient>
+
 				</configuration>
-				
+
 			</plugin>
 
 			<plugin>
@@ -102,13 +125,21 @@
 					</filesets>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.0-beta-2</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex-sdk.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
 				<configuration>
-				
+
 					<reportPlugins>
 
 						<plugin>
@@ -122,36 +153,22 @@
 							<artifactId>maven-surefire-report-plugin</artifactId>
 							<version>2.6</version>
 						</plugin>
-
-						<plugin>
-							<groupId>org.sonatype.flexmojos</groupId>
-							<artifactId>flexmojos-maven-plugin</artifactId>
-							<version>${flex-mojos.version}</version>
-							<reportSets>
-								<reportSet>
-									<id>flex-reports</id>
-									<reports>
-										<report>asdoc-report</report>
-									</reports>
-									<configuration>
-										<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
-										<description>API documentation</description>
-										<mainTitle>API documentation</mainTitle>
-										<windowTitle>API documentation</windowTitle>
-										<name>As3CommonsDocs</name>
-									</configuration>
-								</reportSet>
-							</reportSets>
-						</plugin>
-
+						<!-- <plugin> <groupId>org.sonatype.flexmojos</groupId> <artifactId>flexmojos-maven-plugin</artifactId> 
+							<version>${flex-mojos.version}</version> <reportSets> <reportSet> <id>flex-reports</id> 
+							<reports> <report>asdoc-report</report> </reports> </reportSet> </reportSets> 
+							<configuration> <reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory> 
+							<description>API documentation</description> <mainTitle>API documentation</mainTitle> 
+							<windowTitle>API documentation</windowTitle> <name>As3CommonsDocs</name> 
+							<keepXml>true</keepXml> <dumpConfigAttach>true</dumpConfigAttach> <showWarnings>true</showWarnings> 
+							<lenient>true</lenient> </configuration> </plugin> -->
 					</reportPlugins>
 				</configuration>
-		</plugin>
+			</plugin>
 
 		</plugins>
 
 	</build>
-	
+
 	<dependencies>
 
 		<!-- ================== -->
@@ -223,7 +240,7 @@
 		</dependency>
 
 	</dependencies>
-	
+
 	<scm>
 		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-logging
         </developerConnection>
@@ -248,7 +265,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-				<repository>
+		<repository>
 			<id>yoolab.org-releases</id>
 			<url>http://projects.yoolab.org/maven/content/repositories/releases</url>
 			<releases>
