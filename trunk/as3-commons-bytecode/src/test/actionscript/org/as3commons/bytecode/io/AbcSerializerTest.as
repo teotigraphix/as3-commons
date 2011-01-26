@@ -33,17 +33,12 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.swf.AbcClassLoader;
-	import org.as3commons.bytecode.template.BaseClass;
 	import org.as3commons.bytecode.util.AbcSpec;
 
 	public class AbcSerializerTest extends TestCase {
 		private var _fixture:AbcSerializer;
 
 		private var _classLoader:AbcClassLoader;
-
-		{
-			BaseClass;
-		}
 
 		public function AbcSerializerTest(methodName:String = null) {
 			super(methodName);
