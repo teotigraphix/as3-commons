@@ -7,7 +7,7 @@ package org.as3commons.bytecode.reflect {
 
 	public class ClassMetaDataDeserializerTest extends TestCase {
 
-		private var _ds:ClassMetaDataDeserializer;
+		private var _ds:ClassMetadataDeserializer;
 
 		public function ClassMetaDataDeserializerTest(methodName:String = null) {
 			super(methodName);
@@ -15,7 +15,7 @@ package org.as3commons.bytecode.reflect {
 
 		override public function setUp():void {
 			super.setUp();
-			_ds = new ClassMetaDataDeserializer();
+			_ds = new ClassMetadataDeserializer();
 		}
 
 		public function testRead():void {
@@ -24,18 +24,18 @@ package org.as3commons.bytecode.reflect {
 			_ds.read(typeCache, ba, null, false);
 			var lookup:Object = typeCache.metaDataLookup;
 			assertNotNull(lookup['testmetadata']);
-			var arr:Array = typeCache.getClassesWithMetaData('TestMetadata');
+			var arr:Array = typeCache.getClassesWithMetadata('TestMetadata');
 			assertEquals(3, arr.length);
 			assertTrue(arr.indexOf('com.classes.test.AnnotatedClass') > -1);
 			assertTrue(arr.indexOf('com.classes.test.DoubleAnnotatedClass') > -1);
 			assertTrue(arr.indexOf('com.classes.test.TripleAnnotatedClass') > -1);
 			assertNotNull(lookup['moretestmetadata']);
-			arr = typeCache.getClassesWithMetaData('MoreTestMetadata');
+			arr = typeCache.getClassesWithMetadata('MoreTestMetadata');
 			assertEquals(2, arr.length);
 			assertTrue(arr.indexOf('com.classes.test.DoubleAnnotatedClass') > -1);
 			assertTrue(arr.indexOf('com.classes.test.TripleAnnotatedClass') > -1);
 			assertNotNull(lookup['lasttestmetadata']);
-			arr = typeCache.getClassesWithMetaData('LastTestMetadata');
+			arr = typeCache.getClassesWithMetadata('LastTestMetadata');
 			assertEquals(1, arr.length);
 			assertTrue(arr[0] = 'com.classes.test.TripleAnnotatedClass');
 

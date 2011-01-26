@@ -62,9 +62,9 @@ package org.as3commons.bytecode.emit.impl {
 		public function testBuildClassWithMetadata():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MySimplePropertyTest");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testString", "String", "test");
-			propertyBuilder.defineMetaData("Custom");
+			propertyBuilder.defineMetadata("Custom");
 			var mb:IMethodBuilder = classBuilder.defineMethod("testMethod");
-			mb.defineMetaData("CustomMethod");
+			mb.defineMetadata("CustomMethod");
 			mb.addOpcode(Opcode.getlocal_0).addOpcode(Opcode.pushscope).addOpcode(Opcode.returnvoid);
 			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertyMetadataBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
@@ -79,9 +79,9 @@ package org.as3commons.bytecode.emit.impl {
 			var instance:Object = new cls();
 			var type:Type = Type.forInstance(instance);
 			var fld:Field = type.getField('testString');
-			assertTrue(fld.hasMetaData('Custom'));
+			assertTrue(fld.hasMetadata('Custom'));
 			var mthd:Method = type.getMethod('testMethod');
-			assertTrue(mthd.hasMetaData('CustomMethod'));
+			assertTrue(mthd.hasMetadata('CustomMethod'));
 		}
 
 		public function testBuildClassWithComplexProperty():void {
