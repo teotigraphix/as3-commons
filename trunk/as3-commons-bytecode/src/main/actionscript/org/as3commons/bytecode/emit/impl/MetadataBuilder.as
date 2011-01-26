@@ -21,14 +21,14 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.lang.Assert;
 
-	public class MetaDataBuilder implements IMetaDataBuilder {
+	public class MetadataBuilder implements IMetadataBuilder {
 
 		private var _argLookup:Dictionary;
 		private var _metadata:Metadata;
 		private var _name:String = "";
 		private var _arguments:Array = [];
 
-		public function MetaDataBuilder() {
+		public function MetadataBuilder() {
 			super();
 			_argLookup = new Dictionary();
 		}
@@ -38,7 +38,7 @@ package org.as3commons.bytecode.emit.impl {
 			_metadata = metadata;
 			_name = metadata.name;
 			for (var name:String in metadata.properties) {
-				var arg:MetaDataArgument = defineArgument(name);
+				var arg:MetadataArgument = defineArgument(name);
 				arg.value = metadata.properties[name];
 			}
 		}
@@ -59,17 +59,17 @@ package org.as3commons.bytecode.emit.impl {
 			_arguments = value;
 		}
 
-		public function defineArgument(name:String = null):MetaDataArgument {
-			var ma:MetaDataArgument;
+		public function defineArgument(name:String = null):MetadataArgument {
+			var ma:MetadataArgument;
 			if ((name == null) || (_argLookup[name] == null)) {
-				ma = new MetaDataArgument();
+				ma = new MetadataArgument();
 				_arguments[_arguments.length] = ma;
 				ma.key = name;
 				if (name != null) {
 					_argLookup[name] = ma;
 				}
 			} else {
-				ma = _argLookup[name] as MetaDataArgument;
+				ma = _argLookup[name] as MetadataArgument;
 			}
 			return ma;
 		}
@@ -77,7 +77,7 @@ package org.as3commons.bytecode.emit.impl {
 		public function build():Metadata {
 			var md:Metadata = (_metadata != null) ? _metadata : new Metadata();
 			md.name = _name;
-			for each (var ma:MetaDataArgument in _arguments) {
+			for each (var ma:MetadataArgument in _arguments) {
 				md.properties[ma.key] = ma.value;
 			}
 			return md;

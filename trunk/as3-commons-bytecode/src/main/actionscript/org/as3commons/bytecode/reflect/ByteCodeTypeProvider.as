@@ -89,7 +89,7 @@ package org.as3commons.bytecode.reflect {
 		protected function deserializeMetadata(input:ByteArray):void {
 			if (_metaLookupByteArrays[input] == null) {
 				_metaLookupByteArrays[input] = true;
-				var deserializer:ClassMetaDataDeserializer = new ClassMetaDataDeserializer();
+				var deserializer:ClassMetadataDeserializer = new ClassMetadataDeserializer();
 				deserializer.read(getTypeCache() as ByteCodeTypeCache, input);
 			}
 		}

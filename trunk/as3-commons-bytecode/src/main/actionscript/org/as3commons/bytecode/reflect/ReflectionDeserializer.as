@@ -133,7 +133,7 @@ package org.as3commons.bytecode.reflect {
 			constantPool.dupeCheck = false;
 			deserializeConstantPool(constantPool);
 			var methods:Array = readMethods(input, constantPool, _applicationDomain);
-			var metaData:Array = readMetaData(input, constantPool, _applicationDomain);
+			var metaData:Array = readMetadata(input, constantPool, _applicationDomain);
 			readTypes(input, constantPool, _applicationDomain, methods, metaData, typeCache);
 			if (methods != null) {
 				methods.length = 0;
@@ -221,7 +221,7 @@ package org.as3commons.bytecode.reflect {
 			return methods;
 		}
 
-		public function readMetaData(input:ByteArray, constantPool:ConstantPool, applicationDomain:ApplicationDomain):Array {
+		public function readMetadata(input:ByteArray, constantPool:ConstantPool, applicationDomain:ApplicationDomain):Array {
 			var metadataCount:int = readU30();
 			var metadatas:Array = [];
 			for (var metadataIndex:int = 0; metadataIndex < metadataCount; ++metadataIndex) {
@@ -488,7 +488,7 @@ package org.as3commons.bytecode.reflect {
 				// The value of the metadata_count field is the number of entries in the metadata array. That array 
 				// contains indices into the metadata array of the abcFile." 
 				if (traitKindValue & (TraitAttributes.METADATA.bitMask << 4)) {
-					addMetaData(metadata, metaDataContainer, typeCache);
+					addMetadata(metadata, metaDataContainer, typeCache);
 				}
 
 				setNameSpaceAndVisibility(metaDataContainer as IVisibleMember, traitMultiname);
@@ -533,13 +533,13 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
-		private function addMetaData(metadata:Array, container:MetadataContainer, typeCache:ByteCodeTypeCache):void {
+		private function addMetadata(metadata:Array, container:MetadataContainer, typeCache:ByteCodeTypeCache):void {
 			var numberOfTraitMetadataItems:int = readU30();
 			for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; ++traitMetadataIndex) {
 				var md:Metadata = metadata[readU30()];
 				container.addMetadata(md);
 				if (container is ByteCodeType) {
-					typeCache.as3commons_reflect::addToMetaDataCache(md.name, ByteCodeType(container).fullName);
+					typeCache.as3commons_reflect::addToMetadataCache(md.name, ByteCodeType(container).fullName);
 				}
 			}
 		}

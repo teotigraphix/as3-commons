@@ -31,7 +31,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
-	import org.as3commons.bytecode.emit.IMetaDataBuilder;
+	import org.as3commons.bytecode.emit.IMetadataBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.ITypeBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
@@ -256,8 +256,8 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineMetaData(name:String = null, arguments:Array = null):IMetaDataBuilder {
-			var mdb:MetaDataBuilder = new MetaDataBuilder();
+		public function defineMetadata(name:String = null, arguments:Array = null):IMetadataBuilder {
+			var mdb:MetadataBuilder = new MetadataBuilder();
 			mdb.name = name;
 			mdb.arguments = arguments;
 			_metadata[_metadata.length] = mdb;
@@ -266,7 +266,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		protected function buildMetadata():Array {
 			var result:Array = [];
-			for each (var mdb:MetaDataBuilder in _metadata) {
+			for each (var mdb:MetadataBuilder in _metadata) {
 				result[result.length] = mdb.build();
 			}
 			return result;

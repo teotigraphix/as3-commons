@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.emit.impl.MetaDataArgument;
+	import org.as3commons.bytecode.emit.impl.MetadataArgument;
 	import org.as3commons.bytecode.typeinfo.Metadata;
 
 	/**
 	 * Describes an object that can generate a metadata entry for use in an <code>AbcFile</code>.
 	 * @author Roland Zwaga
 	 */
-	public interface IMetaDataBuilder {
+	public interface IMetadataBuilder {
 		/**
 		 * The name of the metadata entry. I.e. <code>[Event]</code>.
 		 */
@@ -41,7 +41,7 @@ package org.as3commons.bytecode.emit {
 		/**
 		 * Defines an argument for the current <code>IMetaDataBuilder</code>.
 		 */
-		function defineArgument(name:String = null):MetaDataArgument;
+		function defineArgument(name:String = null):MetadataArgument;
 		/**
 		 * Internally used build method, this method should never be called by third parties.
 		 * @param applicationDomain

@@ -15,11 +15,11 @@
  */
 package org.as3commons.bytecode.emit.impl {
 
-	public class MetaDataArgument {
+	public class MetadataArgument {
 		private var _key:String;
 		private var _value:String;
 
-		public function MetaDataArgument(key:String = null, value:String = null) {
+		public function MetadataArgument(key:String = null, value:String = null) {
 			super();
 			_key = key;
 			_value = value;
