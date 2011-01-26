@@ -103,6 +103,28 @@ package org.as3commons.bytecode.emit.impl {
 			assertStrictlyEquals(evt, instance.testObject);
 		}
 
+		public function testBuildClassWithPropertyInitializations():void {
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyPropertyInitializationTest");
+			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testObject", "flash.events.Event");
+			propertyBuilder.memberInitialization = new MemberInitialization();
+			propertyBuilder.memberInitialization.constructorArguments = ["myEventType", true, true];
+			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertyInitsBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+		}
+
+		public function propertyInitsBuildSuccessHandler(event:Event):void {
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyPropertyInitializationTest") as Class;
+			assertNotNull(cls);
+			var instance:Object = new cls();
+			assertNotNull(instance);
+			assertNotNull(instance.testObject);
+			var event:Event = instance.testObject as Event;
+			assertNotNull(event);
+			assertEquals("myEventType", event.type);
+			assertTrue(event.bubbles);
+			assertTrue(event.cancelable);
+		}
+
 		public function testBuildClassWithPropertyWithGeneratedNamespaceScope():void {
 			_abcBuilder.definePackage("com.myclasses.test").defineNamespace("my_namespace_test", "http://www.test.com/mytestnamespace");
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyCustomNamespacePropertyTest");
