@@ -116,16 +116,16 @@ for each (var key:String in keys) {
     that normally isn't available through <code>describeType()</code>.</p>
     <p>Here is a way to generate a lookup for class-level metadata annotations
     and their corresponding class names: <div class="source">
-        <pre>var metaDataLookup:Object = ByteCodeType.metaDataLookupFromLoader(loader);
-var definitionNames:Array = metaDataLookup['mixin'];
+        <pre>var metadataLookup:Object = ByteCodeType.metadataLookupFromLoader(loader);
+var definitionNames:Array = metadataLookup['mixin'];
 for(var i:uint=0; i &lt; definitionNames.length;i++){
   var type:Type = Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
 }</pre>
       </div> </p> <p>Generating this list using
-    <code>metaDataLookupFromLoader(loader)</code> is much, much faster than
+    <code>metadataLookupFromLoader(loader)</code> is much, much faster than
     reading all of the reflection data.</p> <p>The list can later be accessed
-    using the <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeTypeCache.html#metaDataLookup" target="_blank">ByteCodeTypeCache.metaDataLookup</a></code> property or using
-    the <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeTypeCache.html#getClassesWithMetaData()" target="_blank">ByteCodeTypeCache.getClassesWithMetaData(metaDataName)</a></code>
+    using the <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeTypeCache.html#metadataLookup" target="_blank">ByteCodeTypeCache.metadataLookup</a></code> property or using
+    the <code><a href="asdoc/org/as3commons/bytecode/reflect/ByteCodeTypeCache.html#getClassesWithMetadata()" target="_blank">ByteCodeTypeCache.getClassesWithMetadata(metadataName)</a></code>
     method.</p> <p>At the same time a full list of definition names contained
     within the specified bytecode will be populated.<br /> To retrieve this
     list use this <code>ByteCodeTypeCache</code> property:
