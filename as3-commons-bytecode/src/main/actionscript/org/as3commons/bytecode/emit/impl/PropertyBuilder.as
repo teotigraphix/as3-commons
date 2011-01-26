@@ -88,7 +88,7 @@ package org.as3commons.bytecode.emit.impl {
 			_type = QualifiedName(trait.typeMultiname).fullName;
 			visibility = EmitUtil.getMemberVisibilityFromQualifiedName(trait.traitMultiname);
 			for each (var metadata:Metadata in trait.metadata) {
-				var mdb:MetaDataBuilder = defineMetaData() as MetaDataBuilder;
+				var mdb:MetadataBuilder = defineMetadata() as MetadataBuilder;
 				mdb.as3commons_bytecode::setMetadata(metadata);
 			}
 		}

@@ -29,9 +29,9 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.Metadata;
 	import org.as3commons.reflect.as3commons_reflect;
 
-	public class ClassMetaDataDeserializer extends ReflectionDeserializer {
+	public class ClassMetadataDeserializer extends ReflectionDeserializer {
 
-		public function ClassMetaDataDeserializer() {
+		public function ClassMetadataDeserializer() {
 			super();
 		}
 

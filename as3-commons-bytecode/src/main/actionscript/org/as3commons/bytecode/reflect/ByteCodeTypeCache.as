@@ -56,7 +56,7 @@ package org.as3commons.bytecode.reflect {
 		/**
 		 * A lookup of metadata name -&gt; <code>Array</code> of class names.
 		 * <p>For example, to retrieve all the names of classes that are annotated with the [Mixin] metadata:</p>
-		 * <p>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().getClassesWithMetaData('Mixin');</p>
+		 * <p>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().getClassesWithMetadata('Mixin');</p>
 		 */
 		public function get metaDataLookup():Object {
 			return _metaDataLookup;
@@ -83,7 +83,7 @@ package org.as3commons.bytecode.reflect {
 		 * @param classname
 		 *
 		 */
-		as3commons_reflect function addToMetaDataCache(metaDataName:String, classname:String):void {
+		as3commons_reflect function addToMetadataCache(metaDataName:String, classname:String):void {
 			Assert.hasText(metaDataName, "metaDataName argument must not be empty or null");
 			Assert.hasText(classname, "classname argument must not be empty or null");
 			metaDataName = metaDataName.toLowerCase();
@@ -112,7 +112,7 @@ package org.as3commons.bytecode.reflect {
 		 * @param metaDataName The specified metadata name.
 		 * @return an <code>Array</code> of class names.
 		 */
-		public function getClassesWithMetaData(metaDataName:String):Array {
+		public function getClassesWithMetadata(metaDataName:String):Array {
 			Assert.hasText(metaDataName, "metaDataName argument must not be empty or null");
 			metaDataName = metaDataName.toLowerCase();
 			if (_metaDataLookup.hasOwnProperty(metaDataName)) {

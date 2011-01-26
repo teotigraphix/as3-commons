@@ -332,7 +332,7 @@ package org.as3commons.bytecode.reflect {
 		/**
 		 * A lookup of metadata name -&gt; <code>Array</code> of class names.
 		 * <p>For example, to retrieve all the names of classes that are annotated with the [Mixin] metadata:</p>
-		 * <p>var classnames:Array = ByteCodeType..getClassesWithMetaData('Mixin');</p>
+		 * <p>var classnames:Array = ByteCodeType.getClassesWithMetadata('Mixin');</p>
 		 */
 		public static function get metaDataLookup():Object {
 			return getCache().metaDataLookup;
@@ -343,8 +343,8 @@ package org.as3commons.bytecode.reflect {
 		 * @param metaDataName The specified metadata name.
 		 * @return an <code>Array</code> of class names.
 		 */
-		public static function getClassesWithMetaData(metaDataName:String):Array {
-			return getCache().getClassesWithMetaData(metaDataName);
+		public static function getClassesWithMetadata(metaDataName:String):Array {
+			return getCache().getClassesWithMetadata(metaDataName);
 		}
 	}
 }
