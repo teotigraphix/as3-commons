@@ -231,6 +231,7 @@ public class MyInterceptorFactory:IFactory {
 proxyFactory.defineProxy(TracingInterceptor, BasicMethodInvocationInterceptor);
 proxyFactory.generateProxyClasses();
 proxyFactory.addEventListener(Event.COMPLETE, proxiesLoadedHandler);
+proxyFactory.loadProxyClasses();
 
 function proxiesLoadedHandler(event:Event):void {
 	var proxyFactory:IProxyFactory = (event.target as IProxyFactory);
@@ -331,6 +332,7 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(Order);
 classProxyInfo.introduce(PartialChangeTracker);
 proxyFactory.generateProxyClasses();
+proxyFactory.loadProxyClasses();
 </pre></div>
 	<p>And that's it, if afterwards the proxy is instantiated, the instance can actually be cast to <code>IChangeTrackable</code>:</p>
 	<div class="source"><pre>var order:Order = proxyFactory.createProxy(Order) as Order;
@@ -416,11 +418,12 @@ var dirty:Boolean = IChangeTrackable(order).isDirty;
 	class, scoping its members to a namespace reduces the risks of duplicate members in the generated class.</p>
 	<p>Now the class is ready to be introduced (merged) into a proxy class, let's suppose there is an <code>IEventDispatcher</code> implementation called <code>MyEventDispatcher</code>:</p>
 	<div class="source"><pre>var proxyfactory:IProxyFactory = new ProxyFactory();
-	var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyEventDispatcher);
-	classProxyInfo.introduce(EventDispatcherExImpl);
-	classProxyInfo.proxyMethod("addEventListener");
-	classProxyInfo.proxyMethod("removeEventListener");
-	proxyFactory.generateProxyClasses();
+var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyEventDispatcher);
+classProxyInfo.introduce(EventDispatcherExImpl);
+classProxyInfo.proxyMethod("addEventListener");
+classProxyInfo.proxyMethod("removeEventListener");
+proxyFactory.generateProxyClasses();
+proxyFactory.loadProxyClasses();
 </pre></div>
 	<p>Of course the mechanism to tie the introduced clas together with the proxy is done using an <code>IInterceptor</code>:</p>
 	<div class="source"><pre>public class EventDispatcherExInterceptor implements IInterceptor {
