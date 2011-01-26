@@ -37,7 +37,7 @@ package org.as3commons.bytecode.reflect {
 		private var _byteArray:ByteArray;
 		private var _constantPool:IConstantPool;
 
-		public function ByteCodeType(applicationDomain:ApplicationDomain, byteArray:ByteArray=null, constantPool:IConstantPool=null) {
+		public function ByteCodeType(applicationDomain:ApplicationDomain, byteArray:ByteArray = null, constantPool:IConstantPool = null) {
 			super(applicationDomain);
 			_byteArray = byteArray;
 			_constantPool = constantPool;
@@ -299,7 +299,7 @@ package org.as3commons.bytecode.reflect {
 						this.constants[this.constants.length] = constant;
 					}
 					this.methods = tempMethods;
-					this.createMetaDataLookup();
+					this.createMetadataLookup();
 				}
 			}
 		}

@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.proxy.impl {
 
 	import flash.events.Event;
+	import flash.net.registerClassAlias;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
@@ -31,6 +32,10 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.io.AbcDeserializer;
 	import org.as3commons.bytecode.io.AbcSerializer;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
+	import org.as3commons.bytecode.proxy.IProxyFactory;
+	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
+	import org.as3commons.bytecode.proxy.event.ProxyCreationEvent;
+	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.testclasses.EventDispatcherExImpl;
@@ -65,9 +70,10 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.testclasses.interceptors.TestRestMethodInterceptor;
 	import org.as3commons.bytecode.util.ApplicationUtils;
 	import org.as3commons.reflect.Accessor;
-	import org.as3commons.reflect.MetaData;
+	import org.as3commons.reflect.Metadata;
 	import org.as3commons.reflect.Method;
 	import org.as3commons.reflect.Type;
+	import org.flexunit.asserts.assertTrue;
 
 	public class ProxyFactoryTest extends TestCase {
 
@@ -274,7 +280,50 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.loadProxyClasses();
 		}
 
-		/*public function testIntroduction():void {
+		public function testBusyGeneratingError():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			_proxyFactory.defineProxy(Flavour, null, applicationDomain);
+			var func:Function = function(event:ProxyFactoryBuildEvent):void {
+				var factory:IProxyFactory = IProxyFactory(event.target);
+				try {
+					factory.loadProxyClasses();
+					fail('loadProxyClass() should not be possible to invoke here.');
+				} catch (e:ProxyBuildError) {
+					assertEquals(e.errorID, ProxyBuildError.PROXY_FACTORY_IS_BUSY_GENERATING);
+				}
+			};
+			_proxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_PROXY_BUILD, func);
+			_proxyFactory.generateProxyClasses();
+		}
+
+		public function testSerialization():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			_proxyFactory.defineProxy(Flavour, null, applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleSerializationTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		protected function handleSerializationTestComplete(event:Event):void {
+			var proxyFactory:IProxyFactory = event.target as IProxyFactory;
+			var instance:Flavour = proxyFactory.createProxy(Flavour) as Flavour;
+			assertNotNull(instance);
+			var cls:Class = Object(instance).constructor as Class;
+			registerClassAlias("org.as3commons.bytecode.testclasses.Flavour", cls);
+
+			var ba:ByteArray = new ByteArray();
+			ba.writeObject(instance);
+			ba.position = 0;
+
+			try {
+				var instance2:Flavour = ba.readObject() as Flavour;
+				assertNotNull(instance2);
+			} catch (e:Error) {
+				fail('instance2 was not properly deserialized');
+			}
+		}
+
+		public function testIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
 			classProxyInfo.introduce(TestIntroduction);
@@ -293,7 +342,7 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createEventDispatcherIntroductionInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleEventDispatcherIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}*/
+		}
 
 		protected function handleMultipleProxiesTestComplete(event:Event):void {
 			assertTrue(true);
@@ -468,22 +517,22 @@ package org.as3commons.bytecode.proxy.impl {
 		protected function handleMetadataTestComplete(event:Event):void {
 			var instance:SimpleClassWithMetadata = _proxyFactory.createProxy(SimpleClassWithMetadata) as SimpleClassWithMetadata;
 			var type:Type = Type.forInstance(instance);
-			assertTrue(type.hasMetaData('Transient'));
-			var metadata:MetaData = type.getMetaData('Transient')[0];
+			assertTrue(type.hasMetadata('Transient'));
+			var metadata:Metadata = type.getMetadata('Transient')[0];
 			assertEquals(1, metadata.arguments.length);
 			assertEquals('arg', metadata.arguments[0].key);
 			assertEquals('classtest', metadata.arguments[0].value);
 
 			var method:Method = type.getMethod('simpleMethod');
-			assertTrue(method.hasMetaData('Transient'));
-			metadata = method.getMetaData('Transient')[0];
+			assertTrue(method.hasMetadata('Transient'));
+			metadata = method.getMetadata('Transient')[0];
 			assertEquals(1, metadata.arguments.length);
 			assertEquals('arg', metadata.arguments[0].key);
 			assertEquals('methodtest', metadata.arguments[0].value);
 
 			var accessor:Accessor = type.getField('getter') as Accessor;
-			assertTrue(accessor.hasMetaData('Transient'));
-			metadata = accessor.getMetaData('Transient')[0];
+			assertTrue(accessor.hasMetadata('Transient'));
+			metadata = accessor.getMetadata('Transient')[0];
 			assertEquals(1, metadata.arguments.length);
 			assertEquals('arg', metadata.arguments[0].key);
 			assertEquals('accessortest', metadata.arguments[0].value);

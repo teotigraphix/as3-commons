@@ -72,7 +72,7 @@ package org.as3commons.bytecode.proxy.impl {
 				throw new ProxyBuildError(ProxyBuildError.FINAL_ACCESSOR_ERROR, accessor.name);
 			}
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(accessor.name, accessor.type.fullName, accessor.initializedValue);
-			addMetadata(accessorBuilder, accessor.metaData);
+			addMetadata(accessorBuilder, accessor.metadata);
 			accessorBuilder.namespaceURI = accessor.namespaceURI;
 			accessorBuilder.scopeName = accessor.scopeName;
 			accessorBuilder.isOverride = (!type.isInterface);

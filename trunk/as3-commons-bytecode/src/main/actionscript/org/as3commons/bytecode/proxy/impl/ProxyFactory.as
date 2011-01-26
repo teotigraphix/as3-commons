@@ -58,7 +58,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.reflect.Accessor;
-	import org.as3commons.reflect.MetaDataContainer;
+	import org.as3commons.reflect.MetadataContainer;
 	import org.as3commons.reflect.Method;
 
 	/**
@@ -421,7 +421,7 @@ package org.as3commons.bytecode.proxy.impl {
 			var packageBuilder:IPackageBuilder = _abcBuilder.definePackage(packageName);
 
 			var classBuilder:IClassBuilder = packageBuilder.defineClass(classParts[1], (type.isInterface ? null : className));
-			addMetadata(classBuilder, type.metaData);
+			addMetadata(classBuilder, type.metadata);
 			if ((type.isDynamic == false) && (classProxyInfo.makeDynamic == true)) {
 				classBuilder.isDynamic = true;
 			} else {
@@ -582,7 +582,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param namespaceKind The specified <code>NamespaceKind</code>.
 		 * @return <code>True</code> if the specified <code>NamespaceKind</code> can be proxied.
 		 */
-		protected function isEligibleForProxy(member:MetaDataContainer):Boolean {
+		protected function isEligibleForProxy(member:MetadataContainer):Boolean {
 			Assert.notNull(member, "member argument must not be null");
 			if ((member['isStatic'] == true) || (member['isFinal'] == true)) {
 				return false;
