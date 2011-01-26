@@ -28,14 +28,16 @@ package org.as3commons.bytecode.proxy.event {
 
 		public var proxyInstance:Object;
 		public var methodInvocationInterceptor:IMethodInvocationInterceptor;
+		public var proxyConstructorArgs:Array;
 
-		public function ProxyCreationEvent(type:String, instance:Object, bubbles:Boolean = false, cancelable:Boolean = false) {
+		public function ProxyCreationEvent(type:String, instance:Object, constructorArgs:Array = null, bubbles:Boolean = false, cancelable:Boolean = false) {
 			super(type, bubbles, cancelable);
 			proxyInstance = instance;
+			proxyConstructorArgs = constructorArgs;
 		}
 
 		public override function clone():Event {
-			var evt:ProxyCreationEvent = new ProxyCreationEvent(this.type, this.proxyInstance, this.bubbles, this.cancelable);
+			var evt:ProxyCreationEvent = new ProxyCreationEvent(this.type, this.proxyInstance, this.proxyConstructorArgs, this.bubbles, this.cancelable);
 			evt.methodInvocationInterceptor = this.methodInvocationInterceptor;
 			return evt;
 		}

@@ -141,6 +141,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _isGenerating:Boolean = false;
 		private var _generatedMultinames:Dictionary;
 		private var _classProxyLookup:Dictionary;
+		private var _proxyClassLookup:Dictionary;
 		private var _abcBuilder:IAbcBuilder;
 		private var _domains:Dictionary;
 		private var _classIntroducer:IClassIntroducer;
@@ -220,7 +221,9 @@ package org.as3commons.bytecode.proxy.impl {
 			_abcBuilder = new AbcBuilder();
 			_domains = new Dictionary();
 			_classProxyLookup = new Dictionary();
+			_proxyClassLookup = new Dictionary();
 			_generatedMultinames = new Dictionary();
+			proxyCreationDispatcher.addEventListener(ProxyCreationEvent.PROXY_CREATED, proxyCreatedHandler);
 			LOGGER.debug("ProxyFactory created and initialized");
 		}
 
@@ -361,28 +364,32 @@ package org.as3commons.bytecode.proxy.impl {
 			if (proxyInfo != null) {
 				if (proxyInfo.proxyClass == null) {
 					proxyInfo.proxyClass = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
+					_proxyClassLookup[proxyInfo.proxyClass] = proxyInfo;
 				}
-				var proxyCreatedHandler:Function = function(event:ProxyCreationEvent):void {
-					IEventDispatcher(event.target).removeEventListener(ProxyCreationEvent.PROXY_CREATED, proxyCreatedHandler);
-					var factoryEvent:ProxyFactoryEvent = new ProxyFactoryEvent(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, clazz, constructorArgs, proxyInfo.methodInvocationInterceptorClass);
-					dispatchEvent(factoryEvent);
-					var interceptorInstance:IMethodInvocationInterceptor;
-					if (factoryEvent.methodInvocationInterceptor != null) {
-						interceptorInstance = factoryEvent.methodInvocationInterceptor;
-					} else {
-						if (proxyInfo.interceptorFactory == null) {
-							interceptorInstance = new proxyInfo.methodInvocationInterceptorClass();
-						} else {
-							interceptorInstance = proxyInfo.interceptorFactory.newInstance();
-						}
-					}
-					event.methodInvocationInterceptor = interceptorInstance;
-				};
-				proxyCreationDispatcher.addEventListener(ProxyCreationEvent.PROXY_CREATED, proxyCreatedHandler);
-				LOGGER.debug("Creating proxy for class {0} with arguments: {1}", clazz, constructorArgs);
+				LOGGER.debug("Creating proxy for class {0} with arguments: {1}", clazz, (constructorArgs != null) ? constructorArgs.join(',') : "");
 				return ClassUtils.newInstance(proxyInfo.proxyClass, constructorArgs);
 			}
 			return null;
+		}
+
+		protected function proxyCreatedHandler(event:ProxyCreationEvent):void {
+			var cls:Class = Object(event.proxyInstance).constructor as Class;
+			var proxyInfo:ProxyInfo = _proxyClassLookup[cls];
+			if (proxyInfo != null) {
+				var factoryEvent:ProxyFactoryEvent = new ProxyFactoryEvent(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, proxyInfo.proxiedClass, event.proxyConstructorArgs, proxyInfo.methodInvocationInterceptorClass);
+				dispatchEvent(factoryEvent);
+				var interceptorInstance:IMethodInvocationInterceptor;
+				if (factoryEvent.methodInvocationInterceptor != null) {
+					interceptorInstance = factoryEvent.methodInvocationInterceptor;
+				} else {
+					if (proxyInfo.interceptorFactory == null) {
+						interceptorInstance = new proxyInfo.methodInvocationInterceptorClass();
+					} else {
+						interceptorInstance = proxyInfo.interceptorFactory.newInstance();
+					}
+				}
+				event.methodInvocationInterceptor = interceptorInstance;
+			}
 		}
 
 		/**
