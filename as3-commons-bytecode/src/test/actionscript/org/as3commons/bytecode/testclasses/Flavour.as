@@ -17,6 +17,10 @@ package org.as3commons.bytecode.testclasses {
 
 	public class Flavour implements IFlavour {
 
+		{
+			InlineTest;
+		}
+
 		private var _name:String;
 		private var _ingredients:Array;
 		private var _liked:Boolean;
@@ -45,11 +49,11 @@ package org.as3commons.bytecode.testclasses {
 		public function combine(... rest):void {
 
 		}
-		
+
 		public function add(flavour:IFlavour):void {
-			
+
 		}
-		
+
 		public function toString():String {
 			return "Flavour{_name:\"" + _name + "\", _ingredients:[" + _ingredients + "], _liked:" + _liked + "}";
 		}

@@ -23,6 +23,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
+	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
@@ -112,6 +113,63 @@ package org.as3commons.bytecode.emit.impl {
 			return trait;
 		}
 
+		public function buildPropertyInitializers():Array {
+			var result:Array = [];
+			if (_memberInitialization != null) {
+				var propertyTypeMultiname:QualifiedName = createPropertyTypeQualifiedName();
+				result[result.length] = Opcode.getlocal_0.op();
+				result[result.length] = Opcode.findpropstrict.op([propertyTypeMultiname]);
+				for each (var arg:* in _memberInitialization.constructorArguments) {
+					switch (true) {
+						case (arg is String):
+							result[result.length] = Opcode.pushstring.op([arg]);
+							break;
+						case (arg is int):
+							result[result.length] = Opcode.pushint.op([arg]);
+							break;
+						case (arg is uint):
+							result[result.length] = Opcode.pushuint.op([arg]);
+							break;
+						case (arg is Number):
+							result[result.length] = Opcode.pushdouble.op([arg]);
+							break;
+						case (arg is Boolean):
+							if (Boolean(arg) == true) {
+								result[result.length] = Opcode.pushtrue.op();
+							} else {
+								result[result.length] = Opcode.pushfalse.op();
+							}
+							break;
+						case (arg == null):
+							result[result.length] = Opcode.pushnull.op();
+							break;
+					}
+				}
+				result[result.length] = Opcode.constructprop.op([propertyTypeMultiname, _memberInitialization.constructorArguments.length]);
+				result[result.length] = Opcode.initproperty.op([createPropertyQualifiedName()]);
+			}
+			return result;
+		}
+
+		protected function createPropertyTypeQualifiedName():QualifiedName {
+			return MultinameUtil.toQualifiedName(_type, MultinameUtil.getNamespaceKind(visibility));
+		}
+
+		protected function createPropertyQualifiedName():QualifiedName {
+			return MultinameUtil.toQualifiedName(name, MultinameUtil.getNamespaceKind(visibility));
+		}
+
+		/*
+		getlocal_0
+		findpropstrict	QName[Namespace[public::flash.events]:Event]
+		pushstring	customEvent
+		constructprop	QName[Namespace[public::flash.events]:Event]	1
+		initproperty	QName[Namespace[public]:event]
+		getlocal_0
+		getlocal_0
+		callproperty	QName[Namespace[public]:createEvent]	0
+		initproperty	QName[Namespace[public]:flexEvent]
+		*/
 
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
 			_eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);

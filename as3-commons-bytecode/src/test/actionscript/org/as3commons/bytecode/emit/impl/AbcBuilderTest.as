@@ -60,7 +60,7 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function testBuildClassWithMetadata():void {
-			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MySimplePropertyTest");
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MySimplePropertyWithMetadataTest");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testString", "String", "test");
 			propertyBuilder.defineMetadata("Custom");
 			var mb:IMethodBuilder = classBuilder.defineMethod("testMethod");
@@ -74,10 +74,10 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		private function propertyMetadataBuildSuccessHandler(event:Event):void {
-			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyTest") as Class;
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyWithMetadataTest") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
-			var type:Type = Type.forInstance(instance);
+			var type:Type = Type.forClass(cls);
 			var fld:Field = type.getField('testString');
 			assertTrue(fld.hasMetadata('Custom'));
 			var mthd:Method = type.getMethod('testMethod');

@@ -22,6 +22,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.lang.StringUtils;
 
 	public final class MultinameUtil {
@@ -34,7 +35,7 @@ package org.as3commons.bytecode.util {
 
 		public static function toQualifiedName(className:String, kind:NamespaceKind = null):QualifiedName {
 			var name:QualifiedName;
-			kind = (kind == null) ? NamespaceKind.PACKAGE_NAMESPACE : kind;
+			kind ||= NamespaceKind.PACKAGE_NAMESPACE;
 
 			switch (className) {
 				case BuiltIns.OBJECT.fullName:
@@ -82,7 +83,7 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function toMultiName(className:String, kind:NamespaceKind = null):Multiname {
-			kind = (kind != null) ? kind : NamespaceKind.PACKAGE_NAMESPACE;
+			kind ||= NamespaceKind.PACKAGE_NAMESPACE;
 			var portions:Array;
 			var classNamePortion:String;
 			if (className.match(DOUBLE_COLON_REGEXP) != null) {
@@ -204,6 +205,26 @@ package org.as3commons.bytecode.util {
 				return nameParts.join(SINGLE_COLON);
 			} else {
 				return "";
+			}
+		}
+
+		public static function getNamespaceKind(visibility:MemberVisibility):NamespaceKind {
+			switch (visibility) {
+				case MemberVisibility.PUBLIC:
+					return NamespaceKind.PACKAGE_NAMESPACE;
+					break;
+				case MemberVisibility.PROTECTED:
+					return NamespaceKind.PROTECTED_NAMESPACE;
+					break;
+				case MemberVisibility.PRIVATE:
+					return NamespaceKind.PRIVATE_NAMESPACE;
+					break;
+				case MemberVisibility.NAMESPACE:
+					return NamespaceKind.NAMESPACE;
+					break;
+				default:
+					return NamespaceKind.PACKAGE_NAMESPACE;
+					break;
 			}
 		}
 

@@ -248,9 +248,17 @@ package org.as3commons.bytecode.emit.impl {
 				for each (var slot:SlotOrConstantTrait in slots) {
 					if (slot.traitMultiname.nameSpace.kind === NamespaceKind.PROTECTED_NAMESPACE) {
 						instInfo.isProtected = true;
-						break;
 					}
 				}
+			}
+			var initOpcodes:Array = [];
+			for each (var pb:IPropertyBuilder in _propertyBuilders) {
+				if (pb.memberInitialization != null) {
+					initOpcodes.push.apply(initOpcodes, pb.buildPropertyInitializers());
+				}
+			}
+			if (initOpcodes.length > 0) {
+				initOpcodes[initOpcodes.length] = Opcode.getlocal_0.op();
 			}
 			instInfo.isFinal = isFinal;
 			instInfo.isInterface = false;
@@ -266,6 +274,7 @@ package org.as3commons.bytecode.emit.impl {
 			if (_ctorBuilder == null) {
 				_ctorBuilder = createDefaultConstructor();
 			}
+			mergeOpcodes(_ctorBuilder.opcodes, initOpcodes);
 			instInfo.instanceInitializer = _ctorBuilder.build();
 			instInfo.instanceInitializer.methodBody.initScopeDepth = initScopeDepth++;
 			instInfo.instanceInitializer.methodBody.maxScopeDepth = initScopeDepth;
@@ -274,6 +283,14 @@ package org.as3commons.bytecode.emit.impl {
 				instInfo.interfaceMultinames[instInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(interfaceName);
 			}
 			return instInfo;
+		}
+
+		protected function mergeOpcodes(constructorBody:Array, initializers:Array):void {
+			if (initializers.length > 0) {
+				var trailingOpcodes:Array = constructorBody.splice(2, constructorBody.length);
+				constructorBody.push.apply(constructorBody, initializers);
+				constructorBody.push.apply(constructorBody, trailingOpcodes);
+			}
 		}
 
 		override public function removeAccessor(name:String, nameSpace:String = null):void {
