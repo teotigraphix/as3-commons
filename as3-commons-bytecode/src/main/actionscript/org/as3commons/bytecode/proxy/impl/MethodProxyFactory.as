@@ -57,7 +57,7 @@ package org.as3commons.bytecode.proxy.impl {
 			if ((method.isFinal) && (failOnFinal)) {
 				throw new ProxyBuildError(ProxyBuildError.FINAL_METHOD_ERROR, method.name);
 			}
-			addMetadata(methodBuilder, method.metaData);
+			addMetadata(methodBuilder, method.metadata);
 			methodBuilder.visibility = (!type.isInterface) ? ProxyFactory.getMemberVisibility(method) : MemberVisibility.PUBLIC;
 			methodBuilder.namespaceURI = method.namespaceURI;
 			methodBuilder.scopeName = method.scopeName;

@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.reflect {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
-	
+
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.IConstantPool;
@@ -26,7 +26,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.util.MultinameUtil;
-	import org.as3commons.reflect.MetaData;
+	import org.as3commons.reflect.Metadata;
 	import org.as3commons.reflect.as3commons_reflect;
 
 	public class ClassMetaDataDeserializer extends ReflectionDeserializer {
@@ -188,7 +188,7 @@ package org.as3commons.bytecode.reflect {
 		private function addMetaData(metadata:Array, className:String, typeCache:ByteCodeTypeCache):void {
 			var numberOfTraitMetadataItems:int = readU30();
 			for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; ++traitMetadataIndex) {
-				var md:MetaData = metadata[readU30()];
+				var md:Metadata = metadata[readU30()];
 				if (className != null) {
 					typeCache.as3commons_reflect::addToMetaDataCache(md.name, className);
 				}

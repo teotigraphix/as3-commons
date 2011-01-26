@@ -18,8 +18,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 	import org.as3commons.bytecode.emit.IMetadataContainer;
 	import org.as3commons.bytecode.emit.impl.MetaDataArgument;
-	import org.as3commons.reflect.MetaData;
-	import org.as3commons.reflect.MetaDataArgument;
+	import org.as3commons.reflect.Metadata;
 
 	public class AbstractProxyFactory extends EventDispatcher {
 
@@ -34,9 +33,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param metadatas The specified <code>Array</code> of <code>MetaData</code> instances
 		 */
 		protected function addMetadata(metadaContainer:IMetadataContainer, metadatas:Array):void {
-			for each (var metadata:MetaData in metadatas) {
+			for each (var metadata:Metadata in metadatas) {
 				var args:Array = [];
-				for each (var arg:org.as3commons.reflect.MetaDataArgument in metadata.arguments) {
+				for each (var arg:org.as3commons.reflect.MetadataArgument in metadata.arguments) {
 					args[args.length] = new org.as3commons.bytecode.emit.impl.MetaDataArgument(arg.key, arg.value);
 					metadaContainer.defineMetaData(metadata.name, args);
 				}

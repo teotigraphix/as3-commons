@@ -40,9 +40,9 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Constructor;
-	import org.as3commons.reflect.MetaData;
-	import org.as3commons.reflect.MetaDataArgument;
-	import org.as3commons.reflect.MetaDataContainer;
+	import org.as3commons.reflect.Metadata;
+	import org.as3commons.reflect.MetadataArgument;
+	import org.as3commons.reflect.MetadataContainer;
 	import org.as3commons.reflect.Parameter;
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
@@ -240,7 +240,7 @@ package org.as3commons.bytecode.reflect {
 				// So, if the item_count is 3, that means you will get three keys followed by three values. The keys
 				// and values match up with each other in index, so the first key matches the first value, second key
 				// matches the second value, etc.
-				var metadataInstance:MetaData = new MetaData("");
+				var metadataInstance:Metadata = new Metadata("");
 				metadatas[metadatas.length] = metadataInstance;
 
 				metadataInstance.as3commons_reflect::setName(constantPool.stringPool[readU30()]);
@@ -257,7 +257,7 @@ package org.as3commons.bytecode.reflect {
 				// Map keys to values in another loop
 				for each (key in keys) {
 					var value:String = constantPool.stringPool[readU30()];
-					metadataInstance.arguments[metadataInstance.arguments.length] = new MetaDataArgument(key, value);
+					metadataInstance.arguments[metadataInstance.arguments.length] = new MetadataArgument(key, value);
 				}
 			}
 			return metadatas;
@@ -395,7 +395,7 @@ package org.as3commons.bytecode.reflect {
 				var namedMultiname:BaseMultiname = null;
 				var vindex:uint = 0;
 				var vkind:uint = 0;
-				var metaDataContainer:MetaDataContainer;
+				var metaDataContainer:MetadataContainer;
 				var qualifiedName:QualifiedName;
 				var fullName:String = ((instanceInfo != null)) ? instanceInfo.fullName : "";
 				switch (traitKind) {
@@ -533,11 +533,11 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
-		private function addMetaData(metadata:Array, container:MetaDataContainer, typeCache:ByteCodeTypeCache):void {
+		private function addMetaData(metadata:Array, container:MetadataContainer, typeCache:ByteCodeTypeCache):void {
 			var numberOfTraitMetadataItems:int = readU30();
 			for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; ++traitMetadataIndex) {
-				var md:MetaData = metadata[readU30()];
-				container.addMetaData(md);
+				var md:Metadata = metadata[readU30()];
+				container.addMetadata(md);
 				if (container is ByteCodeType) {
 					typeCache.as3commons_reflect::addToMetaDataCache(md.name, ByteCodeType(container).fullName);
 				}
