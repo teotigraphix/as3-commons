@@ -244,10 +244,10 @@ methodBuilder.addAsmSource(source);</pre></div>
     </section>
     
     <section name="Generating metadata">
-    	<p>Methods, properties, accessors and classes themselves can be annotated with metadata using an <code><a href="asdoc/org/as3commons/bytecode/emit/IMetaDataBuilder.html" target="_blank">IMetadataBuilder</a></code> instance:</p>
-    	<div class="source"><pre>var metadataBuilder:IMetadataBuilder = methodBuilder.defineMetaData("Inject");</pre></div>
-    	<p>To add arguments to the metadata definition invoke the <code><a href="asdoc/org/as3commons/bytecode/emit/IMetaDataBuilder.html#defineArgument()" target="_blank">defineArgument()</a></code> method:</p>
-    	<div class="source"><pre>var metadataArgument:MetaDataArgument = metadataBuilder.defineArgument();
+    	<p>Methods, properties, accessors and classes themselves can be annotated with metadata using an <code><a href="asdoc/org/as3commons/bytecode/emit/IMetadataBuilder.html" target="_blank">IMetadataBuilder</a></code> instance:</p>
+    	<div class="source"><pre>var metadataBuilder:IMetadataBuilder = methodBuilder.defineMetadata("Inject");</pre></div>
+    	<p>To add arguments to the metadata definition invoke the <code><a href="asdoc/org/as3commons/bytecode/emit/IMetadataBuilder.html#defineArgument()" target="_blank">defineArgument()</a></code> method:</p>
+    	<div class="source"><pre>var metadataArgument:MetadataArgument = metadataBuilder.defineArgument();
 metadataArgument.name = "name";
 metadataArgument.value = "objectName";</pre></div>
 	<p>The actionscript source equivalent of this statement would look like this:</p>
