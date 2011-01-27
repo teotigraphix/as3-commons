@@ -22,7 +22,11 @@
 package org.as3commons.logging {
 	
 	/**
-	 * A <code>ILogSetup</code> 
+	 * <code>ILogSetup</code> defines the setup mechanism or <code>Logger</code>
+	 * instances created by <code>LoggerFactory</code>.
+	 *
+	 * <p>By implementing <code>ILogSetup</code> its possible to augment all loggers
+	 * </p> 
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
@@ -30,7 +34,10 @@ package org.as3commons.logging {
 	public interface ILogSetup {
 		
 		/**
-		 * @param logger Logger that should be 
+		 * Sets all targets of the passed-in <code>Logger</code> to the target
+		 * defined by the setup.
+		 * 
+		 * @param logger <code>Logger</code> to be augmented by the setup
 		 */
 		function applyTo(logger:Logger):void;
 	}

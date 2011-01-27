@@ -63,7 +63,6 @@
 							<directory>src/main/actionscript</directory>
 						</source>
 					</includeAsClasses>
-
 					<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
 					<description>API documentation</description>
 					<mainTitle>API documentation</mainTitle>
@@ -203,9 +202,10 @@
 									<doc-sources
 										path-element="src/main/actionscript" />
 										<library-path dir="target/dependency" includes="*.swc" append="true"/>
+									<templates-path>src/asdoc/template</templates-path>
+									<package-description-file>src/asdoc/package.description.xml</package-description-file>
 								</asdoc>
 							</tasks>
-
 						</configuration>
 						<goals>
 							<goal>run</goal>

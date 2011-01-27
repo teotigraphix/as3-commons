@@ -69,15 +69,15 @@ package org.as3commons.logging.util {
 			assertEquals( "9:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, null, NaN, null, null ) );
 			assertEquals( "9:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, null, null, null, null ) );
 			assertEquals( "0:0:0.0", new LogMessageFormatter( "{timeUTC}" ).format( null, null, null, null, null, null ) );
-			assertEquals( "{0}", new LogMessageFormatter( "{0}" ).format( null, null, null, null, null, ["a"] ) );
-			assertEquals( "a", new LogMessageFormatter( "{message}" ).format( null, null, null, null, "{0}", ["a"] ) );
-			assertEquals( "f", new LogMessageFormatter( "{message}" ).format( null, null, null, null, "{5}", ["a","b","c","d","e","f"] ) );
+			assertEquals( "{0}", new LogMessageFormatter( "{0}" ).format( null, null, null, NaN, null, ["a"] ) );
+			assertEquals( "a", new LogMessageFormatter( "{message}" ).format( null, null, null, NaN, "{0}", ["a"] ) );
+			assertEquals( "f", new LogMessageFormatter( "{message}" ).format( null, null, null, NaN, "{5}", ["a","b","c","d","e","f"] ) );
 			assertEquals( SWFInfo.URL_ERROR, new LogMessageFormatter( "{swf}" ).format( null, null, null, null, null, null ) );
 			assertEquals( SWFInfo.URL_ERROR, new LogMessageFormatter( "{shortSWF}" ).format( null, null, null, null, null, null ) );
 			
 			SWFInfo.init( LogTests.STAGE );
 			assertEquals( SWF_URL, new LogMessageFormatter( "{swf}" ).format( null, null, null, null, null, null ) );
-			assertEquals( SWF_SHORT_URL, new LogMessageFormatter( "{shortSWF}" ).format( null, null, null, null, null, null ) );
+			assertEquals( SWF_SHORT_URL, new LogMessageFormatter( "{shortSWF}" ).format( null, null, null, NaN, null, null ) );
 			SWFInfo.init( null );
 		}
 	}
