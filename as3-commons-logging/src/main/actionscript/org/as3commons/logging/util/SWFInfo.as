@@ -18,5 +18,8 @@ package org.as3commons.logging.util {
 			}
 		}
 		
+		{
+			init( null );
+		}
 	}
 }

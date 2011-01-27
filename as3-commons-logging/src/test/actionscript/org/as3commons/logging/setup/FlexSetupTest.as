@@ -81,6 +81,8 @@ class TestLoggingTarget extends AbstractTarget {
 	
 	public var events: Array = [];
 	
+	public function TestLoggingTarget() {}
+	
 	override public function logEvent(event:LogEvent):void {
 		events.push( event );
 	}

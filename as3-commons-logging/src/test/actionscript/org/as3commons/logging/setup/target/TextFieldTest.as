@@ -11,7 +11,9 @@ package org.as3commons.logging.setup.target {
 	public class TextFieldTest extends TestCase {
 		
 		private const textField: TextField = new TextField();
-		private var lineEnd: String;
+		private var lineEnd : String;
+		
+		public function TextFieldTest() {}
 		
 		private var target: TextFieldTarget;
 		

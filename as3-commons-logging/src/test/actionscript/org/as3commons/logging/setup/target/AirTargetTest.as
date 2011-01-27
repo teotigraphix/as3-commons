@@ -17,6 +17,8 @@ package org.as3commons.logging.setup.target {
 	 */
 	public class AirTargetTest extends TestCase {
 		
+		public function AirTargetTest(){}
+		
 		private var _target: AirFileTarget;
 		private var _filesToDelete : Array;
 		private var _randomTime : Number;

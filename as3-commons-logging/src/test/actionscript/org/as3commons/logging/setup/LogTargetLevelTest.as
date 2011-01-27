@@ -8,7 +8,9 @@ package org.as3commons.logging.setup {
 	 */
 	public class LogTargetLevelTest extends Assert {
 		
-		private const testTarget: ILogTarget = TraceTarget.INSTANCE;
+		private const testTarget : ILogTarget = TraceTarget.INSTANCE;
+		
+		public function LogTargetLevelTest() {}
 		
 		[Test]
 		public function testDebug():void {
