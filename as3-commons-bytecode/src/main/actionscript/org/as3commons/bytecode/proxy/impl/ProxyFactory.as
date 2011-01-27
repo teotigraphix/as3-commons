@@ -362,10 +362,6 @@ package org.as3commons.bytecode.proxy.impl {
 		public function createProxy(clazz:Class, constructorArgs:Array = null):Object {
 			var proxyInfo:ProxyInfo = _classProxyLookup[clazz] as ProxyInfo;
 			if (proxyInfo != null) {
-				if (proxyInfo.proxyClass == null) {
-					proxyInfo.proxyClass = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
-					_proxyClassLookup[proxyInfo.proxyClass] = proxyInfo;
-				}
 				LOGGER.debug("Creating proxy for class {0} with arguments: {1}", clazz, (constructorArgs != null) ? constructorArgs.join(',') : "");
 				return ClassUtils.newInstance(proxyInfo.proxyClass, constructorArgs);
 			}
@@ -397,6 +393,13 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param event The specified event.
 		 */
 		protected function redispatch(event:Event):void {
+			if (event.type == Event.COMPLETE) {
+				for (var obj:* in _classProxyLookup) {
+					var proxyInfo:ProxyInfo = _classProxyLookup[obj];
+					proxyInfo.proxyClass = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
+					_proxyClassLookup[proxyInfo.proxyClass] = proxyInfo;
+				}
+			}
 			_abcBuilder.removeEventListener(Event.COMPLETE, redispatch);
 			_abcBuilder.removeEventListener(IOErrorEvent.IO_ERROR, redispatch);
 			_abcBuilder.removeEventListener(IOErrorEvent.VERIFY_ERROR, redispatch);

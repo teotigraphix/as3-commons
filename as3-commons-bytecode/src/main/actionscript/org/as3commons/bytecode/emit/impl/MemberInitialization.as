@@ -35,7 +35,7 @@ package org.as3commons.bytecode.emit.impl {
 			return !StringUtils.hasText(factoryMethodName);
 		}
 
-		public var constructorArguments:Array;
+		public var constructorArguments:Array = [];
 
 		public var factoryMethodName:String;
 	}

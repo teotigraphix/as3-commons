@@ -28,6 +28,8 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
+	import org.as3commons.bytecode.emit.IPropertyBuilder;
+	import org.as3commons.bytecode.emit.impl.MemberInitialization;
 	import org.as3commons.bytecode.interception.impl.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.io.AbcDeserializer;
 	import org.as3commons.bytecode.io.AbcSerializer;
@@ -43,6 +45,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.testclasses.IEventDispatcherEx;
 	import org.as3commons.bytecode.testclasses.IFlavour;
 	import org.as3commons.bytecode.testclasses.ITestIntroduction;
+	import org.as3commons.bytecode.testclasses.InlineTest;
 	import org.as3commons.bytecode.testclasses.ProxySubClass;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithAccessors;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithCustomNamespaceMethod;
@@ -82,6 +85,7 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		private var _proxyFactory:ProxyFactory;
+		private var _embeddedName:String;
 
 		public function ProxyFactoryTest(methodName:String = null) {
 			super(methodName);
@@ -318,6 +322,49 @@ package org.as3commons.bytecode.proxy.impl {
 			try {
 				var instance2:Flavour = ba.readObject() as Flavour;
 				assertNotNull(instance2);
+			} catch (e:Error) {
+				fail('instance2 was not properly deserialized');
+			}
+		}
+
+		public function testNestedSerialization():void {
+			_embeddedName = null;
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			_proxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_PROXY_BUILD, addProxiedProperty);
+			_proxyFactory.defineProxy(InlineTest, null, applicationDomain);
+			_proxyFactory.defineProxy(Flavour, null, applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleNestedSerializationTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		public function addProxiedProperty(event:ProxyFactoryBuildEvent):void {
+			if (_embeddedName == null) {
+				_embeddedName = event.classBuilder.packageName + '.' + event.classBuilder.name;
+			} else {
+				var pb:IPropertyBuilder = event.classBuilder.defineProperty("testNest", _embeddedName);
+				pb.memberInitialization = new MemberInitialization();
+			}
+		}
+
+		protected function handleNestedSerializationTestComplete(event:Event):void {
+			var proxyFactory:IProxyFactory = event.target as IProxyFactory;
+			var instance:Flavour = proxyFactory.createProxy(Flavour) as Flavour;
+			assertNotNull(instance);
+			assertNotNull(instance['testNest']);
+			var cls:Class = Object(instance).constructor as Class;
+			var cls2:Class = Object(instance['testNest']).constructor as Class;
+			registerClassAlias("org.as3commons.bytecode.testclasses.Flavour", cls);
+			registerClassAlias("org.as3commons.bytecode.testclasses.InlineTest", cls2);
+
+			var ba:ByteArray = new ByteArray();
+			ba.writeObject(instance);
+			ba.position = 0;
+
+			try {
+				var instance2:Flavour = ba.readObject() as Flavour;
+				assertNotNull(instance2);
+				assertNotNull(instance2['testNest']);
 			} catch (e:Error) {
 				fail('instance2 was not properly deserialized');
 			}
