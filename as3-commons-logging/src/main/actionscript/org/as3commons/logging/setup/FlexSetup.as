@@ -29,6 +29,7 @@ package org.as3commons.logging.setup {
 	 *
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
+	 * @version 2
 	 */
 	public class FlexSetup implements ILogSetup {
 		

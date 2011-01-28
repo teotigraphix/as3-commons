@@ -24,25 +24,58 @@ package org.as3commons.logging {
 	import org.as3commons.logging.util.toLogName;
 	
 	/**
-	 * Use the LoggerFactory to obtain a logger. This is the main class used when working with the as3commons-logging
-	 * library.
+	 * Use the <code>LoggerFactory<code> to obtain a logger. This is the main class used when
+	 * working with the as3commons-logging library.
 	 *
-	 * <p>You can either request a logger via the long LoggerFactory.getLogger() or LoggerFactory.getNamedLogger() methods or
-	 * use the short hand methods 
-	 * </p>
+	 * <p>You can either request a logger via the long <code>LoggerFactory.getLogger()</code>
+	 * or <code>LoggerFactory.getNamedLogger()</code> methods or use the short methods
+	 * <code>getLogger()</code>, <code>getNamedLogger()</code>, <code>getClassLogger()</code>.</p>
 	 *
-	 * <p>When configuring a custom logger factory, make sure the logger factory is set before a logger is created.
-	 * Here is an example (for your main application file):</p>
+	 * <listing>
+	 * package {
+	 *   import org.as3commons.logging.ILogger;
+	 *   import org.as3commons.logging.getLogger;
 	 *
-	 * <listing version="3.0">// force the FlexLoggerFactory to be set before any loggers are created
-	 * private static var loggerSetup:&#42; = (LoggerFactory.loggerFactory = new FlexLoggerFactory());
-	 * private static var logger:ILogger = LoggerFactory.getLogger("com.domain.MyClass");</listing>
-	 *
-	 * <p>By default, the DefaultLoggerFactory will be used that will write all log statements to the console using
-	 * trace(). If you don't want any logging, set the logger setup to <code>null</code>.</p>
-	 *
+	 *   public class MyClass {
+	 *   
+	 *    private static const logger: ILogger = getLogger( MyClass );
+	 *      
+	 *    public function doSomething(): void {
+	 *      logger.info("hi");
+	 *    }
+	 *   }
+	 * } 
+	 * </listing>
+	 * 
+	 * <p>By default the <code>Logger</code> instances will redirect to the 
+	 * <code>TRACE_TARGET</code> (using <code>trace</code> for the output). To
+	 * change that to your preferred logging mechanism change the <code>setup</code>
+	 * of the logger factory.</p>
+	 * 
+	 * <listing>
+	 *    org.as3commons.logging.LOGGER_FACTORY.setup = new FlexSetup();
+	 *    // will redirect all output to the flex logging mechanism 
+	 
+	 *    org.as3commons.logging.LOGGER_FACTORY.setup = null;
+	 *    // will clear all output
+	 * </listing>
+	 * 
+	 * <p>Performance information: <code>getLogger</code> is slightly slower than
+	 * <code>getClassLogger</code> and both are a bit slower than
+	 * <code>getNamedLogger()</code>. Nevertheless, it has advantages to use
+	 * <code>getClassLogger()</code>: In a development environment that updates 
+	 * class references on rename its safer (in terms of: less exposed to bugs)
+	 * and faster to use the <code>getLogger()</code>. If you create libraries with
+	 * a lot of classes its recommended to use <code>getNamedLogger()</code>.</p>
+	 * 
 	 * @author Christophe Herreman
-	 * @author Martin Heidegger 
+	 * @author Martin Heidegger
+	 * @version 2
+	 * @see ILogTarget
+	 * @see ILogSetup
+	 * @see getLogger
+	 * @see getNamedLogger
+	 * @see getClassLogger
 	 */
 	public class LoggerFactory {
 		
@@ -82,6 +115,13 @@ package org.as3commons.logging {
 		private var _nullLogger:Logger;
 		private var _undefinedLogger:Logger;
 		
+		/**
+		 * 
+		 * 
+		 * 
+		 * @param setup Default setup to be used for configuring the <code>Logger</code>
+		 *        instances.
+		 */
 		public function LoggerFactory(setup:ILogSetup) {
 			this.setup = setup;
 		}
@@ -101,6 +141,17 @@ package org.as3commons.logging {
 			}
 		}
 		
+		/**
+		 * Returns a <code>ILogger</code> instance for the passed-in name.
+		 * 
+		 * <p>
+		 * 
+		 
+		 * </p>
+		 * 
+		 * @param name Name of the logger to be received, null and undefined are allowed
+		 * @return Logger for the passed-in name
+		 */
 		public function getLogger(name:String):ILogger {
 			var result:Logger;
 			var compileSafeName:* = name;

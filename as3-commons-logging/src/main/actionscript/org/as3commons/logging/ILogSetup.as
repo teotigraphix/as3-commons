@@ -22,22 +22,24 @@
 package org.as3commons.logging {
 	
 	/**
-	 * <code>ILogSetup</code> defines the setup mechanism or <code>Logger</code>
-	 * instances created by <code>LoggerFactory</code>.
-	 *
-	 * <p>By implementing <code>ILogSetup</code> its possible to augment all loggers
-	 * </p> 
+	 * <code>ILogSetup</code> augment <code>Logger</code> instances created by
+	 * <code>LoggerFactory</code>.
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
+	 * @see org.as3commons.logging.LoggerFactory#setup
 	 */
 	public interface ILogSetup {
 		
 		/**
-		 * Sets all targets of the passed-in <code>Logger</code> to the target
-		 * defined by the setup.
+		 * Sets all targets of the passed-in <code>Logger</code> to the ones
+		 * desired by the setup.
+		 * 
+		 * <p>The <code>ILogSetup<code> has to change <b>all</b> targets of the
+		 * <code>Logger</code>.</p> 
 		 * 
 		 * @param logger <code>Logger</code> to be augmented by the setup
+		 * @see org.as3commons.logging.LoggerFactory
 		 */
 		function applyTo(logger:Logger):void;
 	}

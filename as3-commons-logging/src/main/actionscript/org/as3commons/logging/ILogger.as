@@ -27,8 +27,10 @@ package org.as3commons.logging {
 	 * 
 	 * <p><code>ILogger</code> offers the common methods to log your traces like
 	 * <code>debug</code>, <code>info</code>, <code>warning</code>, <code>error</code>,
-	 * <code>fatal</code>. Each of these methods gets treatened seperatly by the
+	 * <code>fatal</code>. Each of these methods gets treated separately by the
 	 * logging framework.</p>
+	 * 
+	 * 
 	 * 
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
@@ -39,7 +41,7 @@ package org.as3commons.logging {
 	public interface ILogger {
 		
 		/**
-		 * Getter for the name this 
+		 * Getter for the name this instance. 
 		 * 
 		 * @return name of the instance.
 		 */
@@ -66,15 +68,15 @@ package org.as3commons.logging {
 		 * <p>Debug messages should be messages that are just necessary for
 		 * the debugging of a application.</p>
 		 * 
-		 * @example 
-		 * 
 		 * @param message Message that should be logged.
 		 * @param params List of parameters 
 		 */
 		function debug(message:*, ... params):void;
 		
 		/**
-		 * Logs a message with a "info" level.
+		 * Logs a message with a "info" purposes.
+		 * 
+		 * <p>
 		 */
 		function info(message:*, ... params):void;
 		

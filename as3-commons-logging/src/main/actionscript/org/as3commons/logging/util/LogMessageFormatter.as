@@ -25,31 +25,81 @@ package org.as3commons.logging.util {
 	
 	/**
 	 * A Formatter that formats a message string using a pattern.
+	 * 
+	 * 
+	 * <dl>
+	 *   <dt>{date}</dt>
+	 *   <dd>The date in the format <code>YYYY.MM.DD</code></dd>
+	 *   <dt>{dateUTC}</dt>
+	 *   <dd>The UTC date in the format <code>YYYY.MM.DD</code></dd>
+	 *   <dt>{logLevel}</dt>
+	 *   <dd>The level of the log statement (example: <code>DEBUG</code> )</dd>
+	 *   <dt>{logTime}</dt>
+	 *   <dd>The UTC time in the format <code>HH:MM:SS.0MS</code></dd>
+	 *   <dt>{message}</dt>
+	 *   <dd>The message of the logger</dd>
+	 *   <dt>{message_dqt}</dt>
+	 *   <dd>The message of the logger, double quote escaped.</dd>
+	 *   <dt>{name}</dt>
+	 *   <dd>The name of the logger</dd>
+	 *   <dt>{time}</dt>
+	 *   <dd>The time in the format <code>H:M:S.MS</code></dd>
+	 *   <dt>{timeUTC}</dt>
+	 *   <dd>The UTC time in the format <code>H:M:S.MS</code></dd>
+	 *   <dt>{shortName}</dt>
+	 *   <dd>The short name of the logger</dd>
+	 *   <dt>{shortSWF}</dt>
+	 *   <dd>The SWF file name</dd>
+	 *   <dt>{swf}</dt>
+	 *   <dd>The full SWF path</dd>
+	 * </dl>
 	 *
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
+	 * @since 2
+	 * @see org.as3commons.logging.setup.target.IFormattingLogTarget
 	 */
 	public final class LogMessageFormatter {
 		
-		private const STATIC_TYPE: int		= 0;
-		private const MESSAGE_TYPE: int		= 1;
-		private const MESSAGE_DQT_TYPE: int	= 2;
-		private const TIME_TYPE: int		= 3;
-		private const TIME_UTC_TYPE: int	= 4;
-		private const LOG_TIME_TYPE: int	= 5;
-		private const DATE_TYPE: int		= 6;
-		private const DATE_UTC_TYPE: int	= 7;
-		private const LOG_LEVEL_TYPE: int	= 8;
-		private const SWF_TYPE: int			= 9;
-		private const SHORT_SWF_TYPE: int	= 10;
-		private const NAME_TYPE: int		= 11;
-		private const SHORT_NAME_TYPE: int	= 12;
+		private const STATIC_TYPE: int		= 1;
+		private const MESSAGE_TYPE: int		= 2;
+		private const MESSAGE_DQT_TYPE: int	= 3;
+		private const TIME_TYPE: int		= 4;
+		private const TIME_UTC_TYPE: int	= 5;
+		private const LOG_TIME_TYPE: int	= 6;
+		private const DATE_TYPE: int		= 7;
+		private const DATE_UTC_TYPE: int	= 8;
+		private const LOG_LEVEL_TYPE: int	= 9;
+		private const SWF_TYPE: int			= 10;
+		private const SHORT_SWF_TYPE: int	= 11;
+		private const NAME_TYPE: int		= 12;
+		private const SHORT_NAME_TYPE: int	= 13;
+		
+		private const TYPES: Object			= {
+			message:		MESSAGE_TYPE,
+			message_dqt:	MESSAGE_DQT_TYPE,
+			time:			TIME_TYPE,
+			timeUTC:		TIME_UTC_TYPE,
+			logTime:		LOG_TIME_TYPE,
+			date:			DATE_TYPE,
+			dateUTC:		DATE_UTC_TYPE,
+			logLevel:		LOG_LEVEL_TYPE,
+			swf:			SWF_TYPE,
+			shortSWF:		SHORT_SWF_TYPE,
+			name:			NAME_TYPE,
+			shortName:		SHORT_NAME_TYPE
+		};
 		
 		private const _now: Date = new Date();
 		private const _braceRegexp: RegExp = /{(?P<field>[a-zA-Z_]+)}/g;
 		private var _firstNode: FormatNode;
 		
-		public function LogMessageFormatter( format:String ) {
+		/**
+		 * Constructs a new <code>LogMessageFormatter</code> instance.
+		 * 
+		 * @param format Format pattern used to format a log statement
+		 */
+		public function LogMessageFormatter(format:String) {
 			var pos: int = 0;
 			var parseResult: Object;
 			var lastNode: FormatNode;
@@ -59,23 +109,7 @@ package org.as3commons.logging.util {
 			
 			while( parseResult =  _braceRegexp.exec( format ) ) {
 				
-				var field: String = parseResult["field"];
-				type = -1;
-				
-				     if( field == "message" )		type = MESSAGE_TYPE;
-				else if( field == "message_dqt" )	type = MESSAGE_DQT_TYPE;
-				else if( field == "time" )			type = TIME_TYPE;
-				else if( field == "timeUTC" )		type = TIME_UTC_TYPE;
-				else if( field == "logTime" )		type = LOG_TIME_TYPE;
-				else if( field == "date" )			type = DATE_TYPE;
-				else if( field == "dateUTC" )		type = DATE_UTC_TYPE;
-				else if( field == "logLevel" )		type = LOG_LEVEL_TYPE;
-				else if( field == "swf" )			type = SWF_TYPE;
-				else if( field == "shortSWF" )		type = SHORT_SWF_TYPE;
-				else if( field == "name" )			type = NAME_TYPE;
-				else if( field == "shortName" )		type = SHORT_NAME_TYPE;
-				
-				if( type != -1 ) {
+				if( type = TYPES[parseResult["field"]] ) {
 					
 					if( pos != parseResult["index"] ) {
 						
@@ -121,8 +155,18 @@ package org.as3commons.logging.util {
 		
 		/**
 		 * Returns a string with the parameters replaced.
+		 * 
+		 * @param name Name of the logger that initiated that log statement.
+		 * @param shortName Short name of the logger that initiated that log statement.
+		 * @param level Level of which the output happened.
+		 * @param timeMs Time in ms since 1970, passed to the log target.
+		 * @param message Message that should be logged.
+		 * @param params Parameter that should be filled in the message
+		 * 
+		 * @see org.as3commons.logging.Logger
 		 */
-		public function format( name:String, shortName:String, level:LogLevel, timeMs:Number, message:String, params:Array ):String {
+		public function format(name:String, shortName:String, level:LogLevel, timeMs:Number,
+								message:String, params:Array):String {
 			
 			var result: String = "";
 			var node: FormatNode = _firstNode;

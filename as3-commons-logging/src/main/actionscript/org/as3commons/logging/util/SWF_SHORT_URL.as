@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.util {
-
+	
 	/**
 	 * The url of the currently running SWF in its short form (just the file name).
 	 * 

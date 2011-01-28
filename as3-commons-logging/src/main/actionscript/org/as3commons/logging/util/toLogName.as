@@ -24,11 +24,11 @@ package org.as3commons.logging.util {
 	import flash.utils.getQualifiedClassName;
 	
 	/**
-	 * Transforms a input to a 
+	 * Transforms a input class or object to a viable logger name.
 	 * 
 	 * @author Martin Heidegger
-	 * @param input 
-	 * @return String for the input
+	 * @param input Class or object from which the class name will be taken from
+	 * @return Classname prepared to be used within the logging framework.
 	 */
 	public function toLogName(input:*):String {
 		// replace the colons (::) in the name since this is not allowed in the Flex logging API

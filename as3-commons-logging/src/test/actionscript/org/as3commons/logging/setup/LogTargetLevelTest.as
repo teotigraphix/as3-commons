@@ -1,5 +1,5 @@
 package org.as3commons.logging.setup {
-	import org.as3commons.logging.setup.target.TraceTarget;
+	import org.as3commons.logging.setup.target.TRACE_TARGET;
 	import org.as3commons.logging.Logger;
 	import flexunit.framework.Assert;
 
@@ -8,7 +8,7 @@ package org.as3commons.logging.setup {
 	 */
 	public class LogTargetLevelTest extends Assert {
 		
-		private const testTarget : ILogTarget = TraceTarget.INSTANCE;
+		private const testTarget : ILogTarget = TRACE_TARGET;
 		
 		public function LogTargetLevelTest() {}
 		
