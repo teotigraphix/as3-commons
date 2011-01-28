@@ -19,6 +19,8 @@ package org.as3commons.bytecode.reflect {
 	import flash.utils.ByteArray;
 
 	import org.as3commons.bytecode.abc.IConstantPool;
+	import org.as3commons.bytecode.util.AbcFileUtil;
+	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.SoftReference;
@@ -149,6 +151,8 @@ package org.as3commons.bytecode.reflect {
 		public static function forName(name:String, applicationDomain:ApplicationDomain = null):ByteCodeType {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:ByteCodeType;
+
+			name = AbcFileUtil.normalizeFullName(name);
 
 			result = getTypeProvider().getTypeCache().get(name) as ByteCodeType;
 
