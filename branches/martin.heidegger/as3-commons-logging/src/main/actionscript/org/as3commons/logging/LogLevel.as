@@ -22,15 +22,20 @@
 package org.as3commons.logging {
 
 	/**
-	 * LogLevel enumeration
+	 * For making sure that the debug levels are well identified and may not
+	 * 
 	 *
 	 * @author Martin Heidegger
-	 * @version 1.0
+	 * @version 1
 	 */
 	public final class LogLevel {
 		
+		/** Value of the log level */
 		private var _value:int;
+		
+		/** Name of the log level */
 		private var _name:String;
+		
 		
 		public function LogLevel(name:String,value:int) {
 			_name = name;
@@ -41,6 +46,9 @@ package org.as3commons.logging {
 			return _name;
 		}
 		
+		/**
+		 *
+		 */
 		public function valueOf(): int {
 			return _value;
 		}

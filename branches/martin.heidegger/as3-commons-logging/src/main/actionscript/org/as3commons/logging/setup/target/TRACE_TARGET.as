@@ -21,51 +21,35 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import org.as3commons.logging.LogLevel;
-	
 	/**
-	 * Holder for the content of one log statement.
-	 * 
+	 * Outputs log statements to the <code>trace()</code> method. 
+	 *
+	 * @author Christophe Herreman
 	 * @author Martin Heidegger
-	 * @since 2
+	 * @version 2
 	 */
-	public final class BufferStatement {
-		
-		/** Name of the logger that triggered the log statement. */
-		public var name: String;
-		
-		/** Shortened form of the name. */
-		public var shortName: String;
-		
-		/** Level of the log statement that got triggered. */
-		public var level: LogLevel;
-		
-		/** Time stamp of when the log statement got triggered. */
-		public var timeStamp: Number;
-		
-		/** Message of the log statement. */
-		public var message: *;
-		
-		/** Parameters for the log statement. */
-		public var parameters: Array;
-		
-		/**
-		 *
-		 * @param name
-		 * @param shortName
-		 * @param level
-		 * @param timeStamp
-		 * @param message
-		 * @param parameters
-		 */
-		public function BufferStatement(name:String, shortName:String, level:LogLevel,
-										timeStamp:Number, message:*, parameters:Array) {
-			this.name = name;
-			this.shortName = shortName;
-			this.level = level;
-			this.timeStamp = timeStamp;
-			this.message = message;
-			this.parameters = parameters;
-		}
+	public const TRACE_TARGET: IFormattingLogTarget = new TraceTarget();
+}
+
+import org.as3commons.logging.LogLevel;
+import org.as3commons.logging.setup.target.IFormattingLogTarget;
+import org.as3commons.logging.util.LogMessageFormatter;
+
+final class TraceTarget implements IFormattingLogTarget {
+	
+	public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
+	
+	private var _formatter:LogMessageFormatter;
+	
+	public function TraceTarget( format: String = null ) {
+		this.format = format;
+	}
+	
+	public function set format( format: String ): void {
+		_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
+	}
+	
+	public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:*, parameters:Array):void {
+		trace( _formatter.format( name, shortName, level, timeStamp, message, parameters));
 	}
 }
