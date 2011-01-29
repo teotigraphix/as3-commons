@@ -37,7 +37,7 @@ package org.as3commons.logging.util {
 	 *       <td>The UTC date in the format <code>YYYY/MM/DD</code></td></tr>
 	 * 
 	 *   <tr><td>{gmt}</td>
-	 *       <td>The time offset of the statement to the Greenwich mean time in the format <code>GMT+9999</td></tr>
+	 *       <td>The time offset of the statement to the Greenwich mean time in the format <code>GMT+9999</code></td></tr>
 	 
 	 *   <tr><td>{logLevel}</td>
 	 *       <td>The level of the log statement (example: <code>DEBUG</code> )</td></tr>
