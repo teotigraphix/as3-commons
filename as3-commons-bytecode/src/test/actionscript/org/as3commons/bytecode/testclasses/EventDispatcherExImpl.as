@@ -22,9 +22,19 @@ package org.as3commons.bytecode.testclasses {
 
 		as3commons_bytecode var listenersLookup:Dictionary;
 
+		private var _testAccessor:Object;
+
 		public function EventDispatcherExImpl() {
 			super();
 			this.as3commons_bytecode::listenersLookup = new Dictionary();
+		}
+
+		public function get testAccessor():Object {
+			return _testAccessor;
+		}
+
+		public function set testAccessor(value:Object):void {
+			_testAccessor = value;
 		}
 
 		public function removeAll():void {

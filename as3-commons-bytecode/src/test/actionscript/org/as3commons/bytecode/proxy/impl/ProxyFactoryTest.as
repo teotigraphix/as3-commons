@@ -58,6 +58,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.testclasses.SimpleClassWithTwoMethods;
 	import org.as3commons.bytecode.testclasses.SimpleClassWithoutConstructorArgument;
 	import org.as3commons.bytecode.testclasses.TestEventDispatcher;
+	import org.as3commons.bytecode.testclasses.TestEventDispatcher2;
 	import org.as3commons.bytecode.testclasses.TestIntroduction;
 	import org.as3commons.bytecode.testclasses.TestProxiedClass;
 	import org.as3commons.bytecode.testclasses.interceptors.CtorInterceptorFactory;
@@ -391,6 +392,24 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.loadProxyClasses();
 		}
 
+		public function testMultipleIntroductions():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(TestEventDispatcher, null, applicationDomain);
+			classProxyInfo.introduce(EventDispatcherExImpl);
+			classProxyInfo.proxyMethod("addEventListener");
+			classProxyInfo.proxyMethod("removeEventListener");
+
+			classProxyInfo = _proxyFactory.defineProxy(TestEventDispatcher2, null, applicationDomain);
+			classProxyInfo.introduce(EventDispatcherExImpl);
+			classProxyInfo.proxyMethod("addEventListener");
+			classProxyInfo.proxyMethod("removeEventListener");
+
+			var abcBuilder:IAbcBuilder = _proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createEventDispatcherIntroductionInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMultipleIntroductionTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
 		protected function handleMultipleProxiesTestComplete(event:Event):void {
 			assertTrue(true);
 		}
@@ -409,6 +428,24 @@ package org.as3commons.bytecode.proxy.impl {
 			var func1:Function = function(event:Event):void {
 			};
 			instance.addEventListener(Event.ACTIVATE, func1, false, 0, true);
+			assertEquals(1, testInterface.getCountListeners(Event.ACTIVATE));
+		}
+
+		protected function handleMultipleIntroductionTestComplete(event:Event):void {
+			var instance:TestEventDispatcher = _proxyFactory.createProxy(TestEventDispatcher) as TestEventDispatcher;
+			assertNotNull(instance);
+			var testInterface:IEventDispatcherEx = instance as IEventDispatcherEx;
+			assertNotNull(testInterface);
+			var func1:Function = function(event:Event):void {
+			};
+			instance.addEventListener(Event.ACTIVATE, func1, false, 0, true);
+			assertEquals(1, testInterface.getCountListeners(Event.ACTIVATE));
+
+			var instance2:TestEventDispatcher2 = _proxyFactory.createProxy(TestEventDispatcher2) as TestEventDispatcher2;
+			assertNotNull(instance2);
+			testInterface = instance2 as IEventDispatcherEx;
+			assertNotNull(testInterface);
+			instance2.addEventListener(Event.ACTIVATE, func1, false, 0, true);
 			assertEquals(1, testInterface.getCountListeners(Event.ACTIVATE));
 		}
 

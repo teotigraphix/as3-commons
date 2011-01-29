@@ -81,12 +81,12 @@ package org.as3commons.bytecode.proxy.impl {
 			accessorBuilder.visibility = (!type.isInterface) ? ProxyFactory.getMemberVisibility(accessor) : MemberVisibility.PUBLIC;
 			var getterFunc:Function = function(event:AccessorBuilderEvent):void {
 				IEventDispatcher(event.target).removeEventListener(AccessorBuilderEvent.BUILD_GETTER, getterFunc);
-				event.builder = createGetter(event.accessorBuilder, multiName, bytecodeQname, type.isInterface);
+				event.builder = createGetter(event.accessorBuilder, classBuilder, multiName, bytecodeQname, type.isInterface);
 			};
 			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_GETTER, getterFunc);
 			var setterFunc:Function = function(event:AccessorBuilderEvent):void {
 				IEventDispatcher(event.target).removeEventListener(AccessorBuilderEvent.BUILD_SETTER, setterFunc);
-				event.builder = createSetter(event.accessorBuilder, multiName, bytecodeQname, type.isInterface);
+				event.builder = createSetter(event.accessorBuilder, classBuilder, multiName, bytecodeQname, type.isInterface);
 			};
 			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_SETTER, setterFunc);
 		}
@@ -119,10 +119,10 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 * @return The new <code>IMethodBuilder</code> instance.
 		 */
-		protected function createGetter(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):IMethodBuilder {
+		protected function createGetter(accessorBuilder:IAccessorBuilder, classBuilder:IClassBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod(accessorBuilder);
 			mb.returnType = accessorBuilder.type;
-			addGetterBody(mb, multiName, bytecodeQname, isInterface);
+			addGetterBody(mb, multiName, bytecodeQname, classBuilder, isInterface);
 			return mb;
 		}
 
@@ -134,11 +134,11 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 * @return The new <code>IMethodBuilder</code> instance.
 		 */
-		protected function createSetter(accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):IMethodBuilder {
+		protected function createSetter(accessorBuilder:IAccessorBuilder, classBuilder:IClassBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):IMethodBuilder {
 			var mb:IMethodBuilder = createMethod(accessorBuilder);
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(accessorBuilder.type);
-			addSetterBody(mb, accessorBuilder, multiName, bytecodeQname, isInterface);
+			addSetterBody(mb, accessorBuilder, multiName, bytecodeQname, classBuilder, isInterface);
 			return mb;
 		}
 
@@ -156,9 +156,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 */
-		protected function addGetterBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):void {
+		protected function addGetterBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName, classBuilder:IClassBuilder, isInterface:Boolean):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
-			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, methodBuilder);
+			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, methodBuilder, classBuilder);
 			dispatchEvent(event);
 			methodBuilder = event.methodBuilder;
 			if (methodBuilder == null) {
@@ -220,9 +220,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 */
-		protected function addSetterBody(methodBuilder:IMethodBuilder, accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):void {
+		protected function addSetterBody(methodBuilder:IMethodBuilder, accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName, classBuilder:IClassBuilder, isInterface:Boolean):void {
 			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
-			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD, methodBuilder);
+			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD, methodBuilder, classBuilder);
 			dispatchEvent(event);
 			methodBuilder = event.methodBuilder;
 			if (methodBuilder == null) {
