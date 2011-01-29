@@ -1,5 +1,6 @@
 package org.as3commons.logging.setup {
 	import org.as3commons.logging.setup.target.TRACE_TARGET;
+	import org.as3commons.logging.setup.target.TextFieldTarget;
 	import org.as3commons.logging.Logger;
 	import flexunit.framework.Assert;
 
@@ -187,6 +188,113 @@ package org.as3commons.logging.setup {
 			assertTrue( logger.warnTarget != testTarget );
 			assertTrue( logger.errorTarget != testTarget );
 			assertTrue( logger.fatalTarget != testTarget );
+		}
+		
+		[Test]
+		public function testApply():void {
+			var logger: Logger = new Logger("name");
+			var targetA: ILogTarget = new TextFieldTarget;
+			var targetB: ILogTarget = new TextFieldTarget;
+			
+			logger.allTargets = targetA;
+			
+			LogSetupLevel.ERROR_ONLY.applyTo(logger, targetB, true);
+			
+			assertEquals( logger.errorTarget, targetB );
+			assertEquals( logger.debugTarget, null );
+			assertEquals( logger.fatalTarget, null );
+			assertEquals( logger.infoTarget, null );
+			assertEquals( logger.warnTarget, null );
+			
+			logger.allTargets = targetA;
+			
+			LogSetupLevel.WARN_ONLY.applyTo(logger, targetB, true);
+			
+			assertEquals( logger.errorTarget, null );
+			assertEquals( logger.debugTarget, null );
+			assertEquals( logger.fatalTarget, null );
+			assertEquals( logger.infoTarget, null );
+			assertEquals( logger.warnTarget, targetB );
+			
+			logger.allTargets = targetA;
+			
+			LogSetupLevel.INFO_ONLY.applyTo(logger, targetB, true);
+			
+			assertEquals( logger.errorTarget, null );
+			assertEquals( logger.debugTarget, null );
+			assertEquals( logger.fatalTarget, null );
+			assertEquals( logger.infoTarget, targetB );
+			assertEquals( logger.warnTarget, null );
+			
+			logger.allTargets = targetA;
+			
+			LogSetupLevel.DEBUG_ONLY.applyTo(logger, targetB, true);
+			
+			assertEquals( logger.errorTarget, null );
+			assertEquals( logger.debugTarget, targetB );
+			assertEquals( logger.fatalTarget, null );
+			assertEquals( logger.infoTarget, null );
+			assertEquals( logger.warnTarget, null );
+			
+			logger.allTargets = targetA;
+			
+			LogSetupLevel.FATAL_ONLY.applyTo(logger, targetB, true);
+			
+			assertEquals( logger.errorTarget, null );
+			assertEquals( logger.debugTarget, null );
+			assertEquals( logger.fatalTarget, targetB );
+			assertEquals( logger.infoTarget, null );
+			assertEquals( logger.warnTarget, null );
+			
+			logger.allTargets = targetA;
+			
+			LogSetupLevel.ERROR_ONLY.applyTo(logger, targetB, false);
+			
+			assertEquals( logger.errorTarget, targetB );
+			assertEquals( logger.debugTarget, targetA );
+			assertEquals( logger.fatalTarget, targetA );
+			assertEquals( logger.infoTarget, targetA );
+			assertEquals( logger.warnTarget, targetA );
+			
+			logger.allTargets = targetA;
+			
+			LogSetupLevel.WARN_ONLY.applyTo(logger, targetB, false);
+			
+			assertEquals( logger.errorTarget, targetA );
+			assertEquals( logger.debugTarget, targetA );
+			assertEquals( logger.fatalTarget, targetA );
+			assertEquals( logger.infoTarget, targetA );
+			assertEquals( logger.warnTarget, targetB );
+			
+			logger.allTargets = targetA;
+			
+			LogSetupLevel.INFO_ONLY.applyTo(logger, targetB, false);
+			
+			assertEquals( logger.errorTarget, targetA );
+			assertEquals( logger.debugTarget, targetA );
+			assertEquals( logger.fatalTarget, targetA );
+			assertEquals( logger.infoTarget, targetB );
+			assertEquals( logger.warnTarget, targetA );
+			
+			logger.allTargets = targetA;
+			
+			LogSetupLevel.DEBUG_ONLY.applyTo(logger, targetB, false);
+			
+			assertEquals( logger.errorTarget, targetA );
+			assertEquals( logger.debugTarget, targetB );
+			assertEquals( logger.fatalTarget, targetA );
+			assertEquals( logger.infoTarget, targetA );
+			assertEquals( logger.warnTarget, targetA );
+			
+			logger.allTargets = targetA;
+			
+			LogSetupLevel.FATAL_ONLY.applyTo(logger, targetB, false);
+			
+			assertEquals( logger.errorTarget, targetA );
+			assertEquals( logger.debugTarget, targetA );
+			assertEquals( logger.fatalTarget, targetB );
+			assertEquals( logger.infoTarget, targetA );
+			assertEquals( logger.warnTarget, targetA );
 		}
 	}
 }

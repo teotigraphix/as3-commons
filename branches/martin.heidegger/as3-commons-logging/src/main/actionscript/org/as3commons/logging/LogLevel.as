@@ -22,11 +22,11 @@
 package org.as3commons.logging {
 
 	/**
-	 * For making sure that the debug levels are well identified and may not
+	 * <code>LogLevel</code> is used to inform <code>ILogTarget</code> on which
+	 * method the log statement happened.
 	 * 
-	 *
 	 * @author Martin Heidegger
-	 * @version 1
+	 * @version 1.0
 	 */
 	public final class LogLevel {
 		
@@ -36,24 +36,37 @@ package org.as3commons.logging {
 		/** Name of the log level */
 		private var _name:String;
 		
-		
-		public function LogLevel(name:String,value:int) {
+		/**
+		 * Creates a new <code>LogLevel</code>.
+		 * 
+		 * @param name Name of this level.
+		 * @param value Value of this level. Binary unique.
+		 */
+		public function LogLevel(name:String, value:int) {
 			_name = name;
 			_value = value;
 		}
 		
+		/**
+		 * Name of the <code>LogLevel</code>
+		 */
 		public function get name():String {
 			return _name;
 		}
 		
 		/**
-		 *
+		 * Value of the <code>LogLevel</code>.
+		 * 
+		 * @return Value of this level. Binary unique.
 		 */
-		public function valueOf(): int {
+		public function valueOf():int {
 			return _value;
 		}
 		
-		public function toString(): String {
+		/**
+		 * 
+		 */
+		public function toString():String {
 			return "[LogLevel." + _name + "]";
 		}
 	}

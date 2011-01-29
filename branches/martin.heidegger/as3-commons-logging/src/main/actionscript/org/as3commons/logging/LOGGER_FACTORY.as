@@ -25,11 +25,23 @@ package org.as3commons.logging {
 	import org.as3commons.logging.setup.SimpleTargetSetup;
 	
 	/**
-	 * Constant 
+	 * <code>LOGGER_FACTORY</code> contains the default <code>LoggerFactory</code>
+	 * used by <code>getLogger</code> and its siblings.
 	 * 
+	 * <p>All <code>Logger</code> instances returned by <code>getLogger()</code>,
+	 * are generated and held by this instance. This instance </p>
+	 * 
+	 * <listing>
+	 *    LOGGER_FACTORY.setup = null; // Sets all output to null.
+	 *    LOGGER_FACTORY.setup = new SimpleTargetSetup( new SOSTarget );
+	 *    // Logs all targets to SOS
+	 * </listing>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2
+	 * @see org.as3commons.logging#getLogger()
+	 * @see org.as3commons.logging#getNamedLogger()
+	 * @see org.as3commons.logging#getClassLogger()
 	 */
 	public const LOGGER_FACTORY: LoggerFactory = new LoggerFactory( new SimpleTargetSetup( TRACE_TARGET ) );
 }

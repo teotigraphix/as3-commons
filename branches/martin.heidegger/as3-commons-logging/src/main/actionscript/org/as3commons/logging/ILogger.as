@@ -30,7 +30,20 @@ package org.as3commons.logging {
 	 * <code>fatal</code>. Each of these methods gets treated separately by the
 	 * logging framework.</p>
 	 * 
+	 * <p><b>Performance Note:</b> If you have a log statement that does intense
+	 * processing or intense stringification it will be executed no matter if a log
+	 * target is actually in place.</p>
 	 * 
+	 * <listing>
+	 *   // This will call the complexStringifcation no matter if it will do actually
+	 *   // something.
+	 *   logger.info( complexStringification() );
+	 *   
+	 *   if( logger.infoEnabled ) {
+	 *      // will just call the stringification in case the info is enabled
+	 *      logger.info( complexStringification() );
+	 *   }
+	 * </listing>
 	 * 
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
@@ -65,63 +78,139 @@ package org.as3commons.logging {
 		/**
 		 * Logs a message for debug purposes.
 		 * 
-		 * <p>Debug messages should be messages that are just necessary for
-		 * the debugging of a application.</p>
+		 * <p>Debug messages should be messages that are additional output used
+		 * to ease the debugging of an application.</p>
+		 * 
+		 * <p>A message can contain place holders that are filled with the additional
+		 * parameters. The <code>ILogTarget</code> implementation may treat the 
+		 * options as they want.</p>
+		 * 
+		 * <p>Example for a message with parameters:</p>
+		 * <listing>
+		 *   logger.debug("A: {0} is B: {1}", "Hello", "World");
+		 *   // A: Hello is B: World
+		 * </listing>
 		 * 
 		 * @param message Message that should be logged.
-		 * @param params List of parameters 
+		 * @param params List of parameters.
 		 */
-		function debug(message:*, ... params):void;
+		function debug(message:*, ... parameters):void;
 		
 		/**
-		 * Logs a message with a "info" purposes.
+		 * Logs a message for notification purposes.
 		 * 
-		 * <p>
+		 * <p>Notification messages should be messages that highlight interesting
+		 * informations about what happens in the the application.</p>
+		 * 
+		 * <p>A message can contain place holders that are filled with the additional
+		 * parameters. The <code>ILogTarget</code> implementation may treat the 
+		 * options as they want.</p>
+		 * 
+		 * <p>Example for a message with parameters:</p>
+		 * <listing>
+		 *   logger.info("A: {0} is B: {1}", "Hello", "World");
+		 *   // A: Hello is B: World
+		 * </listing>
+		 * 
+		 * @param message Message that should be logged.
+		 * @param params List of parameters.
 		 */
-		function info(message:*, ... params):void;
+		function info(message:*, ... parameters):void;
 		
 		/**
-		 * Logs a message with a "warn" level.
+		 * Logs a message for warning about a undesirable application state.
+		 * 
+		 * <p>Warnings are designated to be used in case code got executed that
+		 * is not desirable for performance, memory or clarity reasons but didn't
+		 * result in any error.</p>
+		 * 
+		 * <p>A message can contain place holders that are filled with the additional
+		 * parameters. The <code>ILogTarget</code> implementation may treat the 
+		 * options as they want.</p>
+		 * 
+		 * <p>Example for a message with parameters:</p>
+		 * <listing>
+		 *   logger.warn("A: {0} is B: {1}", "Hello", "World");
+		 *   // A: Hello is B: World
+		 * </listing>
+		 * 
+		 * @param message Message that should be logged.
+		 * @param params List of parameters.
 		 */
 		function warn(message:*, ... params):void;
 		
 		/**
-		 * Logs a message with a "error" level.
+		 * Logs a message to notify about an error that was dodged by the application.
+		 * 
+		 * <p>The Error level is designated to be used in case an error occurred
+		 * and the error could be dodged. It should contain hints about why
+		 * that error occurs and if there is a common case where this error occurs.</p>
+		 * 
+		 * <p>A message can contain place holders that are filled with the additional
+		 * parameters. The <code>ILogTarget</code> implementation may treat the 
+		 * options as they want.</p>
+		 * 
+		 * <p>Example for a message with parameters:</p>
+		 * <listing>
+		 *   logger.error("A: {0} is B: {1}", "Hello", "World");
+		 *   // A: Hello is B: World
+		 * </listing>
+		 * 
+		 * @param message Message that should be logged.
+		 * @param params List of parameters.
 		 */
-		function error(message:*, ... params):void;
+		function error(message:*, ... parameters):void;
 		
 		/**
-		 * Logs a message with a "fatal" level.
+		 * Logs a message to notify about an error that broke the application and
+		 * couldn't be fixed automatically.
+		 * 
+		 * <p>The Fatal level is designated to be used in case an error occurred
+		 * that couldn't be stopped. A fatal error usually results in a inconsistent
+		 * or inperceivable application state.</p>
+		 * 
+		 * <p>A message can contain place holders that are filled with the additional
+		 * parameters. The <code>ILogTarget</code> implementation may treat the 
+		 * options as they want.</p>
+		 * 
+		 * <p>Example for a message with parameters:</p>
+		 * <listing>
+		 *   logger.fatal("A: {0} is B: {1}", "Hello", "World");
+		 *   // A: Hello is B: World
+		 * </listing>
+		 * 
+		 * @param message Message that should be logged.
+		 * @param params List of parameters.
 		 */
-		function fatal(message:*, ... params):void;
+		function fatal(message:*, ... parameters):void;
 		
 		/**
-		 * @return <code>true</code> if <code>debug</code> actually does something.
-		 * @see #debug
+		 * <code>true</code> if <code>debug</code> actually does something.
+		 * @see #debug()
 		 */
 		function get debugEnabled():Boolean;
 		
 		/**
-		 * @return <code>true</code> if <code>info</code> actually does something.
-		 * @see #info
+		 * <code>true</code> if <code>info</code> actually does something.
+		 * @see #info()
 		 */
 		function get infoEnabled():Boolean;
 		
 		/**
-		 * @return <code>true</code> if <code>warn</code> actually does something.
-		 * @see #warn
+		 * <code>true</code> if <code>warn</code> actually does something.
+		 * @see #warn()
 		 */
 		function get warnEnabled():Boolean;
 		
 		/**
-		 * @return <code>true</code> if <code>error</code> actually does something.
-		 * @see #error
+		 * <code>true</code> if <code>error</code> actually does something.
+		 * @see #error()
 		 */
 		function get errorEnabled():Boolean;
 		
 		/**
-		 * @return <code>true</code> if <code>fatal</code> works.
-		 * @see #fatal
+		 * <code>true</code> if <code>fatal</code> works.
+		 * @see #fatal()
 		 */
 		function get fatalEnabled():Boolean;
 	}

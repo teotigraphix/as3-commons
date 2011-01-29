@@ -21,43 +21,15 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import flash.utils.Dictionary;
-	
+	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.logging.setup.ILogTarget;
 	
 	/**
-	 * Merges a list of <code>ILogTarget</code> instances to one instance.
 	 * 
-	 * <p>This method is pretty useful if you want use more than one target for
-	 * to be triggered from the same logger. The resulting <code>ILogTarget</code>
-	 * of this method will log to all the targets passed in.</p>
-	 * 
-	 * @example <listing>
-	 *   LOGGER_FACTORY.setup = new SimpleTargetSetup(
-	 *     mergeTargets( TRACE_TARGET, new SOSTarget, new TextFieldTarget )
-	 *   );
-	 *   // now all log statements go to all three targets!
-	 * </listing>
-	 *
-	 * @param targets All the targets that should be merged.
-	 * @return A target that will log to all the passed-in targets.
 	 * @author Martin Heidegger
-	 * @since 2
+	 * @since 2.0
 	 */
-	public function mergeTargets( ...targets ):ILogTarget {
-		var contains: Dictionary = new Dictionary();
-		var target: ILogTarget = null;
-		while( targets.length > 0 ) {
-			var current: ILogTarget = targets.shift() as ILogTarget;
-			if( current && !contains[current] ) {
-				contains[current] = true;
-				if( target ) {
-					target = new MergedTarget( target, current );
-				} else {
-					target = current;
-				}
-			}
-		}
-		return target;
+	public interface IFlushableLogTarget extends ILogTarget {
+		function flush(factory:LoggerFactory=null):void;
 	}
 }

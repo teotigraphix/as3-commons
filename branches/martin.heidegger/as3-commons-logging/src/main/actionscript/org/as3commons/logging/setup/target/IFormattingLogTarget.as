@@ -38,32 +38,61 @@ package org.as3commons.logging.setup.target {
 		 * to a string.
 		 * 
 		 * <p>The format passed in can use any of the the following definitions:</p>
-		 * <dl>
-		 *   <dt>{date}</dt>
-		 *   <dd>The date in the format <code>YYYY.MM.DD</code></dd>
-		 *   <dt>{dateUTC}</dt>
-		 *   <dd>The UTC date in the format <code>YYYY.MM.DD</code></dd>
-		 *   <dt>{logLevel}</dt>
-		 *   <dd>The level of the log statement (example: <code>DEBUG</code> )</dd>
-		 *   <dt>{logTime}</dt>
-		 *   <dd>The UTC time in the format <code>HH:MM:SS.0MS</code></dd>
-		 *   <dt>{message}</dt>
-		 *   <dd>The message of the logger</dd>
-		 *   <dt>{message_dqt}</dt>
-		 *   <dd>The message of the logger, double quote escaped.</dd>
-		 *   <dt>{name}</dt>
-		 *   <dd>The name of the logger</dd>
-		 *   <dt>{time}</dt>
-		 *   <dd>The time in the format <code>H:M:S.MS</code></dd>
-		 *   <dt>{timeUTC}</dt>
-		 *   <dd>The UTC time in the format <code>H:M:S.MS</code></dd>
-		 *   <dt>{shortName}</dt>
-		 *   <dd>The short name of the logger</dd>
-		 *   <dt>{shortSWF}</dt>
-		 *   <dd>The SWF file name</dd>
-		 *   <dt>{swf}</dt>
-		 *   <dd>The full SWF path</dd>
-		 * </dl>
+		 * 
+		 * <table>
+		 *   <tr>
+		 *     <th>Field</th>
+		 *     <th>Description</th>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{date}</td>
+		 *     <td>The date in the format <code>YYYY.MM.DD</code></td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{dateUTC}</td>
+		 *     <td>The UTC date in the format <code>YYYY.MM.DD</code></td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{logLevel}</td>
+		 *     <td>The level of the log statement (example: <code>DEBUG</code> )</td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{logTime}</td>
+		 *     <td>The UTC time in the format <code>HH:MM:SS.0MS</code></td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{message}</td>
+		 *     <td>The message of the logger</td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{message_dqt}</td>
+		 *     <td>The message of the logger, double quote escaped.</td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{name}</td>
+		 *     <td>The name of the logger</td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{time}</td>
+		 *     <td>The time in the format <code>H:M:S.MS</code></td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{timeUTC}</td>
+		 *     <td>The UTC time in the format <code>H:M:S.MS</code></td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{shortName}</td>
+		 *     <td>The short name of the logger</td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{shortSWF}</td>
+		 *     <td>The SWF file name</td>
+		 *   </tr>
+		 *   <tr>
+		 *     <td>{swf}</td>
+		 *     <td>The full SWF path</td>
+		 *   </tr>
+		 * </table>
 		 * 
 		 * @example <listing>
 		 *    formattingLogTarget.format = "{shortName} - {logLevel) - {message}";

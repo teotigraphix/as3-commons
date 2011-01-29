@@ -30,12 +30,11 @@ package org.as3commons.logging.setup {
 	 * <p>Levels are defined by a integer value. Different values can be combined
 	 * by using the <code>.or()</code> method.</p>
 	 * 
-	 * @example <listing>
-	 *    var debugAndErrorOutput:LogSetupLevel = LogSetupLevel.DEBUG_ONLY.or(LogSetupLevel.ERROR_ONLY);
-	 * </listing>
+	 * <listing>var debugAndErrorOutput:LogSetupLevel = LogSetupLevel.DEBUG_ONLY.or(LogSetupLevel.ERROR_ONLY);</listing>
 	 *
 	 * @author Martin Heidegger
 	 * @since 2
+	 * @see org.as3commons.logging.setup.LevelTargetSetup
 	 */
 	public final class LogSetupLevel {
 		
@@ -110,13 +109,23 @@ package org.as3commons.logging.setup {
 		 * 
 		 * @param logger <code>Logger</code> instance to receive the targets
 		 * @param target <code>ILogTarget</code> that should be used for the defined targets
+		 * @param fill <code>true</code> fills the not defined targets with null.
 		 */
-		public function applyTo(logger:Logger, target:ILogTarget):void {
-			logger.debugTarget = ((_value & DEBUG_ONLY._value) == DEBUG_ONLY._value) ? target : null;
-			logger.infoTarget  = ((_value & INFO_ONLY._value)  == INFO_ONLY._value)  ? target : null;
-			logger.warnTarget  = ((_value & WARN_ONLY._value)  == WARN_ONLY._value)  ? target : null;
-			logger.errorTarget = ((_value & ERROR_ONLY._value) == ERROR_ONLY._value) ? target : null;
-			logger.fatalTarget = ((_value & FATAL_ONLY._value) == FATAL_ONLY._value) ? target : null;
+		public function applyTo(logger:Logger, target:ILogTarget, fill:Boolean=true):void {
+			if((_value & DEBUG_ONLY._value) == DEBUG_ONLY._value) logger.debugTarget = target;
+			else if(fill) logger.debugTarget = null;
+			
+			if((_value & INFO_ONLY._value)  == INFO_ONLY._value)  logger.infoTarget  = target;
+			else if(fill) logger.infoTarget = null;
+			
+			if((_value & WARN_ONLY._value)  == WARN_ONLY._value)  logger.warnTarget  = target;
+			else if(fill) logger.warnTarget = null;
+			
+			if((_value & ERROR_ONLY._value) == ERROR_ONLY._value) logger.errorTarget = target;
+			else if(fill) logger.errorTarget = null;
+			
+			if((_value & FATAL_ONLY._value) == FATAL_ONLY._value) logger.fatalTarget = target;
+			else if(fill) logger.fatalTarget = null;
 		}
 		
 		/**

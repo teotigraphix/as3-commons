@@ -24,13 +24,13 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.LogLevel;
 	
 	/**
-	 * Holder for the content of one log statement.
+	 * <code>LogStatement</code> is a data holder for the content of one log statement.
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.0
-	 * @see org.as3commons.logging.setup.target#BUFFER_TARGET
+	 * @since 2
+	 * @see org.as3commons.logging.setup.target.BufferTarget
 	 */
-	public final class BufferStatement {
+	public final class LogStatement {
 		
 		/** Name of the logger that triggered the log statement. */
 		public var name: String;
@@ -51,7 +51,7 @@ package org.as3commons.logging.setup.target {
 		public var parameters: Array;
 		
 		/**
-		 * Constructs a new <code>BufferStatement</code> containing the content
+		 * Constructs a new <code>LogStatement</code> containing the content
 		 * of a logging statement.
 		 * 
 		 * @param name Name of the logger that triggered the log statement.
@@ -61,7 +61,7 @@ package org.as3commons.logging.setup.target {
 		 * @param message Message of the log statement.
 		 * @param parameters Parameters for the log statement.
 		 */
-		public function BufferStatement(name:String, shortName:String, level:LogLevel,
+		public function LogStatement(name:String, shortName:String, level:LogLevel,
 										timeStamp:Number, message:*, parameters:Array) {
 			this.name = name;
 			this.shortName = shortName;

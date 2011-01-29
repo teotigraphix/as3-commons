@@ -26,7 +26,7 @@ package org.as3commons.logging {
 	 * 
 	 * <p>Shortest access to get a custom named <code>ILogger</code> instance to
 	 * send your logging statements.</p>
-	 * <p>Short form of <code>LoggerFactory.getNamedLogger(name);</code>.</p>
+	 * <p>Short form of now deprecated <code>LoggerFactory.getNamedLogger(name);</code>.</p>
 	 * 
 	 * @example <listing>
 	 * package {
@@ -47,8 +47,8 @@ package org.as3commons.logging {
 	 * @param input Any object (will be transformed by get
 	 * @return <code>ILogger</code> instance to publish log statements
 	 * @since 2.0
-	 * @see LoggerFactory#getNamedLogger()
-	 * @see LOGGER_FACTORY
+	 * @see LoggerFactory#getLogger()
+	 * @see org.as3commons.logging#LOGGER_FACTORY
 	 */
 	public function getNamedLogger(name:String):ILogger {
 		return LOGGER_FACTORY.getLogger(name);
