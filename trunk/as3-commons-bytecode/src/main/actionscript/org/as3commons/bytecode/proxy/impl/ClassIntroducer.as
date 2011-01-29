@@ -281,6 +281,7 @@ package org.as3commons.bytecode.proxy.impl {
 				var byteCodeAccessor:ByteCodeAccessor = ByteCodeAccessor(arr[0]);
 				var type:ByteCodeType = ByteCodeType(arr[1]);
 				copyGetterBody(event.methodBuilder, byteCodeAccessor, event.classBuilder, type);
+				delete _getterBuilders[key];
 			}
 		}
 
@@ -291,6 +292,7 @@ package org.as3commons.bytecode.proxy.impl {
 				var byteCodeAccessor:ByteCodeAccessor = ByteCodeAccessor(arr[0]);
 				var type:ByteCodeType = ByteCodeType(arr[1]);
 				copySetterBody(event.methodBuilder, byteCodeAccessor, event.classBuilder, type);
+				delete _setterBuilders[key];
 			}
 		}
 
