@@ -1,6 +1,8 @@
 package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.ILogSetup;
 	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.setup.target.IFlushableLogTarget;
+	import org.as3commons.logging.setup.target.BUFFER_TARGET;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
@@ -20,14 +22,9 @@ package org.as3commons.logging.setup.target {
 		public function BufferTest() {
 			super( [ ILogSetup, ILogTarget ] );
 		}
-		
-		public function testEmpty(): void {
-			var logCache: BufferTarget = new BufferTarget();
-			logCache.flush( null );
-		}
 
 		public function testNormal(): void {
-			var logCache: BufferTarget = new BufferTarget();
+			var logCache: IFlushableLogTarget = BUFFER_TARGET;
 			var factory: LoggerFactory = new LoggerFactory( new SimpleTargetSetup(logCache) );
 			
 			var target: ILogTarget = mock( ILogTarget );

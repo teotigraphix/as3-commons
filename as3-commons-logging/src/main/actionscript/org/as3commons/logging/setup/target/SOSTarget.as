@@ -1,31 +1,68 @@
-	package org.as3commons.logging.setup.target {
-	
+/*
+ * Copyright (c) 2008-2009 the original author or authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package org.as3commons.logging.setup.target {
 	
 	import org.as3commons.logging.LogLevel;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
-	 * @author martin.heidegger
+	 * 
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2
 	 */
 	public final class SOSTarget implements IFormattingLogTarget {
 		
+		/** Default format used to format the log statement */
 		public static const DEFAULT_FORMAT: String = "{shortSWF}({time}) {shortName}: {message}";
-		public static const INSTANCE: SOSTarget = new SOSTarget();
 		
+		/** */
 		private var _formatter:LogMessageFormatter;
+		
+		/** */
 		private var _gateway:SOSGateway;
 		
-		public function SOSTarget( format: String = null, gateway: SOSGateway = null ) {
+		/**
+		 * 
+		 * @param format Format in which the logger will 
+		 */
+		public function SOSTarget(format:String=null, gateway:SOSGateway=null) {
 			this.format = format;
-			_gateway = gateway || SOSGateway.INSTANCE;
+			_gateway = gateway||SOSGateway.INSTANCE;
 		}
 		
-		public function log( name: String, shortName: String, level: LogLevel, timeStamp: Number, message: *, params: Array ): void {
+		/**
+		 * @inheritDoc
+		 */
+		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number,
+							message:*, params:Array):void {
 			_gateway.log( level.name, _formatter.format( name, shortName, level, timeStamp, message, params) );
 		}
-
-		public function set format( format: String ): void {
-			_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function set format(format:String):void {
+			_formatter = new LogMessageFormatter(format||DEFAULT_FORMAT);
 		}
 	}
 }

@@ -35,7 +35,7 @@ package org.as3commons.logging {
 		 * Sets all targets of the passed-in <code>Logger</code> to the ones
 		 * desired by the setup.
 		 * 
-		 * <p>The <code>ILogSetup<code> has to change <b>all</b> targets of the
+		 * <p>The <code>ILogSetup</code> has to change <b>all</b> targets of the
 		 * <code>Logger</code>.</p> 
 		 * 
 		 * @param logger <code>Logger</code> to be augmented by the setup

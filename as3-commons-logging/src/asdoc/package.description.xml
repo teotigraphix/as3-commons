@@ -1,15 +1,39 @@
 <overviews>
 	<all-packages>
 		<description><![CDATA[
-			Working with the ActionScript 3 can put you in 
+			<h3>Thank you for looking into the as3commons-logging system!</h3>
+			<h5>We hope you'll like it!</h5>
+			<p>Lets begin! There are various packages listed below for various
+			tasks that might come up when working with this logging framework.
+			<code>org.as3commons.logging</code> contains all that is necessary 
+			for a enduser: Just log and done!
+			</p>
 		]]></description>
 	</all-packages>
 	<packages>
 		<package name="org.as3commons.logging" >
-			<shortDescription><![CDATA[
-			]]></shortDescription>
-			<description><![CDATA[
-			]]></description>
+			<shortDescription><![CDATA[Main access points to the logging framework.]]></shortDescription>
+			<description><![CDATA[]]></description>
+		</package>
+		<package name="org.as3commons.logging.level" >
+			<shortDescription><![CDATA[All log levels of the system.]]></shortDescription>
+			<description><![CDATA[]]></description>
+		</package>
+		<package name="org.as3commons.logging.integration" >
+			<shortDescription><![CDATA[Integration to other logging systems (for routing log events of the other systems to the as3commons logging system)]]></shortDescription>
+			<description><![CDATA[]]></description>
+		</package>
+		<package name="org.as3commons.logging.setup" >
+			<shortDescription><![CDATA[Setup mechanisms to define/manipulate the log output.]]></shortDescription>
+			<description><![CDATA[]]></description>
+		</package>
+		<package name="org.as3commons.logging.setup.target" >
+			<shortDescription><![CDATA[Various output targets that can be used in the setup process.]]></shortDescription>
+			<description><![CDATA[]]></description>
+		</package>
+		<package name="org.as3commons.logging.util" >
+			<shortDescription><![CDATA[Formatting utils.]]></shortDescription>
+			<description><![CDATA[]]></description>
 		</package>
 	</packages>
 </overviews>

@@ -26,25 +26,26 @@ package org.as3commons.logging.setup {
 	
 	/**
 	 * 
+	 * 
 	 * @author Martin Heidegger
 	 * @since 2
 	 */
-	public class ComplexSetup implements ILogSetup {
+	public class RegExpSetup implements ILogSetup {
 		
-		private var _firstRule: ComplexRule;
-		private var _lastRule: ComplexRule;
+		private var _firstRule: RegExpRule;
+		private var _lastRule: RegExpRule;
 		
-		public function ComplexSetup() {}
+		public function RegExpSetup() {}
 		
-		public function addTargetRule(rule:RegExp, target:ILogTarget, level:LogSetupLevel = null): ComplexSetup {
-			return addSetupRule(
+		public function addTargetRule(rule:RegExp, target:ILogTarget, level:LogSetupLevel=null): RegExpSetup {
+			return addRule(
 				rule,
-				level ? new LevelTargetSetup(target, level) : new SimpleTargetSetup(target)
+				level ? new RegExpLevelTargetSetup(target, level) : new SimpleTargetSetup(target)
 			);
 		}
 		
-		public function addSetupRule(rule: RegExp, setup: ILogSetup): ComplexSetup {
-			var newRule: ComplexRule = new ComplexRule(rule, setup);
+		public function addRule(rule: RegExp, setup: ILogSetup): RegExpSetup {
+			var newRule: RegExpRule = new RegExpRule(rule, setup);
 			if( _lastRule ) {
 				_lastRule.next = newRule;
 			} else {
@@ -54,29 +55,24 @@ package org.as3commons.logging.setup {
 			return this;
 		}
 		
-		public function addNoLogRule(regExp:RegExp): ComplexSetup {
-			return addSetupRule(regExp,new SimpleTargetSetup(null));
+		public function addNoLogRule(regExp:RegExp): RegExpSetup {
+			return addRule(regExp,new SimpleTargetSetup(null));
 		}
 		
 		public function applyTo(logger:Logger):void {
-			var current: ComplexRule = _firstRule;
-			var lastMatch: ComplexRule = null;
+			logger.allTargets = null;
+			var current: RegExpRule = _firstRule;
 			var name: String = logger.name;
 			while( current ) {
 				if( current.rule.test(name) ) {
-					lastMatch = current;
+					current.setup.applyTo(logger);
 				}
 				current = current.next;
-			}
-			if ( lastMatch ) {
-				lastMatch.setup.applyTo(logger);
-			} else {
-				logger.allTargets = null;
 			}
 		}
 		
 		public function dispose(): void {
-			var current: ComplexRule = _firstRule;
+			var current: RegExpRule = _firstRule;
 			while( current ) {
 				current = current.dispose();
 			}
@@ -86,22 +82,52 @@ package org.as3commons.logging.setup {
 }
 
 import org.as3commons.logging.ILogSetup;
+import org.as3commons.logging.Logger;
+import org.as3commons.logging.setup.ILogTarget;
+import org.as3commons.logging.setup.LogSetupLevel;
 
-internal class ComplexRule {
+internal class RegExpRule {
 	public var rule: RegExp;
 	public var setup: ILogSetup;
-	public var next: ComplexRule;
+	public var next: RegExpRule;
 	
-	public function ComplexRule(rule: RegExp, setup: ILogSetup) {
+	public function RegExpRule(rule: RegExp, setup: ILogSetup) {
 		this.rule = rule;
 		this.setup = setup;
 	}
 	
-	public function dispose():ComplexRule {
-		var result: ComplexRule = next;
+	public function dispose():RegExpRule {
+		var result: RegExpRule = next;
 		rule = null;
 		setup = null;
 		next = null;
 		return result;
+	}
+}
+
+internal class RegExpLevelTargetSetup implements ILogSetup {
+	
+	/** Level to set the target to. */
+	private var _level:LogSetupLevel;
+	
+	/** Target which should be used. */
+	private var _target:ILogTarget;
+	
+	/**
+	 * Constructs a new <code>LevelTargetSetup</code>.
+	 * 
+	 * @param target Target which should be receiving the log output.
+	 * @param level Level at which the target should be receiving the output.
+	 */
+	public function RegExpLevelTargetSetup(target:ILogTarget, level:LogSetupLevel) {
+		_target = target;
+		_level = level;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function applyTo(logger:Logger):void {
+		_level.applyTo(logger, _target, false);
 	}
 }

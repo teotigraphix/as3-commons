@@ -26,37 +26,53 @@ package org.as3commons.logging.util {
 	/**
 	 * A Formatter that formats a message string using a pattern.
 	 * 
+	 * <table>
+	 *   <tr><th>Field</th>
+	 *       <th>Description</th></tr>
 	 * 
-	 * <dl>
-	 *   <dt>{date}</dt>
-	 *   <dd>The date in the format <code>YYYY.MM.DD</code></dd>
-	 *   <dt>{dateUTC}</dt>
-	 *   <dd>The UTC date in the format <code>YYYY.MM.DD</code></dd>
-	 *   <dt>{logLevel}</dt>
-	 *   <dd>The level of the log statement (example: <code>DEBUG</code> )</dd>
-	 *   <dt>{logTime}</dt>
-	 *   <dd>The UTC time in the format <code>HH:MM:SS.0MS</code></dd>
-	 *   <dt>{message}</dt>
-	 *   <dd>The message of the logger</dd>
-	 *   <dt>{message_dqt}</dt>
-	 *   <dd>The message of the logger, double quote escaped.</dd>
-	 *   <dt>{name}</dt>
-	 *   <dd>The name of the logger</dd>
-	 *   <dt>{time}</dt>
-	 *   <dd>The time in the format <code>H:M:S.MS</code></dd>
-	 *   <dt>{timeUTC}</dt>
-	 *   <dd>The UTC time in the format <code>H:M:S.MS</code></dd>
-	 *   <dt>{shortName}</dt>
-	 *   <dd>The short name of the logger</dd>
-	 *   <dt>{shortSWF}</dt>
-	 *   <dd>The SWF file name</dd>
-	 *   <dt>{swf}</dt>
-	 *   <dd>The full SWF path</dd>
-	 * </dl>
+	 *   <tr><td>{date}</td>
+	 *       <td>The date in the format <code>YYYY/MM/DD</code></td></tr>
+	 * 
+	 *   <tr><td>{dateUTC}</td>
+	 *       <td>The UTC date in the format <code>YYYY/MM/DD</code></td></tr>
+	 * 
+	 *   <tr><td>{gmt}</td>
+	 *       <td>The time offset of the statement to the Greenwich mean time in the format <code>GMT+9999</td></tr>
+	 
+	 *   <tr><td>{logLevel}</td>
+	 *       <td>The level of the log statement (example: <code>DEBUG</code> )</td></tr>
+	 * 
+	 *   <tr><td>{logTime}</td>
+	 *       <td>The UTC time in the format <code>HH:MM:SS.0MS</code></td></tr>
+	 * 
+	 *   <tr><td>{message}</td>
+	 *       <td>The message of the logger</td></tr>
+	 * 
+	 *   <tr><td>{message_dqt}</td>
+	 *       <td>The message of the logger, double quote escaped.</td></tr>
+	 * 
+	 *   <tr><td>{name}</td>
+	 *       <td>The name of the logger</td></tr>
+	 * 
+	 *   <tr><td>{time}</td>
+	 *       <td>The time in the format <code>H:M:S.MS</code></td></tr>
+	 *   
+	 *   <tr><td>{timeUTC}</td>
+	 *       <td>The UTC time in the format <code>H:M:S.MS</code></td></tr>
+	 *   
+	 *   <tr><td>{shortName}</td>
+	 *       <td>The short name of the logger</td></tr>
+	 *   
+	 *   <tr><td>{shortSWF}</td>
+	 *       <td>The SWF file name</td></tr>
+	 *   
+	 *   <tr><td>{swf}</td>
+	 *       <td>The full SWF path</td></tr>
+	 * </table>
 	 *
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
-	 * @since 2
+	 * @since 2.0
 	 * @see org.as3commons.logging.setup.target.IFormattingLogTarget
 	 */
 	public final class LogMessageFormatter {
@@ -74,6 +90,7 @@ package org.as3commons.logging.util {
 		private const SHORT_SWF_TYPE: int	= 11;
 		private const NAME_TYPE: int		= 12;
 		private const SHORT_NAME_TYPE: int	= 13;
+		private const GMT_OFFSET_TYPE: int	= 14;
 		
 		private const TYPES: Object			= {
 			message:		MESSAGE_TYPE,
@@ -87,11 +104,15 @@ package org.as3commons.logging.util {
 			swf:			SWF_TYPE,
 			shortSWF:		SHORT_SWF_TYPE,
 			name:			NAME_TYPE,
-			shortName:		SHORT_NAME_TYPE
+			shortName:		SHORT_NAME_TYPE,
+			gmt:			GMT_OFFSET_TYPE
 		};
 		
 		private const _now: Date = new Date();
 		private const _braceRegexp: RegExp = /{(?P<field>[a-zA-Z_]+)}/g;
+		private const _gmt: String = calculateGMT();
+		
+		/** First no in the generated set */
 		private var _firstNode: FormatNode;
 		
 		/**
@@ -109,7 +130,7 @@ package org.as3commons.logging.util {
 			
 			while( parseResult =  _braceRegexp.exec( format ) ) {
 				
-				if( type = TYPES[parseResult["field"]] ) {
+				if( ( type = TYPES[parseResult["field"]] ) ) {
 					
 					if( pos != parseResult["index"] ) {
 						
@@ -172,12 +193,14 @@ package org.as3commons.logging.util {
 			var node: FormatNode = _firstNode;
 			
 			if( message ) {
-				// While it would be theoretically possible to preparse this
-				// in order to have a faster statement. But if you would change
-				// it to the a preparsed approach you might run into user problems"
-				// log.debug( "a" + getTimer() ); would require new parsing for
-				// every call - we would soon run into a memory problem which we
-				// could only avoid with proper stacking, which costs time as well.
+				// It would be theoretically possible to preparse this
+				// in order to have a faster statement, but if you would change
+				// it to the a preparsed approach you might run into user problems.
+				// Log statements like <code>log.debug( "a" + getTimer() );</code>
+				// would require new parsing at every call (leading to a higher performance loss)
+				// Sure: that might not be a reasonable case. But users don't read
+				// documentation and in order to prevent a huge performance problem
+				// for them I didnt implement it the high performing way ...
 				const numParams:int = params ? params.length: 0;
 				for (var i:int = 0; i < numParams; ++i) {
 					var param: * = params[i];
@@ -189,17 +212,17 @@ package org.as3commons.logging.util {
 			while( node ) {
 				
 				var type: int = node.type;
-				if( type < 6 ) {
-					if( type < 3 ) {
-						// 0
+				if( type < 7 ) {
+					if( type < 4 ) {
+						// 1
 						if( type == STATIC_TYPE ) {
 							result += node.content;
 						}
-						// 1
+						// 2
 						else if( type == MESSAGE_TYPE ) {
 							result += message;
 						}
-						// 2
+						// 3
 						else { // Message DQT
 							if( message ) {
 								result += message.replace( "\"", "\\\"" ).replace( "\n", "\\n");
@@ -208,15 +231,15 @@ package org.as3commons.logging.util {
 							}
 						}
 					}
-					// 3
+					// 4
 					else if( type == TIME_TYPE ) {
 						result += _now.hours + ":" + _now.minutes + ":" + _now.seconds + "." + _now.milliseconds;
 					}
-					// 4
+					// 5
 					else if( type == TIME_UTC_TYPE ) {
 						result += _now.hoursUTC + ":" + _now.minutesUTC + ":" + _now.secondsUTC + "." + _now.millisecondsUTC;
 					}
-					// 5
+					// 6
 					else { // LOG_TIME_TYPE
 						var hrs: String = _now.hoursUTC.toString();
 						if( hrs.length == 1 ) {
@@ -238,41 +261,67 @@ package org.as3commons.logging.util {
 						}
 						result += hrs+":"+mins+":"+secs+"."+ms;
 					}
-				} else if( type < 12 ) {
-					if( type < 9 ) {
-						// 6
+				} else if( type < 13 ) {
+					if( type < 10 ) {
+						// 7
 						if( type == DATE_TYPE ) {
 							result += _now.fullYear + "/" + (_now.month+1) + "/" + _now.date;
 						}
-						// 7
+						// 8
 						else if( type == DATE_UTC_TYPE ) {
 							result += _now.fullYearUTC + "/" + (_now.monthUTC+1) + "/" + _now.dateUTC;
 						}
-						// 8
+						// 9
 						else { // LEVEL_TYPE
 							if( level ) result += level.name;
 						}
 					}
-					// 9
+					// 10
 					else if( type == SWF_TYPE ) {
 						result += SWF_URL;
 					}
-					// 10
+					// 11
 					else if( type == SHORT_SWF_TYPE ) {
 						result += SWF_SHORT_URL;
 					}
-					// 11
+					// 12
 					else { // NAME_TYPE
 						result += name;
 					}
 				}
-				// 12
-				else { // SHORT_NAME_TYPE
+				// 13
+				else if( type == SHORT_NAME_TYPE ) {
 					result += shortName;
+				}
+				// 14
+				else {
+					result += _gmt;
 				}
 				node = node.next;
 			}
 			return result;
+		}
+		
+		/**
+		 * Calculates the GMT of the running swf
+		 */
+		private function calculateGMT():String {
+			var date: Date = new Date();
+			var mins: int = date.timezoneOffset;
+			var hours: int = mins / 60;
+			var pre: String;
+			
+			if( mins < 0 ) {
+			  pre = "-";
+			  mins = mins * -1;
+			  hours = hours * -1;
+			} else {
+			  pre = "+";
+			}
+			
+			hours = Math.floor(hours);
+			mins = mins - (hours * 60);
+			return pre+(( hours < 10 ) ? "0"+hours : hours)+(( mins < 10 ) ? "0"+mins : mins);
 		}
 	}
 }

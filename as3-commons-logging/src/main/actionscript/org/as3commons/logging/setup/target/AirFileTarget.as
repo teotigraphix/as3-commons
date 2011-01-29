@@ -38,7 +38,7 @@ package org.as3commons.logging.setup.target {
 	
 	/**
 	 * @author Martin Heidegger
-	 * @since 2
+	 * @since 2.0
 	 */
 	public final class AirFileTarget extends EventDispatcher implements ILogTarget {
 		

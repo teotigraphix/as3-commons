@@ -24,7 +24,7 @@ package org.as3commons.logging {
 	import org.as3commons.logging.util.toLogName;
 	
 	/**
-	 * Use the <code>LoggerFactory<code> to obtain a logger. This is the main class used when
+	 * Use the <code>LoggerFactory</code> to obtain a logger. This is the main class used when
 	 * working with the as3commons-logging library.
 	 *
 	 * <p>You can either request a logger via the long <code>LoggerFactory.getLogger()</code>
@@ -71,11 +71,11 @@ package org.as3commons.logging {
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
 	 * @version 2
-	 * @see ILogTarget
 	 * @see ILogSetup
-	 * @see getLogger
-	 * @see getNamedLogger
-	 * @see getClassLogger
+	 * @see org.as3commons.logging#getLogger()
+	 * @see org.as3commons.logging#getNamedLogger()
+	 * @see org.as3commons.logging#getClassLogger()
+	 * @see org.as3commons.logging.setup.ILogTarget
 	 */
 	public class LoggerFactory {
 		

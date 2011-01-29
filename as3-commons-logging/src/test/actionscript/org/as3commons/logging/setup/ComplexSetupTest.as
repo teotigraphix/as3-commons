@@ -1,4 +1,5 @@
 package org.as3commons.logging.setup {
+	import org.as3commons.logging.setup.target.TextFieldTarget;
 	import org.as3commons.logging.Logger;
 	import org.as3commons.logging.ILogSetup;
 	import org.as3commons.logging.util.verifyNothingCalled;
@@ -31,7 +32,7 @@ package org.as3commons.logging.setup {
 			traceSetup.applyTo(loggerD);
 			traceSetup.applyTo(loggerE);
 			
-			var setup: ComplexSetup = new ComplexSetup();
+			var setup: RegExpSetup = new RegExpSetup();
 			setup.applyTo(loggerA);
 			assertEquals(loggerA.debugTarget, null);
 			
@@ -63,7 +64,7 @@ package org.as3commons.logging.setup {
 			assertEquals(loggerD.debugTarget, null);
 			assertEquals(loggerE.debugTarget, null);
 			
-			setup = new ComplexSetup();
+			setup = new RegExpSetup();
 			setup.addTargetRule( /test/, dummy );
 			setup.applyTo(loggerA);
 			setup.applyTo(loggerB);
@@ -126,8 +127,8 @@ package org.as3commons.logging.setup {
 			var loggerA: Logger = new Logger("mouse");
 			var loggerB: Logger = new Logger("adf");
 			
-			var setup: ComplexSetup = new ComplexSetup();
-			setup.addSetupRule( /^adf.*$/, targetSetup );
+			var setup: RegExpSetup = new RegExpSetup();
+			setup.addRule( /^adf.*$/, targetSetup );
 			
 			setup.applyTo( loggerA );
 			setup.applyTo( loggerB );
@@ -137,9 +138,29 @@ package org.as3commons.logging.setup {
 			verifyNothingCalled( targetSetup );
 		}
 		
+		public function testOverriding(): void {
+			var setup: RegExpSetup = new RegExpSetup();
+			var targetA: ILogTarget = new TextFieldTarget();
+			var targetB: ILogTarget = new TextFieldTarget();
+			var targetC: ILogTarget = new TextFieldTarget();
+			
+			var loggerA: Logger = new Logger("mouse");
+			loggerA.allTargets = targetC;
+			
+			setup.addTargetRule(/mouse/, targetA, LogSetupLevel.ERROR_ONLY);
+			setup.addTargetRule(/mouse/, targetB, LogSetupLevel.DEBUG_ONLY);
+			setup.applyTo(loggerA);
+			
+			assertEquals(loggerA.errorTarget, targetA);
+			assertEquals(loggerA.debugTarget, targetB);
+			assertNull(loggerA.fatalTarget);
+			assertNull(loggerA.infoTarget);
+			assertNull(loggerA.warnTarget);
+		}
+		
 		public function testDispose(): void {
 			var dummy: ILogTarget = mock( ILogTarget );
-			var setup: ComplexSetup = new ComplexSetup();
+			var setup: RegExpSetup = new RegExpSetup();
 			var logger: Logger = new Logger("");
 			
 			setup.addNoLogRule( /.*/ );
@@ -148,7 +169,7 @@ package org.as3commons.logging.setup {
 			setup.dispose();
 			
 			setup.applyTo(logger);
-
+			
 			assertStrictlyEquals( logger.debugTarget, null);
 			assertStrictlyEquals( logger.debugTarget, null);
 		}

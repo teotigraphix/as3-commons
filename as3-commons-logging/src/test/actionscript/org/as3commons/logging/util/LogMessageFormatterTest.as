@@ -66,9 +66,11 @@ package org.as3commons.logging.util {
 			assertEquals( "00:01:01.023", new LogMessageFormatter( "{logTime}" ).format( null, null, null, time.getTime(), null, null ) );
 			assertEquals( "1970/1/2", new LogMessageFormatter( "{date}" ).format( null, null, null, time.getTime(), null, null ) );
 			assertEquals( "1970/1/2", new LogMessageFormatter( "{dateUTC}" ).format( null, null, null, time.getTime(), null, null ) );
+			assertEquals( "1970/1/2", new LogMessageFormatter( "{dateUTC}" ).format( null, null, null, time.getTime(), null, null ) );
 			assertEquals( "9:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, null, NaN, null, null ) );
 			assertEquals( "9:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, null, null, null, null ) );
 			assertEquals( "0:0:0.0", new LogMessageFormatter( "{timeUTC}" ).format( null, null, null, null, null, null ) );
+			assertEquals( "GMT+0700", new LogMessageFormatter( "{gmt}" ).format( null, null, null, null, null, null ) );
 			assertEquals( "{0}", new LogMessageFormatter( "{0}" ).format( null, null, null, NaN, null, ["a"] ) );
 			assertEquals( "a", new LogMessageFormatter( "{message}" ).format( null, null, null, NaN, "{0}", ["a"] ) );
 			assertEquals( "f", new LogMessageFormatter( "{message}" ).format( null, null, null, NaN, "{5}", ["a","b","c","d","e","f"] ) );

@@ -52,9 +52,9 @@ package org.as3commons.logging {
 	 * @return <code>ILogger</code> instance to publish log statements
 	 * @since 2.0
 	 * @version 1.0
-	 * @see #getNamedLogger()
-	 * @see #getClassLogger()
-	 * @see LOGGER_FACTORY
+	 * @see org.as3commons.logging#getNamedLogger()
+	 * @see org.as3commons.logging#getClassLogger()
+	 * @see org.as3commons.logging#LOGGER_FACTORY
 	 */
 	public function getLogger(input:*):ILogger {
 		if(!(input is String)) {
