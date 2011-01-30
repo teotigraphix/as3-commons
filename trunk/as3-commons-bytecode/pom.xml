@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-bytecode</artifactId>
 	<packaging>swc</packaging>
-	<version>0.9.7-SNAPSHOT</version>
+	<version>0.9.7</version>
 	<name>AS3Commons ByteCode</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
@@ -91,9 +91,9 @@
 	</build>
 
 	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9.6</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9.6</url>
-		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9.6</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9.7</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9.7</url>
+		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9.7</connection>
 	</scm>
 
 	<distributionManagement>
