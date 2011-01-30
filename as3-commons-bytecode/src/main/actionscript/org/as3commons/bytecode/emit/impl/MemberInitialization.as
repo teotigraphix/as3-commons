@@ -18,9 +18,8 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.lang.StringUtils;
 
 	/**
-	 *
+	 * Describes the way a member of a complex type will be instantiated in a generated class.
 	 * @author Roland Zwaga
-	 *
 	 */
 	public final class MemberInitialization {
 
@@ -31,12 +30,22 @@ package org.as3commons.bytecode.emit.impl {
 			super();
 		}
 
+		/**
+		 * Determines if the member class should be instantiated, returns true if the <code>factoryMethodName</code> property is <code>null</code>.
+		 */
 		public function get createNewClass():Boolean {
 			return !StringUtils.hasText(factoryMethodName);
 		}
 
+		/**
+		 * An optional <code>Array</code> of constructor arguments that will be passed to the <code>Class</code> constructor or factory method.
+		 */
 		public var constructorArguments:Array = [];
 
+		/**
+		 * A factory method that will be used to instantiate the class. The factory method is assumed to be part of the generated class, unless a fully qualified
+		 * static method path is assigned. I.e. <code>com.myclasses.factories.MyFactory.createInstance</code>
+		 */
 		public var factoryMethodName:String;
 	}
 }

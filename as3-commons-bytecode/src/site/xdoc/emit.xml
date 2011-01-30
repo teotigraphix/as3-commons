@@ -70,6 +70,14 @@ var packageBuilder:IPackageBuilder = abcBuilder.definePackage("com.classes.gener
     	<div class="source"><pre>var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("name","String","defaultName");</pre></div>
     	<p>The actionscript source equivalent of those statements would look like this:</p>
     	<div class="source"><pre>public var name:String = "defaultName";</pre></div>
+    	<p>Properties with complex types can have their initial values defined by setting the <code>memberInitialization</code> property to a valid <code><a href="asdoc/org/as3commons/bytecode/emit/impl/MemberInitialization.html" target="_blank">MemberInitialization</a></code> instance.<br/>
+    	To simply have the class instantiated all that is needed is a new <code><a href="asdoc/org/as3commons/bytecode/emit/impl/MemberInitialization.html" target="_blank">MemberInitialization</a></code> instance:</p>
+    	<div class="source"><pre>propertyBuilder.memberInitialization = new MemberInitialization();</pre></div>
+    	<p>When the constructor needs one or more constructor arguments, add them using the <code>constructorArguments</code> property:</p>
+    	<div class="source"><pre>propertyBuilder.memberInitialization = new MemberInitialization();
+propertyBuilder.memberInitialization.constructorArguments = ["myString", true, 100];
+</pre></div>
+	<blockquote><strong>Attention: Only constructor arguments of a simple type are supported (i.e. String, Number, etc).</strong></blockquote>
     	<p>By default the generated property will be public, to change this use the <code>IPropertyBuilder.visibility</code> property:</p>
     	<div class="source"><pre>propertyBuilder.visibility = MemberVisibility.PRIVATE;</pre></div>
     	<p>To assign a custom namespace to the property, assign the specified namespace URL to the <code><a href="asdoc/org/as3commons/bytecode/emit/IEmitObject.html#namespace" target="_blank">IPropertyBuilder.namespace</a></code> property and the name to the <code><a href="asdoc/org/as3commons/bytecode/emit/IEmitObject.html#scopeName" target="_blank">IPropertyBuilder.scopeName</a></code> property:</p>
