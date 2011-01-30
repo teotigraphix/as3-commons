@@ -51,6 +51,6 @@ package org.as3commons.logging {
 	 * @see org.as3commons.logging#LOGGER_FACTORY
 	 */
 	public function getNamedLogger(name:String):ILogger {
-		return LOGGER_FACTORY.getLogger(name);
+		return LOGGER_FACTORY.getNamedLogger(name);
 	}
 }

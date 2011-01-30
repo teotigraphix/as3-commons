@@ -128,6 +128,6 @@ internal class RegExpLevelTargetSetup implements ILogSetup {
 	 * @inheritDoc
 	 */
 	public function applyTo(logger:Logger):void {
-		_level.applyTo(logger, _target, false);
+		_level.applyTo(logger, _target);
 	}
 }

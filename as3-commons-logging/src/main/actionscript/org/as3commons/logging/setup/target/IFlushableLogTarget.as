@@ -25,11 +25,21 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.setup.ILogTarget;
 	
 	/**
+	 * A <code>IFlushableLogTarget</code> describes a target that stores some
+	 * log statements and that allows to flush those statements to a logger
+	 * at a later statement.
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
 	 */
 	public interface IFlushableLogTarget extends ILogTarget {
+		
+		/**
+		 * Flushes the content of this target to the logger of the factory.
+		 * 
+		 * @param factory <code>LoggerFactory</code> to flush to.
+		 *                <code>LOGGER_FACTORY</code> will be used if null is passed-in. 
+		 */
 		function flush(factory:LoggerFactory=null):void;
 	}
 }

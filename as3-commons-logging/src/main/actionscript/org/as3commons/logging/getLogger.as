@@ -60,6 +60,6 @@ package org.as3commons.logging {
 		if(!(input is String)) {
 			input = toLogName(input);
 		}
-		return LOGGER_FACTORY.getLogger(input);
+		return LOGGER_FACTORY.getNamedLogger(input);
 	}
 }

@@ -20,8 +20,6 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.target {
-
-	import org.as3commons.logging.setup.ILogTarget;
 	
 	/**
 	 * Target that logs directly to the monster debugger.
@@ -33,7 +31,7 @@ package org.as3commons.logging.setup.target {
 	 * @since 2
 	 * @see http://demonsterdebugger.com
 	 */
-	public const MONSTER_DEBUGGER_TARGET: ILogTarget = new MonsterDebuggerTarget();
+	public const MONSTER_DEBUGGER_TARGET: IFormattingLogTarget = new MonsterDebuggerTarget();
 }
 
 import flash.utils.Dictionary;

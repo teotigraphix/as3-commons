@@ -22,6 +22,23 @@
 package org.as3commons.logging.setup.target {
 	
 	/**
+	 * The <code>BUFFER_TARGET</code> stores statements sent to in order to be 
+	 * sent to the output later when (for example) the setup configuration is available.
+	 * 
+	 * <p>If you want to store log statements because you need to load some files
+	 * you can use this target to store statements that get logged meanwhile and
+	 * pass them later to the real system.</p>
+	 * 
+	 * <p>Example: Buffering statements during a loading process.</p>
+	 * <listing>
+	 *     LOGGER_FACTORY.setup = new SimpleTargetSetup( BUFFER_TARGET );
+	 *     
+	 *     // load files and create a new setup
+	 *     LOGGER_FACTORY.setup = loadedSetup;
+	 *     
+	 *     // Flushing all former statements to the new setup.
+	 *     BUFFER_TARGET.flush();
+	 * </listing>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
@@ -54,12 +71,15 @@ internal final class BufferTarget implements IFlushableLogTarget {
 		);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function flush(factory:LoggerFactory=null):void {
 		factory = factory||LOGGER_FACTORY;
 		var i: int = _logStatements.length;
 		while(--i-(-1)) {
 			var statement: LogStatement = LogStatement(_logStatements.shift());
-			var logger: Logger = factory.getLogger(statement.name) as Logger;
+			var logger: Logger = factory.getNamedLogger(statement.name) as Logger;
 			
 			var logTarget: ILogTarget;
 			if(statement.level == DEBUG) {
