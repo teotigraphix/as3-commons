@@ -13,19 +13,16 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.bytecode.proxy {
+package org.as3commons.bytecode.reflect {
+	import flash.display.GraphicsGradientFill;
+	import flash.system.ApplicationDomain;
+	import flash.text.engine.FontDescription;
+	import flash.utils.Dictionary;
 
-	import flash.events.IEventDispatcher;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.reflect.AccessorAccess;
+	import org.as3commons.reflect.as3commons_reflect;
 
-	import org.as3commons.bytecode.abc.Multiname;
-	import org.as3commons.bytecode.abc.QualifiedName;
-	import org.as3commons.bytecode.emit.IClassBuilder;
-
-	/**
-	 * Describes an object capable of merging an existing class with a generated class.
-	 * @author Roland Zwaga
-	 */
-	public interface IClassIntroducer extends IEventDispatcher {
-		function introduce(className:String, classBuilder:IClassBuilder):void;
+	public class PlayerGlobalTypes {
 	}
 }

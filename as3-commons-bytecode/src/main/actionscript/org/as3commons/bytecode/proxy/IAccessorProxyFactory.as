@@ -22,8 +22,22 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.proxy.impl.MemberInfo;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 
+	/**
+	 * Describes an object that is capable of generating a proxy accessor on a proxy class
+	 * based on the existing accessor of a proxied class.
+	 * @author Roland Zwaga
+	 */
 	public interface IAccessorProxyFactory extends IEventDispatcher {
 
+		/**
+		 *
+		 * @param classBuilder The <code>IClassBuilder</code> used to generate the proxy class.
+		 * @param type The <code>ByteCodeType</code> instance that describes the proxied class.
+		 * @param memberInfo The <code>MemberInfo</code> instance that describes the proxied accessor.
+		 * @param multiName
+		 * @param bytecodeQname
+		 * @param failOnFinal Determines whether the <code>proxyAccessor()</code> needs to throw an error when an accessor marked as final is being proxied.
+		 */
 		function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName, failOnFinal:Boolean = true):void;
 
 	}
