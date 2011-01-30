@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.2-SNAPSHOT</version>
+			<version>0.3.2</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
