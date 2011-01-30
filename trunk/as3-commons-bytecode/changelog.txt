@@ -10,6 +10,7 @@ Changes in version 1.0RC (00.00.0000)
 * Renamed all instances of MetaData to Metadata.
 * Added support for complex property initializations in the emit.* API
 * Fixed issue where an RTE was thrown after introducing a class with accessors to multiple proxies.
+* Added proxyMethodScopes, proxyAccessorScopes, proxyMethodNamespaces and proxyAccessorNamespaces convenience properties to IClassInfoProxy interface and added usage of these properties to the ProxyFactory implementation.
 
 Changes in version 0.9.6 (19.01.2011)
 -----------------------------------
