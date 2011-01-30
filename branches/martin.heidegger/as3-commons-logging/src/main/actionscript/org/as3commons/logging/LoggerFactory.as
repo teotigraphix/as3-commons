@@ -60,7 +60,7 @@ package org.as3commons.logging {
 	 *    // will clear all output
 	 * </listing>
 	 * 
-	 * <p>Performance information: <code>getLogger</code> is slightly slower than
+	 * <p><b>Performance Note:</b> <code>getLogger</code> is slightly slower than
 	 * <code>getClassLogger</code> and both are a bit slower than
 	 * <code>getNamedLogger()</code>. Nevertheless, it has advantages to use
 	 * <code>getClassLogger()</code>: In a development environment that updates 
@@ -116,16 +116,28 @@ package org.as3commons.logging {
 		private var _undefinedLogger:Logger;
 		
 		/**
+		 * Constructs a new <code>LoggerFactory</code> instance.
 		 * 
-		 * 
-		 * 
+		 * <p>Usually you don't need to create your own instance. The commonly
+		 * used instance of this class would be available in the global constant:
+		 * <code>LOGGER_FACTORY</code>.</p>
+		 
 		 * @param setup Default setup to be used for configuring the <code>Logger</code>
 		 *        instances.
+		 * @see LOGGER_FACTORY;
 		 */
 		public function LoggerFactory(setup:ILogSetup) {
 			this.setup = setup;
 		}
 		
+		/**
+		 * The currently appied setup.
+		 * 
+		 * <p>By changing this setup, all loggers handled by this <code>LoggerFactory</code>
+		 * will be cleared and handed to this setup for augmentation.</p>
+		 * 
+		 * @see ILogSetup#applyTo()
+		 */
 		public function get setup():ILogSetup {
 			return _setup;
 		}
