@@ -73,12 +73,18 @@
   		<p>Now, to define a proxy for a specified class invoke the defineProxy() method:</p>
   		<div class="source"><pre>var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyClass);</pre></div>
   		<p>This method returns an <code><a href="asdoc/org/as3commons/bytecode/proxy/IClassProxyInfo.html" target="_blank">IClassProxyInfo</a></code> instance which allows further definition of the proxy.<br/>
-  		Its also possible to ignore the <code><a href="asdoc/org/as3commons/bytecode/proxy/IClassProxyInfo.html" target="_blank">IClassProxyInfo</a></code> instance entirely, in which case every public, protected and custom namespace scoped member on the specified class will be proxied. (Bytecode reflection is used here to obtain the information)</p>
+  		Its also possible to ignore the <code><a href="asdoc/org/as3commons/bytecode/proxy/IClassProxyInfo.html" target="_blank">IClassProxyInfo</a></code> instance entirely, in which case every public, protected and custom namespace scoped member on the specified class will be proxied. (Bytecode reflection is used here to obtain the information).</p>
   		<p>Should this not be desirable these methods will define specific members for proxying:</p>
   		<div class="source"><pre>classProxyInfo.proxyMethod("myMethod");</pre></div>
   		<div class="source"><pre>classProxyInfo.proxyMethod("myAccessor");</pre></div>
-  		<p>If only the constructor should be proxied, set the <code>onlyProxyConstructor</code> property:</p>
-  		<div class="source"><pre>classProxyInfo.onlyProxyConstructor = true;</pre></div>
+  		<p>To have only methods of a certain scope proxied use the <code>proxyMethodScopes</code> property:</p>
+  		<div class="source"><pre>classProxyInfo.proxyMethodScopes = ProxyScope.PUBLIC;</pre></div>
+  		<p>The same mechanism can be used for accessor scopes:</p>
+  		<div class="source"><pre>classProxyInfo.proxyAccessorScopes = ProxyScope.ALL;</pre></div>
+  		<p>If only methods or accessors of a certain namespace need to be proxied, use the <code>proxyMethodNamespaces</code> and <code>proxyAccessorNamespaces</code> properties, which both can receive an <code>Array</code> of namespace URIs:</p>
+  		<div class="source"><pre>classProxyInfo.proxyMethodNamespaces = ["http://www.mydomain.com/mymethodnamespace"];
+classProxyInfo.proxyAccessorNamespaces = ["http://www.mydomain.com/myaccessornamespace"];
+</pre></div>
   		<p>If the original class is not dynamic, but its desired to have a dynamic proxy, set the <code>makeDynamic</code> property:</p> 
   		<div class="source"><pre>classProxyInfo.makeDynamic = true;</pre></div>
   		<p>This is the equivalent for setting the <code>dynamic</code> keyword on a class definition:</p>
