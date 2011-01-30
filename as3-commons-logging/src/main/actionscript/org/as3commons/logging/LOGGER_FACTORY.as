@@ -34,11 +34,11 @@ package org.as3commons.logging {
 	 * <listing>
 	 *    LOGGER_FACTORY.setup = null; // Sets all output to null.
 	 *    LOGGER_FACTORY.setup = new SimpleTargetSetup( new SOSTarget );
-	 *    // Logs all targets to SOS
+	 *    // Logs all targets to the SOS Target
 	 * </listing>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2
+	 * @since 2.0
 	 * @see org.as3commons.logging#getLogger()
 	 * @see org.as3commons.logging#getNamedLogger()
 	 * @see org.as3commons.logging#getClassLogger()

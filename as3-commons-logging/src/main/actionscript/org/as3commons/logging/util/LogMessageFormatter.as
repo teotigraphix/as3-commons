@@ -311,17 +311,17 @@ package org.as3commons.logging.util {
 			var hours: int = mins / 60;
 			var pre: String;
 			
-			if( mins < 0 ) {
-			  pre = "-";
+			if( mins <= 0 ) {
+			  pre = "+";
 			  mins = mins * -1;
 			  hours = hours * -1;
 			} else {
-			  pre = "+";
+			  pre = "-";
 			}
 			
 			hours = Math.floor(hours);
 			mins = mins - (hours * 60);
-			return pre+(( hours < 10 ) ? "0"+hours : hours)+(( mins < 10 ) ? "0"+mins : mins);
+			return "GMT"+pre+(( hours < 10 ) ? "0"+hours : hours)+(( mins < 10 ) ? "0"+mins : mins);
 		}
 	}
 }

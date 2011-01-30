@@ -40,7 +40,7 @@ package org.as3commons.logging {
 	 *
 	 * @author Martin Heidegger
 	 * @author Christophe Herreman
-	 * @version 2
+	 * @version 2.0
 	 * @see org.as3commons.logging.ILogSetup
 	 */
 	public final class Logger implements ILogger {
