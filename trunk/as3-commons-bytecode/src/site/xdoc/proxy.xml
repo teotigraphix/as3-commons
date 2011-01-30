@@ -537,7 +537,7 @@ for each(var className:String in classNames) {
 }
 proxyFactory.addEventListener(Event.COMPLETE, proxiesLoadedHandler);
 proxyFactory.generateProxyClasses();
-proxyFactory.loadPorxyClasses();
+proxyFactory.loadProxyClasses();
 
 function proxiesLoadedHandler(event:Complete):void {
 	var classNames:Array = ByteCodeType.getClassesWithMetadata('RemoteClass');
@@ -550,7 +550,7 @@ function proxiesLoadedHandler(event:Complete):void {
 	}
 }
 </pre></div>
-	<p>And that's it, any objects coming from the remote server that are assocoated with the specified alias will
+	<p>And that's it, any objects coming from the remote server that are associated with the specified alias will
 	be deserialized to the proxy value objects containing the new <code>timestamp</code> property that initializes to the current date.</p>
 	</subsection>
 	<subsection name="What is the purpose of all this?">
