@@ -56,6 +56,7 @@
 			<li><a href="#Instantiating_a_proxy_class">Instantiating a proxy class</a></li>
 			<li><a href="#A_practical_example">A practical example</a></li>
 			<li><a href="#Introductions">Introductions</a></li>
+			<li><a href="#Proxying_aliased_classes">Proxying aliased classes</a></li>
 		</ul>
 	</section>
   	
@@ -477,6 +478,80 @@ proxyFactory.loadProxyClasses();
 	but this example is not meant to showcase a perfect implementation, merely a pattern.</p>
 	<p>All of this could, of course, be solved in most cases by having the necessary classes inherit from a base class, but this is not always possible to achieve, in these cases
 	a dynamic proxy might offer a better solution.</p>
+	</subsection>
+	<subsection name="Proxying aliased classes">
+		<p>There might be scenario's one can think of where proxying a value object returned from a webserver can add an extra benefit.</p>
+		<p>In this section it is explained how this can be achieved.</p>
+		<p>First, let's imagine the value objects, probably looking something like this:</p>
+		<div class="source"><pre>[RemoteClass("com.myclasses.vo.MyValueObject")]
+public class MyValueObject {
+	private var _name:String;
+	private var _width:Number;
+	private var _height:Number;
+
+	public function get name():String {
+		return _name;
+	}
+	public function set name(value:String):void {
+		_name = value;
+	}
+
+	public function get width():Number {
+		return _width;
+	}
+	public function set width(value:Number):void; {
+		_width = value;
+	}
+
+	public function get height():Number {
+		return _height;
+	}
+	public function set height(value:Number):void {
+		_height = value;
+	}
+}
+</pre></div>
+	<p>Now suppose every value object would need an instantiation timestamp, as defined in this following interface and implemented in the specified class:</p>
+	<div class="source"><pre>public interface ITimeStampable {
+	function get timestamp():Date;
+}
+
+public class PartialTimeStampable implements ITimeStampable {
+	private var _timestamp:Date = new Date();
+	
+	[Transient]
+	public function get timestamp():Date {
+		return _timestamp;
+	}
+}
+</pre></div>
+	<p>All that remains is figuring out which classes ought to be proxied and their class aliases overriden:</p>
+	<div class="source"><pre>var classNames:Array = ByteCodeType.fromLoader(Application.loaderInfo);
+var classNames:Array = ByteCodeType.getClassesWithMetadata('RemoteClass');
+var proxyFactory:IProxyfactory = new ProxyFactory();
+for each(var className:String in classNames) {
+	var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(ApplicationDomain.currentDomain.getDefinition(className) as Class);
+	classProxyInfo.proxyMethodScopes = ProxyScope.NONE;
+	classProxyInfo.proxyAccessorScopes = ProxyScope.NONE;
+	classProxyInfo.introduce(PartialTimeStampable);
+}
+proxyFactory.addEventListener(Event.COMPLETE, proxiesLoadedHandler);
+proxyFactory.generateProxyClasses();
+proxyFactory.loadPorxyClasses();
+
+function proxiesLoadedHandler(event:Complete):void {
+	var classNames:Array = ByteCodeType.getClassesWithMetadata('RemoteClass');
+	for each(var className:String in classNames) {
+		var clazz:Class = ApplicationDomain.currentDomain.getDefinition(className) as Class;
+		var proxyInfo:ProxyInfo = proxyFactory.getProxyInfoForClass(clazz);
+		var type:Type = Type.forClass(clazz);
+		var classAlias:String = Metadata(type.getMetadata('RemoteClass')[0]).getArgument('alias').value;
+		registerClassAlias(classAlias, proxyInfo.proxyClass);
+	}
+}
+</pre></div>
+	<p>And that's it, any objects coming from the remote server that are assocoated with the specified alias will
+	be deserialized to the proxy value objects containing the new <code>timestamp</code> property that initializes to the current date.</p>
 	</subsection>
 	<subsection name="What is the purpose of all this?">
 		<p>The proxy API in as3commons-bytecode isn't meant as a complete end solution for all proxying needs. Instead it only offers the basic building blocks
