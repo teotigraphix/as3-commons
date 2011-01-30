@@ -92,7 +92,7 @@ package org.as3commons.logging {
 		 */
 		[Deprecated(replacement="org.as3commons.logging.getClassLogger()", since="2.0")]
 		public static function getClassLogger(input:*): ILogger {
-			return LOGGER_FACTORY.getLogger(toLogName(input));
+			return LOGGER_FACTORY.getNamedLogger(toLogName(input));
 		}
 		
 		/**
@@ -106,7 +106,7 @@ package org.as3commons.logging {
 		 */
 		[Deprecated(replacement="org.as3commons.logging.getNamedLogger()", since="2.0")]
 		public static function getLogger(name:String):ILogger {
-			return LOGGER_FACTORY.getLogger(name);
+			return LOGGER_FACTORY.getNamedLogger(name);
 		}
 		
 		private const _loggers:Object/* <String, ILogger> */={};
@@ -126,17 +126,20 @@ package org.as3commons.logging {
 			this.setup = setup;
 		}
 		
+		public function get setup():ILogSetup {
+			return _setup;
+		}
+		
 		public function set setup(setup:ILogSetup):void {
 			_setup = setup;
 			var name: String;
 			
+			for(name in _loggers) {
+				Logger(_loggers[name]).allTargets = null;
+			}
 			if(setup) {
 				for(name in _loggers) {
 					setup.applyTo( _loggers[name] );
-				}
-			} else {
-				for(name in _loggers) {
-					Logger(_loggers[name]).allTargets = null;
 				}
 			}
 		}
@@ -144,15 +147,10 @@ package org.as3commons.logging {
 		/**
 		 * Returns a <code>ILogger</code> instance for the passed-in name.
 		 * 
-		 * <p>
-		 * 
-		 
-		 * </p>
-		 * 
 		 * @param name Name of the logger to be received, null and undefined are allowed
 		 * @return Logger for the passed-in name
 		 */
-		public function getLogger(name:String):ILogger {
+		public function getNamedLogger(name:String):ILogger {
 			var result:Logger;
 			var compileSafeName:* = name;
 			if( compileSafeName === null ) {

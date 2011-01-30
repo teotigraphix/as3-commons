@@ -31,7 +31,7 @@ package org.as3commons.logging.setup {
 		override public function setUp():void {
 			super.setUp();
 			LOGGER_FACTORY.setup = null;
-			_logger = LOGGER_FACTORY.getLogger("");
+			_logger = LOGGER_FACTORY.getNamedLogger("");
 		}
 		
 		public function testAccess(): void {

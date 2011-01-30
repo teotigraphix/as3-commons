@@ -1,6 +1,7 @@
 package org.as3commons.logging.setup {
 	
 	import org.as3commons.logging.Logger;
+	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.MockitoTestCase;
 	
@@ -14,11 +15,8 @@ package org.as3commons.logging.setup {
 		
 		public function testNormal(): void {
 			var target: ILogTarget = mock( ILogTarget );
-			var logger: Logger = new Logger("a");
-			var setup: LevelTargetSetup;
-			
-			setup = new LevelTargetSetup(target,LogSetupLevel.ALL);
-			setup.applyTo(logger);
+			var factory: LoggerFactory = new LoggerFactory( new LevelTargetSetup(target,LogSetupLevel.ALL) );
+			var logger: Logger = factory.getNamedLogger("a") as Logger;
 			
 			assertEquals(logger.debugTarget, target);
 			assertEquals(logger.infoTarget, target);
@@ -26,8 +24,7 @@ package org.as3commons.logging.setup {
 			assertEquals(logger.errorTarget, target);
 			assertEquals(logger.fatalTarget, target);
 			
-			setup = new LevelTargetSetup(target, LogSetupLevel.DEBUG_ONLY);
-			setup.applyTo(logger);
+			factory.setup = new LevelTargetSetup(target, LogSetupLevel.DEBUG_ONLY);
 			
 			assertEquals(logger.debugTarget, target);
 			assertEquals(logger.infoTarget, null);
@@ -35,8 +32,7 @@ package org.as3commons.logging.setup {
 			assertEquals(logger.errorTarget, null);
 			assertEquals(logger.fatalTarget, null);
 			
-			setup = new LevelTargetSetup(target, LogSetupLevel.INFO_ONLY);
-			setup.applyTo(logger);
+			factory.setup = new LevelTargetSetup(target, LogSetupLevel.INFO_ONLY);
 			
 			assertEquals(logger.debugTarget, null);
 			assertEquals(logger.infoTarget, target);
@@ -44,8 +40,7 @@ package org.as3commons.logging.setup {
 			assertEquals(logger.errorTarget, null);
 			assertEquals(logger.fatalTarget, null);
 			
-			setup = new LevelTargetSetup(target, LogSetupLevel.WARN_ONLY);
-			setup.applyTo(logger);
+			factory.setup = new LevelTargetSetup(target, LogSetupLevel.WARN_ONLY);
 			
 			assertEquals(logger.debugTarget, null);
 			assertEquals(logger.infoTarget, null);
@@ -53,8 +48,7 @@ package org.as3commons.logging.setup {
 			assertEquals(logger.errorTarget, null);
 			assertEquals(logger.fatalTarget, null);
 			
-			setup = new LevelTargetSetup(target, LogSetupLevel.ERROR_ONLY);
-			setup.applyTo(logger);
+			factory.setup = new LevelTargetSetup(target, LogSetupLevel.ERROR_ONLY);
 			
 			assertEquals(logger.debugTarget, null);
 			assertEquals(logger.infoTarget, null);
@@ -62,8 +56,7 @@ package org.as3commons.logging.setup {
 			assertEquals(logger.errorTarget, target);
 			assertEquals(logger.fatalTarget, null);
 			
-			setup = new LevelTargetSetup(target, LogSetupLevel.FATAL_ONLY);
-			setup.applyTo(logger);
+			factory.setup = new LevelTargetSetup(target, LogSetupLevel.FATAL_ONLY);
 			
 			assertEquals(logger.debugTarget, null);
 			assertEquals(logger.infoTarget, null);
@@ -71,8 +64,7 @@ package org.as3commons.logging.setup {
 			assertEquals(logger.errorTarget, null);
 			assertEquals(logger.fatalTarget, target);
 			
-			setup = new LevelTargetSetup(target,LogSetupLevel.NONE);
-			setup.applyTo(logger);
+			factory.setup = new LevelTargetSetup(target,LogSetupLevel.NONE);
 			
 			assertEquals(logger.debugTarget, null);
 			assertEquals(logger.infoTarget, null);

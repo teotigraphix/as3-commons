@@ -198,57 +198,7 @@ package org.as3commons.logging.setup {
 			
 			logger.allTargets = targetA;
 			
-			LogSetupLevel.ERROR_ONLY.applyTo(logger, targetB, true);
-			
-			assertEquals( logger.errorTarget, targetB );
-			assertEquals( logger.debugTarget, null );
-			assertEquals( logger.fatalTarget, null );
-			assertEquals( logger.infoTarget, null );
-			assertEquals( logger.warnTarget, null );
-			
-			logger.allTargets = targetA;
-			
-			LogSetupLevel.WARN_ONLY.applyTo(logger, targetB, true);
-			
-			assertEquals( logger.errorTarget, null );
-			assertEquals( logger.debugTarget, null );
-			assertEquals( logger.fatalTarget, null );
-			assertEquals( logger.infoTarget, null );
-			assertEquals( logger.warnTarget, targetB );
-			
-			logger.allTargets = targetA;
-			
-			LogSetupLevel.INFO_ONLY.applyTo(logger, targetB, true);
-			
-			assertEquals( logger.errorTarget, null );
-			assertEquals( logger.debugTarget, null );
-			assertEquals( logger.fatalTarget, null );
-			assertEquals( logger.infoTarget, targetB );
-			assertEquals( logger.warnTarget, null );
-			
-			logger.allTargets = targetA;
-			
-			LogSetupLevel.DEBUG_ONLY.applyTo(logger, targetB, true);
-			
-			assertEquals( logger.errorTarget, null );
-			assertEquals( logger.debugTarget, targetB );
-			assertEquals( logger.fatalTarget, null );
-			assertEquals( logger.infoTarget, null );
-			assertEquals( logger.warnTarget, null );
-			
-			logger.allTargets = targetA;
-			
-			LogSetupLevel.FATAL_ONLY.applyTo(logger, targetB, true);
-			
-			assertEquals( logger.errorTarget, null );
-			assertEquals( logger.debugTarget, null );
-			assertEquals( logger.fatalTarget, targetB );
-			assertEquals( logger.infoTarget, null );
-			assertEquals( logger.warnTarget, null );
-			
-			logger.allTargets = targetA;
-			
-			LogSetupLevel.ERROR_ONLY.applyTo(logger, targetB, false);
+			LogSetupLevel.ERROR_ONLY.applyTo(logger, targetB);
 			
 			assertEquals( logger.errorTarget, targetB );
 			assertEquals( logger.debugTarget, targetA );
@@ -258,7 +208,7 @@ package org.as3commons.logging.setup {
 			
 			logger.allTargets = targetA;
 			
-			LogSetupLevel.WARN_ONLY.applyTo(logger, targetB, false);
+			LogSetupLevel.WARN_ONLY.applyTo(logger, targetB);
 			
 			assertEquals( logger.errorTarget, targetA );
 			assertEquals( logger.debugTarget, targetA );
@@ -268,7 +218,7 @@ package org.as3commons.logging.setup {
 			
 			logger.allTargets = targetA;
 			
-			LogSetupLevel.INFO_ONLY.applyTo(logger, targetB, false);
+			LogSetupLevel.INFO_ONLY.applyTo(logger, targetB);
 			
 			assertEquals( logger.errorTarget, targetA );
 			assertEquals( logger.debugTarget, targetA );
@@ -278,7 +228,7 @@ package org.as3commons.logging.setup {
 			
 			logger.allTargets = targetA;
 			
-			LogSetupLevel.DEBUG_ONLY.applyTo(logger, targetB, false);
+			LogSetupLevel.DEBUG_ONLY.applyTo(logger, targetB);
 			
 			assertEquals( logger.errorTarget, targetA );
 			assertEquals( logger.debugTarget, targetB );
@@ -288,7 +238,7 @@ package org.as3commons.logging.setup {
 			
 			logger.allTargets = targetA;
 			
-			LogSetupLevel.FATAL_ONLY.applyTo(logger, targetB, false);
+			LogSetupLevel.FATAL_ONLY.applyTo(logger, targetB);
 			
 			assertEquals( logger.errorTarget, targetA );
 			assertEquals( logger.debugTarget, targetA );

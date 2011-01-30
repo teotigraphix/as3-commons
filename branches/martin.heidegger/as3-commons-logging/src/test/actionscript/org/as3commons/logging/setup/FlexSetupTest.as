@@ -53,10 +53,10 @@ package org.as3commons.logging.setup {
 			Log.addTarget( flexTarget );
 			
 			var factory: LoggerFactory = new LoggerFactory(new SimpleTargetSetup( new FlexLogTarget() ));
-			var loggerA: Logger = factory.getLogger( "com.mux" ) as Logger;
-			var loggerB: Logger = factory.getLogger( "com.me.Example" ) as Logger;
-			var loggerC: Logger = factory.getLogger( "com.ma.rup" ) as Logger;
-			var loggerD: Logger = factory.getLogger( "com.ma.sup" ) as Logger;
+			var loggerA: Logger = factory.getNamedLogger( "com.mux" ) as Logger;
+			var loggerB: Logger = factory.getNamedLogger( "com.me.Example" ) as Logger;
+			var loggerC: Logger = factory.getNamedLogger( "com.ma.rup" ) as Logger;
+			var loggerD: Logger = factory.getNamedLogger( "com.ma.sup" ) as Logger;
 			loggerA.debugTarget.log( "com.mux", "mux", DEBUG, 123, "hello {0}", ["world"]);
 			loggerB.infoTarget.log( "com.me.Example", "Example", INFO, 123, "{0} {1}", ["hello","world"] );
 			loggerC.warnTarget.log( "com.ma.rup", "rup", WARN, 123, "{0} world", ["hello"] );
