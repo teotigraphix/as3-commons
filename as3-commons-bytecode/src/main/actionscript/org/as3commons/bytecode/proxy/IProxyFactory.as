@@ -107,9 +107,9 @@ package org.as3commons.bytecode.proxy {
 		 * have been invoked.
 		 * @param clazz
 		 * @param constructorArgs
-		 * @return
+		 * @return An instance of the proxy class.
 		 */
-		function createProxy(clazz:Class, constructorArgs:Array = null):Object;
+		function createProxy(clazz:Class, constructorArgs:Array = null):*;
 
 		/**
 		 * Returns a <code>ProxyInfo</code> instance associated with the specified proxied class,

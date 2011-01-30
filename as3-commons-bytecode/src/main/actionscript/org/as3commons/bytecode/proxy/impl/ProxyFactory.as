@@ -360,7 +360,7 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function createProxy(clazz:Class, constructorArgs:Array = null):Object {
+		public function createProxy(clazz:Class, constructorArgs:Array = null):* {
 			var proxyInfo:ProxyInfo = _classProxyLookup[clazz] as ProxyInfo;
 			if (proxyInfo != null) {
 				LOGGER.debug("Creating proxy for class {0} with arguments: {1}", clazz, (constructorArgs != null) ? constructorArgs.join(',') : "");
