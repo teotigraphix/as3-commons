@@ -142,14 +142,14 @@ package org.as3commons.bytecode.emit.asm {
 			var source:String = (<![CDATA[
 			debugfile     	"C:\projects\as3-commons\as3-commons-lang\src\main\actionscript;org\as3commons\lang;ClassUtils.as"
 			debugline     	310
-			getlocal0     	
+			getlocal_0     	
 			pushscope     	
 			debug         	1 35 0 310
 			debug         	1 11 1 310
 			debug         	1 33 2 312
 			debug         	1 88 3 314
 			debugline     	311
-			getlocal2     	
+			getlocal_2     	
 			pushnull      	
 			ifne          	L0
 			
@@ -159,17 +159,17 @@ package org.as3commons.bytecode.emit.asm {
 			coerce        	flash.system:ApplicationDomain
 			jump          	L1
 			L0:
-			getlocal2     	
+			getlocal_2     	
 			coerce        	flash.system:ApplicationDomain
 			L1:
 			coerce        	flash.system:ApplicationDomain
-			setlocal2     	
+			setlocal_2     	
 			debugline     	312
 			findpropstrict	:getFullyQualifiedImplementedInterfaceNames
-			getlocal1     	
+			getlocal_1     	
 			callproperty  	:getFullyQualifiedImplementedInterfaceNames 1
 			coerce        	:Array
-			setlocal3     	
+			setlocal_3     	
 			debugline     	314
 			pushbyte      	0
 			convert_i     	
@@ -179,14 +179,14 @@ package org.as3commons.bytecode.emit.asm {
 			L3:
 			label         	
 			debugline     	315
-			getlocal3     	
+			getlocal_3     	
 			getlocal      	4
 			findpropstrict	org.as3commons.lang:ClassUtils
 			getproperty   	org.as3commons.lang:ClassUtils
-			getlocal3     	
+			getlocal_3     	
 			getlocal      	4
 			getproperty   	private,,org.as3commons.lang,org.as3commons.lang,http://adobe.com/AS3/2006/builtin,private,org.as3commons.lang:ClassUtils,org.as3commons.lang:ClassUtils,Object:null
-			getlocal2     	
+			getlocal_2     	
 			callproperty  	:forName 2
 			setproperty   	private,,org.as3commons.lang,org.as3commons.lang,http://adobe.com/AS3/2006/builtin,private,org.as3commons.lang:ClassUtils,org.as3commons.lang:ClassUtils,Object:null
 			debugline     	314
@@ -196,12 +196,12 @@ package org.as3commons.bytecode.emit.asm {
 			setlocal      	4
 			L2:
 			getlocal      	4
-			getlocal3     	
+			getlocal_3     	
 			getproperty   	:length
 			iflt          	L3
 			
 			debugline     	317
-			getlocal3     	
+			getlocal_3     	
 			returnvalue]]>).toString();
 			var result:Array = _asm.parseAndConvert(source);
 		}
