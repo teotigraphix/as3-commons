@@ -97,19 +97,103 @@ package org.as3commons.eventbus {
 		 */
 		function removeAllListeners(topic:Object = null):void;
 
+		/**
+		 *
+		 * @param interceptor
+		 * @param topic
+		 */
 		function addInterceptor(interceptor:IEventInterceptor, topic:Object = null):void;
 
+		/**
+		 *
+		 * @param interceptor
+		 * @param topic
+		 */
 		function removeInterceptor(interceptor:IEventInterceptor, topic:Object = null):void;
 
+		/**
+		 *
+		 * @param type
+		 * @param interceptor
+		 * @param topic
+		 */
 		function addEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object = null):void;
 
+		/**
+		 *
+		 * @param type
+		 * @param interceptor
+		 * @param topic
+		 */
 		function removeEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object = null):void;
 
+		/**
+		 *
+		 * @param eventClass
+		 * @param interceptor
+		 * @param topic
+		 */
 		function addEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor, topic:Object = null):void;
 
+		/**
+		 *
+		 * @param eventClass
+		 * @param interceptor
+		 * @param topic
+		 */
 		function removeEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor, topic:Object = null):void;
 
+		/**
+		 *
+		 * @param topic
+		 */
 		function removeAllInterceptors(topic:Object = null):void;
+
+		/**
+		 *
+		 * @param interceptor
+		 * @param topic
+		 */
+		function addListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void;
+
+		/**
+		 *
+		 * @param interceptor
+		 * @param topic
+		 */
+		function removeListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void;
+
+		/**
+		 *
+		 * @param type
+		 * @param interceptor
+		 * @param topic
+		 */
+		function addEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void;
+
+		/**
+		 *
+		 * @param type
+		 * @param interceptor
+		 * @param topic
+		 */
+		function removeEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void;
+
+		/**
+		 *
+		 * @param eventClass
+		 * @param interceptor
+		 * @param topic
+		 */
+		function addEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void;
+
+		/**
+		 *
+		 * @param eventClass
+		 * @param interceptor
+		 * @param topic
+		 */
+		function removeEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void;
 
 		/**
 		 * Removes all event listeners and interceptors from the current <code>IEventBus</code> instance.
