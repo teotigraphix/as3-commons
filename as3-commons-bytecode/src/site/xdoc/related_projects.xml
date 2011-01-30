@@ -29,6 +29,17 @@
                         An Inversion Of Control framework for Actionscript based applications.
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <a href="https://code.google.com/p/flapper-as/">Spring Actionscript</a>
+                    </td>
+                    <td>
+                        Marty Pitt
+                    </td>
+                    <td>
+                        An extension library for AOP with Parsley.
+                    </td>
+                </tr>
 
             </table>
 			
