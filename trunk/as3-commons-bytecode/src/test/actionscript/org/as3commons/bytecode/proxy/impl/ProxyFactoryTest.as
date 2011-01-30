@@ -35,6 +35,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.io.AbcSerializer;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
 	import org.as3commons.bytecode.proxy.IProxyFactory;
+	import org.as3commons.bytecode.proxy.ProxyScope;
 	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
 	import org.as3commons.bytecode.proxy.event.ProxyCreationEvent;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
@@ -107,7 +108,6 @@ package org.as3commons.bytecode.proxy.impl {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(TestProxiedClass, null, applicationDomain);
 			assertStrictlyEquals(TestProxiedClass, classProxyInfo.proxiedClass);
-			assertEquals(true, classProxyInfo.proxyAll);
 			for (var domain:* in _proxyFactory.domains) {
 				assertStrictlyEquals(applicationDomain, domain);
 			}
@@ -123,7 +123,8 @@ package org.as3commons.bytecode.proxy.impl {
 		public function testLoadProxyClassForClassWithOneCtorParam():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, applicationDomain);
-			classProxyInfo.onlyProxyConstructor = true;
+			classProxyInfo.proxyAccessorScopes = ProxyScope.NONE;
+			classProxyInfo.proxyMethodScopes = ProxyScope.NONE;
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createConstructorInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleConstructorTestComplete, 1000));
@@ -133,7 +134,8 @@ package org.as3commons.bytecode.proxy.impl {
 		public function testLoadProxyClassForClassWithTwoCtorParams():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithTwoConstructorArguments, null, applicationDomain);
-			classProxyInfo.onlyProxyConstructor = true;
+			classProxyInfo.proxyAccessorScopes = ProxyScope.NONE;
+			classProxyInfo.proxyMethodScopes = ProxyScope.NONE;
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createConstructorInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleConstructorTwoParamsTestComplete, 1000));
@@ -144,7 +146,8 @@ package org.as3commons.bytecode.proxy.impl {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, applicationDomain);
 			classProxyInfo.interceptorFactory = new CtorInterceptorFactory();
-			classProxyInfo.onlyProxyConstructor = true;
+			classProxyInfo.proxyAccessorScopes = ProxyScope.NONE;
+			classProxyInfo.proxyMethodScopes = ProxyScope.NONE;
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleConstructorTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
@@ -154,7 +157,8 @@ package org.as3commons.bytecode.proxy.impl {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, applicationDomain);
 			classProxyInfo.interceptorFactory = new CustomInterceptorFactory();
-			classProxyInfo.onlyProxyConstructor = true;
+			classProxyInfo.proxyAccessorScopes = ProxyScope.NONE;
+			classProxyInfo.proxyMethodScopes = ProxyScope.NONE;
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleCustomFactoryConstructorTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
@@ -172,7 +176,8 @@ package org.as3commons.bytecode.proxy.impl {
 		public function testLoadProxyClassForClassWithoutCtorParams():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, applicationDomain);
-			classProxyInfo.onlyProxyConstructor = true;
+			classProxyInfo.proxyAccessorScopes = ProxyScope.NONE;
+			classProxyInfo.proxyMethodScopes = ProxyScope.NONE;
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createConstructorInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleConstructorTestComplete, 1000));

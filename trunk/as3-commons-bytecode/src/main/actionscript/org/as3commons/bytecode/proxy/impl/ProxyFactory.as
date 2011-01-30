@@ -44,6 +44,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.proxy.IConstructorProxyFactory;
 	import org.as3commons.bytecode.proxy.IMethodProxyFactory;
 	import org.as3commons.bytecode.proxy.IProxyFactory;
+	import org.as3commons.bytecode.proxy.ProxyScope;
 	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
 	import org.as3commons.bytecode.proxy.event.ProxyCreationEvent;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
@@ -446,13 +447,11 @@ package org.as3commons.bytecode.proxy.impl {
 			var ctorBuilder:ICtorBuilder = constructorProxyFactory.addConstructor(classBuilder, type, classProxyInfo);
 			constructorProxyFactory.addConstructorBody(ctorBuilder, bytecodeQname, nsMultiname);
 
-			if ((classProxyInfo.proxyAll == true) && (classProxyInfo.onlyProxyConstructor == false)) {
-				reflectMembers(classProxyInfo, type, applicationDomain);
-			}
-			if (classProxyInfo.proxyAllAccessors == true) {
+			if (classProxyInfo.accessors.length == 0) {
 				reflectAccessors(classProxyInfo, type, applicationDomain);
 			}
-			if (classProxyInfo.proxyAllMethods == true) {
+
+			if (classProxyInfo.methods.length == 0) {
 				reflectMethods(classProxyInfo, type, applicationDomain);
 			}
 
@@ -557,7 +556,7 @@ package org.as3commons.bytecode.proxy.impl {
 			for each (var method:Method in type.methods) {
 				var byteCodeMethod:ByteCodeMethod = method as ByteCodeMethod;
 				if (byteCodeMethod != null) {
-					if (!isEligibleForProxy(byteCodeMethod)) {
+					if (!isEligibleForProxy(byteCodeMethod, classProxyInfo.proxyMethodScopes, classProxyInfo.proxyMethodNamespaces)) {
 						continue;
 					}
 					classProxyInfo.proxyMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI);
@@ -572,7 +571,7 @@ package org.as3commons.bytecode.proxy.impl {
 			for each (var accessor:Accessor in type.accessors) {
 				var byteCodeAccessor:ByteCodeAccessor = accessor as ByteCodeAccessor;
 				if (byteCodeAccessor != null) {
-					if (!isEligibleForProxy(byteCodeAccessor)) {
+					if (!isEligibleForProxy(byteCodeAccessor, classProxyInfo.proxyAccessorScopes, classProxyInfo.proxyAccessorNamespaces)) {
 						continue;
 					}
 					classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI);
@@ -585,12 +584,38 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param namespaceKind The specified <code>NamespaceKind</code>.
 		 * @return <code>True</code> if the specified <code>NamespaceKind</code> can be proxied.
 		 */
-		protected function isEligibleForProxy(member:MetadataContainer):Boolean {
+		protected function isEligibleForProxy(member:MetadataContainer, scope:ProxyScope, namespaces:Array):Boolean {
 			Assert.notNull(member, "member argument must not be null");
 			if ((member['isStatic'] == true) || (member['isFinal'] == true)) {
 				return false;
 			}
-			return ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.NAMESPACE));
+			var result:Boolean = false;
+			switch (scope) {
+				case ProxyScope.ALL:
+					result = ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.NAMESPACE));
+					break;
+				case ProxyScope.PUBLIC:
+					result = ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE));
+					break;
+				case ProxyScope.PROTECTED:
+					result = ((NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE));
+					break;
+				case ProxyScope.PUBLIC_PROTECTED:
+					result = ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE));
+					break;
+				case ProxyScope.NONE:
+					result = false;
+					break;
+			}
+			if ((!result) && (namespaces != null)) {
+				for each (var ns:String in namespaces) {
+					if (member['namespaceURI'] == ns) {
+						result = true;
+						break;
+					}
+				}
+			}
+			return result;
 		}
 
 

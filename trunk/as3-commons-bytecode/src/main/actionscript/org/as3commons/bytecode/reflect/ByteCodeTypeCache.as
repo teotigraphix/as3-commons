@@ -72,7 +72,14 @@ package org.as3commons.bytecode.reflect {
 			if ((type != null) && (!type.as3commons_reflect::initialized)) {
 				type.as3commons_reflect::initialize();
 			} else if (type == null) {
-				return Type.forName(key);
+				type = Type.forName(key);
+			}
+			if (type == null) {
+				/*var func:Function = PlayerGlobalTypes.typeMethods[key];
+				if (func != null) {
+					type = func();
+					cache[key] = type;
+				}*/
 			}
 			return type;
 		}

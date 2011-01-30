@@ -15,15 +15,16 @@
 */
 package org.as3commons.bytecode.proxy.impl {
 
+	import flash.errors.IllegalOperationError;
+
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptorFactory;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
+	import org.as3commons.bytecode.proxy.ProxyScope;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 
 	/**
-	 * Contains all the necessary information for an <code>IProxyFactory</code> to generate
-	 * a proxy class.
-	 * @author Roland Zwaga
+	 * @inheritDoc
 	 */
 	public final class ClassProxyInfo implements IClassProxyInfo {
 
@@ -35,8 +36,10 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _onlyProxyConstructor:Boolean = false;
 		private var _makeDynamic:Boolean = false;
 		private var _interceptorFactory:IMethodInvocationInterceptorFactory;
-		private var _proxyAllAccessors:Boolean;
-		private var _proxyAllMethods:Boolean;
+		private var _proxyAccessorNamespaces:Array;
+		private var _proxyAccessorScopes:ProxyScope;
+		private var _proxyMethodNamespaces:Array;
+		private var _proxyMethodScopes:ProxyScope;
 
 		/**
 		 * Creates a new <code>ClassProxyInfo</code> instance.
@@ -44,23 +47,6 @@ package org.as3commons.bytecode.proxy.impl {
 		public function ClassProxyInfo(proxiedClass:Class, methodInvocationInterceptorClass:Class = null) {
 			super();
 			initClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
-		}
-
-
-		public function get proxyAllAccessors():Boolean {
-			return _proxyAllAccessors;
-		}
-
-		public function set proxyAllAccessors(value:Boolean):void {
-			_proxyAllAccessors = value;
-		}
-
-		public function get proxyAllMethods():Boolean {
-			return _proxyAllMethods;
-		}
-
-		public function set proxyAllMethods(value:Boolean):void {
-			_proxyAllMethods = value;
 		}
 
 		public function get interceptorFactory():IMethodInvocationInterceptorFactory {
@@ -72,14 +58,14 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		/**
-		 * The class for which a proxy will be generated.
+		 * @inheritDoc
 		 */
 		public function get proxiedClass():Class {
 			return _proxiedClass;
 		}
 
 		/**
-		 * The <code>Class</code> that will be injected into the proxy class as the main interceptor mechanism.
+		 * @inheritDoc
 		 */
 		public function get methodInvocationInterceptorClass():Class {
 			return _methodInvocationInterceptorClass;
@@ -97,6 +83,8 @@ package org.as3commons.bytecode.proxy.impl {
 			_methods = [];
 			_accessors = [];
 			_introductions = [];
+			_proxyAccessorScopes = ProxyScope.ALL;
+			_proxyMethodScopes = ProxyScope.ALL;
 		}
 
 		/**
@@ -114,67 +102,104 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		/**
-		 * Determines whether the <code>IProxyFactory</code> should proxy all members of the proxied class.
+		 * @inheritDoc
 		 */
-		public function get proxyAll():Boolean {
-			return ((_methods.length + _accessors.length) == 0);
-		}
-
-		/**
-		 * Determines whether the <code>IProxyFactory</code> should only generate a proxy for the constructor.
-		 * (No other members will be proxied).
-		 */
-		public function get onlyProxyConstructor():Boolean {
-			return _onlyProxyConstructor;
+		public function get proxyAccessorNamespaces():Array {
+			return _proxyAccessorNamespaces;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set onlyProxyConstructor(value:Boolean):void {
-			_onlyProxyConstructor = value;
+		public function set proxyAccessorNamespaces(value:Array):void {
+			_proxyAccessorNamespaces = value;
 		}
 
 		/**
-		 * Marks the specified method and optional namespace for proxying.
-		 * @param methodName The specified method name.
-		 * @param namespace Optionally the custom namespace of the specified method.
+		 * @inheritDoc
+		 */
+		public function get proxyAccessorScopes():ProxyScope {
+			return _proxyAccessorScopes;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set proxyAccessorScopes(value:ProxyScope):void {
+			if (value == null) {
+				throw new IllegalOperationError("proxyAccessorScopes value cannot be null");
+			}
+			_proxyAccessorScopes = value;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get proxyMethodNamespaces():Array {
+			return _proxyMethodNamespaces;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set proxyMethodNamespaces(value:Array):void {
+			_proxyMethodNamespaces = value;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get proxyMethodScopes():ProxyScope {
+			return _proxyMethodScopes;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set proxyMethodScopes(value:ProxyScope):void {
+			if (value == null) {
+				throw new IllegalOperationError("proxyMethodScopes value cannot be null");
+			}
+			_proxyMethodScopes = value;
+		}
+
+		/**
+		 * @inheritDoc
 		 */
 		public function proxyMethod(methodName:String, namespace:String = null):void {
 			_methods[_methods.length] = new MemberInfo(methodName, namespace);
 		}
 
 		/**
-		 * Marks the specified accessor and optional namespace for proxying.
-		 * @param accessorName The specified accessor name.
-		 * @param namespace Optionally the custom namespace of the specified accessor.
+		 * @inheritDoc
 		 */
 		public function proxyAccessor(accessorName:String, namespace:String = null):void {
 			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace);
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function introduce(clazz:Class):void {
 			_introductions[_introductions.length] = ClassUtils.getFullyQualifiedName(clazz, true);
 		}
 
 		/**
-		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the methods
-		 * that will be proxied for the specified class.
+		 * @inheritDoc
 		 */
 		public function get methods():Array {
 			return _methods;
 		}
 
 		/**
-		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the accessors
-		 * that will be proxied for the specified class.
+		 * @inheritDoc
 		 */
 		public function get accessors():Array {
 			return _accessors;
 		}
 
 		/**
-		 *
+		 * @inheritDoc
 		 */
 		public function get introductions():Array {
 			return _introductions;
