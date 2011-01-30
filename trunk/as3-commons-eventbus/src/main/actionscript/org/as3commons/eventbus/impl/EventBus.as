@@ -26,6 +26,7 @@ package org.as3commons.eventbus.impl {
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.reflect.MethodInvoker;
+	import org.as3commons.eventbus.IEventListenerInterceptor;
 
 	/**
 	 * The <code>EventBus</code> is used as a publish/subscribe event mechanism that lets objects communicate
@@ -437,6 +438,30 @@ package org.as3commons.eventbus.impl {
 			if (idx > -1) {
 				interceptors.splice(idx, 1);
 			}
+		}
+
+		public function addEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void {
+			//TODO Auto-generated method stub
+		}
+
+		public function addEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void {
+			//TODO Auto-generated method stub
+		}
+
+		public function addListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void {
+			//TODO Auto-generated method stub
+		}
+
+		public function removeEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void {
+			//TODO Auto-generated method stub
+		}
+
+		public function removeEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void {
+			//TODO Auto-generated method stub
+		}
+
+		public function removeListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void {
+			//TODO Auto-generated method stub
 		}
 
 		/**
