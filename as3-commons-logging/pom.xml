@@ -171,7 +171,7 @@
 						can use Ant -->
 					<execution>
 						<id>copy-dependencies</id>
-						<phase>site</phase>
+						<phase>process-sources</phase> <!-- site -->
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
@@ -192,7 +192,7 @@
 
 					<execution>
 						<id>asdoc-generate</id>
-						<phase>site</phase>
+						<phase>process-sources</phase> <!-- site -->
 						<configuration>
 
 							<tasks>
@@ -211,7 +211,7 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-
+					
 				</executions>
 			</plugin>
 
