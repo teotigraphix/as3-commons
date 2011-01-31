@@ -22,9 +22,11 @@
 package org.as3commons.logging.util {
 	
 	/**
-	 * The url of the currently running SWF.
+	 * The URL of the currently running SWF.
 	 * 
 	 * @author Martin Heidegger
+	 * @since 2.0
+	 * @see org.as3commons.logging.util.SWFInfo#init()
 	 */
 	public var SWF_URL: String;
 }

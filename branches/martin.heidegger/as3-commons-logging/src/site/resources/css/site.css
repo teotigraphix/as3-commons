@@ -46,3 +46,21 @@ body ul {
     font-size: 0.85em;
     padding-bottom:0.15em;
 }
+
+pre a, pre a:link, pre a:visited {
+	color: black;
+	text-decoration: none;
+}
+
+pre {
+	font-size: 11px;
+}
+
+pre a:hover {
+	text-decoration: underline;
+}
+
+.section p a {
+	color: #4477AA;
+	font-weight: normal;
+}

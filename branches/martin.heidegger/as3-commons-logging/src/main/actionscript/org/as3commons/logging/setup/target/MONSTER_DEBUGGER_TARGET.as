@@ -22,73 +22,11 @@
 package org.as3commons.logging.setup.target {
 	
 	/**
-	 * Target that logs directly to the monster debugger.
-	 * 
-	 * <p>The Monster Debugger is an alternative way to display your logging statements.
-	 * This target is pretty straightforward about sending it to the Monster Debugger.</p>
+	 * Default <code>MonsterDebuggerTarget</code> that can be used straight out of the box.
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2
+	 * @since 2.0
 	 * @see http://demonsterdebugger.com
 	 */
-	public const MONSTER_DEBUGGER_TARGET: IFormattingLogTarget = new MonsterDebuggerTarget();
-}
-
-import flash.utils.Dictionary;
-import nl.demonsters.debugger.MonsterDebugger;
-
-import org.as3commons.logging.LogLevel;
-import org.as3commons.logging.level.DEBUG;
-import org.as3commons.logging.level.ERROR;
-import org.as3commons.logging.level.FATAL;
-import org.as3commons.logging.level.INFO;
-import org.as3commons.logging.level.WARN;
-import org.as3commons.logging.util.LogMessageFormatter;
-import org.as3commons.logging.setup.target.IFormattingLogTarget;
-
-internal final class MonsterDebuggerTarget implements IFormattingLogTarget {
-	
-	/** Default output format used to stringify the log statements. */
-	private const DEFAULT_FORMAT: String = "{time} {shortName} - {message}";
-	
-	/** Default colors used to color the output statements. */
-	private const DEFAULT_COLORS: Dictionary = new Dictionary();
-	
-	private var _colors:Dictionary;
-	private var _formatter:LogMessageFormatter;
-	
-	public function MonsterDebuggerTarget() {
-		DEFAULT_COLORS[DEBUG] = MonsterDebugger.COLOR_NORMAL;
-		DEFAULT_COLORS[FATAL] = MonsterDebugger.COLOR_ERROR;
-		DEFAULT_COLORS[ERROR] = MonsterDebugger.COLOR_ERROR;
-		DEFAULT_COLORS[INFO] = MonsterDebugger.COLOR_NORMAL;
-		DEFAULT_COLORS[WARN] = MonsterDebugger.COLOR_WARNING;
-		this.format = DEFAULT_FORMAT;
-		this.colors = DEFAULT_COLORS;
-	}
-	
-	/**
-	 *
-	 */
-	public function set colors(colors:Dictionary):void {
-		_colors = colors||DEFAULT_COLORS;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function set format(format:String):void {
-		_formatter = new LogMessageFormatter(format||DEFAULT_FORMAT);
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function log(name: String, shortName: String, level: LogLevel, timeStamp: Number, message: *, parameters: Array): void {
-		if( message is String ) {
-			MonsterDebugger.trace( name, _formatter.format( name, shortName, level, timeStamp, message, parameters), _colors[ level ] );
-		} else {
-			MonsterDebugger.trace( name, message, _colors[ level ] );
-		}
-	}
+	public const MONSTER_DEBUGGER_TARGET: MonsterDebuggerTarget = new MonsterDebuggerTarget();
 }

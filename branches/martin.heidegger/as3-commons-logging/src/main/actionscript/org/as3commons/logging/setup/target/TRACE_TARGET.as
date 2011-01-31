@@ -22,34 +22,10 @@
 package org.as3commons.logging.setup.target {
 	
 	/**
-	 * Outputs log statements to the <code>trace()</code> method. 
+	 * Default <code>TraceTarget</code> to be used by the <code>LoggerFactory</code>
 	 *
-	 * @author Christophe Herreman
 	 * @author Martin Heidegger
-	 * @version 2
+	 * @since 2.0
 	 */
 	public const TRACE_TARGET: IFormattingLogTarget = new TraceTarget();
-}
-
-import org.as3commons.logging.LogLevel;
-import org.as3commons.logging.setup.target.IFormattingLogTarget;
-import org.as3commons.logging.util.LogMessageFormatter;
-
-final class TraceTarget implements IFormattingLogTarget {
-	
-	public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
-	
-	private var _formatter:LogMessageFormatter;
-	
-	public function TraceTarget( format: String = null ) {
-		this.format = format;
-	}
-	
-	public function set format( format: String ): void {
-		_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
-	}
-	
-	public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:*, parameters:Array):void {
-		trace( _formatter.format( name, shortName, level, timeStamp, message, parameters));
-	}
 }
