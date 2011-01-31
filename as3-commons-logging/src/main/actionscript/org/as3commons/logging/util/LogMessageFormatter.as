@@ -312,11 +312,11 @@ package org.as3commons.logging.util {
 			var pre: String;
 			
 			if( mins <= 0 ) {
-			  pre = "+";
-			  mins = mins * -1;
-			  hours = hours * -1;
+				pre = "+";
+				mins = mins * -1;
+				hours = hours * -1;
 			} else {
-			  pre = "-";
+				pre = "-";
 			}
 			
 			hours = Math.floor(hours);

@@ -25,6 +25,7 @@ package org.as3commons.logging.util {
 	 * The URL of the currently running SWF in its short form (just the file name).
 	 * 
 	 * @author Martin Heidegger
+	 * @see org.as3commons.logging.util.SWFInfo#init()
 	 */
 	public var SWF_SHORT_URL: String;
 }

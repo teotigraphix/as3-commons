@@ -93,6 +93,7 @@ package org.as3commons.logging.setup.target {
 		 * @param format Format which the target should use to stringify the log
 		 *        statements.
 		 * @see org.as3commons.logging.util.LogMessageFormatter
+		 * @see org.as3commons.logging.util.SWFInfo#init()
 		 * @see org.as3commons.logging.util#SWF_URL
 		 * @see org.as3commons.logging.util#SWF_SHORT_URL
 		 */

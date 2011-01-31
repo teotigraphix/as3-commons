@@ -131,7 +131,7 @@ package org.as3commons.logging {
 		}
 		
 		/**
-		 * The currently appied setup.
+		 * The currently applied setup.
 		 * 
 		 * <p>By changing this setup, all loggers handled by this <code>LoggerFactory</code>
 		 * will be cleared and handed to this setup for augmentation.</p>

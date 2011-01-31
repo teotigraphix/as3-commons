@@ -22,55 +22,46 @@
 package org.as3commons.logging.setup.target {
 	
 	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.setup.target.IFormattingLogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
-	 * <code>SOSTarget</code> logs all statements to the SOS console from powerflasher.
+	 * <code>TraceTarget</code> renders log statements with the <code>trace()</code> method. 
 	 * 
-	 * <p>The SOS console from Powerflasher is a fast, lightweight console
-	 * to render log statements from flash. This logger provides the facility to
-	 * log to the SOS console.</p>
-	 * 
+	 * @author Christophe Herreman
 	 * @author Martin Heidegger
-	 * @since 2.0
-	 * @see http://www.sos.powerflasher.com/
+	 * @version 2.0
 	 */
-	public final class SOSTarget implements IFormattingLogTarget {
+	public final class TraceTarget implements IFormattingLogTarget {
 		
-		/** Default format used to format the log statement */
-		public static const DEFAULT_FORMAT: String = "{shortSWF}({time}) {shortName}: {message}";
+		/** Default format to be used for formatting statements. */
+		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
 		
-		/** Formatter used to render the log statements. */
+		/** Formatter to render the log statements */
 		private var _formatter:LogMessageFormatter;
 		
-		/** Gateway used to send SOS targets. */
-		private var _gateway:SOSGateway;
-		
 		/**
-		 * Constructs a new <code>SOSTarget</code>
+		 * Creates a new <code>TraceTarget</code> instance.
 		 * 
-		 * @param format Format in which the logger will
-		 * @param gateway Gateway to the SOS that runs. Will use the default gateway
-		 *        in case no custom one is provided. 
+		 * @param format Format to be used to format the statements.
 		 */
-		public function SOSTarget(format:String=null, gateway:SOSGateway=null) {
+		public function TraceTarget(format:String=null) {
 			this.format = format;
-			_gateway = gateway||SOSGateway.INSTANCE;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number,
-							message:*, params:Array):void {
-			_gateway.log( level.name, _formatter.format( name, shortName, level, timeStamp, message, params) );
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function set format(format:String):void {
-			_formatter = new LogMessageFormatter(format||DEFAULT_FORMAT);
+			_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function log(name:String, shortName:String, level:LogLevel,
+							timeStamp:Number, message:*, parameters:Array):void {
+			trace( _formatter.format( name, shortName, level, timeStamp, message, parameters));
 		}
 	}
 }
