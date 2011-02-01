@@ -23,27 +23,69 @@ package org.as3commons.logging.setup {
 	
 	import org.as3commons.logging.ILogSetup;
 	import org.as3commons.logging.Logger;
+	import org.as3commons.logging.setup.SimpleTargetSetup;
 	
 	/**
+	 * The <code>RegExpSetup</code> allows to filter different <code>ILogSetup</code>
+	 * instances to differently named loggers.
 	 * 
+	 * <p>This setup allows to restrict the logging to just work with certain loggers
+	 * based on the name of it. This setup will check if the name of the logger really
+	 * matches the RegExp given for the child setup. Just if it passes the name
+	 * test the logger will be applied, here is a short example for matching
+	 * just loggers starting with <code>"org.as3commons"</code>:</p>
+	 * 
+	 * <listing>
+	 *   LOGGER_FACTORY.setup = new RegExpSetup()
+	 *         .addRule(/^org\.as3commons\./, new SimpleTargetSetup(TRACE_TARGET) );
+	 * </listing>
+	 * 
+	 * <p>The former example will trace <b>nothing but</b> the statements passed
+	 * to loggers that start with <code>"org.as3commons"</code>.</p>
+	 * 
+	 * <p>The setup offers two other methods that allow to write the former code
+	 * shorter.</p>
+	 * 
+	 * <listing>
+	 *   LOGGER_FACTORY.setup = new RegExpSetup()
+	 *         // uses the trace target to all code in org.as3commons
+	 *         .addTargetRule(/^org\.as3commons\./, TRACE_TARGET );
+	 *         // uses just the debug level to all code in com.mycompany
+	 *         .addTargetRule(/^com\.mycompany\./, TRACE_TARGET, LogSetupLevel.DEBUG_ONLY );
+	 *         // overwrites the first definition by not allowing any output at
+	 *         // org.as3commons.logging
+	 *         .addNoLogRule(/^org\.as3commons\.logging\./ );
+	 * </listing>
+	 * 
+	 * <p></p>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2
 	 */
 	public class RegExpSetup implements ILogSetup {
 		
+		/** Setup to be used for addNoLogRule */
+		private static const NO_LOG_SETUP: ILogSetup = new SimpleTargetSetup(null);
+		
+		/** First rule of the setup. */
 		private var _firstRule: RegExpRule;
+		
+		/** Last rule of the setup. */
 		private var _lastRule: RegExpRule;
 		
+		/**
+		 * Constructs a new <code>RegExpSetup</code>.
+		 */
 		public function RegExpSetup() {}
 		
-		public function addTargetRule(rule:RegExp, target:ILogTarget, level:LogSetupLevel=null): RegExpSetup {
-			return addRule(
-				rule,
-				level ? new RegExpLevelTargetSetup(target, level) : new SimpleTargetSetup(target)
-			);
-		}
-		
+		/**
+		 * Adds a rule which defines when to use a setup for a logger according
+		 * to the loggers name.
+		 * 
+		 * @param rule The rule to which the name of the logger has to match. 
+		 * @param setup Setup to be applied to the loggers that match.
+		 * @return This setup instance.
+		 */
 		public function addRule(rule: RegExp, setup: ILogSetup): RegExpSetup {
 			var newRule: RegExpRule = new RegExpRule(rule, setup);
 			if( _lastRule ) {
@@ -55,10 +97,42 @@ package org.as3commons.logging.setup {
 			return this;
 		}
 		
-		public function addNoLogRule(regExp:RegExp): RegExpSetup {
-			return addRule(regExp,new SimpleTargetSetup(null));
+		/**
+		 * Adds a rule which defines when to use a certain <code>ILogTarget</code>
+		 * with loggers.
+		 * 
+		 * <p>Its a shorthand method of:</p>
+		 * <listing>addRule([rule], new LevelTargetSetup( [target], [level] ) );</listing>
+		 * 
+		 * @param rule The rule to which the name of the logger has to match.
+		 * @param target Target used for these loggers.
+		 * @param level Level that can restrict for which levels it should be used.
+		 * @return This setup instance.
+		 */
+		public function addTargetRule(rule:RegExp, target:ILogTarget, level:LogSetupLevel=null): RegExpSetup {
+			return addRule(
+				rule,
+				level ? new LevelTargetSetup(target, level) : new SimpleTargetSetup(target)
+			);
 		}
 		
+		/**
+		 * Adds a rule which defines when to remove loggers added by previous statements.
+		 * 
+		 * <p>Its a shorthand method of:</p>
+		 * <listing>addRule([rule], new SimpleTargetSetup( null ) );</listing>
+		 * 
+		 * @param rule The rule to which the name of the logger has to match.
+		 * @param regexp 
+		 * @return This setup instance.
+		 */
+		public function addNoLogRule(rule:RegExp): RegExpSetup {
+			return addRule(rule,NO_LOG_SETUP);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function applyTo(logger:Logger):void {
 			logger.allTargets = null;
 			var current: RegExpRule = _firstRule;
@@ -71,7 +145,10 @@ package org.as3commons.logging.setup {
 			}
 		}
 		
-		public function dispose(): void {
+		/**
+		 * @inheritDoc
+		 */
+		public function dispose():void {
 			var current: RegExpRule = _firstRule;
 			while( current ) {
 				current = current.dispose();
@@ -82,9 +159,6 @@ package org.as3commons.logging.setup {
 }
 
 import org.as3commons.logging.ILogSetup;
-import org.as3commons.logging.Logger;
-import org.as3commons.logging.setup.ILogTarget;
-import org.as3commons.logging.setup.LogSetupLevel;
 
 internal class RegExpRule {
 	public var rule: RegExp;
@@ -102,32 +176,5 @@ internal class RegExpRule {
 		setup = null;
 		next = null;
 		return result;
-	}
-}
-
-internal class RegExpLevelTargetSetup implements ILogSetup {
-	
-	/** Level to set the target to. */
-	private var _level:LogSetupLevel;
-	
-	/** Target which should be used. */
-	private var _target:ILogTarget;
-	
-	/**
-	 * Constructs a new <code>LevelTargetSetup</code>.
-	 * 
-	 * @param target Target which should be receiving the log output.
-	 * @param level Level at which the target should be receiving the output.
-	 */
-	public function RegExpLevelTargetSetup(target:ILogTarget, level:LogSetupLevel) {
-		_target = target;
-		_level = level;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function applyTo(logger:Logger):void {
-		_level.applyTo(logger, _target);
 	}
 }
