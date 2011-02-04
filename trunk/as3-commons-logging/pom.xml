@@ -13,6 +13,87 @@
     </description>
 	<inceptionYear>2009</inceptionYear>
 
+	<licenses>
+		<license>
+			<name>Apache Software License 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/as3-commons/issues/list</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/</developerConnection>
+		<url>http://code.google.com/p/as3-commons/source/browse/</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>cherreman</id>
+			<name>Christophe Herreman</name>
+			<email>christophe.herreman [at] stackandheap.com</email>
+			<url>http://www.herrodius.com</url>
+			<organization>Stack &amp; Heap</organization>
+			<organizationUrl>http://www.stackandheap.com</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>			
+		<id>martin.heidegger</id>
+			<name>Martin Heidegger</name>
+			<email>mh [at] leichtgewicht.at</email>
+			<url>http://leichtgewicht.at/</url>
+			<organization>Nanosome</organization>
+			<organizationUrl>http://www.nanosome.in</organizationUrl>
+			<timezone>+9</timezone>
+		</developer>
+		<developer>
+			<id>martino.piccinato</id>
+			<name>Martino Piccinato</name>
+			<email>mp [at] yoolab.com</email>
+			<organization>Yoolab</organization>
+			<organizationUrl>http://www.yoolab.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>rzwaga</id>
+			<name>Roland Zwaga</name>
+			<email>roland.zwaga [at] stackandheap.com</email>
+			<url>http://zwaga.blogspot.com/</url>
+			<organization>Stack &amp; Heap</organization>
+			<organizationUrl>http://www.stackandheap.com</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>jes</id>
+			<name>Jens Struwe</name>
+			<email>jens [at] struwe.net</email>
+			<organization>Russischer B�r Software</organization>
+			<organizationUrl>http://sibirjak.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>alewisohn</id>
+			<name>Andrew Lewisohn</name>
+			<email>alewisohn [at] gmail.com</email>
+			<organization>Arc90, Inc.</organization>
+			<organizationUrl>http://www.arc90.com/</organizationUrl>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<id>jghandour</id>
+			<name>James Ghandour</name>
+			<email>jamesghandour [at] jagsits.com</email>
+			<organization>JAG's ITS Inc.</organization>
+			<organizationUrl>http://www.jagsits.com/</organizationUrl>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
+
 	<properties>
 		<flex-sdk.version>4.1.0.16076</flex-sdk.version>
 		<flex-mojos.version>4.0-beta-3</flex-mojos.version>
@@ -39,17 +120,8 @@
 						<type>pom</type>
 					</dependency>
 				</dependencies>
-				<!-- 
-				<executions>
-					<execution>
-						<id>flex-reports</id>
-						<goals>
-							<goal>asdoc-report</goal>
-						</goals>
-						<phase>site</phase>
-					</execution>
-				</executions>
-				-->
+				<!-- <executions> <execution> <id>flex-reports</id> <goals> <goal>asdoc-report</goal> 
+					</goals> <phase>site</phase> </execution> </executions> -->
 				<configuration>
 					<storepass></storepass>
 					<configurationReport>true</configurationReport>
@@ -152,14 +224,7 @@
 							<artifactId>maven-surefire-report-plugin</artifactId>
 							<version>2.6</version>
 						</plugin>
-						<!-- <plugin> <groupId>org.sonatype.flexmojos</groupId> <artifactId>flexmojos-maven-plugin</artifactId> 
-							<version>${flex-mojos.version}</version> <reportSets> <reportSet> <id>flex-reports</id> 
-							<reports> <report>asdoc-report</report> </reports> </reportSet> </reportSets> 
-							<configuration> <reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory> 
-							<description>API documentation</description> <mainTitle>API documentation</mainTitle> 
-							<windowTitle>API documentation</windowTitle> <name>As3CommonsDocs</name> 
-							<keepXml>true</keepXml> <dumpConfigAttach>true</dumpConfigAttach> <showWarnings>true</showWarnings> 
-							<lenient>true</lenient> </configuration> </plugin> -->
+
 					</reportPlugins>
 				</configuration>
 			</plugin>
@@ -192,16 +257,17 @@
 
 					<execution>
 						<id>asdoc-generate</id>
-						<phase>process-sources</phase> <!-- site -->
+						<phase>site</phase>
 						<configuration>
 
 							<tasks>
-								<property name="FLEX_HOME" value="${flex.home}"/>
+								<property name="FLEX_HOME" value="${flex.home}" />
 								<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
-								<asdoc output="target/site/asdoc" lenient="true" failonerror="true">
-									<doc-sources
-										path-element="src/main/actionscript" />
-										<library-path dir="target/dependency" includes="*.swc" append="true"/>
+								<asdoc output="target/site/asdoc" lenient="true"
+									failonerror="true">
+									<doc-sources path-element="src/main/actionscript" />
+									<library-path dir="target/dependency" includes="*.swc"
+										append="true" />
 									<templates-path>src/asdoc/template</templates-path>
 									<package-description-file>src/asdoc/package.description.xml</package-description-file>
 								</asdoc>
@@ -211,7 +277,7 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-					
+
 				</executions>
 			</plugin>
 
@@ -291,12 +357,6 @@
 		</dependency>
 
 	</dependencies>
-
-	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-logging
-        </developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-logging</url>
-	</scm>
 
 	<distributionManagement>
 		<site>
