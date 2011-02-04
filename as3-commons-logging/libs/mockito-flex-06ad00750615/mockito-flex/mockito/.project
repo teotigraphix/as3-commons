@@ -1,0 +1,14 @@
+<projectDescription>
+  <name>mockito</name>
+  <comment/>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>com.adobe.flexbuilder.project.flexbuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>com.adobe.flexbuilder.project.flexlibnature</nature>
+    <nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+  </natures>
+</projectDescription>
