@@ -35,7 +35,7 @@ package org.as3commons.eventbus {
 		/**
 		 * Adds the given listener object as a listener to all events sent through the event bus.
 		 */
-		function addListener(listener:IEventBusListener, useWeakReference:Boolean = false, topic:Object = null):void;
+		function addListener(listener:IEventBusListener, useWeakReference:Boolean = false, topic:Object = null):Boolean;
 		/**
 		 * Removes the given listener from the event bus.
 		 * @param listener
@@ -47,7 +47,7 @@ package org.as3commons.eventbus {
 		 * @param type the type of event to listen to
 		 * @param listener the event handler function
 		 */
-		function addEventListener(type:String, listener:Function, useWeakReference:Boolean = false, topic:Object = null):void;
+		function addEventListener(type:String, listener:Function, useWeakReference:Boolean = false, topic:Object = null):Boolean;
 		/**
 		 * Removes the given listener function as an event handler from the given event type.
 		 * @param type
@@ -60,7 +60,7 @@ package org.as3commons.eventbus {
 		 * @param type the type of event to listen to
 		 * @param proxy a proxy method invoker for the event handler
 		 */
-		function addEventListenerProxy(type:String, proxy:MethodInvoker, useWeakReference:Boolean = false, topic:Object = null):void;
+		function addEventListenerProxy(type:String, proxy:MethodInvoker, useWeakReference:Boolean = false, topic:Object = null):Boolean;
 		/**
 		 * Removes a proxied event handler as a listener from the specified event type.
 		 */
@@ -71,7 +71,7 @@ package org.as3commons.eventbus {
 		 * @param eventClass The specified <code>Class</code>.
 		 * @param listener The specified listener function.
 		 */
-		function addEventClassListener(eventClass:Class, listener:Function, useWeakReference:Boolean = false, topic:Object = null):void;
+		function addEventClassListener(eventClass:Class, listener:Function, useWeakReference:Boolean = false, topic:Object = null):Boolean;
 		/**
 		 * Removes a listener function for events of a specific Class.
 		 * @param eventClass The specified <code>Class</code>.
@@ -84,7 +84,7 @@ package org.as3commons.eventbus {
 		 * @param eventClass The specified <code>Class</code>.
 		 * @param proxy The specified listener function.
 		 */
-		function addEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, useWeakReference:Boolean = false, topic:Object = null):void;
+		function addEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, useWeakReference:Boolean = false, topic:Object = null):Boolean;
 		/**
 		 * Removes a proxied event handler as a listener for events of a specific <code>Class</code>.
 		 * @param eventClass The specified <code>Class</code>.

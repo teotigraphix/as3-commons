@@ -14,11 +14,12 @@
 * limitations under the License.
 */
 package org.as3commons.eventbus {
+	import org.as3commons.collections.WeakLinkedList;
 
-	public interface IBusCollectionLookup {
+	public interface IEventBusCollectionLookup {
 		function add(item:Object, useWeakReference:Boolean = false, topic:Object = null):void;
 		function remove(item:Object, topic:Object = null):void;
-		function getCollection(topic:Object = null):Object;
+		function getCollection(topic:Object = null):WeakLinkedList;
 		function getCollectionCount(topic:Object = null):uint;
 	}
 }
