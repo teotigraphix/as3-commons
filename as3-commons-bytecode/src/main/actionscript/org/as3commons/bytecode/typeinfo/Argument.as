@@ -24,7 +24,6 @@ package org.as3commons.bytecode.typeinfo {
 	//TODO: Set this up so that the user does not need to worry about the ConstantKind. You should be able to determine this from the default value 
 	public class Argument implements ICloneable {
 
-		public var classDefinition:ClassDefinition;
 		public var name:String;
 		public var defaultValue:Object;
 		public var isOptional:Boolean;

@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+import flash.errors.IllegalOperationError;
 
-	import flash.errors.IllegalOperationError;
+import org.as3commons.bytecode.abc.enum.TraitKind;
+import org.as3commons.bytecode.typeinfo.Annotatable;
 
-	import org.as3commons.bytecode.abc.enum.TraitKind;
-	import org.as3commons.bytecode.typeinfo.Annotatable;
-	import org.as3commons.lang.ICloneable;
-
-	/**
+/**
 	 * as3commons-bytecode representation of <code>traits_info</code> in the ABC file format, which is the base type for all kinds of object traits
 	 * (both class and instance traits).
 	 *

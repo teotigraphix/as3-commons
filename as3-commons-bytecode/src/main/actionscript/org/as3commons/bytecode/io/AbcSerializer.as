@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -47,7 +47,6 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
-	import org.as3commons.bytecode.typeinfo.ClassDefinition;
 	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.typeinfo.Method;
 	import org.as3commons.bytecode.util.AbcSpec;
@@ -475,41 +474,6 @@ package org.as3commons.bytecode.io {
 //			}
 		}
 
-		public function serialize(classDefinition:ClassDefinition):ByteArray {
-			_pool = new ConstantPool();
-
-			// abcFile  
-			// { 
-			//  u16 minor_version 
-			//  u16 major_version 
-			//  cpool_info constant_pool 
-			//  u30 method_count 
-			//  method_info method[method_count] 
-			//  u30 metadata_count 
-			//  metadata_info metadata[metadata_count] 
-			//  u30 class_count 
-			//  instance_info instance[class_count] 
-			//  class_info class[class_count] 
-			//  u30 script_count 
-			//  script_info script[script_count] 
-			//  u30 method_body_count 
-			//  method_body_info method_body[method_body_count] 
-			// }
-			var methodInfoBuffer:ByteArray = serializeMethods(classDefinition);
-
-			// ========================
-			// FLUSH TO BYTECODE BUFFER
-			// ========================
-			var bytecodeBuffer:ByteArray = createBuffer();
-			AbcSpec.writeU16(MINOR_VERSION, bytecodeBuffer);
-			AbcSpec.writeU16(MAJOR_VERSION, bytecodeBuffer);
-			serializeConstantPool(_pool, bytecodeBuffer);
-
-			bytecodeBuffer.writeBytes(methodInfoBuffer);
-			bytecodeBuffer.position = 0;
-			return bytecodeBuffer;
-		}
-
 		/**
 		 * Flushes the Constant Pool to the output stream. This should be the last possible thing that
 		 * can happen since all the constants have to be added to the pool before it hits the bytecode
@@ -673,77 +637,6 @@ package org.as3commons.bytecode.io {
 
 		private function createBuffer():ByteArray {
 			return AbcSpec.byteArray();
-		}
-
-		public function serializeMethods(classDefinition:ClassDefinition):ByteArray {
-			var buffer:ByteArray = createBuffer();
-			AbcSpec.writeU30(classDefinition.instanceMethods.length, buffer);
-
-			// Methods
-			for each (var method:Method in classDefinition.instanceMethods) {
-				//  trace("~~~" + method.methodName + "(" + method.arguments.length + ") flags=" + method.flags);
-				AbcSpec.writeU30(method.methodArguments.length, buffer); // u30 param_count
-				AbcSpec.writeU30(_pool.addMultiname(method.returnType), buffer); // u30 return_type
-				//TODO: If the owning classdef is an interface, then no method bodies are allowed
-				for each (var argument:Argument in method.methodArguments) {
-					AbcSpec.writeU30(_pool.addMultiname(argument.type), buffer); // u30 param_type[param_count]
-				}
-				AbcSpec.writeU30(_pool.addString(method.methodName.name), buffer); // u30 name
-
-				var flags:uint = 0;
-				if ((method.methodArguments.length > 0) && (method.hasRestArguments == false)) {
-					flags |= MethodFlag.NEED_ARGUMENTS.value;
-				}
-				if ((method.methodArguments.length < 1) && (method.hasRestArguments == true)) {
-					flags |= MethodFlag.NEED_REST.value;
-				}
-				if (method.hasOpcode(Opcode.newactivation)) {
-					flags |= MethodFlag.NEED_ACTIVATION.value;
-				}
-				if ((method.hasOpcode(Opcode.dxns) || (method.hasOpcode(Opcode.dxnslate)))) {
-					flags |= MethodFlag.SET_DXNS.value;
-				}
-
-				var numberOfOptionalArguments:uint = 0;
-				for each (var arg:Argument in method.methodArguments) {
-					if (arg.isOptional) {
-						numberOfOptionalArguments++;
-					}
-				}
-				if (numberOfOptionalArguments > 0) {
-					flags |= MethodFlag.HAS_OPTIONAL.value;
-				}
-
-				for each (arg in method.methodArguments) {
-					if (StringUtils.hasText(arg.name)) {
-						flags |= MethodFlag.HAS_PARAM_NAMES.value;
-						break;
-					}
-				}
-
-				AbcSpec.writeU8(flags, buffer);
-
-				if (numberOfOptionalArguments > 0) {
-					AbcSpec.writeU30(numberOfOptionalArguments, buffer);
-					var argLen:int = method.methodArguments.length;
-					for (var i:int = (method.methodArguments.length - numberOfOptionalArguments); i < argLen; ++i) {
-						arg = method.methodArguments[i];
-						var defaultValueIndex:int = 0;
-						defaultValueIndex = _pool.addItemToPool(arg.kind, arg.defaultValue);
-						AbcSpec.writeU30(defaultValueIndex, buffer);
-						AbcSpec.writeU8(arg.kind.value, buffer);
-					}
-				}
-
-				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_PARAM_NAMES)) {
-					for each (arg in method.methodArguments) {
-						AbcSpec.writeU30(_pool.addString(arg.name), buffer);
-					}
-				}
-
-			}
-
-			return buffer;
 		}
 
 		public function toString():String {
