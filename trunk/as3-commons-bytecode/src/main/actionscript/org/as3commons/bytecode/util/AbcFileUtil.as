@@ -19,24 +19,13 @@ package org.as3commons.bytecode.util {
 	import flash.utils.Endian;
 	
 	import org.as3commons.bytecode.abc.AbcFile;
-	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.InstanceInfo;
-	import org.as3commons.bytecode.abc.LNamespace;
-	import org.as3commons.bytecode.abc.MethodInfo;
-	import org.as3commons.bytecode.abc.MethodTrait;
-	import org.as3commons.bytecode.abc.QualifiedName;
-	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
-	import org.as3commons.bytecode.abc.enum.NamespaceKind;
-	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.swf.SWFFile;
 	import org.as3commons.bytecode.tags.DoABCTag;
-	import org.as3commons.bytecode.typeinfo.Argument;
-	import org.as3commons.bytecode.typeinfo.ClassDefinition;
-	import org.as3commons.bytecode.typeinfo.Method;
 
 	/**
 	 * Helper methods for modifying <code>ABCFiles</code>, <code>ConstantPools</code> and <code>SWFFile</code>.
@@ -160,62 +149,6 @@ package org.as3commons.bytecode.util {
 			}
 
 			return result;
-		}
-
-		public static function AbcFileToClassDefinitions(abcFile:AbcFile):Array {
-			var classDefinitions:Array = [];
-
-			for each (var currentInstanceInfo:InstanceInfo in abcFile.instanceInfo) {
-				var classDefinition:ClassDefinition = new ClassDefinition();
-				classDefinition.className = currentInstanceInfo.classMultiname as QualifiedName;
-				classDefinition.superClass = currentInstanceInfo.superclassMultiname as QualifiedName;
-				classDefinition.isFinal = currentInstanceInfo.isFinal;
-				classDefinition.isSealed = currentInstanceInfo.isSealed;
-				classDefinition.isProtectedNamespace = currentInstanceInfo.isProtected;
-				classDefinition.isInterface = currentInstanceInfo.isInterface;
-
-				var instanceInitializer:MethodInfo = currentInstanceInfo.instanceInitializer;
-				classDefinition.instanceInitializer = new Method(new QualifiedName(INSTANCE_INITIALIZER_QNAME, new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "")), instanceInitializer.returnType);
-				classDefinition.instanceInitializer.setMethodBody(instanceInitializer.methodBody);
-
-				for each (var methodTrait:MethodTrait in currentInstanceInfo.methodTraits) {
-					var associatedMethodInfo:MethodInfo = methodTrait.traitMethod;
-					var method:Method;
-					switch (methodTrait.traitKind) {
-						case TraitKind.GETTER:
-							method = classDefinition.addGetter(methodTrait.traitMultiname, associatedMethodInfo.returnType, false, methodTrait.isOverride, methodTrait.isFinal);
-							break;
-						case TraitKind.SETTER:
-							method = classDefinition.addSetter(methodTrait.traitMultiname, associatedMethodInfo.returnType, false, methodTrait.isOverride, methodTrait.isFinal);
-							break;
-						case TraitKind.METHOD:
-							method = classDefinition.addMethod(methodTrait.traitMultiname, associatedMethodInfo.returnType, false, methodTrait.isOverride, methodTrait.isFinal);
-							break;
-						default:
-							throw new Error("Unknown method trait kind: " + methodTrait.traitKind);
-							break;
-					}
-
-					for each (var argument:Argument in associatedMethodInfo.argumentCollection) {
-						method.addArgument(argument);
-					}
-
-					method.setMethodBody(associatedMethodInfo.methodBody);
-				}
-
-				for each (var slotOrConstant:SlotOrConstantTrait in currentInstanceInfo.slotOrConstantTraits) {
-					classDefinition.addField(slotOrConstant.traitMultiname as QualifiedName, slotOrConstant.typeMultiname as QualifiedName);
-				}
-
-				var interfaces:Array = classDefinition.interfaces;
-				for each (var interfaceMultiname:BaseMultiname in currentInstanceInfo.interfaceMultinames) {
-					interfaces[interfaces.length] = interfaceMultiname;
-				}
-
-				classDefinitions[classDefinitions.length] = classDefinition;
-			}
-
-			return classDefinitions;
 		}
 
 		public static function getClassinfoByFullyQualifiedName(abcFile:AbcFile, fullName:String):ClassInfo {
