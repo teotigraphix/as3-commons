@@ -93,7 +93,10 @@ package org.as3commons.bytecode.swf {
 			return serializerInstances[tagId] as ITagSerializer;
 		}
 
-		public function read(input:ByteArray):SWFFile {
+		/**
+		 * @inheritDoc
+		 */
+		public function read(input:ByteArray, isLoaderBytes:Boolean = false):SWFFile {
 			var swfFile:SWFFile = new SWFFile();
 			var bytes:ByteArray = AbcSpec.byteArray();
 			input.endian = Endian.LITTLE_ENDIAN;
@@ -103,6 +106,9 @@ package org.as3commons.bytecode.swf {
 			swfFile.fileLength = SWFSpec.readUI32(input);
 			input.readBytes(bytes);
 			bytes.position = 0;
+			if (isLoaderBytes) {
+				bytes.length -= 8;
+			}
 
 			if (compressed) {
 				bytes.uncompress();
@@ -116,6 +122,9 @@ package org.as3commons.bytecode.swf {
 			return swfFile;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function write(output:ByteArray, swf:SWFFile):void {
 			output.endian = Endian.LITTLE_ENDIAN;
 			output.position = 0;

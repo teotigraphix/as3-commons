@@ -43,7 +43,6 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.Metadata;
 	import org.as3commons.reflect.MetadataArgument;
 	import org.as3commons.reflect.MetadataContainer;
-	import org.as3commons.reflect.Parameter;
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
 
@@ -459,7 +458,7 @@ package org.as3commons.bytecode.reflect {
 						//  u30 method 
 						// }
 						readU30(); //skip disp_id
-						var accessorMethod:Method = methodInfos[readU30()];
+						var accessorMethod:ByteCodeMethod = methodInfos[readU30()];
 						if (instanceInfo != null) {
 							metaDataContainer = addAccessor(instanceInfo, accessorMethod, isStatic);
 						}
