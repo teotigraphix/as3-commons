@@ -16,10 +16,25 @@
 package org.as3commons.bytecode.swf {
 	import flash.utils.ByteArray;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public interface ISWFFileIO {
 
-		function read(input:ByteArray):SWFFile;
+		/**
+		 * Reads a <code>SWFFile</code> instance from the specified <code>ByteArray</code>.
+		 * @param input The specified <code>ByteArray</code>.
+		 * @param isLoaderBytes True if the specified <code>ByteArray</code> is the bytes property from a <code>LoaderInfo</code> instance.
+		 * @return A new <code>SWFFile</code> instance.
+		 */
+		function read(input:ByteArray, isLoaderBytes:Boolean = false):SWFFile;
 
+		/**
+		 *
+		 * @param output
+		 * @param swf
+		 */
 		function write(output:ByteArray, swf:SWFFile):void;
 
 	}
