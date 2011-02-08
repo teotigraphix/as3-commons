@@ -98,105 +98,105 @@ package org.as3commons.eventbus {
 		function removeAllListeners(topic:Object = null):void;
 
 		/**
-		 *
-		 * @param interceptor
-		 * @param topic
+		 * Registers the specified <code>IEventInterceptor</code> to intercept all events, optionally for the specified topic.
+		 * @param interceptor The specified <code>IEventInterceptor</code>
+		 * @param topic an optional topic for which the specified <code>IEventInterceptor</code> will be registered.
 		 */
 		function addInterceptor(interceptor:IEventInterceptor, topic:Object = null):void;
 
 		/**
-		 *
-		 * @param interceptor
-		 * @param topic
+		 * Removes the specified <code>IEventInterceptor</code> for all events, optionally for the specified topic.
+		 * @param interceptor The specified <code>IEventInterceptor</code>
+		 * @param topic an optional topic for which the specified <code>IEventInterceptor</code> was registered.
 		 */
 		function removeInterceptor(interceptor:IEventInterceptor, topic:Object = null):void;
 
 		/**
-		 *
-		 * @param type
-		 * @param interceptor
-		 * @param topic
+		 * Registers the specified <code>IEventInterceptor</code> to intercept events of the specified type, and optionally for the specified topic.
+		 * @param type The specified event type
+		 * @param interceptor The specified <code>IEventInterceptor</code>
+		 * @param topic an optional topic for which the specified <code>IEventInterceptor</code> will be registered.
 		 */
 		function addEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object = null):void;
 
 		/**
-		 *
-		 * @param type
-		 * @param interceptor
-		 * @param topic
+		 * Removes the specified <code>IEventInterceptor</code> for events of the specified type, and optionally for the specified topic.
+		 * @param type The specified event type
+		 * @param interceptor The specified <code>IEventInterceptor</code>
+		 * @param topic an optional topic for which the specified <code>IEventInterceptor</code> was registered.
 		 */
 		function removeEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object = null):void;
 
 		/**
-		 *
-		 * @param eventClass
-		 * @param interceptor
-		 * @param topic
+		 * Registers the specified <code>IEventInterceptor</code> to intercept events of the specified <code>Class</code>, and optionally for the specified topic.
+		 * @param eventClass The specified event <code>Class</code>
+		 * @param interceptor The specified <code>IEventInterceptor</code>
+		 * @param topic an optional topic for which the specified <code>IEventInterceptor</code> will be registered.
 		 */
 		function addEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor, topic:Object = null):void;
 
 		/**
-		 *
-		 * @param eventClass
-		 * @param interceptor
-		 * @param topic
+		 * Removes the specified <code>IEventInterceptor</code> for events of the specified <code>Class</code>, and optionally for the specified topic.
+		 * @param eventClass The specified event <code>Class</code>
+		 * @param interceptor The specified <code>IEventInterceptor</code>
+		 * @param topic an optional topic for which the specified <code>IEventInterceptor</code> will be registered.
 		 */
 		function removeEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor, topic:Object = null):void;
 
 		/**
-		 *
+		 * Removes all global, event and class specific interceptors.
 		 * @param topic
 		 */
 		function removeAllInterceptors(topic:Object = null):void;
 
 		/**
-		 *
-		 * @param interceptor
-		 * @param topic
+		 * Registers the specified <code>IEventListenerInterceptor</code> to intercept all listeners, optionally for the specified topic.
+		 * @param interceptor The specified <code>IEventListenerInterceptor</code>
+		 * @param topic an optional topic for which the specified <code>IEventListenerInterceptor</code> will be registered.
 		 */
 		function addListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void;
 
 		/**
-		 *
-		 * @param interceptor
-		 * @param topic
+		 * Removes the specified <code>IEventListenerInterceptor</code> for all listeners, optionally for the specified topic.
+		 * @param interceptor The specified <code>IEventListenerInterceptor</code>
+		 * @param topic an optional topic for which the specified <code>IEventListenerInterceptor</code> will be registered.
 		 */
 		function removeListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void;
 
 		/**
-		 *
-		 * @param type
-		 * @param interceptor
-		 * @param topic
+		 * Registers the specified <code>IEventListenerInterceptor</code> to intercept listeners for the specified event type, optionally for the specified topic.
+		 * @param type The specified event type
+		 * @param interceptor The specified <code>IEventListenerInterceptor</code>
+		 * @param topic an optional topic for which the specified <code>IEventListenerInterceptor</code> will be registered.
 		 */
 		function addEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void;
 
 		/**
-		 *
-		 * @param type
-		 * @param interceptor
-		 * @param topic
+		 * Removes the specified <code>IEventListenerInterceptor</code> for listeners for the specified event type, optionally for the specified topic.
+		 * @param type The specified event type
+		 * @param interceptor The specified <code>IEventListenerInterceptor</code>
+		 * @param topic an optional topic for which the specified <code>IEventListenerInterceptor</code> will be registered.
 		 */
 		function removeEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void;
 
 		/**
-		 *
-		 * @param eventClass
-		 * @param interceptor
+		 * Registers the specified <code>IEventListenerInterceptor</code> to intercept listeners for the specified event <code>Class</code>, optionally for the specified topic.
+		 * @param eventClass The specified event <code>Class</code>
+		 * @param interceptor The specified <code>IEventListenerInterceptor</code>
 		 * @param topic
 		 */
 		function addEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void;
 
 		/**
-		 *
-		 * @param eventClass
-		 * @param interceptor
+		 * Registers the specified <code>IEventListenerInterceptor</code> to intercept listeners for the specified event <code>Class</code>, optionally for the specified topic.
+		 * @param eventClass The specified event <code>Class</code>
+		 * @param interceptor The specified <code>IEventListenerInterceptor</code>
 		 * @param topic
 		 */
 		function removeEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void;
 
 		/**
-		 * Removes all event listeners and interceptors from the current <code>IEventBus</code> instance.
+		 * Removes all event listeners, interceptors and listener interceptors from the current <code>IEventBus</code> instance.
 		 */
 		function clear():void;
 
@@ -205,10 +205,11 @@ package org.as3commons.eventbus {
 		 * @param event The specified <code>Event</code>.
 		 */
 		function dispatchEvent(event:Event, topic:Object = null):Boolean;
+
 		/**
 		 * Convenience method for dispatching an event. This will create an <code>Event</code> instance with the given
 		 * type and call <code>dispatchEvent()</code> on the event bus.
-		 * @param type the type of the event to dispatch
+		 * @param type the type of the event to dispatch.
 		 */
 		function dispatch(type:String, topic:Object = null):Boolean;
 	}
