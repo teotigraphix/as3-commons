@@ -75,7 +75,9 @@ package org.as3commons.eventbus.impl {
 		 */
 		public function add(item:Object, useWeakReference:Boolean = false, topic:Object = null):void {
 			var list:WeakLinkedList = getList(topic);
-			list.add(item, useWeakReference);
+			if (!list.has(item)) {
+				list.add(item, useWeakReference);
+			}
 		}
 
 		protected function getList(topic:Object, createIfNotExists:Boolean = true):WeakLinkedList {

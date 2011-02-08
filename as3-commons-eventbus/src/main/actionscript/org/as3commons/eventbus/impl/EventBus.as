@@ -105,6 +105,12 @@ package org.as3commons.eventbus.impl {
 		/** */
 		protected var listenerInterceptors:EventBusCollectionLookup = new EventBusCollectionLookup();
 
+		// --------------------------------------------------------------------
+		//
+		// Public count methods
+		//
+		// --------------------------------------------------------------------
+
 		public function getListenerCount(topic:Object = null):uint {
 			return listeners.getCollectionCount(topic);
 		}
@@ -385,7 +391,7 @@ package org.as3commons.eventbus.impl {
 		}
 
 		public function addListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void {
-			//TODO Auto-generated method stub
+			listenerInterceptors.add(interceptor, false, topic);
 		}
 
 		public function removeEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void {
@@ -393,11 +399,11 @@ package org.as3commons.eventbus.impl {
 		}
 
 		public function removeEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void {
-			//TODO Auto-generated method stub
+
 		}
 
 		public function removeListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void {
-			//TODO Auto-generated method stub
+			listenerInterceptors.remove(interceptor, topic);
 		}
 
 		/**
