@@ -19,6 +19,8 @@ package org.as3commons.eventbus.impl {
 
 	import flexunit.framework.TestCase;
 
+	import mx.events.FlexEvent;
+
 	import org.as3commons.eventbus.IEventBusListener;
 	import org.as3commons.eventbus.IEventInterceptor;
 	import org.as3commons.eventbus.IEventListenerInterceptor;
@@ -408,6 +410,16 @@ package org.as3commons.eventbus.impl {
 			_eventBus.addEventListener("testType2", eventBusTestListener);
 			assertEquals(0, _eventBus.getEventListenerCount("testType"));
 			assertEquals(1, _eventBus.getEventListenerCount("testType2"));
+		}
+
+		public function testSpecificClassEventListenerIntercept():void {
+			var eventClass:Class = MockCustomEvent;
+			var eventClass2:Class = FlexEvent;
+			_eventBus.addEventClassListenerInterceptor(eventClass, new MockListenerInterceptor(true));
+			_eventBus.addEventClassListener(eventClass, eventBusTestListener);
+			_eventBus.addEventClassListener(eventClass2, eventBusTestListener);
+			assertEquals(0, _eventBus.getClassListenerCount(eventClass));
+			assertEquals(1, _eventBus.getClassListenerCount(eventClass2));
 		}
 
 		public function testSpecificEventListenerInterceptWithTopic():void {
