@@ -52,14 +52,14 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function interceptListener(listener:Function):void {
+		public function interceptListener(listener:Function, eventType:String = null, eventClass:Class = null):void {
 			throw new IllegalOperationError("interceptListener() not implemented in abstract base class");
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function interceptListenerProxy(proxy:MethodInvoker):void {
+		public function interceptListenerProxy(proxy:MethodInvoker, eventType:String = null, eventClass:Class = null):void {
 			throw new IllegalOperationError("interceptListenerProxy() not implemented in abstract base class");
 		}
 
