@@ -21,6 +21,7 @@ package org.as3commons.eventbus.impl {
 
 	import org.as3commons.eventbus.IEventBusListener;
 	import org.as3commons.eventbus.IEventInterceptor;
+	import org.as3commons.eventbus.IEventListenerInterceptor;
 	import org.as3commons.reflect.MethodInvoker;
 
 	public class EventBusTest extends TestCase {
@@ -298,12 +299,124 @@ package org.as3commons.eventbus.impl {
 			assertEquals(0, _eventBus.getInterceptorCount());
 		}
 
+		public function testAddListenerInterceptor():void {
+			var li:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			var li2:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			assertEquals(0, _eventBus.getListenerInterceptorCount());
+			_eventBus.addListenerInterceptor(li);
+			assertEquals(1, _eventBus.getListenerInterceptorCount());
+			_eventBus.addListenerInterceptor(li2);
+			assertEquals(2, _eventBus.getListenerInterceptorCount());
+		}
+
+		public function testAddDuplicateListenerInterceptor():void {
+			var li:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			assertEquals(0, _eventBus.getListenerInterceptorCount());
+			_eventBus.addListenerInterceptor(li);
+			assertEquals(1, _eventBus.getListenerInterceptorCount());
+			_eventBus.addListenerInterceptor(li);
+			assertEquals(1, _eventBus.getListenerInterceptorCount());
+		}
+
+		public function testAddListenerInterceptorForTopic():void {
+			var li:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			var topic:String = "testTopic";
+			assertEquals(0, _eventBus.getListenerInterceptorCount(topic));
+			_eventBus.addListenerInterceptor(li, topic);
+			assertEquals(1, _eventBus.getListenerInterceptorCount(topic));
+			assertEquals(0, _eventBus.getListenerInterceptorCount());
+		}
+
+		public function testAddEventListenerInterceptor():void {
+			var li:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			var li2:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			var eventType:String = "testType";
+			assertEquals(0, _eventBus.getEventListenerInterceptorCount(eventType));
+			_eventBus.addEventListenerInterceptor(eventType, li);
+			assertEquals(1, _eventBus.getEventListenerInterceptorCount(eventType));
+			_eventBus.addEventListenerInterceptor(eventType, li2);
+			assertEquals(2, _eventBus.getEventListenerInterceptorCount(eventType));
+		}
+
+		public function testAddEventListenerInterceptorForTopic():void {
+			var li:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			var li2:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			var eventType:String = "testType";
+			var topic:String = "testTopic";
+			assertEquals(0, _eventBus.getEventListenerInterceptorCount(eventType, topic));
+			_eventBus.addEventListenerInterceptor(eventType, li, topic);
+			assertEquals(1, _eventBus.getEventListenerInterceptorCount(eventType, topic));
+			assertEquals(0, _eventBus.getEventListenerInterceptorCount(eventType));
+			_eventBus.addEventListenerInterceptor(eventType, li2, topic);
+			assertEquals(2, _eventBus.getEventListenerInterceptorCount(eventType, topic));
+			assertEquals(0, _eventBus.getEventListenerInterceptorCount(eventType));
+		}
+
+		public function testAddEventClassListenerInterceptor():void {
+			var li:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			var li2:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			var eventClass:Class = MockCustomEvent;
+			assertEquals(0, _eventBus.getClassListenerInterceptorCount(eventClass));
+			_eventBus.addEventClassListenerInterceptor(eventClass, li);
+			assertEquals(1, _eventBus.getClassListenerInterceptorCount(eventClass));
+			_eventBus.addEventClassListenerInterceptor(eventClass, li2);
+			assertEquals(2, _eventBus.getClassListenerInterceptorCount(eventClass));
+		}
+
+		public function testAddEventClassListenerInterceptorForTopic():void {
+			var li:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			var li2:IEventListenerInterceptor = new MockListenerInterceptor(true);
+			var eventClass:Class = MockCustomEvent;
+			var topic:String = "testTopic";
+			assertEquals(0, _eventBus.getClassListenerInterceptorCount(eventClass, topic));
+			_eventBus.addEventClassListenerInterceptor(eventClass, li, topic);
+			assertEquals(1, _eventBus.getClassListenerInterceptorCount(eventClass, topic));
+			assertEquals(0, _eventBus.getClassListenerInterceptorCount(eventClass));
+			_eventBus.addEventClassListenerInterceptor(eventClass, li2, topic);
+			assertEquals(2, _eventBus.getClassListenerInterceptorCount(eventClass, topic));
+			assertEquals(0, _eventBus.getClassListenerInterceptorCount(eventClass));
+		}
+
+		public function testGlobalListenerIntercept():void {
+			var eventType:String = "testType";
+			_eventBus.addListenerInterceptor(new MockListenerInterceptor(true));
+			_eventBus.addEventListener(eventType, eventBusTestListener);
+			assertEquals(0, _eventBus.getEventListenerCount(eventType));
+		}
+
 		public function testGlobalIntercept():void {
 			_eventBus.addEventListener("testType", eventBusTestListener);
 			_eventBus.addInterceptor(new MockInterceptor(true));
 			assertFalse(_eventReceived);
 			_eventBus.dispatch("testType");
 			assertFalse(_eventReceived);
+		}
+
+		public function testGlobalListenerInterceptWithTopic():void {
+			var eventType:String = "testType";
+			var topic:String = "testTopic";
+			_eventBus.addListenerInterceptor(new MockListenerInterceptor(true), topic);
+			_eventBus.addEventListener(eventType, eventBusTestListener, false, topic);
+			_eventBus.addEventListener(eventType, eventBusTestListener);
+			assertEquals(0, _eventBus.getEventListenerCount(eventType, topic));
+			assertEquals(1, _eventBus.getEventListenerCount(eventType));
+		}
+
+		public function testSpecificEventListenerIntercept():void {
+			_eventBus.addEventListenerInterceptor("testType", new MockListenerInterceptor(true));
+			_eventBus.addEventListener("testType", eventBusTestListener);
+			_eventBus.addEventListener("testType2", eventBusTestListener);
+			assertEquals(0, _eventBus.getEventListenerCount("testType"));
+			assertEquals(1, _eventBus.getEventListenerCount("testType2"));
+		}
+
+		public function testSpecificEventListenerInterceptWithTopic():void {
+			var topic:String = "testTopic";
+			_eventBus.addEventListenerInterceptor("testType", new MockListenerInterceptor(true), topic);
+			_eventBus.addEventListener("testType", eventBusTestListener, false, topic);
+			_eventBus.addEventListener("testType", eventBusTestListener);
+			assertEquals(0, _eventBus.getEventListenerCount("testType", topic));
+			assertEquals(1, _eventBus.getEventListenerCount("testType"));
 		}
 
 		public function testGlobalInterceptWithTopic():void {
@@ -385,6 +498,8 @@ import flash.events.Event;
 import org.as3commons.eventbus.IEventBusListener;
 import org.as3commons.eventbus.IEventInterceptor;
 import org.as3commons.eventbus.impl.AbstractEventInterceptor;
+import org.as3commons.eventbus.impl.AbstractEventListenerInterceptor;
+import org.as3commons.reflect.MethodInvoker;
 
 class MockEventBusListener implements IEventBusListener {
 
@@ -412,5 +527,18 @@ class MockInterceptor extends AbstractEventInterceptor {
 	}
 
 	override public function intercept(event:Event):void {
+	}
+}
+
+class MockListenerInterceptor extends AbstractEventListenerInterceptor {
+
+	public function MockListenerInterceptor(block:Boolean) {
+		blockListener = block;
+	}
+
+	override public function interceptListener(listener:Function, eventType:String = null, eventClass:Class = null):void {
+	}
+
+	override public function interceptListenerProxy(proxy:MethodInvoker, eventType:String = null, eventClass:Class = null):void {
 	}
 }
