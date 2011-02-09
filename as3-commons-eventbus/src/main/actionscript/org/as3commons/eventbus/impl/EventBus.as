@@ -161,6 +161,25 @@ package org.as3commons.eventbus.impl {
 			return interceptors.getCollectionCount(topic);
 		}
 
+		public function getListenerInterceptorCount(topic:Object = null):uint {
+			return listenerInterceptors.getCollectionCount(topic);
+		}
+
+		public function getClassListenerInterceptorCount(eventClass:Class, topic:Object = null):uint {
+			if (eventClassListenerInterceptors[eventClass] != null) {
+				return EventBusCollectionLookup(eventClassListenerInterceptors[eventClass]).getCollectionCount(topic);
+			}
+			return 0;
+		}
+
+		public function getEventListenerInterceptorCount(eventType:String, topic:Object = null):uint {
+			if (eventListenerInterceptors[eventType] != null) {
+				return EventBusCollectionLookup(eventListenerInterceptors[eventType]).getCollectionCount(topic);
+			}
+			return 0;
+		}
+
+
 		// --------------------------------------------------------------------
 		//
 		// Constructor
@@ -188,9 +207,9 @@ package org.as3commons.eventbus.impl {
 		 * @inheritDoc
 		 */
 		public function addListener(listener:IEventBusListener, useWeakReference:Boolean = false, topic:Object = null):Boolean {
-			listeners.add(listener, useWeakReference, topic);
+			var result:Boolean = internalAddListener(listeners, listener, useWeakReference, topic, null);
 			LOGGER.debug("Added IEventBusListener " + listener);
-			return true;
+			return result;
 		}
 
 		/**
@@ -209,9 +228,9 @@ package org.as3commons.eventbus.impl {
 				eventListeners[type] = new EventBusCollectionLookup();
 			}
 			var listeners:EventBusCollectionLookup = EventBusCollectionLookup(eventListeners[type]);
-			listeners.add(listener, useWeakReference, topic);
+			var result:Boolean = internalAddListener(listeners, listener, useWeakReference, topic, type);
 			LOGGER.debug("Added eventbus listener " + listener + " for type " + type);
-			return true;
+			return result;
 		}
 
 		/**
@@ -233,9 +252,9 @@ package org.as3commons.eventbus.impl {
 				eventListenerProxies[type] = new EventBusCollectionLookup();
 			}
 			var proxies:EventBusCollectionLookup = EventBusCollectionLookup(eventListenerProxies[type]);
-			proxies.add(proxy, useWeakReference, topic);
+			var result:Boolean = internalAddListener(proxies, proxy, useWeakReference, topic, type);
 			LOGGER.debug("Added eventbus listenerproxy " + proxy + " for type " + type);
-			return true;
+			return result;
 		}
 
 		/**
@@ -257,9 +276,9 @@ package org.as3commons.eventbus.impl {
 				classListeners[eventClass] = new EventBusCollectionLookup();
 			}
 			var listeners:EventBusCollectionLookup = EventBusCollectionLookup(classListeners[eventClass]);
-			listeners.add(listener, useWeakReference, topic);
+			var result:Boolean = internalAddListener(listeners, listener, useWeakReference, topic, eventClass);
 			LOGGER.debug("Added eventbus classlistener " + listener + " for class " + eventClass);
-			return true;
+			return result;
 		}
 
 		/**
@@ -281,9 +300,9 @@ package org.as3commons.eventbus.impl {
 				classProxyListeners[eventClass] = new EventBusCollectionLookup();
 			}
 			var proxies:EventBusCollectionLookup = EventBusCollectionLookup(classProxyListeners[eventClass]);
-			proxies.add(proxy, useWeakReference, topic);
+			var result:Boolean = internalAddListener(proxies, proxy, useWeakReference, topic, eventClass);
 			LOGGER.debug("Added eventbus classlistener proxy " + proxy + " for class " + eventClass);
-			return true;
+			return result;
 		}
 
 		/**
@@ -382,12 +401,25 @@ package org.as3commons.eventbus.impl {
 			interceptors.remove(interceptor, topic);
 		}
 
+		/*
+				protected var eventClassListenerInterceptors:Dictionary = new Dictionary();
+				protected var eventListenerInterceptors:Dictionary = new Dictionary();
+		*/
+
 		public function addEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void {
-			//TODO Auto-generated method stub
+			if (eventClassListenerInterceptors[eventClass] == null) {
+				eventClassListenerInterceptors[eventClass] = new EventBusCollectionLookup();
+			}
+			var classListenerInterceptors:EventBusCollectionLookup = EventBusCollectionLookup(eventClassListenerInterceptors[eventClass]);
+			classListenerInterceptors.add(interceptor, false, topic);
 		}
 
 		public function addEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void {
-			//TODO Auto-generated method stub
+			if (eventListenerInterceptors[type] == null) {
+				eventListenerInterceptors[type] = new EventBusCollectionLookup();
+			}
+			var evtListenerInterceptors:EventBusCollectionLookup = EventBusCollectionLookup(eventListenerInterceptors[type]);
+			evtListenerInterceptors.add(interceptor, false, topic);
 		}
 
 		public function addListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void {
@@ -395,11 +427,17 @@ package org.as3commons.eventbus.impl {
 		}
 
 		public function removeEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void {
-			//TODO Auto-generated method stub
+			if (eventClassListenerInterceptors[eventClass] == null) {
+				var classListenerInterceptors:EventBusCollectionLookup = EventBusCollectionLookup(eventClassListenerInterceptors[eventClass]);
+				classListenerInterceptors.remove(interceptor, topic);
+			}
 		}
 
 		public function removeEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void {
-
+			if (eventListenerInterceptors[type] == null) {
+				var evtListenerInterceptors:EventBusCollectionLookup = EventBusCollectionLookup(eventListenerInterceptors[type]);
+				evtListenerInterceptors.remove(interceptor, topic);
+			}
 		}
 
 		public function removeListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void {
@@ -427,8 +465,63 @@ package org.as3commons.eventbus.impl {
 			return false;
 		}
 
+		// --------------------------------------------------------------------
+		//
+		// Protected Methods
+		//
+		// --------------------------------------------------------------------
+
+		protected function internalAddListener(collection:EventBusCollectionLookup, listener:Object, useWeakReference:Boolean, topic:Object, key:Object):Boolean {
+			if (invokeListenerInterceptors(listener, topic, key) == false) {
+				collection.add(listener, useWeakReference, topic);
+				return true;
+			}
+			return false;
+		}
+
+		protected function invokeListenerInterceptors(listener:Object, topic:Object, key:Object):Boolean {
+			var interceptorList:WeakLinkedList = listenerInterceptors.getCollection(topic);
+			var eventType:String = (key as String);
+			var eventClass:Class = (key as Class);
+			if (listenerIntercept(interceptorList, listener, eventType, eventClass)) {
+				return true;
+			}
+			if ((eventType != null) && (specificEventListenerIntercepted(listener, topic, eventType))) {
+				return true;
+			}
+			if ((eventClass != null) && (classListenerIntercepted(listener, topic, eventClass))) {
+				return true;
+				specificEventListenerIntercepted
+			}
+			return false;
+		}
+
+		protected function listenerIntercept(interceptors:WeakLinkedList, listener:Object, eventType:String, eventClass:Class):Boolean {
+			if (interceptors != null) {
+				var iterator:WeakLinkedListIterator = WeakLinkedListIterator(interceptors.iterator());
+				while (iterator.hasNext()) {
+					iterator.next();
+					var interceptor:IEventListenerInterceptor = IEventListenerInterceptor(iterator.current);
+					interceptor.eventBus = this;
+					if (listener is Function) {
+						interceptor.interceptListener((listener as Function), eventType, eventClass);
+					} else {
+						interceptor.interceptListenerProxy(MethodInvoker(listener), eventType, eventClass);
+					}
+					if (interceptor.blockListener) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
 		/**
-		 * @inheritDoc
+		 *
+		 * @param event
+		 * @param eventClass
+		 * @param topic
+		 * @return
 		 */
 		protected function invokeInterceptors(event:Event, eventClass:Class, topic:Object):Boolean {
 			var interceptorList:WeakLinkedList = interceptors.getCollection(topic);
@@ -442,6 +535,24 @@ package org.as3commons.eventbus.impl {
 				return true;
 			}
 			return false;
+		}
+
+		protected function specificEventListenerIntercepted(listener:Object, topic:Object, eventType:String):Boolean {
+			if (eventListenerInterceptors[eventType] != null) {
+				var interceptors:WeakLinkedList = EventBusCollectionLookup(eventListenerInterceptors[eventType]).getCollection(topic);
+				return listenerIntercept(interceptors, listener, eventType, null);
+			} else {
+				return false;
+			}
+		}
+
+		protected function classListenerIntercepted(listener:Object, topic:Object, eventClass:Class):Boolean {
+			if (eventClassListenerInterceptors[eventClass] != null) {
+				var interceptors:WeakLinkedList = EventBusCollectionLookup(eventClassListenerInterceptors[eventClass]).getCollection(topic);
+				return listenerIntercept(interceptors, listener, null, eventClass);
+			} else {
+				return false;
+			}
 		}
 
 		/**
