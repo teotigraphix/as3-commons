@@ -96,29 +96,32 @@ package org.as3commons.bytecode.swf {
 		/**
 		 * @inheritDoc
 		 */
-		public function read(input:ByteArray, isLoaderBytes:Boolean = false):SWFFile {
+		public function read(input:ByteArray):SWFFile {
+			var originalPosition:int = input.position;
 			var swfFile:SWFFile = new SWFFile();
-			var bytes:ByteArray = AbcSpec.byteArray();
-			input.endian = Endian.LITTLE_ENDIAN;
-			swfFile.signature = input.readUTFBytes(3);
-			var compressed:Boolean = (swfFile.signature == SWF_SIGNATURE_COMPRESSED);
-			swfFile.version = SWFSpec.readSI8(input);
-			swfFile.fileLength = SWFSpec.readUI32(input);
-			input.readBytes(bytes);
-			bytes.position = 0;
-			if (isLoaderBytes) {
-				bytes.length -= 8;
-			}
+			try {
+				input.position = 0;
+				var bytes:ByteArray = AbcSpec.byteArray();
+				input.endian = Endian.LITTLE_ENDIAN;
+				swfFile.signature = input.readUTFBytes(3);
+				var compressed:Boolean = (swfFile.signature == SWF_SIGNATURE_COMPRESSED);
+				swfFile.version = SWFSpec.readSI8(input);
+				swfFile.fileLength = SWFSpec.readUI32(input);
+				input.readBytes(bytes);
+				bytes.position = 0;
 
-			if (compressed) {
-				bytes.uncompress();
-			}
-			bytes.position = 0;
-			readHeader(bytes, swfFile);
-			while (bytes.bytesAvailable) {
-				swfFile.addTag(readTag(bytes));
-			}
+				if (compressed) {
+					bytes.uncompress();
+					bytes.position = 0;
+				}
 
+				readHeader(bytes, swfFile);
+				while (bytes.bytesAvailable) {
+					swfFile.addTag(readTag(bytes));
+				}
+			} finally {
+				input.position = originalPosition;
+			}
 			return swfFile;
 		}
 
