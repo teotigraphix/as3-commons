@@ -16,10 +16,6 @@
 package org.as3commons.collections.framework.core {
 	import flash.utils.Dictionary;
 
-	import mx.graphics.shaderClasses.SoftLightShader;
-
-	import org.as3commons.collections.framework.core.LinkedNode;
-
 	public class WeakLinkedNode extends LinkedNode {
 
 		private var _useWeakReference:Boolean = false;
