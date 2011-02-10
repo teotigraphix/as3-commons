@@ -19,6 +19,20 @@ package org.as3commons.bytecode {
 
 	public class TestConstants {
 
+		[Embed(source="../../../../../test/resources/assets/framework_4.0.0.14159.swf", mimeType="application/octet-stream")]
+		private static var framework4:Class;
+
+		public static function getFramework4():ByteArray {
+			return new framework4() as ByteArray;
+		}
+
+		[Embed(source="../../../../../test/resources/assets/framework_4.1.0.16076.swf", mimeType="application/octet-stream")]
+		private static var framework41:Class;
+
+		public static function getFramework41():ByteArray {
+			return new framework41() as ByteArray;
+		}
+
 		[Embed(source="../../../../../test/resources/assets/metadatalookuptest.swf", mimeType="application/octet-stream")]
 		private static var metadataLookupTest:Class;
 
