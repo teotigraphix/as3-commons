@@ -191,7 +191,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static const pushnan:Opcode = new Opcode(0x28, "pushnan");
 		public static const pushnull:Opcode = new Opcode(0x20, "pushnull");
 		public static const pushscope:Opcode = new Opcode(0x30, "pushscope");
-		public static const pushshort:Opcode = new Opcode(0x25, "pushshort", [uint, AbcSpec.S32]);
+		public static const pushshort:Opcode = new Opcode(0x25, "pushshort", [int, AbcSpec.S32]);
 		public static const pushstring:Opcode = new Opcode(0x2c, "pushstring", [String, AbcSpec.U30]);
 		public static const pushtrue:Opcode = new Opcode(0x26, "pushtrue");
 		public static const pushuint:Opcode = new Opcode(0x2E, "pushuint", [UnsignedInteger, AbcSpec.U30]); //Added
