@@ -3,6 +3,12 @@ AS3COMMONS COLLECTIONS CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.1.0 (10.02.2011)
+--------------------------------------
+
+General
+* Added WeakLinkedList and WeakLinkedNode
+
 Changes in version 1.0.0 (14.04.2010)
 --------------------------------------
 
