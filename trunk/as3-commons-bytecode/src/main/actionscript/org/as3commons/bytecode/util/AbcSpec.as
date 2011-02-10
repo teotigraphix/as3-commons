@@ -17,6 +17,8 @@ package org.as3commons.bytecode.util {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 
+	import org.as3commons.lang.StringUtils;
+
 	/**
 	 * A reader/writer for the primitives required by the ABC file specification.
 	 *
@@ -44,6 +46,11 @@ package org.as3commons.bytecode.util {
 		public static const S24:ReadWritePair = new ReadWritePair(readS24, writeS24);
 
 		/**
+		 * Pair for reading/writing <code>s32</code>s.
+		 */
+		public static const S32:ReadWritePair = new ReadWritePair(readS32, writeS32);
+
+		/**
 		 * Pair for reading/writing <code>s24</code> arrays, used for the <code>lookupswitch</code> opcode
 		 * which handles <code>switch</code> statements.
 		 */
@@ -58,7 +65,7 @@ package org.as3commons.bytecode.util {
 		 * keeps everybody happy.
 		 */
 		public static const UNSIGNED_BYTE:ReadWritePair = new ReadWritePair(readUnsigned, writeU8);
-		private static const __VALUE_OUT_OF_RANGE_ERROR:String = "Value out of range";
+		private static const __VALUE_OUT_OF_RANGE_ERROR:String = "Value out of range, expected {0}, but got {1}";
 
 		public static const TWOHUNDRED_FIFTYFIVE:uint = 255;
 		public static const EIGHT:uint = 8;
@@ -87,7 +94,7 @@ package org.as3commons.bytecode.util {
 
 		public static function readU8(bytes:ByteArray):uint {
 			var value:uint = TWOHUNDRED_FIFTYFIVE & bytes[bytes.position++];
-			assertWithinRange(value < MAX_U8);
+			assertWithinRange(value < MAX_U8, MAX_U8, value);
 			return value;
 		}
 
@@ -97,7 +104,7 @@ package org.as3commons.bytecode.util {
 
 		public static function readU16(bytes:ByteArray):uint {
 			var value:uint = readU8(bytes) | readU8(bytes) << EIGHT;
-			assertWithinRange(value < MAX_U16);
+			assertWithinRange(value < MAX_U16, MAX_U16, value);
 			return value;
 		}
 
@@ -127,7 +134,7 @@ package org.as3commons.bytecode.util {
 
 		public static function readU30(bytes:ByteArray):uint {
 			var value:uint = readU32(bytes);
-			assertWithinRange(value < MAX_U30);
+			assertWithinRange(value < MAX_U30, MAX_U30, value);
 			return value;
 		}
 
@@ -255,7 +262,7 @@ package org.as3commons.bytecode.util {
 		 * Writes a one-byte unsigned integer value.
 		 */
 		public static function writeU8(value:uint, byteArray:ByteArray):void {
-			assertWithinRange(value < MAX_U8);
+			assertWithinRange(value < MAX_U8, MAX_U8, value);
 			byteArray.writeByte(value);
 		}
 
@@ -263,7 +270,7 @@ package org.as3commons.bytecode.util {
 		 * Writes a two-byte unsigned integer value.
 		 */
 		public static function writeU16(value:uint, byteArray:ByteArray):void {
-			assertWithinRange(value < MAX_U16);
+			assertWithinRange(value < MAX_U16, MAX_U16, value);
 			byteArray.writeByte(value & 0xFF);
 			byteArray.writeByte((value >> EIGHT) & 0xFF);
 		}
@@ -272,7 +279,8 @@ package org.as3commons.bytecode.util {
 		 * Writes a three-byte signed integer value.
 		 */
 		public static function writeS24(value:int, byteArray:ByteArray):void {
-			assertWithinRange(value > -MAX_S24 && value < MAX_S24);
+			assertWithinRange(value > -MAX_S24, -MAX_S24, value);
+			assertWithinRange(value < MAX_S24, MAX_S24, value);
 			var i:int = value & 0xFF;
 			byteArray.writeByte(i);
 			i = (value >> EIGHT) & 0xFF;
@@ -285,7 +293,7 @@ package org.as3commons.bytecode.util {
 		 * Writes a variable-length encoded 30-bit unsigned integer value.
 		 */
 		public static function writeU30(value:uint, byteArray:ByteArray):void {
-			assertWithinRange(value < MAX_U30);
+			assertWithinRange(value < MAX_U30, MAX_U30, value);
 			writeU32(value, byteArray);
 		}
 
@@ -324,9 +332,9 @@ package org.as3commons.bytecode.util {
 		/**
 		 * Asserts a given statementm, throwing an error if the statement is false.
 		 */
-		public static function assertWithinRange(assertion:Boolean):void {
+		public static function assertWithinRange(assertion:Boolean, expected:Number, gotten:Number):void {
 			if (!assertion) {
-				throw new Error(__VALUE_OUT_OF_RANGE_ERROR);
+				throw new Error(StringUtils.substitute(__VALUE_OUT_OF_RANGE_ERROR, expected, gotten));
 			}
 		}
 	}

@@ -15,10 +15,14 @@
 */
 package org.as3commons.bytecode.swf {
 
+	import flash.utils.ByteArray;
+
 	import flexunit.framework.TestCase;
 
 	import mx.core.Application;
 	import mx.managers.SystemManager;
+
+	import org.as3commons.bytecode.TestConstants;
 
 	public class SWFFileIOTest extends TestCase {
 
@@ -34,6 +38,16 @@ package org.as3commons.bytecode.swf {
 
 		public function testLoadFromLoaderInfo():void {
 			var file:SWFFile = _swfFileIO.read(SystemManager(Application.application.systemManager).loaderInfo.bytes);
+		}
+
+		public function testDeserializeFramework4():void {
+			var byteStream:ByteArray = TestConstants.getFramework4();
+			var file:SWFFile = _swfFileIO.read(byteStream);
+		}
+
+		public function testDeserializeFramework41():void {
+			var byteStream:ByteArray = TestConstants.getFramework41();
+			var file:SWFFile = _swfFileIO.read(byteStream);
 		}
 
 	}

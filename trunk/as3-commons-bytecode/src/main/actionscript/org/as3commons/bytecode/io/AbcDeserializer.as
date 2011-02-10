@@ -112,13 +112,21 @@ package org.as3commons.bytecode.io {
 
 			deserializeConstantPool(pool);
 
+			trace("Constantpool parsed by " + (new Date().getTime() - startTime) + " ms");
+
 			deserializeMethodInfos(abcFile, pool);
+
+			trace("MethodInfos parsed by " + (new Date().getTime() - startTime) + " ms");
 
 //            trace("Metadata: " + _byteStream.position);
 			deserializeMetadata(abcFile, pool);
 
+			trace("Metadata parsed by " + (new Date().getTime() - startTime) + " ms");
+
 //            trace("Classes: " + _byteStream.position);
 			var classCount:int = deserializeInstanceInfo(abcFile, pool);
+
+			trace("InstanceInfos parsed by " + (new Date().getTime() - startTime) + " ms");
 
 			deserializeClassInfos(abcFile, pool, classCount);
 
@@ -168,7 +176,11 @@ package org.as3commons.bytecode.io {
 			var methodBodyCount:int = readU30();
 			trace("methodBody count:" + methodBodyCount);
 			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; ++bodyIndex) {
+				trace("deserializing method body #", bodyIndex);
 				var methodBody:MethodBody = new MethodBody();
+				if (bodyIndex == 8354) {
+					var i:int = 0;
+				}
 				// method_body_info 
 				// { 
 				//  u30 method 
@@ -208,7 +220,6 @@ package org.as3commons.bytecode.io {
 				   trace("Exception info count: " + exceptionCount);
 				 trace("----------------------------------------------------");*/
 				for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
-					trace("Exception #" + exceptionIndex);
 					var exceptionInfo:ExceptionInfo = new ExceptionInfo();
 					// exception_info  
 					// { 
@@ -230,7 +241,7 @@ package org.as3commons.bytecode.io {
 					exceptionInfos[exceptionInfos.length] = exceptionInfo;
 				}
 
-				//Add the ExceptionInfo reference to all opcodes to until now only carried an
+				//Add the ExceptionInfo reference to all opcodes that until now only carried an
 				//index for the reference (this replaces the index with the actual reference in the parameter):
 				exceptionIndex = -1;
 				for each (var op:Op in methodBody.opcodes) {
