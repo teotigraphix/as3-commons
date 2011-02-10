@@ -44,14 +44,14 @@
 			<tr>
 				<td><strong>EventBus</strong></td>
 				<td>The EventBus is used as a publish/subscribe event mechanism that lets objects communicate with eachother in a loosely coupled way. It offers event subscription based on event name, event class or for specific topics. An interception mechanism is in place to block or alter incoming events.</td>
-				<td>1.0</td>
-				<td>10 Jan 2011</td>
+				<td>1.1</td>
+				<td>10 Feb 2011</td>
 			</tr>
 			<tr>
 				<td><strong>Collections</strong></td>
 				<td>Collection framework formerly known as Lite Collections Fx.</td>
-				<td>1.0</td>
-				<td>14 Nov 2010</td>
+				<td>1.1</td>
+				<td>10 Feb 2010</td>
 			</tr>
 			<tr>
 				<td><strong>Concurrency</strong></td>
@@ -68,8 +68,8 @@
 			<tr>
 				<td><strong>Logging</strong></td>
 				<td>An abstraction over logging framework implementations. Being a pure actionscript library it can be used for any Flash/Flex/AIR project. Its use is recommended for use with other libraries/framework trying to be logging framework agnostic.</td>
-				<td>1.2</td>
-				<td>13 Dec 2010</td>
+				<td>2.0</td>
+				<td>05 Feb 2011</td>
 			</tr>
 			<tr>
 				<td><strong>Reflect</strong></td>

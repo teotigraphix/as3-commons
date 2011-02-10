@@ -12,7 +12,7 @@
 	<description>AS3Commons project</description>
 
 	<properties>
-		<flex-mojos.version>3.8</flex-mojos.version>
+		<flex-mojos.version>3.7.1</flex-mojos.version>
 		<flex-sdk.version>3.5.0.12683</flex-sdk.version>
 		<!-- Flash Player -->
 		<flashplayer.version.major>10</flashplayer.version.major>
