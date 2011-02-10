@@ -40,6 +40,50 @@ package org.as3commons.eventbus.singleton {
 			return _eventBus;
 		}
 
+		public function getListenerCount(topic:Object = null):uint {
+			return _eventBus.getListenerCount(topic);
+		}
+
+		public function getEventListenerCount(eventType:String, topic:Object = null):uint {
+			return _eventBus.getEventListenerCount(eventType, topic);
+		}
+
+		public function getEventListenerProxyCount(eventType:String, topic:Object = null):uint {
+			return _eventBus.getEventListenerProxyCount(eventType, topic);
+		}
+
+		public function getClassListenerCount(clazz:Class, topic:Object = null):uint {
+			return _eventBus.getClassListenerCount(clazz, topic);
+		}
+
+		public function getClassProxyListenerCount(clazz:Class, topic:Object = null):uint {
+			return _eventBus.getClassProxyListenerCount(clazz, topic);
+		}
+
+		public function getClassInterceptorCount(clazz:Class, topic:Object = null):uint {
+			return _eventBus.getClassInterceptorCount(clazz, topic);
+		}
+
+		public function getEventInterceptorCount(eventType:String, topic:Object = null):uint {
+			return _eventBus.getEventInterceptorCount(eventType, topic);
+		}
+
+		public function getInterceptorCount(topic:Object = null):uint {
+			return _eventBus.getInterceptorCount(topic);
+		}
+
+		public function getListenerInterceptorCount(topic:Object = null):uint {
+			return _eventBus.getListenerInterceptorCount(topic);
+		}
+
+		public function getClassListenerInterceptorCount(eventClass:Class, topic:Object = null):uint {
+			return _eventBus.getClassListenerInterceptorCount(eventClass, topic);
+		}
+
+		public function getEventListenerInterceptorCount(eventType:String, topic:Object = null):uint {
+			return _eventBus.getEventListenerInterceptorCount(eventType, topic);
+		}
+
 		public static function addListener(listener:IEventBusListener, useWeakReference:Boolean = false, topic:Object = null):Boolean {
 			return eventBus.addListener(listener, useWeakReference, topic);
 		}
