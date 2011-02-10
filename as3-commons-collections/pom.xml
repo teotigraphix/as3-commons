@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-collections</artifactId>
 	<packaging>swc</packaging>
-	<version>1.1</version>
+	<version>1.2-SNAPSHOT</version>
 	<name>AS3Commons Collections</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
