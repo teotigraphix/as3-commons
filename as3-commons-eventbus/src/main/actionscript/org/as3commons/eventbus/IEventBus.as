@@ -32,6 +32,103 @@ package org.as3commons.eventbus {
 	 * @author Roland Zwaga
 	 */
 	public interface IEventBus {
+
+		/**
+		 *
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getListenerCount(topic:Object = null):uint;
+
+		/**
+		 *
+		 * @param eventType
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getEventListenerCount(eventType:String, topic:Object = null):uint;
+
+		/**
+		 *
+		 * @param eventType
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getEventListenerProxyCount(eventType:String, topic:Object = null):uint;
+
+		/**
+		 *
+		 * @param clazz
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getClassListenerCount(clazz:Class, topic:Object = null):uint;
+
+		/**
+		 *
+		 * @param clazz
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getClassProxyListenerCount(clazz:Class, topic:Object = null):uint;
+
+		/**
+		 *
+		 * @param clazz
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getClassInterceptorCount(clazz:Class, topic:Object = null):uint;
+
+		/**
+		 *
+		 * @param eventType
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getEventInterceptorCount(eventType:String, topic:Object = null):uint;
+
+		/**
+		 *
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getInterceptorCount(topic:Object = null):uint;
+
+		/**
+		 *
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getListenerInterceptorCount(topic:Object = null):uint;
+
+		/**
+		 *
+		 * @param eventClass
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getClassListenerInterceptorCount(eventClass:Class, topic:Object = null):uint;
+
+		/**
+		 *
+		 * @param eventType
+		 * @param topic
+		 * @return
+		 *
+		 */
+		function getEventListenerInterceptorCount(eventType:String, topic:Object = null):uint;
+
 		/**
 		 * Adds the given listener object as a listener to all events sent through the event bus.
 		 */
