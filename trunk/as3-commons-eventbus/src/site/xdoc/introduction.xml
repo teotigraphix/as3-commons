@@ -64,7 +64,7 @@ eventBus.addEventListenerProxy("myCustomEvent", methodInvoker);</pre></div>
     		<div class="source"><pre>eventBus.dispatchEvent(new MyCustomEvent("myCustomEventType"), "myTopic");</pre></div>
     	</subsection>
     </section>
-    <section name="EventBus intercepting">
+    <section name="EventBus event intercepting">
     	<p>To prevent events from passing through the <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a>, or to change their properties before they do, an <a href="asdoc/org/as3commons/eventbus/IEventBus.html"><code>IEventBus</code></a> implementation accepts <a href="asdoc/org/as3commons/eventbus/IEventInterceptor.html"><code>IEventInterceptor</code></a> registrations.</p>
     	<p>This process is almost the same as for event listeners: Interceptors can be added globally, for specific event types or specific classes and for specific topics.</p>
     	<div class="source"><pre>eventBus.addInterceptor(interceptor);
@@ -85,6 +85,25 @@ eventBus.addEventClassInterceptor(MyCustomEvent, interceptor, "myTopic");</pre><
 	<p>An <code>IEventInterceptor</code> also receives a reference to the current <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> each time its <code>intercept()</code> method is invoked, this allows an implementation to block certain events and replace them with a
 	different instance. Events could be split up into multiple events, etc.</p>
 	<p>AS3Comons-eventbus offers the <a href="asdoc/org/as3commons/eventbus/impl/AbstractEventInterceptor.html"><code>AbstractEventInterceptor</code></a> to be used as a general base class for event interceptors.</p>
+    </section>
+    <section name="EventBus event listener intercepting">
+    	<p>To log, modify or block event listeners from being added an <a href="asdoc/org/as3commons/eventbus/IEventListenerInterceptor.html"><code>IEventListenerInterceptor</code></a> can be registered with the <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a>.</p>
+    	<p>This process is almost the same as for event listeners and interceptors: Listener interceptors can be added globally, for specific event types or specific classes and for specific topics.</p>
+<div class="source"><pre>eventBus.addListenerInterceptor(interceptor);
+eventBus.addEventListenerInterceptor("myCustomEvent", interceptor);
+eventBus.addClassListenerInterceptor(MyCustomEvent, interceptor);
+//And for topic specific interception:
+eventBus.addListenerInterceptor(interceptor, "myTopic");
+eventBus.addEventListenerInterceptor("myCustomEvent", interceptor, "myTopic");
+eventBus.addClassListenerInterceptor(MyCustomEvent, interceptor, "myTopic");</pre></div>
+	<p>To prevent the listener from being added, simply set the <code>blockListener</code> property to <code>true</code>.</p>
+	<p>An <code>IEventListenerInterceptor</code> also receives a reference to the current <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> each time its <code>interceptListener()</code> or <code>interceptListenerProxy()</code> method is invoked,
+	allowing the interceptor to examine the <code>EventBus</code> before deciding to allow the listener to be added or not.</p>
+	<p>AS3Comons-eventbus offers the <a href="asdoc/org/as3commons/eventbus/impl/AbstractEventListenerInterceptor.html"><code>AbstractEventListenerInterceptor</code></a> to be used as a general base class for eventlistener interceptors.</p>
+    </section>
+    <section name="Static EventBus implementation">
+    	<p>In a select few cases it might be easier to have one static eventbus in an application, for this purpose as3-commons-eventbus offers the <code>StaticEventBus</code>.</p>
+    	<p>The <code>StaticEventBus</code> has static equivalents of all the <code>IEventBus</code> methods, so its usage is exactly the same.</p>
     </section>
     <section name="EventBus chaining">    
     	<p>The <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> itself is also an implementation of <a href="asdoc/org/as3commons/eventbus/IEventBusListener.html"><code>IEventBusListener</code></a>. Therefore it is possible to chain multiple <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> instances by adding an <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> as a global listener to another <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a>.</p>
