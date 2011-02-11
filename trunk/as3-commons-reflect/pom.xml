@@ -1,10 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<groupId>org.as3commons</groupId>
-		<artifactId>as3commons-project</artifactId>
-		<version>1.0.0</version>
-	</parent>
+
 	<modelVersion>4.0.0</modelVersion>
+    <groupId>org.as3commons</groupId>
 	<artifactId>as3commons-reflect</artifactId>
 	<packaging>swc</packaging>
 	<version>1.3.5-SNAPSHOT</version>
@@ -16,107 +13,143 @@
 	<inceptionYear>2007</inceptionYear>
 
 	<properties>
+		<flex-mojos.version>4.0-beta-3</flex-mojos.version>
 		<flex-sdk.version>4.1.0.16076</flex-sdk.version>
-		<flashplayer.version.minor>1</flashplayer.version.minor>
-		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
+        <flashplayer.version.major>10</flashplayer.version.major>
+        <flashplayer.version.minor>1</flashplayer.version.minor>
+        <flashplayer.version.revision>0</flashplayer.version.revision>
+        <flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}</flashplayer.version>
+        <playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.2</version>
-			<type>swc</type>
-			<scope>external</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>com.adobe.flex.framework</groupId>
-					<artifactId>playerglobal</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-logging</artifactId>
-			<version>1.1.1</version>
-			<type>swc</type>
-			<scope>external</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>com.adobe.flex.framework</groupId>
-					<artifactId>playerglobal</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+    <licenses>
+             <license>
+                     <name>Apache Software License 2.0</name>
+                     <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+                     <distribution>repo</distribution>
+             </license>
+     </licenses>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>sparkskins</artifactId>
-            <version>${flex-sdk.version}</version>
-            <scope>external</scope>
-            <type>swc</type>
-        </dependency>
+     <issueManagement>
+             <system>Google Code</system>
+             <url>http://code.google.com/p/as3-commons/issues/list</url>
+     </issueManagement>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>spark</artifactId>
-            <version>${flex-sdk.version}</version>
-            <scope>external</scope>
-            <type>swc</type>
-        </dependency>
+     <developers>
+             <developer>
+                     <id>cherreman</id>
+                     <name>Christophe Herreman</name>
+                     <email>christophe.herreman [at] stackandheap.com</email>
+                     <url>http://www.herrodius.com</url>
+                     <organization>Stack &amp; Heap</organization>
+                     <organizationUrl>http://www.stackandheap.com</organizationUrl>
+                     <timezone>+1</timezone>
+             </developer>
+             <developer>
+                     <id>martino.piccinato</id>
+                     <name>Martino Piccinato</name>
+                     <email>mp [at] yoolab.com</email>
+                     <organization>Yoolab</organization>
+                     <organizationUrl>http://www.yoolab.com/</organizationUrl>
+                     <timezone>+1</timezone>
+             </developer>
+             <developer>
+                     <id>rzwaga</id>
+                     <name>Roland Zwaga</name>
+                     <email>roland.zwaga [at] stackandheap.com</email>
+                     <url>http://zwaga.blogspot.com/</url>
+                     <organization>Stack &amp; Heap</organization>
+                     <organizationUrl>http://www.stackandheap.com</organizationUrl>
+                     <timezone>+1</timezone>
+             </developer>
+             <developer>
+                     <id>jes</id>
+                     <name>Jens Struwe</name>
+                     <email>jens [at] struwe.net</email>
+                     <organization>Russischer B�r Software</organization>
+                     <organizationUrl>http://sibirjak.com/</organizationUrl>
+                     <timezone>+1</timezone>
+             </developer>
+             <developer>
+                     <id>alewisohn</id>
+                     <name>Andrew Lewisohn</name>
+                     <email>alewisohn [at] gmail.com</email>
+                     <organization>Arc90, Inc.</organization>
+                     <organizationUrl>http://www.arc90.com/</organizationUrl>
+                     <timezone>-5</timezone>
+             </developer>
+             <developer>
+                     <id>jghandour</id>
+                     <name>James Ghandour</name>
+                     <email>jamesghandour [at] jagsits.com</email>
+                     <organization>JAG's ITS Inc.</organization>
+                     <organizationUrl>http://www.jagsits.com/</organizationUrl>
+                     <timezone>-5</timezone>
+             </developer>
+     </developers>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>textLayout</artifactId>
-            <version>${flex-sdk.version}</version>
-            <scope>external</scope>
-            <type>swc</type>
-        </dependency>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>flash-integration</artifactId>
-            <version>${flex-sdk.version}</version>
-            <scope>external</scope>
-            <type>swc</type>
-        </dependency>
+    	<build>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>osmf</artifactId>
-            <version>${flex-sdk.version}</version>
-            <scope>external</scope>
-            <type>swc</type>
-        </dependency>
+        <sourceDirectory>src/main/actionscript</sourceDirectory>
+		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>spark</artifactId>
-            <version>${flex-sdk.version}</version>
-            <type>rb.swc</type>
-            <scope>external</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>textLayout</artifactId>
-            <version>${flex-sdk.version}</version>
-            <type>rb.swc</type>
-            <scope>external</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>osmf</artifactId>
-            <version>${flex-sdk.version}</version>
-            <type>rb.swc</type>
-            <scope>external</scope>
-        </dependency>
-
-	</dependencies>
-
-	<build>
 		<plugins>
+
+            <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <configuration>
+                            <encoding>UTF-8</encoding>
+                    </configuration>
+            </plugin>
+
+
+            <plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flex-mojos.version}</version>
+				<extensions>true</extensions>
+
+                <dependencies>
+					<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex-sdk.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+
+				<executions> <execution> <id>flex-reports</id> <goals> <goal>asdoc-report</goal>
+					</goals> <phase>site</phase> </execution> </executions>
+				<configuration>
+                    <storepass></storepass>
+                    <testTimeout>10000</testTimeout>
+					<configurationReport>true</configurationReport>
+					<targetPlayer>${flashplayer.version.major}</targetPlayer>
+					<locales>
+						<param>en_US</param>
+					</locales>
+					<updateSecuritySandbox>true</updateSecuritySandbox>
+					<includeAsClasses>
+						<source>
+							<directory>src/main/actionscript</directory>
+						</source>
+					</includeAsClasses>
+					<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
+					<description>API documentation</description>
+					<mainTitle>API documentation</mainTitle>
+					<windowTitle>API documentation</windowTitle>
+					<name>As3CommonsDocs</name>
+					<keepXml>true</keepXml>
+					<dumpConfigAttach>true</dumpConfigAttach>
+					<showWarnings>true</showWarnings>
+					<lenient>true</lenient>
+				</configuration>
+
+			</plugin>
+
+
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
@@ -164,16 +197,191 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.0-beta-2</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex-sdk.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+				<configuration>
+
+					<reportPlugins>
+
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<version>2.2</version>
+						</plugin>
+
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-report-plugin</artifactId>
+							<version>2.6</version>
+						</plugin>
+
+					</reportPlugins>
+				</configuration>
+			</plugin>
+
 		</plugins>
 
 	</build>
-	
+
+	<dependencies>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>common-framework</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>pom</type>
+        </dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-lang</artifactId>
+			<version>0.3.2</version>
+			<type>swc</type>
+			<scope>external</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>playerglobal</artifactId>
+				</exclusion>
+                <exclusion>
+                    <groupId>com.adobe.flex.framework</groupId>
+                    <artifactId>common-framework</artifactId>
+                </exclusion>
+			</exclusions>
+		</dependency>
+
+
+        <dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-logging</artifactId>
+			<version>1.1.1</version>
+			<type>swc</type>
+			<scope>external</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.adobe.flex.framework</groupId>
+                    <artifactId>playerglobal</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-logging</artifactId>
+			<version>2.0</version>
+			<type>swc</type>
+			<scope>external</scope>
+  			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>air-framework</artifactId>
+				</exclusion>
+                <exclusion>
+                    <groupId>com.adobe.flex.framework</groupId>
+                    <artifactId>common-framework</artifactId>
+                </exclusion>
+    			<exclusion>
+					<groupId>nl.demonsters.debugger</groupId>
+					<artifactId>monsterdebugger</artifactId>
+				</exclusion>
+                <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant-nodeps</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ant-contrib</groupId>
+                    <artifactId>ant-contrib</artifactId>
+                </exclusion>
+			</exclusions>
+		</dependency>
+         -->
+
+        <dependency>
+                <groupId>com.adobe.flex.framework</groupId>
+                <artifactId>playerglobal</artifactId>
+                <version>${flex-sdk.version}</version>
+                <scope>external</scope>
+                <type>swc</type>
+                <classifier>${playerglobal.version}</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>sparkskins</artifactId>
+            <version>${flex-sdk.version}</version>
+            <scope>external</scope>
+            <type>swc</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>spark</artifactId>
+            <version>${flex-sdk.version}</version>
+            <scope>external</scope>
+            <type>swc</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>textLayout</artifactId>
+            <version>${flex-sdk.version}</version>
+            <scope>external</scope>
+            <type>swc</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>osmf</artifactId>
+            <version>${flex-sdk.version}</version>
+            <scope>external</scope>
+            <type>swc</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>spark</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>rb.swc</type>
+            <scope>external</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>textLayout</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>rb.swc</type>
+            <scope>external</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>osmf</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>rb.swc</type>
+            <scope>external</scope>
+        </dependency>
+
+	</dependencies>
+
 	<reporting>
 		<plugins>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 			</plugin>
+            <!--
 			<plugin>
 				<groupId>org.sonatype.flexmojos</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>
@@ -196,6 +404,7 @@
 					</reportSet>
 				</reportSets>
 			</plugin>
+			-->
 
 		</plugins>
 	</reporting>
@@ -213,5 +422,44 @@
 			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-reflect</url>
 		</site>
 	</distributionManagement>
+
+    <repositories>
+		<repository>
+			<id>flex-mojos-repository</id>
+			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>yoolab.org-releases</id>
+			<url>http://projects.yoolab.org/maven/content/repositories/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>yoolab.org-snapshots</id>
+			<url>http://projects.yoolab.org/maven/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>flexmojos-plugin</id>
+			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 </project>
