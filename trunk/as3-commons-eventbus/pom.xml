@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-eventbus</artifactId>
 	<packaging>swc</packaging>
-	<version>1.1</version>
+	<version>1.1.1</version>
 	<name>AS3Commons EventBus</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>The EventBus is used as a publish/subscribe event mechanism that lets objects communicate with eachother in a loosely coupled way.
