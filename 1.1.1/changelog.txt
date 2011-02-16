@@ -1,0 +1,27 @@
+AS3COMMONS-EVENTBUS CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+Changes in version 1.1.1 (16.02.2011)
+-----------------------------------
+
+General
+* Critical bug fix where notifySpecificEvent() would end up in and infinite iterator loop
+
+Changes in version 1.1 (10.02.2011)
+-----------------------------------
+
+General
+* Added IEventListenerInterceptor interface and listener interception mechanism in EventBus
+* Added dependency on as3commons-collections and replaced all arrays with WeakLinkedLists
+* Added StaticEventBus implementation
+* Refactored all of the internal collections into the EventBusCollectionLookup class
+
+Changes in version 1.0 (10.01.2011)
+-----------------------------------
+
+General
+* Added support for topic-based event filtering
+* Added IInterceptor interface and interception mechanism in EventBus
+* initial commit, directly copied from Spring Actionscript sources with minor refactorings
