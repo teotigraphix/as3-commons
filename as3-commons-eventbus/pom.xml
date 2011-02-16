@@ -97,9 +97,9 @@
 	</build>
 
 	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-eventbus/1.1</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-eventbus/1.1</url>
-		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-eventbus/1.1</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-eventbus/1.1.1</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-eventbus/1.1.1</url>
+		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-eventbus/1.1.1</connection>
 	</scm>
 
 	<distributionManagement>
