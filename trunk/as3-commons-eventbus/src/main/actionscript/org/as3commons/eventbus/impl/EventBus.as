@@ -681,7 +681,7 @@ package org.as3commons.eventbus.impl {
 				if (proxies != null) {
 					var iterator:WeakLinkedListIterator = WeakLinkedListIterator(proxies.iterator());
 					while (iterator.hasNext()) {
-						iterator.hasNext();
+						iterator.next();
 						if (iterator.current == null) {
 							iterator.remove();
 						} else {
