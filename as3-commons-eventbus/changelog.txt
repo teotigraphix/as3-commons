@@ -3,6 +3,12 @@ AS3COMMONS-EVENTBUS CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.1.1 (16.02.2011)
+-----------------------------------
+
+General
+* Critical bug fix where notifySpecificEvent() would end up in and infinite iterator loop
+
 Changes in version 1.1 (10.02.2011)
 -----------------------------------
 
