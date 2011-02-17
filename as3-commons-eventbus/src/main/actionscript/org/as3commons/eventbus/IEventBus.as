@@ -29,24 +29,28 @@ package org.as3commons.eventbus {
 	 * <li>Add a listener for all events of a <code>Class</code> that are dispatched by an <code>IEventBus</code>.</li>
 	 * </ol>
 	 * </p>
+	 * <p>Further event filtering can be achieved by using topics, which can be registered through all the different event dispatching
+	 * and listeners registration methods as an optional argument.</p>
+	 * <p>Events can be modified or blocked using <code>IEventInterceptor</code> implementations.</p>
+	 * <p>Events listeners can be blocked using <code>IEventListenerInterceptor</code> implementations.</p>
 	 * @author Roland Zwaga
 	 */
 	public interface IEventBus {
 
 		/**
-		 *
-		 * @param topic
-		 * @return
-		 *
+		 * The number of registered global event listeners, optionally for the specified topic. Omitting the topic argument will return the number
+		 * of global listeners that have been registered without a topic, so *not* the entire count.
+		 * @param topic The specified optional topic.
+		 * @return The specified number of global listeners.
 		 */
 		function getListenerCount(topic:Object = null):uint;
 
 		/**
-		 *
-		 * @param eventType
-		 * @param topic
-		 * @return
-		 *
+		 * The number of registered event listeners for the specified event type, optionally also for the specified topic. Omitting the topic argument will return the number
+		 * of event listeners that have been registered without a topic, so *not* the entire count.
+		 * @param eventType The specified event type.
+		 * @param topic The specified optional topic.
+		 * @return The specified number of event listeners.
 		 */
 		function getEventListenerCount(eventType:String, topic:Object = null):uint;
 
