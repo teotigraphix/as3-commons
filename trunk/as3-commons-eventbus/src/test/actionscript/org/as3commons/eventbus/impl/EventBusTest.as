@@ -386,6 +386,45 @@ package org.as3commons.eventbus.impl {
 			assertEquals(0, _eventBus.getEventListenerCount(eventType));
 		}
 
+		public function testEventTypeListener():void {
+			var eventType:String = "testType";
+			_eventBus.addEventListener(eventType, eventBusTestListener);
+			_eventBus.dispatch("testType");
+			assertTrue(_eventReceived);
+		}
+
+		public function testEventTypeListenerWithoutTopic():void {
+			var eventType:String = "testType";
+			_eventBus.addEventListener(eventType, eventBusTestListener);
+			_eventBus.dispatch("testType", "testTopic");
+			assertFalse(_eventReceived);
+		}
+
+		public function testEventTypeListenerWithTopic():void {
+			var eventType:String = "testType";
+			_eventBus.addEventListener(eventType, eventBusTestListener, false, "testTopic");
+			_eventBus.dispatch("testType", "testTopic");
+			assertTrue(_eventReceived);
+		}
+
+		public function testEventClassListener():void {
+			_eventBus.addEventClassListener(MockCustomEvent, eventBusTestListener);
+			_eventBus.dispatchEvent(new MockCustomEvent());
+			assertTrue(_eventReceived);
+		}
+
+		public function testEventClassListenerWithoutTopic():void {
+			_eventBus.addEventClassListener(MockCustomEvent, eventBusTestListener);
+			_eventBus.dispatchEvent(new MockCustomEvent(), "testTopic");
+			assertFalse(_eventReceived);
+		}
+
+		public function testEventClassListenerWithTopic():void {
+			_eventBus.addEventClassListener(MockCustomEvent, eventBusTestListener, false, "testTopic");
+			_eventBus.dispatchEvent(new MockCustomEvent(), "testTopic");
+			assertTrue(_eventReceived);
+		}
+
 		public function testGlobalIntercept():void {
 			_eventBus.addEventListener("testType", eventBusTestListener);
 			_eventBus.addInterceptor(new MockInterceptor(true));
@@ -500,6 +539,27 @@ package org.as3commons.eventbus.impl {
 
 		public function eventBusTestListener(event:Event):void {
 			_eventReceived = true;
+		}
+
+		public function testGlobalListener():void {
+			var listener:MockEventBusListener = new MockEventBusListener();
+			_eventBus.addListener(listener);
+			_eventBus.dispatch("testType");
+			assertTrue(listener.receivedEvent);
+		}
+
+		public function testGlobalListenerWithoutTopic():void {
+			var listener:MockEventBusListener = new MockEventBusListener();
+			_eventBus.addListener(listener);
+			_eventBus.dispatch("testType", "testTopic");
+			assertFalse(listener.receivedEvent);
+		}
+
+		public function testGlobalListenerWithTopic():void {
+			var listener:MockEventBusListener = new MockEventBusListener();
+			_eventBus.addListener(listener, false, "testTopic");
+			_eventBus.dispatch("testType", "testTopic");
+			assertTrue(listener.receivedEvent);
 		}
 
 	}
