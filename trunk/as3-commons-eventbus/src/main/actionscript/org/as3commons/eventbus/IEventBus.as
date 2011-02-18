@@ -55,29 +55,29 @@ package org.as3commons.eventbus {
 		function getEventListenerCount(eventType:String, topic:Object = null):uint;
 
 		/**
-		 *
-		 * @param eventType
-		 * @param topic
-		 * @return
-		 *
+		 * The number of registered event listener proxies for the specified event type, optionally also for the specified topic. Omitting the topic argument will return the number
+		 * of event listener proxies that have been registered without a topic, so *not* the entire count.
+		 * @param eventType The specified event type.
+		 * @param topic The specified optional topic.
+		 * @return The specified number of event listener proxies.
 		 */
 		function getEventListenerProxyCount(eventType:String, topic:Object = null):uint;
 
 		/**
-		 *
-		 * @param clazz
-		 * @param topic
-		 * @return
-		 *
+		 * The number of registered event listeners for the specified event class, optionally also for the specified topic. Omitting the topic argument will return the number
+		 * of event listeners that have been registered without a topic, so *not* the entire count.
+		 * @param eventClass The specified event Class.
+		 * @param topic The specified optional topic.
+		 * @return The specified number of event listeners.
 		 */
 		function getClassListenerCount(clazz:Class, topic:Object = null):uint;
 
 		/**
-		 *
-		 * @param clazz
-		 * @param topic
-		 * @return
-		 *
+		 * The number of registered event listener proxies for the specified event class, optionally also for the specified topic. Omitting the topic argument will return the number
+		 * of event listener proxies that have been registered without a topic, so *not* the entire count.
+		 * @param eventClass The specified event Class.
+		 * @param topic The specified optional topic.
+		 * @return The specified number of event listener proxies.
 		 */
 		function getClassProxyListenerCount(clazz:Class, topic:Object = null):uint;
 
