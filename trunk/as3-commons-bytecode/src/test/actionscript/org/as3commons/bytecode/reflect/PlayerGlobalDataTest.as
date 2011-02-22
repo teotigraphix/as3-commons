@@ -18,9 +18,6 @@ package org.as3commons.bytecode.reflect {
 
 	import flexunit.framework.TestCase;
 
-	import org.flexunit.asserts.assertNotNull;
-	import org.flexunit.asserts.assertNull;
-
 	public class PlayerGlobalDataTest extends TestCase {
 
 		public function PlayerGlobalDataTest(methodName:String = null) {

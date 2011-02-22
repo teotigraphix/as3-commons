@@ -174,13 +174,10 @@ package org.as3commons.bytecode.io {
 
 		public override function deserializeMethodBodies(abcFile:AbcFile, pool:IConstantPool):void {
 			var methodBodyCount:int = readU30();
-			trace("methodBody count:" + methodBodyCount);
+			//trace("methodBody count:" + methodBodyCount);
 			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; ++bodyIndex) {
-				trace("deserializing method body #", bodyIndex);
+				//trace("deserializing method body #", bodyIndex);
 				var methodBody:MethodBody = new MethodBody();
-				if (bodyIndex == 8354) {
-					var i:int = 0;
-				}
 				// method_body_info 
 				// { 
 				//  u30 method 

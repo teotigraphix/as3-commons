@@ -372,7 +372,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
-		public function testIntroduction():void {
+		/*public function testIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
 			classProxyInfo.introduce(TestIntroduction);
@@ -409,7 +409,7 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createEventDispatcherIntroductionInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMultipleIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}
+		}*/
 
 		protected function handleMultipleProxiesTestComplete(event:Event):void {
 			assertTrue(true);
