@@ -17,7 +17,7 @@ package org.as3commons.bytecode.util {
 
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
-	
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ConstantPool;
@@ -45,6 +45,7 @@ package org.as3commons.bytecode.util {
 		private static var SWF_FOOTER:Array = [0x40, 0x00]; // Tag type=1 (ShowFrame), length=0
 
 		private static const INSTANCE_INITIALIZER_QNAME:String = "{instance initializer (constructor?)}";
+		private static const PERIOD:String = '.';
 
 		/**
 		 * Searches the specified <code>SWFFile</code> for <code>DoABCTags</code>
@@ -172,7 +173,7 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function normalizeFullName(fullName:String):String {
-			return fullName.replace(MultinameUtil.DOUBLE_COLON_REGEXP, '.');
+			return fullName.replace(MultinameUtil.DOUBLE_COLON_REGEXP, PERIOD);
 		}
 
 		/**
@@ -181,7 +182,6 @@ package org.as3commons.bytecode.util {
 		 *
 		 * @param   bytes an array or ABC bytecode blocks
 		 * @return  a byte array containing the contents of a valid SWF file ready for loading in to the Flash Player
-		 *
 		 */
 		public static function wrapBytecodeInSWF(arrayOfAbcByteCodeBlocks:Array):ByteArray {
 			var outputStream:ByteArray = new ByteArray();

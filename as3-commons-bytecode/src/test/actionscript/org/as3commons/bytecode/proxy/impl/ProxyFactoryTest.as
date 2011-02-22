@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.proxy.impl {
 
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.net.registerClassAlias;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
@@ -371,7 +372,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
-		/*public function testIntroduction():void {
+		public function testIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
 			classProxyInfo.introduce(TestIntroduction);
@@ -382,7 +383,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 		public function testEventDispatcherIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
-			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(TestEventDispatcher, null, applicationDomain);
+			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(EventDispatcher, null, applicationDomain);
 			classProxyInfo.introduce(EventDispatcherExImpl);
 			classProxyInfo.proxyMethod("addEventListener");
 			classProxyInfo.proxyMethod("removeEventListener");
@@ -408,7 +409,7 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createEventDispatcherIntroductionInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMultipleIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}*/
+		}
 
 		protected function handleMultipleProxiesTestComplete(event:Event):void {
 			assertTrue(true);
@@ -421,7 +422,7 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		protected function handleEventDispatcherIntroductionTestComplete(event:Event):void {
-			var instance:TestEventDispatcher = _proxyFactory.createProxy(TestEventDispatcher) as TestEventDispatcher;
+			var instance:EventDispatcher = _proxyFactory.createProxy(EventDispatcher) as EventDispatcher;
 			assertNotNull(instance);
 			var testInterface:IEventDispatcherEx = instance as IEventDispatcherEx;
 			assertNotNull(testInterface);

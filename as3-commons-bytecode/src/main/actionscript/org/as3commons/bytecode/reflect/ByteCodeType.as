@@ -17,6 +17,7 @@ package org.as3commons.bytecode.reflect {
 	import flash.display.LoaderInfo;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.util.AbcFileUtil;
@@ -24,6 +25,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.SoftReference;
+	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.Constant;
 	import org.as3commons.reflect.ITypeProvider;
@@ -33,8 +35,28 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.as3commons_reflect;
 
 	public class ByteCodeType extends Type {
+		private static const FLASH_NATIVE_PACKAGE_PREFIX:String = 'flash.';
 
 		private static var typeProvider:ITypeProvider;
+		private static const nativeClassNames:Dictionary = new Dictionary();
+		{
+			nativeClassNames['Object'] = true;
+			nativeClassNames['Function'] = true;
+			nativeClassNames['RegExp'] = true;
+			nativeClassNames['Array'] = true;
+			nativeClassNames['Error'] = true;
+			nativeClassNames['DefinitionError'] = true;
+			nativeClassNames['EvalError'] = true;
+			nativeClassNames['RangeError'] = true;
+			nativeClassNames['ReferenceError'] = true;
+			nativeClassNames['SecurityError'] = true;
+			nativeClassNames['SyntaxError'] = true;
+			nativeClassNames['TypeError'] = true;
+			nativeClassNames['URIError'] = true;
+			nativeClassNames['VerifyError'] = true;
+			nativeClassNames['UninitializedError'] = true;
+			nativeClassNames['ArgumentError'] = true;
+		}
 
 		private var _byteArray:ByteArray;
 		private var _constantPool:IConstantPool;
@@ -155,8 +177,22 @@ package org.as3commons.bytecode.reflect {
 			name = AbcFileUtil.normalizeFullName(name);
 
 			result = getTypeProvider().getTypeCache().get(name) as ByteCodeType;
+			if ((result == null) && (isNativeName(name))) {
+				result = PlayerGlobalData.forName(name);
+				if (result != null) {
+					getTypeProvider().getTypeCache().put(name, result);
+				}
+			}
 
 			return result;
+		}
+
+		public static function isNativeName(name:String):Boolean {
+			return ( //
+				(StringUtils.startsWith(name, FLASH_NATIVE_PACKAGE_PREFIX)) || //
+				(nativeClassNames[name] == true) || //
+				(StringUtils.startsWith(name, '__AS3__.')) //
+				);
 		}
 
 		/**
@@ -168,10 +204,7 @@ package org.as3commons.bytecode.reflect {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:ByteCodeType;
 			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz, true);
-
-			result = getTypeProvider().getTypeCache().get(fullyQualifiedClassName) as ByteCodeType;
-
-			return result;
+			return forName(fullyQualifiedClassName, applicationDomain);
 		}
 
 		override public function get clazz():Class {
@@ -183,6 +216,16 @@ package org.as3commons.bytecode.reflect {
 				}
 			}
 			return super.clazz;
+		}
+
+		// ----------------------------
+		// isNative
+		// ----------------------------
+
+		private var _isNative:Boolean = false;
+
+		public function get isNative():Boolean {
+			return _isNative;
 		}
 
 		// ----------------------------
@@ -243,6 +286,10 @@ package org.as3commons.bytecode.reflect {
 
 		public function get namespaceName():String {
 			return _namespaceName;
+		}
+
+		as3commons_reflect function setIsNative(value:Boolean):void {
+			_isNative = value;
 		}
 
 		as3commons_reflect function setNamespaceName(value:String):void {
