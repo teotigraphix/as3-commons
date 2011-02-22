@@ -18,12 +18,12 @@ package org.as3commons.eventbus.impl {
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 
-	import org.as3commons.collections.WeakLinkedList;
-	import org.as3commons.collections.framework.core.WeakLinkedListIterator;
 	import org.as3commons.eventbus.IEventBus;
 	import org.as3commons.eventbus.IEventBusListener;
 	import org.as3commons.eventbus.IEventInterceptor;
 	import org.as3commons.eventbus.IEventListenerInterceptor;
+	import org.as3commons.eventbus.impl.collection.WeakLinkedList;
+	import org.as3commons.eventbus.impl.collection.WeakLinkedListIterator;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.reflect.MethodInvoker;

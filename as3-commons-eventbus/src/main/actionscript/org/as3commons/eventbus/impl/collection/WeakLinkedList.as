@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.collections {
+package org.as3commons.eventbus.impl.collection {
 	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.framework.IWeakLinkedList;
 	import org.as3commons.collections.framework.core.AbstractLinkedDuplicatesCollection;
 	import org.as3commons.collections.framework.core.LinkedNode;
-	import org.as3commons.collections.framework.core.WeakLinkedListIterator;
-	import org.as3commons.collections.framework.core.WeakLinkedNode;
 	import org.as3commons.collections.framework.core.as3commons_collections;
 
 	public class WeakLinkedList extends AbstractLinkedDuplicatesCollection implements IWeakLinkedList {
-		
+
 		public function WeakLinkedList() {
 			super();
 		}
@@ -39,30 +37,30 @@ package org.as3commons.collections {
 		public function addLast(item:*, useWeakReference:Boolean = false):void {
 			addNodeLast(new WeakLinkedNode(item, useWeakReference));
 		}
-		
+
 		/**
 		 * @inheritDoc
 		 */
-		override public function iterator(cursor : * = undefined) : IIterator {
+		override public function iterator(cursor:* = undefined):IIterator {
 			return new WeakLinkedListIterator(this);
 		}
-		
+
 		/**
 		 * Framework internal method to remove a node from the list.
-		 * 
+		 *
 		 * @param node The node to remove.
 		 */
-		as3commons_collections function removeNode_internal(node : LinkedNode) : void {
+		as3commons_collections function removeNode_internal(node:LinkedNode):void {
 			removeNode(node);
 		}
-		
+
 		/**
 		 * Framework internal method to add a node before an existing one.
-		 * 
+		 *
 		 * @param next The node to add before.
 		 * @param node The node to add.
 		 */
-		as3commons_collections function addNodeBefore_internal(next : LinkedNode, node : LinkedNode) : void {
+		as3commons_collections function addNodeBefore_internal(next:LinkedNode, node:LinkedNode):void {
 			addNodeBefore(next, node);
 		}
 

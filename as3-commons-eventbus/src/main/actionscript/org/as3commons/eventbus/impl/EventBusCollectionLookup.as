@@ -16,9 +16,9 @@
 package org.as3commons.eventbus.impl {
 	import flash.utils.Dictionary;
 
-	import org.as3commons.collections.WeakLinkedList;
-	import org.as3commons.collections.framework.core.WeakLinkedListIterator;
 	import org.as3commons.eventbus.IEventBusCollectionLookup;
+	import org.as3commons.eventbus.impl.collection.WeakLinkedList;
+	import org.as3commons.eventbus.impl.collection.WeakLinkedListIterator;
 	import org.as3commons.lang.ObjectUtils;
 
 	/**
