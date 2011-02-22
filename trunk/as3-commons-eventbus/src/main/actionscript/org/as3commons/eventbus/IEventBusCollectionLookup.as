@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.eventbus {
-	import org.as3commons.collections.WeakLinkedList;
+	import org.as3commons.eventbus.impl.collection.WeakLinkedList;
 
 	public interface IEventBusCollectionLookup {
 		function add(item:Object, useWeakReference:Boolean = false, topic:Object = null):void;

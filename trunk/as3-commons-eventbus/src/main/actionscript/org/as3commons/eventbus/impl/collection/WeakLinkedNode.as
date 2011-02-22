@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.collections.framework.core {
+package org.as3commons.eventbus.impl.collection {
 	import flash.utils.Dictionary;
+
+	import org.as3commons.collections.framework.core.LinkedNode;
 
 	public class WeakLinkedNode extends LinkedNode {
 
