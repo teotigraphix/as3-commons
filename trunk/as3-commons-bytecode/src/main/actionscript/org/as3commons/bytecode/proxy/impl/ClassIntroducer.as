@@ -14,7 +14,6 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy.impl {
-	import flash.events.IEventDispatcher;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
@@ -50,7 +49,6 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Field;
-	import org.as3commons.reflect.Method;
 	import org.as3commons.reflect.as3commons_reflect;
 
 	public class ClassIntroducer extends AbstractProxyFactory implements IClassIntroducer {
@@ -82,6 +80,9 @@ package org.as3commons.bytecode.proxy.impl {
 			var type:ByteCodeType = ByteCodeType.forName(className);
 			if (type.isInterface) {
 				throw new ProxyBuildError(ProxyBuildError.CANNOT_INTRODUCE_INTERFACE, className);
+			}
+			if (type.isNative) {
+				throw new ProxyBuildError(ProxyBuildError.CANNOT_INTRODUCE_NATIVE_CLASS, className);
 			}
 			if (type != null) {
 				internalIntroduce(type, classBuilder);
@@ -140,8 +141,9 @@ package org.as3commons.bytecode.proxy.impl {
 			for each (var field:Field in type.fields) {
 				introduceField(field, classBuilder, type);
 			}
-			for each (var method:Method in type.methods) {
-				if (method is ByteCodeMethod) {
+			for each (var method:ByteCodeMethod in type.methods) {
+				//methods with body length 0 are native methods
+				if (method.bodyLength > 0) {
 					introduceMethod(ByteCodeMethod(method), classBuilder, type);
 				}
 			}
@@ -270,6 +272,7 @@ package org.as3commons.bytecode.proxy.impl {
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(byteCodeVariable.name, byteCodeVariable.type.fullName, byteCodeVariable.initializedValue);
 			propertyBuilder.namespaceURI = byteCodeVariable.namespaceURI;
 			propertyBuilder.scopeName = byteCodeVariable.scopeName;
+			propertyBuilder.isStatic = byteCodeVariable.isStatic;
 			propertyBuilder.visibility = ProxyFactory.getMemberVisibility(byteCodeVariable);
 			addMetadata(propertyBuilder, byteCodeVariable.metadata);
 		}

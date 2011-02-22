@@ -24,7 +24,6 @@ package org.as3commons.bytecode.testclasses {
 
 		private var _testAccessor:Object;
 
-		[Test]
 		public var myPropertyWithMetadata:String;
 
 		public function EventDispatcherExImpl() {
