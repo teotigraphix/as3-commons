@@ -3,7 +3,13 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.0RC (00.00.0000)
+Changes in version 1.0-RC1 (22.02.2011)
+-----------------------------------
+
+* Added support for proxies for native classes
+* Various minor bugfixes in bytecode serialization/deserialization
+
+Changes in version 1.9.7 (30.01.2011)
 -----------------------------------
 
 * Made changes to IMethodInvocationInterceptor injection so that a generated class can be serialized and deserialized (for AMF purposes et al).
