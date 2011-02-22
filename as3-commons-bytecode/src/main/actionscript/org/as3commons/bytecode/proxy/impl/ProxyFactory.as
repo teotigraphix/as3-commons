@@ -553,8 +553,10 @@ package org.as3commons.bytecode.proxy.impl {
 			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
-			for each (var method:Method in type.methods) {
-				var byteCodeMethod:ByteCodeMethod = method as ByteCodeMethod;
+			for each (var byteCodeMethod:ByteCodeMethod in type.methods) {
+				if (byteCodeMethod.declaringType.name == 'Object') {
+					continue;
+				}
 				if (byteCodeMethod != null) {
 					if (!isEligibleForProxy(byteCodeMethod, classProxyInfo.proxyMethodScopes, classProxyInfo.proxyMethodNamespaces)) {
 						continue;
