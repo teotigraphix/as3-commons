@@ -22,7 +22,9 @@
 package org.as3commons.reflect {
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.HashArray;
+	import org.as3commons.lang.StringUtils;
 
 	/**
 	 * Abstract base class for members of a <code>Class</code>.
@@ -69,12 +71,20 @@ package org.as3commons.reflect {
 		 */
 		public function AbstractMember(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) {
 			super(metadata);
+			initAbstractType(name, isStatic, type, declaringType, applicationDomain);
+		}
+
+		protected function initAbstractType(name:String, isStatic:Boolean, type:String, declaringType:String, applicationDomain:ApplicationDomain):void {
+			Assert.hasText(name, "name argument must have text");
+			Assert.hasText(type, "type argument must have text");
+			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
 			_name = name;
 			_isStatic = isStatic;
 			typeName = type;
 			declaringTypeName = declaringType;
 			this.applicationDomain = applicationDomain;
 		}
+
 
 		// -------------------------------------------------------------------------
 		//
@@ -89,8 +99,8 @@ package org.as3commons.reflect {
 		public function get declaringType():Type {
 			//Do NOT store a reference to the declaring type here, always do a forName() lookup
 			//otherwise this will lead to a circular reference between the AbstractMember and Type instances,
-			//which will in turn result in a memory leak.
-			return Type.forName(declaringTypeName, applicationDomain);
+			//which will in turn result in a memory leak because the instances will never be garbage collected.
+			return (StringUtils.hasText(declaringTypeName)) ? Type.forName(declaringTypeName, applicationDomain) : null;
 		}
 
 		// ----------------------------
