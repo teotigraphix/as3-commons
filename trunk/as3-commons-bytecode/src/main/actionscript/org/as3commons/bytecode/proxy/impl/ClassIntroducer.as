@@ -78,6 +78,9 @@ package org.as3commons.bytecode.proxy.impl {
 
 		public function introduce(className:String, classBuilder:IClassBuilder):void {
 			var type:ByteCodeType = ByteCodeType.forName(className);
+			if (type == null) {
+				throw new ProxyBuildError(ProxyBuildError.INTRODUCED_CLASS_NOT_FOUND, className);
+			}
 			if (type.isInterface) {
 				throw new ProxyBuildError(ProxyBuildError.CANNOT_INTRODUCE_INTERFACE, className);
 			}
@@ -86,8 +89,6 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			if (type != null) {
 				internalIntroduce(type, classBuilder);
-			} else {
-				throw new ProxyBuildError(ProxyBuildError.INTRODUCED_CLASS_NOT_FOUND, className);
 			}
 		}
 
@@ -228,6 +229,8 @@ package org.as3commons.bytecode.proxy.impl {
 						break;
 					case (param is NamespaceSet):
 						translateNamespaceSet(NamespaceSet(param), oldScopeName, newScopeName);
+						break;
+					default:
 						break;
 				}
 			}

@@ -29,6 +29,7 @@ package org.as3commons.bytecode.reflect {
 	public class ByteCodeTypeCache extends TypeCache {
 
 		private var _metaDataLookup:Object;
+		private var _interfaceLookup:Object;
 		private var _definitionNames:Array;
 
 		/**
@@ -42,6 +43,7 @@ package org.as3commons.bytecode.reflect {
 
 		protected function initByteCodeTypeCache():void {
 			_metaDataLookup = {};
+			_interfaceLookup = {};
 			_definitionNames = [];
 		}
 
@@ -60,6 +62,15 @@ package org.as3commons.bytecode.reflect {
 		 */
 		public function get metaDataLookup():Object {
 			return _metaDataLookup;
+		}
+
+		/**
+		 * A lookup of interface name -&gt; <code>Array</code> of class names.
+		 * <p>For example, to retrieve all the names of classes that implement the com.interfaces.ITestInterface:</p>
+		 * <p>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().getImplementationNames('com.interfaces.ITestInterface');</p>
+		 */
+		public function get interfaceLookup():Object {
+			return _interfaceLookup;
 		}
 
 		/**
@@ -124,6 +135,20 @@ package org.as3commons.bytecode.reflect {
 			metaDataName = metaDataName.toLowerCase();
 			if (_metaDataLookup.hasOwnProperty(metaDataName)) {
 				return _metaDataLookup[metaDataName] as Array;
+			}
+			return [];
+		}
+
+		/**
+		 * Returns an <code>Array</code> of class names that implement the specified interface.
+		 * @param interfaceName The specified interface.
+		 * @return an <code>Array</code> of class names.
+		 */
+		public function getImplementationNames(interfaceName:String):Array {
+			Assert.hasText(interfaceName, "interfaceName argument must not be empty or null");
+			interfaceName = interfaceName.toLowerCase();
+			if (_interfaceLookup.hasOwnProperty(interfaceName)) {
+				return _interfaceLookup[interfaceName] as Array;
 			}
 			return [];
 		}

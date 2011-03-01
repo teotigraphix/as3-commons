@@ -57,6 +57,7 @@ package org.as3commons.bytecode.proxy.error {
 
 		public static const CANNOT_INTRODUCE_NATIVE_CLASS:uint = 0x09;
 
+
 		private static const messages:Dictionary = new Dictionary();
 		{
 			messages[FINAL_CLASS_ERROR] = "Proxied class {0} is marked as final, cannot create a subclass";

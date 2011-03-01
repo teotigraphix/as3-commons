@@ -426,11 +426,16 @@ package org.as3commons.bytecode.abc.enum {
 			methodBody.backPatches = [];
 			_jumpLookup = new Dictionary();
 			var startPosition:int = byteArray.position;
+			var startOffset:uint = 0;
+			var currentPosition:uint = 0;
 
 			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCodeLength);
 			try {
 				while (byteArray.position < positionAtEndOfBytecode) {
+					currentPosition = byteArray.position;
 					parseOpcode(byteArray, constantPool, ops, methodBody);
+					Op(ops[ops.length - 1]).offset = startOffset;
+					startOffset += (byteArray.position - currentPosition);
 				}
 				if (byteArray.position > positionAtEndOfBytecode) {
 					throw new Error("Opcode parsing read beyond end of method body");

@@ -84,6 +84,8 @@ package org.as3commons.bytecode.abc {
 			}
 		}
 
+		public var offset:uint;
+
 		public function get parameters():Array {
 			return _parameters;
 		}
