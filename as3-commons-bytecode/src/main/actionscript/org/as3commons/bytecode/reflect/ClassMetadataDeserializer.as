@@ -82,7 +82,16 @@ package org.as3commons.bytecode.reflect {
 				}
 				var interfaceCount:int = readU30();
 				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
-					skipU30(); //BaseMultiname
+					var mn:BaseMultiname = constantPool.multinamePool[readU30()];
+					var qName:QualifiedName = MultinameUtil.convertToQualifiedName(mn);
+					var impls:Array;
+					if (!typeCache.interfaceLookup.hasOwnProperty(qName.fullName)) {
+						impls = [];
+						typeCache.interfaceLookup[qName.fullName] = impls;
+					} else {
+						impls = typeCache.interfaceLookup[qName.fullName] as Array;
+					}
+					impls[impls.length] = qualifiedName.fullName;
 				}
 				skipU30(); //constructorIndex
 				gatherMetaData(classNames, constantPool, methods, metadatas, false, typeCache);

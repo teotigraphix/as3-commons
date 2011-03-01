@@ -27,6 +27,8 @@ package org.as3commons.bytecode.util {
 
 	public final class MultinameUtil {
 
+		public static const PROTECTED_SCOPE_NAME:String = "protected:";
+		public static const PRIVATE_SCOPE_NAME:String = "private:";
 		public static const DOUBLE_COLON:String = "::";
 		public static const SINGLE_COLON:String = ":";
 		public static const DOUBLE_COLON_REGEXP:RegExp = /[:]+/;
@@ -193,16 +195,14 @@ package org.as3commons.bytecode.util {
 			return qualifiedName;
 		}
 
-		public static function extractNamespaceNameFromFullName(methodName:String):String {
+		public static function extractInterfaceScopeFromFullName(methodName:String):String {
 			if (!StringUtils.hasText(methodName)) {
 				return "";
 			}
-			var parts:Array = methodName.split(FORWARD_SLASH);
+			var parts:Array = methodName.split(PERIOD);
 			if (parts.length > 1) {
-				var name:String = String(parts[1]);
-				var nameParts:Array = name.split(SINGLE_COLON);
-				nameParts.pop();
-				return nameParts.join(SINGLE_COLON);
+				parts.pop();
+				return parts.join(PERIOD);
 			} else {
 				return "";
 			}
@@ -226,6 +226,25 @@ package org.as3commons.bytecode.util {
 					return NamespaceKind.PACKAGE_NAMESPACE;
 					break;
 			}
+		}
+
+		public static function createScopeNameFromQualifiedName(qualifiedName:QualifiedName):String {
+			var scope:String;
+			switch (qualifiedName.nameSpace.kind) {
+				case NamespaceKind.PROTECTED_NAMESPACE:
+					scope = PROTECTED_SCOPE_NAME;
+					break;
+				case NamespaceKind.PRIVATE_NAMESPACE:
+					scope = PRIVATE_SCOPE_NAME;
+					break;
+				case NamespaceKind.NAMESPACE:
+					scope = qualifiedName.nameSpace.name + MultinameUtil.SINGLE_COLON;
+					break;
+				case MemberVisibility.INTERNAL:
+					scope = qualifiedName.fullName.split(MultinameUtil.SINGLE_COLON)[0] + MultinameUtil.SINGLE_COLON;
+					break;
+			}
+			return scope;
 		}
 
 	}

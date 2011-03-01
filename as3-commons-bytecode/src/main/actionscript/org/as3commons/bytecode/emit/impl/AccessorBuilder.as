@@ -156,16 +156,16 @@ package org.as3commons.bytecode.emit.impl {
 			var scope:String = "";
 			switch (visibility) {
 				case MemberVisibility.PROTECTED:
-					scope = "protected:"
+					scope = MultinameUtil.PROTECTED_SCOPE_NAME;
 					break;
 				case MemberVisibility.PRIVATE:
-					scope = "private:"
+					scope = MultinameUtil.PRIVATE_SCOPE_NAME;
 					break;
 				case MemberVisibility.NAMESPACE:
-					scope = scopeName + ":"
+					scope = scopeName + MultinameUtil.SINGLE_COLON;
 					break;
 				case MemberVisibility.INTERNAL:
-					scope = packageName.split(MultinameUtil.SINGLE_COLON)[0] + ":"
+					scope = packageName.split(MultinameUtil.SINGLE_COLON)[0] + MultinameUtil.SINGLE_COLON;
 					break;
 			}
 			return StringUtils.substitute(ACCESSOR_NAME, packageName, scope, name, suffix);

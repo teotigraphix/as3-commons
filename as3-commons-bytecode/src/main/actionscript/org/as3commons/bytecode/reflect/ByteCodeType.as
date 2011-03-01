@@ -390,6 +390,24 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		/**
+		 * A lookup of interface name -&gt; <code>Array</code> of class names.
+		 * <p>For example, to retrieve all the names of classes that implement the com.interfaces.ITestInterface:</p>
+		 * <p>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().getImplementationNames('com.interfaces.ITestInterface');</p>
+		 */
+		public static function get interfaceLookup():Object {
+			return getCache().interfaceLookup;
+		}
+
+		/**
+		 * Returns an <code>Array</code> of class names that implement the specified interface.
+		 * @param interfaceName The specified interface.
+		 * @return an <code>Array</code> of class names.
+		 */
+		public static function getImplementationNames(interfaceName:String):Array {
+			return getCache().getImplementationNames(interfaceName);
+		}
+
+		/**
 		 * Returns an <code>Array</code> of class names that have been annotated with the specified metadata name.
 		 * @param metaDataName The specified metadata name.
 		 * @return an <code>Array</code> of class names.
