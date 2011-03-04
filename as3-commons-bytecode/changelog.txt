@@ -3,6 +3,12 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.0-RC2 (04.03.2011)
+-----------------------------------
+
+* Fixed several critical bugs related to differences between debug and release builds
+* Added getImplementationNames(intf:Class) method to ByteCodeCache and ByteCodeType for retrieving a list of classnames that implement a specified interface
+
 Changes in version 1.0-RC1 (22.02.2011)
 -----------------------------------
 
