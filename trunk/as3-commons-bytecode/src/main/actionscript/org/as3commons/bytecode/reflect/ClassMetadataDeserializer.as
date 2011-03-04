@@ -25,6 +25,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.MethodFlag;
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.reflect.Metadata;
 	import org.as3commons.reflect.as3commons_reflect;
@@ -91,7 +92,7 @@ package org.as3commons.bytecode.reflect {
 					} else {
 						impls = typeCache.interfaceLookup[qName.fullName] as Array;
 					}
-					impls[impls.length] = qualifiedName.fullName;
+					impls[impls.length] = AbcFileUtil.normalizeFullName(qualifiedName.fullName);
 				}
 				skipU30(); //constructorIndex
 				gatherMetaData(classNames, constantPool, methods, metadatas, false, typeCache);

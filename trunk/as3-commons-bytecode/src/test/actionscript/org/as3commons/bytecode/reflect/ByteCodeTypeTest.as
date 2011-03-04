@@ -37,6 +37,10 @@ package org.as3commons.bytecode.reflect {
 			assertNotNull(type);
 			assertEquals(12, type.methods.length);
 			assertEquals(1, type.accessors.length);
+
+			var ba:ByteCodeAccessor = type.accessors[0];
+			assertEquals("testAccessor", ba.name);
+
 			var bm:ByteCodeMethod = type.getMethod("testMethod") as ByteCodeMethod;
 			assertEquals("testMethod", bm.name);
 			assertEquals("public testMethod():int", bm.fullName);
@@ -56,6 +60,11 @@ package org.as3commons.bytecode.reflect {
 
 			bm = type.getMethod("testMethod") as ByteCodeMethod;
 			assertEquals("interfaces:ITestInterface", bm.scopeName);
+
+			var classNames:Array = ByteCodeType.interfaceLookup["interfaces.ITestInterface"];
+			assertNotNull(classNames.length);
+			assertEquals(1, classNames.length);
+			assertEquals("classes.TestImplementation", classNames[0]);
 		}
 
 		public function testReleaseBuildRead():void {
@@ -65,6 +74,10 @@ package org.as3commons.bytecode.reflect {
 			assertNotNull(type);
 			assertEquals(12, type.methods.length);
 			assertEquals(1, type.accessors.length);
+
+			var ba:ByteCodeAccessor = type.accessors[0];
+			assertEquals("testAccessor", ba.name);
+
 			var bm:ByteCodeMethod = type.getMethod("testMethod") as ByteCodeMethod;
 			assertEquals("testMethod", bm.name);
 			assertEquals("public testMethod():int", bm.fullName);
@@ -84,6 +97,11 @@ package org.as3commons.bytecode.reflect {
 
 			bm = type.getMethod("testMethod") as ByteCodeMethod;
 			assertEquals("interfaces:ITestInterface", bm.scopeName);
+
+			var classNames:Array = ByteCodeType.interfaceLookup["interfaces.ITestInterface"];
+			assertNotNull(classNames.length);
+			assertEquals(1, classNames.length);
+			assertEquals("classes.TestImplementation", classNames[0]);
 		}
 
 	}
