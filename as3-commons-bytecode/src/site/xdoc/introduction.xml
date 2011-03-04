@@ -103,7 +103,7 @@ function parseSWF():void {
       </ul> </p> <p>To loop through all the generated
     <code>ByteCodeTypes</code> use the <code>getKeys()</code> method on the
     <code>TypeCache</code> instance: <div class="source">
-        <pre>var typeCache:TypeCache = ByteCodeType.getTypeProvider().getTypeCache();
+        <pre>var typeCache:TypeCache = ByteCodeType.getCache();
 for each (var key:String in keys) {
   var type:ByteCodeType = typeCache.get(key) as ByteCodeType; /* ... do something... */
 }</pre>
@@ -138,11 +138,20 @@ for(var i:uint=0; i &lt; definitionNames.length;i++){
     <p>Or use this, slighty less verbose, method instead:<div class="source">
 	<pre>var definitionNames:Array = ByteCodeType.definitionNamesFromLoader(loader);</pre>
     </div></p>
+    
+    <subsection name="Interface implementation lookup">
+    	<p>Similar to the metadata lookup another type of lookup is also populated, this is assigned to the <code>ByteCodeCache.interfaceLookup</code> property.</p>
+    	<p>To retrieve a list of class names that all implement a specific interface the <code>getImplementationNames()</code> method can be invoked:</p>
+    	<div class="source"><pre>var definitionNames:Array = ByteCodeType.getImplementationNames(IMyTestInterface);
+for(var i:uint=0; i &lt; definitionNames.length;i++){
+  var type:Type = Type.forName(definitionNames[i]); <i>/* ... do something... */</i>
+}</pre></div>
+    </subsection>
       
     <p>Notice that to retrieve the type information the regular
     as3commons-reflect <code>Type</code> is used. Combining as3commons-bytecode
     and -reflect can yield the most efficient result in this way.</p>
-    <blockquote><strong>Note:</strong> the definitionNames list and metadata lookup property
+    <blockquote><strong>Note:</strong> the definitionNames list, metadata and interface lookup property
     are of course also populated when the full bytecode reflection data is
     generated.</blockquote></section>
   </body>

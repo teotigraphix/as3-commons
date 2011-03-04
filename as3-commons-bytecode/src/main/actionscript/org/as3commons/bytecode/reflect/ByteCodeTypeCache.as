@@ -15,7 +15,10 @@
  */
 package org.as3commons.bytecode.reflect {
 	import flash.utils.Dictionary;
+	import flash.utils.getQualifiedClassName;
 
+	import org.as3commons.bytecode.util.AbcFileUtil;
+	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.TypeCache;
@@ -47,6 +50,11 @@ package org.as3commons.bytecode.reflect {
 			_definitionNames = [];
 		}
 
+		override public function clear():void {
+			super.clear();
+			initByteCodeTypeCache();
+		}
+
 		/**
 		 * List of all fully qualified definition names that have been encountered in all
 		 * the bytecode that was scanned.
@@ -58,7 +66,7 @@ package org.as3commons.bytecode.reflect {
 		/**
 		 * A lookup of metadata name -&gt; <code>Array</code> of class names.
 		 * <p>For example, to retrieve all the names of classes that are annotated with the [Mixin] metadata:</p>
-		 * <p>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().getClassesWithMetadata('Mixin');</p>
+		 * <p><code>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().getClassesWithMetadata('Mixin');</code></p>
 		 */
 		public function get metaDataLookup():Object {
 			return _metaDataLookup;
@@ -67,7 +75,7 @@ package org.as3commons.bytecode.reflect {
 		/**
 		 * A lookup of interface name -&gt; <code>Array</code> of class names.
 		 * <p>For example, to retrieve all the names of classes that implement the com.interfaces.ITestInterface:</p>
-		 * <p>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().getImplementationNames('com.interfaces.ITestInterface');</p>
+		 * <p><code>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().interfaceLookup['com.interfaces.ITestInterface'];</code></p>
 		 */
 		public function get interfaceLookup():Object {
 			return _interfaceLookup;
@@ -141,12 +149,13 @@ package org.as3commons.bytecode.reflect {
 
 		/**
 		 * Returns an <code>Array</code> of class names that implement the specified interface.
-		 * @param interfaceName The specified interface.
+		 * @param intf The specified interface.
 		 * @return an <code>Array</code> of class names.
 		 */
-		public function getImplementationNames(interfaceName:String):Array {
+		public function getImplementationNames(intf:Class):Array {
 			Assert.hasText(interfaceName, "interfaceName argument must not be empty or null");
-			interfaceName = interfaceName.toLowerCase();
+			var interfaceName:String = getQualifiedClassName(intf);
+			interfaceName = AbcFileUtil.normalizeFullName(interfaceName);
 			if (_interfaceLookup.hasOwnProperty(interfaceName)) {
 				return _interfaceLookup[interfaceName] as Array;
 			}

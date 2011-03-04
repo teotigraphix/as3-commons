@@ -35,6 +35,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.swf.SWFFileIO;
 	import org.as3commons.bytecode.tags.serialization.RecordHeaderSerializer;
 	import org.as3commons.bytecode.tags.struct.RecordHeader;
+	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.bytecode.util.SWFSpec;
@@ -333,7 +334,7 @@ package org.as3commons.bytecode.reflect {
 					} else {
 						classNames = typeCache.interfaceLookup[qName.fullName] as Array;
 					}
-					classNames[classNames.length] = instanceInfo.fullName;
+					classNames[classNames.length] = AbcFileUtil.normalizeFullName(instanceInfo.fullName);
 				}
 				var constructorIndex:uint = readU30();
 				var method:ByteCodeMethod = methods[constructorIndex];
@@ -482,7 +483,7 @@ package org.as3commons.bytecode.reflect {
 						skipU30(); //skip disp_id
 						var accessorMethod:ByteCodeMethod = methodInfos[readU30()];
 						if (instanceInfo != null) {
-							metaDataContainer = addAccessor(instanceInfo, accessorMethod, isStatic, getterSetterSignature);
+							metaDataContainer = addAccessor(instanceInfo, accessorMethod, isStatic, getterSetterSignature, traitMultiname.name);
 						}
 						break;
 
@@ -577,17 +578,9 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
-		private function addAccessor(instanceInfo:Type, method:ByteCodeMethod, isStatic:Boolean, getset:String):ByteCodeAccessor {
-			var methodName:String = "noName";
-			if (method.name.indexOf(FORWARD_SLASH) > -1) {
-				var nameParts:Array = method.name.split(FORWARD_SLASH);
-				methodName = String(nameParts[0]);
-			} else if (method.name.length > 0) {
-				methodName = method.name;
-			}
-			//var getset:String = String(nameParts[nameParts.length - 1]);
+		private function addAccessor(instanceInfo:Type, method:ByteCodeMethod, isStatic:Boolean, getset:String, accessorName:String):ByteCodeAccessor {
 			for each (var acc:ByteCodeAccessor in instanceInfo.accessors) {
-				if (acc.name == methodName) {
+				if (acc.name == accessorName) {
 					acc.as3commons_reflect::setAccess(AccessorAccess.READ_WRITE);
 					if (getset == GETTER_SIGNATURE) {
 						acc.as3commons_reflect::setGetterMethod(method);
@@ -606,7 +599,7 @@ package org.as3commons.bytecode.reflect {
 					accessorType = ByteCodeParameter(method.parameters[0]).as3commons_reflect::typeName;
 				}
 			}
-			var result:ByteCodeAccessor = new ByteCodeAccessor(methodName, accAccess, accessorType, instanceInfo.fullName, false, instanceInfo.applicationDomain);
+			var result:ByteCodeAccessor = new ByteCodeAccessor(accessorName, accAccess, accessorType, instanceInfo.fullName, false, instanceInfo.applicationDomain);
 			if (getset == GETTER_SIGNATURE) {
 				result.as3commons_reflect::setGetterMethod(method);
 			} else {
@@ -615,6 +608,7 @@ package org.as3commons.bytecode.reflect {
 			result.as3commons_reflect::setScopeName(method.scopeName);
 			result.as3commons_reflect::setNamespaceURI(method.namespaceURI);
 			result.as3commons_reflect::setIsStatic(isStatic);
+			result.as3commons_reflect::setDeclaringType(instanceInfo.fullName);
 			instanceInfo.accessors[instanceInfo.accessors.length] = result;
 			return result;
 		}

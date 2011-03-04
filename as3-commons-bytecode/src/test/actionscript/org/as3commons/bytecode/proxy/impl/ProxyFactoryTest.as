@@ -17,6 +17,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
 	import flash.net.registerClassAlias;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
@@ -306,8 +307,21 @@ package org.as3commons.bytecode.proxy.impl {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			_proxyFactory.defineProxy(Flavour, null, applicationDomain);
 			_proxyFactory.generateProxyClasses();
-			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleSerializationTestComplete, 1000));
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleSerializationTestComplete, 1000, null, handleSerializationTestFail));
+			_proxyFactory.addEventListener(IOErrorEvent.VERIFY_ERROR, addAsync(handleSerializationTestError, 1000, null, handleSerializationTestErrorFail));
 			_proxyFactory.loadProxyClasses();
+		}
+
+		protected function handleSerializationTestError(event:IOErrorEvent):void {
+			assertEquals("", event.text);
+		}
+
+		protected function handleSerializationTestErrorFail(event:Event):void {
+			assertTrue(true);
+		}
+
+		protected function handleSerializationTestFail(event:Event):void {
+			assertTrue(true);
 		}
 
 		protected function handleSerializationTestComplete(event:Event):void {
@@ -372,7 +386,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
-		/*public function testIntroduction():void {
+		public function testIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
 			classProxyInfo.introduce(TestIntroduction);
@@ -409,7 +423,7 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createEventDispatcherIntroductionInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleMultipleIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}*/
+		}
 
 		protected function handleMultipleProxiesTestComplete(event:Event):void {
 			assertTrue(true);

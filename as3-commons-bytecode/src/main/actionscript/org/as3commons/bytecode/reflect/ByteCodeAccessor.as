@@ -26,6 +26,8 @@ package org.as3commons.bytecode.reflect {
 
 	public class ByteCodeAccessor extends Accessor implements IVisibleMember {
 
+		private static const FORWARD_SLASH:String = '/';
+
 		public function ByteCodeAccessor(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metaData:HashArray = null) {
 			super(name, access, type, declaringType, isStatic, applicationDomain, metaData);
 		}
