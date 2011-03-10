@@ -28,7 +28,7 @@ package org.as3commons.lang {
 	 * @author Christophe Herreman
 	 * @author Erik Westra
 	 */
-	public class ClassUtils {
+	public final class ClassUtils {
 
 		private static const PACKAGE_CLASS_SEPARATOR:String = "::";
 

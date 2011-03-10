@@ -28,7 +28,7 @@ package org.as3commons.lang {
 	 * a <code>Dictionary</code> object with weak keys to hold the object reference.
 	 * @author Roland Zwaga
 	 */
-	public class SoftReference {
+	public final class SoftReference {
 		private var _dict:Dictionary;
 
 		/**

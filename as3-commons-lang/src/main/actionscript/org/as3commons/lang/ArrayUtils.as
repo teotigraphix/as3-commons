@@ -22,7 +22,7 @@ package org.as3commons.lang {
 	 * @author Simon Wacker
 	 * @author Martin Heidegger
 	 */
-	public class ArrayUtils {
+	public final class ArrayUtils {
 
 		/**
 		 * Clones an array.

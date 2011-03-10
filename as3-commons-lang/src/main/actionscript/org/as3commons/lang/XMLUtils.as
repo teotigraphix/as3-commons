@@ -23,7 +23,7 @@ package org.as3commons.lang {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class XMLUtils {
+	public final class XMLUtils {
 
 		public static const ELEMENT_NODE_KIND:String = "element";
 

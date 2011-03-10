@@ -25,7 +25,7 @@ package org.as3commons.lang {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class ObjectUtils {
+	public final class ObjectUtils {
 		
 		/**
 		 * @private

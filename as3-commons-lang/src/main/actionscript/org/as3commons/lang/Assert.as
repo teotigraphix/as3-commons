@@ -24,7 +24,7 @@ package org.as3commons.lang {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class Assert {
+	public final class Assert {
 
 		/**
 		 * Asserts a boolean expression to be <code>true</code>.

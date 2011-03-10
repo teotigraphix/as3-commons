@@ -18,7 +18,7 @@ package org.as3commons.lang {
 	/**
 	 * @author Christophe Herreman
 	 */
-	public class StringBuffer {
+	public final class StringBuffer {
 
 		private var _string:Array;
 
