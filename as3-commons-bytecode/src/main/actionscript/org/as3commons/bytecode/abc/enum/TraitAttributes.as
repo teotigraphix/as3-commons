@@ -21,7 +21,7 @@ package org.as3commons.bytecode.abc.enum {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Trait attributes" in the AVM Spec (page 31)
 	 */
-	public class TraitAttributes {
+	public final class TraitAttributes {
 
 		private static var _enumCreated:Boolean = false;
 		private static const _TYPES:Array = [];

@@ -17,7 +17,7 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.lang.IEquals;
 
-	public class MultinameG extends BaseMultiname {
+	public final class MultinameG extends BaseMultiname {
 
 		private var _qualifiedName:QualifiedName;
 		private var _paramCount:uint;

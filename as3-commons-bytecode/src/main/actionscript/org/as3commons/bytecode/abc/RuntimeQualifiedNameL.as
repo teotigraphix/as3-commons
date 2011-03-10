@@ -22,7 +22,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "RTQNameL" in the AVM Spec (page 9)
 	 */
-	public class RuntimeQualifiedNameL extends BaseMultiname {
+	public final class RuntimeQualifiedNameL extends BaseMultiname {
 
 		public function RuntimeQualifiedNameL(kindValue:MultinameKind = null) {
 			kindValue = (kindValue) ? kindValue : MultinameKind.RTQNAME_L;

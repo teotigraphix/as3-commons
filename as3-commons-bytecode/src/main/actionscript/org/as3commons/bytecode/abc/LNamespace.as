@@ -24,7 +24,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Namespace" in the AVM Spec (page 22)
 	 */
-	public class LNamespace implements ICloneable, IEquals {
+	public final class LNamespace implements ICloneable, IEquals {
 
 		public static const PUBLIC:LNamespace = new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, ""); // Namespace[public::*]
 		public static const ASTERISK:LNamespace = new LNamespace(NamespaceKind.NAMESPACE, "*"); //  Namespace[namespace::*]

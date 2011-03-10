@@ -15,7 +15,7 @@
 */
 package org.as3commons.bytecode.abc {
 	import flash.utils.Dictionary;
-	
+
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 
 	public interface IConstantPool {

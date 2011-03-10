@@ -23,7 +23,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Class traits" in the AVM Spec (page 30)
 	 */
-	public class ClassTrait extends TraitInfo {
+	public final class ClassTrait extends TraitInfo {
 		public var classSlotId:int;
 		public var classIndex:int;
 		public var classInfo:ClassInfo;

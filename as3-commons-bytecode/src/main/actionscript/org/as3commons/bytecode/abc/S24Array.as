@@ -19,7 +19,7 @@ package org.as3commons.bytecode.abc {
 	 * Special type used for identifying elements that need to be parsed as an <code>S24</code> array. Used for
 	 * parsing the <code>lookupswitch</code> opcode.
 	 */
-	public class S24Array {
+	public final class S24Array {
 
 		public function S24Array() {
 			super();

@@ -21,7 +21,7 @@ package org.as3commons.bytecode.abc.enum {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "flags" in the AVM Spec (page 25)
 	 */
-	public class MethodFlag {
+	public final class MethodFlag {
 		public static const NEED_ARGUMENTS:MethodFlag = new MethodFlag(0x01, "need arguments");
 		public static const NEED_ACTIVATION:MethodFlag = new MethodFlag(0x02, "need activation");
 		public static const NEED_REST:MethodFlag = new MethodFlag(0x04, "need rest");

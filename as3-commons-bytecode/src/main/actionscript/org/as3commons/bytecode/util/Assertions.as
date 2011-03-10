@@ -20,7 +20,7 @@ package org.as3commons.bytecode.util {
 	/**
 	 * Utility class offering assertions to be used within the test suite and the as3commons-bytecode project code.
 	 */
-	public class Assertions {
+	public final class Assertions {
 		/**
 		 * Given two arrays, asserts that the lengths and contents are identical. Does not care about the order
 		 * of items within the arrays, only that the contents all match.
@@ -42,34 +42,34 @@ package org.as3commons.bytecode.util {
 			}
 
 			var contentsMatch:Boolean = firstArray.every(function(item:Object, index:int, array:Array):Boolean {
-					var matchFound:Boolean = false;
-					for each (var current:Object in secondArray) {
-						if (current.hasOwnProperty("equals")) {
-							if (current.equals(item)) {
-								matchFound = true;
-								break;
-							} else {
-								// as3commons-bytecode-specific exception for private LNamespaces. Allow value equality so that
-								// sample LNamespaces can be provided for comparison in tests  
-								if (current is LNamespace) {
-									if (LNamespace(current).kind == NamespaceKind.PRIVATE_NAMESPACE) {
-										if (LNamespace(current).name == item.name) {
-											matchFound = true;
-											break;
-										}
+				var matchFound:Boolean = false;
+				for each (var current:Object in secondArray) {
+					if (current.hasOwnProperty("equals")) {
+						if (current.equals(item)) {
+							matchFound = true;
+							break;
+						} else {
+							// as3commons-bytecode-specific exception for private LNamespaces. Allow value equality so that
+							// sample LNamespaces can be provided for comparison in tests  
+							if (current is LNamespace) {
+								if (LNamespace(current).kind == NamespaceKind.PRIVATE_NAMESPACE) {
+									if (LNamespace(current).name == item.name) {
+										matchFound = true;
+										break;
 									}
 								}
 							}
-						} else {
-							if (current == item) {
-								matchFound = true;
-								break;
-							}
+						}
+					} else {
+						if (current == item) {
+							matchFound = true;
+							break;
 						}
 					}
+				}
 
-					return matchFound;
-				});
+				return matchFound;
+			});
 
 			if (!contentsMatch) {
 				throw new Error("Array contents to do not match.");

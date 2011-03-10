@@ -21,7 +21,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Class" in the AVM Spec (page 32)
 	 */
-	public class ClassInfo extends BaseTypeInfo {
+	public final class ClassInfo extends BaseTypeInfo {
 
 		public var staticInitializer:MethodInfo;
 

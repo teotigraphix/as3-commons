@@ -50,7 +50,7 @@ package org.as3commons.bytecode.swf {
 	 * </p>
 	 * @see http://eval.hurlant.com/
 	 */
-	public class AbcClassLoader extends EventDispatcher {
+	public final class AbcClassLoader extends EventDispatcher {
 		private static var ALLOW_BYTECODE_PROPERTY_NAME:String = "allowLoadBytesCodeExecution";
 
 		private var _loader:Loader;

@@ -29,11 +29,11 @@ package org.as3commons.bytecode.util {
 
 		override public function setUp():void {
 			super.setUp();
-			_testArray = AbcSpec.byteArray();
+			_testArray = AbcSpec.newByteArray();
 		}
 
 		public function testByteArray():void {
-			var ba:ByteArray = AbcSpec.byteArray();
+			var ba:ByteArray = AbcSpec.newByteArray();
 			assertEquals(Endian.LITTLE_ENDIAN, ba.endian);
 			assertEquals(0, ba.position);
 		}

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
-	import flash.errors.IllegalOperationError;
-
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.lang.ICloneable;
@@ -30,7 +28,7 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Method signature" in the AVM Spec (page 24)
 	 * @see MethodTrait
 	 */
-	public class MethodInfo implements ICloneable {
+	public final class MethodInfo implements ICloneable {
 
 		private static const ILLEGAL_TRAITINFO_TYPE:String = "Argument must be of type FunctionTrait or MethodTrait";
 		private var _as3commonsByteCodeAssignedMethodTrait:TraitInfo;

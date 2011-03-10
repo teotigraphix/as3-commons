@@ -46,7 +46,7 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf "Constant Pool" the in AVM Spec (page 20)
 	 */
 	//TODO: There are a lot of opportunities for fast-lookup optimizations here, such as using dictionaries instead of looping over collections
-	public class ConstantPool implements IEquals, IConstantPool {
+	public final class ConstantPool implements IEquals, IConstantPool {
 
 		private static const NAMESPACE_SET_PROPERTYNAME:String = "namespaceSet";
 		private static const NAME_PROPERTYNAME:String = "name";
@@ -259,7 +259,7 @@ package org.as3commons.bytecode.abc {
 		as3commons_bytecode function setMultinamePool(value:Array):void {
 			_multinamePool = value;
 		}
-		
+
 		public function get classInfo():Array {
 			return _classInfo;
 		}

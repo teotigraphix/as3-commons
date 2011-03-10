@@ -21,7 +21,7 @@ package org.as3commons.bytecode.abc.enum {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Namespace Kind" in the AVM Spec (page 22)
 	 */
-	public class NamespaceKind {
+	public final class NamespaceKind {
 		private static var _enumCreated:Boolean = false;
 		private static const _TYPES:Dictionary = new Dictionary();
 		private static const _NAMES:Dictionary = new Dictionary();

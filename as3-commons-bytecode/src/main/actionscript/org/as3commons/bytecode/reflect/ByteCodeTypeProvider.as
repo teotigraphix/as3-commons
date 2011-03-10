@@ -117,6 +117,8 @@ package org.as3commons.bytecode.reflect {
 			try {
 				var deserializer:ReflectionDeserializer = new ReflectionDeserializer();
 				deserializer.read(getTypeCache() as ByteCodeTypeCache, input, applicationDomain, isLoaderBytes);
+			} catch (e:Error) {
+				throw e;
 			} finally {
 				input.position = initialPosition;
 			}

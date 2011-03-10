@@ -98,6 +98,20 @@ package org.as3commons.bytecode.proxy.impl {
 			var newScopeName:String = classBuilder.packageName + MultinameUtil.SINGLE_COLON + classBuilder.name;
 			var oldScopeName:String = makeScopeName(type.fullName);
 			var constructorBody:MethodBody = deserializeMethodBody(type, type.instanceConstructor, newScopeName);
+			mergeConstructors(constructorBody, oldScopeName, newScopeName);
+
+			for each (var field:Field in type.fields) {
+				introduceField(field, classBuilder, type);
+			}
+			for each (var method:ByteCodeMethod in type.methods) {
+				//methods with body length 0 are native methods
+				if (method.bodyLength > 0) {
+					introduceMethod(ByteCodeMethod(method), classBuilder, type);
+				}
+			}
+		}
+
+		protected function mergeConstructors(constructorBody:MethodBody, oldScopeName:String, newScopeName:String):void {
 			constructorBody.opcodes.pop();
 			var constrSuperIdx:int = 0;
 			var dropped:Array = [];
@@ -138,17 +152,8 @@ package org.as3commons.bytecode.proxy.impl {
 				};
 				_constructorProxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_CONSTRUCTOR_BODY_BUILD, mergeConstructor);
 			}
-
-			for each (var field:Field in type.fields) {
-				introduceField(field, classBuilder, type);
-			}
-			for each (var method:ByteCodeMethod in type.methods) {
-				//methods with body length 0 are native methods
-				if (method.bodyLength > 0) {
-					introduceMethod(ByteCodeMethod(method), classBuilder, type);
-				}
-			}
 		}
+
 
 		protected function introduceMethod(method:ByteCodeMethod, classBuilder:IClassBuilder, type:ByteCodeType):void {
 			var memberInfo:MemberInfo = new MemberInfo(method.name, method.namespaceURI);

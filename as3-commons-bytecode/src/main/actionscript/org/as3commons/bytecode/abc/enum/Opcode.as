@@ -44,7 +44,7 @@ package org.as3commons.bytecode.abc.enum {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "AVM2 instructions" in the AVM Spec (page 35)
 	 */
 	//TODO: Derive local_count etc. from opcodes. Page 15 of the AVM2 spec covers this in more detail.
-	public class Opcode {
+	public final class Opcode {
 
 		private var _instance:Op;
 
@@ -292,12 +292,14 @@ package org.as3commons.bytecode.abc.enum {
 		 */
 		public static function serialize(ops:Array, methodBody:MethodBody, abcFile:AbcFile):ByteArray {
 			_opcodePositions = new Dictionary();
-			var serializedOpcodes:ByteArray = AbcSpec.byteArray();
+			var serializedOpcodes:ByteArray = AbcSpec.newByteArray();
 			for each (var op:Op in ops) {
+				op.baseLocation = serializedOpcodes.position
 				_opcodePositions[op] = serializedOpcodes.position;
 				AbcSpec.writeU8(op.opcode._value, serializedOpcodes);
 
 				serializeOpcodeArguments(op, abcFile, methodBody, serializedOpcodes);
+				op.endLocation = serializedOpcodes.position;
 //				trace(serializedOpcodes.position + "\t" + op);
 			}
 			serializedOpcodes.position = 0;
@@ -309,23 +311,26 @@ package org.as3commons.bytecode.abc.enum {
 
 		public static function resolveBackPatches(serializedOpcodes:ByteArray, backPatches:Array, positions:Dictionary):void {
 			for each (var jumpData:JumpTargetData in backPatches) {
-				resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes);
+				resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes, (jumpData.extraOpcodes != null));
 				if (jumpData.extraOpcodes != null) {
 					for each (var targetOpcode:Op in jumpData.extraOpcodes) {
-						resolveBackpatch(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes);
+						resolveBackpatch(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes, true);
 					}
 				}
 			}
 		}
 
-		private static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray):void {
-			var targetPos:int = positions[jumpOpcode] + int(jumpOpcode.parameters[0]);
-			var targetOpPos:int = (positions[targetOpcode]) ? positions[targetOpcode] : 0;
+		private static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean = false):void {
+			if (targetOpcode == null) {
+				return;
+			}
+			var targetPos:int = (positions[jumpOpcode]) + int(jumpOpcode.parameters[0]);
+			var targetOpPos:int = positions[targetOpcode];
 			if (targetPos != targetOpPos) {
-				serializedOpcodes.position = (positions[jumpOpcode]) + 1;
-				var operandPos:int = serializedOpcodes.position;
-				var newJump:int = (targetOpPos - (operandPos + 3));
-				serializedOpcodes.position = operandPos;
+				var operandPos:int = (positions[jumpOpcode]);
+				var baseLocation:int = (isLookupSwitch) ? jumpOpcode.baseLocation : jumpOpcode.endLocation;
+				var newJump:int = (targetOpcode.baseLocation - baseLocation);
+				serializedOpcodes.position = operandPos + 1;
 				AbcSpec.writeS24(newJump, serializedOpcodes);
 			}
 		}
@@ -423,7 +428,9 @@ package org.as3commons.bytecode.abc.enum {
 		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, constantPool:IConstantPool):Array {
 			_opcodePositions = new Dictionary();
 			var ops:Array = [];
-			methodBody.backPatches = [];
+			if (methodBody.backPatches == null) {
+				methodBody.backPatches = [];
+			}
 			_jumpLookup = new Dictionary();
 			var startPosition:int = byteArray.position;
 			var startOffset:uint = 0;
@@ -433,29 +440,59 @@ package org.as3commons.bytecode.abc.enum {
 			try {
 				while (byteArray.position < positionAtEndOfBytecode) {
 					currentPosition = byteArray.position;
-					parseOpcode(byteArray, constantPool, ops, methodBody);
-					Op(ops[ops.length - 1]).offset = startOffset;
+					var newOp:Op = parseOpcode(byteArray, constantPool, ops, methodBody);
+					newOp.baseLocation = startOffset;
 					startOffset += (byteArray.position - currentPosition);
+					newOp.endLocation = startOffset;
+					_opcodePositions[newOp.baseLocation] = newOp;
 				}
 				if (byteArray.position > positionAtEndOfBytecode) {
 					throw new Error("Opcode parsing read beyond end of method body");
 				}
 			} catch (e:*) {
 				var pos:int = (byteArray.position - startPosition);
-				var fragment:ByteArray = AbcSpec.byteArray();
+				var fragment:ByteArray = AbcSpec.newByteArray();
 				fragment.writeBytes(byteArray, startPosition, opcodeByteCodeLength);
 				fragment.position = 0;
 				errorDispatcher.dispatchEvent(new ByteCodeErrorEvent(ByteCodeErrorEvent.BYTECODE_METHODBODY_ERROR, fragment, pos));
 				throw e;
 			}
+
+			resolveJumpTargets(methodBody, Op(ops[ops.length - 1]));
+
 			_opcodePositions = null;
+
 			return ops;
 		}
 
-		public static function parseOpcode(byteArray:ByteArray, constantPool:IConstantPool, ops:Array, methodBody:MethodBody):void {
+		private static function resolveJumpTargets(methodBody:MethodBody, lastOp:Op):void {
+			var pos:int;
+			var targetPos:int;
+			var target:Op;
+			for each (var jmpTarget:JumpTargetData in methodBody.backPatches) {
+				if (jmpTarget.jumpOpcode.opcode !== Opcode.lookupswitch) {
+					pos = int(jmpTarget.jumpOpcode.parameters[0]);
+					targetPos = jmpTarget.jumpOpcode.endLocation + pos;
+					target = _opcodePositions[targetPos];
+					if (target == null) {
+						target = lastOp;
+					}
+					jmpTarget.targetOpcode = target;
+				} else {
+					var arr:Array = jmpTarget.jumpOpcode.parameters[2] as Array;
+					for each (pos in arr) {
+						targetPos = jmpTarget.jumpOpcode.baseLocation + pos;
+						target = _opcodePositions[targetPos];
+						jmpTarget.addTarget(target);
+					}
+				}
+			}
+		}
+
+
+		public static function parseOpcode(byteArray:ByteArray, constantPool:IConstantPool, ops:Array, methodBody:MethodBody):Op {
 			var startPos:int = byteArray.position;
 			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
-			_opcodePositions[startPos] = opcode;
 			var argumentValues:Array = [];
 			for each (var argument:* in opcode.argumentTypes) {
 				parseOpcodeArguments(argument, byteArray, argumentValues, constantPool, methodBody);
@@ -464,50 +501,10 @@ package org.as3commons.bytecode.abc.enum {
 
 			var op:Op = opcode.op(argumentValues);
 			ops[ops.length] = op;
-
-			var pos:int;
 			if (jumpOpcodes[opcode] == true) {
-				if (opcode !== Opcode.lookupswitch) {
-					var jumpPos:int = int(op.parameters[0]);
-					pos = (endPos + jumpPos);
-					if (pos > endPos) {
-						if (_jumpLookup[pos] == null) {
-							_jumpLookup[pos] = [new JumpTargetData(op, null)];
-						} else {
-							var arr:Array = _jumpLookup[pos];
-							arr[arr.length] = new JumpTargetData(op, null);
-						}
-					} else {
-						methodBody.backPatches[methodBody.backPatches.length] = new JumpTargetData(op, _opcodePositions[endPos]);
-					}
-				} else {
-					var newJpd:JumpTargetData = new JumpTargetData(op, null);
-					var positions:Array = (op.parameters[2] as Array);
-					for each (var switchPos:int in positions) {
-						if (switchPos < 0) {
-							pos = (endPos + switchPos);
-							newJpd.addTarget(_opcodePositions[endPos]);
-						} else {
-							_jumpLookup[switchPos] = newJpd;
-						}
-					}
-					methodBody.backPatches[methodBody.backPatches.length] = newJpd;
-				}
+				methodBody.backPatches[methodBody.backPatches.length] = new JumpTargetData(op);
 			}
-			if (_jumpLookup[startPos] != null) {
-				var jumpTargets:Array = _jumpLookup[startPos];
-				for each (var jt:JumpTargetData in jumpTargets) {
-					if (jt.jumpOpcode.opcode !== Opcode.lookupswitch) {
-						jt.targetOpcode = op;
-						methodBody.backPatches[methodBody.backPatches.length] = jt;
-					} else {
-						jt.addTarget(op);
-					}
-				}
-				delete _jumpLookup[startPos];
-			}
-			_opcodePositions[startPos] = op;
-			//trace(byteArray.position + "\t" + op);
+			return op;
 		}
 
 		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, argumentValues:Array, constantPool:IConstantPool, methodBody:MethodBody):void {

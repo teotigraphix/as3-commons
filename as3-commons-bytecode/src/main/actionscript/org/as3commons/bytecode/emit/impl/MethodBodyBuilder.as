@@ -146,6 +146,9 @@ package org.as3commons.bytecode.emit.impl {
 			Assert.notNull(methodBody, "methodBody argument must not be null");
 			_methodBody = methodBody;
 			_opcodes = _methodBody.opcodes.concat([]);
+			if (_methodBody.backPatches != null) {
+				_backpatches = _methodBody.backPatches.concat([]);
+			}
 			_exceptionInfos = _methodBody.exceptionInfos.concat([]);
 			_traits = _methodBody.traits.concat([]);
 			_maxStack = _methodBody.maxStack;
@@ -200,7 +203,9 @@ package org.as3commons.bytecode.emit.impl {
 			_currentScope = initScopeDepth;
 			_maxScope = 0;
 			var mb:MethodBody = (_methodBody != null) ? _methodBody : new MethodBody();
-			mb.backPatches = [];
+			if (mb.backPatches == null) {
+				mb.backPatches = [];
+			}
 			mb.initScopeDepth = initScopeDepth;
 			mb.opcodes = _opcodes.concat([]);
 			mb.exceptionInfos = _exceptionInfos.concat([]);

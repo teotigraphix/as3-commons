@@ -1,7 +1,7 @@
 package org.as3commons.bytecode.util {
 	import flash.utils.Dictionary;
 
-	public class StringLookup {
+	public final class StringLookup {
 
 		private static const UNDERSCORE:String = '_';
 		private static const RESERVED_WORDS:Dictionary = new Dictionary();

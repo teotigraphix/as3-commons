@@ -23,9 +23,9 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Method, getter, and setter traits" in the AVM Spec (page 31)
 	 */
-	public class MethodTrait extends TraitInfo {
+	public final class MethodTrait extends TraitInfo {
 
-		public var dispositionId:int;
+		public var dispositionId:int = 0;
 		public var traitMethod:MethodInfo;
 		public var isStatic:Boolean;
 

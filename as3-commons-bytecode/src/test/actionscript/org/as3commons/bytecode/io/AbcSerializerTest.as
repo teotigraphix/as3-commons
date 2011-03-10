@@ -226,7 +226,7 @@ package org.as3commons.bytecode.io {
 			constantPool.addMultiname(new MultinameL(firstNamespaceSet, MultinameKind.MULTINAME_LA));
 
 			// Convert to bytestream
-			var actualBytes:ByteArray = AbcSpec.byteArray();
+			var actualBytes:ByteArray = AbcSpec.newByteArray();
 			_fixture.serializeConstantPool(constantPool, actualBytes);
 			actualBytes.position = 0;
 
