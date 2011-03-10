@@ -140,6 +140,11 @@ package org.as3commons.bytecode.io {
 
 				writeU30(body.exceptionInfos.length);
 				for each (var exception:ExceptionInfo in body.exceptionInfos) {
+
+					exception.exceptionEnabledFromCodePosition = exception.exceptionEnabledFromOpcode.baseLocation;
+					exception.exceptionEnabledToCodePosition = exception.exceptionEnabledToOpcode.baseLocation;
+					exception.codePositionToJumpToOnException = exception.opcodeToJumpToOnException.baseLocation;
+
 					writeU30(exception.exceptionEnabledFromCodePosition);
 					writeU30(exception.exceptionEnabledToCodePosition);
 					writeU30(exception.codePositionToJumpToOnException);

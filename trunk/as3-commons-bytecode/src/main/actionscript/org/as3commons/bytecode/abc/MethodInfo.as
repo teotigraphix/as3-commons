@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import flash.utils.Dictionary;
+
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.lang.ICloneable;

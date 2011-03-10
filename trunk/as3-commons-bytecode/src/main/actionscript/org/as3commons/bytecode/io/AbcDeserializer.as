@@ -230,8 +230,14 @@ package org.as3commons.bytecode.io {
 					// indexes into the multiname pool instead of the string pool
 					// }
 					exceptionInfo.exceptionEnabledFromCodePosition = readU30();
+					exceptionInfo.exceptionEnabledFromOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledFromCodePosition];
+
 					exceptionInfo.exceptionEnabledToCodePosition = readU30();
+					exceptionInfo.exceptionEnabledToOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledToCodePosition];
+
 					exceptionInfo.codePositionToJumpToOnException = readU30();
+					exceptionInfo.opcodeToJumpToOnException = methodBody.opcodeBaseLocations[exceptionInfo.codePositionToJumpToOnException];
+
 					exceptionInfo.exceptionType = pool.multinamePool[readU30()];
 					Assert.notNull(exceptionInfo.exceptionType, "exceptionInfo.exceptionTypeName returned null from constant pool");
 					exceptionInfo.variableReceivingException = pool.multinamePool[readU30()];

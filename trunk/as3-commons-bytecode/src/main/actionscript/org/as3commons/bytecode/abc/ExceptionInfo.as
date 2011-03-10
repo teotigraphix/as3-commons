@@ -23,8 +23,14 @@ package org.as3commons.bytecode.abc {
 	public class ExceptionInfo implements ICloneable {
 
 		public var exceptionEnabledFromCodePosition:int;
+		public var exceptionEnabledFromOpcode:Op;
+
 		public var exceptionEnabledToCodePosition:int;
+		public var exceptionEnabledToOpcode:Op;
+
 		public var codePositionToJumpToOnException:int;
+		public var opcodeToJumpToOnException:Op;
+
 		public var exceptionType:QualifiedName;
 		public var variableReceivingException:QualifiedName;
 
@@ -35,8 +41,14 @@ package org.as3commons.bytecode.abc {
 		public function clone():* {
 			var clone:ExceptionInfo = new ExceptionInfo();
 			clone.exceptionEnabledFromCodePosition = exceptionEnabledFromCodePosition;
+			clone.exceptionEnabledFromOpcode = exceptionEnabledFromOpcode.clone() as Op;
+
 			clone.exceptionEnabledToCodePosition = exceptionEnabledToCodePosition;
+			clone.exceptionEnabledToOpcode = exceptionEnabledToOpcode.clone() as Op;
+
 			clone.codePositionToJumpToOnException = codePositionToJumpToOnException;
+			clone.opcodeToJumpToOnException = opcodeToJumpToOnException.clone() as Op;
+
 			clone.exceptionType = exceptionType.clone() as QualifiedName;
 			clone.variableReceivingException = variableReceivingException.clone() as QualifiedName;
 			return clone;

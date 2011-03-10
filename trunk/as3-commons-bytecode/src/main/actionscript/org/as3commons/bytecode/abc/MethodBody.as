@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.abc {
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.util.AbcSpec;
@@ -44,6 +45,7 @@ package org.as3commons.bytecode.abc {
 		public var exceptionInfos:Array;
 		public var traits:Array;
 		public var backPatches:Array;
+		public var opcodeBaseLocations:Dictionary;
 
 		public function MethodBody() {
 			super();

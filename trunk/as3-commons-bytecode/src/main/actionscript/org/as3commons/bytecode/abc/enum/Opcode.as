@@ -305,6 +305,7 @@ package org.as3commons.bytecode.abc.enum {
 			serializedOpcodes.position = 0;
 			resolveBackPatches(serializedOpcodes, methodBody.backPatches, _opcodePositions);
 			serializedOpcodes.position = 0;
+			methodBody.opcodeBaseLocations = _opcodePositions;
 			_opcodePositions = null;
 			return serializedOpcodes;
 		}
@@ -459,7 +460,7 @@ package org.as3commons.bytecode.abc.enum {
 			}
 
 			resolveJumpTargets(methodBody, Op(ops[ops.length - 1]));
-
+			methodBody.opcodeBaseLocations = _opcodePositions;
 			_opcodePositions = null;
 
 			return ops;
