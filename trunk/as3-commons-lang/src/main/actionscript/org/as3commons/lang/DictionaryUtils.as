@@ -22,7 +22,7 @@ package org.as3commons.lang {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class DictionaryUtils {
+	public final class DictionaryUtils {
 		
 		/**
 		 * Returns an array with the keys of the dictionary.

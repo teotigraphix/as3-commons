@@ -24,7 +24,7 @@ package org.as3commons.lang {
 	 * @author Christophe Herreman
 	 * @author James Ghandour
 	 */
-	public class StringUtils {
+	public final class StringUtils {
 
 		/**
 		 * The empty String <code>""</code>
