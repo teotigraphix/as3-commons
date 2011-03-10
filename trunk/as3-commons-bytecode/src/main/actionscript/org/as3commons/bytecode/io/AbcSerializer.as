@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -48,7 +48,6 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.typeinfo.Metadata;
-	import org.as3commons.bytecode.typeinfo.Method;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
@@ -86,13 +85,13 @@ package org.as3commons.bytecode.io {
 		 * @return    A <code>ByteArray</code> containing the bytecode. The <code>ByteArray</code> position is set to 0 so it can be read from immediately.
 		 */
 		public function serializeAbcFile(abcFile:AbcFile):ByteArray {
-			_outputStream = AbcSpec.byteArray();
+			_outputStream = AbcSpec.newByteArray();
 			writeU16(MINOR_VERSION);
 			writeU16(MAJOR_VERSION);
 
 			var tempOutputStream:ByteArray = _outputStream;
 
-			_outputStream = AbcSpec.byteArray();
+			_outputStream = AbcSpec.newByteArray();
 
 			serializeMethodInfo(abcFile);
 			serializeMetadataInfo(abcFile);
@@ -636,7 +635,7 @@ package org.as3commons.bytecode.io {
 		}
 
 		private function createBuffer():ByteArray {
-			return AbcSpec.byteArray();
+			return AbcSpec.newByteArray();
 		}
 
 		public function toString():String {

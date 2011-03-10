@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
-import org.as3commons.bytecode.typeinfo.Annotatable;
-import org.as3commons.lang.StringUtils;
+	import org.as3commons.bytecode.typeinfo.Annotatable;
+	import org.as3commons.lang.StringUtils;
 
-/**
-	 * as3commons-bytecode representation of <code>Trait_Function</code> in the ABC file format.
-	 *
-	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Function traits" in the AVM Spec (page 31)
-	 */
-	public class FunctionTrait extends TraitInfo {
+	/**
+		 * as3commons-bytecode representation of <code>Trait_Function</code> in the ABC file format.
+		 *
+		 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Function traits" in the AVM Spec (page 31)
+		 */
+	public final class FunctionTrait extends TraitInfo {
 
 		public var functionSlotId:int;
 		public var functionMethod:MethodInfo;

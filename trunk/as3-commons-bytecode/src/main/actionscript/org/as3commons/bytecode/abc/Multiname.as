@@ -22,7 +22,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Multiname" in the AVM Spec (page 23)
 	 */
-	public class Multiname extends NamedMultiname {
+	public final class Multiname extends NamedMultiname {
 		private var _namespaceSet:NamespaceSet;
 
 		public function Multiname(multiname:String, namespaceSet:NamespaceSet, kind:MultinameKind = null) {

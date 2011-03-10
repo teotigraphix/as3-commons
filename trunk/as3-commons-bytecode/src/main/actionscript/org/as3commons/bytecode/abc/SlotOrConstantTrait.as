@@ -24,7 +24,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Slot and const traits" in the AVM Spec (page 30)
 	 */
-	public class SlotOrConstantTrait extends TraitInfo {
+	public final class SlotOrConstantTrait extends TraitInfo {
 
 		public var slotId:int;
 		public var typeMultiname:BaseMultiname;

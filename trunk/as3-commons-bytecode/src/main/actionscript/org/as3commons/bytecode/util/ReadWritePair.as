@@ -28,7 +28,7 @@ package org.as3commons.bytecode.util {
 	 * @see AbcSpec
 	 * @see org.as3commons.bytecode.abc.enum.Opcode
 	 */
-	public class ReadWritePair {
+	public final class ReadWritePair {
 		private var _reader:Function;
 		private var _writer:Function;
 

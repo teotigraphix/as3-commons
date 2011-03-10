@@ -22,7 +22,7 @@ package org.as3commons.bytecode.typeinfo {
 	 * Represents an argument to a method, including its type, name, optional status, default value (if optional), and kind.
 	 */
 	//TODO: Set this up so that the user does not need to worry about the ConstantKind. You should be able to determine this from the default value 
-	public class Argument implements ICloneable {
+	public final class Argument implements ICloneable {
 
 		public var name:String;
 		public var defaultValue:Object;

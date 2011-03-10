@@ -41,6 +41,7 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.typeinfo.Metadata;
+	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;

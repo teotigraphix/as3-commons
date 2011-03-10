@@ -17,12 +17,13 @@ package org.as3commons.bytecode.abc {
 	import flash.errors.IllegalOperationError;
 
 	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.lang.Assert;
 
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class JumpTargetData {
+	public final class JumpTargetData {
 
 		private var _jumpOpcode:Op;
 		private var _targetOpcode:Op;

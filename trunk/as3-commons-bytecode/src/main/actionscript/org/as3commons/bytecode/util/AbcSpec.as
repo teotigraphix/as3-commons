@@ -86,7 +86,7 @@ package org.as3commons.bytecode.util {
 		/**
 		 * Returns a ByteArray set to Endian.LITTLE_ENDIAN.
 		 */
-		public static function byteArray():ByteArray {
+		public static function newByteArray():ByteArray {
 			var byteArray:ByteArray = new ByteArray();
 			byteArray.endian = Endian.LITTLE_ENDIAN;
 			return byteArray;

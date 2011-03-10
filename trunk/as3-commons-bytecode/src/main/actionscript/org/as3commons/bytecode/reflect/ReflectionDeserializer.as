@@ -67,7 +67,7 @@ package org.as3commons.bytecode.reflect {
 
 		public function read(typeCache:ByteCodeTypeCache, input:ByteArray, applicationDomain:ApplicationDomain = null, isLoaderBytes:Boolean = true):void {
 			_applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
-			_byteStream = AbcSpec.byteArray();
+			_byteStream = AbcSpec.newByteArray();
 			input.endian = Endian.LITTLE_ENDIAN;
 			var swfIdentifier:String = input.readUTFBytes(3);
 			var compressed:Boolean = (swfIdentifier == SWFFileIO.SWF_SIGNATURE_COMPRESSED);
@@ -326,15 +326,17 @@ package org.as3commons.bytecode.reflect {
 				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
 					var mn:BaseMultiname = constantPool.multinamePool[readU30()];
 					var qName:QualifiedName = MultinameUtil.convertToQualifiedName(mn);
-					instanceInfo.interfaces[instanceInfo.interfaces.length] = qName.fullName;
-					var classNames:Array;
-					if (!typeCache.interfaceLookup.hasOwnProperty(qName.fullName)) {
-						classNames = [];
-						typeCache.interfaceLookup[qName.fullName] = classNames;
-					} else {
-						classNames = typeCache.interfaceLookup[qName.fullName] as Array;
+					if (qName != null) {
+						instanceInfo.interfaces[instanceInfo.interfaces.length] = qName.fullName;
+						var classNames:Array;
+						if (!typeCache.interfaceLookup.hasOwnProperty(qName.fullName)) {
+							classNames = [];
+							typeCache.interfaceLookup[qName.fullName] = classNames;
+						} else {
+							classNames = typeCache.interfaceLookup[qName.fullName] as Array;
+						}
+						classNames[classNames.length] = AbcFileUtil.normalizeFullName(instanceInfo.fullName);
 					}
-					classNames[classNames.length] = AbcFileUtil.normalizeFullName(instanceInfo.fullName);
 				}
 				var constructorIndex:uint = readU30();
 				var method:ByteCodeMethod = methods[constructorIndex];
@@ -399,7 +401,8 @@ package org.as3commons.bytecode.reflect {
 				//  u30 metadata_count 
 				//  u30 metadata[metadata_count] 
 				// }
-				var traitName:BaseMultiname = pool.multinamePool[readU30()];
+				var multiNameIndex:uint = readU30();
+				var traitName:BaseMultiname = pool.multinamePool[multiNameIndex];
 				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
@@ -409,6 +412,12 @@ package org.as3commons.bytecode.reflect {
 				var metaDataContainer:MetadataContainer;
 				var qualifiedName:QualifiedName;
 				var fullName:String = ((instanceInfo != null)) ? instanceInfo.fullName : "";
+				if (traitMultiname.nameSpace.name == "*") {
+					var lastIdx:int = fullName.lastIndexOf(MultinameUtil.PERIOD);
+					var fullNSName:Array = fullName.split("");
+					fullNSName[lastIdx] = MultinameUtil.SINGLE_COLON;
+					traitMultiname.nameSpace.name = fullNSName.join("");
+				}
 				var getterSetterSignature:String = "";
 				switch (traitKind) {
 					case TraitKind.SLOT:
@@ -459,15 +468,15 @@ package org.as3commons.bytecode.reflect {
 						method.as3commons_reflect::setIsStatic(isStatic);
 						methods[methods.length] = method;
 						method.as3commons_reflect::setName(traitMultiname.name);
-						if (instanceInfo.isInterface) {
-							method.as3commons_reflect::setScopeName(MultinameUtil.extractInterfaceScopeFromFullName(traitMultiname.fullName));
-						} else {
-							method.as3commons_reflect::setScopeName(MultinameUtil.createScopeNameFromQualifiedName(traitMultiname));
-						}
-						metaDataContainer = method;
 						if (instanceInfo != null) {
+							if (instanceInfo.isInterface) {
+								method.as3commons_reflect::setScopeName(MultinameUtil.extractInterfaceScopeFromFullName(traitMultiname.fullName));
+							} else {
+								method.as3commons_reflect::setScopeName(MultinameUtil.createScopeNameFromQualifiedName(traitMultiname));
+							}
 							method.as3commons_reflect::setDeclaringType(instanceInfo.fullName);
 						}
+						metaDataContainer = method;
 						break;
 					case TraitKind.GETTER:
 						getterSetterSignature = GETTER_SIGNATURE;

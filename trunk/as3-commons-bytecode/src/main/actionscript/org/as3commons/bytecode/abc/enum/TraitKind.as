@@ -24,7 +24,7 @@ package org.as3commons.bytecode.abc.enum {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Summary of trait types" in the AVM Spec (page 29)
 	 */
-	public class TraitKind {
+	public final class TraitKind {
 		private static var _enumCreated:Boolean = false;
 		private static const _TYPES:Dictionary = new Dictionary();
 

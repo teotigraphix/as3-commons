@@ -31,7 +31,7 @@ package org.as3commons.bytecode.tags.serialization {
 
 		override public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
 			var tag:UnsupportedTag = new UnsupportedTag(recordHeader.id);
-			tag.tagBody = AbcSpec.byteArray();
+			tag.tagBody = AbcSpec.newByteArray();
 			input.readBytes(tag.tagBody, 0, recordHeader.length);
 			tag.tagBody.position = 0;
 			return tag;

@@ -18,7 +18,7 @@ package org.as3commons.bytecode.abc {
 	/**
 	 * as3commons-bytecode type representing an Int stored in the constant pool. Used for parsing/serailizing opcodes.
 	 */
-	public class Integer {
+	public final class Integer {
 		public function Integer() {
 			super();
 		}

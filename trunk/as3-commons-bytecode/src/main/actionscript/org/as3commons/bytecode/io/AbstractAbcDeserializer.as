@@ -218,7 +218,8 @@ package org.as3commons.bytecode.io {
 			//  u30 ns 
 			//  u30 name 
 			// }
-			var ns:LNamespace = pool.namespacePool[readU30()];
+			var idx:uint = readU30();
+			var ns:LNamespace = pool.namespacePool[idx];
 			var name:String = pool.stringPool[readU30()];
 			return new QualifiedName(name, ns, kind);
 		}

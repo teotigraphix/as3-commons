@@ -352,7 +352,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			_abcBuilder.addEventListener(Event.COMPLETE, redispatch);
 			_abcBuilder.addEventListener(IOErrorEvent.IO_ERROR, redispatch);
-			_abcBuilder.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch);
+			_abcBuilder.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch, false, 0, true);
 			_abcBuilder.buildAndLoad(applicationDomain);
 			LOGGER.debug("Loading proxies into application domain {0}", applicationDomain);
 		}
@@ -403,7 +403,6 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			_abcBuilder.removeEventListener(Event.COMPLETE, redispatch);
 			_abcBuilder.removeEventListener(IOErrorEvent.IO_ERROR, redispatch);
-			_abcBuilder.removeEventListener(IOErrorEvent.VERIFY_ERROR, redispatch);
 			dispatchEvent(event);
 		}
 

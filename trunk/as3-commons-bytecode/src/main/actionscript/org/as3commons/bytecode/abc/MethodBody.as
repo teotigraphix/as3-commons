@@ -27,7 +27,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Method body" in the AVM Spec (page 32)
 	 */
-	public class MethodBody implements ICloneable {
+	public final class MethodBody implements ICloneable {
 		/**
 		 * Containes <code>Opcode</code> instances with appropriate arguments, representing the body of this method.
 		 *
@@ -72,7 +72,7 @@ package org.as3commons.bytecode.abc {
 			var clone:MethodBody = new MethodBody();
 			clone.opcodes = CloneUtils.cloneList(opcodes);
 			if (rawOpcodes != null) {
-				clone.rawOpcodes = AbcSpec.byteArray();
+				clone.rawOpcodes = AbcSpec.newByteArray();
 				clone.rawOpcodes.writeBytes(rawOpcodes);
 				clone.rawOpcodes.position = 0;
 			}
@@ -80,9 +80,19 @@ package org.as3commons.bytecode.abc {
 			clone.localCount = localCount;
 			clone.initScopeDepth = initScopeDepth;
 			clone.maxScopeDepth = maxScopeDepth;
+			clone.backPatches = [];
 			for each (var op:Op in clone.opcodes) {
 				if (op.opcode === Opcode.newcatch) {
-					clone.exceptionInfos[clone.exceptionInfos.length] = op.parameters[0];
+					clone.exceptionInfos[clone.exceptionInfos.length] = ExceptionInfo(op.parameters[0]).clone();
+				}
+			}
+			for each (var bp:JumpTargetData in this.backPatches) {
+				var jidx:int = this.opcodes.indexOf(bp.jumpOpcode);
+				var tidx:int = this.opcodes.indexOf(bp.targetOpcode);
+				var jumpTargetData:JumpTargetData = new JumpTargetData(clone.opcodes[jidx], clone.opcodes[tidx]);
+				clone.backPatches[clone.backPatches.length] = jumpTargetData;
+				for each (op in bp.extraOpcodes) {
+					jumpTargetData.addTarget(clone.opcodes[this.opcodes.indexOf(op)]);
 				}
 			}
 			clone.traits = CloneUtils.cloneList(traits);

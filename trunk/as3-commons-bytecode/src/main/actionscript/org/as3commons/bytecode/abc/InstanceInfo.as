@@ -22,7 +22,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Instance" in the AVM Spec (page 28)
 	 */
-	public class InstanceInfo extends BaseTypeInfo {
+	public final class InstanceInfo extends BaseTypeInfo {
 
 		//shortcut for emit.* package
 		public var classInfo:ClassInfo;

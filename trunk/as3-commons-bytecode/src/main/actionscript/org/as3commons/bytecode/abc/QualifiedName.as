@@ -22,7 +22,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "QName" in the AVM Spec (page 23)
 	 */
-	public class QualifiedName extends NamedMultiname {
+	public final class QualifiedName extends NamedMultiname {
 
 		private static const ASTERISK:String = '*';
 		private var _namespace:LNamespace;

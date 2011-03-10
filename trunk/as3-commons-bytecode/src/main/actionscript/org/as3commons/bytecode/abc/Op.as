@@ -19,11 +19,12 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.lang.util.CloneUtils;
 
 	/**
 	 * Represents an individual opcode operation with parameters.
 	 */
-	public class Op implements ICloneable {
+	public final class Op implements ICloneable {
 
 		private static const ARGUMENT_TYPE_ERROR:String = "Wrong opcode argument type for opcode {0}, expected {1}, but got {2}";
 		private static const OBJECT_TYPE_NAME:String = "object";
@@ -50,7 +51,9 @@ package org.as3commons.bytecode.abc {
 					params[params.length] = obj;
 				}
 			}
-			return _opcode.op(params);
+			var clone:Op = _opcode.op(params);
+			clone.baseLocation = baseLocation;
+			return clone;
 		}
 
 		public static function checkParameters(parameters:Array, opcode:Opcode):void {
@@ -84,7 +87,14 @@ package org.as3commons.bytecode.abc {
 			}
 		}
 
-		public var offset:uint;
+		/**
+		 * Byte array position right before the opcode
+		 */
+		public var baseLocation:uint;
+		/**
+		 * Byte array position right after the opcode and its parameters (also the base location of the next opcode)
+		 */
+		public var endLocation:uint;
 
 		public function get parameters():Array {
 			return _parameters;
@@ -95,7 +105,7 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function toString():String {
-			return _opcode.opcodeName + "\t\t" + ((_parameters.length != 0) ? "[" + _parameters.join(", ") + "]" : "");
+			return baseLocation + ":" + _opcode.opcodeName + "\t\t" + ((_parameters.length != 0) ? "[" + _parameters.join(", ") + "]:" : ":") + endLocation;
 		}
 	}
 }

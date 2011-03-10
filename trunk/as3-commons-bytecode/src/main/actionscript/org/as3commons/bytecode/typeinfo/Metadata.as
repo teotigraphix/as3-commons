@@ -32,7 +32,7 @@ package org.as3commons.bytecode.typeinfo {
 	 *
 	 * @see Annotatable
 	 */
-	public class Metadata implements ICloneable {
+	public final class Metadata implements ICloneable {
 
 		private static const KEY_VALUE_PAIR_TOSTRING:String = "{0}=\"{1}\"";
 		private static const METADATA_TOSTRING:String = "[{0}({1})]";

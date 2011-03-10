@@ -23,7 +23,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Namespace set" in the AVM Spec (page 22)
 	 */
-	public class NamespaceSet implements ICloneable, IEquals {
+	public final class NamespaceSet implements ICloneable, IEquals {
 
 		public static const PUBLIC_NSSET:NamespaceSet = new NamespaceSet([LNamespace.PUBLIC]);
 

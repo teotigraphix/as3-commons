@@ -24,7 +24,7 @@ package org.as3commons.bytecode.abc.enum {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Optional parameters" in the AVM Spec (page 25)
 	 */
-	public class ConstantKind {
+	public final class ConstantKind {
 		private static var _enumCreated:Boolean = false;
 		private static const _TYPES:Dictionary = new Dictionary();
 

@@ -101,7 +101,7 @@ package org.as3commons.bytecode.swf {
 			var swfFile:SWFFile = new SWFFile();
 			try {
 				input.position = 0;
-				var bytes:ByteArray = AbcSpec.byteArray();
+				var bytes:ByteArray = AbcSpec.newByteArray();
 				input.endian = Endian.LITTLE_ENDIAN;
 				swfFile.signature = input.readUTFBytes(3);
 				var compressed:Boolean = (swfFile.signature == SWF_SIGNATURE_COMPRESSED);
@@ -133,7 +133,7 @@ package org.as3commons.bytecode.swf {
 			output.position = 0;
 			output.writeUTFBytes(swf.signature);
 			SWFSpec.writeSI8(output, swf.version);
-			var ba:ByteArray = AbcSpec.byteArray();
+			var ba:ByteArray = AbcSpec.newByteArray();
 			writeHeader(ba, swf);
 			for each (var tag:ISWFTag in swf.tags) {
 				writeTag(ba, tag);

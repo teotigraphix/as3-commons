@@ -23,7 +23,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Script" in the AVM Spec (page 32)
 	 */
-	public class ScriptInfo implements ICloneable {
+	public final class ScriptInfo implements ICloneable {
 		public var scriptInitializer:MethodInfo;
 		public var traits:Array;
 
