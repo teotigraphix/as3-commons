@@ -85,7 +85,7 @@ package org.as3commons.bytecode.abc {
 			clone.backPatches = [];
 			for each (var op:Op in clone.opcodes) {
 				if (op.opcode === Opcode.newcatch) {
-					clone.exceptionInfos[clone.exceptionInfos.length] = ExceptionInfo(op.parameters[0]).clone();
+					clone.exceptionInfos[clone.exceptionInfos.length] = op.parameters[0];
 				}
 			}
 			for each (var bp:JumpTargetData in this.backPatches) {
