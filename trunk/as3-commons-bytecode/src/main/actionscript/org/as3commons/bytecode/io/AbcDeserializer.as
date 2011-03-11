@@ -239,9 +239,7 @@ package org.as3commons.bytecode.io {
 					exceptionInfo.opcodeToJumpToOnException = methodBody.opcodeBaseLocations[exceptionInfo.codePositionToJumpToOnException];
 
 					exceptionInfo.exceptionType = pool.multinamePool[readU30()];
-					Assert.notNull(exceptionInfo.exceptionType, "exceptionInfo.exceptionTypeName returned null from constant pool");
 					exceptionInfo.variableReceivingException = pool.multinamePool[readU30()];
-					Assert.notNull(exceptionInfo.variableReceivingException, "exceptionInfo.nameOfVariableReceivingException returned null from constant pool");
 					exceptionInfos[exceptionInfos.length] = exceptionInfo;
 				}
 

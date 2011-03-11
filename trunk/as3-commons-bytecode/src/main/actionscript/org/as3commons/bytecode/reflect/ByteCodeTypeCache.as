@@ -153,7 +153,7 @@ package org.as3commons.bytecode.reflect {
 		 * @return an <code>Array</code> of class names.
 		 */
 		public function getImplementationNames(intf:Class):Array {
-			Assert.hasText(interfaceName, "interfaceName argument must not be empty or null");
+			Assert.notNull(intf, "intf argument must not be empty or null");
 			var interfaceName:String = getQualifiedClassName(intf);
 			interfaceName = AbcFileUtil.normalizeFullName(interfaceName);
 			if (_interfaceLookup.hasOwnProperty(interfaceName)) {
