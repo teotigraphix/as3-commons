@@ -185,11 +185,18 @@ package org.as3commons.bytecode.proxy.impl {
 					type.byteArray.position = method.bodyStartPosition;
 					method.methodBody.opcodes = Opcode.parse(type.byteArray, method.bodyLength, method.methodBody, type.constantPool);
 					method.methodBody.exceptionInfos = extractExceptionInfos(type.byteArray, type, method.methodBody);
-					for each (var op:Op in method.methodBody.opcodes) {
-						var idx:int = AbcDeserializer.getExceptionInfoArgumentIndex(op);
-						if (idx > -1) {
-							var exceptionIndex:int = op.parameters[idx];
-							op.parameters[idx] = method.methodBody.exceptionInfos[exceptionIndex];
+					if (method.methodBody.exceptionInfos.length > 0) {
+						var foundLen:int = 0;
+						for each (var op:Op in method.methodBody.opcodes) {
+							var idx:int = AbcDeserializer.getExceptionInfoArgumentIndex(op);
+							if (idx > -1) {
+								var exceptionIndex:int = int(op.parameters[idx]);
+								op.parameters[idx] = method.methodBody.exceptionInfos[exceptionIndex];
+								foundLen++;
+								if (foundLen == method.methodBody.exceptionInfos.length) {
+									break;
+								}
+							}
 						}
 					}
 				} finally {
