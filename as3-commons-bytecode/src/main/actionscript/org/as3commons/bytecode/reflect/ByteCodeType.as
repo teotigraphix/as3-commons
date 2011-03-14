@@ -204,7 +204,11 @@ package org.as3commons.bytecode.reflect {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:ByteCodeType;
 			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz, true);
-			return forName(fullyQualifiedClassName, applicationDomain);
+			var type:ByteCodeType = forName(fullyQualifiedClassName, applicationDomain);
+			if (type.clazz == null) {
+				type.clazz = clazz;
+			}
+			return type;
 		}
 
 		override public function get clazz():Class {

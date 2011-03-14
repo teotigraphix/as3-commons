@@ -246,12 +246,18 @@ package org.as3commons.bytecode.io {
 				//Add the ExceptionInfo reference to all opcodes that until now only carried an
 				//index for the reference (this replaces the index with the actual reference in the parameter):
 				exceptionIndex = -1;
-				for each (var op:Op in methodBody.opcodes) {
-					var idx:int = getExceptionInfoArgumentIndex(op);
-					if (idx > -1) {
-						exceptionIndex = op.parameters[idx];
-						op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
-						Assert.notNull(op.parameters[idx], op.parameters[idx].toString() + " returned null from method exception info collection");
+				if (methodBody.exceptionInfos.length > 0) {
+					var foundLen:int = 0;
+					for each (var op:Op in methodBody.opcodes) {
+						var idx:int = getExceptionInfoArgumentIndex(op);
+						if (idx > -1) {
+							exceptionIndex = int(op.parameters[idx]);
+							op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
+							foundLen++;
+							if (foundLen == methodBody.exceptionInfos.length) {
+								break;
+							}
+						}
 					}
 				}
 

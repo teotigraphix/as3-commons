@@ -241,6 +241,7 @@ package org.as3commons.bytecode.abc.enum {
 
 		private static var _jumpLookup:Dictionary;
 		private static var _opcodePositions:Dictionary;
+		private static var _opcodeEndPositions:Dictionary;
 		public static const jumpOpcodes:Dictionary = new Dictionary();
 		{
 			jumpOpcodes[ifeq] = true;
@@ -322,15 +323,13 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		private static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean = false):void {
-			if (targetOpcode == null) {
-				return;
-			}
 			var targetPos:int = (positions[jumpOpcode]) + int(jumpOpcode.parameters[0]);
 			var targetOpPos:int = positions[targetOpcode];
 			if (targetPos != targetOpPos) {
 				var operandPos:int = (positions[jumpOpcode]);
-				var baseLocation:int = (isLookupSwitch) ? jumpOpcode.baseLocation : jumpOpcode.endLocation;
-				var newJump:int = (targetOpcode.baseLocation - baseLocation);
+				var baseLocation:int = 0;
+				baseLocation = (isLookupSwitch) ? jumpOpcode.baseLocation : jumpOpcode.endLocation;
+				var newJump:int = (targetOpcode.opcode !== Opcode.lookupswitch) ? (targetOpcode.baseLocation - baseLocation) : (targetOpcode.endLocation - baseLocation);
 				serializedOpcodes.position = operandPos + 1;
 				AbcSpec.writeS24(newJump, serializedOpcodes);
 			}
@@ -428,11 +427,11 @@ package org.as3commons.bytecode.abc.enum {
 		 */
 		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, constantPool:IConstantPool):Array {
 			_opcodePositions = new Dictionary();
+			_opcodeEndPositions = new Dictionary();
 			var ops:Array = [];
 			if (methodBody.backPatches == null) {
 				methodBody.backPatches = [];
 			}
-			_jumpLookup = new Dictionary();
 			var startPosition:int = byteArray.position;
 			var startOffset:uint = 0;
 			var currentPosition:uint = 0;
@@ -446,6 +445,7 @@ package org.as3commons.bytecode.abc.enum {
 					startOffset += (byteArray.position - currentPosition);
 					newOp.endLocation = startOffset;
 					_opcodePositions[newOp.baseLocation] = newOp;
+					_opcodeEndPositions[newOp.endLocation] = newOp;
 				}
 				if (byteArray.position > positionAtEndOfBytecode) {
 					throw new Error("Opcode parsing read beyond end of method body");
@@ -459,14 +459,14 @@ package org.as3commons.bytecode.abc.enum {
 				throw e;
 			}
 
-			resolveJumpTargets(methodBody, Op(ops[ops.length - 1]));
+			resolveJumpTargets(methodBody);
 			methodBody.opcodeBaseLocations = _opcodePositions;
 			_opcodePositions = null;
-
+			_opcodeEndPositions = null;
 			return ops;
 		}
 
-		private static function resolveJumpTargets(methodBody:MethodBody, lastOp:Op):void {
+		private static function resolveJumpTargets(methodBody:MethodBody):void {
 			var pos:int;
 			var targetPos:int;
 			var target:Op;
@@ -475,8 +475,8 @@ package org.as3commons.bytecode.abc.enum {
 					pos = int(jmpTarget.jumpOpcode.parameters[0]);
 					targetPos = jmpTarget.jumpOpcode.endLocation + pos;
 					target = _opcodePositions[targetPos];
-					if (target == null) {
-						target = lastOp;
+					if (target == null) { //jumps can point to the end location of an opcode sometimes, like the default jump in a switch statement:
+						target = _opcodeEndPositions[targetPos];
 					}
 					jmpTarget.targetOpcode = target;
 				} else {
@@ -484,12 +484,14 @@ package org.as3commons.bytecode.abc.enum {
 					for each (pos in arr) {
 						targetPos = jmpTarget.jumpOpcode.baseLocation + pos;
 						target = _opcodePositions[targetPos];
+						if (target == null) {
+							target = _opcodeEndPositions[targetPos];
+						}
 						jmpTarget.addTarget(target);
 					}
 				}
 			}
 		}
-
 
 		public static function parseOpcode(byteArray:ByteArray, constantPool:IConstantPool, ops:Array, methodBody:MethodBody):Op {
 			var startPos:int = byteArray.position;
@@ -591,11 +593,9 @@ package org.as3commons.bytecode.abc.enum {
 
 		public static function determineOpcode(opcodeByte:int):Opcode {
 			var matchingOpcode:Opcode = _ALL_OPCODES[opcodeByte];
-
 			if (!matchingOpcode) {
 				throw new Error("No match for Opcode: 0x" + opcodeByte.toString(16) + " (" + opcodeByte + ")");
 			}
-			//trace(matchingOpcode);
 			return matchingOpcode;
 		}
 
