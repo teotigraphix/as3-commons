@@ -163,6 +163,8 @@ package org.as3commons.bytecode.emit.impl {
 			assertNotNull(cls);
 			var instance:Object = new cls();
 			assertNotNull(instance);
+                        instance.testMe();
+                        assertTrue(true);
 		}
 
 		public function testBuildClassReadOnlyAccessor():void {

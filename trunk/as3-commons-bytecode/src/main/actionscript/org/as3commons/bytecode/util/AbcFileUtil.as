@@ -33,7 +33,7 @@ package org.as3commons.bytecode.util {
 	 */
 	public final class AbcFileUtil {
 
-		private static const SWF_HEADER:Array = [0x46, 0x57, 0x53, 0x10, // FWS, Version 10
+		private static const SWF_HEADER:Array = [0x46, 0x57, 0x53, 0x0a, // FWS, Version 10
 			0xff, 0xff, 0xff, 0xff, // File length
 			0x78, 0x00, 0x03, 0xe8, 0x00, 0x00, 0x0b, 0xb8, 0x00, // size [Rect 0 0 8000 6000]
 			0x00, 0x0c, 0x01, 0x00, // 16bit le frame rate 12, 16bit be frame count 1
@@ -42,7 +42,7 @@ package org.as3commons.bytecode.util {
 
 		private static const ABC_HEADER:Array = [0x3f, 0x12]; // Tag type=72 (DoABC), length=next.]
 
-		private static var SWF_FOOTER:Array = [0x40, 0x00]; // Tag type=1 (ShowFrame), length=0
+		private static var SWF_FOOTER:Array = [0x40, 0x00, 0x00, 0x00]; // Tag type=1 (ShowFrame), length=0
 
 		private static const INSTANCE_INITIALIZER_QNAME:String = "{instance initializer (constructor?)}";
 		private static const PERIOD:String = '.';
