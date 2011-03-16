@@ -3,6 +3,14 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.0-RC4 (00.00.2011)
+-----------------------------------
+
+* Fixed some issues concerning parsing of opcodes that involve lookupswitches
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=45
+* Added opcode properties to ExceptionInfo
+* Before serializing exceptioninfo locations are updated to correct opcode base location
+
 Changes in version 1.0-RC3 (14.03.2011)
 -----------------------------------
 
