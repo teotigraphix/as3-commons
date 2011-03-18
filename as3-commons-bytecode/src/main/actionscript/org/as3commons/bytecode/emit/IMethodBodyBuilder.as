@@ -98,6 +98,11 @@ package org.as3commons.bytecode.emit {
 		 */
 		function addOpcodes(newOpcodes:Array):IMethodBodyBuilder;
 
+		/**
+		 *
+		 * @param newBackpatches
+		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining of <code>addOpcodes()</code> invocations.
+		 */
 		function addBackPatches(newBackpatches:Array):IMethodBodyBuilder;
 		/**
 		 * Creates and returns a new <code>IExceptionInfoBuilder</code> instance.
