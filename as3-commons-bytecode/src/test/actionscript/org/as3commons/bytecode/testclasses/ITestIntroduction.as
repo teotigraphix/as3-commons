@@ -20,5 +20,7 @@ package org.as3commons.bytecode.testclasses {
 		function set testString(value:String):void;
 		function get testObject():SimpleClassWithAccessors;
 		function getTest():String;
+		function testSwitch(idx:int):String;
+		function testBoolean(str:String):Boolean;
 	}
 }

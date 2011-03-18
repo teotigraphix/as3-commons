@@ -469,6 +469,7 @@ package org.as3commons.bytecode.proxy.impl {
 			assertNotNull(instance);
 			var testInterface:ITestIntroduction = instance as ITestIntroduction;
 			assertNotNull(testInterface);
+			assertEquals("1", testInterface.testSwitch(1));
 			assertEquals("test", testInterface.getTest());
 			assertEquals("testString", testInterface.testString);
 			assertNotNull(testInterface.testObject);

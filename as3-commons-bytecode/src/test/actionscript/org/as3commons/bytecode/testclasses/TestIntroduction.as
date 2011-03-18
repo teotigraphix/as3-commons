@@ -19,6 +19,7 @@ package org.as3commons.bytecode.testclasses {
 
 		private var _test:String = "test";
 		private var _testString:String = "testString";
+
 		private var _testObject:SimpleClassWithAccessors;
 
 		public function TestIntroduction() {
@@ -34,9 +35,35 @@ package org.as3commons.bytecode.testclasses {
 			try {
 				return internalGetTest();
 			} catch (e:Error) {
-				trace(e);
+				trace("");
 			}
 			return "";
+		}
+
+		public function testSwitch(idx:int):String {
+			switch (idx) {
+				case 1:
+					return "1";
+					break;
+				case 2:
+					return "2";
+					break;
+				default:
+					break;
+			}
+			if (1 == 2) {
+				return "0";
+			}
+			switch (idx) {
+				case 3:
+					return "3";
+					break;
+				case 4:
+					return "4";
+					break;
+				default:
+					return "0";
+			}
 		}
 
 		public function get testString():String {
@@ -49,6 +76,14 @@ package org.as3commons.bytecode.testclasses {
 
 		public function get testObject():SimpleClassWithAccessors {
 			return _testObject;
+		}
+
+		public function testBoolean(str:String):Boolean {
+			if (str == null) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 	}
