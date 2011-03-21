@@ -160,6 +160,7 @@ package org.as3commons.bytecode.emit.impl {
 				_methodBody.rawOpcodes.position = 0;
 				methodBody.opcodes = Opcode.parse(_methodBody.rawOpcodes, _methodBody.rawOpcodes.length, methodBody, constantPool);
 				AbcDeserializer.resolveOpcodeExceptionInfos(methodBody);
+				_methodBody.rawOpcodes = null;
 			}
 			_opcodes = _methodBody.opcodes.concat([]);
 			if (_methodBody.backPatches != null) {
