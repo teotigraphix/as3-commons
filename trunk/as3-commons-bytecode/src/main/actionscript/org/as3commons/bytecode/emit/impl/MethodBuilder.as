@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
@@ -126,6 +127,16 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function get needArguments():Boolean {
 			return (_methodBodyBuilder) ? _methodBodyBuilder.needArguments : false;
+		}
+
+		public function get constantPool():IConstantPool {
+			return (_methodBodyBuilder) ? _methodBodyBuilder.constantPool : null;
+		}
+
+		public function set constantPool(value:IConstantPool):void {
+			if (_methodBodyBuilder != null) {
+				_methodBodyBuilder.constantPool = value;
+			}
 		}
 
 		public function defineArgument(type:String = "", isOptional:Boolean = false, defaultValue:Object = null):MethodArgument {

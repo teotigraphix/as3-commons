@@ -17,12 +17,17 @@ package org.as3commons.bytecode.emit {
 	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.bytecode.abc.IConstantPool;
+
 	[Event(name="extendedClassesNotFound", type="org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
 	/**
 	 * Describes an object capable of creating classes, interfaces and package level variables and methods.
 	 * @author Roland Zwaga
 	 */
 	public interface IPackageBuilder extends IEventDispatcher {
+		function get constantPool():IConstantPool;
+
+		function set constantPool(value:IConstantPool):void;
 		/**
 		 * The name of the current package. i.e. <code>com.myclasses.test</code>.
 		 */
@@ -42,12 +47,12 @@ package org.as3commons.bytecode.emit {
 		 */
 		function defineInterface(name:String, superInterfaceNames:Array = null):IInterfaceBuilder;
 		/**
-		 * 
+		 *
 		 * @param name
 		 * @param URI
-		 * @return 
+		 * @return
 		 */
-		function defineNamespace(scopeName:String,URI:String):INamespaceBuilder;
+		function defineNamespace(scopeName:String, URI:String):INamespaceBuilder;
 		/**
 		 * Internally used build method, this method should never be called by third parties.
 		 * @param applicationDomain

@@ -19,6 +19,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
@@ -55,6 +56,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _superClassName:String;
 		private var _isDynamic:Boolean = false;
 		private var _eventDispatcher:IEventDispatcher;
+		private var _constantPool:IConstantPool;
 
 		/**
 		 * Creates a new <code>ClassBuilder</code> instance.
@@ -88,6 +90,14 @@ package org.as3commons.bytecode.emit.impl {
 			_propertyBuilders = [];
 			_implementedInterfaceNames = [];
 			_superClassName = BuiltIns.OBJECT.fullName;
+		}
+
+		public function get constantPool():IConstantPool {
+			return _constantPool;
+		}
+
+		public function set constantPool(value:IConstantPool):void {
+			_constantPool = value;
 		}
 
 		/**

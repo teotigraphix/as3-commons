@@ -15,6 +15,8 @@
  */
 package org.as3commons.bytecode.abc {
 
+	import flash.utils.Dictionary;
+
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.asm.ClassInfoReference;
 	import org.as3commons.bytecode.typeinfo.Metadata;
@@ -27,6 +29,7 @@ package org.as3commons.bytecode.abc {
 	 */
 	public final class AbcFile {
 
+		private var _classNameLookup:Dictionary;
 		private var _methodInfo:Array;
 		private var _metadataInfo:Array;
 		private var _instanceInfo:Array;
@@ -51,6 +54,7 @@ package org.as3commons.bytecode.abc {
 		 */
 		protected function initAbcFile():void {
 			constantPool = new ConstantPool();
+			_classNameLookup = new Dictionary();
 			_methodInfo = [];
 			_metadataInfo = [];
 			_instanceInfo = [];
@@ -110,12 +114,15 @@ package org.as3commons.bytecode.abc {
 
 		public function addInstanceInfo(instanceInfo:InstanceInfo):int {
 			Assert.notNull(instanceInfo);
+
+			_classNameLookup[instanceInfo.classMultiname.fullName] = true;
+
 			constantPool.addMultiname(instanceInfo.classMultiname);
 			for each (var name:BaseMultiname in instanceInfo.interfaceMultinames) {
 				constantPool.addMultiname(name);
 			}
 
-			// The protected namespace might be null if the isProtected flag is false, so
+			// The protected namespace is null if the isProtected flag is false, so
 			// we only add this if the isProtected flag is true 
 			if (instanceInfo.isProtected) {
 				constantPool.addNamespace(instanceInfo.protectedNamespace);
@@ -129,6 +136,10 @@ package org.as3commons.bytecode.abc {
 			}
 
 			return addUniquely(instanceInfo, _instanceInfo);
+		}
+
+		public function containsClass(className:String):Boolean {
+			return (_classNameLookup[className] == true);
 		}
 
 		public function addInstanceInfos(instanceInfos:Array):void {

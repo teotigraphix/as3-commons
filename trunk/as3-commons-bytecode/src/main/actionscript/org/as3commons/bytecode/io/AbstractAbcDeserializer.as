@@ -123,8 +123,12 @@ package org.as3commons.bytecode.io {
 			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
 		}
 
-		protected function get byteStream():ByteArray {
+		public function get byteStream():ByteArray {
 			return _byteStream;
+		}
+
+		public function set byteStream(value:ByteArray):void {
+			_byteStream = value;
 		}
 
 		/**

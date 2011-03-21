@@ -17,6 +17,8 @@ package org.as3commons.bytecode.emit {
 	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 
+	import org.as3commons.bytecode.abc.IConstantPool;
+
 	[Event(name="extendedClassesNotFound", type="org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
 	/**
 	 * Describes an object that can generate a class object to be added to an <code>AbcFile</code> which
@@ -74,5 +76,10 @@ package org.as3commons.bytecode.emit {
 		function defineProperty(propertyName:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder;
 
 		function removeProperty(name:String, nameSpace:String = null):void;
+
+		function get constantPool():IConstantPool;
+
+		function set constantPool(value:IConstantPool):void;
+
 	}
 }

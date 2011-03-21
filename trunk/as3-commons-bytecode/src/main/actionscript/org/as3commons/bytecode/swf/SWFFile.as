@@ -16,6 +16,8 @@
 package org.as3commons.bytecode.swf {
 	import flash.geom.Rectangle;
 
+	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.tags.DoABCTag;
 	import org.as3commons.bytecode.tags.ISWFTag;
 	import org.as3commons.lang.Assert;
 
@@ -132,6 +134,7 @@ package org.as3commons.bytecode.swf {
 		}
 
 		public function getTagsByType(tagClass:Class):Array {
+			Assert.notNull(tagClass, "tagClass argument must not be null");
 			var result:Array = [];
 			for each (var tag:ISWFTag in _tags) {
 				if (tag is tagClass) {
@@ -141,5 +144,15 @@ package org.as3commons.bytecode.swf {
 			return result;
 		}
 
+		public function getAbcFileForClassName(className:String):AbcFile {
+			Assert.hasText(className, "className argument must not be empty or null");
+			var abcTags:Array = getTagsByType(DoABCTag);
+			for each (var tag:DoABCTag in abcTags) {
+				if (tag.abcFile.containsClass(className)) {
+					return tag.abcFile;
+				}
+			}
+			return null;
+		}
 	}
 }

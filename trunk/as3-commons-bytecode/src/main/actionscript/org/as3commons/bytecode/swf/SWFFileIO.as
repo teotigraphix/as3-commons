@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.swf {
+	import flash.events.EventDispatcher;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.Endian;
 
+	import org.as3commons.bytecode.swf.event.SWFFileIOEvent;
 	import org.as3commons.bytecode.tags.DefineShapeTag;
 	import org.as3commons.bytecode.tags.DoABCTag;
 	import org.as3commons.bytecode.tags.EndTag;
@@ -48,13 +50,21 @@ package org.as3commons.bytecode.swf {
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.SWFSpec;
 
-	public class SWFFileIO implements ISWFFileIO {
+	/**
+	 *
+	 */
+	[Event(name="tagSerializerCreated", type="org.as3commons.bytecode.swf.event.SWFFileIOEvent")]
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
+	public class SWFFileIO extends EventDispatcher implements ISWFFileIO {
 
 		public static const SWF_SIGNATURE_COMPRESSED:String = "CWS";
 		public static const SWF_SIGNATURE_UNCOMPRESSED:String = "FWS";
 
-		protected var tagSerializers:Dictionary;
-		protected var serializerInstances:Dictionary;
+		private var _tagSerializers:Dictionary;
+		private var _serializerInstances:Dictionary;
 		protected var unsupportedTagSerializer:UnsupportedSerializer;
 		protected var recordHeaderSerializer:RecordHeaderSerializer;
 		protected var structSerializerFactory:StructSerializerFactory;
@@ -64,12 +74,20 @@ package org.as3commons.bytecode.swf {
 			initSWFFileIO();
 		}
 
+		public function get serializerInstances():Dictionary {
+			return _serializerInstances;
+		}
+
+		public function get tagSerializers():Dictionary {
+			return _tagSerializers;
+		}
+
 		protected function initSWFFileIO():void {
 			unsupportedTagSerializer = new UnsupportedSerializer();
 			recordHeaderSerializer = new RecordHeaderSerializer();
 			structSerializerFactory = new StructSerializerFactory();
-			tagSerializers = new Dictionary();
-			serializerInstances = new Dictionary();
+			_tagSerializers = new Dictionary();
+			_serializerInstances = new Dictionary();
 			tagSerializers[EndTag.TAG_ID] = EndTagSerializer;
 			tagSerializers[FileAttributesTag.TAG_ID] = FileAttributesSerializer;
 			tagSerializers[FrameLabelTag.TAG_ID] = FrameLabelSerializer;
@@ -82,15 +100,20 @@ package org.as3commons.bytecode.swf {
 			tagSerializers[DoABCTag.TAG_ID] = DoABCSerializer;
 		}
 
-		protected function createTagSerializer(tagId:uint):ITagSerializer {
+		public function createTagSerializer(tagId:uint):ITagSerializer {
+			var serializer:ITagSerializer;
 			if (serializerInstances[tagId] == null) {
 				if (tagSerializers[tagId] != null) {
-					serializerInstances[tagId] = new tagSerializers[tagId](structSerializerFactory);
+					serializer = new tagSerializers[tagId](structSerializerFactory);
+					var evt:SWFFileIOEvent = new SWFFileIOEvent(SWFFileIOEvent.TAG_SERIALIZER_CREATED, serializer);
+					dispatchEvent(evt);
+					serializer = evt.tagSerializer;
+					serializerInstances[tagId] = serializer;
 				} else {
-					return unsupportedTagSerializer;
+					serializer = unsupportedTagSerializer;
 				}
 			}
-			return serializerInstances[tagId] as ITagSerializer;
+			return serializer;
 		}
 
 		/**
@@ -117,7 +140,10 @@ package org.as3commons.bytecode.swf {
 
 				readHeader(bytes, swfFile);
 				while (bytes.bytesAvailable) {
-					swfFile.addTag(readTag(bytes));
+					var tag:ISWFTag = readTag(bytes);
+					if (tag != null) {
+						swfFile.addTag(tag);
+					}
 				}
 			} finally {
 				input.position = originalPosition;

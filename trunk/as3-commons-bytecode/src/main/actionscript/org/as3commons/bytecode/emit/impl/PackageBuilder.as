@@ -22,6 +22,7 @@ package org.as3commons.bytecode.emit.impl {
 
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ClassInfo;
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.as3commons_bytecode;
@@ -51,6 +52,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _eventDispatcher:IEventDispatcher;
 		private var _classBuilderLookup:Dictionary;
 		private var _namespaceBuilderLookup:Dictionary;
+		private var _constantPool:IConstantPool;
 
 		/**
 		 * Creates a new <code>PackageBuilder</code> instance.
@@ -71,6 +73,14 @@ package org.as3commons.bytecode.emit.impl {
 			_classBuilderLookup = new Dictionary();
 			_namespaceBuilderLookup = new Dictionary();
 			_abcFile = abcFile;
+		}
+
+		public function get constantPool():IConstantPool {
+			return _constantPool;
+		}
+
+		public function set constantPool(value:IConstantPool):void {
+			_constantPool = value;
 		}
 
 		private var _packageName:String;
@@ -119,6 +129,7 @@ package org.as3commons.bytecode.emit.impl {
 						cb.as3commons_bytecode::setInstanceInfo(instanceInfo);
 					}
 				}
+				cb.constantPool = _constantPool;
 				_classBuilders[_classBuilders.length] = cb;
 			}
 			return cb;

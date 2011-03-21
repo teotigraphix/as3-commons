@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.ConstantPool;
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.Opcode;
@@ -121,5 +122,9 @@ package org.as3commons.bytecode.emit {
 		function get needActivation():Boolean;
 
 		function get needArguments():Boolean;
+
+		function get constantPool():IConstantPool;
+
+		function set constantPool(value:IConstantPool):void;
 	}
 }
