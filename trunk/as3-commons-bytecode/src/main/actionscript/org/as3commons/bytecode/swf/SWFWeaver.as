@@ -177,6 +177,9 @@ package org.as3commons.bytecode.swf {
 						result[result.length] = serializer.serializer.serializeAbcFile(DoABCTag(tag).abcFile);
 					}
 				}
+				if (newClasses != null) {
+					result[result.length] = serializer.serializer.serializeAbcFile(newClasses.build());
+				}
 			}
 			return result;
 		}
