@@ -14,15 +14,64 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.swf {
+
+	import flash.events.IEventDispatcher;
+	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
 
-	public interface ISWFWeaver {
+	/**
+	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
+	 * @eventType flash.events.Event.COMPLETE
+	 */
+	[Event(name="complete", type="flash.events.Event")]
+	/**
+	 * Dispatched when the class loader has encountered an IO related error.
+	 * @eventType flash.events.IOErrorEvent.IO_ERROR
+	 */
+	[Event(name="ioError", type="flash.events.IOErrorEvent")]
+	/**
+	 * Dispatched when the class loader has encountered a SWF verification error.
+	 * @eventType flash.events.IOErrorEvent.VERIFY_ERROR
+	 */
+	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
+	public interface ISWFWeaver extends IEventDispatcher {
+
+		/**
+		 *
+		 * @param byteArray
+		 */
 		function initialize(byteArray:ByteArray):void;
+
+		/**
+		 *
+		 * @param className
+		 * @return
+		 */
 		function getClassBuilder(className:String):IClassBuilder;
+
+		/**
+		 *
+		 * @param interfaceName
+		 * @return
+		 */
 		function getInterfaceBuilder(interfaceName:String):IInterfaceBuilder;
-		function serialize():void;
+
+		/**
+		 *
+		 * @return
+		 */
+		function build():Array;
+
+		/**
+		 *
+		 */
+		function buildAndLoad(applicationDomain:ApplicationDomain = null):Boolean;
 	}
 }

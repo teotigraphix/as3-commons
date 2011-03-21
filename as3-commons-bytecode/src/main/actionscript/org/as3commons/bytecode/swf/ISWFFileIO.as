@@ -14,13 +14,17 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.swf {
+	import flash.events.IEventDispatcher;
 	import flash.utils.ByteArray;
 
+	import org.as3commons.bytecode.tags.serialization.ITagSerializer;
+
+	[Event(name="tagSerializerCreated", type="org.as3commons.bytecode.swf.event.SWFFileIOEvent")]
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
-	public interface ISWFFileIO {
+	public interface ISWFFileIO extends IEventDispatcher {
 
 		/**
 		 * Reads a <code>SWFFile</code> instance from the specified <code>ByteArray</code>.
@@ -37,5 +41,11 @@ package org.as3commons.bytecode.swf {
 		 */
 		function write(output:ByteArray, swf:SWFFile):void;
 
+		/**
+		 *
+		 * @param tagId
+		 * @return
+		 */
+		function createTagSerializer(tagId:uint):ITagSerializer;
 	}
 }

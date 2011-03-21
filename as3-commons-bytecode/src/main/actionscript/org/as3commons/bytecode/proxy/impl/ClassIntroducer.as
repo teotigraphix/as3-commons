@@ -184,21 +184,8 @@ package org.as3commons.bytecode.proxy.impl {
 				try {
 					type.byteArray.position = method.bodyStartPosition;
 					method.methodBody.opcodes = Opcode.parse(type.byteArray, method.bodyLength, method.methodBody, type.constantPool);
-					method.methodBody.exceptionInfos = extractExceptionInfos(type.byteArray, type, method.methodBody);
-					if (method.methodBody.exceptionInfos.length > 0) {
-						var foundLen:int = 0;
-						for each (var op:Op in method.methodBody.opcodes) {
-							var idx:int = AbcDeserializer.getExceptionInfoArgumentIndex(op);
-							if (idx > -1) {
-								var exceptionIndex:int = int(op.parameters[idx]);
-								op.parameters[idx] = method.methodBody.exceptionInfos[exceptionIndex];
-								foundLen++;
-								if (foundLen == method.methodBody.exceptionInfos.length) {
-									break;
-								}
-							}
-						}
-					}
+					method.methodBody.exceptionInfos = AbcDeserializer.extractExceptionInfos(type.byteArray, type.constantPool, method.methodBody);
+					AbcDeserializer.resolveOpcodeExceptionInfos(method.methodBody);
 				} finally {
 					type.byteArray.position = originalPosition;
 				}
@@ -258,26 +245,6 @@ package org.as3commons.bytecode.proxy.impl {
 			if (ns.name == oldScopeName) {
 				ns.name = newScopeName;
 			}
-		}
-
-		protected function extractExceptionInfos(input:ByteArray, type:ByteCodeType, methodBody:MethodBody):Array {
-			var exceptionInfos:Array = [];
-			var exceptionCount:int = AbcSpec.readU30(input);
-			for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
-				var exceptionInfo:ExceptionInfo = new ExceptionInfo();
-				exceptionInfo.exceptionEnabledFromCodePosition = AbcSpec.readU30(input);
-				exceptionInfo.exceptionEnabledToCodePosition = AbcSpec.readU30(input);
-				exceptionInfo.codePositionToJumpToOnException = AbcSpec.readU30(input);
-
-				exceptionInfo.exceptionEnabledFromOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledFromCodePosition];
-				exceptionInfo.exceptionEnabledToOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledToCodePosition];
-				exceptionInfo.opcodeToJumpToOnException = methodBody.opcodeBaseLocations[exceptionInfo.codePositionToJumpToOnException];
-
-				exceptionInfo.exceptionType = type.constantPool.multinamePool[AbcSpec.readU30(input)];
-				exceptionInfo.variableReceivingException = type.constantPool.multinamePool[AbcSpec.readU30(input)];
-				exceptionInfos[exceptionInfos.length] = exceptionInfo;
-			}
-			return exceptionInfos;
 		}
 
 		protected function introduceField(field:Field, classBuilder:IClassBuilder, type:ByteCodeType):void {

@@ -40,6 +40,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
+	import org.as3commons.bytecode.emit.INamespaceBuilder;
 	import org.as3commons.bytecode.emit.IPackageBuilder;
 	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
 	import org.as3commons.bytecode.io.AbcSerializer;
@@ -49,7 +50,6 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Type;
-	import org.as3commons.bytecode.emit.INamespaceBuilder;
 
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
@@ -192,7 +192,11 @@ package org.as3commons.bytecode.emit.impl {
 			var packageName:String = MultinameUtil.extractPackageName(fullName);
 			var classname:String = fullName.substr(fullName.lastIndexOf(MultinameUtil.PERIOD), fullName.length);
 			var packageBuilder:IPackageBuilder = definePackage(packageName);
-			return packageBuilder.defineClass(classname, superClassName);
+			var classBuilder:IClassBuilder = packageBuilder.defineClass(classname, superClassName);
+			if (_abcFile != null) {
+				classBuilder.constantPool = _abcFile.constantPool;
+			}
+			return classBuilder;
 		}
 
 		/**

@@ -18,6 +18,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
+	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.JumpTargetData;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
@@ -27,6 +28,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IExceptionInfoBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.asm.Asm;
+	import org.as3commons.bytecode.io.AbcDeserializer;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
@@ -137,14 +139,28 @@ package org.as3commons.bytecode.emit.impl {
 		private var _jumpDataLookup:Dictionary = new Dictionary();
 		private var _asm:Asm;
 		private var _methodBody:MethodBody;
+		private var _constantPool:IConstantPool;
 
 		public function MethodBodyBuilder() {
 			super();
 		}
 
+		public function get constantPool():IConstantPool {
+			return _constantPool;
+		}
+
+		public function set constantPool(value:IConstantPool):void {
+			_constantPool = value;
+		}
+
 		as3commons_bytecode function setMethodBody(methodBody:MethodBody):void {
 			Assert.notNull(methodBody, "methodBody argument must not be null");
 			_methodBody = methodBody;
+			if ((_methodBody.rawOpcodes != null) && (_methodBody.opcodes.length == 0) && (constantPool != null)) {
+				_methodBody.rawOpcodes.position = 0;
+				methodBody.opcodes = Opcode.parse(_methodBody.rawOpcodes, _methodBody.rawOpcodes.length, methodBody, constantPool);
+				AbcDeserializer.resolveOpcodeExceptionInfos(methodBody);
+			}
 			_opcodes = _methodBody.opcodes.concat([]);
 			if (_methodBody.backPatches != null) {
 				_backpatches = _methodBody.backPatches.concat([]);

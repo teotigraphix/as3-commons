@@ -25,8 +25,33 @@ package org.as3commons.bytecode.tags.serialization {
 
 	public class DoABCSerializer extends AbstractTagSerializer {
 
+		private var _deserializer:AbcDeserializer;
+		private var _serializer:AbcSerializer;
+
 		public function DoABCSerializer(serializerFactory:IStructSerializerFactory) {
 			super(serializerFactory);
+		}
+
+		public function set deserializer(value:AbcDeserializer):void {
+			_deserializer = value;
+		}
+
+		public function set serializer(value:AbcSerializer):void {
+			_serializer = value;
+		}
+
+		public function get deserializer():AbcDeserializer {
+			if (_deserializer == null) {
+				_deserializer = new AbcDeserializer();
+			}
+			return _deserializer;
+		}
+
+		public function get serializer():AbcSerializer {
+			if (_serializer == null) {
+				_serializer = new AbcSerializer();
+			}
+			return _serializer;
 		}
 
 		override public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
@@ -34,14 +59,15 @@ package org.as3commons.bytecode.tags.serialization {
 			tag.flags = SWFSpec.readUI32(input);
 			tag.byteCodeName = SWFSpec.readString(input);
 			trace("Starting deserialization for ABC Tag " + tag.byteCodeName);
-			tag.abcFile = new AbcDeserializer(input).deserialize(input.position);
+			deserializer.byteStream = input;
+			tag.abcFile = deserializer.deserialize(input.position);
 			return tag;
 		}
 
 		override public function write(output:ByteArray, tag:ISWFTag):void {
 			var abcTag:DoABCTag = DoABCTag(tag);
 			writeTagHeader(output, abcTag);
-			var serializedTag:ByteArray = new AbcSerializer().serializeAbcFile(abcTag.abcFile);
+			var serializedTag:ByteArray = serializer.serializeAbcFile(abcTag.abcFile);
 			serializedTag.position = 0;
 			output.writeBytes(serializedTag);
 		}

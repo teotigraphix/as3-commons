@@ -63,10 +63,11 @@ package org.as3commons.bytecode.io {
 		public static const CONSTRUCTOR_BYTECODENAME:String = "constructor";
 		public static const STATIC_INITIALIZER_BYTECODENAME:String = "staticInitializer";
 		public static const SCRIPT_INITIALIZER_BYTECODENAME:String = "scriptInitializer";
+		private static const ASSERT_EXTRACTION_ERROR_TEMPLATE:String = "Expected {0} elements in {1}, actual count is {2}";
 
 		private var _methodBodyExtractionMethod:MethodBodyExtractionKind;
 
-		public function AbcDeserializer(byteStream:ByteArray) {
+		public function AbcDeserializer(byteStream:ByteArray = null) {
 			super(byteStream);
 			methodBodyExtractionMethod = MethodBodyExtractionKind.PARSE;
 		}
@@ -91,7 +92,7 @@ package org.as3commons.bytecode.io {
 			} else {
 				var collectionLength:int = elementCollection.length;
 				if (expectedCount != collectionLength) {
-					throw new Error(StringUtils.substitute("Expected {0} elements in {1}, actual count is {2}", expectedCount, collectionName, collectionLength));
+					throw new Error(StringUtils.substitute(ASSERT_EXTRACTION_ERROR_TEMPLATE, expectedCount, collectionName, collectionLength));
 				}
 			}
 		}
@@ -210,55 +211,12 @@ package org.as3commons.bytecode.io {
 					byteStream.position += codeLength;
 				}
 
-				var exceptionCount:int = readU30();
-				var exceptionInfos:Array = methodBody.exceptionInfos;
-				/*trace("----------------------------------------------------");
-				   trace("Method: " + methodBody.methodSignature.methodName);
-				   trace("Opcode count: " + methodBody.opcodes.length);
-				   trace("Exception info count: " + exceptionCount);
-				 trace("----------------------------------------------------");*/
-				for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
-					var exceptionInfo:ExceptionInfo = new ExceptionInfo();
-					// exception_info  
-					// { 
-					//  u30 from 
-					//  u30 to  
-					//  u30 target 
-					//  u30 exc_type 
-					//  u30 var_name 
-					// The AVM2 documentation is wrong again here, exc_type and var_name are
-					// indexes into the multiname pool instead of the string pool
-					// }
-					exceptionInfo.exceptionEnabledFromCodePosition = readU30();
-					exceptionInfo.exceptionEnabledFromOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledFromCodePosition];
-
-					exceptionInfo.exceptionEnabledToCodePosition = readU30();
-					exceptionInfo.exceptionEnabledToOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledToCodePosition];
-
-					exceptionInfo.codePositionToJumpToOnException = readU30();
-					exceptionInfo.opcodeToJumpToOnException = methodBody.opcodeBaseLocations[exceptionInfo.codePositionToJumpToOnException];
-
-					exceptionInfo.exceptionType = pool.multinamePool[readU30()];
-					exceptionInfo.variableReceivingException = pool.multinamePool[readU30()];
-					exceptionInfos[exceptionInfos.length] = exceptionInfo;
-				}
+				methodBody.exceptionInfos = extractExceptionInfos(byteStream, pool, methodBody);
 
 				//Add the ExceptionInfo reference to all opcodes that until now only carried an
 				//index for the reference (this replaces the index with the actual reference in the parameter):
-				exceptionIndex = -1;
-				if (methodBody.exceptionInfos.length > 0) {
-					var foundLen:int = 0;
-					for each (var op:Op in methodBody.opcodes) {
-						var idx:int = getExceptionInfoArgumentIndex(op);
-						if (idx > -1) {
-							exceptionIndex = int(op.parameters[idx]);
-							op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
-							foundLen++;
-							if (foundLen == methodBody.exceptionInfos.length) {
-								break;
-							}
-						}
-					}
+				if (methodBodyExtractionMethod === MethodBodyExtractionKind.PARSE) {
+					resolveOpcodeExceptionInfos(methodBody);
 				}
 
 				methodBody.traits = deserializeTraitsInfo(abcFile, byteStream);
@@ -267,6 +225,53 @@ package org.as3commons.bytecode.io {
 			}
 		}
 
+		public static function extractExceptionInfos(input:ByteArray, constantPool:IConstantPool, methodBody:MethodBody):Array {
+			var exceptionInfos:Array = [];
+			var exceptionCount:int = AbcSpec.readU30(input);
+			for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
+				// exception_info
+				// {
+				//  u30 from
+				//  u30 to
+				//  u30 target
+				//  u30 exc_type
+				//  u30 var_name
+				// The AVM2 documentation is wrong again here, exc_type and var_name are
+				// indexes into the multiname pool instead of the string pool
+				// }
+				var exceptionInfo:ExceptionInfo = new ExceptionInfo();
+				exceptionInfo.exceptionEnabledFromCodePosition = AbcSpec.readU30(input);
+				exceptionInfo.exceptionEnabledToCodePosition = AbcSpec.readU30(input);
+				exceptionInfo.codePositionToJumpToOnException = AbcSpec.readU30(input);
+
+				exceptionInfo.exceptionEnabledFromOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledFromCodePosition];
+				exceptionInfo.exceptionEnabledToOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledToCodePosition];
+				exceptionInfo.opcodeToJumpToOnException = methodBody.opcodeBaseLocations[exceptionInfo.codePositionToJumpToOnException];
+
+				exceptionInfo.exceptionType = constantPool.multinamePool[AbcSpec.readU30(input)];
+				exceptionInfo.variableReceivingException = constantPool.multinamePool[AbcSpec.readU30(input)];
+				exceptionInfos[exceptionInfos.length] = exceptionInfo;
+			}
+			return exceptionInfos;
+		}
+
+		public static function resolveOpcodeExceptionInfos(methodBody:MethodBody):void {
+			var exceptionIndex:int = -1;
+			if (methodBody.exceptionInfos.length > 0) {
+				var foundLen:int = 0;
+				for each (var op:Op in methodBody.opcodes) {
+					var idx:int = getExceptionInfoArgumentIndex(op);
+					if (idx > -1) {
+						exceptionIndex = int(op.parameters[idx]);
+						op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
+						foundLen++;
+						if (foundLen == methodBody.exceptionInfos.length) {
+							break;
+						}
+					}
+				}
+			}
+		}
 
 		public override function deserializeScriptInfos(abcFile:AbcFile):void {
 			var scriptCount:int = readU30();

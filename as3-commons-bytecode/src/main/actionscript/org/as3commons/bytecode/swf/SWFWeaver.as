@@ -14,18 +14,52 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.swf {
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 
+	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
+	import org.as3commons.bytecode.emit.impl.AbcBuilder;
+	import org.as3commons.bytecode.io.AbcDeserializer;
+	import org.as3commons.bytecode.io.MethodBodyExtractionKind;
+	import org.as3commons.bytecode.swf.event.SWFFileIOEvent;
+	import org.as3commons.bytecode.tags.DoABCTag;
+	import org.as3commons.bytecode.tags.serialization.DoABCSerializer;
+	import org.as3commons.bytecode.tags.serialization.ITagSerializer;
+	import org.as3commons.bytecode.util.AbcSpec;
 
 	/**
-	 * <code>ISWFWeaver</code> implementation used to manipulate existing classes in a SWF file.
+	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
+	 * @eventType flash.events.Event.COMPLETE
+	 */
+	[Event(name="complete", type="flash.events.Event")]
+	/**
+	 * Dispatched when the class loader has encountered an IO related error.
+	 * @eventType flash.events.IOErrorEvent.IO_ERROR
+	 */
+	[Event(name="ioError", type="flash.events.IOErrorEvent")]
+	/**
+	 * Dispatched when the class loader has encountered a SWF verification error.
+	 * @eventType flash.events.IOErrorEvent.VERIFY_ERROR
+	 */
+	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
+	/**
+	 * <code>ISWFWeaver</code> implementation used to manipulate existing classes in a <code>SWF</code> file.
 	 * @author Roland Zwaga
 	 */
-	public class SWFWeaver implements ISWFWeaver {
+	public class SWFWeaver extends EventDispatcher implements ISWFWeaver {
 
-		private var _SWFWeaverIO:SWFWeaverIO;
+		private var _loader:AbcClassLoader;
+		private var _SWFFileIO:SWFFileIO;
+		private var _swfFile:SWFFile;
+		private var _builders:Dictionary;
+		private var _newClasses:IAbcBuilder;
 
 		/**
 		 * Creates a new <code>SWFWeaver</code> instance.
@@ -36,25 +70,129 @@ package org.as3commons.bytecode.swf {
 		}
 
 		/**
+		 * Internal <code>AbcClassLoader</code> instance used by the <code>buildAndLoad()</code> method.
+		 */
+		protected function get loader():AbcClassLoader {
+			if (_loader == null) {
+				_loader = new AbcClassLoader();
+				_loader.addEventListener(Event.COMPLETE, redispatch);
+				_loader.addEventListener(IOErrorEvent.IO_ERROR, redispatch);
+				_loader.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch);
+			}
+			return _loader;
+		}
+
+		/**
+		 * Redispatches the specified <code>AbcClassLoader</code> <code>Event</code>.
+		 * @param event The specified <code>AbcClassLoader</code> <code>Event</code>.
+		 */
+		protected function redispatch(event:Event):void {
+			dispatchEvent(event);
+		}
+
+		/**
+		 *
+		 * @return
+		 */
+		protected function get newClasses():IAbcBuilder {
+			if (_newClasses == null) {
+				_newClasses = new AbcBuilder();
+			}
+			return _newClasses;
+		}
+
+		/**
 		 * Initializes the current <code>SWFWeaver</code>.
 		 */
 		protected function initSWFWeaver():void {
-			_SWFWeaverIO = new SWFWeaverIO();
+			_SWFFileIO = new SWFFileIO();
+			_SWFFileIO.addEventListener(SWFFileIOEvent.TAG_SERIALIZER_CREATED, onTagSerializerCreated);
+			_builders = new Dictionary();
 		}
 
+		/**
+		 *
+		 * @param event
+		 */
+		protected function onTagSerializerCreated(event:SWFFileIOEvent):void {
+			if (event.tagSerializer is DoABCSerializer) {
+				DoABCSerializer(event.tagSerializer).deserializer = new AbcDeserializer();
+				DoABCSerializer(event.tagSerializer).deserializer.methodBodyExtractionMethod = MethodBodyExtractionKind.BYTEARRAY;
+			}
+		}
+
+		/**
+		 *
+		 * @param byteArray
+		 */
 		public function initialize(byteArray:ByteArray):void {
-			_SWFWeaverIO.read(byteArray);
+			_swfFile = _SWFFileIO.read(byteArray);
 		}
 
+		/**
+		 *
+		 * @param fullyQualifiedName
+		 * @return
+		 */
+		protected function getBuilderForFullName(fullyQualifiedName:String):AbcBuilder {
+			if (_builders[fullyQualifiedName] == null) {
+				var abcFile:AbcFile = _swfFile.getAbcFileForClassName(fullyQualifiedName);
+				_builders[fullyQualifiedName] = new AbcBuilder(abcFile);
+			}
+			return AbcBuilder(_builders[fullyQualifiedName]);
+		}
+
+		/**
+		 *
+		 * @param className
+		 * @return
+		 */
 		public function getClassBuilder(className:String):IClassBuilder {
-			return null;
+			var builder:AbcBuilder = getBuilderForFullName(className);
+			return builder.defineClass(className);
 		}
 
+		/**
+		 *
+		 * @param interfaceName
+		 * @return
+		 */
 		public function getInterfaceBuilder(interfaceName:String):IInterfaceBuilder {
-			return null;
+			var builder:AbcBuilder = getBuilderForFullName(interfaceName);
+			return builder.defineInterface(interfaceName);
 		}
 
-		public function serialize():void {
+		/**
+		 *
+		 * @return
+		 */
+		public function build():Array {
+			var result:Array;
+			if (_swfFile != null) {
+				result = [];
+				var i:int = 0;
+				var serializer:DoABCSerializer = DoABCSerializer(_SWFFileIO.createTagSerializer(DoABCTag.TAG_ID));
+				for each (var tag:ITagSerializer in _swfFile.tags) {
+					if (tag is DoABCTag) {
+						result[result.length] = serializer.serializer.serializeAbcFile(DoABCTag(tag).abcFile);
+					}
+				}
+			}
+			return result;
+		}
+
+		/**
+		 *
+		 *
+		 */
+		public function buildAndLoad(applicationDomain:ApplicationDomain = null):Boolean {
+			applicationDomain ||= ApplicationDomain.currentDomain;
+			var binaryAbcFiles:Array = build();
+			if ((binaryAbcFiles != null) && (binaryAbcFiles.length > 0)) {
+				_loader.loadClassDefinitionsFromBytecode(binaryAbcFiles, applicationDomain);
+				return true;
+			}
+			return false;
 		}
 	}
 }
