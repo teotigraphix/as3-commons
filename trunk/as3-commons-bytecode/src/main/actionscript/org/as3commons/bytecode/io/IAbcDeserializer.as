@@ -42,6 +42,6 @@ package org.as3commons.bytecode.io {
 
 		function deserializeMethodInfos(abcFile:AbcFile, pool:IConstantPool):void;
 
-		function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false):Array;
+		function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false, className:String = ""):Array;
 	}
 }

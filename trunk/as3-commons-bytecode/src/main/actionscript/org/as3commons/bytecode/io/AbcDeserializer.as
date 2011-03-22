@@ -331,7 +331,7 @@ package org.as3commons.bytecode.io {
 				}
 				instanceInfo.instanceInitializer = abcFile.methodInfo[readU30()];
 				instanceInfo.instanceInitializer.as3commonsBytecodeName = CONSTRUCTOR_BYTECODENAME;
-				instanceInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
+				instanceInfo.traits = deserializeTraitsInfo(abcFile, byteStream, false, instanceInfo.classMultiname.fullName);
 				abcFile.addInstanceInfo(instanceInfo);
 			}
 			return classCount;
@@ -517,7 +517,7 @@ package org.as3commons.bytecode.io {
 			return -1;
 		}
 
-		public override function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false):Array {
+		public override function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false, className:String = ""):Array {
 			var traits:Array = [];
 			var pool:IConstantPool = abcFile.constantPool;
 			var methodInfos:Array = abcFile.methodInfo;
@@ -539,6 +539,16 @@ package org.as3commons.bytecode.io {
 				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
+				if (traitMultiname.nameSpace.name == "*") {
+					var lastIdx:int = className.lastIndexOf(MultinameUtil.PERIOD);
+					if (lastIdx > -1) {
+						var fullNSName:Array = className.split("");
+						fullNSName[lastIdx] = MultinameUtil.SINGLE_COLON;
+						traitMultiname.nameSpace.name = fullNSName.join("");
+					} else {
+						traitMultiname.nameSpace.name = className;
+					}
+				}
 				switch (traitKind) {
 					case TraitKind.SLOT:
 					case TraitKind.CONST:
@@ -576,6 +586,7 @@ package org.as3commons.bytecode.io {
 						// It's not strictly necessary to do this, but it helps the API for the MethodInfo to have a
 						// reference to its traits and vice versa 
 						var associatedMethodInfo:MethodInfo = methodInfos[readU30()];
+						associatedMethodInfo.methodName = traitMultiname.name;
 						methodTrait.traitMethod = associatedMethodInfo;
 						associatedMethodInfo.as3commonsByteCodeAssignedMethodTrait = methodTrait;
 						methodTrait.traitMethod.as3commonsBytecodeName = traitMultiname;
@@ -605,6 +616,7 @@ package org.as3commons.bytecode.io {
 						var functionTrait:FunctionTrait = new FunctionTrait();
 						functionTrait.functionSlotId = readU30();
 						functionTrait.functionMethod = methodInfos[readU30()];
+						functionTrait.functionMethod.methodName = traitMultiname.name;
 						functionTrait.isStatic = isStatic;
 						functionTrait.functionMethod.as3commonsByteCodeAssignedMethodTrait = functionTrait;
 						trait = functionTrait;
