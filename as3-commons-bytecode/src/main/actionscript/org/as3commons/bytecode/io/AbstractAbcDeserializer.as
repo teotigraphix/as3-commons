@@ -111,7 +111,7 @@ package org.as3commons.bytecode.io {
 			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
 		}
 
-		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false):Array {
+		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false, className:String = ""):Array {
 			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
 		}
 
