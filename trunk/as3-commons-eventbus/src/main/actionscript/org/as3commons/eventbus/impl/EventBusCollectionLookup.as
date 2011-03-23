@@ -25,7 +25,7 @@ package org.as3commons.eventbus.impl {
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class EventBusCollectionLookup implements IEventBusCollectionLookup {
+	public final class EventBusCollectionLookup implements IEventBusCollectionLookup {
 
 		private var _mainList:WeakLinkedList = new WeakLinkedList();
 		private var _topicLists:Dictionary = new Dictionary();
