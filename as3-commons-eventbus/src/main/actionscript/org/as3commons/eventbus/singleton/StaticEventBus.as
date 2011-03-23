@@ -24,13 +24,17 @@ package org.as3commons.eventbus.singleton {
 	import org.as3commons.eventbus.impl.EventBus;
 	import org.as3commons.reflect.MethodInvoker;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public final class StaticEventBus {
 
 		private static var _eventBus:EventBus;
 
 		public function StaticEventBus() {
 			super();
-			throw new IllegalOperationError("Do not instantiate the StaticEventBus, use its staic methods instead.");
+			throw new IllegalOperationError("Do not instantiate the StaticEventBus, use its static methods instead.");
 		}
 
 		protected static function get eventBus():EventBus {

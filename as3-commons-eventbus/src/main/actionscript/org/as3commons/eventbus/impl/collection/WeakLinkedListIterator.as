@@ -20,7 +20,7 @@ package org.as3commons.eventbus.impl.collection {
 	import org.as3commons.collections.framework.core.AbstractLinkedCollectionIterator;
 	import org.as3commons.collections.framework.core.as3commons_collections;
 
-	public class WeakLinkedListIterator extends AbstractLinkedCollectionIterator implements IWeakLinkedListIterator {
+	public final class WeakLinkedListIterator extends AbstractLinkedCollectionIterator implements IWeakLinkedListIterator {
 
 		use namespace as3commons_collections;
 

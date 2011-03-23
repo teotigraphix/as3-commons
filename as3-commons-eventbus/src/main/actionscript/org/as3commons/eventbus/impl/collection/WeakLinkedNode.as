@@ -18,7 +18,7 @@ package org.as3commons.eventbus.impl.collection {
 
 	import org.as3commons.collections.framework.core.LinkedNode;
 
-	public class WeakLinkedNode extends LinkedNode {
+	public final class WeakLinkedNode extends LinkedNode {
 
 		private var _useWeakReference:Boolean = false;
 

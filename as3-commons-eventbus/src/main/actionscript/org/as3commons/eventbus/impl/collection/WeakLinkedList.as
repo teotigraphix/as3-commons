@@ -20,7 +20,7 @@ package org.as3commons.eventbus.impl.collection {
 	import org.as3commons.collections.framework.core.LinkedNode;
 	import org.as3commons.collections.framework.core.as3commons_collections;
 
-	public class WeakLinkedList extends AbstractLinkedDuplicatesCollection implements IWeakLinkedList {
+	public final class WeakLinkedList extends AbstractLinkedDuplicatesCollection implements IWeakLinkedList {
 
 		public function WeakLinkedList() {
 			super();
