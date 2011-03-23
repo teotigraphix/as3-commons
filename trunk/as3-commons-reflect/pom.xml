@@ -429,6 +429,16 @@
 			<id>yoolab.org-as3commons</id>
 			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-reflect</url>
 		</site>
+		<repository>
+			<id>yoolab.org-releases</id>
+			<name>Yoolab.org releases repository</name>
+			<url>https://dev.yoolab.org/maven/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>yoolab.org-snapshots</id>
+			<name>Yoolab.org snapshots repository</name>
+			<url>https://dev.yoolab.org/maven/content/repositories/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 
     <repositories>
