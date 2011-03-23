@@ -373,6 +373,15 @@ package org.as3commons.lang {
 			assertFalse(StringUtils.contains('abc', 'z'));
 		}
 		
+		public function testContainsIgnoreCase():void {
+			assertFalse(StringUtils.containsIgnoreCase(null, 'm'));
+			assertFalse(StringUtils.containsIgnoreCase('m', null));
+			assertTrue(StringUtils.containsIgnoreCase('', ''));
+			assertTrue(StringUtils.containsIgnoreCase('abc', ''));
+			assertTrue(StringUtils.containsIgnoreCase('abc', 'A'));
+			assertFalse(StringUtils.containsIgnoreCase('abc', 'Z'));
+		}		
+		
 		public function testContainsNone():void {
 			assertTrue('containsNone(null, "m")', StringUtils.containsNone(null, 'm'));
 			assertTrue('containsNone("m", null)', StringUtils.containsNone('m', null));
@@ -586,11 +595,25 @@ package org.as3commons.lang {
 			assertTrue(StringUtils.endsWith('www.domain.com', 'com'));
 		}
 		
+		public function testEndsWithIgnoreCase():void {
+			assertFalse(StringUtils.endsWithIgnoreCase(null, 'm'));
+			assertFalse(StringUtils.endsWithIgnoreCase(null, null));
+			assertFalse(StringUtils.endsWithIgnoreCase('m', null));
+			assertTrue(StringUtils.endsWithIgnoreCase('www.domain.com', 'Com'));
+		}		
+		
 		public function testStartsWith():void {
 			assertFalse(StringUtils.startsWith(null, 'm'));
 			assertFalse(StringUtils.startsWith(null, null));
 			assertFalse(StringUtils.startsWith('m', null));
 			assertTrue(StringUtils.startsWith('www.domain.com', 'www.'));
+		}
+
+		public function testStartsWithIgnoreCase():void {
+			assertFalse(StringUtils.startsWithIgnoreCase(null, 'm'));
+			assertFalse(StringUtils.startsWithIgnoreCase(null, null));
+			assertFalse(StringUtils.startsWithIgnoreCase('m', null));
+			assertTrue(StringUtils.startsWithIgnoreCase('www.domain.com', 'wWw.'));
 		}
 		
 		//=====================================================================
