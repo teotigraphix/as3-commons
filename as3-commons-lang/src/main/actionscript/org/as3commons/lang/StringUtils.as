@@ -1276,7 +1276,34 @@ package org.as3commons.lang {
 			}
 			return new RegExp('(' + searchStr + ')', 'g').test(str);
 		}
-
+		
+		/**
+		 * <p>Checks if String contains a search String, ignoring the case and handling <code>null</code>.
+		 *
+		 * <p>A <code>null</code> String will return <code>false</code>.</p>
+		 *
+		 * <pre>
+		 * StringUtils.contains(null, *)     = false
+		 * StringUtils.contains(*, null)     = false
+		 * StringUtils.contains("", "")      = true
+		 * StringUtils.contains("abc", "")   = true
+		 * StringUtils.contains("abc", "A")  = true
+		 * StringUtils.contains("abc", "z")  = false
+		 * </pre>
+		 *
+		 * @param str  the String to check, may be null
+		 * @param searchStr  the String to find, may be null
+		 * @return true if the String contains the search String,
+		 *  false if not or <code>null</code> string input
+		 */		
+		public static function containsIgnoreCase(str:String, searchStr:String):Boolean {
+			if (str == null || searchStr == null) {
+				return false;
+			}
+			
+			return new RegExp('(' + searchStr.toUpperCase() + ')', 'g').test(str.toUpperCase());
+		}
+		
 		/**
 		 * <p>Checks that the String does not contain certain characters.</p>
 		 *
@@ -1875,6 +1902,30 @@ package org.as3commons.lang {
 		}
 
 		/**
+		 * <p>Checks if the String end characters match the given end string, ignoring case.</p>
+		 *
+		 * <p><code>null</code> will return <code>false</code>.
+		 *
+		 * <pre>
+		 * StringUtils.endsWith(null, *)	 				= false
+		 * StringUtils.endsWith(null, null) 				= false
+		 * StringUtils.endsWith(*, null)	   				= false
+		 * StringUtils.endsWith("www.domain.com", "Com") = true
+		 * </pre>
+		 *
+		 * @param str  the String to check, may be null
+		 * @param end the string to compare
+		 * @return <code>true</code> if only contains whitespace, and is non-null
+		 */
+		public static function endsWithIgnoreCase(str:String, end:String):Boolean {
+			if ((str != null) && (end != null) && (str.length >= end.length)) {
+				return (str.toUpperCase().substr((str.length - end.length), str.length) == end.toUpperCase());
+			} else {
+				return false;
+			}
+		}			
+		
+		/**
 		 * <p>Checks if the String start characters match the given start string.</p>
 		 *
 		 * <p><code>null</code> will return <code>false</code>.
@@ -1897,6 +1948,30 @@ package org.as3commons.lang {
 				return false;
 			}
 		}
+		
+		/**
+		 * <p>Checks if the String start characters match the given start string.</p>
+		 *
+		 * <p><code>null</code> will return <code>false</code>.
+		 *
+		 * <pre>
+		 * StringUtils.startsWith(null, *)	 				= false
+		 * StringUtils.startsWith(null, null) 				= false
+		 * StringUtils.startsWith(*, null)	   				= false
+		 * StringUtils.startsWith("www.domain.com", "wWw.")	= true
+		 * </pre>
+		 *
+		 * @param str  the String to check, may be null
+		 * @param start the string to compare
+		 * @return <code>true</code> if only contains whitespace, and is non-null
+		 */
+		public static function startsWithIgnoreCase(str:String, start:String):Boolean {
+			if ((str != null) && (start != null) && (str.length >= start.length)) {
+				return (str.toUpperCase().substr(0, start.length) == start.toUpperCase());
+			} else {
+				return false;
+			}
+		}		
 
 		/**
 		 * Compares two strings lexicographically, ignoring case
