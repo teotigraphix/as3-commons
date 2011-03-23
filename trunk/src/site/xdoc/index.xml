@@ -38,8 +38,8 @@
 			<tr>
 				<td><strong>Bytecode</strong></td>
 				<td>Bytecode parsing and publishing formerly known as Loom. Capable of generating classes at runtime, bytecode based reflection and more.</td>
-				<td>1.0-RC1</td>
-				<td>22 Feb 2011</td>
+				<td>1.0-RC3</td>
+				<td>10 Mar 2011</td>
 			</tr>
 			<tr>
 				<td><strong>EventBus</strong></td>
