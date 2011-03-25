@@ -60,16 +60,16 @@ package org.as3commons.ui.layout.debugger {
 			var padding : uint = depth;
 
 			if (layoutItem is ILayout) {
-				drawRect(layoutItem.contentRect, padding, _contentColor, 1, 0x333333, 1, false);
+				drawLayoutItemRect(layoutItem.contentRect, padding, _contentColor, 1, 0x333333, 1, false);
 
 			} else { // IDisplay
-				drawRect(layoutItem.contentRect, padding, 0, 1, 0xFFFFFF, 1, false);
-				drawRect(layoutItem.contentRect, padding + 1, 0, 1, _contentColor, 1, false);
-				drawRect(layoutItem.visibleRect, padding + 2, 0xFFFFFF, 1, 0, 1, false);
+				drawLayoutItemRect(layoutItem.contentRect, padding, 0, 1, 0xFFFFFF, 1, false);
+				drawLayoutItemRect(layoutItem.contentRect, padding + 1, 0, 1, _contentColor, 1, false);
+				drawLayoutItemRect(layoutItem.visibleRect, padding + 2, 0xFFFFFF, 1, 0, 1, false);
 			}
 		}
 			
-		private function drawRect(
+		private function drawLayoutItemRect(
 			rect : Rectangle,
 			padding : int,
 			color : uint,
@@ -78,7 +78,6 @@ package org.as3commons.ui.layout.debugger {
 			borderAlpha : Number,
 			raster : Boolean
 		) : void {
-			
 			if (!rect.width || !rect.height) return;
 			
 			rect = rect.clone();
