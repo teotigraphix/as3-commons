@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AS3 Commons Collections">
+<project name="AS3 Commons UI">
  
     <skin>
         <groupId>org.apache.tapestry</groupId>
@@ -24,7 +24,6 @@
     </menu>
 
     <menu name="Documentation">
-      <item name="Examples" href="examples.html" />
       <item name="API" href="asdoc/index.html"/>
     </menu>
 
