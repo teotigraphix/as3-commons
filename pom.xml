@@ -103,6 +103,7 @@
 		<module>as3-commons-logging</module>
 		<module>as3-commons-reflect</module>
 		<module>as3-commons-serialization</module>
+		<module>as3-commons-ui</module>
 	</modules>
 
 	<dependencies>
