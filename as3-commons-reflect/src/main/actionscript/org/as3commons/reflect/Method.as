@@ -60,7 +60,7 @@ package org.as3commons.reflect {
 		}
 
 		protected function initMethod(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metadata:HashArray):void {
-			_declaringTypeName = declaringType;
+			declaringTypeName = declaringType;
 			_name = name;
 			_isStatic = isStatic;
 			_parameters = parameters;
@@ -78,10 +78,10 @@ package org.as3commons.reflect {
 		// declaringType
 		// ----------------------------
 
-		private var _declaringTypeName:String;
+		protected var declaringTypeName:String;
 
 		public function get declaringType():Type {
-			return Type.forName(_declaringTypeName, applicationDomain);
+			return Type.forName(declaringTypeName, applicationDomain);
 		}
 
 		// ----------------------------
@@ -205,7 +205,7 @@ package org.as3commons.reflect {
 		// -------------------------------------------------------------------------
 
 		as3commons_reflect function setDeclaringType(value:String):void {
-			_declaringTypeName = value;
+			declaringTypeName = value;
 		}
 
 		as3commons_reflect function setFullName(value:String):void {
