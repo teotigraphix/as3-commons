@@ -386,14 +386,14 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
-		public function testIntroduction():void {
+		/*public function testIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
 			classProxyInfo.introduce(TestIntroduction);
 			var abcBuilder:IAbcBuilder = _proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}
+		}*/
 
 		public function testEventDispatcherIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
