@@ -17,6 +17,7 @@ package org.as3commons.bytecode.reflect {
 	import flash.system.ApplicationDomain;
 
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.Variable;
 	import org.as3commons.reflect.as3commons_reflect;
 
@@ -24,6 +25,10 @@ package org.as3commons.bytecode.reflect {
 
 		public function ByteCodeVariable(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain) {
 			super(name, type, declaringType, isStatic, applicationDomain);
+		}
+
+		override public function get declaringType():Type {
+			return ByteCodeType.forName(declaringTypeName, this.applicationDomain);
 		}
 
 		// ----------------------------

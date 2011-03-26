@@ -20,6 +20,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.lang.HashArray;
 	import org.as3commons.reflect.Method;
+	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
 
 	public class ByteCodeMethod extends Method implements IVisibleMember {
@@ -36,8 +37,11 @@ package org.as3commons.bytecode.reflect {
 			super(declaringType, name, isStatic, parameters, returnType, applicationDomain, metaData);
 		}
 
-		private var _visibility:NamespaceKind = NamespaceKind.PACKAGE_NAMESPACE;
+		override public function get declaringType():Type {
+			return ByteCodeType.forName(declaringTypeName, this.applicationDomain);
+		}
 
+		private var _visibility:NamespaceKind = NamespaceKind.PACKAGE_NAMESPACE;
 
 		public function get hasRestArguments():Boolean {
 			return _hasRestArguments;
