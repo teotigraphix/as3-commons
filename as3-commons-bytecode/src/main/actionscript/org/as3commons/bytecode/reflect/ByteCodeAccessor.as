@@ -22,6 +22,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.lang.HashArray;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.AccessorAccess;
+	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
 
 	public class ByteCodeAccessor extends Accessor implements IVisibleMember {
@@ -30,6 +31,10 @@ package org.as3commons.bytecode.reflect {
 
 		public function ByteCodeAccessor(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metaData:HashArray = null) {
 			super(name, access, type, declaringType, isStatic, applicationDomain, metaData);
+		}
+
+		override public function get declaringType():Type {
+			return ByteCodeType.forName(declaringTypeName, this.applicationDomain);
 		}
 
 		// ----------------------------
