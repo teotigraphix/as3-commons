@@ -134,6 +134,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private static const ORGAS3COMMONSBYTECODE:String = "org.as3commons.bytecode";
 		private static const CONSTRUCTOR:String = "constructor";
 		private static const PROXY_PACKAGE_NAME_PREFIX:String = "as3commons_bytecode_generated_";
+		private static const OBJECT_DECLARINGTYPE_NAME:String = 'Object';
 
 		//public static constants
 		public static var proxyCreationDispatcher:IEventDispatcher = new EventDispatcher();
@@ -553,7 +554,7 @@ package org.as3commons.bytecode.proxy.impl {
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
 			for each (var byteCodeMethod:ByteCodeMethod in type.methods) {
-				if (byteCodeMethod.declaringType.name == 'Object') {
+				if ((byteCodeMethod.declaringType.name == null) || (byteCodeMethod.declaringType.name == OBJECT_DECLARINGTYPE_NAME)) {
 					continue;
 				}
 				if (byteCodeMethod != null) {
@@ -572,6 +573,9 @@ package org.as3commons.bytecode.proxy.impl {
 			for each (var accessor:Accessor in type.accessors) {
 				var byteCodeAccessor:ByteCodeAccessor = accessor as ByteCodeAccessor;
 				if (byteCodeAccessor != null) {
+					if ((byteCodeAccessor.declaringType.name == null) || (byteCodeAccessor.declaringType.name == OBJECT_DECLARINGTYPE_NAME)) {
+						continue;
+					}
 					if (!isEligibleForProxy(byteCodeAccessor, classProxyInfo.proxyAccessorScopes, classProxyInfo.proxyAccessorNamespaces)) {
 						continue;
 					}
