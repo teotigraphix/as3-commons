@@ -135,6 +135,10 @@ package org.as3commons.bytecode.proxy.impl {
 		private static const CONSTRUCTOR:String = "constructor";
 		private static const PROXY_PACKAGE_NAME_PREFIX:String = "as3commons_bytecode_generated_";
 		private static const OBJECT_DECLARINGTYPE_NAME:String = 'Object';
+		private static const IS_STATIC_FIELD_NAME:String = 'isStatic';
+		private static const IS_FINAL_FIELD_NAME:String = 'isFinal';
+		private static const VISIBILITY_FIELD_NAME:String = 'visibility';
+		private static const NAMESPACE_URI_FIELD_NAME:String = 'namespaceURI';
 
 		//public static constants
 		public static var proxyCreationDispatcher:IEventDispatcher = new EventDispatcher();
@@ -591,22 +595,22 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		protected function isEligibleForProxy(member:MetadataContainer, scope:ProxyScope, namespaces:Array):Boolean {
 			Assert.notNull(member, "member argument must not be null");
-			if ((member['isStatic'] == true) || (member['isFinal'] == true)) {
+			if ((member[IS_STATIC_FIELD_NAME] == true) || (member[IS_FINAL_FIELD_NAME] == true)) {
 				return false;
 			}
 			var result:Boolean = false;
 			switch (scope) {
 				case ProxyScope.ALL:
-					result = ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.NAMESPACE));
+					result = ((NamespaceKind(member[VISIBILITY_FIELD_NAME]) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member[VISIBILITY_FIELD_NAME]) === NamespaceKind.PROTECTED_NAMESPACE) || (NamespaceKind(member[VISIBILITY_FIELD_NAME]) === NamespaceKind.NAMESPACE));
 					break;
 				case ProxyScope.PUBLIC:
-					result = ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE));
+					result = ((NamespaceKind(member[VISIBILITY_FIELD_NAME]) === NamespaceKind.PACKAGE_NAMESPACE));
 					break;
 				case ProxyScope.PROTECTED:
-					result = ((NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE));
+					result = ((NamespaceKind(member[VISIBILITY_FIELD_NAME]) === NamespaceKind.PROTECTED_NAMESPACE));
 					break;
 				case ProxyScope.PUBLIC_PROTECTED:
-					result = ((NamespaceKind(member['visibility']) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member['visibility']) === NamespaceKind.PROTECTED_NAMESPACE));
+					result = ((NamespaceKind(member[VISIBILITY_FIELD_NAME]) === NamespaceKind.PACKAGE_NAMESPACE) || (NamespaceKind(member[VISIBILITY_FIELD_NAME]) === NamespaceKind.PROTECTED_NAMESPACE));
 					break;
 				case ProxyScope.NONE:
 					result = false;
@@ -614,7 +618,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			if ((!result) && (namespaces != null)) {
 				for each (var ns:String in namespaces) {
-					if (member['namespaceURI'] == ns) {
+					if (member[NAMESPACE_URI_FIELD_NAME] == ns) {
 						result = true;
 						break;
 					}
