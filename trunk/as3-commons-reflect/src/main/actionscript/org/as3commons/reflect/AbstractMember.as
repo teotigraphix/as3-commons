@@ -46,7 +46,7 @@ package org.as3commons.reflect {
 		 * @private
 		 * Stores the string name of the declaringType impl.
 		 */
-		private var declaringTypeName:String;
+		protected var declaringTypeName:String;
 
 		/**
 		 * @private
