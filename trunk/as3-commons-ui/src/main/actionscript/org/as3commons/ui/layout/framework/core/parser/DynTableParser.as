@@ -17,11 +17,12 @@ package org.as3commons.ui.layout.framework.core.parser {
 
 	import org.as3commons.ui.layout.framework.IDynamicTable;
 	import org.as3commons.ui.layout.framework.core.cell.ICell;
+	import org.as3commons.ui.layout.framework.core.config.CellConfigMerge;
 
 	/**
 	 * @author Jens Struwe 19.03.2011
 	 */
-	public class DynamicTableParser extends TableParser {
+	public class DynTableParser extends TableParser {
 
 		private var _maxContentWidth : uint;
 		private var _hGap : uint;
@@ -42,6 +43,10 @@ package org.as3commons.ui.layout.framework.core.parser {
 		}
 
 		override public function parseCell(cell : ICell) : void {
+			var hIndex : uint = _cache.length % numColumns;
+			var vIndex : uint = Math.floor(_cache.length / numColumns);
+
+			CellConfigMerge.merge(cell.config, _layout.getCellConfig(hIndex, vIndex));
 			cell.measure();
 			// skip empty cells
 			if (cell.isEmpty()) return;

@@ -15,7 +15,6 @@
  */
 package org.as3commons.ui.layout.framework.core.parser {
 
-	import flash.geom.Rectangle;
 	import org.as3commons.ui.layout.CellConfig;
 	import org.as3commons.ui.layout.framework.IMultilineLayout;
 	import org.as3commons.ui.layout.framework.ITable;
@@ -25,7 +24,7 @@ package org.as3commons.ui.layout.framework.core.parser {
 	import org.as3commons.ui.layout.framework.core.row.IRow;
 	import org.as3commons.ui.layout.framework.core.row.VRow;
 
-
+	import flash.geom.Rectangle;
 
 	/**
 	 * @author Jens Struwe 19.03.2011
