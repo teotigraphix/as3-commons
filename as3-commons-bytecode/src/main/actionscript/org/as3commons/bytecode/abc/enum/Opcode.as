@@ -43,7 +43,6 @@ package org.as3commons.bytecode.abc.enum {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "AVM2 instructions" in the AVM Spec (page 35)
 	 */
-	//TODO: Derive local_count etc. from opcodes. Page 15 of the AVM2 spec covers this in more detail.
 	public final class Opcode {
 
 		private var _instance:Op;
@@ -113,9 +112,9 @@ package org.as3commons.bytecode.abc.enum {
 		public static const esc_xattr:Opcode = new Opcode(0x72, "esc_xattr"); //Added
 		public static const esc_xelem:Opcode = new Opcode(0x71, "esc_xelem"); //Added
 		public static const finddef:Opcode = new Opcode(0x5F, "finddef", [BaseMultiname, AbcSpec.U30]); //Added
-		public static const findpropglobalstrict:Opcode = new Opcode(0x5b, "findpropglobalstrict", [BaseMultiname, AbcSpec.U30]); //Added
-		public static const findpropglobal:Opcode = new Opcode(0x5c, "findpropglobal", [BaseMultiname, AbcSpec.U30]); //Added
 		public static const findproperty:Opcode = new Opcode(0x5e, "findproperty", [BaseMultiname, AbcSpec.U30]);
+		public static const findpropglobal:Opcode = new Opcode(0x5c, "findpropglobal", [BaseMultiname, AbcSpec.U30]); //Added
+		public static const findpropglobalstrict:Opcode = new Opcode(0x5b, "findpropglobalstrict", [BaseMultiname, AbcSpec.U30]); //Added
 		public static const findpropstrict:Opcode = new Opcode(0x5d, "findpropstrict", [BaseMultiname, AbcSpec.U30]);
 		public static const getdescendants:Opcode = new Opcode(0x59, "getdescendants", [BaseMultiname, AbcSpec.U30]);
 		public static const getglobalscope:Opcode = new Opcode(0x64, "getglobalscope");
@@ -143,9 +142,9 @@ package org.as3commons.bytecode.abc.enum {
 		public static const iflt:Opcode = new Opcode(0x15, "iflt", [int, AbcSpec.S24]);
 		public static const ifne:Opcode = new Opcode(0x14, "ifne", [int, AbcSpec.S24]);
 		public static const ifnge:Opcode = new Opcode(0x0f, "ifnge", [int, AbcSpec.S24]);
+		public static const ifngt:Opcode = new Opcode(0x0e, "ifngt", [int, AbcSpec.S24]);
 		public static const ifnle:Opcode = new Opcode(0x0d, "ifnle", [int, AbcSpec.S24]);
 		public static const ifnlt:Opcode = new Opcode(0x0c, "ifnlt", [int, AbcSpec.S24]);
-		public static const ifngt:Opcode = new Opcode(0x0e, "ifngt", [int, AbcSpec.S24]);
 		public static const ifstricteq:Opcode = new Opcode(0x19, "ifstricteq", [int, AbcSpec.S24]);
 		public static const ifstrictne:Opcode = new Opcode(0x1a, "ifstrictne", [int, AbcSpec.S24]);
 		public static const iftrue:Opcode = new Opcode(0x11, "iftrue", [int, AbcSpec.S24]);
@@ -184,6 +183,8 @@ package org.as3commons.bytecode.abc.enum {
 		public static const popscope:Opcode = new Opcode(0x1d, "popscope");
 		public static const pushbyte:Opcode = new Opcode(0x24, "pushbyte", [int, AbcSpec.UNSIGNED_BYTE]); // unsigned byte... however, this was writing out too many bytes (4 bytes for the value instead of 1)
 		public static const pushconstant:Opcode = new Opcode(0x22, "pushconstant", [String, AbcSpec.U30]); //Added
+		public static const pushdecimal:Opcode = new Opcode(0x33, "pushdecimal", [Number, AbcSpec.U30]);
+		public static const pushdnan:Opcode = new Opcode(0x34, "pushdnan");
 		public static const pushdouble:Opcode = new Opcode(0x2f, "pushdouble", [Number, AbcSpec.U30]);
 		public static const pushfalse:Opcode = new Opcode(0x27, "pushfalse");
 		public static const pushint:Opcode = new Opcode(0x2d, "pushint", [Integer, AbcSpec.U30]);
@@ -197,8 +198,6 @@ package org.as3commons.bytecode.abc.enum {
 		public static const pushuint:Opcode = new Opcode(0x2E, "pushuint", [UnsignedInteger, AbcSpec.U30]); //Added
 		public static const pushundefined:Opcode = new Opcode(0x21, "pushundefined");
 		public static const pushwith:Opcode = new Opcode(0x1c, "pushwith");
-		public static const pushdecimal:Opcode = new Opcode(0x33, "pushdecimal", [Number, AbcSpec.U30]);
-		public static const pushdnan:Opcode = new Opcode(0x34, "pushdnan");
 		public static const returnvalue:Opcode = new Opcode(0x48, "returnvalue");
 		public static const returnvoid:Opcode = new Opcode(0x47, "returnvoid");
 		public static const rshift:Opcode = new Opcode(0xa6, "rshift");
@@ -240,8 +239,8 @@ package org.as3commons.bytecode.abc.enum {
 		private static const UNKNOWN_OPCODE_ARGUMENTTYPE:String = "Unknown Opcode argument type. {0}";
 
 		private static var _jumpLookup:Dictionary;
-		private static var _opcodePositions:Dictionary;
-		private static var _opcodeEndPositions:Dictionary;
+		//private static var _opcodePositions:Dictionary;
+		//private static var _opcodeEndPositions:Dictionary;
 		public static const jumpOpcodes:Dictionary = new Dictionary();
 		{
 			jumpOpcodes[ifeq] = true;
@@ -292,11 +291,11 @@ package org.as3commons.bytecode.abc.enum {
 		 * Serializes an array of Ops, returning a ByteArray with the opcode output block.
 		 */
 		public static function serialize(ops:Array, methodBody:MethodBody, abcFile:AbcFile):ByteArray {
-			_opcodePositions = new Dictionary();
+			var opcodePositions:Dictionary = new Dictionary();
 			var serializedOpcodes:ByteArray = AbcSpec.newByteArray();
 			for each (var op:Op in ops) {
 				op.baseLocation = serializedOpcodes.position
-				_opcodePositions[op] = serializedOpcodes.position;
+				opcodePositions[op] = serializedOpcodes.position;
 				AbcSpec.writeU8(op.opcode._value, serializedOpcodes);
 
 				serializeOpcodeArguments(op, abcFile, methodBody, serializedOpcodes);
@@ -304,10 +303,9 @@ package org.as3commons.bytecode.abc.enum {
 //				trace(serializedOpcodes.position + "\t" + op);
 			}
 			serializedOpcodes.position = 0;
-			resolveBackPatches(serializedOpcodes, methodBody.backPatches, _opcodePositions);
+			resolveBackPatches(serializedOpcodes, methodBody.backPatches, opcodePositions);
 			serializedOpcodes.position = 0;
-			methodBody.opcodeBaseLocations = _opcodePositions;
-			_opcodePositions = null;
+			methodBody.opcodeBaseLocations = opcodePositions;
 			return serializedOpcodes;
 		}
 
@@ -342,11 +340,11 @@ package org.as3commons.bytecode.abc.enum {
 				var argumentType:* = typeAndReadWritePair[0];
 				var readWritePair:ReadWritePair = typeAndReadWritePair[1];
 				var rawValue:* = op.parameters[serializedArgumentCount++];
-				serializeOpcode(rawValue, argumentType, abcFile, methodBody, op, serializedOpcodes, readWritePair);
+				serializeOpcodeArgument(rawValue, argumentType, abcFile, methodBody, op, serializedOpcodes, readWritePair);
 			}
 		}
 
-		public static function serializeOpcode(rawValue:*, argumentType:*, abcFile:AbcFile, methodBody:MethodBody, op:Op, serializedOpcodes:ByteArray, readWritePair:ReadWritePair):void {
+		public static function serializeOpcodeArgument(rawValue:*, argumentType:*, abcFile:AbcFile, methodBody:MethodBody, op:Op, serializedOpcodes:ByteArray, readWritePair:ReadWritePair):void {
 			var abcCompatibleValue:* = rawValue;
 
 			switch (argumentType) {
@@ -402,7 +400,7 @@ package org.as3commons.bytecode.abc.enum {
 					var arr:Array = rawValue as Array;
 					var caseCount:int = arr.length;
 					for (var i:int = 0; i < caseCount; ++i) {
-						AbcSpec.writeS24(arr[i], serializedOpcodes);
+						readWritePair.write(arr[i], serializedOpcodes);
 					}
 					break;
 
@@ -426,47 +424,45 @@ package org.as3commons.bytecode.abc.enum {
 		 * opcode block.
 		 */
 		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, constantPool:IConstantPool):Array {
-			_opcodePositions = new Dictionary();
-			_opcodeEndPositions = new Dictionary();
+			var opcodePositions:Dictionary = new Dictionary();
+			var opcodeEndPositions:Dictionary = new Dictionary();
 			var ops:Array = [];
 			if (methodBody.backPatches == null) {
 				methodBody.backPatches = [];
 			}
-			var startPosition:int = byteArray.position;
-			var startOffset:uint = 0;
-			var currentPosition:uint = 0;
+			var methodBodyPosition:uint = byteArray.position;
+			var opcodeStartPosition:uint = 0;
+			var offset:uint = 0;
 
 			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCodeLength);
 			try {
 				while (byteArray.position < positionAtEndOfBytecode) {
-					currentPosition = byteArray.position;
+					opcodeStartPosition = byteArray.position;
 					var newOp:Op = parseOpcode(byteArray, constantPool, ops, methodBody);
-					newOp.baseLocation = startOffset;
-					startOffset += (byteArray.position - currentPosition);
-					newOp.endLocation = startOffset;
-					_opcodePositions[newOp.baseLocation] = newOp;
-					_opcodeEndPositions[newOp.endLocation] = newOp;
+					newOp.baseLocation = offset;
+					offset += (byteArray.position - opcodeStartPosition);
+					newOp.endLocation = offset;
+					opcodePositions[newOp.baseLocation] = newOp;
+					opcodeEndPositions[newOp.endLocation] = newOp;
 				}
 				if (byteArray.position > positionAtEndOfBytecode) {
 					throw new Error("Opcode parsing read beyond end of method body");
 				}
 			} catch (e:*) {
-				var pos:int = (byteArray.position - startPosition);
+				var pos:int = (byteArray.position - methodBodyPosition);
 				var fragment:ByteArray = AbcSpec.newByteArray();
-				fragment.writeBytes(byteArray, startPosition, opcodeByteCodeLength);
+				fragment.writeBytes(byteArray, methodBodyPosition, opcodeByteCodeLength);
 				fragment.position = 0;
 				errorDispatcher.dispatchEvent(new ByteCodeErrorEvent(ByteCodeErrorEvent.BYTECODE_METHODBODY_ERROR, fragment, pos));
 				throw e;
 			}
 
-			resolveJumpTargets(methodBody);
-			methodBody.opcodeBaseLocations = _opcodePositions;
-			_opcodePositions = null;
-			_opcodeEndPositions = null;
+			resolveJumpTargets(methodBody, opcodePositions, opcodeEndPositions);
+			methodBody.opcodeBaseLocations = opcodePositions;
 			return ops;
 		}
 
-		private static function resolveJumpTargets(methodBody:MethodBody):void {
+		private static function resolveJumpTargets(methodBody:MethodBody, opcodeStartPositions:Dictionary, opcodeEndPositions:Dictionary):void {
 			var pos:int;
 			var targetPos:int;
 			var target:Op;
@@ -474,18 +470,18 @@ package org.as3commons.bytecode.abc.enum {
 				if (jmpTarget.jumpOpcode.opcode !== Opcode.lookupswitch) {
 					pos = int(jmpTarget.jumpOpcode.parameters[0]);
 					targetPos = jmpTarget.jumpOpcode.endLocation + pos;
-					target = _opcodePositions[targetPos];
+					target = opcodeStartPositions[targetPos];
 					if (target == null) { //jumps can point to the end location of an opcode sometimes, like the default jump in a switch statement:
-						target = _opcodeEndPositions[targetPos];
+						target = opcodeEndPositions[targetPos];
 					}
 					jmpTarget.targetOpcode = target;
 				} else {
 					var arr:Array = jmpTarget.jumpOpcode.parameters[2] as Array;
 					for each (pos in arr) {
 						targetPos = jmpTarget.jumpOpcode.baseLocation + pos;
-						target = _opcodePositions[targetPos];
+						target = opcodeStartPositions[targetPos];
 						if (target == null) {
-							target = _opcodeEndPositions[targetPos];
+							target = opcodeEndPositions[targetPos];
 						}
 						jmpTarget.addTarget(target);
 					}
@@ -496,9 +492,9 @@ package org.as3commons.bytecode.abc.enum {
 		public static function parseOpcode(byteArray:ByteArray, constantPool:IConstantPool, ops:Array, methodBody:MethodBody):Op {
 			var startPos:int = byteArray.position;
 			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
-			var argumentValues:Array = [];
+			var argumentValues:Array;
 			for each (var argument:* in opcode.argumentTypes) {
-				parseOpcodeArguments(argument, byteArray, argumentValues, constantPool, methodBody);
+				argumentValues = parseOpcodeArguments(argument, byteArray, constantPool, methodBody);
 			}
 			var endPos:int = byteArray.position;
 
@@ -510,7 +506,8 @@ package org.as3commons.bytecode.abc.enum {
 			return op;
 		}
 
-		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, argumentValues:Array, constantPool:IConstantPool, methodBody:MethodBody):void {
+		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, constantPool:IConstantPool, methodBody:MethodBody):Array {
+			var argumentValues:Array = [];
 			var argumentType:* = argument[0];
 			var readWritePair:ReadWritePair = argument[1];
 			var byteCodeValue:* = readWritePair.read(byteArray);
@@ -571,11 +568,14 @@ package org.as3commons.bytecode.abc.enum {
 					// already been read for us by the time this switch is invoked, we just need
 					// to pull the rest of the offsets. We determine how many there are by looking at
 					// the second argument to the op, which is the case_count
+					//new Opcode(0x1b, "lookupswitch", [int, AbcSpec.S24], [int, AbcSpec.U30], [Array, AbcSpec.S24_ARRAY]);
 					var caseOffsets:Array = [];
-					caseOffsets[caseOffsets.length] = byteCodeValue;
+					caseOffsets.length = argumentValues[1];
+					caseOffsets[0] = byteCodeValue;
 					var caseCount:int = argumentValues[1];
 					for (var i:int = 0; i < caseCount; ++i) {
-						caseOffsets[caseOffsets.length] = AbcSpec.readS24(byteArray);
+						caseOffsets[i + 1] = readWritePair.read(byteArray);
+							//AbcSpec.readS24(byteArray);
 					}
 					argumentValues[argumentValues.length] = caseOffsets;
 					break;
@@ -589,6 +589,7 @@ package org.as3commons.bytecode.abc.enum {
 				default:
 					throw new Error("Unknown Opcode argument type." + argumentType.toString());
 			}
+			return argumentValues;
 		}
 
 		public static function determineOpcode(opcodeByte:int):Opcode {
