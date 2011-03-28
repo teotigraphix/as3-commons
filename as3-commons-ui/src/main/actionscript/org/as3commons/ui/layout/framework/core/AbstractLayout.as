@@ -122,7 +122,7 @@ package org.as3commons.ui.layout.framework.core {
 					layoutItem = item;
 
 				} else {
-					return;
+					continue;
 				}
 				
 				if (layoutItem.id) {
