@@ -18,7 +18,7 @@ package org.as3commons.ui.layout {
 	import org.as3commons.ui.layout.framework.IDynamicTable;
 	import org.as3commons.ui.layout.framework.core.AbstractMultilineLayout;
 	import org.as3commons.ui.layout.framework.core.cell.ILayoutCell;
-	import org.as3commons.ui.layout.framework.core.parser.DynamicTableParser;
+	import org.as3commons.ui.layout.framework.core.parser.DynTableParser;
 	import org.as3commons.ui.layout.framework.core.parser.ILayoutParser;
 	import org.as3commons.ui.layout.framework.core.parser.SingleRowTableParser;
 	import org.as3commons.ui.layout.framework.core.row.IRow;
@@ -73,7 +73,7 @@ package org.as3commons.ui.layout {
 		 */
 
 		override protected function createParser() : ILayoutParser {
-			if (_maxContentWidth) return new DynamicTableParser();
+			if (_maxContentWidth) return new DynTableParser();
 			else return new SingleRowTableParser();
 		}
 
