@@ -15,11 +15,11 @@
  */
 package org.as3commons.ui.layout.framework {
 
-	import flash.display.Sprite;
 	import org.as3commons.collections.framework.IIterable;
 	import org.as3commons.collections.framework.IRecursiveIterator;
 	import org.as3commons.ui.layout.CellConfig;
 
+	import flash.display.Sprite;
 
 	/**
 	 * @author Jens Struwe 21.03.2011
@@ -59,6 +59,8 @@ package org.as3commons.ui.layout.framework {
 		function recursiveIterator() : IRecursiveIterator;
 		
 		function remove(key : *) : void;
+
+		function get numItems() : uint;
 
 		/*
 		 * Layout

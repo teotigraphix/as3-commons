@@ -183,6 +183,10 @@ package org.as3commons.ui.layout.framework.core {
 			}
 		}
 
+		public function get numItems() : uint {
+			return _items.size;
+		}
+
 		// Layout
 
 		public function layout(container : Sprite, relayout : Boolean = false) : void {
