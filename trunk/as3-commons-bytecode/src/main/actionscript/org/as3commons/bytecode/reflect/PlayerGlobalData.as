@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.reflect {
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.reflect.Accessor;
@@ -53,6 +53,14 @@ package org.as3commons.bytecode.reflect {
 		private static function typeToByteCodeType(type:Type, applicationDomain:ApplicationDomain):ByteCodeType {
 			var result:ByteCodeType = new ByteCodeType(applicationDomain);
 			result.as3commons_reflect::setIsNative(true);
+			result.name = type.name;
+			result.fullName = type.fullName;
+			result.clazz = type.clazz;
+			result.extendsClasses = type.extendsClasses.concat([]);
+			result.interfaces = type.interfaces.concat([]);
+			for each(var param:* in type.parameters){
+				result.parameters[result.parameters.length] = param;
+			}
 			result.as3commons_reflect::setInstanceConstructor(constructorToByteCodeConstructor(type.constructor, applicationDomain));
 			result.constructor = new Constructor(type.fullName, applicationDomain, result.instanceConstructor.parameters);
 			var methods:Array = [];

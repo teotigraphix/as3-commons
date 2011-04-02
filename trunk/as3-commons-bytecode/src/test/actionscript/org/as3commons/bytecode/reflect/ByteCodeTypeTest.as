@@ -62,7 +62,7 @@ package org.as3commons.bytecode.reflect {
 			assertEquals("interfaces:ITestInterface", bm.scopeName);
 
 			var classNames:Array = ByteCodeType.interfaceLookup["interfaces.ITestInterface"];
-			assertNotNull(classNames.length);
+			assertNotNull(classNames);
 			assertEquals(1, classNames.length);
 			assertEquals("classes.TestImplementation", classNames[0]);
 		}
@@ -99,9 +99,16 @@ package org.as3commons.bytecode.reflect {
 			assertEquals("interfaces:ITestInterface", bm.scopeName);
 
 			var classNames:Array = ByteCodeType.interfaceLookup["interfaces.ITestInterface"];
-			assertNotNull(classNames.length);
+			assertNotNull(classNames);
 			assertEquals(1, classNames.length);
 			assertEquals("classes.TestImplementation", classNames[0]);
+		}
+		
+		public function testReflectNativeClass():void {
+			var type:ByteCodeType = ByteCodeType.forName("Object");
+			assertNotNull(type);
+			assertEquals("Object",type.fullName);
+			assertEquals("Object",type.name);
 		}
 
 	}
