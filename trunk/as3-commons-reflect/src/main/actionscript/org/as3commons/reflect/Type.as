@@ -749,6 +749,10 @@ package org.as3commons.reflect {
 				}
 			}
 		}
+		
+		as3commons_reflect function setParameters(value:Array):void {
+			_parameters = value;
+		}
 
 	}
 }
