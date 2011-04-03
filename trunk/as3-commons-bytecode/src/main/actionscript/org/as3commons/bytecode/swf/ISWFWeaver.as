@@ -18,7 +18,7 @@ package org.as3commons.bytecode.swf {
 	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
-
+	
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
 
@@ -38,7 +38,7 @@ package org.as3commons.bytecode.swf {
 	 */
 	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
 	/**
-	 *
+	 * Describes an object capable of manipulating the contents of ABC tags inside a SWF file.
 	 * @author Roland Zwaga
 	 */
 	public interface ISWFWeaver extends IEventDispatcher {
@@ -47,7 +47,7 @@ package org.as3commons.bytecode.swf {
 		 *
 		 * @param byteArray
 		 */
-		function initialize(byteArray:ByteArray):void;
+		function read(byteArray:ByteArray):void;
 
 		/**
 		 *
@@ -73,5 +73,7 @@ package org.as3commons.bytecode.swf {
 		 *
 		 */
 		function buildAndLoad(applicationDomain:ApplicationDomain = null):Boolean;
+		
+		function buildSWFFile():ByteArray;
 	}
 }

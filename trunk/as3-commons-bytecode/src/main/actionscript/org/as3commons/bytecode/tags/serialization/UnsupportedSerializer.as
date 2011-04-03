@@ -23,12 +23,25 @@ package org.as3commons.bytecode.tags.serialization {
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.SWFSpec;
 
+	/**
+	 * 
+	 * @author Roland Zwaga
+	 */
 	public class UnsupportedSerializer extends AbstractTagSerializer {
 
+		/**
+		 * 
+		 */
 		public function UnsupportedSerializer() {
 			super(null);
 		}
 
+		/**
+		 * 
+		 * @param input
+		 * @param recordHeader
+		 * @return 
+		 */
 		override public function read(input:ByteArray, recordHeader:RecordHeader):ISWFTag {
 			var tag:UnsupportedTag = new UnsupportedTag(recordHeader.id);
 			tag.tagBody = AbcSpec.newByteArray();
@@ -37,6 +50,11 @@ package org.as3commons.bytecode.tags.serialization {
 			return tag;
 		}
 
+		/**
+		 * 
+		 * @param output
+		 * @param tag
+		 */
 		override public function write(output:ByteArray, tag:ISWFTag):void {
 			var unsupportedTag:UnsupportedTag = tag as UnsupportedTag;
 			unsupportedTag.tagBody.position = 0;

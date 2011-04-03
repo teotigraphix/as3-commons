@@ -26,14 +26,14 @@ package org.as3commons.bytecode.swf {
 
 	public class SWFFileIOTest extends TestCase {
 
-		private var _swfFileIO:SWFFileIO;
+		private var _swfFileIO:SWFWeaverFileIO;
 
 		public function SWFFileIOTest(methodName:String = null) {
 			super(methodName);
 		}
 
 		override public function setUp():void {
-			_swfFileIO = new SWFFileIO();
+			_swfFileIO = new SWFWeaverFileIO();
 		}
 
 		public function testLoadFromLoaderInfo():void {

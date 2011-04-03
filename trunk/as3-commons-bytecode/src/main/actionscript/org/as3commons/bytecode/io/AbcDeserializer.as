@@ -15,7 +15,7 @@
  */
 package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -205,6 +205,7 @@ package org.as3commons.bytecode.io {
 				if (methodBodyExtractionMethod === MethodBodyExtractionKind.PARSE) {
 					methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile.constantPool);
 				} else if (methodBodyExtractionMethod === MethodBodyExtractionKind.BYTEARRAY) {
+					methodBody.rawOpcodes = AbcSpec.newByteArray();
 					methodBody.rawOpcodes.writeBytes(byteStream, byteStream.position, codeLength);
 					byteStream.position += codeLength;
 				} else {
@@ -214,15 +215,22 @@ package org.as3commons.bytecode.io {
 				methodBody.exceptionInfos = extractExceptionInfos(byteStream, pool, methodBody);
 
 				//Add the ExceptionInfo reference to all opcodes that until now only carried an
-				//index for the reference (this replaces the index with the actual reference in the parameter):
+				//index of the reference (this replaces the index with the actual reference in the parameter):
 				if (methodBodyExtractionMethod === MethodBodyExtractionKind.PARSE) {
-					resolveOpcodeExceptionInfos(methodBody);
+					resolveExceptionInfos(methodBody);
 				}
 
 				methodBody.traits = deserializeTraitsInfo(abcFile, byteStream);
 
 				abcFile.addMethodBody(methodBody);
 			}
+		}
+		
+		public static function resolveExceptionInfos(methodBody:MethodBody):void {
+			for each(var exceptionInfo:ExceptionInfo in methodBody.exceptionInfos){
+				resolveExceptionInfoOpcodes(exceptionInfo, methodBody);
+			}
+			resolveOpcodeExceptionInfos(methodBody);
 		}
 
 		public static function extractExceptionInfos(input:ByteArray, constantPool:IConstantPool, methodBody:MethodBody):Array {
@@ -244,15 +252,17 @@ package org.as3commons.bytecode.io {
 				exceptionInfo.exceptionEnabledToCodePosition = AbcSpec.readU30(input);
 				exceptionInfo.codePositionToJumpToOnException = AbcSpec.readU30(input);
 
-				exceptionInfo.exceptionEnabledFromOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledFromCodePosition];
-				exceptionInfo.exceptionEnabledToOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledToCodePosition];
-				exceptionInfo.opcodeToJumpToOnException = methodBody.opcodeBaseLocations[exceptionInfo.codePositionToJumpToOnException];
-
 				exceptionInfo.exceptionType = constantPool.multinamePool[AbcSpec.readU30(input)];
 				exceptionInfo.variableReceivingException = constantPool.multinamePool[AbcSpec.readU30(input)];
 				exceptionInfos[exceptionInfos.length] = exceptionInfo;
 			}
 			return exceptionInfos;
+		}
+		
+		public static function resolveExceptionInfoOpcodes(exceptionInfo:ExceptionInfo, methodBody:MethodBody):void {
+			exceptionInfo.exceptionEnabledFromOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledFromCodePosition];
+			exceptionInfo.exceptionEnabledToOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledToCodePosition];
+			exceptionInfo.opcodeToJumpToOnException = methodBody.opcodeBaseLocations[exceptionInfo.codePositionToJumpToOnException];
 		}
 
 		public static function resolveOpcodeExceptionInfos(methodBody:MethodBody):void {

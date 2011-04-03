@@ -32,7 +32,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.io.AbstractAbcDeserializer;
-	import org.as3commons.bytecode.swf.SWFFileIO;
+	import org.as3commons.bytecode.swf.SWFWeaverFileIO;
 	import org.as3commons.bytecode.tags.serialization.RecordHeaderSerializer;
 	import org.as3commons.bytecode.tags.struct.RecordHeader;
 	import org.as3commons.bytecode.util.AbcFileUtil;
@@ -70,7 +70,7 @@ package org.as3commons.bytecode.reflect {
 			_byteStream = AbcSpec.newByteArray();
 			input.endian = Endian.LITTLE_ENDIAN;
 			var swfIdentifier:String = input.readUTFBytes(3);
-			var compressed:Boolean = (swfIdentifier == SWFFileIO.SWF_SIGNATURE_COMPRESSED);
+			var compressed:Boolean = (swfIdentifier == SWFWeaverFileIO.SWF_SIGNATURE_COMPRESSED);
 			var version:uint = input.readByte();
 			var filesize:uint = input.readUnsignedInt();
 
