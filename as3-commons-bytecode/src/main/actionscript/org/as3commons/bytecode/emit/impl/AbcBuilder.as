@@ -190,7 +190,7 @@ package org.as3commons.bytecode.emit.impl {
 		public function defineClass(fullName:String, superClassName:String = null):IClassBuilder {
 			fullName = AbcFileUtil.normalizeFullName(fullName);
 			var packageName:String = MultinameUtil.extractPackageName(fullName);
-			var classname:String = fullName.substr(fullName.lastIndexOf(MultinameUtil.PERIOD), fullName.length);
+			var classname:String = fullName.substr(fullName.lastIndexOf(MultinameUtil.PERIOD)+1, fullName.length);
 			var packageBuilder:IPackageBuilder = definePackage(packageName);
 			var classBuilder:IClassBuilder = packageBuilder.defineClass(classname, superClassName);
 			if (_abcFile != null) {

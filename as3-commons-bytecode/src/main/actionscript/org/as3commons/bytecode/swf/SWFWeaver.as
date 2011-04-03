@@ -20,7 +20,7 @@ package org.as3commons.bytecode.swf {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
@@ -33,6 +33,7 @@ package org.as3commons.bytecode.swf {
 	import org.as3commons.bytecode.tags.serialization.DoABCSerializer;
 	import org.as3commons.bytecode.tags.serialization.ITagSerializer;
 	import org.as3commons.bytecode.util.AbcSpec;
+	import org.as3commons.bytecode.util.SWFSpec;
 
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
@@ -56,7 +57,7 @@ package org.as3commons.bytecode.swf {
 	public class SWFWeaver extends EventDispatcher implements ISWFWeaver {
 
 		private var _loader:AbcClassLoader;
-		private var _SWFFileIO:SWFFileIO;
+		private var _SWFFileIO:SWFWeaverFileIO;
 		private var _swfFile:SWFFile;
 		private var _builders:Dictionary;
 		private var _newClasses:IAbcBuilder;
@@ -105,7 +106,7 @@ package org.as3commons.bytecode.swf {
 		 * Initializes the current <code>SWFWeaver</code>.
 		 */
 		protected function initSWFWeaver():void {
-			_SWFFileIO = new SWFFileIO();
+			_SWFFileIO = new SWFWeaverFileIO();
 			_SWFFileIO.addEventListener(SWFFileIOEvent.TAG_SERIALIZER_CREATED, onTagSerializerCreated);
 			_builders = new Dictionary();
 		}
@@ -125,7 +126,7 @@ package org.as3commons.bytecode.swf {
 		 *
 		 * @param byteArray
 		 */
-		public function initialize(byteArray:ByteArray):void {
+		public function read(byteArray:ByteArray):void {
 			_swfFile = _SWFFileIO.read(byteArray);
 		}
 
@@ -163,8 +164,7 @@ package org.as3commons.bytecode.swf {
 		}
 
 		/**
-		 *
-		 * @return
+		 * @inheritDoc
 		 */
 		public function build():Array {
 			var result:Array;
@@ -177,16 +177,15 @@ package org.as3commons.bytecode.swf {
 						result[result.length] = serializer.serializer.serializeAbcFile(DoABCTag(tag).abcFile);
 					}
 				}
-				if (newClasses != null) {
-					result[result.length] = serializer.serializer.serializeAbcFile(newClasses.build());
+				if (_newClasses != null) {
+					result[result.length] = serializer.serializer.serializeAbcFile(_newClasses.build());
 				}
 			}
 			return result;
 		}
 
 		/**
-		 *
-		 *
+		 * @inheritDoc
 		 */
 		public function buildAndLoad(applicationDomain:ApplicationDomain = null):Boolean {
 			applicationDomain ||= ApplicationDomain.currentDomain;
@@ -196,6 +195,26 @@ package org.as3commons.bytecode.swf {
 				return true;
 			}
 			return false;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function buildSWFFile():ByteArray {
+			if (_swfFile != null) {
+				if (_newClasses != null) {
+					 var abcFile:AbcFile = _newClasses.build();
+					 var tag:DoABCTag = new DoABCTag();
+					 tag.byteCodeName = "as3commonsByteCodeGeneratedClasses";
+					 tag.abcFile = abcFile;
+					 _swfFile.tags[_swfFile.tags.length] = tag;
+				}
+				var result:ByteArray = new ByteArray();
+				_SWFFileIO.write(result, _swfFile);
+				result.position = 0;
+				return result;
+			}
+			return null;
 		}
 	}
 }

@@ -21,7 +21,7 @@ package org.as3commons.bytecode.swf {
 
 	[Event(name="tagSerializerCreated", type="org.as3commons.bytecode.swf.event.SWFFileIOEvent")]
 	/**
-	 *
+	 * Describes an object capable of reading and writing a SWF file.
 	 * @author Roland Zwaga
 	 */
 	public interface ISWFFileIO extends IEventDispatcher {

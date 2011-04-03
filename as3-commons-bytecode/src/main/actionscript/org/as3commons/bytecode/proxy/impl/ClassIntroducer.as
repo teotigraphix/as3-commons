@@ -185,7 +185,7 @@ package org.as3commons.bytecode.proxy.impl {
 					type.byteArray.position = method.bodyStartPosition;
 					method.methodBody.opcodes = Opcode.parse(type.byteArray, method.bodyLength, method.methodBody, type.constantPool);
 					method.methodBody.exceptionInfos = AbcDeserializer.extractExceptionInfos(type.byteArray, type.constantPool, method.methodBody);
-					AbcDeserializer.resolveOpcodeExceptionInfos(method.methodBody);
+					AbcDeserializer.resolveExceptionInfos(method.methodBody);
 				} finally {
 					type.byteArray.position = originalPosition;
 				}

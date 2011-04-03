@@ -19,6 +19,20 @@ package org.as3commons.bytecode {
 
 	public class TestConstants {
 
+		[Embed(source="../../../../../test/resources/assets/SWFWeaverTest-debug.swf", mimeType="application/octet-stream")]
+		private static var debugbuildswfweavertest:Class;
+		
+		public static function getDebugBuildSWFWeaverTest():ByteArray {
+			return new debugbuildswfweavertest() as ByteArray;
+		}
+		
+		[Embed(source="../../../../../test/resources/assets/SWFWeaverTest-release.swf", mimeType="application/octet-stream")]
+		private static var releasebuildswfweavertest:Class;
+
+		public static function getReleaseBuildSWFWeaverTest():ByteArray {
+			return new releasebuildswfweavertest() as ByteArray;
+		}
+
 		[Embed(source="../../../../../test/resources/assets/BytecodeDeserializeTest-release.swf", mimeType="application/octet-stream")]
 		private static var releasebuildtest:Class;
 
