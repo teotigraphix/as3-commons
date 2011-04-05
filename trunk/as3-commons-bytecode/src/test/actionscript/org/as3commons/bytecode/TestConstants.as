@@ -113,6 +113,13 @@ package org.as3commons.bytecode {
 		[Embed(source="../../../../../test/resources/assets/abc/Interface.abc", mimeType="application/octet-stream")]
 		private static var interfaceBytes:Class;
 
+        [Embed(source="../../../../../test/resources/assets/spark_4.5.0.19786-uncompressed.swf", mimeType="application/octet-stream")]
+		private static var sparkRslUncompressedSwf:Class;
+
+        public static function getSparkRslUncompressedSwf():ByteArray {
+			return new sparkRslUncompressedSwf() as ByteArray;
+		}
+
 		public static function getInterfaceDefinitionByteCode():ByteArray {
 			return new interfaceBytes() as ByteArray;
 		}
