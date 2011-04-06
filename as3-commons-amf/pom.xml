@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>org.as3commons</groupId>
 		<artifactId>as3commons-project</artifactId>
@@ -14,7 +15,7 @@
 			AMF (Action Message Format) (De)serialization codecs.
 	</description>
 	<inceptionYear>2011</inceptionYear>
-	
+
 	<developers>
 		<developer>
 			<id>jvcoppenolle</id>
@@ -23,6 +24,16 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.adobe.flexunit</groupId>
+			<artifactId>flexunit</artifactId>
+			<version>4.1.0-beta3</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<build>
 
@@ -57,13 +68,13 @@
 					</tagBase>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<configuration>
 					<filesets>
 						<fileset>
-							<directory>src/main/actionscript</directory>
+							<directory>src/test/actionscript</directory>
 							<includes>
 								<include>FlexUnitApplication.mxml</include>
 							</includes>
@@ -79,8 +90,8 @@
 	<scm>
 		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-amf</developerConnection>
 		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-amf</url>
-	  <connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-amf</connection>
-  </scm>
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-amf</connection>
+	</scm>
 
 	<distributionManagement>
 		<site>

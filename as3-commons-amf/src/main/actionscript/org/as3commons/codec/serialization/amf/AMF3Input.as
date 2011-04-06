@@ -7,6 +7,7 @@ package org.as3commons.codec.serialization.amf
 	import flash.utils.getDefinitionByName;
 	
 	import org.as3commons.codec.IDecoder;
+	import org.as3commons.codec.serialization.utils.PropertyInfo;
 	import org.as3commons.codec.serialization.utils.TraitsInfo;
 	
 	public class AMF3Input
@@ -198,9 +199,10 @@ package org.as3commons.codec.serialization.amf
 			var ref:int = readUInt29();
 			var object:Object;
 			var traitsInfo:TraitsInfo;
+			var propertyInfo:PropertyInfo;
+			var property:String;
 			var type:String;
 			var kind:Class;
-			var property:String;
 			var value:Object;
 			
 			if ((ref & 0x01) == 0)
@@ -222,7 +224,10 @@ package org.as3commons.codec.serialization.amf
 				}
 				
 				if (kind)
+				{
 					object = new kind();
+					traitsInfo.kind = kind;
+				}
 				else
 					object = {};
 				
@@ -234,8 +239,8 @@ package org.as3commons.codec.serialization.amf
 				}
 				else
 				{
-					for each (property in traitsInfo.properties)
-						object[property] = readObject();
+					for each (propertyInfo in traitsInfo.properties)
+						object[propertyInfo.name] = readObject();
 					
 					if (traitsInfo.isDynamic)
 					{
