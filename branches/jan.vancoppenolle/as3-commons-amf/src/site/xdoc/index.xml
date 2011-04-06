@@ -2,7 +2,7 @@
 <document>
     <properties>
         <title>Welcome to as3commons-amf</title>
-        <author email="scab@dds.nl">Jan Van Coppenolle</author>
+        <author email="jan@kaustic.net">Jan Van Coppenolle</author>
     </properties>
     <body>
         <section name="Welcome to as3-commons-amf">
@@ -10,7 +10,7 @@
             <div id="downloadbox">
                 <h5>Get latest stable</h5>
                 <p>
-                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-bytecode/1.0-RC1/as3commons-bytecode-1.0-RC1.swc">
+                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-amf/1.0-RC1/as3commons-amf-1.0-RC1.swc">
                         <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
                         Download
                     </a>
@@ -19,7 +19,7 @@
                 <br/>
                 <h5>Get lastest development snapshot</h5>
                 <p>
-                    <a href="downloads/as3commons-bytecode-latest-snapshot-bin.zip">
+                    <a href="downloads/as3commons-amf-latest-snapshot-bin.zip">
                         <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
                         Download
                     </a>

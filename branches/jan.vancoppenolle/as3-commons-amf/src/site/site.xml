@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AS3 Commons Bytecode">
+<project name="AS3 Commons AMF">
  
     <skin>
         <groupId>org.apache.tapestry</groupId>
@@ -24,7 +24,7 @@
     </menu>
 
     <menu name="Documentation">
-      <!-- item name="Runtime class manipulation" href="weave.html" /-->
+      <!-- item name="Quickstart" href="quickstart.html" /-->
       <item name="API" href="asdoc/index.html"/>
     </menu>
 
