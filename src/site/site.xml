@@ -27,6 +27,7 @@
 			<item name="Collections" href="as3-commons-collections/index.html" />
 			<item name="Concurrency" href="as3-commons-concurrency/index.html" />
 			<item name="Serialization" href="as3-commons-serialization/index.html" />
+			<item name="UI" href="as3-commons-ui/index.html" />
 		</menu>
 
 	</body>

@@ -5,7 +5,7 @@
     <groupId>org.as3commons</groupId>
     <artifactId>as3commons-ui</artifactId>
     <packaging>swc</packaging>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
     <name>AS3Commons UI</name>
     <url>http://code.google.com/p/as3-commons</url>
     <description>
@@ -32,8 +32,8 @@
             <id>jes</id>
             <name>Jens Struwe</name>
             <email>jens [at] struwe.net</email>
-            <organization>Russischer B�r Software</organization>
-            <organizationUrl>http://sibirjak.com/</organizationUrl>
+            <organization>Russischer Bär Software</organization>
+            <organizationUrl>http://sibirjak.com/osflash/</organizationUrl>
             <timezone>+1</timezone>
         </developer>
     </developers>
