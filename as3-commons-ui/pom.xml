@@ -1,91 +1,263 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<groupId>org.as3commons</groupId>
-		<artifactId>as3commons-project</artifactId>
-		<version>1.0.0</version>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>as3commons-ui</artifactId>
-	<packaging>swc</packaging>
-	<version>0.1.1-SNAPSHOT</version>
-	<name>AS3Commons UI</name>
-	<url>http://code.google.com/p/as3-commons</url>
-	<description>
-			ActionScript UI Development Tools
-	</description>
-	<inceptionYear>2010</inceptionYear>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<dependencies>
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-collections</artifactId>
-			<version>1.1</version>
-			<type>swc</type>
-			<scope>external</scope>
-		</dependency>
-	</dependencies>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.as3commons</groupId>
+    <artifactId>as3commons-ui</artifactId>
+    <packaging>swc</packaging>
+    <version>0.1.1-SNAPSHOT</version>
+    <name>AS3Commons UI</name>
+    <url>http://code.google.com/p/as3-commons</url>
+    <description>
+        ActionScript UI Development Tools
+    </description>
+    <inceptionYear>2010</inceptionYear>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>
-						https://as3-commons.googlecode.com/svn/tags/as3-commons-ui
-					</tagBase>
-				</configuration>
-			</plugin>
 
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptor>
-						src/main/assembly/package.xml
-					</descriptor>
-					<finalName>as3commons-ui-latest-snapshot</finalName>
-          			<outputDirectory>target/site/downloads</outputDirectory>
-          			<workDirectory>target/assembly/work</workDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
-						<phase>site</phase> <!-- append to the packaging phase. -->
-						<goals>
-							<goal>single</goal> <!-- goals == mojos -->
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+    <properties>
+        <flex-mojos.version>3.7.1</flex-mojos.version>
+        <flex-sdk.version>3.4.1.10084</flex-sdk.version>
 
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>src/main/actionscript</directory>
-							<includes>
-								<include>FlexUnitApplication.mxml</include>
-							</includes>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
+        <!-- Flash Player -->
+        <flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}
+        </flashplayer.version>
+        <flashplayer.version.major>9</flashplayer.version.major>
+        <flashplayer.version.minor>0</flashplayer.version.minor>
+        <flashplayer.version.revision>0</flashplayer.version.revision>
 
-		</plugins>
+    </properties>
 
-	</build>
+    <developers>
+        <developer>
+            <id>jes</id>
+            <name>Jens Struwe</name>
+            <email>jens [at] struwe.net</email>
+            <organization>Russischer B�r Software</organization>
+            <organizationUrl>http://sibirjak.com/</organizationUrl>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
 
-	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.1.1</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.1.1</url>
-	  <connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.1.1</connection>
-  </scm>
+    <licenses>
+        <license>
+            <name>Apache Software License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<distributionManagement>
-		<site>
-			<id>yoolab.org-as3commons</id>
-			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-ui</url>
-		</site>
-	</distributionManagement>
+    <dependencies>
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>common-framework</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>pom</type>
+            <scope>external</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.as3commons</groupId>
+            <artifactId>as3commons-collections</artifactId>
+            <version>1.1</version>
+            <type>swc</type>
+            <scope>external</scope>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+
+
+        <sourceDirectory>src/main/actionscript</sourceDirectory>
+        <testSourceDirectory>src/test/actionscript</testSourceDirectory>
+
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.flexmojos</groupId>
+                <artifactId>flexmojos-maven-plugin</artifactId>
+                <version>${flex-mojos.version}</version>
+                <extensions>true</extensions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.adobe.flex</groupId>
+                        <artifactId>compiler</artifactId>
+                        <version>${flex-sdk.version}</version>
+                        <type>pom</type>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configurationReport>true</configurationReport>
+                    <targetPlayer>${flashplayer.version}</targetPlayer>
+                    <locales>
+                        <param>en_US</param>
+                    </locales>
+                    <updateSecuritySandbox>true</updateSecuritySandbox>
+                    <includeAsClasses>
+                        <source>
+                            <directory>src/main/actionscript</directory>
+                        </source>
+                    </includeAsClasses>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <tagBase>
+                        https://as3-commons.googlecode.com/svn/tags/as3-commons-ui
+                    </tagBase>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptor>
+                        src/main/assembly/package.xml
+                    </descriptor>
+                    <finalName>as3commons-ui-latest-snapshot</finalName>
+                    <outputDirectory>target/site/downloads</outputDirectory>
+                    <workDirectory>target/assembly/work</workDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <!-- this is used for inheritance merges -->
+                        <phase>site</phase>
+                        <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>single</goal>
+                            <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>src/main/actionscript</directory>
+                            <includes>
+                                <include>FlexUnitApplication.mxml</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+
+        </plugins>
+
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.flexmojos</groupId>
+                <artifactId>flexmojos-maven-plugin</artifactId>
+                <version>${flex-mojos.version}</version>
+                <inherited>true</inherited>
+                <reportSets>
+                    <reportSet>
+                        <id>flex-reports</id>
+                        <reports>
+                            <report>asdoc-report</report>
+                        </reports>
+                        <configuration>
+                            <reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
+                            <description>API documentation</description>
+                            <mainTitle>API documentation</mainTitle>
+                            <windowTitle>API documentation</windowTitle>
+                            <name>SpringASDocs</name>
+                        </configuration>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+        </plugins>
+    </reporting>
+
+
+    <scm>
+        <developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.1.1
+        </developerConnection>
+        <url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.1.1</url>
+        <connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.1.1</connection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>yoolab.org-releases</id>
+            <name>Yoolab.org releases repository</name>
+            <url>https://projects.yoolab.com/maven/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>yoolab.org-snapshots</id>
+            <name>Yoolab.org snapshots repository</name>
+            <url>https://projects.yoolab.com/maven/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <site>
+            <id>yoolab.org-as3commons</id>
+            <url>scp://www.as3commons.org/srv/www/www.as3commons.org/public_html/as3-commons-logging</url>
+        </site>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>flex-mojos-repository</id>
+            <url>http://repository.sonatype.org/content/groups/flexgroup</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>yoolab.org-releases</id>
+            <url>http://projects.yoolab.org/maven/content/repositories/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>yoolab.org-snapshots</id>
+            <url>http://projects.yoolab.org/maven/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>flexmojos-plugin</id>
+            <url>http://repository.sonatype.org/content/groups/flexgroup</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>
