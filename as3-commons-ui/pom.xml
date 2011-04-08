@@ -21,10 +21,10 @@
         <!-- Flash Player -->
         <flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}
         </flashplayer.version>
-        <flashplayer.version.major>10</flashplayer.version.major>
+        <flashplayer.version.major>9</flashplayer.version.major>
         <flashplayer.version.minor>0</flashplayer.version.minor>
         <flashplayer.version.revision>0</flashplayer.version.revision>
-
+        <playerglobal.version>${flashplayer.version.major}</playerglobal.version>
     </properties>
 
     <developers>
@@ -64,6 +64,14 @@
             <scope>external</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>playerglobal</artifactId>
+            <version>${flex-sdk.version}</version>
+            <scope>external</scope>
+            <type>swc</type>
+            <classifier>${playerglobal.version}</classifier>
+        </dependency>
 
     </dependencies>
 
