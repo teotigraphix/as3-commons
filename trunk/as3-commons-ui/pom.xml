@@ -207,12 +207,12 @@
         <repository>
             <id>yoolab.org-releases</id>
             <name>Yoolab.org releases repository</name>
-            <url>dav:https://projects.yoolab.com/maven/content/repositories/releases</url>
+            <url>dav:https://projects.yoolab.org/maven/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
             <id>yoolab.org-snapshots</id>
             <name>Yoolab.org snapshots repository</name>
-            <url>dav:https://projects.yoolab.com/maven/content/repositories/snapshots</url>
+            <url>dav:https://projects.yoolab.org/maven/content/repositories/snapshots</url>
         </snapshotRepository>
         <site>
             <id>yoolab.org-as3commons</id>
