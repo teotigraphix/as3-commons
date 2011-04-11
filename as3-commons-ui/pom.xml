@@ -16,12 +16,12 @@
 
     <properties>
         <flex-mojos.version>3.7.1</flex-mojos.version>
-        <flex-sdk.version>3.4.1.10084</flex-sdk.version>
+        <flex-sdk.version>3.6.0.16321</flex-sdk.version>
 
         <!-- Flash Player -->
         <flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}
         </flashplayer.version>
-        <flashplayer.version.major>10</flashplayer.version.major>
+        <flashplayer.version.major>9</flashplayer.version.major>
         <flashplayer.version.minor>0</flashplayer.version.minor>
         <flashplayer.version.revision>0</flashplayer.version.revision>
         <playerglobal.version>${flashplayer.version.major}</playerglobal.version>
@@ -62,15 +62,6 @@
             <version>1.1</version>
             <type>swc</type>
             <scope>external</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>playerglobal</artifactId>
-            <version>${flex-sdk.version}</version>
-            <scope>external</scope>
-            <type>swc</type>
-            <classifier>${playerglobal.version}</classifier>
         </dependency>
 
     </dependencies>
