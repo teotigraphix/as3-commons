@@ -83,7 +83,7 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.isFinal = isFinal;
 			instanceInfo.interfaceMultinames.length = 0;
 			for each (var intfName:String in _extendingInterfacesNames) {
-				instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(intfName, NamespaceKind.PACKAGE_NAMESPACE);
+				instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = MultinameUtil.toArgumentMultiName(intfName, NamespaceKind.PACKAGE_NAMESPACE);
 			}
 			var metadata:Array = buildMetadata();
 			return [classInfo, instanceInfo, methods, metadata];

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import org.as3commons.bytecode.abc.BaseMultiname;
+	import org.as3commons.bytecode.abc.MultinameG;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.util.BuildUtil;
@@ -37,7 +39,11 @@ package org.as3commons.bytecode.emit.impl {
 			_argument = argument;
 			_name = argument.name;
 			_isOptional = argument.isOptional;
-			_type = argument.type.fullName;
+			if (argument.type is QualifiedName) {
+				_type = QualifiedName(argument.type).fullName;
+			} else {
+				_type = MultinameG(argument.type).qualifiedName.fullName;
+			}
 			_defaultValue = argument.defaultValue;
 		}
 
@@ -75,8 +81,8 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function build():Argument {
 			var argument:Argument = (_argument != null) ? _argument : new Argument();
-			var qname:QualifiedName = MultinameUtil.toQualifiedName(_type);
-			if ((argument.type == null) || (argument.type.fullName != qname.fullName)) {
+			var qname:BaseMultiname = MultinameUtil.toArgumentMultiName(_type);
+			if ((argument.type == null) || (argument.type.equals(qname) == false)) {
 				argument.type = qname;
 			}
 			argument.isOptional = _isOptional;

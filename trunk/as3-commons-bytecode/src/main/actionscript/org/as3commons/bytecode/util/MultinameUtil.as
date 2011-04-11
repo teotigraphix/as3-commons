@@ -21,6 +21,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.NamespaceSet;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
+	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.lang.StringUtils;
@@ -33,7 +34,48 @@ package org.as3commons.bytecode.util {
 		public static const SINGLE_COLON:String = ":";
 		public static const DOUBLE_COLON_REGEXP:RegExp = /[:]+/;
 		public static const PERIOD:String = ".";
+		public static const COMMA:String = ",";
 		public static const FORWARD_SLASH:String = "/";
+		public static const VECTOR_INDICATOR:String = "<";
+
+		public static function toArgumentMultiName(className:String, kind:NamespaceKind = null):BaseMultiname {
+			if (className.indexOf(VECTOR_INDICATOR) < 0) {
+				return toQualifiedName(className, kind);
+			} else {
+				kind ||= NamespaceKind.PACKAGE_NAMESPACE;
+				//Vector.<int>
+				var portions:Array;
+				var namespacePortion:String;
+				var classNamePortion:String;
+				var paramPortion:String;
+				var params:Array;
+				var i:uint;
+				if (className.match(DOUBLE_COLON_REGEXP) != null) {
+					portions = className.split(DOUBLE_COLON_REGEXP);
+					namespacePortion = String(portions[0]);
+					portions = String(portions[1]).split(PERIOD);
+					classNamePortion = portions[0];
+					paramPortion = portions[1];
+					paramPortion = paramPortion.substr(1, paramPortion.length - 2);
+					params = paramPortion.split(COMMA);
+					for (i = 0; i < params.length; ++i) {
+						params[i] = toArgumentMultiName(String(params[i]));
+					}
+				} else {
+					portions = className.split(PERIOD);
+					paramPortion = String(portions.pop());
+					paramPortion = paramPortion.substr(1, paramPortion.length - 2);
+					params = paramPortion.split(COMMA);
+					for (i = 0; i < params.length; ++i) {
+						params[i] = toArgumentMultiName(String(params[i]));
+					}
+					classNamePortion = String(portions.pop());
+					namespacePortion = portions.join(PERIOD);
+				}
+				var QName:QualifiedName = new QualifiedName(classNamePortion, toLNamespace(namespacePortion + PERIOD + classNamePortion, kind));
+				return new MultinameG(QName, params.length, params);
+			}
+		}
 
 		public static function toQualifiedName(className:String, kind:NamespaceKind = null):QualifiedName {
 			var name:QualifiedName;

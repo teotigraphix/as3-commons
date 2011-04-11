@@ -351,7 +351,7 @@ package org.as3commons.bytecode.emit.asm {
 		protected function addMultinameParameter(op:Op, multiNameString:String):void {
 			Assert.notNull(op, "op argument must not be null");
 			Assert.hasText(multiNameString, "multiNameString must not be empty or null");
-			var bm:BaseMultiname = MultinameUtil.toMultiName(multiNameString);
+			var bm:BaseMultiname = MultinameUtil.toArgumentMultiName(multiNameString);
 			op.parameters[op.parameters.length] = bm;
 		}
 
