@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.typeinfo {
-	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.lang.ICloneable;
 
@@ -29,14 +29,14 @@ package org.as3commons.bytecode.typeinfo {
 		public var isOptional:Boolean;
 		public var kind:ConstantKind;
 
-		public var type:QualifiedName;
+		public var type:BaseMultiname;
 
-		public function Argument(typeValue:QualifiedName = null, hasOptionalValue:Boolean = false, defaultVal:Object = null, defaultValueKind:ConstantKind = null) {
+		public function Argument(typeValue:BaseMultiname = null, hasOptionalValue:Boolean = false, defaultVal:Object = null, defaultValueKind:ConstantKind = null) {
 			super();
 			initArgument(typeValue, hasOptionalValue, defaultVal, defaultValueKind);
 		}
 
-		protected function initArgument(typeValue:QualifiedName, hasOptionalValue:Boolean, defaultVal:Object, defaultValueKind:ConstantKind):void {
+		protected function initArgument(typeValue:BaseMultiname, hasOptionalValue:Boolean, defaultVal:Object, defaultValueKind:ConstantKind):void {
 			type = typeValue;
 			isOptional = hasOptionalValue;
 			defaultValue = defaultVal;

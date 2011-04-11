@@ -23,7 +23,8 @@ package org.as3commons.bytecode.abc {
 		private var _paramCount:uint;
 		private var _parameters:Array;
 
-		public function MultinameG(qName:QualifiedName, pCount:uint, params:Array, kindValue:MultinameKind) {
+		public function MultinameG(qName:QualifiedName, pCount:uint, params:Array, kindValue:MultinameKind = null) {
+			kindValue ||= MultinameKind.GENERIC;
 			super(kindValue);
 			initMultinameG(kindValue, qName, pCount, params);
 		}

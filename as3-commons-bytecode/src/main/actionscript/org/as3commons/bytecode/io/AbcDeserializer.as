@@ -28,6 +28,7 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
+	import org.as3commons.bytecode.abc.MultinameG;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.ScriptInfo;
@@ -411,7 +412,7 @@ package org.as3commons.bytecode.io {
 				//trace("MethodInfo return type: " + methodInfo.returnType);
 				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
 					var mn:BaseMultiname = pool.multinamePool[readU30()];
-					var paramQName:QualifiedName = MultinameUtil.convertToQualifiedName(mn);
+					var paramQName:BaseMultiname = (mn is MultinameG) ? mn : MultinameUtil.convertToQualifiedName(mn);
 					var arg:Argument = new Argument(paramQName);
 					methodInfo.argumentCollection[methodInfo.argumentCollection.length] = arg;
 						//trace("MethodInfo param " + argumentIndex + ": " + arg.toString());

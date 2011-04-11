@@ -290,7 +290,7 @@ package org.as3commons.bytecode.emit.impl {
 			instInfo.instanceInitializer.methodBody.maxScopeDepth = initScopeDepth;
 			instInfo.instanceInitializer.methodName = StringUtils.substitute(CONSTRUCTOR_NAME, packageName, name);
 			for each (var interfaceName:String in _implementedInterfaceNames) {
-				instInfo.interfaceMultinames[instInfo.interfaceMultinames.length] = MultinameUtil.toMultiName(interfaceName);
+				instInfo.interfaceMultinames[instInfo.interfaceMultinames.length] = MultinameUtil.toArgumentMultiName(interfaceName);
 			}
 			return instInfo;
 		}

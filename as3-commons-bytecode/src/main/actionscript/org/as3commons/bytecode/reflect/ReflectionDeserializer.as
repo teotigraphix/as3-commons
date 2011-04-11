@@ -282,7 +282,7 @@ package org.as3commons.bytecode.reflect {
 				//  u30 trait_count 
 				//  traits_info trait[trait_count] 
 				// }
-				//	            trace("InstanceInfo: " + _byteStream.position);
+				// trace("InstanceInfo: " + _byteStream.position);
 				// The AVM2 spec dictates that this should always be a QualifiedName, but when parsing SWFs I have come across
 				// Multinames with single namespaces (which are essentially QualifiedNames - the only reason to be a multiname
 				// is to have multiple namespaces to search within to resolve a name). I haven't heard back from the Tamarin

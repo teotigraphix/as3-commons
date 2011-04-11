@@ -74,6 +74,9 @@ package org.as3commons.bytecode.swf {
 			tagSerializers[DoABCTag.TAG_ID] = DoABCSerializer;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function createTagSerializer(tagId:uint):ITagSerializer {
 			var serializer:ITagSerializer = serializerInstances[tagId];
 			if (serializer == null) {
