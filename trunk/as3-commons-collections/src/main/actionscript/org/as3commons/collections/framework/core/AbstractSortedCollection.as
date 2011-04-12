@@ -214,7 +214,7 @@ package org.as3commons.collections.framework.core {
 		 * @param node The root node of the subtree.
 		 * @return The lowest node or <code>null</code>, if the collection is empty.
 		 */
-       as3commons_collections function mostLeftNode_internal(node : SortedNode = null) : SortedNode {
+		as3commons_collections function mostLeftNode_internal(node : SortedNode = null) : SortedNode {
 			if (!_root) return null;
 			if (!node) node = _root;
 			while (node.left) {
