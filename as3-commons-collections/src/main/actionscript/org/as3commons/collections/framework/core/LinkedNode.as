@@ -1,12 +1,12 @@
 /**
  * Copyright 2010 The original author or authors.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,40 +17,32 @@ package org.as3commons.collections.framework.core {
 
 	/**
 	 * Linked node.
-	 *
+	 * 
 	 * @author Jens Struwe 13.03.2009
 	 */
 	public class LinkedNode {
-
-		private var _item:*;
-
+		
 		/**
 		 * The node's data.
 		 */
-		public function get item():* {
-			return _item;
-		}
-
-		public function set item(value:*):void {
-			_item = value;
-		}
+		public var item : *;
 
 		/**
 		 * The predecessor.
 		 */
-		public var left:LinkedNode;
+		public var left : LinkedNode;
 
 		/**
 		 * The successor.
 		 */
-		public var right:LinkedNode;
+		public var right : LinkedNode;
 
 		/**
 		 * LinkedNode constructor.
-		 *
+		 * 
 		 * @param theItem The data of the node.
 		 */
-		public function LinkedNode(theItem:*) {
+		public function LinkedNode(theItem : *) {
 			item = theItem;
 		}
 	}
