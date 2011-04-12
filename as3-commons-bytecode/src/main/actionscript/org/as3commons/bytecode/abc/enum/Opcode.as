@@ -492,9 +492,9 @@ package org.as3commons.bytecode.abc.enum {
 		public static function parseOpcode(byteArray:ByteArray, constantPool:IConstantPool, ops:Array, methodBody:MethodBody):Op {
 			var startPos:int = byteArray.position;
 			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
-			var argumentValues:Array;
+			var argumentValues:Array = [];
 			for each (var argument:* in opcode.argumentTypes) {
-				argumentValues = parseOpcodeArguments(argument, byteArray, constantPool, methodBody);
+				parseOpcodeArguments(argument, byteArray, constantPool, methodBody, argumentValues);
 			}
 			var endPos:int = byteArray.position;
 
@@ -506,8 +506,7 @@ package org.as3commons.bytecode.abc.enum {
 			return op;
 		}
 
-		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, constantPool:IConstantPool, methodBody:MethodBody):Array {
-			var argumentValues:Array = [];
+		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, constantPool:IConstantPool, methodBody:MethodBody, argumentValues:Array):void {
 			var argumentType:* = argument[0];
 			var readWritePair:ReadWritePair = argument[1];
 			var byteCodeValue:* = readWritePair.read(byteArray);
@@ -589,7 +588,6 @@ package org.as3commons.bytecode.abc.enum {
 				default:
 					throw new Error("Unknown Opcode argument type." + argumentType.toString());
 			}
-			return argumentValues;
 		}
 
 		public static function determineOpcode(opcodeByte:int):Opcode {
