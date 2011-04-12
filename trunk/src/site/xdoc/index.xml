@@ -50,8 +50,8 @@
 			<tr>
 				<td><strong>Collections</strong></td>
 				<td>Collections framework including several lists, sets and maps, many of them in an additional bindable version.</td>
-				<td>1.1</td>
-				<td>10 Feb 2011</td>
+				<td>1.2.0</td>
+				<td>12 Apr 2011</td>
 			</tr>
 			<tr>
 				<td><strong>Concurrency</strong></td>
@@ -86,8 +86,8 @@
 			<tr>
 				<td><strong>UI</strong></td>
 				<td>Algorithms and managers to serve common UI releated tasks such as layouting, focus and keyboard management, popup handling, drag and drop control and so on. All packages support native Flash display objects. Usage of UI does not require interface implementations. The first version (0.1.x) includes the sole layout package.</td>
-				<td>0.1.1</td>
-				<td>08 Apr 2011</td>
+				<td>0.1.2</td>
+				<td>12 Apr 2011</td>
 			</tr>
 		</table>
 		</subsection>
