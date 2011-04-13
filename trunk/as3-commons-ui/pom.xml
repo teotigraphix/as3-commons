@@ -5,7 +5,7 @@
     <groupId>org.as3commons</groupId>
     <artifactId>as3commons-ui</artifactId>
     <packaging>swc</packaging>
-    <version>0.1.2</version>
+    <version>0.1.3-SNAPSHOT</version>
     <name>AS3Commons UI</name>
     <url>http://code.google.com/p/as3-commons</url>
     <description>ActionScript UI Development Tools</description>
