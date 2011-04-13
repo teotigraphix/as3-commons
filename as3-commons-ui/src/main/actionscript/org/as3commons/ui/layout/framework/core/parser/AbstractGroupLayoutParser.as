@@ -35,6 +35,9 @@ package org.as3commons.ui.layout.framework.core.parser {
 			CellConfigMerge.merge(cell.config, _layout.getCellConfig(_layoutCell.row.numItems));
 			cell.measure();
 
+			// skip empty cells
+			if (cell.isEmpty()) return;
+
 			_layoutCell.row.add(cell);
 		}
 		
