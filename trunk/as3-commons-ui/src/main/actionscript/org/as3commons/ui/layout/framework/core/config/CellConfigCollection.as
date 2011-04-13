@@ -62,7 +62,6 @@ package org.as3commons.ui.layout.framework.core.config {
 		 */
 
 		private function resize(width : uint, height : uint) : void {
-
 			width = Math.max(width, _width);
 			height = Math.max(height, _height);
 			var cellConfigs : Object = new Object();
@@ -72,8 +71,8 @@ package org.as3commons.ui.layout.framework.core.config {
 
 			for (var property : String in _cellConfigs) {
 				oldIndex = parseInt(property);
-				x = oldIndex % width;
-				y = Math.floor(oldIndex / width);
+				x = oldIndex % _width;
+				y = Math.floor(oldIndex / _width);
 
 				cellConfigs[y * width + x] = _cellConfigs[oldIndex];
 			}
@@ -81,8 +80,6 @@ package org.as3commons.ui.layout.framework.core.config {
 			_cellConfigs = cellConfigs; 
 			_width = width;
 			_height = height;
-
-
 		}
 		
 	}
