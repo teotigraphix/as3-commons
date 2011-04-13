@@ -6,7 +6,6 @@ package org.as3commons.codec.serialization.amf
 	import flash.utils.IExternalizable;
 	import flash.utils.getDefinitionByName;
 	
-	import org.as3commons.codec.IDecoder;
 	import org.as3commons.codec.serialization.utils.PropertyInfo;
 	import org.as3commons.codec.serialization.utils.TraitsInfo;
 	
@@ -15,8 +14,8 @@ package org.as3commons.codec.serialization.amf
 		protected var input:IDataInput;
 		
 		protected var objectTable:Array;
-		protected var stringTable:Array;
-		protected var traitsTable:Array;
+		protected var stringTable:Vector.<String>;
+		protected var traitsTable:Vector.<TraitsInfo>;
 		
 		public function AMF3Input(input:IDataInput = null)
 		{
@@ -29,8 +28,8 @@ package org.as3commons.codec.serialization.amf
 			this.input = input;
 			
 			objectTable = [];
-			stringTable = [];
-			traitsTable = [];
+			stringTable = new Vector.<String>();
+			traitsTable = new Vector.<TraitsInfo>();
 		}
 		
 		public function readObject():*
@@ -39,7 +38,7 @@ package org.as3commons.codec.serialization.amf
 			return readObjectValue(type);
 		}
 		
-		public function getTraits():Array
+		public function getTraits():Vector.<TraitsInfo>
 		{
 			return traitsTable;
 		}
@@ -421,28 +420,29 @@ package org.as3commons.codec.serialization.amf
 			var traitsInfo:TraitsInfo;
 			var isExternalizable:Boolean;
 			var isDynamic:Boolean;
-			var count:int;
+			var propertyCount:int;
 			var type:String;
-			var i:int;
+			var index:int;
 			var property:String;
 			
 			if ((ref & 0x03) == 1)
 			{
 				// This is a reference
-				return getTraitReference(ref >> 2);
+				return getTraitsReference(ref >> 2);
 			}
 			else
 			{
+				type = readString();
 				isExternalizable = ((ref & 0x04) == 4);
 				isDynamic = ((ref & 0x08) == 8);
-				count = (ref >> 4); /* uint29 */
-				type = readString();
 				
 				traitsInfo = new TraitsInfo(type, isDynamic, isExternalizable);
 				
-				addTraitReference(traitsInfo);
+				addTraitsReference(traitsInfo);
+
+				propertyCount = (ref >> 4); /* uint29 */
 				
-				for (i = 0; i < count; ++i)
+				for (index = 0; index < propertyCount; ++index)
 				{
 					property = readString();
 					traitsInfo.addProperty(property);
@@ -474,12 +474,12 @@ package org.as3commons.codec.serialization.amf
 			stringTable.push(value);
 		}
 		
-		protected function getTraitReference(index:int):TraitsInfo
+		protected function getTraitsReference(index:int):TraitsInfo
 		{
 			return traitsTable[index];
 		}
 		
-		protected function addTraitReference(value:TraitsInfo):void
+		protected function addTraitsReference(value:TraitsInfo):void
 		{
 			traitsTable.push(value);
 		}

@@ -18,9 +18,9 @@ package org.as3commons.codec.serialization.utils
 			properties = new Vector.<PropertyInfo>();
 		}
 		
-		public function addProperty(name:String, info:TraitsInfo = null):void
+		public function addProperty(name:String, traits:TraitsInfo = null):void
 		{
-			properties.push(new PropertyInfo(name, info));
+			properties.push(new PropertyInfo(name, traits));
 		}
 	}
 }
