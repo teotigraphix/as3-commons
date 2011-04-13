@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Welcome to as3commons-collections</title>
+		<author email="jens@struwe.net">Jens Struwe</author>
+	</properties>
+	<body>
+		<section name="Welcome to as3-commons-collections">
+		
+			<p>The projects contains an abstraction layer over different data structures as well as a set of useful and performant collection implementations:</p>
+						
+			<ul>
+				<li>ArrayList, SortedList</li>
+				<li>Set, LinkedSet, SortedSet</li>
+				<li>Map, LinkedMap, SortedMap</li>
+				<li>LinkedList, Treap</li>
+			</ul>
+
+			<p>Additionally, most of the collection implementations come in a bindable version, capable to be bound to user interfaces.</p>
+
+			<p>For more information, articles and examples on AS3Commons Collections visit: <a href="http://sibirjak.com/osflash/projects/as3commons-collections/">Developer Page AS3Commons Collections</a></p>
+			
+			<div id="downloadbox">
+				<h5>Get latest stable</h5>
+				<p>
+					<a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-collections/1.2.0/as3commons-collections-1.2.0.swc">
+						<img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+						Download
+					</a>
+					latest stable (1.2.0)
+				</p>
+				<br/>
+
+				<h5>Get lastest development snapshot</h5>
+				<p>
+					<a href="downloads/as3commons-collections-latest-snapshot-bin.zip">
+						<img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+						Download
+					</a>
+					latest snapshot
+				</p>
+			</div>
+
+		</section>
+
+	</body>
+</document>
+
