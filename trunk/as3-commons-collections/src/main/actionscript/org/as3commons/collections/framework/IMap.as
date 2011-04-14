@@ -58,7 +58,7 @@ package org.as3commons.collections.framework {
 		 * <p>The position of items that are added to a <code>SortedMap</code>
 		 * depends on its sort order.</p>
 		 * 
-		 * @param item The key of the item to add.
+		 * @param key The key of the item to add.
 		 * @param item The item to add.
 		 * @return <code>true</code> if the item has been added.
 		 */
