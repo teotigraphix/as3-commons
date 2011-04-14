@@ -52,6 +52,7 @@ package {
 	import org.as3commons.collections.iterators.FilterIteratorTest;
 	import org.as3commons.collections.iterators.RecursiveFilterIteratorTest;
 	import org.as3commons.collections.iterators.RecursiveIteratorTest;
+	import org.as3commons.collections.utils.MapsTest;
 	import org.as3commons.collections.utils.StringComparatorTest;
 
 	/**
@@ -121,6 +122,7 @@ package {
 			// utils
 
 			addTestSuite(StringComparatorTest);
+			addTestSuite(MapsTest);
 
 		}
 		
