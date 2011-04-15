@@ -1,11 +1,16 @@
 package org.as3commons.collections.utils {
-	import org.as3commons.collections.LinkedMap;
-	import flash.utils.getQualifiedClassName;
+
 	import flexunit.framework.TestCase;
 
+	import org.as3commons.collections.LinkedMap;
 	import org.as3commons.collections.Map;
 	import org.as3commons.collections.framework.IMap;
+	import org.as3commons.collections.testhelpers.CollectionTest;
+
+	import flash.utils.getQualifiedClassName;
+
 	public class MapsTest extends TestCase {
+
 		private var map : IMap;
 		
 		override public function setUp() : void {
@@ -118,5 +123,86 @@ package org.as3commons.collections.utils {
 			assertEquals("Resulting map is empty", 0, map.size);
 			assertEquals("Resulting map is of the supplied type", getQualifiedClassName(sourceMap), getQualifiedClassName(result));
 		}
+
+		public function test_clone_returnsCopy() : void {
+			map.add(1, 1);
+			map.add(2, 1);
+
+			var filter : Function = function(key : int) : Boolean {
+				return (key % 2 == 0);
+			};
+
+			// no filter
+			
+			var clone : IMap = Maps.clone(map);
+			assertTrue (map !== clone);
+
+			// only key filter
+
+			clone = Maps.clone(map, filter);
+			assertTrue (map !== clone);
+
+			// only item filter
+
+			clone = Maps.clone(map, null, filter);
+			assertTrue (map !== clone);
+
+			// both filters
+
+			clone = Maps.clone(map, filter, filter);
+			assertTrue (map !== clone);
+		}
+
+		public function test_clone_filters() : void {
+			map.add(1, 1);
+			map.add(2, 1);
+			map.add(3, 2);
+			map.add(4, 2);
+			map.add(5, 3);
+			map.add(6, 3);
+			map.add(7, 4);
+			map.add(8, 4);
+			map.add(9, 5);
+			map.add(10, 5);
+			map.add(11, 6);
+			map.add(12, 6);
+			
+			var filter : Function = function(key : int) : Boolean {
+				return (key % 2 == 0);
+			};
+
+			// no filter
+			
+			var clone : IMap = Maps.clone(map);
+			assertEquals(12, clone.size);
+			assertEquals(getQualifiedClassName(map), getQualifiedClassName(clone));
+			assertTrue(CollectionTest.keysMatch(clone, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]));
+			assertTrue(CollectionTest.itemsMatch(clone, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]));
+
+			// only key filter
+
+			clone = Maps.clone(map, filter);
+			assertEquals(6, clone.size);
+			assertEquals(getQualifiedClassName(map), getQualifiedClassName(clone));
+			assertTrue(CollectionTest.keysMatch(clone, [2, 4, 6, 8, 10, 12]));
+			assertTrue(CollectionTest.itemsMatch(clone, [1, 2, 3, 4, 5, 6]));
+
+			// only item filter
+
+			clone = Maps.clone(map, null, filter);
+			assertEquals(6, clone.size);
+			assertEquals(getQualifiedClassName(map), getQualifiedClassName(clone));
+			assertTrue(CollectionTest.keysMatch(clone, [3, 4, 7, 8, 11, 12]));
+			assertTrue(CollectionTest.itemsMatch(clone, [2, 2, 4, 4, 6, 6]));
+
+			// both filters
+
+			clone = Maps.clone(map, filter, filter);
+			assertEquals(3, clone.size);
+			assertEquals(getQualifiedClassName(map), getQualifiedClassName(clone));
+			assertTrue(CollectionTest.keysMatch(clone, [4, 8, 12]));
+			assertTrue(CollectionTest.itemsMatch(clone, [2, 4, 6]));
+		}
+		
 	}
 }

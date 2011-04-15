@@ -1,10 +1,12 @@
 package org.as3commons.collections.utils {
+
 	import flexunit.framework.TestCase;
 
 	import org.as3commons.collections.LinkedSet;
 	import org.as3commons.collections.Set;
 	import org.as3commons.collections.SortedSet;
 	import org.as3commons.collections.framework.ISet;
+	import org.as3commons.collections.testhelpers.CollectionTest;
 
 	import flash.utils.getQualifiedClassName;
 	/**
@@ -54,6 +56,33 @@ package org.as3commons.collections.utils {
 				
 			assertEquals("Resulting ISet is an instance of SortedSet", getQualifiedClassName(SortedSet), getQualifiedClassName(result));
 		}		
+
+		public function test_addMany() : void {
+			// multiple arguments
+
+			var theSet : ISet = SetBuilder.linkedSet()
+				.addMany(1, 2, 3, 4, 5)
+				.build();
+				
+			assertTrue(CollectionTest.itemsEqual(theSet, [1, 2, 3, 4, 5]));
+
+			// single argument
+
+			theSet = SetBuilder.linkedSet()
+				.addMany(1)
+				.build();
+
+			assertTrue(CollectionTest.itemsEqual(theSet, [1]));
+
+			// no argument
+
+			theSet = SetBuilder.linkedSet()
+				.addMany()
+				.build();
+				
+			assertTrue(CollectionTest.itemsEqual(theSet, []));
+		}
+
 	}
 }
 
