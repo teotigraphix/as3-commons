@@ -1,9 +1,28 @@
+/**
+ * Copyright 2010 The original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.as3commons.collections.utils {
+
+	import org.as3commons.collections.framework.IBasicMapIterator;
 	import org.as3commons.collections.framework.IMap;
+	import org.as3commons.collections.iterators.MapFilterIterator;
+
 	/**
 	 * <p>A set of common utilities for working with IMap implementations.</p>
 	 * 
-	 * @author John Reeves
+	 * @author John Reeves 14.04.2011
 	 */
 	public class Maps {
 		/**
@@ -74,6 +93,52 @@ package org.as3commons.collections.utils {
 				if (predicate(key)) {
 					result.add(key, map.itemFor(key));
 				}
+			}
+			return result;
+		}
+
+		/**
+		 * <p>Clones the supplied IMap instance returning a new IMap of the same type. If filter are specified,
+		 * the resulting map only contains mappings that meet the supplied predicates.<p>
+		 * 
+		 * <p>The key filter function accepts the current key and returns a boolean
+		 * value (<code>true</code> if the key is accepted).</p>
+		 * 
+		 * <listing>
+				function keyFilter(key : *) : Boolean {
+					var accept : Boolean = false;
+					// test the key
+					return accept;
+				}
+				
+				var iterator : IIterator = new MapFilterIterator(map, keyFilter);
+		 * </listing>
+		 * 
+		 * <p>The item filter function accepts the current item and returns a boolean
+		 * value (<code>true</code> if the item is accepted).</p>
+		 * 
+		 * <listing>
+				function itemFilter(item : *) : Boolean {
+					var accept : Boolean = false;
+					// test the item
+					return accept;
+				}
+				
+				var iterator : IIterator = new MapFilterIterator(map, keyFilter, itemFilter);
+		 * </listing>
+		 * 
+		 * @param map the IMap instance to operate on.
+		 * @param keyFilter Function which will be be applied to each key in the source map.
+		 * @param itemFilter Function which will be be applied to each item in the source map.
+		 * @return A new IMap instance.
+		 */
+		public static function clone(source : IMap, keyFilter : Function = null, itemFilter : Function = null) : IMap {
+			var result : IMap = new ((source as Object).constructor) as IMap;
+			var iterator : IBasicMapIterator = new MapFilterIterator(source, keyFilter, itemFilter);
+			var item : *;
+			while (iterator.hasNext()) {
+				item = iterator.next();
+				result.add(iterator.key, item);
 			}
 			return result;
 		}
