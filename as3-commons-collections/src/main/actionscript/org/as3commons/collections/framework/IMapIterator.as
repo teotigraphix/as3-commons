@@ -20,25 +20,27 @@ package org.as3commons.collections.framework {
 	 * 
 	 * <p><strong>Description</strong></p>
 	 * 
-	 * <p>An <code>IMapIterator</code> is an extended <code>ICollectionIterator</code> available
-	 * for all map collections.</p>
+	 * <p>An <code>IMapIterator</code> is an extended <code>IBasicMapIterator</code> and
+	 * <code>ICollectionIterator</code> available for all map collections.</p>
 	 * 
 	 * <p><strong>Features</strong></p>
 	 * 
-	 * <p>Additionally to the base collection iterator the <code>IListIterator</code>
-	 * provides information about the key of the item at the current iterator position:</p>
+	 * <p>Additionally to the base map iterator the <code>IMapIterator</code>
+	 * provides information about the current iterator position. The <code>IMapIterator</code>
+	 * provides all functionality of the <code>ICollectionIterator</code>.</p>
 	 * 
 	 * <ul>
-	 * <li>Key of the last returned item.<br />
-	 * <code>key</code></li>
 	 * <li>Lookup for the key of the next or previous item.<br />
 	 * <code>nextKey, previousKey</code></li>
 	 * </ul>
 	 * 
 	 * @author Jens Struwe 18.03.2010
+	 * @see IBasicMapIterator IBasicMapIterator interface - Detailed description of the base map iterator features.
 	 * @see ICollectionIterator ICollectionIterator interface - Detailed description of the base collection iterator features.
+	 * 
+	 * @TODO Rename to IMapCollectionIterator while IBasicMapIterator has to be renamed to IMapIterator.
 	 */
-	public interface IMapIterator extends ICollectionIterator {
+	public interface IMapIterator extends ICollectionIterator, IBasicMapIterator {
 		
 		/**
 		 * The key of the item left to the current cursor position.
@@ -61,21 +63,6 @@ package org.as3commons.collections.framework {
 		 * the map is emtpy.</p>
 		 */
 		function get nextKey() : *;
-
-		/**
-		 * The key of the last returned item.
-		 * 
-		 * <p><code>undefined</code> if the iterator points to the postion before the first
-		 * or after the last item or the map is empty.</p>
-		 * 
-		 * <p>The key is reset to <code>undefined</code> after all operations that modify the underlying
-		 * map order (<code>add(), remove()</code>) or modify the cursor position
-		 * (<code>start(), end()</code>).</p>
-		 * 
-		 * <p>Initially <code>undefined</code>.</p>
-		 */
-		function get key() : *;
-
 		
 	}
 }
