@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.as3commons.collections.utils {
-	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.Map;
 	import org.as3commons.collections.framework.IBasicMapIterator;
 	import org.as3commons.collections.framework.IMap;
+	import org.as3commons.collections.framework.IMapIterator;
 	import org.as3commons.collections.iterators.MapFilterIterator;
 
 	import flash.utils.Dictionary;
@@ -44,7 +44,7 @@ package org.as3commons.collections.utils {
 			}
 			return map.itemFor(key);
 		}
-		
+
 		/**
 		 * <p>Attempts to retrieve the item mapped to the supplied key.  If the supplied key is not mapped then the
 		 * supplied default value will be returned instead.</p>
@@ -61,7 +61,7 @@ package org.as3commons.collections.utils {
 			}
 			return map.itemFor(key);
 		}
-		
+
 		/**
 		 * <p>Attempts to retrieve the item mapped to the supplied key.  If the supplied key is not mapped then the
 		 * supplied value will mapped to the key and returned.</p>
@@ -79,7 +79,7 @@ package org.as3commons.collections.utils {
 			}
 			return map.itemFor(key);
 		}
-		
+
 		/**
 		 * <p>Filters the supplied IMap instance returning a new IMap of the same type which only contains  
 		 * mappings where the key meets the supplied predicate.<p>
@@ -99,7 +99,7 @@ package org.as3commons.collections.utils {
 			}
 			return result;
 		}
-		
+
 		/**
 		 * <p>Conveneice method which constructs a Map from the supplied Dictionary.</p>
 		 * 
@@ -132,26 +132,26 @@ package org.as3commons.collections.utils {
 		 * value (<code>true</code> if the key is accepted).</p>
 		 * 
 		 * <listing>
-				function keyFilter(key : *) : Boolean {
-					var accept : Boolean = false;
-					// test the key
-					return accept;
-				}
+		function keyFilter(key : *) : Boolean {
+		var accept : Boolean = false;
+		// test the key
+		return accept;
+		}
 				
-				var iterator : IIterator = new MapFilterIterator(map, keyFilter);
+		var iterator : IIterator = new MapFilterIterator(map, keyFilter);
 		 * </listing>
 		 * 
 		 * <p>The item filter function accepts the current item and returns a boolean
 		 * value (<code>true</code> if the item is accepted).</p>
 		 * 
 		 * <listing>
-				function itemFilter(item : *) : Boolean {
-					var accept : Boolean = false;
-					// test the item
-					return accept;
-				}
+		function itemFilter(item : *) : Boolean {
+		var accept : Boolean = false;
+		// test the item
+		return accept;
+		}
 				
-				var iterator : IIterator = new MapFilterIterator(map, keyFilter, itemFilter);
+		var iterator : IIterator = new MapFilterIterator(map, keyFilter, itemFilter);
 		 * </listing>
 		 * 
 		 * @param map the IMap instance to operate on.
@@ -169,7 +169,7 @@ package org.as3commons.collections.utils {
 			}
 			return result;
 		}
-		
+
 		/**
 		 * <p>Copies all the mappings from the source IMap instance into the supplied destination IMap instance.</p>
 		 * 
@@ -183,10 +183,10 @@ package org.as3commons.collections.utils {
 		 * @return reference to the supplied destination IMap.
 		 */
 		public static function copy(source : IMap, destination : IMap) : IMap {
-			const keys : IIterator = source.keyIterator();
-			while (keys.hasNext()) {
-				var key : * = keys.next();
-				destination.add(key, source.itemFor(key));
+			var iterator : IMapIterator = source.iterator() as IMapIterator;
+			while (iterator.hasNext()) {
+				var item : * = iterator.next();
+				destination.add(iterator.key, item);
 			}
 			return destination;
 		}
