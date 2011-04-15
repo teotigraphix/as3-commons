@@ -1,5 +1,4 @@
 package org.as3commons.collections.utils {
-
 	import flexunit.framework.TestCase;
 
 	import org.as3commons.collections.LinkedMap;
@@ -7,6 +6,7 @@ package org.as3commons.collections.utils {
 	import org.as3commons.collections.framework.IMap;
 	import org.as3commons.collections.testhelpers.CollectionTest;
 
+	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 
 	public class MapsTest extends TestCase {
@@ -204,5 +204,39 @@ package org.as3commons.collections.utils {
 			assertTrue(CollectionTest.itemsMatch(clone, [2, 4, 6]));
 		}
 		
+		public function test_fromDictionary() : void {
+			const source : Dictionary = new Dictionary();
+			source["key"] = "value";
+			source[22] = "twenty two";
+			
+			const result : IMap = Maps.fromDictionary(source);
+			
+			assertEquals("Resulting Map contains 2 entries", 2, result.size);
+			assertEquals("Expected entry in resulting Map", "value", result.itemFor("key"));
+			assertEquals("Expected entry in resulting Map", "twenty two", result.itemFor(22));
+		}
+		
+		public function test_fromDictionary_null() : void {
+			const result : IMap = Maps.fromDictionary(null);
+			assertEquals("Empty map returned", 0, result.size);
+		}
+		
+		public function test_fromObject() : void {
+			const source : Object = {};
+			source["key"] = "value";
+			source[22] = "twenty two";
+			
+			const result : IMap = Maps.fromObject(source);
+			
+			assertEquals("Resulting Map contains 2 entries", 2, result.size);
+			assertEquals("Expected entry in resulting Map", "value", result.itemFor("key"));
+			assertEquals("Expected entry in resulting Map", "twenty two", result.itemFor(22));
+		}		
+		
+		public function test_fromObject_null() : void {
+			const result : IMap = Maps.fromObject(null);
+			assertEquals("Empty map returned", 0, result.size);
+		}
 	}
 }
+
