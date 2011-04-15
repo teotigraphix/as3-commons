@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package org.as3commons.collections.utils {
-
+	import org.as3commons.collections.Map;
 	import org.as3commons.collections.framework.IBasicMapIterator;
 	import org.as3commons.collections.framework.IMap;
 	import org.as3commons.collections.iterators.MapFilterIterator;
+
+	import flash.utils.Dictionary;
 
 	/**
 	 * <p>A set of common utilities for working with IMap implementations.</p>
@@ -93,6 +95,30 @@ package org.as3commons.collections.utils {
 				if (predicate(key)) {
 					result.add(key, map.itemFor(key));
 				}
+			}
+			return result;
+		}
+		
+		/**
+		 * <p>Conveneice method which constructs a Map from the supplied Dictionary.</p>
+		 * 
+		 * @param source Dictionary object to create the Map from
+		 * @return new Map instance with the values taken from the supplied source Dictionary.
+		 */
+		public static function fromDictionary(source : Dictionary) : IMap {
+			return fromObject(source);
+		}
+
+		/**
+		 * <p>Conveneice method which constructs a Map from the publicly accessible properties in the supplied Object.</p>
+		 * 
+		 * @param source Object to create the Map from.
+		 * @return new Map instance with the values taken from the supplied source Object.
+		 */
+		public static function fromObject(source : Object) : IMap {
+			const result : IMap = new Map();
+			for (var key : * in source) {
+				result.add(key, source[key]);
 			}
 			return result;
 		}
