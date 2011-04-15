@@ -237,6 +237,35 @@ package org.as3commons.collections.utils {
 			const result : IMap = Maps.fromObject(null);
 			assertEquals("Empty map returned", 0, result.size);
 		}
+		
+		public function test_copy() : void {
+			const source : IMap = MapBuilder.map()
+				.add("key1", "item1")
+				.add("key2", "item2")
+				.build();
+				
+			const result : IMap = Maps.copy(source, new Map());
+			
+			assertEquals("Resulting Map has the expected number of entries", source.size, result.size);
+			assertEquals("Expected entry exists in resulting Map", source.itemFor("key1"), result.itemFor("key1"));
+			assertEquals("Expected entry exists in resulting Map", source.itemFor("key2"), result.itemFor("key2"));
+		}
+		
+		public function test_copy_doesNotClearTargetMap() : void
+		{
+			const source : IMap = MapBuilder.map()
+				.add("source-key", "source-item")
+				.build();
+				
+			const target : IMap = MapBuilder.map()
+				.add("original-key", "original-item")
+				.build();
+				
+			Maps.copy(source, target);
+			
+			assertEquals("Resulting Map has the expected number of entries", 2, target.size);
+			assertTrue("Target map retains its original mappings", target.hasKey("original-key"));
+		}
 	}
 }
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.collections.utils {
+	import org.as3commons.collections.framework.IIterator;
 	import org.as3commons.collections.Map;
 	import org.as3commons.collections.framework.IBasicMapIterator;
 	import org.as3commons.collections.framework.IMap;
@@ -167,6 +168,27 @@ package org.as3commons.collections.utils {
 				result.add(iterator.key, item);
 			}
 			return result;
+		}
+		
+		/**
+		 * <p>Copies all the mappings from the source IMap instance into the supplied destination IMap instance.</p>
+		 * 
+		 * @example Copies all the entries contained in the source Map into a new Map instance.
+		 * &lt;listing version="3.0"&gt;
+		 * 		const result : IMap = Maps.copy(source, new Map());
+		 * &lt;/listing&gt;
+		 * 
+		 * @param source IMap instance which contains the entries you wish to copy.
+		 * @param destination IMap instance into which all the mappings from the supplied source map will be added.
+		 * @return reference to the supplied destination IMap.
+		 */
+		public static function copy(source : IMap, destination : IMap) : IMap {
+			const keys : IIterator = source.keyIterator();
+			while (keys.hasNext()) {
+				var key : * = keys.next();
+				destination.add(key, source.itemFor(key));
+			}
+			return destination;
 		}
 	}
 }
