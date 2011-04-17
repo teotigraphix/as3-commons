@@ -41,6 +41,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param classBuilder The specified <code>IClassBuilder</code> instance.
 		 * @param type The specified <code>ByteCodeType</code> instance.
 		 * @param memberInfo The specified <code>MemberInfo</code> instance.
+		 * @param failOnFinal When <code>true</code> an error is thrown when the.
 		 * @return The <code>IMethodBuilder</code> representing the generated method.
 		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied method is marked as final.
 		 */

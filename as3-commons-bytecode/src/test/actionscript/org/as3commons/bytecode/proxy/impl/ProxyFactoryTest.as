@@ -27,11 +27,14 @@ package org.as3commons.bytecode.proxy.impl {
 
 	import mx.containers.Canvas;
 
+	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.impl.MemberInitialization;
 	import org.as3commons.bytecode.interception.impl.BasicMethodInvocationInterceptor;
+	import org.as3commons.bytecode.io.AbcDeserializer;
+	import org.as3commons.bytecode.io.AbcSerializer;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
 	import org.as3commons.bytecode.proxy.IProxyFactory;
 	import org.as3commons.bytecode.proxy.ProxyScope;
@@ -386,14 +389,14 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
-		/*public function testIntroduction():void {
+		public function testIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(Flavour, null, applicationDomain);
 			classProxyInfo.introduce(TestIntroduction);
 			var abcBuilder:IAbcBuilder = _proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
-		}*/
+		}
 
 		public function testEventDispatcherIntroduction():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
@@ -402,6 +405,9 @@ package org.as3commons.bytecode.proxy.impl {
 			classProxyInfo.proxyMethod("addEventListener");
 			classProxyInfo.proxyMethod("removeEventListener");
 			var abcBuilder:IAbcBuilder = _proxyFactory.generateProxyClasses();
+			//var abcFile:AbcFile = abcBuilder.build();
+			//var ba:ByteArray = new AbcSerializer().serializeAbcFile(abcFile);
+			//abcFile = new AbcDeserializer(ba).deserialize();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createEventDispatcherIntroductionInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleEventDispatcherIntroductionTestComplete, 1000));
 			_proxyFactory.loadProxyClasses();
