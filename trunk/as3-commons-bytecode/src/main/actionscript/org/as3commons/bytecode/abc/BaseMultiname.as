@@ -24,12 +24,12 @@ package org.as3commons.bytecode.abc {
 	/**
 	 * as3commons-bytecode representation of a multiname. Although I hate using the word "base" in classes, I was required to since there
 	 * is a multiname type called <code>Multiname</code>.
-	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Names" in the AVM Spec (page 8)
 	 */
 	public class BaseMultiname implements ICloneable, IEquals {
 		private static const NOT_IMPLEMENTED_ERROR:String = "Not implemented in BaseMultiname";
 		private var _kind:MultinameKind;
+		public var poolIndex:uint;
 
 		public function BaseMultiname(kindValue:MultinameKind) {
 			_kind = kindValue;
@@ -61,6 +61,10 @@ package org.as3commons.bytecode.abc {
 
 		public function toString():String {
 			return StringUtils.substitute("BaseMultiname[kind={0}]", _kind);
+		}
+
+		public function toHash():String {
+			return poolIndex.toString();
 		}
 	}
 }

@@ -15,7 +15,7 @@
  */
 package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
-	
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -113,7 +113,11 @@ package org.as3commons.bytecode.io {
 			abcFile.minorVersion = readU16();
 			abcFile.majorVersion = readU16();
 
+			//When deserializing a constantpool its rather senseless to perform any duplicatechecks in the pool,
+			//so in this instance we turn it off and back on after deserialization:
+			pool.dupeCheck = false;
 			deserializeConstantPool(pool);
+			pool.dupeCheck = true;
 
 			trace("Constantpool parsed by " + (new Date().getTime() - startTime) + " ms");
 
@@ -226,9 +230,9 @@ package org.as3commons.bytecode.io {
 				abcFile.addMethodBody(methodBody);
 			}
 		}
-		
+
 		public static function resolveExceptionInfos(methodBody:MethodBody):void {
-			for each(var exceptionInfo:ExceptionInfo in methodBody.exceptionInfos){
+			for each (var exceptionInfo:ExceptionInfo in methodBody.exceptionInfos) {
 				resolveExceptionInfoOpcodes(exceptionInfo, methodBody);
 			}
 			resolveOpcodeExceptionInfos(methodBody);
@@ -259,7 +263,7 @@ package org.as3commons.bytecode.io {
 			}
 			return exceptionInfos;
 		}
-		
+
 		public static function resolveExceptionInfoOpcodes(exceptionInfo:ExceptionInfo, methodBody:MethodBody):void {
 			exceptionInfo.exceptionEnabledFromOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledFromCodePosition];
 			exceptionInfo.exceptionEnabledToOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledToCodePosition];
@@ -294,7 +298,6 @@ package org.as3commons.bytecode.io {
 				abcFile.addScriptInfo(scriptInfo);
 			}
 		}
-
 
 		public override function deserializeInstanceInfo(abcFile:AbcFile, pool:IConstantPool):int {
 			var classCount:int = readU30();

@@ -45,15 +45,13 @@ package org.as3commons.bytecode.abc.enum {
 	 */
 	public final class Opcode {
 
-		private var _instance:Op;
-
 		private static var _enumCreated:Boolean = false;
 		private static const _ALL_OPCODES:Dictionary = new Dictionary();
 		private static const _opcodeNameLookup:Dictionary = new Dictionary();
 
 		public static const errorDispatcher:IEventDispatcher = new EventDispatcher();
 
-		// 162 total opcodes
+		// 164 total opcodes
 		public static const add:Opcode = new Opcode(0xa0, "add");
 		public static const add_d:Opcode = new Opcode(0x9B, "add_d"); //Added
 		public static const add_i:Opcode = new Opcode(0xC5, "add_i"); //Added
@@ -239,8 +237,6 @@ package org.as3commons.bytecode.abc.enum {
 		private static const UNKNOWN_OPCODE_ARGUMENTTYPE:String = "Unknown Opcode argument type. {0}";
 
 		private static var _jumpLookup:Dictionary;
-		//private static var _opcodePositions:Dictionary;
-		//private static var _opcodeEndPositions:Dictionary;
 		public static const jumpOpcodes:Dictionary = new Dictionary();
 		{
 			jumpOpcodes[ifeq] = true;
@@ -300,7 +296,6 @@ package org.as3commons.bytecode.abc.enum {
 
 				serializeOpcodeArguments(op, abcFile, methodBody, serializedOpcodes);
 				op.endLocation = serializedOpcodes.position;
-//				trace(serializedOpcodes.position + "\t" + op);
 			}
 			serializedOpcodes.position = 0;
 			resolveBackPatches(serializedOpcodes, methodBody.backPatches, opcodePositions);
@@ -311,7 +306,9 @@ package org.as3commons.bytecode.abc.enum {
 
 		public static function resolveBackPatches(serializedOpcodes:ByteArray, backPatches:Array, positions:Dictionary):void {
 			for each (var jumpData:JumpTargetData in backPatches) {
-				resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes, (jumpData.extraOpcodes != null));
+				if (jumpData.targetOpcode != null) {
+					resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes, (jumpData.extraOpcodes != null));
+				}
 				if (jumpData.extraOpcodes != null) {
 					for each (var targetOpcode:Op in jumpData.extraOpcodes) {
 						resolveBackpatch(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes, true);
@@ -320,7 +317,7 @@ package org.as3commons.bytecode.abc.enum {
 			}
 		}
 
-		private static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean = false):void {
+		public static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean = false):void {
 			var targetPos:int = (positions[jumpOpcode]) + int(jumpOpcode.parameters[0]);
 			var targetOpPos:int = positions[targetOpcode];
 			if (targetPos != targetOpPos) {
@@ -462,7 +459,7 @@ package org.as3commons.bytecode.abc.enum {
 			return ops;
 		}
 
-		private static function resolveJumpTargets(methodBody:MethodBody, opcodeStartPositions:Dictionary, opcodeEndPositions:Dictionary):void {
+		public static function resolveJumpTargets(methodBody:MethodBody, opcodeStartPositions:Dictionary, opcodeEndPositions:Dictionary):void {
 			var pos:int;
 			var targetPos:int;
 			var target:Op;
@@ -471,7 +468,8 @@ package org.as3commons.bytecode.abc.enum {
 					pos = int(jmpTarget.jumpOpcode.parameters[0]);
 					targetPos = jmpTarget.jumpOpcode.endLocation + pos;
 					target = opcodeStartPositions[targetPos];
-					if (target == null) { //jumps can point to the end location of an opcode sometimes, like the default jump in a switch statement:
+					//jumps can point to the end location of an opcode, like the default jump in a switch statement:
+					if (target == null) {
 						target = opcodeEndPositions[targetPos];
 					}
 					jmpTarget.targetOpcode = target;
