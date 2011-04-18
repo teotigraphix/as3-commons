@@ -25,7 +25,7 @@ package org.as3commons.collections.framework.core {
 		/**
 		 * The node's data.
 		 */
-		public var item : *;
+		private var _item : *;
 
 		/**
 		 * The predecessor.
@@ -43,7 +43,22 @@ package org.as3commons.collections.framework.core {
 		 * @param theItem The data of the node.
 		 */
 		public function LinkedNode(theItem : *) {
-			item = theItem;
+			_item = theItem;
 		}
+
+		/**
+		 * @private
+		 */
+		public function set item(item : *) : void {
+			_item = item;
+		}
+		
+		/**
+		 * The node's data.
+		 */
+		public function get item() : * {
+			return _item;
+		}
+		
 	}
 }
