@@ -14,33 +14,23 @@
  * limitations under the License.
  */
 package org.as3commons.eventbus.impl.collection {
-	import flash.utils.Dictionary;
 
-	import org.as3commons.collections.framework.core.LinkedNode;
+	public interface IWeakLinkedList {
+		function add(item:*, useWeakReference:Boolean = false):void;
 
-	public final class WeakLinkedNode extends LinkedNode {
+		/**
+		 * Adds an item in front of the list.
+		 *
+		 * @param item The item to add.
+		 */
+		function addFirst(item:*, useWeakReference:Boolean = false):void;
 
-		private var _useWeakReference:Boolean = false;
-
-		public function getItem():* {
-			if (!_useWeakReference) {
-				return super.item;
-			} else {
-				for (var it:* in super.item) {
-					return it;
-				}
-			}
-		}
-
-		public function WeakLinkedNode(theItem:*, useWeakReference:Boolean = false) {
-			_useWeakReference = useWeakReference;
-			if (useWeakReference) {
-				var value:* = theItem;
-				theItem = new Dictionary(true);
-				theItem[value] = true;
-			}
-			super(theItem);
-		}
+		/**
+		 * Adds an item at the end of the list.
+		 *
+		 * @param item The item to add.
+		 */
+		function addLast(item:*, useWeakReference:Boolean = false):void;
 
 	}
 }

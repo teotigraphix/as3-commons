@@ -15,7 +15,6 @@
  */
 package org.as3commons.eventbus.impl.collection {
 	import org.as3commons.collections.framework.IIterator;
-	import org.as3commons.collections.framework.IWeakLinkedList;
 	import org.as3commons.collections.framework.core.AbstractLinkedDuplicatesCollection;
 	import org.as3commons.collections.framework.core.LinkedNode;
 	import org.as3commons.collections.framework.core.as3commons_collections;
