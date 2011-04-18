@@ -22,7 +22,7 @@ package org.as3commons.eventbus.impl.collection {
 
 		private var _useWeakReference:Boolean = false;
 
-		public function getItem():* {
+		override public function get item():* {
 			if (!_useWeakReference) {
 				return super.item;
 			} else {
