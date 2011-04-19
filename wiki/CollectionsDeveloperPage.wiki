@@ -8,8 +8,48 @@ We use this page to share concepts and ideas on the further development of the A
 = Milestones =
 
 ==V 1.3==
-  * Utils Maps, Sets, Collections, ...
-  * Clone and conversion functionality
+==== Utility Classes for Major Collection Types ====
+Provide static utility classes which contain common helper methods which simplify / provide common functionality around their Collection interfaces - these classes allow us to add new features without bloating / complicating the core API; examples such as:
+
+{{{
+// The following call will result in an ArgumentError being thrown.
+var myMap : IMap = new Map();
+Maps.itemOrError(myMap, "non-existant-key", "bang!");
+}}}
+
+We should provide utility classes for:
+ * Maps
+ * Lists
+ * Sets
+
+==== Provide a simple way to convert from one Collection to Another ====
+Currently there is no easy way to copy all the values from one collection to another; for example, from a List to a Set in order to remove all duplicates.  This could possibly be achieved by using an Collections helper class, with the syntax:
+
+{{{
+var myList : IList = new List();
+list.add("a");
+list.add("b");
+list.add("a");
+
+// Transfer the contents of myList into a new Set instance.
+var noDupes : ISet = Collections.transfer(myList, new Set()) as ISet;
+}}}
+
+==== Provide Builders for Common Collection Types ====
+Builders simplify the construction of pre-populated collections, an example of a SetBuilder:
+
+{{{
+var mySet : ISet = SetBuilder.buildSet()
+  .add("item-1")
+  .add("item-2")
+  .build();
+}}}
+
+Builders should be provided for:
+ * MapBuilder
+ * SetBuilder
+ * ListBuilder
+
 
 ==V 2==
   * API refinement
