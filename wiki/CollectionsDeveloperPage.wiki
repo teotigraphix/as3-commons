@@ -1,0 +1,14 @@
+#labels Phase-Requirements
+= Collections Roadmap =
+
+We use this page to share concepts and ideas on the further development of the AS3Commons Collections Framework.
+
+= Milestones =
+
+==V 1.3==
+* Utils Maps, Sets, Collections, ...
+* Clone and conversion functionality
+
+==V2==
+* API refinement
+* Test restructuring
