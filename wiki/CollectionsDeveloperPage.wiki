@@ -52,5 +52,5 @@ Builders should be provided for:
 
 
 ==V 2==
-  * API refinement
-  * Test restructuring
+==== forEach Iterator ====
+Provide the ability to iterate all Collections using a forEach syntax - this is not as fast as using an iterator but provides a very simple interface for AS3 devs not used to iterators.
