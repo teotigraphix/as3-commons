@@ -30,7 +30,7 @@ We should provide utility classes for:
  * Sets: Sets.as
  * Collections: Collections.as
 
-=== Provide a simple way to convert from one collection to another ===
+==== Provide a simple way to convert from one collection to another ====
 
 Currently there is no easy way to copy all the values from one collection to another; for example, from a List to a Set in order to remove all duplicates.  This could possibly be achieved by using an Collections helper class, with the syntax:
 
@@ -111,6 +111,14 @@ function build() : ILinkedList; // finalize, return list
 === Add a forEach closure iterator ===
 
 Provide the ability to iterate all Collections using a forEach syntax - this is not as fast as using an iterator but provides a very simple interface for AS3 devs not used to iterators.
+
+{{{
+myCollection.foreach(callback : Function) : void;
+myMap.foreachKey(keyCallback : Function) : void;
+
+function callback(item : *) { ... }
+function keyCallback(key : *) { ... }
+}}}
 
 === Refactor tests ===
 
