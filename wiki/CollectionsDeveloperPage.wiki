@@ -1,13 +1,13 @@
 #summary Project vision and requirements
 #labels Phase-Requirements
 
-= Table Of Contents =
-
-<wiki:toc max_depth="2" />
-
 = Collections Roadmap =
 
 We use this page to share concepts and ideas on the further development of the AS3Commons Collections Framework.
+
+= Table Of Contents =
+
+<wiki:toc max_depth="2" />
 
 = Milestones =
 
