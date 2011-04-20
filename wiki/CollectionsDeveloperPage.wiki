@@ -11,7 +11,7 @@ We use this page to share concepts and ideas on the further development of the A
 
 = Milestones / Releases =
 
-==V 1.3==
+== V 1.3 ==
 
 === Utility classes for major collection types ===
 
@@ -78,15 +78,45 @@ function build() : IMap; // finalize, return map
 
 SetBuilder.as
 {{{
-static function set() : SetBuilder; // builds an IMap
+static function set() : SetBuilder; // builds an ISet
 static function orderedSet() : SetBuilder; // builds an IOrderedSet
 static function sortedSet(comparator : IComparator) : SetBuilder; // builds an ISortedSet
-function SetBuilder(underlyingSet : IMap); // constructor
-function add(key : *, item : *) : MapBuilder; // add single
-function addAll(...args) : MapBuilder; // add many
-function build() : IMap; // finalize, return map
+function SetBuilder(underlyingSet : ISet); // constructor
+function add(item : *) : SetBuilder; // add single
+function addAll(...args) : SetBuilder; // add many
+function build() : ISet; // finalize, return set
 }}}
 
-==V 2==
-==== forEach Iterator ====
+ListBuilder.as
+{{{
+static function list() : ListBuilder; // builds an IList
+static function sortedList(comparator : IComparator) : ListBuilder; // builds an ISortedList
+function ListBuilder(underlyingList : IList); // constructor
+function add(item : *) : ListBuilder; // add single
+function addAll(...args) : ListBuilder; // add many
+function build() : IList; // finalize, return list
+}}}
+
+LinkedListBuilder.as
+{{{
+static function linkedList() : LinkedListBuilder; // builds an ILinkedList
+function LinkedListBuilder(underlyingList : ILinkedList); // constructor
+function add(item : *) : LinkedListBuilder; // add single
+function addAll(...args) : LinkedListBuilder; // add many
+function build() : ILinkedList; // finalize, return list
+}}}
+
+== V 2 ==
+
+=== Add a forEach closure iterator ===
+
 Provide the ability to iterate all Collections using a forEach syntax - this is not as fast as using an iterator but provides a very simple interface for AS3 devs not used to iterators.
+
+=== Refactor tests ===
+
+The test of the framework are very fine grained and consist of a complicated structure. To enable faster development on the framework it is necessary to refactor all tests.
+
+=== Clarify collections API ===
+
+  * Maps and ICollection
+  * LinkedList and IList
