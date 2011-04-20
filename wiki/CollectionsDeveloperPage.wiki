@@ -57,15 +57,15 @@ var mySet : ISet = SetBuilder.buildSet() // start building a specific type
 
 Builders should be provided for:
 
- * Map: MapBuilder.as
- * Set: SetBuilder.as
- * List: ListBuilder.as
- * LinkedList: LinkedListBuilder.as
+ * Map: !MapBuilder.as
+ * Set: !SetBuilder.as
+ * List: !ListBuilder.as
+ * LinkedList: !LinkedListBuilder.as
 
 A builder consists of static factories to create builders for a specific collection type such as `MapBuilder.map(), MapBuilder.orderedMap(), MapBuilder.sortedMap()`. Additionally, the builder may be instantiated directly by passing an instance of the collection to build.
 The actual implementation returned by a builder is not specified but will be usually one of the implementations provided by the framework.
 
-MapBuilder.as
+!MapBuilder.as
 {{{
 static function map() : MapBuilder; // builds an IMap
 static function orderedMap() : MapBuilder; // builds an IOrderedMap
@@ -76,7 +76,7 @@ function addAll(...args) : MapBuilder; // add many
 function build() : IMap; // finalize, return map
 }}}
 
-SetBuilder.as
+!SetBuilder.as
 {{{
 static function set() : SetBuilder; // builds an ISet
 static function orderedSet() : SetBuilder; // builds an IOrderedSet
@@ -87,7 +87,7 @@ function addAll(...args) : SetBuilder; // add many
 function build() : ISet; // finalize, return set
 }}}
 
-ListBuilder.as
+!ListBuilder.as
 {{{
 static function list() : ListBuilder; // builds an IList
 static function sortedList(comparator : IComparator) : ListBuilder; // builds an ISortedList
@@ -97,7 +97,7 @@ function addAll(...args) : ListBuilder; // add many
 function build() : IList; // finalize, return list
 }}}
 
-LinkedListBuilder.as
+!LinkedListBuilder.as
 {{{
 static function linkedList() : LinkedListBuilder; // builds an ILinkedList
 function LinkedListBuilder(underlyingList : ILinkedList); // constructor
