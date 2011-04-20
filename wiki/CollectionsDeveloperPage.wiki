@@ -15,13 +15,7 @@ We use this page to share concepts and ideas on the further development of the A
 
 === Utility classes for major collection types ===
 
-Provide static utility classes which contain common helper methods which simplify / provide common functionality around their collection interfaces. These classes allow us to add new features without bloating / complicating the core API; examples such as:
-
-{{{
-// The following call will result in an ArgumentError being thrown.
-var myMap : IMap = new Map();
-Maps.itemOrError(myMap, "non-existant-key", "bang!");
-}}}
+Provide static utility classes which contain common helper methods which simplify / provide common functionality around their collection interfaces. These classes allow us to add new features without bloating/complicating the core API.
 
 We should provide utility classes for:
 
@@ -29,6 +23,22 @@ We should provide utility classes for:
  * Lists: Lists.as
  * Sets: Sets.as
  * Collections: Collections.as
+
+==== Fallback getters ====
+
+{{{
+// The following call will result in an ArgumentError being thrown.
+var myMap : IMap = new Map();
+Maps.itemOrError(myMap, "non-existant-key", "bang!");
+Maps.itemOrValue(myMap, "non-existant-key", "bang!");
+Maps.itemOrAdd(myMap, "non-existant-key", newKey, newValue);
+}}}
+
+{{{
+static function itemOrError(map : IMap, key : *, errorMessage : String = null) : *;
+static function itemOrValue(map : IMap, key : *, defaultValue : *) : *;
+static function itemOrAdd(map : IMap, key : *, item : *) : *;
+}}}
 
 ==== Provide a simple way to convert from one collection to another ====
 
@@ -42,6 +52,18 @@ list.add("a");
 
 // Transfer the contents of myList into a new Set instance.
 var noDupes : ISet = Collections.transfer(myList, new Set()) as ISet;
+}}}
+
+Not only collections may be the source of a conversion, native Flash objects are also allowed:
+
+Maps.as
+
+{{{
+static function fromDictionary(source : Dictionary) : IMap;
+static function fromObject(source : Object) : IMap;
+static function fromMap(source : ICollection) : IMap; // clone original key
+static function fromList(source : ICollection) : IMap; // use index as key
+static function fromSet(source : ICollection) : IMap; // use item as key
 }}}
 
 === Provide builders for common collection types ===
@@ -74,36 +96,6 @@ function MapBuilder(underlyingMap : IMap); // constructor
 function add(key : *, item : *) : MapBuilder; // add single
 function addAll(...args) : MapBuilder; // add many
 function build() : IMap; // finalize, return map
-}}}
-
-!SetBuilder.as
-{{{
-static function set() : SetBuilder; // builds an ISet
-static function orderedSet() : SetBuilder; // builds an IOrderedSet
-static function sortedSet(comparator : IComparator) : SetBuilder; // builds an ISortedSet
-function SetBuilder(underlyingSet : ISet); // constructor
-function add(item : *) : SetBuilder; // add single
-function addAll(...args) : SetBuilder; // add many
-function build() : ISet; // finalize, return set
-}}}
-
-!ListBuilder.as
-{{{
-static function list() : ListBuilder; // builds an IList
-static function sortedList(comparator : IComparator) : ListBuilder; // builds an ISortedList
-function ListBuilder(underlyingList : IList); // constructor
-function add(item : *) : ListBuilder; // add single
-function addAll(...args) : ListBuilder; // add many
-function build() : IList; // finalize, return list
-}}}
-
-!LinkedListBuilder.as
-{{{
-static function linkedList() : LinkedListBuilder; // builds an ILinkedList
-function LinkedListBuilder(underlyingList : ILinkedList); // constructor
-function add(item : *) : LinkedListBuilder; // add single
-function addAll(...args) : LinkedListBuilder; // add many
-function build() : ILinkedList; // finalize, return list
 }}}
 
 == V 2 ==
