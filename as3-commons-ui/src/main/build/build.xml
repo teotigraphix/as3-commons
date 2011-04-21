@@ -83,6 +83,7 @@
 			<!--<zipfileset dir="${TESTS}" prefix="tests" />
 			<zipfileset dir="${EXAMPLES}" prefix="examples" />-->
 			<zipfileset file="${SWC}/${FILE_NAME}-${VERSION}.swc" prefix="swc" />
+			<zipfileset file="${AS3_COMMONS_COLLECTIONS}" prefix="libs" />
 			<zipfileset dir="${DOC}" prefix="doc" />
 		</zip>
 		
