@@ -37,6 +37,7 @@ package org.as3commons.bytecode.util {
 		public static const COMMA:String = ",";
 		public static const FORWARD_SLASH:String = "/";
 		public static const VECTOR_INDICATOR:String = "<";
+		public static const ASTERISK:String = "*";
 
 		public static function toArgumentMultiName(className:String, kind:NamespaceKind = null):BaseMultiname {
 			if (className.indexOf(VECTOR_INDICATOR) < 0) {
