@@ -25,6 +25,7 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.FunctionTrait;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.InstanceInfo;
+	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
@@ -553,14 +554,17 @@ package org.as3commons.bytecode.io {
 				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
-				if (traitMultiname.nameSpace.name == "*") {
+				if (traitMultiname.nameSpace.name == MultinameUtil.ASTERISK) {
+					var newNs:LNamespace = traitMultiname.nameSpace.clone() as LNamespace;
 					var lastIdx:int = className.lastIndexOf(MultinameUtil.PERIOD);
 					if (lastIdx > -1) {
 						var fullNSName:Array = className.split("");
 						fullNSName[lastIdx] = MultinameUtil.SINGLE_COLON;
-						traitMultiname.nameSpace.name = fullNSName.join("");
+						newNs.name = fullNSName.join("");
+						traitMultiname.nameSpace = newNs;
 					} else {
-						traitMultiname.nameSpace.name = className;
+						newNs.name = className;
+						traitMultiname.nameSpace = newNs;
 					}
 				}
 				switch (traitKind) {
