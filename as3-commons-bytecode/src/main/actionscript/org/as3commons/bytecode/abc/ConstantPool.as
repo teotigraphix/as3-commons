@@ -563,9 +563,11 @@ package org.as3commons.bytecode.abc {
 		 * @param item    The item to add to the pool.
 		 */
 		public function addToPool(pool:Array, lookup:*, item:Object):int {
-			Assert.notNull(pool, "pool instance cannot be null");
-			Assert.notNull(lookup, "lookup instance cannot be null");
-			Assert.notNull(item, "constant pool item cannot be null");
+			CONFIG::debug {
+				Assert.notNull(pool, "pool instance cannot be null");
+				Assert.notNull(lookup, "lookup instance cannot be null");
+				Assert.notNull(item, "constant pool item cannot be null");
+			}
 			var n:* = (lookup is Dictionary) ? lookup[item] : lookup.get(item);
 			var index:int = (n != null) ? n : -1;
 			if (index > -1) {

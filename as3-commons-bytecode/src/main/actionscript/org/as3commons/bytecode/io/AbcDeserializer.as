@@ -170,8 +170,14 @@ package org.as3commons.bytecode.io {
 				//  traits_info traits[trait_count] 
 				// }
 				var classInfo:ClassInfo = new ClassInfo();
+				CONFIG::debug {
+					Assert.notNull(abcFile.instanceInfo[classIndex]);
+				}
 				classInfo.classMultiname = InstanceInfo(abcFile.instanceInfo[classIndex]).classMultiname;
 				classInfo.staticInitializer = abcFile.methodInfo[readU30()];
+				CONFIG::debug {
+					Assert.notNull(classInfo.staticInitializer);
+				}
 				classInfo.staticInitializer.as3commonsBytecodeName = STATIC_INITIALIZER_BYTECODENAME;
 				classInfo.traits = deserializeTraitsInfo(abcFile, byteStream, true);
 				abcFile.instanceInfo[classIndex].classInfo = classInfo;
@@ -201,6 +207,9 @@ package org.as3commons.bytecode.io {
 				//  traits_info trait[trait_count] 
 				// }
 				methodBody.methodSignature = abcFile.methodInfo[readU30()];
+				CONFIG::debug {
+					Assert.notNull(methodBody.methodSignature);
+				}
 				methodBody.methodSignature.methodBody = methodBody;
 				methodBody.maxStack = readU30();
 				methodBody.localCount = readU30();
@@ -262,6 +271,9 @@ package org.as3commons.bytecode.io {
 
 				exceptionInfo.exceptionType = constantPool.multinamePool[AbcSpec.readU30(input)];
 				exceptionInfo.variableReceivingException = constantPool.multinamePool[AbcSpec.readU30(input)];
+				CONFIG::debug {
+					Assert.notNull(exceptionInfo.variableReceivingException);
+				}
 				exceptionInfos[exceptionInfos.length] = exceptionInfo;
 			}
 			return exceptionInfos;
@@ -269,21 +281,33 @@ package org.as3commons.bytecode.io {
 
 		public static function resolveExceptionInfoOpcodes(exceptionInfo:ExceptionInfo, methodBody:MethodBody):void {
 			exceptionInfo.exceptionEnabledFromOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledFromCodePosition];
+			CONFIG::debug {
+				Assert.notNull(exceptionInfo.exceptionEnabledFromOpcode);
+			}
 			exceptionInfo.exceptionEnabledToOpcode = methodBody.opcodeBaseLocations[exceptionInfo.exceptionEnabledToCodePosition];
+			CONFIG::debug {
+				Assert.notNull(exceptionInfo.exceptionEnabledToOpcode);
+			}
 			exceptionInfo.opcodeToJumpToOnException = methodBody.opcodeBaseLocations[exceptionInfo.codePositionToJumpToOnException];
+			CONFIG::debug {
+				Assert.notNull(exceptionInfo.opcodeToJumpToOnException);
+			}
 		}
 
 		public static function resolveOpcodeExceptionInfos(methodBody:MethodBody):void {
 			var exceptionIndex:int = -1;
-			if (methodBody.exceptionInfos.length > 0) {
+			var len:int = methodBody.exceptionInfos.length;
+			if (len > 0) {
 				var foundLen:int = 0;
 				for each (var op:Op in methodBody.opcodes) {
 					var idx:int = getExceptionInfoArgumentIndex(op);
 					if (idx > -1) {
 						exceptionIndex = int(op.parameters[idx]);
 						op.parameters[idx] = methodBody.exceptionInfos[exceptionIndex];
-						foundLen++;
-						if (foundLen == methodBody.exceptionInfos.length) {
+						CONFIG::debug {
+							Assert.notNull(op.parameters[idx]);
+						}
+						if (++foundLen == len) {
 							break;
 						}
 					}
@@ -296,6 +320,9 @@ package org.as3commons.bytecode.io {
 			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
 				var scriptInfo:ScriptInfo = new ScriptInfo();
 				scriptInfo.scriptInitializer = abcFile.methodInfo[readU30()];
+				CONFIG::debug {
+					Assert.notNull(scriptInfo.scriptInitializer);
+				}
 				scriptInfo.scriptInitializer.as3commonsBytecodeName = SCRIPT_INITIALIZER_BYTECODENAME;
 				scriptInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
 				abcFile.addScriptInfo(scriptInfo);
@@ -330,9 +357,15 @@ package org.as3commons.bytecode.io {
 				//      The name field is an index into the multiname array of the constant pool; it provides a name for the 
 				//      class. The entry specified must be a QName. 
 				var classMultiname:BaseMultiname = pool.multinamePool[readU30()];
+				CONFIG::debug {
+					Assert.notNull(classMultiname);
+				}
 
 				instanceInfo.classMultiname = MultinameUtil.convertToQualifiedName(classMultiname);
 				instanceInfo.superclassMultiname = pool.multinamePool[readU30()];
+				CONFIG::debug {
+					Assert.notNull(instanceInfo.superclassMultiname);
+				}
 				var instanceInfoFlags:int = readU8();
 				instanceInfo.isFinal = ClassConstant.FINAL.present(instanceInfoFlags);
 				instanceInfo.isInterface = ClassConstant.INTERFACE.present(instanceInfoFlags);
@@ -340,13 +373,22 @@ package org.as3commons.bytecode.io {
 				instanceInfo.isSealed = ClassConstant.SEALED.present(instanceInfoFlags);
 				if (instanceInfo.isProtected) {
 					instanceInfo.protectedNamespace = pool.namespacePool[readU30()];
+					CONFIG::debug {
+						Assert.notNull(instanceInfo.protectedNamespace);
+					}
 				}
 				var interfaceCount:int = readU30();
 				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
 					var intfIdx:int = readU30();
 					instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = pool.multinamePool[intfIdx];
+					CONFIG::debug {
+						Assert.notNull(pool.multinamePool[intfIdx]);
+					}
 				}
 				instanceInfo.instanceInitializer = abcFile.methodInfo[readU30()];
+				CONFIG::debug {
+					Assert.notNull(instanceInfo.instanceInitializer);
+				}
 				instanceInfo.instanceInitializer.as3commonsBytecodeName = CONSTRUCTOR_BYTECODENAME;
 				instanceInfo.traits = deserializeTraitsInfo(abcFile, byteStream, false, instanceInfo.classMultiname.fullName);
 				abcFile.addInstanceInfo(instanceInfo);
@@ -375,6 +417,9 @@ package org.as3commons.bytecode.io {
 				// matches the second value, etc.
 				var metadataInstance:Metadata = new Metadata();
 				metadataInstance.name = pool.stringPool[readU30()];
+				CONFIG::debug {
+					Assert.notNull(metadataInstance.name);
+				}
 				abcFile.addMetadataInfo(metadataInstance);
 				var keyValuePairCount:int = readU30();
 				var keys:Array = [];
@@ -382,6 +427,9 @@ package org.as3commons.bytecode.io {
 				// Suck out the keys first
 				for (var keyIndex:int = 0; keyIndex < keyValuePairCount; ++keyIndex) {
 					var key:String = pool.stringPool[readU30()];
+					CONFIG::debug {
+						Assert.notNull(key);
+					}
 					keys[keys.length] = key;
 				}
 
@@ -389,6 +437,9 @@ package org.as3commons.bytecode.io {
 				for each (var currentKey:String in keys) {
 					// Note that if a key is zero, then this is a keyless entry and only carries a value (AVM2 overview, page 27 under 4.6 metadata_info) 
 					var value:String = pool.stringPool[readU30()];
+					CONFIG::debug {
+						Assert.notNull(value);
+					}
 					metadataInstance.properties[currentKey] = value;
 				}
 			}
@@ -415,15 +466,24 @@ package org.as3commons.bytecode.io {
 				var paramCount:int = readU30();
 				//trace("MethodInfo param count: " + paramCount);
 				methodInfo.returnType = pool.multinamePool[readU30()];
+				CONFIG::debug {
+					Assert.notNull(methodInfo.returnType);
+				}
 				//trace("MethodInfo return type: " + methodInfo.returnType);
 				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
 					var mn:BaseMultiname = pool.multinamePool[readU30()];
+					CONFIG::debug {
+						Assert.notNull(mn);
+					}
 					var paramQName:BaseMultiname = (mn is MultinameG) ? mn : MultinameUtil.convertToQualifiedName(mn);
 					var arg:Argument = new Argument(paramQName);
 					methodInfo.argumentCollection[methodInfo.argumentCollection.length] = arg;
 						//trace("MethodInfo param " + argumentIndex + ": " + arg.toString());
 				}
 				methodInfo.methodName = pool.stringPool[readU30()];
+				CONFIG::debug {
+					Assert.notNull(methodInfo.methodName);
+				}
 				methodInfo.scopeName = MultinameUtil.extractInterfaceScopeFromFullName(methodInfo.methodName);
 				//trace("Method name " + methodInfo.methodName);
 				methodInfo.flags = readU8();
@@ -445,28 +505,32 @@ package org.as3commons.bytecode.io {
 					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
 						var valueIndexInConstantPool:int = readU30();
 						var optionalValueKind:int = readU8();
-						var defaultValue:Object = null;
+						var defaultValue:* = null;
 						switch (optionalValueKind) {
 							case ConstantKind.INT.value:
 								defaultValue = pool.integerPool[valueIndexInConstantPool];
+								CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
+							}
 								break;
-
 							case ConstantKind.UINT.value:
 								defaultValue = pool.uintPool[valueIndexInConstantPool];
+								CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
+							}
 								break;
-
 							case ConstantKind.DOUBLE.value:
 								defaultValue = pool.doublePool[valueIndexInConstantPool];
+								CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
+							}
 								break;
-
 							case ConstantKind.UTF8.value:
 								defaultValue = pool.stringPool[valueIndexInConstantPool];
+								CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
+							}
 								break;
-
 							case ConstantKind.TRUE.value:
 								defaultValue = true;
 								break;
@@ -491,7 +555,9 @@ package org.as3commons.bytecode.io {
 							case ConstantKind.STATIC_PROTECTED_NAMESPACE.value:
 							case ConstantKind.PRIVATE_NAMESPACE.value:
 								defaultValue = pool.namespacePool[valueIndexInConstantPool];
+								CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
+							}
 								break;
 							default:
 								throw new Error("Unknown optional value kind: " + optionalValueKind);
@@ -519,6 +585,9 @@ package org.as3commons.bytecode.io {
 					var nameCount:uint = methodInfo.argumentCollection.length;
 					for (var nameIndex:uint = 0; nameIndex < nameCount; ++nameIndex) {
 						var paramName:String = abcFile.constantPool.stringPool[readU30()];
+						CONFIG::debug {
+							Assert.notNull(paramName);
+						}
 						Argument(methodInfo.argumentCollection[nameIndex]).name = paramName;
 							//trace("Param name " + nameIndex + ": " + paramName);
 					}
@@ -553,6 +622,9 @@ package org.as3commons.bytecode.io {
 				// }
 				var multiNameIndex:uint = readU30();
 				var traitName:BaseMultiname = pool.multinamePool[multiNameIndex];
+				CONFIG::debug {
+					Assert.notNull(traitName);
+				}
 				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
@@ -582,11 +654,17 @@ package org.as3commons.bytecode.io {
 						var slotOrConstantTrait:SlotOrConstantTrait = new SlotOrConstantTrait();
 						slotOrConstantTrait.slotId = readU30();
 						slotOrConstantTrait.typeMultiname = pool.multinamePool[readU30()];
+						CONFIG::debug {
+						Assert.notNull(slotOrConstantTrait.typeMultiname);
+					}
 						slotOrConstantTrait.vindex = readU30();
 						slotOrConstantTrait.isStatic = isStatic;
 						if (slotOrConstantTrait.vindex > 0) {
 							slotOrConstantTrait.vkind = ConstantKind.determineKind(readU8());
 							slotOrConstantTrait.defaultValue = getSlotOrConstantDefaultValue(pool, slotOrConstantTrait.vindex, slotOrConstantTrait.vkind);
+							CONFIG::debug {
+								Assert.notNull(slotOrConstantTrait.defaultValue);
+							}
 						}
 						trait = slotOrConstantTrait;
 						break;
@@ -606,6 +684,9 @@ package org.as3commons.bytecode.io {
 						// It's not strictly necessary to do this, but it helps the API for the MethodInfo to have a
 						// reference to its traits and vice versa 
 						var associatedMethodInfo:MethodInfo = methodInfos[readU30()];
+						CONFIG::debug {
+						Assert.notNull(associatedMethodInfo);
+					}
 						associatedMethodInfo.methodName = traitMultiname.name;
 						methodTrait.traitMethod = associatedMethodInfo;
 						associatedMethodInfo.as3commonsByteCodeAssignedMethodTrait = methodTrait;
@@ -636,6 +717,9 @@ package org.as3commons.bytecode.io {
 						var functionTrait:FunctionTrait = new FunctionTrait();
 						functionTrait.functionSlotId = readU30();
 						functionTrait.functionMethod = methodInfos[readU30()];
+						CONFIG::debug {
+						Assert.notNull(functionTrait.functionMethod);
+					}
 						functionTrait.functionMethod.methodName = traitMultiname.name;
 						functionTrait.isStatic = isStatic;
 						functionTrait.functionMethod.as3commonsByteCodeAssignedMethodTrait = functionTrait;
@@ -657,7 +741,11 @@ package org.as3commons.bytecode.io {
 				if (traitKindValue & (TraitAttributes.METADATA.bitMask << 4)) {
 					var traitMetadataCount:int = readU30();
 					for (var traitMetadataIndex:int = 0; traitMetadataIndex < traitMetadataCount; ++traitMetadataIndex) {
-						trait.addMetadata(metadata[readU30()]);
+						var mt:Metadata = metadata[readU30()];
+						CONFIG::debug {
+							Assert.notNull(mt);
+						}
+						trait.addMetadata(mt);
 					}
 				}
 

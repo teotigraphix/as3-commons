@@ -17,6 +17,7 @@ package org.as3commons.bytecode.abc {
 	import flash.errors.IllegalOperationError;
 
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.StringUtils;
@@ -28,10 +29,14 @@ package org.as3commons.bytecode.abc {
 	 */
 	public class BaseMultiname implements ICloneable, IEquals {
 		private static const NOT_IMPLEMENTED_ERROR:String = "Not implemented in BaseMultiname";
+		private static const BASE_MULTINAME_TOSTRING_TEMPLATE:String = "BaseMultiname[kind={0}]";
 		private var _kind:MultinameKind;
 		public var poolIndex:uint;
 
 		public function BaseMultiname(kindValue:MultinameKind) {
+			CONFIG::debug {
+				Assert.notNull(kindValue);
+			}
 			_kind = kindValue;
 		}
 
@@ -60,7 +65,7 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function toString():String {
-			return StringUtils.substitute("BaseMultiname[kind={0}]", _kind);
+			return StringUtils.substitute(BASE_MULTINAME_TOSTRING_TEMPLATE, _kind);
 		}
 
 		public function toHash():String {

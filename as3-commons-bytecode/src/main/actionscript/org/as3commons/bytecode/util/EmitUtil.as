@@ -33,12 +33,16 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function getMemberVisibilityFromQualifiedName(qualifiedName:QualifiedName):MemberVisibility {
-			Assert.notNull(qualifiedName, "qualifiedName argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(qualifiedName, "qualifiedName argument must not be null");
+			}
 			return getMemberVisibilityFromNamespace(qualifiedName.nameSpace);
 		}
 
 		public static function getMemberVisibilityFromNamespace(namespace:LNamespace):MemberVisibility {
-			Assert.notNull(namespace, "namespace argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(namespace, "namespace argument must not be null");
+			}
 			return NAMESPACEKIND_LOOKUP[namespace.kind] as MemberVisibility;
 		}
 

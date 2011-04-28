@@ -32,6 +32,7 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.util.AbcSpec;
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -180,6 +181,9 @@ package org.as3commons.bytecode.io {
 			var params:Array = [];
 			for (var idx:uint = 0; idx < paramCount; ++idx) {
 				params[params.length] = pool.multinamePool[readU30()];
+				CONFIG::debug {
+					Assert.notNull(params[params.length - 1]);
+				}
 			}
 			return new MultinameG(qualifiedName, paramCount, params, kind);
 		}
@@ -224,7 +228,13 @@ package org.as3commons.bytecode.io {
 			// }
 			var idx:uint = readU30();
 			var ns:LNamespace = pool.namespacePool[idx];
+			CONFIG::debug {
+				Assert.notNull(ns);
+			}
 			var name:String = pool.stringPool[readU30()];
+			CONFIG::debug {
+				Assert.notNull(name);
+			}
 			return new QualifiedName(name, ns, kind);
 		}
 
@@ -242,6 +252,9 @@ package org.as3commons.bytecode.io {
 				var namespaceArray:Array = [];
 				for (var nssetNamespaceIndex:int = 0; nssetNamespaceIndex < namespaceIndexRefCount; ++nssetNamespaceIndex) {
 					namespaceArray[namespaceArray.length] = pool.namespacePool[readU30()];
+					CONFIG::debug {
+						Assert.notNull(namespaceArray[namespaceArray.length - 1]);
+					}
 				}
 				return new NamespaceSet(namespaceArray);
 			});
@@ -252,6 +265,9 @@ package org.as3commons.bytecode.io {
 			for (var itemIndex:uint = 1; itemIndex < itemCount; ++itemIndex) {
 				var result:* = extractionMethod.apply(this);
 				pool[pool.length] = result;
+				CONFIG::debug {
+					Assert.notNull(pool[pool.length - 1]);
+				}
 			}
 			assertExtraction(itemCount, pool, "");
 		}

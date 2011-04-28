@@ -17,7 +17,6 @@ package org.as3commons.bytecode.abc {
 	import flash.errors.IllegalOperationError;
 
 	import org.as3commons.bytecode.abc.enum.Opcode;
-	import org.as3commons.lang.Assert;
 
 	/**
 	 *

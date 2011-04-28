@@ -29,6 +29,10 @@ package org.as3commons.bytecode.abc {
 	 */
 	public final class AbcFile {
 
+		private static const TAB_CHAR:String = "\t";
+		private static const NL_LF_CHARS:String = "\n\t";
+		private static const NEWLINE_CHAR:String = "\n";
+		private static const TOSTRING_TEMPLATE:String = "Method Signatures (MethodInfo):";
 		private var _classNameLookup:Dictionary;
 		private var _methodInfo:Array;
 		private var _metadataInfo:Array;
@@ -74,32 +78,44 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function addClassInfo(classInfo:ClassInfo):int {
-			Assert.notNull(classInfo);
+			CONFIG::debug {
+				Assert.notNull(classInfo);
+			}
 			return addUniquely(classInfo, constantPool.classInfo);
 		}
 
 		public function addClassInfos(classInfos:Array):void {
-			Assert.notNull(classInfos);
+			CONFIG::debug {
+				Assert.notNull(classInfos);
+			}
 			addCollection(addClassInfo, classInfos);
 		}
 
 		public function addMetadataInfo(metadata:Metadata):int {
-			Assert.notNull(metadata);
+			CONFIG::debug {
+				Assert.notNull(metadata);
+			}
 			return addUniquely(metadata, _metadataInfo);
 		}
 
 		public function addMetadataInfos(metadatas:Array):void {
-			Assert.notNull(metadatas);
+			CONFIG::debug {
+				Assert.notNull(metadatas);
+			}
 			addCollection(addMetadataInfo, metadatas);
 		}
 
 		public function addMethodInfo(methodInfo:MethodInfo):int {
-			Assert.notNull(methodInfo);
+			CONFIG::debug {
+				Assert.notNull(methodInfo);
+			}
 			return addUniquely(methodInfo, _methodInfo);
 		}
 
 		public function addMethodInfos(methodInfos:Array):void {
-			Assert.notNull(methodInfos);
+			CONFIG::debug {
+				Assert.notNull(methodInfos);
+			}
 			addCollection(addMethodInfo, methodInfo);
 		}
 
@@ -113,7 +129,9 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function addInstanceInfo(instanceInfo:InstanceInfo):int {
-			Assert.notNull(instanceInfo);
+			CONFIG::debug {
+				Assert.notNull(instanceInfo);
+			}
 
 			_classNameLookup[instanceInfo.classMultiname.fullName] = true;
 
@@ -226,9 +244,8 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function toString():String {
-			var strings:Array = [constantPool, "Method Signatures (MethodInfo):", "\t" + _methodInfo.join("\n\t"), metadataInfo.join("\n"), _instanceInfo.join("\n"), constantPool.classInfo.join("\n"), _scriptInfo.join("\n"), _methodBodies.join("\n")];
-
-			return strings.join("\n");
+			var strings:Array = [constantPool, TOSTRING_TEMPLATE, TAB_CHAR + _methodInfo.join(NL_LF_CHARS), metadataInfo.join(NEWLINE_CHAR), _instanceInfo.join(NEWLINE_CHAR), constantPool.classInfo.join(NEWLINE_CHAR), _scriptInfo.join(NEWLINE_CHAR), _methodBodies.join(NEWLINE_CHAR)];
+			return strings.join(NEWLINE_CHAR);
 		}
 	}
 }
