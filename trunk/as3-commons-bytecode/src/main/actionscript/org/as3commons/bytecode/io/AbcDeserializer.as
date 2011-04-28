@@ -662,9 +662,6 @@ package org.as3commons.bytecode.io {
 						if (slotOrConstantTrait.vindex > 0) {
 							slotOrConstantTrait.vkind = ConstantKind.determineKind(readU8());
 							slotOrConstantTrait.defaultValue = getSlotOrConstantDefaultValue(pool, slotOrConstantTrait.vindex, slotOrConstantTrait.vkind);
-							CONFIG::debug {
-								Assert.notNull(slotOrConstantTrait.defaultValue);
-							}
 						}
 						trait = slotOrConstantTrait;
 						break;
