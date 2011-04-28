@@ -218,7 +218,7 @@
 				</dependencies>
 				<configuration>
 					<definesDeclaration>
-						<property><name>CONFIG::debug</name><value>true</value></property>
+						<property><name>CONFIG::debug</name><value>false</value></property>
 					</definesDeclaration>
 					<testTimeout>60000</testTimeout>
 					<configurationReport>true</configurationReport>
