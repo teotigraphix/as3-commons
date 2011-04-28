@@ -208,14 +208,16 @@ package org.as3commons.bytecode.io {
 				methodBody.maxScopeDepth = readU30();
 
 				var codeLength:int = readU30();
-				if (methodBodyExtractionMethod === MethodBodyExtractionKind.PARSE) {
-					methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile.constantPool);
-				} else if (methodBodyExtractionMethod === MethodBodyExtractionKind.BYTEARRAY) {
-					methodBody.rawOpcodes = AbcSpec.newByteArray();
-					methodBody.rawOpcodes.writeBytes(byteStream, byteStream.position, codeLength);
-					byteStream.position += codeLength;
-				} else {
-					byteStream.position += codeLength;
+				switch (methodBodyExtractionMethod) {
+					case MethodBodyExtractionKind.PARSE:
+						methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile.constantPool);
+						break;
+					case MethodBodyExtractionKind.BYTEARRAY:
+						methodBody.rawOpcodes = AbcSpec.newByteArray();
+						methodBody.rawOpcodes.writeBytes(byteStream, byteStream.position, codeLength);
+					case MethodBodyExtractionKind.SKIP:
+						byteStream.position += codeLength;
+						break;
 				}
 
 				methodBody.exceptionInfos = extractExceptionInfos(byteStream, pool, methodBody);
