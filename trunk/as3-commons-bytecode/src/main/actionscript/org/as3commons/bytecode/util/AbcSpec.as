@@ -94,7 +94,9 @@ package org.as3commons.bytecode.util {
 
 		public static function readU8(bytes:ByteArray):uint {
 			var value:uint = TWOHUNDRED_FIFTYFIVE & bytes[bytes.position++];
-			assertWithinRange(value < MAX_U8, MAX_U8, value);
+			CONFIG::debug {
+				assertWithinRange(value < MAX_U8, MAX_U8, value);
+			}
 			return value;
 		}
 
@@ -104,7 +106,9 @@ package org.as3commons.bytecode.util {
 
 		public static function readU16(bytes:ByteArray):uint {
 			var value:uint = readU8(bytes) | readU8(bytes) << EIGHT;
-			assertWithinRange(value < MAX_U16, MAX_U16, value);
+			CONFIG::debug {
+				assertWithinRange(value < MAX_U16, MAX_U16, value);
+			}
 			return value;
 		}
 
@@ -270,7 +274,9 @@ package org.as3commons.bytecode.util {
 		 * Writes a two-byte unsigned integer value.
 		 */
 		public static function writeU16(value:uint, byteArray:ByteArray):void {
-			assertWithinRange(value < MAX_U16, MAX_U16, value);
+			CONFIG::debug {
+				assertWithinRange(value < MAX_U16, MAX_U16, value);
+			}
 			byteArray.writeByte(value & 0xFF);
 			byteArray.writeByte((value >> EIGHT) & 0xFF);
 		}
@@ -279,8 +285,10 @@ package org.as3commons.bytecode.util {
 		 * Writes a three-byte signed integer value.
 		 */
 		public static function writeS24(value:int, byteArray:ByteArray):void {
-			assertWithinRange(value > -MAX_S24, -MAX_S24, value);
-			assertWithinRange(value < MAX_S24, MAX_S24, value);
+			CONFIG::debug {
+				assertWithinRange(value > -MAX_S24, -MAX_S24, value);
+				assertWithinRange(value < MAX_S24, MAX_S24, value);
+			}
 			var i:int = value & 0xFF;
 			byteArray.writeByte(i);
 			i = (value >> EIGHT) & 0xFF;
@@ -293,7 +301,9 @@ package org.as3commons.bytecode.util {
 		 * Writes a variable-length encoded 30-bit unsigned integer value.
 		 */
 		public static function writeU30(value:uint, byteArray:ByteArray):void {
-			assertWithinRange(value < MAX_U30, MAX_U30, value);
+			CONFIG::debug {
+				assertWithinRange(value < MAX_U30, MAX_U30, value);
+			}
 			writeU32(value, byteArray);
 		}
 

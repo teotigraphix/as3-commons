@@ -30,7 +30,9 @@ package org.as3commons.bytecode.abc {
 
 		public function NamedMultiname(kindValue:MultinameKind, name:String) {
 			super(kindValue);
-			Assert.notNull(name, "name argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(name, "name argument must not be null");
+			}
 			_name = name;
 		}
 

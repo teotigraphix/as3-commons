@@ -40,7 +40,9 @@ package org.as3commons.bytecode.abc {
 		}
 
 		protected function initLNamespace(kindValue:NamespaceKind, nameValue:String):void {
-			Assert.notNull(kindValue, "kindValue argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(kindValue, "kindValue argument must not be null");
+			}
 			kind = kindValue;
 			name = nameValue;
 		}

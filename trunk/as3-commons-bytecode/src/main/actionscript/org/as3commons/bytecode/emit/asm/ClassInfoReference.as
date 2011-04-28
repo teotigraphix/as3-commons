@@ -27,7 +27,9 @@ package org.as3commons.bytecode.emit.asm {
 		}
 
 		protected function init(clsName:QualifiedName):void {
-			Assert.notNull(clsName, "clsName argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(clsName, "clsName argument must not be null");
+			}
 			_classMultiName = clsName;
 		}
 

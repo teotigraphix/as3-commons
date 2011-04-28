@@ -246,7 +246,9 @@ package org.as3commons.bytecode.emit.asm {
 						break;
 					default:
 						var rawParams:Array = token.value.split(SINGLE_SPACE);
+						CONFIG::debug {
 						Assert.isTrue(currentParameterMethods.length == rawParams.length, StringUtils.substitute(INCORRECT_OPERAND_COUNT_ERROR, currentOp, currentParameterMethods.length, rawParams.length));
+					}
 						var len:int = rawParams.length;
 						for (var i:int = 0; i < len; ++i) {
 							currentParameterMethods[i](currentOp, rawParams[i]);
@@ -257,7 +259,9 @@ package org.as3commons.bytecode.emit.asm {
 			for (var name:String in _labelLookup) {
 				var jumpCodes:Array = _labelLookup[name];
 				var labelOp:Op = labelNameLookup[name];
-				Assert.notNull(labelOp, StringUtils.substitute(UNRESOLVED_LABEL_NAME_ERROR, name));
+				CONFIG::debug {
+					Assert.notNull(labelOp, StringUtils.substitute(UNRESOLVED_LABEL_NAME_ERROR, name));
+				}
 				for each (var op:Op in jumpCodes) {
 					var existingJmp:JumpTargetData = null;
 					for each (var jmp:JumpTargetData in backpatches) {
@@ -344,19 +348,25 @@ package org.as3commons.bytecode.emit.asm {
 		}
 
 		protected function addParameter(op:Op, parameter:*):void {
-			Assert.notNull(op, "op argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(op, "op argument must not be null");
+			}
 			op.parameters[op.parameters.length] = parameter;
 		}
 
 		protected function addMultinameParameter(op:Op, multiNameString:String):void {
-			Assert.notNull(op, "op argument must not be null");
-			Assert.hasText(multiNameString, "multiNameString must not be empty or null");
+			CONFIG::debug {
+				Assert.notNull(op, "op argument must not be null");
+				Assert.hasText(multiNameString, "multiNameString must not be empty or null");
+			}
 			var bm:BaseMultiname = MultinameUtil.toArgumentMultiName(multiNameString);
 			op.parameters[op.parameters.length] = bm;
 		}
 
 		protected function addSwitchJumps(op:Op, params:Array):void {
-			Assert.notNull(op, "op argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(op, "op argument must not be null");
+			}
 			addJump(op, params.shift());
 			op.parameters[op.parameters.length] = params.length;
 			var len:int = params.length;
@@ -368,18 +378,24 @@ package org.as3commons.bytecode.emit.asm {
 		}
 
 		protected function addClassInfo(op:Op, classInfoString:String):void {
-			Assert.notNull(op, "op argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(op, "op argument must not be null");
+			}
 			var qualifiedName:QualifiedName = MultinameUtil.toQualifiedName(classInfoString);
 			op.parameters[op.parameters.length] = new ClassInfoReference(qualifiedName);
 		}
 
 		protected function addExceptionInfo(op:Op, exceptionInfoString:String):void {
-			Assert.notNull(op, "op argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(op, "op argument must not be null");
+			}
 			op.parameters[op.parameters.length] = exceptionInfoString;
 		}
 
 		protected function addNamespace(op:Op, namespaceString:String):void {
-			Assert.notNull(op, "op argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(op, "op argument must not be null");
+			}
 			var parts:Array = namespaceString.split(':');
 			if (parts[0].length == 0) {
 				parts[0] = NamespaceKind.PACKAGE_NAMESPACE.description;

@@ -372,7 +372,9 @@ package org.as3commons.bytecode.abc.enum {
 				case ClassInfo:
 					if (rawValue is ClassInfoReference) {
 						abcCompatibleValue = abcFile.addClassInfoReference(rawValue);
-						Assert.state(abcCompatibleValue > 0, "Unknown classinfo: " + ClassInfoReference(rawValue).classMultiName.toString());
+						CONFIG::debug {
+							Assert.state(abcCompatibleValue > 0, "Unknown classinfo: " + ClassInfoReference(rawValue).classMultiName.toString());
+						}
 					} else {
 						abcCompatibleValue = abcFile.addClassInfo(rawValue);
 					}
@@ -518,43 +520,57 @@ package org.as3commons.bytecode.abc.enum {
 
 				case Integer:
 					constantPoolValue = constantPool.integerPool[byteCodeValue];
+					CONFIG::debug {
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+				}
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case UnsignedInteger:
 					constantPoolValue = constantPool.uintPool[byteCodeValue];
+					CONFIG::debug {
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+				}
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case Number:
 					constantPoolValue = constantPool.doublePool[byteCodeValue];
+					CONFIG::debug {
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+				}
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case BaseMultiname:
 					constantPoolValue = constantPool.multinamePool[byteCodeValue];
+					CONFIG::debug {
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+				}
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case ClassInfo:
 					constantPoolValue = constantPool.classInfo[byteCodeValue];
+					CONFIG::debug {
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+				}
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case String:
 					constantPoolValue = constantPool.stringPool[byteCodeValue];
+					CONFIG::debug {
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+				}
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
 				case LNamespace:
 					constantPoolValue = constantPool.namespacePool[byteCodeValue];
+					CONFIG::debug {
 					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
+				}
 					argumentValues[argumentValues.length] = constantPoolValue;
 					break;
 
