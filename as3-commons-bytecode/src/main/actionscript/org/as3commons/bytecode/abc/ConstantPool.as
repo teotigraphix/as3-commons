@@ -51,7 +51,6 @@ package org.as3commons.bytecode.abc {
 		private static const NAMESPACE_SET_PROPERTYNAME:String = "namespaceSet";
 		private static const NAME_PROPERTYNAME:String = "name";
 		private static const LOCKED_CONSTANTPOOL_ERROR:String = "Constantpool is locked";
-		private static const POOL_INDEX_FIELD_NAME:String = 'poolIndex';
 
 		private var _dupeCheck:Boolean = true;
 		private var _integerPool:Array;
@@ -370,9 +369,6 @@ package org.as3commons.bytecode.abc {
 			if (matchingIndex == -1) {
 				if (!locked) {
 					matchingIndex = pool.push(object) - 1;
-					if (object.hasOwnProperty(POOL_INDEX_FIELD_NAME)) {
-						object[POOL_INDEX_FIELD_NAME] = matchingIndex;
-					}
 					key ||= object.toString();
 					lookup[key] = matchingIndex;
 				} else {
