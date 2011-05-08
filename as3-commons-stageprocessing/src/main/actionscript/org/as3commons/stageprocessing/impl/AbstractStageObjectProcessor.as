@@ -28,7 +28,7 @@ package org.as3commons.stageprocessing.impl {
 	 * @sampleref stagewiring
 	 * @docref container-documentation.html#the_istageprocessor_interface
 	 */
-	public class AbstractStageProcessor implements IStageObjectProcessor, IDisposable {
+	public class AbstractStageObjectProcessor implements IStageObjectProcessor, IDisposable {
 
 		// --------------------------------------------------------------------
 		//
@@ -40,13 +40,13 @@ package org.as3commons.stageprocessing.impl {
 		 * Abstract constructor
 		 * @throws flash.errors.IllegalOperationError When called directly
 		 */
-		public function AbstractStageProcessor(self:AbstractStageProcessor) {
+		public function AbstractStageObjectProcessor(self:AbstractStageObjectProcessor) {
 			super();
-			abstractStageProcessorInit(self);
+			initAbstractStageProcessor(self);
 		}
 
-		protected function abstractStageProcessorInit(self:AbstractStageProcessor):void {
-			if (self != this) {
+		protected function initAbstractStageProcessor(self:AbstractStageObjectProcessor):void {
+			if (self !== this) {
 				throw new IllegalOperationError("AbstractStageProcessor is abstract");
 			}
 		}

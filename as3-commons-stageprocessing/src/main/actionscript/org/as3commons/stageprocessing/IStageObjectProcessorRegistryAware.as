@@ -20,7 +20,7 @@ package org.as3commons.stageprocessing {
 	 * @author Roland Zwaga
 	 * @sampleref stagewiring
 	 */
-	public interface IStageProcessorRegistryAware {
+	public interface IStageObjectProcessorRegistryAware {
 		/**
 		 * The specified <code>IStageProcessorRegistry</code> reference.
 		 */

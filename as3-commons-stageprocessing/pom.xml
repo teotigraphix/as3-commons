@@ -15,11 +15,14 @@
 	<properties>
 		<flex-mojos.version>4.0-beta-3</flex-mojos.version>
 		<flex-sdk.version>4.1.0.16076</flex-sdk.version>
-        <flashplayer.version.major>10</flashplayer.version.major>
-        <flashplayer.version.minor>1</flashplayer.version.minor>
-        <flashplayer.version.revision>0</flashplayer.version.revision>
-        <flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}</flashplayer.version>
-        <playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
+		<flashplayer.version.major>10</flashplayer.version.major>
+		<flashplayer.version.minor>1</flashplayer.version.minor>
+		<flashplayer.version.revision>0</flashplayer.version.revision>
+		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}</flashplayer.version>
+		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
+		<asmock.version>0.9</asmock.version>
+		<asmockflexunit4.version>1.0</asmockflexunit4.version>
+		<flexunit.version>4.0-beta-2</flexunit.version>
 	</properties>
 
     <licenses>
@@ -235,12 +238,26 @@
 
 	<dependencies>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>common-framework</artifactId>
-            <version>${flex-sdk.version}</version>
-            <type>pom</type>
-        </dependency>
+		<dependency>
+			<groupId>com.mock.asmock</groupId>
+			<artifactId>asmock</artifactId>
+			<version>${asmock.version}</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mock.ASMockFlexUnit4</groupId>
+			<artifactId>asmockflexunit4</artifactId>
+			<version>${asmockflexunit4.version}</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+		    <groupId>com.adobe.flex.framework</groupId>
+		    <artifactId>common-framework</artifactId>
+		    <version>${flex-sdk.version}</version>
+		    <type>pom</type>
+		</dependency>
 
 		<dependency>
 			<groupId>org.as3commons</groupId>
@@ -261,19 +278,19 @@
 		</dependency>
 
 
-        <dependency>
+		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-logging</artifactId>
 			<version>1.1.1</version>
 			<type>swc</type>
 			<scope>external</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.adobe.flex.framework</groupId>
-                    <artifactId>playerglobal</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+			<exclusions>
+			<exclusion>
+			    <groupId>com.adobe.flex.framework</groupId>
+			    <artifactId>playerglobal</artifactId>
+			</exclusion>
+			</exclusions>
+		</dependency>
 
         <!--
 		<dependency>
@@ -307,78 +324,78 @@
 		</dependency>
          -->
 
-        <dependency>
-                <groupId>com.adobe.flex.framework</groupId>
-                <artifactId>playerglobal</artifactId>
-                <version>${flex-sdk.version}</version>
-                <scope>external</scope>
-                <type>swc</type>
-                <classifier>${playerglobal.version}</classifier>
-        </dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>playerglobal</artifactId>
+			<version>${flex-sdk.version}</version>
+			<scope>external</scope>
+			<type>swc</type>
+			<classifier>${playerglobal.version}</classifier>
+		</dependency>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>sparkskins</artifactId>
-            <version>${flex-sdk.version}</version>
-            <scope>external</scope>
-            <type>swc</type>
-        </dependency>
+		<dependency>
+		    <groupId>com.adobe.flex.framework</groupId>
+		    <artifactId>sparkskins</artifactId>
+		    <version>${flex-sdk.version}</version>
+		    <scope>external</scope>
+		    <type>swc</type>
+		</dependency>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>spark</artifactId>
-            <version>${flex-sdk.version}</version>
-            <scope>external</scope>
-            <type>swc</type>
-        </dependency>
+		<dependency>
+		    <groupId>com.adobe.flex.framework</groupId>
+		    <artifactId>spark</artifactId>
+		    <version>${flex-sdk.version}</version>
+		    <scope>external</scope>
+		    <type>swc</type>
+		</dependency>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>textLayout</artifactId>
-            <version>${flex-sdk.version}</version>
-            <scope>external</scope>
-            <type>swc</type>
-        </dependency>
+		<dependency>
+		    <groupId>com.adobe.flex.framework</groupId>
+		    <artifactId>textLayout</artifactId>
+		    <version>${flex-sdk.version}</version>
+		    <scope>external</scope>
+		    <type>swc</type>
+		</dependency>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>osmf</artifactId>
-            <version>${flex-sdk.version}</version>
-            <scope>external</scope>
-            <type>swc</type>
-        </dependency>
+		<dependency>
+		    <groupId>com.adobe.flex.framework</groupId>
+		    <artifactId>osmf</artifactId>
+		    <version>${flex-sdk.version}</version>
+		    <scope>external</scope>
+		    <type>swc</type>
+		</dependency>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>spark</artifactId>
-            <version>${flex-sdk.version}</version>
-            <type>rb.swc</type>
-            <scope>external</scope>
-        </dependency>
+		<dependency>
+		    <groupId>com.adobe.flex.framework</groupId>
+		    <artifactId>spark</artifactId>
+		    <version>${flex-sdk.version}</version>
+		    <type>rb.swc</type>
+		    <scope>external</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>textLayout</artifactId>
-            <version>${flex-sdk.version}</version>
-            <type>rb.swc</type>
-            <scope>external</scope>
-        </dependency>
+		<dependency>
+		    <groupId>com.adobe.flex.framework</groupId>
+		    <artifactId>textLayout</artifactId>
+		    <version>${flex-sdk.version}</version>
+		    <type>rb.swc</type>
+		    <scope>external</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>osmf</artifactId>
-            <version>${flex-sdk.version}</version>
-            <type>rb.swc</type>
-            <scope>external</scope>
-        </dependency>
+		<dependency>
+		    <groupId>com.adobe.flex.framework</groupId>
+		    <artifactId>osmf</artifactId>
+		    <version>${flex-sdk.version}</version>
+		    <type>rb.swc</type>
+		    <scope>external</scope>
+		</dependency>
 
-	<dependency>
-		<groupId>com.adobe.flexunit</groupId>
-		<artifactId>flexunit</artifactId>
-		<version>0.90</version>
-		<type>swc</type>
-		<scope>test</scope>
-	</dependency>
+		<dependency>
+			<groupId>com.adobe.flexunit</groupId>
+			<artifactId>flexunit</artifactId>
+			<version>${flexunit.version}</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
