@@ -18,7 +18,6 @@ package org.as3commons.stageprocessing {
 	/**
 	 * Describes an object that needs a reference to an <code>IObjectSelector</code> instance.
 	 * @author Roland Zwaga
-	 * @sampleref stagewiring
 	 */
 	public interface IObjectSelectorAware {
 		/**

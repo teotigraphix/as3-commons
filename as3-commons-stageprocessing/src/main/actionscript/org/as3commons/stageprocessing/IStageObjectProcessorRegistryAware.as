@@ -16,9 +16,8 @@
 package org.as3commons.stageprocessing {
 
 	/**
-	 * Describes an object that needs a reference to a <code>IStageProcessorRegistry</code> instance.
+	 * Describes an object that needs a reference to a <code>IStageObjectProcessorRegistry</code> instance.
 	 * @author Roland Zwaga
-	 * @sampleref stagewiring
 	 */
 	public interface IStageObjectProcessorRegistryAware {
 		/**

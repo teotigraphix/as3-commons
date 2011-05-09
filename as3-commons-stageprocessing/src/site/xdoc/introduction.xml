@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <properties>
+    <title>Introduction to as3commons-bytecode</title>
+
+    <author email="scab@dds.nl">Roland Zwaga</author>
+  </properties>
+
+  <body>
+    <section name="How it works">
+    	<p>AS3Commons-stageprocessing offers a convenient registry system for <code>IStageObjectProcessor</code> implementations. An <code>IStageObjectProcessor</code> is meant
+    	to 'post-process' a display object that has been added to the stage.<br/>
+    	To keep the system as un-intrusive as possible an <code>IStageObjectProcessor</code> is registered with an associated <code>IObjectSelector</code> implementation.<br/>
+    	This <code>IObjectSelector</code> decides if a <code>DisplayObject</code> that was added to the stage will be processed or not. Each <code>IObjectSelector</code> can be
+    	associated with one or more <code>IStageObjectProcessors</code>.
+    	<code>IObjectSelectors</code> in their turn can be associated with a certain <code>DisplayObject</code> that is considered as a 'root view'.<br/>
+    	That way different areas of the stage can be associated with different <code>IObjectSelectors</code> and <code>IStageObjectProcessors</code>.
+    	</p>
+    </section>
+    <section name="Setting things up">
+    	<p>First of all, an instance of <code>FlashStageObjectProcessorRegistry</code> will need to be created and associated with the current stage.
+    	<div class="source"><pre>var registry:FlashStageObjectProcessorRegistry = new FlashStageObjectProcessorRegistry();
+registry.stage = stage;
+</pre></div>
+	Where 'stage' is a valid reference to the current stage, of course.</p>
+	<p>In Flex 4 the stage can be assigned like this:
+    	<div class="source"><pre>var registry:FlashStageObjectProcessorRegistry = new FlashStageObjectProcessorRegistry();
+registry.stage = FlexGlobals.topLevelApplication.stage as Stage;
+</pre></div>
+    	</p>
+    </section>
+    <section name="Creating an IObjectSelector implementation">
+    	<p>Creating an <code>IObjectSelector</code> is very straighforward, the interface contains only one method:
+    	<div class="source"><pre>public interface IObjectSelector {
+  function approve(object:Object):Boolean;
+}</pre></div>
+	So, a simple implementation that checks for certain package names could look like this:
+    	<div class="source"><pre>public class MyObjectSelector implements IObjectSelector {
+  public function approve(object:Object):Boolean {
+    var className:String = getQualifiedClassName(object);
+    return (className.substring(0,14) == "com.myclasses.");
+  }
+}</pre></div>
+    	</p>
+    </section>
+    <section name="Creating an IStageObjectProcessor implementation">
+    	<p>The <code>IStageObjectProcessor</code> interface is equally brief:
+    	<div class="source"><pre>public interface IStageObjectProcessor {
+  function process(displayObject:DisplayObject):DisplayObject;
+}</pre></div>
+	<p>Let's imagine a processor that assigns a dataprovider to certain list components that are added to the stage:
+    	<div class="source"><pre>public class MystageObjectProcessor implements IStageObjectProcessor {
+  public function process(displayObject:DisplayObject):DisplayObject {
+    if (displayObject is List) {
+      List(displayObject).dataProvider = ['option 1', 'option 2', 'option 3'];
+    }
+  }
+}</pre></div>
+    	</p>
+    </section>
+    <section name="Registering the IStageProcessor with the IObjectSelector">
+    	<p>Now to register the two implementations takes one line of code:
+    	<div class="source"><pre>registry.registerStageObjectProcessor(new MystageObjectProcessor(), new MyObjectSelector());</pre></div>
+    	</p>
+    	<p>After all the necessary registrations have been performed its time to activate the <code>FlashStageObjectProcessorRegistry</code>:
+    	<div class="source"><pre>registry.initialize();</pre></div>
+    	This will let the <code>FlashStageObjectProcessorRegistry</code> loop recursively through all the display objects that are already present
+    	on the stage and let them be approved and/or processed by the registered <code>IObjectSelectors</code> and <code>IStageObjectProcessors</code>.
+    	</p>
+    </section>
+    <section name="Registering the IStageProcessor with an IObjectSelector and a custom root view">
+    	<p>The <code>registerStageObjectProcessor()</code> method takes a third optional argument of type <code>DisplayObject</code>. This <code>DisplayObject</code>
+    	instance will be regarded as the root for the specified <code>IObjectSelectors</code> and their associated <code>IStageObjectProcessors</code>.<br/>
+    	In other words, only <code>DisplayObjects</code> that have this root as their parent will be approved and/or processed by these specific <code>IObjectSelectors</code> and their associated <code>IStageObjectProcessors</code>:
+    	<div class="source"><pre>registry.registerStageObjectProcessor(new MystageObjectProcessor(), new MyObjectSelector(), registry.stage.getChildAt(4));</pre></div>
+    	</p>
+    </section>
+  </body>
+</document>

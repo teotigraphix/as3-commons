@@ -21,6 +21,7 @@ package org.as3commons.stageprocessing.impl {
 	import org.as3commons.stageprocessing.IObjectSelector;
 	import org.as3commons.stageprocessing.IObjectSelectorAware;
 	import org.as3commons.stageprocessing.IStageObjectProcessor;
+	import flash.display.DisplayObject;
 
 	/**
 	 * Abstract base class for <code>IStageProcessor</code> implementations.
@@ -77,7 +78,7 @@ package org.as3commons.stageprocessing.impl {
 		 * @throws flash.errors.IllegalOperationError When called directly
 		 * @inheritDoc
 		 */
-		public function process(object:Object):Object {
+		public function process(displayObject:DisplayObject):DisplayObject {
 			throw new IllegalOperationError("Not implemented in abstract base class");
 		}
 

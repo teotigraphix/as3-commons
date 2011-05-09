@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package org.as3commons.stageprocessing {
+	import flash.display.DisplayObject;
 
 	/**
-	 * Describes an object that can process objects that have been removed to the stage.
+	 * Describes an object that can process objects that have been removed from the stage.
 	 * @author Roland Zwaga
 	 */
 	public interface IStageObjectDestroyer extends IStageObjectProcessor {
 		/**
-		 * Performs a destroy operation on the specified <code>Object</code>.
-		 * @param object The object that will be destroyed.
+		 * Performs a destroy operation on the specified <code>DisplayObject</code>.
+		 * @param displayObject The object that will be destroyed.
 		 * @return The destroyed object.
 		 */
-		function destroy(object:Object):Object;
-
+		function destroy(displayObject:DisplayObject):DisplayObject;
 	}
 }
