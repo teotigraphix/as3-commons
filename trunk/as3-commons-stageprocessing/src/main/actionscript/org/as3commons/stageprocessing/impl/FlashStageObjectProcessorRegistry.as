@@ -108,7 +108,9 @@ package org.as3commons.stageprocessing.impl {
 				for (var selector:* in selectors) {
 					var processors:Vector.<IStageObjectProcessor> = selectors[selector];
 					if (processors.indexOf(stageProcessor) > -1) {
-						result[result.length] = IObjectSelector(selector);
+						if (result.indexOf(selector) < 0) {
+							result[result.length] = IObjectSelector(selector);
+						}
 					}
 				}
 			}

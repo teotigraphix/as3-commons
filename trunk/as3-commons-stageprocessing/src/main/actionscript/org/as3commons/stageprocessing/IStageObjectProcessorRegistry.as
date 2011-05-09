@@ -72,7 +72,7 @@ package org.as3commons.stageprocessing {
 		function getAllObjectSelectors():Vector.<IObjectSelector>;
 
 		/**
-		 *
+		 * Returns a <code>Vector</code> of <code>DisplayObjects</code> that represent all of the root views that have been registered.
 		 * @return
 		 */
 		function getAllRootViews():Vector.<DisplayObject>;

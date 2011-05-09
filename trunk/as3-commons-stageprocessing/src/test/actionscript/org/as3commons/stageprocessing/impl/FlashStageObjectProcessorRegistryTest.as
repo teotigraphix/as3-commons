@@ -14,7 +14,9 @@
 * limitations under the License.
 */
 package org.as3commons.stageprocessing.impl {
-	import asmock.integration.flexunit.ASMockClassRunner;
+	import asmock.framework.Expect;
+	import asmock.framework.SetupResult;
+	import asmock.integration.flexunit.IncludeMocksRule;
 
 	import flash.display.DisplayObject;
 	import flash.display.Stage;
@@ -28,17 +30,13 @@ package org.as3commons.stageprocessing.impl {
 	import org.as3commons.stageprocessing.IStageObjectProcessor;
 	import org.as3commons.stageprocessing.test.AbstractTestWithMockRepository;
 
-
-	[Mock("org.as3commons.stageprocessing.IStageObjectProcessor")]
-	[Mock("org.as3commons.stageprocessing.IObjectSelector")]
-	[RunWith("asmock.integration.flexunit.ASMockClassRunner")]
 	public class FlashStageObjectProcessorRegistryTest extends AbstractTestWithMockRepository {
 
-		{
-			IStageObjectProcessor;
-			ASMockClassRunner;
-			IObjectSelector;
-		}
+		[Rule]
+		public var includeMocks:IncludeMocksRule = new IncludeMocksRule([ //
+			IStageObjectProcessor, //
+			IObjectSelector //
+			]);
 
 		private var _registry:FlashStageObjectProcessorRegistry;
 
@@ -91,5 +89,126 @@ package org.as3commons.stageprocessing.impl {
 			Assert.assertStrictlyEquals(processor, _registry.getStageProcessorsByRootView(rootView)[0]);
 		}
 
+		[Test]
+		public function testGetStageProcessorsByType():void {
+			var processor:IStageObjectProcessor = IStageObjectProcessor(mockRepository.createStrict(IStageObjectProcessor));
+			var selector:IObjectSelector = IObjectSelector(mockRepository.createStrict(IObjectSelector));
+			mockRepository.replayAll();
+
+			_registry.registerStageObjectProcessor(processor, selector);
+			var result:Vector.<IStageObjectProcessor> = _registry.getStageObjectProcessorsByType(IStageObjectProcessor);
+			Assert.assertEquals(1, result.length);
+			Assert.assertStrictlyEquals(processor, result[0]);
+		}
+
+		[Test]
+		public function testGetAllObjectSelectors():void {
+			var processor:IStageObjectProcessor = IStageObjectProcessor(mockRepository.createStrict(IStageObjectProcessor));
+			var selector:IObjectSelector = IObjectSelector(mockRepository.createStrict(IObjectSelector));
+			var processor2:IStageObjectProcessor = IStageObjectProcessor(mockRepository.createStrict(IStageObjectProcessor));
+			var selector2:IObjectSelector = IObjectSelector(mockRepository.createStrict(IObjectSelector));
+			mockRepository.replayAll();
+
+			_registry.registerStageObjectProcessor(processor, selector);
+			var result:Vector.<IObjectSelector> = _registry.getAllObjectSelectors();
+			Assert.assertEquals(1, result.length);
+			Assert.assertStrictlyEquals(selector, result[0]);
+
+			_registry.registerStageObjectProcessor(processor2, selector2);
+			result = _registry.getAllObjectSelectors();
+			Assert.assertEquals(2, result.length);
+			Assert.assertTrue(result.indexOf(selector2) > -1);
+		}
+
+		[Test]
+		public function testAllRootViews():void {
+			var processor:IStageObjectProcessor = IStageObjectProcessor(mockRepository.createStrict(IStageObjectProcessor));
+			var selector:IObjectSelector = IObjectSelector(mockRepository.createStrict(IObjectSelector));
+			mockRepository.replayAll();
+			var rootView:UIComponent = new UIComponent();
+
+			_registry.registerStageObjectProcessor(processor, selector, rootView);
+			var result:Vector.<DisplayObject> = _registry.getAllRootViews();
+			Assert.assertEquals(1, result.length);
+			Assert.assertStrictlyEquals(rootView, result[0]);
+		}
+
+		[Test]
+		public function testGetObjectSelectorsForStageProcessor():void {
+			var processor:IStageObjectProcessor = IStageObjectProcessor(mockRepository.createStrict(IStageObjectProcessor));
+			var selector:IObjectSelector = IObjectSelector(mockRepository.createStrict(IObjectSelector));
+			mockRepository.replayAll();
+
+			_registry.registerStageObjectProcessor(processor, selector);
+			var result:Vector.<IObjectSelector> = _registry.getObjectSelectorsForStageProcessor(processor);
+			Assert.assertEquals(1, result.length);
+			Assert.assertStrictlyEquals(selector, result[0]);
+		}
+
+		[Test]
+		public function testProcessorInvocationForAddedStageObjectWithoutRootView():void {
+			var childView:UIComponent = new UIComponent();
+			var processor:IStageObjectProcessor = IStageObjectProcessor(mockRepository.createStub(IStageObjectProcessor));
+			var selector:IObjectSelector = IObjectSelector(mockRepository.createStub(IObjectSelector));
+			SetupResult.forCall(selector.approve(childView)).ignoreArguments().returnValue(true);
+			SetupResult.forCall(selector.approve(_registry.stage.root)).ignoreArguments().returnValue(false);
+			Expect.call(processor.process(null)).ignoreArguments().returnValue(null);
+			mockRepository.replayAll();
+
+			_registry.registerStageObjectProcessor(processor, selector);
+			_registry.initialize();
+			_registry.stage.addChild(childView);
+
+			mockRepository.verifyAll();
+		}
+
+		[Test]
+		public function testProcessorInvocationForAddedStageObjectWithRootView():void {
+			var rootView:UIComponent = new UIComponent();
+			var childView:UIComponent = new UIComponent();
+			var childView2:UIComponent = new UIComponent();
+			var processor:IStageObjectProcessor = IStageObjectProcessor(mockRepository.createStub(IStageObjectProcessor));
+			var selector:IObjectSelector = IObjectSelector(mockRepository.createStub(IObjectSelector));
+
+			SetupResult.forCall(selector.approve(childView)).ignoreArguments().returnValue(true);
+			SetupResult.forCall(selector.approve(_registry.stage.root)).ignoreArguments().returnValue(false);
+			Expect.call(processor.process(childView)).returnValue(childView);
+			Expect.notCalled(processor.process(childView2));
+			mockRepository.replayAll();
+
+			_registry.stage.addChild(rootView);
+			_registry.registerStageObjectProcessor(processor, selector, rootView);
+			_registry.initialize();
+			rootView.addChild(childView);
+			_registry.stage.addChild(childView2);
+
+			mockRepository.verifyAll();
+		}
+
+		[Test]
+		public function testProcessorInvocationForAddedNestedStageObjectWithRootView():void {
+			var rootView:UIComponent = new UIComponent();
+			var childView1:UIComponent = new UIComponent();
+			var childView2:UIComponent = new UIComponent();
+
+			childView1.addChild(childView2);
+
+			var processor:IStageObjectProcessor = IStageObjectProcessor(mockRepository.createStub(IStageObjectProcessor));
+			var selector:IObjectSelector = IObjectSelector(mockRepository.createStub(IObjectSelector));
+
+			SetupResult.forCall(selector.approve(childView2)).ignoreArguments().returnValue(true);
+			SetupResult.forCall(selector.approve(_registry.stage.root)).ignoreArguments().returnValue(false);
+			SetupResult.forCall(selector.approve(childView1)).ignoreArguments().returnValue(false);
+			Expect.call(processor.process(childView2)).returnValue(childView2);
+			Expect.notCalled(processor.process(childView1));
+			mockRepository.replayAll();
+
+			_registry.stage.addChild(rootView);
+			_registry.registerStageObjectProcessor(processor, selector, rootView);
+			_registry.initialize();
+			rootView.addChild(childView1);
+
+			mockRepository.verifyAll();
+		}
 	}
 }

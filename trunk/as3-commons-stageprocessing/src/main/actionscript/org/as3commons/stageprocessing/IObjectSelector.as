@@ -18,16 +18,6 @@ package org.as3commons.stageprocessing {
 	/**
 	 * Objects implementing this interface are used to approve (or deny)
 	 * the selection of an object for some action/purpose.
-	 *
-	 * <p>
-	 * <b>Author:</b> Martino Piccinato<br/>
-	 * <b>Version:</b> $Revision:$, $Date:$, $Author:$<br/>
-	 * <b>Since:</b> 0.8
-	 * </p>
-	 *
-	 * @see org.springextensions.actionscript.context.support.FlexXMLApplicationContext
-	 * @docref container-documentation.html#how_to_determine_which_stage_components_are_eligeble_for_configuration
-	 * @sampleref stagewiring
 	 */
 	public interface IObjectSelector {
 

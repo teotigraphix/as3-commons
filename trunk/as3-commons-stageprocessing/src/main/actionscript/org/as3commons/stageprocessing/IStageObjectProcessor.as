@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.stageprocessing {
+	import flash.display.DisplayObject;
 
 	/**
 	 * Describes an object that can process objects that have been added to the stage.
@@ -28,11 +29,11 @@ package org.as3commons.stageprocessing {
 		// --------------------------------------------------------------------
 
 		/**
-		 * Performs an operation on the specified <code>Object</code>.
-		 * @param object The object that will be processed.
+		 * Performs an operation on the specified <code>DisplayObject</code>.
+		 * @param displayObject The object that will be processed.
 		 * @return The processed object.
 		 */
-		function process(object:Object):Object;
+		function process(displayObject:DisplayObject):DisplayObject;
 
 	}
 }
