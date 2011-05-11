@@ -60,6 +60,17 @@ package org.as3commons.codec.serialization.amf
 			
 			assertEquals(string, amf3Input.readObject());
 		}
+
+		[Test]
+		public function testReadXML():void
+		{
+			var xmlString:String = '<root><child property="foo"/></root>';
+			var xml:XML = new XML(xmlString);
+			
+			recycle(xml);
+			
+			assertEquals(xml.toString(), amf3Input.readObject().toString());
+		}
 		
 		[Test]
 		public function testReadByteArray():void

@@ -2,7 +2,7 @@
 <document>
     <properties>
         <title>Welcome to as3commons-amf</title>
-        <author email="jan@kaustic.net">Jan Van Coppenolle</author>
+        <author>Jan Van Coppenolle</author>
     </properties>
     <body>
         <section name="Welcome to as3-commons-amf">
@@ -29,8 +29,11 @@
 
 
             <p>
+                AS3Commons-amf is an open-source library to provider more flexibility when
+                working with AMF-serialized data. Currently an AS3 version of a AMF3 deserializer
+                has been ported, already providing some hooks previously impossible (yet at the
+                cost of deserialization speed compared to native Flash Player implementation).
             </p>
-            
         </section>
 
     </body>
