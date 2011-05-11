@@ -4,7 +4,7 @@
     	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-stageprocessing</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0-RC1</version>
 	<name>AS3Commons StageProcessing</name>
 	<url>http://www.as3commons.org/stageprocessing</url>
 	<description>
@@ -13,7 +13,7 @@
 	<inceptionYear>2011</inceptionYear>
 
 	<properties>
-		<flex-mojos.version>4.0-beta-3</flex-mojos.version>
+		<flex-mojos.version>4.0-beta-7</flex-mojos.version>
 		<flex-sdk.version>4.1.0.16076</flex-sdk.version>
 		<flashplayer.version.major>10</flashplayer.version.major>
 		<flashplayer.version.minor>1</flashplayer.version.minor>
@@ -23,6 +23,7 @@
 		<asmock.version>1.0</asmock.version>
 		<asmockflexunit4.version>1.0</asmockflexunit4.version>
 		<flexunit.version>4.1-RC2</flexunit.version>
+		<maven-site-plugin.version>3.0-beta-3</maven-site-plugin.version>
 	</properties>
 
     <licenses>
@@ -203,7 +204,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0-beta-2</version>
+				<version>${maven-site-plugin.version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>com.adobe.flex</groupId>
@@ -288,38 +289,6 @@
 			</exclusion>
 			</exclusions>
 		</dependency>
-
-        <!--
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-logging</artifactId>
-			<version>2.0</version>
-			<type>swc</type>
-			<scope>external</scope>
-  			<exclusions>
-				<exclusion>
-					<groupId>com.adobe.flex.framework</groupId>
-					<artifactId>air-framework</artifactId>
-				</exclusion>
-                <exclusion>
-                    <groupId>com.adobe.flex.framework</groupId>
-                    <artifactId>common-framework</artifactId>
-                </exclusion>
-    			<exclusion>
-					<groupId>nl.demonsters.debugger</groupId>
-					<artifactId>monsterdebugger</artifactId>
-				</exclusion>
-                <exclusion>
-                    <groupId>ant</groupId>
-                    <artifactId>ant-nodeps</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ant-contrib</groupId>
-                    <artifactId>ant-contrib</artifactId>
-                </exclusion>
-			</exclusions>
-		</dependency>
-         -->
 
 		<dependency>
 			<groupId>com.adobe.flex.framework</groupId>
@@ -456,6 +425,10 @@
 	</distributionManagement>
 
     <repositories>
+		<repository>
+			<id>flash-nexus-repository</id>
+			<url>http://www.flashnexus.org/nexus/content/groups/public</url>
+		</repository>
 		<repository>
     			<id>cairngorm3-repository</id>
     			<url>http://opensource.adobe.com/svn/opensource/cairngorm3/maven-repository</url>
