@@ -22,7 +22,7 @@
 		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
 		<asmock.version>1.0</asmock.version>
 		<asmockflexunit4.version>1.0</asmockflexunit4.version>
-		<flexunit.version>4.1.0-beta3</flexunit.version>
+		<flexunit.version>4.1-RC2</flexunit.version>
 	</properties>
 
     <licenses>
@@ -456,10 +456,6 @@
 	</distributionManagement>
 
     <repositories>
-		<repository>
-			<id>flash-nexus-repository</id>
-			<url>http://www.flashnexus.org/nexus/content/groups/public</url>
-		</repository>
 		<repository>
     			<id>cairngorm3-repository</id>
     			<url>http://opensource.adobe.com/svn/opensource/cairngorm3/maven-repository</url>
