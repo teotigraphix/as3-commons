@@ -1,0 +1,9 @@
+AS3COMMONS-BYTECODE CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+Changes in version 1.0-RC1 (11.05.2011)
+-----------------------------------
+
+* Initial release, functionality taken out of Spring Actionscript and made a bit more generic
