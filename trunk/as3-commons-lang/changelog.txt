@@ -3,6 +3,17 @@ AS3COMMONS LANG CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 0.3.3 (00.00.2011)
+-----------------------------------
+
+Package org.commons.lang
+
+* Added IDisposable interface
+* Made all util classes final
+* Added INamed interface
+* Added HashArray class
+* various bugfixes
+
 Changes in version 0.3.2 (30.01.2010)
 -----------------------------------
 
