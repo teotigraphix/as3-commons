@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-lang</artifactId>
 	<packaging>swc</packaging>
-	<version>0.3.3-SNAPSHOT</version>
+	<version>0.3.3</version>
 	<name>AS3Commons Lang</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
@@ -68,9 +68,9 @@
 	</build>
 
 	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-lang</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-lang</url>
-	  <connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-lang</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-lang/0.3.3</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-lang/0.3.3</url>
+	  <connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-lang/0.3.3</connection>
   </scm>
 
 	<distributionManagement>
