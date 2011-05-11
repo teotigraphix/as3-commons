@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-    <groupId>org.as3commons</groupId>
+    	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-stageprocessing</artifactId>
 	<packaging>swc</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>AS3Commons StageProcessing</name>
 	<url>http://www.as3commons.org/stageprocessing</url>
 	<description>
-			Library providing an API for intercepting objects that have been added to the Flash stage.
+			A Library that provides an API for intercepting objects that have been added to or removed from the Flash stage.
 	</description>
-	<inceptionYear>2007</inceptionYear>
+	<inceptionYear>2011</inceptionYear>
 
 	<properties>
 		<flex-mojos.version>4.0-beta-3</flex-mojos.version>
@@ -22,7 +22,7 @@
 		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
 		<asmock.version>1.0</asmock.version>
 		<asmockflexunit4.version>1.0</asmockflexunit4.version>
-		<flexunit.version>4.0-beta-2</flexunit.version>
+		<flexunit.version>4.1.0-beta3</flexunit.version>
 	</properties>
 
     <licenses>
@@ -237,21 +237,18 @@
 	</build>
 
 	<dependencies>
-
 		<dependency>
-			<groupId>com.mock.asmock</groupId>
+			<groupId>asmock</groupId>
 			<artifactId>asmock</artifactId>
 			<version>${asmock.version}</version>
-			<type>swc</type>
+			<type>swc</type>			
 		</dependency>
-
 		<dependency>
-			<groupId>com.mock.ASMockFlexUnit4</groupId>
-			<artifactId>asmockflexunit4</artifactId>
+			<groupId>asmock</groupId>
+			<artifactId>asmock-flexunit4.1</artifactId>
 			<version>${asmockflexunit4.version}</version>
-			<type>swc</type>
+			<type>swc</type>			
 		</dependency>
-
 		<dependency>
 		    <groupId>com.adobe.flex.framework</groupId>
 		    <artifactId>common-framework</artifactId>
@@ -262,7 +259,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.2</version>
+			<version>0.3.3</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
@@ -281,7 +278,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-logging</artifactId>
-			<version>1.1.1</version>
+			<version>2.0</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
@@ -459,6 +456,20 @@
 	</distributionManagement>
 
     <repositories>
+		<repository>
+			<id>flash-nexus-repository</id>
+			<url>http://www.flashnexus.org/nexus/content/groups/public</url>
+		</repository>
+		<repository>
+    			<id>cairngorm3-repository</id>
+    			<url>http://opensource.adobe.com/svn/opensource/cairngorm3/maven-repository</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+    		</repository>
 		<repository>
 			<id>flex-mojos-repository</id>
 			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
