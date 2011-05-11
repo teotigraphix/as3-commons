@@ -48,6 +48,7 @@ registry.stage = FlexGlobals.topLevelApplication.stage as Stage;
     	<div class="source"><pre>public interface IStageObjectProcessor {
   function process(displayObject:DisplayObject):DisplayObject;
 }</pre></div>
+	</p>
 	<p>Let's imagine a processor that assigns a dataprovider to certain list components that are added to the stage:
     	<div class="source"><pre>public class MystageObjectProcessor implements IStageObjectProcessor {
   public function process(displayObject:DisplayObject):DisplayObject {
