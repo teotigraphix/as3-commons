@@ -1,5 +1,10 @@
 package org.as3commons.codec.serialization.amf
 {
+	/**
+	 * AMF3 data type constants.
+	 * 
+	 * @author Jan Van Coppenolle
+	 */
 	public final class AMF3Type
 	{
 		public static const UNDEFINED:int = 0;
@@ -16,6 +21,9 @@ package org.as3commons.codec.serialization.amf
 		public static const XMLSTRING:int = 11;
 		public static const BYTEARRAY:int = 12;
 		
+		/**
+		 * @private
+		 */
 		public function AMF3Type()
 		{
 			throw new Error("Static Class");

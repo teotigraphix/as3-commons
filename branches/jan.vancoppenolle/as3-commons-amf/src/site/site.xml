@@ -24,7 +24,7 @@
     </menu>
 
     <menu name="Documentation">
-      <!-- item name="Quickstart" href="quickstart.html" /-->
+      <item name="Introduction" href="introduction.html" />
       <item name="API" href="asdoc/index.html"/>
     </menu>
 

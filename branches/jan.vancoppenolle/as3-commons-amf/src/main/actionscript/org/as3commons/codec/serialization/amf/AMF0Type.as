@@ -1,5 +1,10 @@
 package org.as3commons.codec.serialization.amf
 {
+	/**
+	 * AMF0 data type constants.
+	 * 
+	 * @author Jan Van Coppenolle
+	 */
 	public final class AMF0Type
 	{
 		public static var UNKNOWN:int = -1;
@@ -22,6 +27,9 @@ package org.as3commons.codec.serialization.amf
 		public static var TYPED_OBJECT:int = 16;
 		public static var AMF3_OBJECT:int = 17;
 		
+		/**
+		 * @private
+		 */
 		public function AMF0Type()
 		{
 			throw new Error("Static Class");
