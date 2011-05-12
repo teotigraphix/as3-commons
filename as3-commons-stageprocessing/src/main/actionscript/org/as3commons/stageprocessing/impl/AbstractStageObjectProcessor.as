@@ -15,13 +15,14 @@
  */
 package org.as3commons.stageprocessing.impl {
 
+	import flash.display.DisplayObject;
 	import flash.errors.IllegalOperationError;
 
 	import org.as3commons.lang.IDisposable;
 	import org.as3commons.stageprocessing.IObjectSelector;
 	import org.as3commons.stageprocessing.IObjectSelectorAware;
+	import org.as3commons.stageprocessing.IStageObjectDestroyer;
 	import org.as3commons.stageprocessing.IStageObjectProcessor;
-	import flash.display.DisplayObject;
 
 	/**
 	 * Abstract base class for <code>IStageProcessor</code> implementations.
@@ -29,7 +30,7 @@ package org.as3commons.stageprocessing.impl {
 	 * @sampleref stagewiring
 	 * @docref container-documentation.html#the_istageprocessor_interface
 	 */
-	public class AbstractStageObjectProcessor implements IStageObjectProcessor, IDisposable {
+	public class AbstractStageObjectProcessor implements IStageObjectDestroyer, IDisposable {
 
 		// --------------------------------------------------------------------
 		//
@@ -75,10 +76,18 @@ package org.as3commons.stageprocessing.impl {
 		// --------------------------------------------------------------------
 
 		/**
-		 * @throws flash.errors.IllegalOperationError When called directly
+		 * @throws flash.errors.IllegalOperationError When called directly, must be implemented in sub class
 		 * @inheritDoc
 		 */
 		public function process(displayObject:DisplayObject):DisplayObject {
+			throw new IllegalOperationError("Not implemented in abstract base class");
+		}
+
+		/**
+		 * @throws flash.errors.IllegalOperationError When called directly, must be implemented in sub class
+		 * @inheritDoc
+		 */
+		public function destroy(displayObject:DisplayObject):DisplayObject {
 			throw new IllegalOperationError("Not implemented in abstract base class");
 		}
 
