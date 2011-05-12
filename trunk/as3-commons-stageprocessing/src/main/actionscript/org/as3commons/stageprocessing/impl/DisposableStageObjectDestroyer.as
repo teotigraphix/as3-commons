@@ -24,13 +24,23 @@ package org.as3commons.stageprocessing.impl {
 	 * method implements the <code>IDisposable</code> and, if so, invokes its <code>IDisposable.dispose()</code> method.
 	 * @author Roland Zwaga
 	 */
-	public class DisposableStageObjectProcessor extends AbstractStageObjectProcessor {
+	public class DisposableStageObjectDestroyer extends AbstractStageObjectProcessor {
 
 		/**
 		 * Creates a new <code>DisposableStageObjectProcessor</code> instance.
 		 */
-		public function DisposableStageObjectProcessor() {
+		public function DisposableStageObjectDestroyer() {
 			super(this);
+		}
+
+		/**
+		 * Does nothing, immediately returns the specified <code>DisplayObject</code>.
+		 * @param displayObject
+		 * @return
+		 *
+		 */
+		override public function process(displayObject:DisplayObject):DisplayObject {
+			return displayObject;
 		}
 
 		/**
@@ -38,7 +48,7 @@ package org.as3commons.stageprocessing.impl {
 		  * @param displayObject The specified <code>DisplayObject</code> that will be checked for an <code>IDisposable</code> implementation.
 		  * @return The specified <code>DisplayObject</code>
 		 */
-		override public function process(displayObject:DisplayObject):DisplayObject {
+		override public function destroy(displayObject:DisplayObject):DisplayObject {
 			var disposable:IDisposable = displayObject as IDisposable;
 			if ((disposable != null) && (!disposable.isDisposed)) {
 				disposable.dispose();
