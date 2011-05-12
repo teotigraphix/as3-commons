@@ -18,6 +18,7 @@ package org.as3commons.stageprocessing.impl {
 
 	import org.as3commons.lang.IDisposable;
 
+	[ExcludeClass]
 	/**
 	 * <code>IStageObjectProcessor</code> implementation that checks if the specified <code>DisplayObject</code> passed to its <code>process()</code>
 	 * method implements the <code>IDisposable</code> and, if so, invokes its <code>IDisposable.dispose()</code> method.
