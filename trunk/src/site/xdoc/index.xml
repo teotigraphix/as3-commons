@@ -84,6 +84,12 @@
 				<td>09 Sep 2010</td>
 			</tr>
 			<tr>
+				<td><strong>StageProcessing</strong></td>
+				<td>A Library that provides an API for intercepting objects that have been added to or removed from the Flash stage.</td>
+				<td>1.0-RC1</td>
+				<td>11 May 2011</td>
+			</tr>
+			<tr>
 				<td><strong>UI</strong></td>
 				<td>Algorithms and managers to serve common UI releated tasks such as layouting, focus and keyboard management, popup handling, drag and drop control and so on. All packages support native Flash display objects. Usage of UI does not require interface implementations. The first version (0.1.x) includes the sole layout package.</td>
 				<td>0.1.2</td>
