@@ -76,5 +76,15 @@ registry.stage = FlexGlobals.topLevelApplication.stage as Stage;
     	<div class="source"><pre>registry.registerStageObjectProcessor(new MystageObjectProcessor(), new MyObjectSelector(), registry.stage.getChildAt(4));</pre></div>
     	</p>
     </section>
+    <section name="The IStageObjectDestroyer interface">
+    	<p>The <code>IStageObjectDestroyer</code> interface extends the <code>IStageObjectProcessor</code> interface and is meant to be invoked when an object is removed from the stage.<br/>
+    	Just like its counterpart, the interface is a simple one:
+    	<div class="source"><pre>public interface IStageObjectDestroyer {
+	  function destroy(displayObject:DisplayObject):DisplayObject;
+}</pre></div>
+	Right after an object has been removed the <code>destroy()</code> method will be invoked.<br/>
+	An <code>IStageObjectDestroyer</code> can be used to undo the logic of an <code>IStageObjectProcessor</code>. For instance, a processor might add event listeners, whereas a destroyer will remove them.
+	</p>
+    </section>
   </body>
 </document>
