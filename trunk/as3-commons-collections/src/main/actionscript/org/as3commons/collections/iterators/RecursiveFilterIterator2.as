@@ -23,7 +23,15 @@ package org.as3commons.collections.iterators {
 	 * 
 	 * <p><strong>Description</strong></p>
 	 * 
-	 * <p>The <code>RecursiveFilterIterator</code> accepts an <code>IIterable</code> instance
+	 * <p>Filter a complex data structure using this iterator. Two filters let specify what
+	 * items should be returned and if children of a parent item should be considered.</p>
+	 * 
+	 * <p>In difference to the legacy <code>RecursiveFilterIterator</code> this iterator
+	 * iterates through parent items even if the parent items should not be returned.
+	 * The <code>RecursiveFilterIterator</code> never checks children of items that are
+	 * excluded by the <code>filter</code> function.</p>
+	 * 
+	 * <p>The <code>RecursiveFilterIterator2</code> accepts an <code>IIterable</code> instance
 	 * and iterates recursively over the items of the given iterable collection while applying
 	 * the specified filters. To do so, all children that should be further iterated should be
 	 * also instance of <code>IIterable</code>.</p>
@@ -33,9 +41,8 @@ package org.as3commons.collections.iterators {
 	 * <p>Its possible to set up two different filters. The first filter tests if an
 	 * item should be returned. The second filter tests if children of a specific item
 	 * should be considered or not. Children of items that did not pass the first
-	 * <code>filter</code> function are skipped by the iterator. This is the difference
-	 * to <code>RecursiveFilterIterator2</code>. It is possible to set
-	 * up both filters together.</p>
+	 * <code>filter</code> function are still being considered by the iterator. It is
+	 * possible to set up both filters together.</p>
 	 * 
 	 * <p>Both filter functions accept the current item and return a boolean
 	 * value (<code>true</code> if the item is accepted).</p>
@@ -63,8 +70,10 @@ package org.as3commons.collections.iterators {
 	 * @author Jens Struwe 14.05.2009
 	 * @see org.as3commons.collections.framework.IRecursiveIterator IRecursiveIterator interface - Description of the recursive iterator features.
 	 * @see FilterIterator FilterIterator - Filter iterator usage example.
+	 * 
+	 * @TODO Peplace RecursiveFilterIterator with this implementation in V2.
 	 */
-	public final class RecursiveFilterIterator implements IRecursiveIterator {
+	public final class RecursiveFilterIterator2 implements IRecursiveIterator {
 
 		/**
 		 * Iterator to start with.
@@ -115,7 +124,7 @@ package org.as3commons.collections.iterators {
 		 * @param depth Internally passed recursion depth. 
 		 * @param parentItems Internally passed parent chain, considered in recursion detection.
 		 */
-		public function RecursiveFilterIterator(
+		public function RecursiveFilterIterator2(
 			iterable : IIterable,
 			filter : Function,
 			childrenFilter : Function,
@@ -155,12 +164,9 @@ package org.as3commons.collections.iterators {
 			
 			var next : *;
 			if (_childIterator) {
-				while (_childIterator.hasNext()) {
-					next = _childIterator.next();
-					if (_filter(next)) {
-						_next = next;
-						return true;
-					}
+				if (_childIterator.hasNext()) {
+					_next = _childIterator.next();
+					return true;
 				}
 				_childIterator = null;
 				return hasNext();
@@ -168,10 +174,21 @@ package org.as3commons.collections.iterators {
 
 			while (_iterator.hasNext()) {
 				next = _iterator.next();
-				if (_filter(next)) {
-					_next = next;
-					return true;
+				if (_filter(next)) _next = next;
+				if (next is IIterable && _childrenFilter(next)) {
+					if (_parentItems.indexOf(next) < 0) {
+						_childIterator = new RecursiveFilterIterator2(
+							next,
+							_filter,
+							_childrenFilter,
+							_depth + 1,
+							_parentItems.concat(next)
+						);
+						if (_next === undefined) return hasNext();
+					}
 				}
+
+				if (_next !== undefined) return true;
 			}
 
 			return false;
@@ -194,18 +211,6 @@ package org.as3commons.collections.iterators {
 
 			_depth = _rootDepth; // cannot use _iterator.getDepth() as we have here an IIterator instance
 
-			if (_next is IIterable && _childrenFilter(_next)) {
-				if (_parentItems.indexOf(_next) < 0) {
-					_childIterator = new RecursiveFilterIterator(
-						_next,
-						_filter,
-						_childrenFilter,
-						_depth + 1,
-						_parentItems.concat(_next)
-					);
-				}
-			}
-			
 			next = _next;
 			_next = undefined;
 			return next;

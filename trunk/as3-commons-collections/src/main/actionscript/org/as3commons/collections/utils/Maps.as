@@ -14,23 +14,320 @@
  * limitations under the License.
  */
 package org.as3commons.collections.utils {
+
+	import org.as3commons.collections.LinkedMap;
 	import org.as3commons.collections.Map;
+	import org.as3commons.collections.SortedMap;
 	import org.as3commons.collections.framework.IBasicMapIterator;
+	import org.as3commons.collections.framework.IComparator;
 	import org.as3commons.collections.framework.IMap;
 	import org.as3commons.collections.framework.IMapIterator;
+	import org.as3commons.collections.framework.ISortOrder;
 	import org.as3commons.collections.iterators.MapFilterIterator;
 
-	import flash.utils.Dictionary;
-
 	/**
-	 * <p>A set of common utilities for working with IMap implementations.</p>
+	 * <code>IMap</code> utilities.
+	 * 
+	 * <p id="link_MapsAddFromExample"><strong><code>Maps.addFrom...()</code> example</strong></p>
+	 * 
+	 * {{EXAMPLE: MapsAddFromExample}}
+	 * 
+	 * <p id="link_MapsCloneExample"><strong><code>Maps.clone()</code> example</strong></p>
+	 * 
+	 * {{EXAMPLE: MapsCloneExample}}
+	 * 
+	 * <p id="link_MapsCopyExample"><strong><code>Maps.copy()</code> example</strong></p>
+	 * 
+	 * {{EXAMPLE: MapsCopyExample}}
+	 * 
+	 * <p id="link_AddFromArgsExample"><strong><code>Maps.new...()</code> example</strong></p>
+	 * 
+	 * {{EXAMPLE: AddFromArgsExample}}
+	 * 
+	 * <p id="link_NestedCollectionsExample"><strong>Nested collections example</strong></p>
+	 * 
+	 * {{EXAMPLE: NestedCollectionsExample}}
 	 * 
 	 * @author John Reeves 14.04.2011
 	 */
 	public class Maps {
+		
+		/*
+		 * Factories
+		 */
+
 		/**
-		 * <p>Attempts to retrieve the item mapped to the supplied key.  If the supplied key is not mapped an 
-		 * ArgumentError will be thrown.</p>
+		 * Creates, populates and returns a new <code>Map</code> instance.
+		 * 
+		 * <p>The arguments may be left out. In that case no item is added to the map.</p>
+		 * 
+		 * <p>The last argument is skipped if the size of arguments is not even.</p>
+		 * 
+		 * <listing>
+				var map : Map = Maps.newMap(key1, item1, key2, item2, ...);
+		 * </listing>
+		 * 
+		 * @param ...args List of key-item-pairs to add to the map.
+		 * @return A new <code>Map</code> instance populated from the given arguments.
+		 */
+		public static function newMap(...args) : Map {
+			var map : Map = new Map();
+			addFromArray(map, args);
+			return map;
+		}
+
+		/**
+		 * Creates, populates and returns a new <code>LinkedMap</code> instance.
+		 * 
+		 * <p>The arguments may be left out. In that case no item is added to the map.</p>
+		 * 
+		 * <p>The last argument is skipped if the size of arguments is not even.</p>
+		 * 
+		 * <listing>
+				var map : Map = Maps.newLinkedMap(key1, item1, key2, item2, ...);
+		 * </listing>
+		 * 
+		 * @param ...args List of key-item-pairs to add to the map.
+		 * @return A new <code>LinkedMap</code> instance populated from the given arguments.
+		 */
+		public static function newLinkedMap(...args) : LinkedMap {
+			var map : LinkedMap = new LinkedMap();
+			addFromArray(map, args);
+			return map;
+		}
+
+		/**
+		 * Creates, populates and returns a new <code>SortedMap</code> instance.
+		 * 
+		 * <p>The arguments may be left out. In that case no item is added to the map.</p>
+		 * 
+		 * <p>The last argument is skipped if the size of arguments is not even.</p>
+		 * 
+		 * <listing>
+				var map : Map = Maps.newSortedMap(key1, item1, key2, item2, ...);
+		 * </listing>
+		 * 
+		 * @param comparator The sort criterion.
+		 * @param ...args List of key-item-pairs to add to the map.
+		 * @return A new <code>SortedMap</code> instance populated from the given arguments.
+		 */
+		public static function newSortedMap(comparator : IComparator, ...args) : SortedMap {
+			var map : SortedMap = new SortedMap(comparator);
+			addFromArray(map, args);
+			return map;
+		}
+
+		/*
+		 * Population
+		 */
+
+		/**
+		 * Adds the contents of the given <code>Array</code> to the specified map.
+		 * 
+		 * <p>The <code>Array</code> needs to be in a key-item-pair shape.</p>
+		 * 
+		 * <p>The last <code>Array</code> element is skipped if the size of the Array is not even.</p>
+		 * 
+		 * <listing>
+				var array : Array = [key1, item1, key2, item2, ...];
+				var count : uint = Maps.addFromArray(map, array);
+		 * </listing>
+		 * 
+		 * @param map The map to populate.
+		 * @param source The <code>Array</code> to add from.
+		 * @return The number of items added to the map.
+		 */
+		public static function addFromArray(map : IMap, source : Array) : uint {
+			if (!source) return 0;
+
+			var numAdded : uint;
+			var wrapper : Args;
+			var item : *;
+			for (var i : uint; i < source.length; i++) {
+				if (source[i] is Args) {
+					wrapper = source[i];
+					if (wrapper.source is Array) numAdded += addFromArray(map, wrapper.source as Array);
+					else if (wrapper.source is IMap) numAdded += addFromMap(map, wrapper.source as IMap);
+					else if (wrapper.source is Object) numAdded += addFromObject(map, wrapper.source);
+
+				} else {
+					// skip key without item
+					if (i == source.length - 1) break;
+					// ignore args wrapper for items
+					item = source[i + 1] is Args ? Args(source[i + 1]).source : source[i + 1];
+					if (map.add(source[i], item)) numAdded++;
+					i++;
+				}
+			}
+			return numAdded;
+		}
+
+		/**
+		 * Adds the contents of the given <code>IMap</code> to the specified map.
+		 * 
+		 * <listing>
+				var count : uint = Maps.addFromMap(map, sourceMap);
+		 * </listing>
+		 * 
+		 * @param map The map to populate.
+		 * @param source The <code>IMap</code> to add from.
+		 * @return The number of items added to the map.
+		 */
+		public static function addFromMap(map : IMap, source : IMap) : uint {
+			if (!source) return 0;
+
+			var numAdded : uint;
+			var iterator : IMapIterator = source.iterator() as IMapIterator;
+			while (iterator.next() !== undefined) {
+				if (map.add(iterator.key, iterator.current)) numAdded++;
+			} 
+			return numAdded;
+		}
+
+		/**
+		 * Adds the contents of the given <code>Object</code> to the specified map.
+		 * 
+		 * <listing>
+				var count : uint = Maps.addFromObject(map, object);
+		 * </listing>
+		 * 
+		 * @param map The map to populate.
+		 * @param source The <code>Object</code> to add from.
+		 * @return The number of items added to the map.
+		 */
+		public static function addFromObject(map : IMap, source : Object) : uint {
+			if (!source) return 0;
+
+			var numAdded : uint;
+			for (var key : * in source) {
+				if (map.add(key, source[key])) numAdded++;
+			}
+			return numAdded;
+		}
+
+		/**
+		 * Adds the given list of key-item-pairs to the specified map.
+		 * 
+		 * <listing>
+				Maps.addFromArgs(myMap, key1, item1, key2, item2, ...);
+		 * </listing>
+		 * 
+		 * @param map The map to populate.
+		 * @param ...args List of key-item-pairs to add to the map.
+		 * @return The number of items added to the map.
+		 */
+		public static function addFromArgs(map : IMap, ...args) : uint {
+			return addFromArray(map, args);
+		}
+		
+		/**
+		 * Clones the supplied <code>IMap</code> instance returning a new <code>IMap</code>
+		 * of the same type.
+		 * 
+		 * <p>If filters are specified the resulting map only contains mappings that
+		 * meet the supplied predicates.<p>
+		 * 
+		 * <p>The key filter function accepts the current key and returns a boolean
+		 * value (<code>true</code> if the key is accepted).</p>
+		 * 
+		 * <listing>
+			function keyFilter(key : *) : Boolean {
+				var accept : Boolean = false;
+				// test the key
+				return accept;
+			}
+					
+			var clone : IMap = Maps.clone(map, keyFilter);
+		 * </listing>
+		 * 
+		 * <p>The item filter function accepts the current item and returns a boolean
+		 * value (<code>true</code> if the item is accepted).</p>
+		 * 
+		 * <listing>
+			function itemFilter(item : *) : Boolean {
+				var accept : Boolean = false;
+				// test the item
+				return accept;
+			}
+					
+			var clone : IMap = Maps.clone(map, keyFilter, itemFilter);
+		 * </listing>
+		 * 
+		 * @param map The <code>IMap</code> instance to clone.
+		 * @param keyFilter Function which will be applied to each key in the source map.
+		 * @param itemFilter Function which will be applied to each item in the source map.
+		 * @return A new <code>IMap</code> instance.
+		 */
+		public static function clone(map : IMap, keyFilter : Function = null, itemFilter : Function = null) : IMap {
+			var clone : IMap = new ((map as Object).constructor)() as IMap;
+			if (map is ISortOrder) ISortOrder(clone).comparator = ISortOrder(map).comparator;
+			
+			var iterator : IBasicMapIterator = new MapFilterIterator(map, keyFilter, itemFilter);
+			var item : *;
+			while (iterator.hasNext()) {
+				item = iterator.next();
+				clone.add(iterator.key, item);
+			}
+			return clone;
+		}
+		
+		/**
+		 * Copies mappings from one to another map.
+		 * 
+		 * <p>If filters are specified only mappings are copied that meet
+		 * the supplied predicates.<p>
+		 * 
+		 * <p>The key filter function accepts the current key and returns a boolean
+		 * value (<code>true</code> if the key is accepted).</p>
+		 * 
+		 * <listing>
+			function keyFilter(key : *) : Boolean {
+				var accept : Boolean = false;
+				// test the key
+				return accept;
+			}
+					
+			Maps.copy(sourceMap, destinationMap, keyFilter);
+		 * </listing>
+		 * 
+		 * <p>The item filter function accepts the current item and returns a boolean
+		 * value (<code>true</code> if the item is accepted).</p>
+		 * 
+		 * <listing>
+			function itemFilter(item : *) : Boolean {
+				var accept : Boolean = false;
+				// test the item
+				return accept;
+			}
+					
+			Maps.copy(sourceMap, destinationMap, keyFilter, itemFilter);
+		 * </listing>
+		 * 
+		 * @param source The <code>IMap</code> instance to copy from.
+		 * @param destination The <code>IMap</code> to copy to.
+		 * @param keyFilter Function which will be applied to each key in the source map.
+		 * @param itemFilter Function which will be applied to each item in the source map.
+		 * @return The number of items copied to the map.
+		 */
+		public static function copy(source : IMap, destination : IMap, keyFilter : Function = null, itemFilter : Function = null) : uint {
+			var iterator : IBasicMapIterator = new MapFilterIterator(source, keyFilter, itemFilter);
+			var item : *;
+			var numAdded : uint;
+			while (iterator.hasNext()) {
+				item = iterator.next();
+				if (destination.add(iterator.key, item)) numAdded++;
+			}
+			return numAdded;
+		}
+		
+		/*
+		 * Getting items
+		 */
+
+		/**
+		 * Attempts to retrieve the item mapped to the supplied key.
+		 * 
+		 * <p>If the supplied key is not mapped an ArgumentError will be thrown.</p>
 		 *
 		 * @param map the IMap instance to operate on. 
 		 * @param key the key to perform the lookup using.
@@ -38,16 +335,16 @@ package org.as3commons.collections.utils {
 		 * @return the item mapped to the supplied key.
 		 * @throws ArgumentError if no mapping exists for the supplied key.
 		 */
-		public static function itemOrError(map : IMap, key : *, errorMessage : String = null) : * {
-			if (!map.hasKey(key)) {
-				throw new ArgumentError(errorMessage || key + " does not exist in supplied map");
-			}
+		public static function itemForOrError(map : IMap, key : *, errorMessage : String = null) : * {
+			if (!map.hasKey(key)) throw new ArgumentError(errorMessage || key + " does not exist in supplied map");
 			return map.itemFor(key);
 		}
 
 		/**
-		 * <p>Attempts to retrieve the item mapped to the supplied key.  If the supplied key is not mapped then the
-		 * supplied default value will be returned instead.</p>
+		 * Attempts to retrieve the item mapped to the supplied key.
+		 * 
+		 * <p>If the supplied key is not mapped then the supplied default value
+		 * will be returned instead.</p>
 		 * 
 		 * @param map the IMap instance to operate on.
 		 * @param key the key to perform the lookup using.
@@ -55,16 +352,15 @@ package org.as3commons.collections.utils {
 		 * @return if the supplied key exists in the map then the value mapped to that key will be  returned, otherwise 
 		 * the supplied defaultValue will be returned instead. 
 		 */
-		public static function itemOrValue(map : IMap, key : *, defaultValue : *) : * {
-			if (!map.hasKey(key)) {
-				return defaultValue;
-			}
+		public static function itemForOrValue(map : IMap, key : *, defaultValue : *) : * {
+			if (!map.hasKey(key)) return defaultValue;
 			return map.itemFor(key);
 		}
 
 		/**
-		 * <p>Attempts to retrieve the item mapped to the supplied key.  If the supplied key is not mapped then the
-		 * supplied value will mapped to the key and returned.</p>
+		 * Attempts to retrieve the item mapped to the supplied key.
+		 * 
+		 * <p>If the supplied key is not mapped then the supplied value will mapped to the key and returned.</p>
 		 * 
 		 * @param map the IMap instance to operate on.
 		 * @param key the key to perform the lookup using.
@@ -73,122 +369,10 @@ package org.as3commons.collections.utils {
 		 * @return if a prior mapping exists for the supplied key then the assosiated value in the map will be 
 		 * returned; if no prior mapping exists the supplied value will be returned instead. 
 		 */
-		public static function itemOrAdd(map : IMap, key : *, item : *) : * {
-			if (!map.hasKey(key)) {
-				map.add(key, item);
-			}
+		public static function itemForOrAdd(map : IMap, key : *, item : *) : * {
+			if (!map.hasKey(key)) map.add(key, item);
 			return map.itemFor(key);
 		}
 
-		/**
-		 * <p>Filters the supplied IMap instance returning a new IMap of the same type which only contains  
-		 * mappings where the key meets the supplied predicate.<p>
-		 * 
-		 * @param map the IMap instance to operate on.
-		 * @param predicate	Function which will be be applied to each key in the supplied map.  This function should expect 
-		 * a single argument (the key) and return a Boolean value, true if the key should exist in the returned Map instance
-		 * or false if it should not be included in the returned Map.
-		 * @return a new Map instance consisting only of mappings where the key met the supplied predicate.
-		 */
-		public static function filterKeys(map : IMap, predicate : Function) : IMap {
-			const result : IMap = new ((map as Object).constructor) as IMap;
-			for each (var key : * in map.keysToArray()) {
-				if (predicate(key)) {
-					result.add(key, map.itemFor(key));
-				}
-			}
-			return result;
-		}
-
-		/**
-		 * <p>Conveneice method which constructs a Map from the supplied Dictionary.</p>
-		 * 
-		 * @param source Dictionary object to create the Map from
-		 * @return new Map instance with the values taken from the supplied source Dictionary.
-		 */
-		public static function fromDictionary(source : Dictionary) : IMap {
-			return fromObject(source);
-		}
-
-		/**
-		 * <p>Conveneice method which constructs a Map from the publicly accessible properties in the supplied Object.</p>
-		 * 
-		 * @param source Object to create the Map from.
-		 * @return new Map instance with the values taken from the supplied source Object.
-		 */
-		public static function fromObject(source : Object) : IMap {
-			const result : IMap = new Map();
-			for (var key : * in source) {
-				result.add(key, source[key]);
-			}
-			return result;
-		}
-
-		/**
-		 * <p>Clones the supplied IMap instance returning a new IMap of the same type. If filter are specified,
-		 * the resulting map only contains mappings that meet the supplied predicates.<p>
-		 * 
-		 * <p>The key filter function accepts the current key and returns a boolean
-		 * value (<code>true</code> if the key is accepted).</p>
-		 * 
-		 * <listing>
-		function keyFilter(key : *) : Boolean {
-		var accept : Boolean = false;
-		// test the key
-		return accept;
-		}
-				
-		var iterator : IIterator = new MapFilterIterator(map, keyFilter);
-		 * </listing>
-		 * 
-		 * <p>The item filter function accepts the current item and returns a boolean
-		 * value (<code>true</code> if the item is accepted).</p>
-		 * 
-		 * <listing>
-		function itemFilter(item : *) : Boolean {
-		var accept : Boolean = false;
-		// test the item
-		return accept;
-		}
-				
-		var iterator : IIterator = new MapFilterIterator(map, keyFilter, itemFilter);
-		 * </listing>
-		 * 
-		 * @param map the IMap instance to operate on.
-		 * @param keyFilter Function which will be be applied to each key in the source map.
-		 * @param itemFilter Function which will be be applied to each item in the source map.
-		 * @return A new IMap instance.
-		 */
-		public static function clone(source : IMap, keyFilter : Function = null, itemFilter : Function = null) : IMap {
-			var result : IMap = new ((source as Object).constructor) as IMap;
-			var iterator : IBasicMapIterator = new MapFilterIterator(source, keyFilter, itemFilter);
-			var item : *;
-			while (iterator.hasNext()) {
-				item = iterator.next();
-				result.add(iterator.key, item);
-			}
-			return result;
-		}
-
-		/**
-		 * <p>Copies all the mappings from the source IMap instance into the supplied destination IMap instance.</p>
-		 * 
-		 * @example Copies all the entries contained in the source Map into a new Map instance.
-		 * &lt;listing version="3.0"&gt;
-		 * 		const result : IMap = Maps.copy(source, new Map());
-		 * &lt;/listing&gt;
-		 * 
-		 * @param source IMap instance which contains the entries you wish to copy.
-		 * @param destination IMap instance into which all the mappings from the supplied source map will be added.
-		 * @return reference to the supplied destination IMap.
-		 */
-		public static function copy(source : IMap, destination : IMap) : IMap {
-			var iterator : IMapIterator = source.iterator() as IMapIterator;
-			while (iterator.hasNext()) {
-				var item : * = iterator.next();
-				destination.add(iterator.key, item);
-			}
-			return destination;
-		}
 	}
 }

@@ -13,15 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.collections.testhelpers {
+package org.as3commons.collections.utils {
 	import org.as3commons.collections.framework.IComparator;
 
 	/**
-	 * @author Jens Struwe 22.03.2010
+	 * Null comparator.
+	 * 
+	 * <p>This comparator is being used as the default comparator for sorted collections
+	 * if no comparator has been specified else.</p>
+	 * 
+	 * <p>Using this comparator results in an insertion order.</p>
+	 * 
+	 * @author Jens Struwe 14.05.2011
+	 * @see org.as3commons.collections.framework.IComparator IComparator interface - Description of the comparator features.
 	 */
 	public class NullComparator implements IComparator {
+		
+		/**
+		 * Compares two items and returns 0.
+		 * 
+		 * @param item1 The first item.
+		 * @param item1 The second item.
+		 * @return <code>0</code>.
+		 */
 		public function compare(item1 : *, item2 : *) : int {
 			return 0;
 		}
+
 	}
 }
