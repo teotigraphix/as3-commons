@@ -50,8 +50,8 @@
 			<tr>
 				<td><strong>Collections</strong></td>
 				<td>Collections framework including several lists, sets and maps, many of them in an additional bindable version.</td>
-				<td>1.2.0</td>
-				<td>12 Apr 2011</td>
+				<td>1.3.0</td>
+				<td>15 May 2011</td>
 			</tr>
 			<tr>
 				<td><strong>Concurrency</strong></td>
