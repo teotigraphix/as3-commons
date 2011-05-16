@@ -7,7 +7,12 @@
 	<body>
 		<section name="Welcome to as3-commons-collections">
 		
-			<p style="color:#DD0000">Note: The sources of this project have been moved to GitHub. The existing Google Code SVN branch is not longer maintained and only updated to reflect new releases.</p>
+			<p style="color:#DD0000">
+				Note: The sources of this project have been moved to GitHub. The existing Google Code SVN branch is not longer maintained and only updated to reflect new releases.<br />
+				<br />
+				GitHub: <a href="https://github.com/as3commons/as3commons-collections">https://github.com/as3commons/as3commons-collections</a><br />
+				Project documentation: <a href="http://sibirjak.com/osflash/projects/as3commons-collections/">Developer Page AS3Commons Collections</a>
+			</p>
 		
 			<p>The projects contains an abstraction layer over different data structures as well as a set of useful and performant collection implementations:</p>
 						
@@ -22,8 +27,6 @@
 
 			<p>The framework also includes a powerful set of iterators and collection utils.</p>
 
-			<p>For more information, articles and examples on AS3Commons Collections visit: <a href="http://sibirjak.com/osflash/projects/as3commons-collections/">Developer Page AS3Commons Collections</a></p>
-			
 			<div id="downloadbox">
 				<h5>Get latest stable</h5>
 				<p>
