@@ -52,6 +52,7 @@ package org.as3commons.async.task.command {
 					ITask(cmd).reset(true);
 				}
 			}
+			_finishedCommands ||= [];
 			setCommands(_finishedCommands.concat(commands));
 			_finishedCommands = [];
 		}

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.task.support {
+package org.as3commons.async.task.impl {
 
 	import org.as3commons.async.task.IConditionProvider;
 	import org.as3commons.lang.Assert;

@@ -23,18 +23,30 @@ package org.as3commons.async.test {
 	import org.as3commons.async.task.command.FunctionProxyCommandTest;
 	import org.as3commons.async.task.command.PauseCommandTest;
 	import org.as3commons.async.task.command.TaskCommandTest;
+	import org.as3commons.async.task.impl.CountProviderTest;
+	import org.as3commons.async.task.impl.ForBlockTest;
+	import org.as3commons.async.task.impl.FunctionConditionProviderTest;
+	import org.as3commons.async.task.impl.FunctionCountProviderTest;
+	import org.as3commons.async.task.impl.IfElseBlockTest;
+	import org.as3commons.async.task.impl.WhileBlockTest;
 
 	[Suite]
 	[RunWith("org.flexunit.runners.Suite")]
 	public class AsyncTestSuite {
-		/*public var t1:CompositeCommandTest;
+		public var t1:CompositeCommandTest;
 		public var t2:CompositeCommandKindTest;
 		public var t3:GenericOperationCommandTest;
 		public var t4:OperationHandlerTest;
 		public var t5:OperationQueueTest;
 		public var t6:FunctionCommandTest;
 		public var t7:FunctionProxyCommandTest;
-		public var t8:PauseCommandTest;*/
+		public var t8:PauseCommandTest;
 		public var t9:TaskCommandTest;
+		public var t10:CountProviderTest;
+		public var t11:ForBlockTest;
+		public var t12:FunctionConditionProviderTest;
+		public var t13:FunctionCountProviderTest;
+		public var t14:IfElseBlockTest;
+		public var t15:WhileBlockTest;
 	}
 }
