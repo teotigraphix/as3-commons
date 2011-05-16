@@ -46,7 +46,6 @@ package org.as3commons.async.operation {
 	 * <p>Convenience methods are provided to add and remove listeners to the events dispatched by an operation.</p>
 	 *
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#operations
 	 */
 	public interface IOperation extends IEventDispatcher {
 

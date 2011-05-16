@@ -40,7 +40,6 @@ package org.as3commons.async.operation {
 	/**
 	 * Abstract base class for <code>IOperation</code> implementations.
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#operations
 	 */
 	public class AbstractOperation extends EventDispatcher implements IOperation {
 

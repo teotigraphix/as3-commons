@@ -25,12 +25,31 @@ package org.as3commons.async.command {
 	import org.as3commons.logging.LoggerFactory;
 
 	/**
+	 * Dispatched when the <code>CompositeCommand</code> is finised executing its collection of <code>ICommands</code>
+	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.COMPLETE CompositeCommandEvent.COMPLETE
+	 */
+	[Event(name = "compositeCommandComplete", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
+	/**
+	 * Dispatched when the <code>CompositeCommand</code> encounters an error.
+	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.ERROR CompositeCommandEvent.ERROR
+	 */
+	[Event(name = "compositeCommandError", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
+	/**
+	 * Dispatched before an <code>ICommand</code> from the collection is executed.
+	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.BEFORE_EXECUTE_COMMAND CompositeCommandEvent.BEFORE_EXECUTE_COMMAND
+	 */
+	[Event(name = "compositeCommandBeforeExecuteCommand", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
+	/**
+	 * Dispatched after an <code>ICommand</code> from the collection was executed.
+	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.AFTER_EXECUTE_COMMAND CompositeCommandEvent.AFTER_EXECUTE_COMMAND
+	 */
+	[Event(name = "compositeCommandAfterExecuteCommand", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
+	/**
 	 * Basic implementation of the <code>ICompositeCommand</code> that executes a list of <code>ICommand</code> instances
 	 * that were added through the <code>addCommand()</code> method. The commands are executed in the order in which
 	 * they were added.
 	 * @author Christophe Herreman
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#composite_commands
 	 */
 	public class CompositeCommand extends AbstractProgressOperation implements ICompositeCommand {
 

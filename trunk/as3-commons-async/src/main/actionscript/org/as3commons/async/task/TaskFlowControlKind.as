@@ -21,7 +21,6 @@ package org.as3commons.async.task {
 	/**
 	 * Enumeration that describes different kinds of flow control.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public final class TaskFlowControlKind {
 

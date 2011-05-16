@@ -79,10 +79,10 @@ package org.as3commons.async.command {
 		 */
 		public function GenericOperationCommand(operationClass:Class, ... constructorArgs) {
 			super();
-			genericOperationCommandInit(operationClass, constructorArgs);
+			initGenericOperationCommand(operationClass, constructorArgs);
 		}
 
-		protected function genericOperationCommandInit(operationClass:Class, constructorArgs:Array = null):void {
+		protected function initGenericOperationCommand(operationClass:Class, constructorArgs:Array = null):void {
 			Assert.notNull(operationClass, "operationClass argument must not be null");
 			if (!ClassUtils.isImplementationOf(operationClass, IOperation, _applicationDomain)) {
 				throw new IllegalArgumentError("operationClass argument must be an implementation of IOperation");

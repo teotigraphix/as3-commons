@@ -58,7 +58,6 @@ package org.as3commons.async.task {
 	 * <p>Note: An <code>ITask</code> can only be nested in one other execution chain. Do not re-use instances
 	 * among different <code>ITasks</code>.</p>
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public interface ITask extends ICommand, IOperation {
 

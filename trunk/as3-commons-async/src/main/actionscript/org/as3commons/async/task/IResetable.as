@@ -18,7 +18,6 @@ package org.as3commons.async.task {
 	/**
 	 * Describes an object whose logic can be reset and restarted.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public interface IResetable {
 		/**

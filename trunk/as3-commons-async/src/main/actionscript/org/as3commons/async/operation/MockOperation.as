@@ -17,12 +17,9 @@ package org.as3commons.async.operation {
 
 	import flash.utils.setTimeout;
 
-	import mx.managers.CursorManager;
-
 	/**
-	 * A async mock operation.
+	 * An async mock operation.
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#operations
 	 */
 	public class MockOperation extends AbstractOperation {
 
@@ -37,17 +34,15 @@ package org.as3commons.async.operation {
 		/**
 		 *
 		 */
-		public function MockOperation(resultData:*, delay:int = DEFAULT_MAX_DELAY, returnError:Boolean = false, func:Function = null) {
+		public function MockOperation(resultData:*, delay:int = DEFAULT_MAX_DELAY, returnError:Boolean = false, func:Function = null, useRandomDelay:Boolean = true) {
 			super();
-			mockOperationInit(resultData, delay, returnError, func);
+			initMockOperation(resultData, delay, returnError, func, useRandomDelay);
 		}
 
-		protected function mockOperationInit(resultData:*, delay:int, returnError:Boolean, func:Function):void {
+		protected function initMockOperation(resultData:*, delay:int, returnError:Boolean, func:Function, useRandomDelay:Boolean):void {
 			_result = resultData;
-			_delay = delay;
+			_delay = (useRandomDelay) ? Math.random() * _delay : _delay;
 			_func = func;
-
-			CursorManager.setBusyCursor();
 
 			//var val:Number = Math.random();
 			if (returnError) {
@@ -57,8 +52,7 @@ package org.as3commons.async.operation {
 						_func();
 					}
 					dispatchErrorEvent();
-					CursorManager.removeBusyCursor();
-				}, Math.random() * _delay);
+				}, _delay);
 			} else {
 				setTimeout(function(data:*):void {
 					result = data;
@@ -66,8 +60,7 @@ package org.as3commons.async.operation {
 						_func();
 					}
 					dispatchCompleteEvent();
-					CursorManager.removeBusyCursor();
-				}, Math.random() * _delay, _result);
+				}, _delay, _result);
 			}
 		}
 	}

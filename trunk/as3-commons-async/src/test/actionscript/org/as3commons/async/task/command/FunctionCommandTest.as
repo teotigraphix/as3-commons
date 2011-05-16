@@ -14,26 +14,22 @@
 * limitations under the License.
 */
 package org.as3commons.async.task.command {
-	import org.as3commons.async.command.ICommand;
-	import org.as3commons.lang.Assert;
+	import flexunit.framework.Assert;
 
-	/**
-	 *
-	 * @author Roland Zwaga
-	 */
-	public class FunctionCommand implements ICommand {
+	public class FunctionCommandTest {
 
-		private var _func:Function;
-
-		public function FunctionCommand(func:Function) {
-			Assert.notNull(func, "The func argument must not be null");
+		public function FunctionCommandTest() {
 			super();
-			_func = func;
 		}
 
-		public function execute():* {
-			return _func();
+		[Test]
+		public function testExecute():void {
+			var resultObject:Object = {};
+			var testFunc:Function = function():Object {
+				return resultObject;
+			}
+			var fc:FunctionCommand = new FunctionCommand(testFunc);
+			Assert.assertStrictlyEquals(resultObject, fc.execute());
 		}
-
 	}
 }

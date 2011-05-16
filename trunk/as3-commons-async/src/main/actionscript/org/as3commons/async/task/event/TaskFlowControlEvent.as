@@ -21,7 +21,6 @@ package org.as3commons.async.task.event {
 	/**
 	 *
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public class TaskFlowControlEvent extends Event {
 

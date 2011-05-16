@@ -13,27 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.async.task.command {
-	import org.as3commons.async.command.ICommand;
-	import org.as3commons.lang.Assert;
+package org.as3commons.async.test {
 
-	/**
-	 *
-	 * @author Roland Zwaga
-	 */
-	public class FunctionCommand implements ICommand {
+	import asmock.framework.MockRepository;
 
-		private var _func:Function;
+	public class AbstractTestWithMockRepository {
 
-		public function FunctionCommand(func:Function) {
-			Assert.notNull(func, "The func argument must not be null");
+		protected var mockRepository:MockRepository;
+
+		public function AbstractTestWithMockRepository() {
 			super();
-			_func = func;
+			mockRepository = new MockRepository();
 		}
-
-		public function execute():* {
-			return _func();
-		}
-
 	}
 }

@@ -18,7 +18,6 @@ package org.as3commons.async.task {
 	/**
 	 * Describes an object that needs a reference to an <code>ICountProvider</code> instance.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public interface ICountProviderAware {
 		/**

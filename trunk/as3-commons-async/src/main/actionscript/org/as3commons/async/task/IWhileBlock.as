@@ -19,7 +19,6 @@ package org.as3commons.async.task {
 	 * Describes an object that will repeat a block of logic for the duration determined by
 	 * an <code>IConditionProvider</code> instance.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public interface IWhileBlock extends ITask, ITaskBlock, IConditionProviderAware {
 

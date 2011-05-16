@@ -31,7 +31,6 @@ package org.as3commons.async.operation {
 	 * the need to keep track of each individual instance.
 	 * @see org.springextensions.actionscript.core.operation.OperationEvent OperationEvent
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#operation_queues
 	 */
 	public class OperationQueue extends AbstractProgressOperation {
 
