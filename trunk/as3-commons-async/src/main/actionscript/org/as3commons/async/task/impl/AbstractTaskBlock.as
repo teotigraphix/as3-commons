@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.task.support {
+package org.as3commons.async.task.impl {
 
 	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.operation.IOperation;
@@ -21,6 +21,8 @@ package org.as3commons.async.task.support {
 	import org.as3commons.async.task.ITaskBlock;
 	import org.as3commons.async.task.ITaskFlowControl;
 	import org.as3commons.async.task.TaskFlowControlKind;
+	import org.as3commons.async.task.command.TaskCommand;
+	import org.as3commons.async.task.command.TaskFlowControlCommand;
 	import org.as3commons.async.task.event.TaskEvent;
 	import org.as3commons.async.task.event.TaskFlowControlEvent;
 
@@ -43,7 +45,7 @@ package org.as3commons.async.task.support {
 		override protected function executeCommand(command:ICommand):void {
 			currentCommand = command;
 			if (command) {
-				if (doFlowControlCheck(command as ITaskFlowControl)) {
+				if (doFlowControlCheck(command)) {
 					var async:IOperation = command as IOperation;
 					addCommandListeners(async);
 					dispatchTaskEvent(TaskEvent.BEFORE_EXECUTE_COMMAND, command);
@@ -58,9 +60,13 @@ package org.as3commons.async.task.support {
 			}
 		}
 
-		protected function doFlowControlCheck(flowControl:ITaskFlowControl):Boolean {
-			if (flowControl != null) {
-				return executeFlowControl(flowControl.kind);
+		protected function doFlowControlCheck(command:ICommand):Boolean {
+			var tc:TaskCommand = command as TaskCommand;
+			if (tc != null) {
+				var flowControl:TaskFlowControlCommand = tc.commands[0] as TaskFlowControlCommand;
+				if (flowControl != null) {
+					return executeFlowControl(flowControl.kind);
+				}
 			}
 			return true;
 		}

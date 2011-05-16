@@ -15,14 +15,14 @@
 */
 package org.as3commons.async.task.command {
 
+	import asmock.framework.SetupResult;
 	import asmock.integration.flexunit.IncludeMocksRule;
 
 	import flash.events.Event;
-	import flash.utils.setTimeout;
 
 	import flexunit.framework.Assert;
 
-	import org.as3commons.async.command.IAsyncCommand;
+	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.operation.OperationEvent;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
@@ -30,20 +30,20 @@ package org.as3commons.async.task.command {
 
 		[Rule]
 		public var includeMocks:IncludeMocksRule = new IncludeMocksRule([ //
-			IAsyncCommand //
+			ICommand //
 			]);
 
 		public function TaskCommandTest() {
 			super();
 		}
 
-		[Test(async, timeout = 2000)]
+		[Test]
 		public function testReset():void {
-			var c1:IAsyncCommand = IAsyncCommand(mockRepository.createStub(IAsyncCommand));
-			var c2:IAsyncCommand = IAsyncCommand(mockRepository.createStub(IAsyncCommand));
+			var c1:ICommand = ICommand(mockRepository.createStrict(ICommand));
+			var c2:ICommand = ICommand(mockRepository.createStrict(ICommand));
 
-			mockRepository.stubEvents(c1);
-			mockRepository.stubEvents(c2);
+			SetupResult.forCall(c1.execute()).returnValue(null);
+			SetupResult.forCall(c2.execute()).returnValue(null);
 
 			mockRepository.replayAll();
 
@@ -51,15 +51,13 @@ package org.as3commons.async.task.command {
 			tc.addCommand(c1);
 			tc.addCommand(c2);
 			Assert.assertEquals(2, tc.numCommands);
-			tc.execute();
 			var completeHandler:Function = function(event:Event):void {
 				Assert.assertEquals(0, tc.numCommands);
 				tc.reset();
 				Assert.assertEquals(2, tc.numCommands);
 			};
 			tc.addCompleteListener(completeHandler);
-			c1.dispatchEvent(new OperationEvent(OperationEvent.COMPLETE, c1));
-			c2.dispatchEvent(new OperationEvent(OperationEvent.COMPLETE, c2));
+			tc.execute();
 		}
 	}
 }
