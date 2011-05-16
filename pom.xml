@@ -95,7 +95,7 @@
 		</developer>	
 	</developers>
 
-	<modules>
+	<!--modules>
 		<module>as3-commons-bytecode</module>
 		<module>as3-commons-collections</module>
 		<module>as3-commons-concurrency</module>
@@ -105,7 +105,7 @@
 		<module>as3-commons-serialization</module>
 		<module>as3-commons-stageprocessing</module>
 		<module>as3-commons-ui</module>
-	</modules>
+	</modules-->
 
 	<dependencies>
 		<!-- ================== -->
@@ -239,7 +239,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>2.1</version>
+				<version>2.1.1</version>
+				<configuration>
+				  <templateFile>${basedir}/src/site/vm/as3commons.vm</templateFile>
+				</configuration>
 			</plugin>
 
 		</plugins>
