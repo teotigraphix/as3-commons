@@ -18,7 +18,6 @@ package org.as3commons.lang {
 	/**
 	 * This describes an object that is able to release any resources it might hold a reference to.
 	 * @author Roland Zwaga
-	 * @docref container-documentation.html#disposing_managed_objects
 	 */
 	public interface IDisposable {
 

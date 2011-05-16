@@ -96,7 +96,7 @@
 
 	<properties>
 		<flex-sdk.version>4.1.0.16076</flex-sdk.version>
-		<flex-mojos.version>4.0-beta-3</flex-mojos.version>
+		<flex-mojos.version>4.0-beta-7</flex-mojos.version>
 	</properties>
 
 	<build>
@@ -210,6 +210,7 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					  <templateFile>../src/site/vm/as3commons.vm</templateFile>
 
 					<reportPlugins>
 

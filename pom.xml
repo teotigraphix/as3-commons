@@ -267,6 +267,9 @@
 							<report>asdoc-report</report>
 						</reports>
 						<configuration>
+							<definesDeclaration>
+								<property><name>CONFIG::debug</name><value>false</value></property>
+							</definesDeclaration>
 							<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
 							<description>API documentation</description>
 							<mainTitle>API documentation</mainTitle>
