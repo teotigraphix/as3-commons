@@ -1,4 +1,4 @@
-AS3COMMONS-BYTECODE CHANGELOG
+AS3COMMONS-STAGEPROCESSING CHANGELOG
 ============================
 
 Note: dates are in DD.MM.YYYY format

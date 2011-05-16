@@ -27,8 +27,6 @@ package org.as3commons.stageprocessing.impl {
 	/**
 	 * Abstract base class for <code>IStageProcessor</code> implementations.
 	 * @author Roland Zwaga
-	 * @sampleref stagewiring
-	 * @docref container-documentation.html#the_istageprocessor_interface
 	 */
 	public class AbstractStageObjectProcessor implements IStageObjectDestroyer, IDisposable {
 
