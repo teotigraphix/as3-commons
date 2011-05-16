@@ -7,8 +7,10 @@
 	<body>
 		<section name="Welcome to as3-commons-ui">
 		
-			<p style="color:#DD0000">
-				Note: The sources of this project have been moved to GitHub. The existing Google Code SVN branch is not longer maintained and only updated to reflect new releases. You still may download the latest release from this page. A ZIP archive containing src, examples, tests, APIDoc and external libraries is available at GitHub.<br />
+			<p style="color:#DD0000">Note: The sources of this project have been moved to GitHub.</p>
+			
+			<p>
+				The existing Google Code SVN branch is not longer maintained and only updated to reflect new releases. You still may download the latest release from this page. A ZIP archive containing src, examples, tests, APIDoc and external libraries is available at GitHub.<br />
 				<br />
 				GitHub: <a href="https://github.com/as3commons/as3commons-ui">https://github.com/as3commons/as3commons-ui</a><br />
 				Project documentation: <a href="http://sibirjak.com/osflash/projects/as3commons-ui/">Developer Page AS3Commons UI</a>
