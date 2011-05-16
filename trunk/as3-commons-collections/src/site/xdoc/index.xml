@@ -8,7 +8,7 @@
 		<section name="Welcome to as3-commons-collections">
 		
 			<p style="color:#DD0000">
-				Note: The sources of this project have been moved to GitHub. The existing Google Code SVN branch is not longer maintained and only updated to reflect new releases.<br />
+				Note: The sources of this project have been moved to GitHub. The existing Google Code SVN branch is not longer maintained and only updated to reflect new releases. You still may download the latest release from this page. A ZIP archive containing src, examples, tests and APIDoc is available at GitHub.<br />
 				<br />
 				GitHub: <a href="https://github.com/as3commons/as3commons-collections">https://github.com/as3commons/as3commons-collections</a><br />
 				Project documentation: <a href="http://sibirjak.com/osflash/projects/as3commons-collections/">Developer Page AS3Commons Collections</a>
