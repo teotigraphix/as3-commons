@@ -19,7 +19,6 @@ package org.as3commons.async.task {
 	 * Describes an object that can execute a sequence of <code>ICommands</code> for a number of times determined
 	 * by an <code>ICountProvider</code> instance.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public interface IForBlock extends ITask, ITaskBlock, ICountProviderAware {
 

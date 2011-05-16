@@ -23,7 +23,6 @@ package org.as3commons.async.operation {
 	/**
 	 * Abstract base class for <code>IProgressOperation</code> implementations.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#operations
 	 */
 	public class AbstractProgressOperation extends AbstractOperation implements IProgressOperation {
 

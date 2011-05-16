@@ -14,18 +14,21 @@
 * limitations under the License.
 */
 package org.as3commons.async.command {
+	import flash.utils.Dictionary;
+
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
 	/**
-	 * Enumeration that defines the different ways an <code>ICompositeCommand</code> can execute its collection
+	 * Enumeration that defines the different ways an <code>ICompositeCommand</code> can execute its collection.
 	 * of <code>ICommands</code>
 	 * @author Roland Zwaga
-	 * @see org.springextensions.actionscript.core.command.CompositeCommand CompositeCommand
-	 * @see org.springextensions.actionscript.core.command.ICommand ICommand
-	 * @docref the_operation_api.html#composite_commands
+	 * @see org.as3commons.async.command.CompositeCommand CompositeCommand
+	 * @see org.as3commons.async.command.ICommand ICommand
 	 */
 	public final class CompositeCommandKind {
+
+		private static const _kinds:Dictionary = new Dictionary();
 
 		/**
 		 * Determines that the <code>ICompositeCommand</code> will execute its collection of command one after the other.
@@ -57,6 +60,7 @@ package org.as3commons.async.command {
 		public function CompositeCommandKind(name:String) {
 			Assert.state(!_enumCreated, "The ComposeiteCommandKind enum has already been created.");
 			_name = name;
+			_kinds[name] = this;
 		}
 
 		/**
@@ -67,25 +71,11 @@ package org.as3commons.async.command {
 		 * to the specified <code>name</code> argument, or null if the name doesn't exist.
 		 */
 		public static function fromName(name:String):CompositeCommandKind {
-			var result:CompositeCommandKind;
-
-			// check if the name is a valid value in the enum
-			switch (StringUtils.trim(name.toLowerCase())) {
-				case SEQUENCE_NAME:
-					result = SEQUENCE;
-					break;
-				case PARALLEL_NAME:
-					result = PARALLEL;
-					break;
-				default:
-					result = SEQUENCE;
-			}
-			return result;
+			return _kinds[StringUtils.trim(name.toLowerCase())] as CompositeCommandKind;
 		}
 
 		/**
 		 * Returns the name of the current <code>ComposeiteCommandKind</code>.
-		 * @return The name of the current <code>ComposeiteCommandKind</code>.
 		 */
 		public function get name():String {
 			return _name;
@@ -93,7 +83,6 @@ package org.as3commons.async.command {
 
 		/**
 		 * Returns a string representation of the current <code>ComposeiteCommandKind</code>.
-		 * @return A string representation of the current <code>ComposeiteCommandKind</code>.
 		 */
 		public function toString():String {
 			return _name;

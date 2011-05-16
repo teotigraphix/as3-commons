@@ -28,7 +28,6 @@ package org.as3commons.async.task.command {
 
 	/**
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public class TaskCommand extends CompositeCommand implements IResetable {
 

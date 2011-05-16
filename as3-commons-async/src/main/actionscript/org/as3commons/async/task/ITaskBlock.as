@@ -18,7 +18,6 @@ package org.as3commons.async.task {
 	/**
 	 * Describes an object that represents a block that can be continuously executed or interupted.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public interface ITaskBlock {
 		/**

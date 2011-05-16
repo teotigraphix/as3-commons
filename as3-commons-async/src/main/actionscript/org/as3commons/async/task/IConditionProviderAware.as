@@ -18,7 +18,6 @@ package org.as3commons.async.task {
 	/**
 	 * Describes an object that needs a reference to an <code>IConditionProvider</code>.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public interface IConditionProviderAware {
 		function get conditionProvider():IConditionProvider;

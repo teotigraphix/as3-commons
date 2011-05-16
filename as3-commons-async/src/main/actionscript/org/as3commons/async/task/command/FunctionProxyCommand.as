@@ -22,7 +22,6 @@ package org.as3commons.async.task.command {
 	/**
 	 * <code>ICommand</code> wrapper for <code>MethodInvoker</code> instances.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public class FunctionProxyCommand implements ICommand {
 

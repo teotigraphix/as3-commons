@@ -19,7 +19,6 @@ package org.as3commons.async.task {
 	 * Describes an object consisting of one or two logical blocks which can be executed depending
 	 * on the result of an <code>IConditionProvider</code> instance.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public interface IIfElseBlock extends ITask, ITaskBlock, IConditionProviderAware {
 		/**

@@ -25,7 +25,6 @@ package org.as3commons.async.task.command {
 	/**
 	 *
 	 * @author Roland
-	 * @docref the_operation_api.html#tasks
 	 */
 	public class PauseCommand extends AbstractOperation implements ICommand {
 

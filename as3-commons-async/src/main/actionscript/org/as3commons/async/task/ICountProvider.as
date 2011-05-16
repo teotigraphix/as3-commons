@@ -18,7 +18,6 @@ package org.as3commons.async.task {
 	/**
 	 * Describes an object that returns a count that can be used for flow control purposes.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public interface ICountProvider {
 		/**

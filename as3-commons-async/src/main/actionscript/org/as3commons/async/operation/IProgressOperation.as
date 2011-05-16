@@ -24,7 +24,6 @@ package org.as3commons.async.operation {
 	 * Subinterface of <code>IOperation</code> that contains information about the progress of an operation.
 	 *
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#long_running_operations
 	 */
 	public interface IProgressOperation extends IOperation {
 

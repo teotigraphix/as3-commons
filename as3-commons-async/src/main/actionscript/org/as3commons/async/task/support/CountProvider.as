@@ -19,7 +19,6 @@ package org.as3commons.async.task.support {
 
 	/**
 	 * Base class for <code>ICountProvider</code> implementations.
-	 * @docref the_operation_api.html#tasks
 	 * @inheritDoc
 	 */
 	public class CountProvider implements ICountProvider {

@@ -17,8 +17,7 @@ package org.as3commons.async.task {
 
 	/**
 	 * Describes an object that provides a <code>Boolean</code> value that can be used for flow control purposes.
-	 * @author Roland
-	 * @docref the_operation_api.html#tasks
+	 * @author Roland Zwaga
 	 */
 	public interface IConditionProvider {
 		/**

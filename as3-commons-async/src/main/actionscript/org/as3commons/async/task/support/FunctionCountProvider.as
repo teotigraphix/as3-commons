@@ -21,7 +21,6 @@ package org.as3commons.async.task.support {
 	 * a constructor argument and will invoke this <code>Function</code> in its <code>getCount()</code> method.
 	 * <p>The signature of this <code>Function</code> should be <code>Function():uint;</code></p>
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public class FunctionCountProvider extends CountProvider {
 

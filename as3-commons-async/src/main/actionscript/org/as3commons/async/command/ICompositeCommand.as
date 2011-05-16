@@ -18,29 +18,8 @@ package org.as3commons.async.command {
 	import org.as3commons.async.operation.IOperation;
 
 	/**
-	 * Dispatched when the <code>CompositeCommand</code> is finised executing its collection of <code>ICommands</code>
-	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.COMPLETE CompositeCommandEvent.COMPLETE
-	 */
-	[Event(name="compositeCommandComplete", type="org.as3commons.async.command.event.CompositeCommandEvent")]
-	/**
-	 * Dispatched when the <code>CompositeCommand</code> encounters an error.
-	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.ERROR CompositeCommandEvent.ERROR
-	 */
-	[Event(name="compositeCommandError", type="org.as3commons.async.command.event.CompositeCommandEvent")]
-	/**
-	 * Dispatched before an <code>ICommand</code> from the collection is executed.
-	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.BEFORE_EXECUTE_COMMAND CompositeCommandEvent.BEFORE_EXECUTE_COMMAND
-	 */
-	[Event(name="compositeCommandBeforeExecuteCommand", type="org.as3commons.async.command.event.CompositeCommandEvent")]
-	/**
-	 * Dispatched after an <code>ICommand</code> from the collection was executed.
-	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.AFTER_EXECUTE_COMMAND CompositeCommandEvent.AFTER_EXECUTE_COMMAND
-	 */
-	[Event(name="compositeCommandAfterExecuteCommand", type="org.as3commons.async.command.event.CompositeCommandEvent")]
-	/**
 	 * Interface that needs to be implemented by command classes that are composed of multiple commands.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#composite_commands
 	 */
 	public interface ICompositeCommand extends ICommand, IOperation {
 
@@ -52,7 +31,7 @@ package org.as3commons.async.command {
 
 		/**
 		 * Adds a <code>Class</code> that is an <code>IOperation</code> implementation along with its optional cosntructor arguments.
-		 * Upon execution this class will be instantiated when the current <code>ICompositeCommand</code> reaches it in its execution logic.
+		 * Upon execution this class will be instantiated when the current <code>ICompositeCommand</code> requires it in its execution logic.
 		 * @param operationClass The specified <code>Class</code>.
 		 * @param constructorArgs The optional constructor arguments for the operation <code>Class</code>.
 		 * @return The current <code>ICompositeCommand</code>, this way calls to <code>addCommand()</code> can be chained.
@@ -64,6 +43,9 @@ package org.as3commons.async.command {
 		 */
 		function get numCommands():uint;
 
+		/**
+		 * Determines the way that the ICompositeCommand instance executes its command collection, either CompositeCommandKind.SEQUENCE or CompositeCommandKind.PARALLEL.
+		 */
 		function get kind():CompositeCommandKind;
 	}
 }

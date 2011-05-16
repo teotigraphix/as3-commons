@@ -18,7 +18,6 @@ package org.as3commons.async.command {
 	/**
 	 * Interface to be implemented by command classes.
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#commands
 	 */
 	public interface ICommand {
 

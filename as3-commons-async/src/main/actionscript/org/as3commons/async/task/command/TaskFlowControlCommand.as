@@ -25,7 +25,6 @@ package org.as3commons.async.task.command {
 	/**
 	 *
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public class TaskFlowControlCommand extends EventDispatcher implements ICommand, ITaskFlowControl {
 		private var _kind:TaskFlowControlKind;

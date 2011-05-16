@@ -22,7 +22,6 @@ package org.as3commons.async.command {
 	 * executing directly after a call to the <code>execute()</code> method. Instead, a caller should register to the <code>OperationEvent.COMPLETE</code> or
 	 * <code>OperationEvent.ERROR</code> event before calling <code>execute()</code> and handle the events.
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#commands
 	 */
 	public interface IAsyncCommand extends ICommand, IOperation {
 

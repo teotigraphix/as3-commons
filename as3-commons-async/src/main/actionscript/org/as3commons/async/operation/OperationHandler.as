@@ -17,7 +17,6 @@ package org.as3commons.async.operation {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
-
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -79,20 +78,20 @@ package org.as3commons.async.operation {
 
 		private static const BUSY_CHANGE_EVENT:String = "busyChanged";
 
-		private var _busy:Boolean;
-		private var _operations:Dictionary;
-		private var _defaultErrorHandler:Function;
-
 		/**
 		 * Creates a new <code>OperationHandler</code> instance.
 		 * @param defaultErrorhandler a default method that is invoked when an operation returns an error.
 		 */
 		public function OperationHandler(defaultErrorHandler:Function = null) {
 			super();
-			init(defaultErrorHandler);
+			initOperationHandler(defaultErrorHandler);
 		}
 
-		[Bindable(event="busyChanged")]
+		private var _busy:Boolean;
+		private var _defaultErrorHandler:Function;
+		private var _operations:Dictionary;
+
+		[Bindable(event = "busyChanged")]
 		/**
 		 * Returns <code>true</code> if the current <code>OperationHandler</code> is waiting for an <code>IOperation</code>
 		 * to complete.
@@ -112,12 +111,20 @@ package org.as3commons.async.operation {
 		}
 
 		/**
-		 * Initializes the current <code>OperationHandler</code>.
-		 * @param defaultErrorHandler a default method that is invoked when an operation returns an error.
+		 *
+		 * @param operation The specified <code>IOperation</code>
+		 * @param resultMethod A <code>Function</code> that will be invoked using the <code>IOperation.result</code> as a parameter.
+		 * @param resultTargetObject The target instance that holds the property that will have the <code>IOperation.result</code> or <code>resultMethod</code> result assigned to it.
+		 * @param resultPropertyName The property name on the <code>resultTargetObject</code> that will have the <code>IOperation.result</code> or <code>resultMethod</code> result assigned to it.
+		 * @param errorMethod A <code>Function</code> that will be invoked using the <code>IOperation.error</code> as a parameter.
 		 */
-		protected function init(defaultErrorHandler:Function):void {
-			_operations = new Dictionary();
-			_defaultErrorHandler = defaultErrorHandler;
+		public function handleOperation(operation:IOperation, resultMethod:Function = null, resultTargetObject:Object = null, resultPropertyName:String = null, errorMethod:Function = null):void {
+			if (operation != null) {
+				busy = true;
+				_operations[operation] = new OperationHandlerData(resultPropertyName, resultTargetObject, resultMethod, errorMethod);
+				operation.addCompleteListener(operationCompleteListener);
+				operation.addErrorListener(operationErrorHandler);
+			}
 		}
 
 		/**
@@ -132,22 +139,12 @@ package org.as3commons.async.operation {
 		}
 
 		/**
-		 * Invokes either the default error method or the specified error method with
-		 * the <code>OperationEvent.error</code> property after an <code>IOperation</code> encountered an error.
-		 * @param event The specified <code>OperationEvent</code>.
+		 * Initializes the current <code>OperationHandler</code>.
+		 * @param defaultErrorHandler a default method that is invoked when an operation returns an error.
 		 */
-		protected function operationErrorHandler(event:OperationEvent):void {
-			Assert.notNull(event, "event argument must not be null");
-			busy = false;
-			var data:OperationHandlerData = _operations[event.operation];
-			cleanupUpOperation(event.operation);
-			var errorMethod:Function = _defaultErrorHandler;
-			if (data.errorMethod != null) {
-				errorMethod = data.errorMethod;
-			}
-			if (errorMethod != null) {
-				errorMethod(event.operation.error);
-			}
+		protected function initOperationHandler(defaultErrorHandler:Function):void {
+			_operations = new Dictionary();
+			_defaultErrorHandler = defaultErrorHandler;
 		}
 
 		/**
@@ -176,21 +173,22 @@ package org.as3commons.async.operation {
 		}
 
 		/**
-		 *
-		 * @param operation The specified <code>IOperation</code>
-		 * @param resultMethod A <code>Function</code> that will be invoked using the <code>IOperation.result</code> as a parameter.
-		 * @param resultTargetObject The target instance that holds the property that will have the <code>IOperation.result</code> or <code>resultMethod</code> result assigned to it.
-		 * @param resultPropertyName The property name on the <code>resultTargetObject</code> that will have the <code>IOperation.result</code> or <code>resultMethod</code> result assigned to it.
-		 * @param errorMethod A <code>Function</code> that will be invoked using the <code>IOperation.error</code> as a parameter.
+		 * Invokes either the default error method or the specified error method with
+		 * the <code>OperationEvent.error</code> property after an <code>IOperation</code> encountered an error.
+		 * @param event The specified <code>OperationEvent</code>.
 		 */
-		public function handleOperation(operation:IOperation, resultMethod:Function = null, resultTargetObject:Object = null, resultPropertyName:String = null, errorMethod:Function = null):void {
-			if (operation != null) {
-				busy = true;
-				_operations[operation] = new OperationHandlerData(resultPropertyName, resultTargetObject, resultMethod, errorMethod);
-				operation.addCompleteListener(operationCompleteListener);
-				operation.addErrorListener(operationErrorHandler);
+		protected function operationErrorHandler(event:OperationEvent):void {
+			Assert.notNull(event, "event argument must not be null");
+			busy = false;
+			var data:OperationHandlerData = _operations[event.operation];
+			cleanupUpOperation(event.operation);
+			var errorMethod:Function = _defaultErrorHandler;
+			if (data.errorMethod != null) {
+				errorMethod = data.errorMethod;
+			}
+			if (errorMethod != null) {
+				errorMethod(event.operation.error);
 			}
 		}
-
 	}
 }

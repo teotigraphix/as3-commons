@@ -35,7 +35,6 @@ package org.as3commons.async.task {
 	/**
 	 * Describes an object that can influence the flow of control within a task.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#tasks
 	 */
 	public interface ITaskFlowControl extends IEventDispatcher {
 		/**

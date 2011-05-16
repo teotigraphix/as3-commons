@@ -22,7 +22,6 @@ package org.as3commons.async.command.event {
 	/**
 	 *
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#commands
 	 */
 	public class CommandEvent extends Event {
 
