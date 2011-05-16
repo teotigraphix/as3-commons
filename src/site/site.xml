@@ -8,7 +8,6 @@
 	</skin>
 
 	<body>
-
 		<menu name="Project">
 			<item name="Home" href="index.html" />
 			<item name="License" href="license.html" />
