@@ -31,6 +31,17 @@
                 </tr>
                 <tr>
                     <td>
+                        <a href="https://github.com/MixingLoom">Mixing Loom</a>
+                    </td>
+                    <td>
+                        James Ward &amp; Michael Labriola
+                    </td>
+                    <td>
+                        Mixing Loom lays the foundation for true Aspect Oriented Programming (AOP) on the Flash Platform.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <a href="https://code.google.com/p/flapper-as/">Flapper</a>
                     </td>
                     <td>
@@ -38,6 +49,17 @@
                     </td>
                     <td>
                         An extension library for AOP with Parsley.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://github.com/DavidArno/AS3Introspection">AS3Introspection</a>
+                    </td>
+                    <td>
+                        David Arno
+                    </td>
+                    <td>
+                        AS3 describeType on steriods: can fully describe all accessible aspects of an entire SWF.
                     </td>
                 </tr>
 
