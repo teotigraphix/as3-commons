@@ -20,7 +20,7 @@ package org.as3commons.async.task {
 	 * on the result of an <code>IConditionProvider</code> instance.
 	 * @author Roland Zwaga
 	 */
-	public interface IIfElseBlock extends ITask, ITaskBlock, IConditionProviderAware {
+	public interface IIfElseBlock extends ITaskBlock, IConditionProviderAware {
 		/**
 		 *
 		 */

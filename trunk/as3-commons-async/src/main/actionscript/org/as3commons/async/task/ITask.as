@@ -23,22 +23,22 @@ package org.as3commons.async.task {
 	 * Dispatched when the task is aborted.
 	 * @eventType org.springextensions.actionscript.core.task.event.TaskEvent.TASK_ABORTED
 	 */
-	[Event(name="taskAborted", type="org.as3commons.async.task.event.TaskEvent")]
+	[Event(name = "taskAborted", type = "org.as3commons.async.task.event.TaskEvent")]
 	/**
 	 * Dispatched when the task is completed.
 	 * @eventType org.springextensions.actionscript.core.task.event.TaskEvent.TASK_COMPLETE
 	 */
-	[Event(name="taskComplete", type="org.as3commons.async.task.event.TaskEvent")]
+	[Event(name = "taskComplete", type = "org.as3commons.async.task.event.TaskEvent")]
 	/**
 	 * Dispatched before the task executes an <code>ICommand</code>.
 	 * @eventType org.springextensions.actionscript.core.task.event.TaskEvent.BEFORE_EXECUTE_COMMAND
 	 */
-	[Event(name="taskBeforeExecuteCommand", type="org.as3commons.async.task.event.TaskEvent")]
+	[Event(name = "taskBeforeExecuteCommand", type = "org.as3commons.async.task.event.TaskEvent")]
 	/**
 	 * Dispatched after the task has executed an <code>ICommand</code>.
 	 * @eventType org.springextensions.actionscript.core.task.event.TaskEvent.AFTER_EXECUTE_COMMAND
 	 */
-	[Event(name="taskAfterExecuteCommand", type="org.as3commons.async.task.event.TaskEvent")]
+	[Event(name = "taskAfterExecuteCommand", type = "org.as3commons.async.task.event.TaskEvent")]
 	/**
 	 * Describes an object that is enable to execute a collection of <code>ICommands</code>, both
 	 * in sequence and in parallel, including simple flowcontrol logic such as if, else, while and for.
@@ -150,9 +150,24 @@ package org.as3commons.async.task {
 		function pause(duration:uint, pauseCommand:ICommand = null):ITask;
 
 		/**
-		 * Closes the current <code>ITaskBlock</code>.
+		 * Closes the current <code>ITask</code> if its part of continuous block.
 		 * @return The current <code>ITask</code>.
 		 */
 		function end():ITask;
+		/**
+		 * If <code>true</code> no more <code>ICommands</code> can be added to the current <code>ITask</code>.
+		 */
+		function get isClosed():Boolean;
+		/**
+		 * Interupts the current <code>ITask</code> if its part of a loop construct.
+		 * @return The current <code>ITask</code>'s parent task;
+		 */
+		function break_():ITask;
+		/**
+		 * Continues the current <code>ITask</code> if its part of a loop construct.
+		 * @return The current <code>ITask</code>'s parent task;
+		 */
+		function continue_():ITask;
+
 	}
 }

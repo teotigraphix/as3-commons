@@ -15,11 +15,13 @@
  */
 package org.as3commons.async.task.impl {
 
+	import flash.errors.IllegalOperationError;
+
+	import org.as3commons.async.command.CompositeCommandKind;
 	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.task.ITask;
 	import org.as3commons.async.task.ITaskBlock;
-	import org.as3commons.async.task.ITaskFlowControl;
 	import org.as3commons.async.task.TaskFlowControlKind;
 	import org.as3commons.async.task.command.TaskCommand;
 	import org.as3commons.async.task.command.TaskFlowControlCommand;
@@ -32,14 +34,20 @@ package org.as3commons.async.task.impl {
 	 */
 	public class AbstractTaskBlock extends Task implements ITaskBlock {
 
-		private var _isClosed:Boolean;
+		private static const CLASS_IS_ABSTRACT_ERROR:String = "AbstractTaskBlock class is abstract";
 
-		public function get isClosed():Boolean {
-			return _isClosed;
+		/**
+		 * Creates a new <code>AbstractTaskBlock</code> instance.
+		 */
+		public function AbstractTaskBlock(self:AbstractTaskBlock) {
+			super();
+			initAbstractTaskBlock(self);
 		}
 
-		public function AbstractTaskBlock() {
-			super();
+		protected function initAbstractTaskBlock(self:AbstractTaskBlock):void {
+			if (self !== this) {
+				throw new IllegalOperationError(CLASS_IS_ABSTRACT_ERROR);
+			}
 		}
 
 		override protected function executeCommand(command:ICommand):void {
@@ -105,9 +113,30 @@ package org.as3commons.async.task.impl {
 			executeFlowControl(TaskFlowControlKind.fromName(event.type));
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		override public function end():ITask {
-			_isClosed = true;
+			setIsClosed(true);
 			return (this.parent != null) ? this.parent : this;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		override public function break_():ITask {
+			var result:ITask;
+			result = addCommand(new TaskFlowControlCommand(TaskFlowControlKind.BREAK), CompositeCommandKind.SEQUENCE);
+			return (result != null) ? result : this;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		override public function continue_():ITask {
+			var result:ITask;
+			result = addCommand(new TaskFlowControlCommand(TaskFlowControlKind.CONTINUE), CompositeCommandKind.SEQUENCE);
+			return (result != null) ? result : this;
 		}
 
 	}

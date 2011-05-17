@@ -20,7 +20,7 @@ package org.as3commons.async.task {
 	 * an <code>IConditionProvider</code> instance.
 	 * @author Roland Zwaga
 	 */
-	public interface IWhileBlock extends ITask, ITaskBlock, IConditionProviderAware {
+	public interface IWhileBlock extends ITaskBlock, IConditionProviderAware {
 
 	}
 }

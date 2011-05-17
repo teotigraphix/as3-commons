@@ -28,6 +28,7 @@ package org.as3commons.async.test {
 	import org.as3commons.async.task.impl.FunctionConditionProviderTest;
 	import org.as3commons.async.task.impl.FunctionCountProviderTest;
 	import org.as3commons.async.task.impl.IfElseBlockTest;
+	import org.as3commons.async.task.impl.TaskTest;
 	import org.as3commons.async.task.impl.WhileBlockTest;
 
 	[Suite]
@@ -48,5 +49,6 @@ package org.as3commons.async.test {
 		public var t13:FunctionCountProviderTest;
 		public var t14:IfElseBlockTest;
 		public var t15:WhileBlockTest;
+		public var t16:TaskTest;
 	}
 }

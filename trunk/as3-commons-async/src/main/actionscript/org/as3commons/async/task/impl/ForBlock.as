@@ -35,7 +35,7 @@ package org.as3commons.async.task.impl {
 		 */
 		public function ForBlock(countProvider:ICountProvider) {
 			Assert.notNull(countProvider, "countProvider argument must not be null");
-			super();
+			super(this);
 			_countProvider = countProvider;
 		}
 
