@@ -20,7 +20,7 @@ package org.as3commons.async.task {
 	 * by an <code>ICountProvider</code> instance.
 	 * @author Roland Zwaga
 	 */
-	public interface IForBlock extends ITask, ITaskBlock, ICountProviderAware {
+	public interface IForBlock extends ITaskBlock, ICountProviderAware {
 
 	}
 }

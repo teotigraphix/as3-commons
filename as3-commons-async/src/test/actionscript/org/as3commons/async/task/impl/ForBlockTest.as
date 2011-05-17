@@ -19,9 +19,6 @@ package org.as3commons.async.task.impl {
 
 	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.task.ICountProvider;
-	import org.as3commons.async.task.ITaskBlock;
-	import org.as3commons.async.task.TaskFlowControlKind;
-	import org.as3commons.async.task.command.TaskFlowControlCommand;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
 	public class ForBlockTest extends AbstractTestWithMockRepository {
@@ -84,7 +81,7 @@ package org.as3commons.async.task.impl {
 			mockRepository.replayAll();
 
 			var fb:ForBlock = new ForBlock(count);
-			ITaskBlock(fb.and(command)).continue_().and(command2);
+			fb.and(command).continue_().and(command2);
 			fb.execute();
 
 			mockRepository.verifyAll();

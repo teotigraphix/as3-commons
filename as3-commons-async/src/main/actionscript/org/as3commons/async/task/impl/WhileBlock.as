@@ -29,7 +29,7 @@ package org.as3commons.async.task.impl {
 
 		public function WhileBlock(conditionProvider:IConditionProvider) {
 			Assert.notNull(conditionProvider, "The conditionProvider argument must not be null");
-			super();
+			super(this);
 			_conditionProvider = conditionProvider;
 		}
 

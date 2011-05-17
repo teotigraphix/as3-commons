@@ -30,7 +30,6 @@ package org.as3commons.async.task.impl {
 	import org.as3commons.async.task.IIfElseBlock;
 	import org.as3commons.async.task.IResetable;
 	import org.as3commons.async.task.ITask;
-	import org.as3commons.async.task.ITaskBlock;
 	import org.as3commons.async.task.IWhileBlock;
 	import org.as3commons.async.task.TaskFlowControlKind;
 	import org.as3commons.async.task.command.FunctionCommand;
@@ -46,6 +45,9 @@ package org.as3commons.async.task.impl {
 	 * @inheritDoc
 	 */
 	public class Task extends AbstractOperation implements ITask, IDisposable {
+
+		private var _isDisposed:Boolean = false;
+		private var _isClosed:Boolean = false;
 
 		/**
 		 * Internal <code>Array</code> of the commands, tasks and controlflow objects that will be executed.
@@ -148,7 +150,7 @@ package org.as3commons.async.task.impl {
 			var task:ITask;
 			if (currentCommand != null) {
 				task = currentCommand as ITask;
-				if ((task != null) && (task is ITaskBlock) && (!ITaskBlock(task).isClosed)) {
+				if ((task != null) && (!task.isClosed)) {
 					task.next(command);
 					return task;
 				} else {
@@ -197,7 +199,7 @@ package org.as3commons.async.task.impl {
 		public function if_(conditionProvider:IConditionProvider = null, ifElseBlock:IIfElseBlock = null):IIfElseBlock {
 			ifElseBlock = (ifElseBlock != null) ? ifElseBlock : new IfElseBlock(conditionProvider);
 			var cmd:ICommand = commandList[commandList.length - 1];
-			if ((cmd is ICompositeCommand) || ((cmd is ITaskBlock) && (ITaskBlock(cmd).isClosed))) {
+			if ((cmd is ICompositeCommand) || ((cmd is ITask) && (ITask(cmd).isClosed))) {
 				addToCommandList(ifElseBlock);
 			} else {
 				addCommand(ifElseBlock, CompositeCommandKind.SEQUENCE);
@@ -226,7 +228,7 @@ package org.as3commons.async.task.impl {
 		public function while_(conditionProvider:IConditionProvider = null, whileBlock:IWhileBlock = null):IWhileBlock {
 			whileBlock = (whileBlock != null) ? whileBlock : new WhileBlock(conditionProvider);
 			var cmd:ICommand = commandList[commandList.length - 1];
-			if ((cmd is ICompositeCommand) || ((cmd is ITaskBlock) && (ITaskBlock(cmd).isClosed))) {
+			if ((cmd is ICompositeCommand) || ((cmd is ITask) && (ITask(cmd).isClosed))) {
 				addToCommandList(whileBlock);
 			} else {
 				addCommand(whileBlock, CompositeCommandKind.SEQUENCE);
@@ -241,7 +243,7 @@ package org.as3commons.async.task.impl {
 			countProvider = ((countProvider == null) && (forBlock == null)) ? new CountProvider(count) : countProvider;
 			forBlock = (forBlock != null) ? forBlock : new ForBlock(countProvider);
 			var cmd:ICommand = (commandList.length > 0) ? commandList[commandList.length - 1] : null;
-			if ((cmd is ICompositeCommand) || ((cmd is ITaskBlock) && (ITaskBlock(cmd).isClosed))) {
+			if ((cmd is ICompositeCommand) || ((cmd is ITask) && (ITask(cmd).isClosed))) {
 				addToCommandList(forBlock);
 			} else {
 				addCommand(forBlock, CompositeCommandKind.SEQUENCE);
@@ -255,29 +257,11 @@ package org.as3commons.async.task.impl {
 		public function end():ITask {
 			if (commandList.length > 0) {
 				var task:ITask = commandList[commandList.length - 1] as ITask;
-				if ((task != null) && (task is ITaskBlock) && (ITaskBlock(task).isClosed == false)) {
+				if ((task != null) && (task.isClosed == false)) {
 					return task.end();
 				}
 			}
 			return (this.parent != null) ? this.parent : this;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function break_():ITask {
-			var result:ITask;
-			result = addCommand(new TaskFlowControlCommand(TaskFlowControlKind.BREAK), CompositeCommandKind.SEQUENCE);
-			return (result != null) ? result : this;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function continue_():ITask {
-			var result:ITask;
-			result = addCommand(new TaskFlowControlCommand(TaskFlowControlKind.CONTINUE), CompositeCommandKind.SEQUENCE);
-			return (result != null) ? result : this;
 		}
 
 		/**
@@ -456,8 +440,6 @@ package org.as3commons.async.task.impl {
 			dispatchEvent(new TaskEvent(eventType, this, command));
 		}
 
-		private var _isDisposed:Boolean = false;
-
 		/**
 		 * @inheritDoc
 		 */
@@ -476,6 +458,31 @@ package org.as3commons.async.task.impl {
 		 */
 		public function get isDisposed():Boolean {
 			return _isDisposed;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get isClosed():Boolean {
+			return _isClosed;
+		}
+
+		protected function setIsClosed(value:Boolean):void {
+			_isClosed = value;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function break_():ITask {
+			return this;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function continue_():ITask {
+			return this;
 		}
 
 	}
