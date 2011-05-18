@@ -23,6 +23,7 @@ package org.as3commons.async.task.impl {
 
 	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.command.MockAsyncCommand;
+	import org.as3commons.async.operation.MockOperation;
 	import org.as3commons.async.task.event.TaskEvent;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
@@ -61,11 +62,30 @@ package org.as3commons.async.task.impl {
 			mockRepository.verifyAll();
 		}
 
+		[Test(async, timeout = 6000)]
+		public function testAndMultipleAsync():void {
+			var counter:uint = 0;
+			var command1:Function = function():void {
+				Assert.assertEquals(0, counter);
+				counter++;
+			}
+			var command2:Function = function():void {
+				Assert.assertEquals(1, counter);
+			}
+			var handleComplete:Function = function(event:TaskEvent):void {
+				Assert.assertEquals(1, counter);
+			}
+			var task:Task = new Task();
+			task.and(MockOperation, "test1", 5000, false, command1).and(MockOperation, "test2", 1000, false, command2);
+			task.addEventListener(TaskEvent.TASK_COMPLETE, handleComplete);
+			task.execute();
+		}
+
 		protected function onTaskComplete(event:TaskEvent):void {
 			Assert.assertEquals(1, _counter);
 		}
 
-		[Test]
+		[Test(async, timeout = 500)]
 		public function testAndAsync():void {
 			var task:Task = new Task();
 			task.and(new MockAsyncCommand(false, 1, incCounter));
@@ -83,6 +103,7 @@ package org.as3commons.async.task.impl {
 			task.and(new MockAsyncCommand(false, 1, incCounter)).and(c);
 			task.addEventListener(TaskEvent.TASK_COMPLETE, onTaskComplete);
 			task.execute();
+			mockRepository.verifyAll();
 		}
 
 	}

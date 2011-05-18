@@ -19,27 +19,49 @@ package org.as3commons.async.command {
 
 	import org.as3commons.async.operation.AbstractOperation;
 
+	/**
+	 * An async mock command. For testing purposes, obviously. :)
+	 * @author Roland Zwaga
+	 */
 	public class MockAsyncCommand extends AbstractOperation implements ICommand {
 
 		private var _fail:Boolean;
 		private var _timeout:Number = 1;
 		private var _func:Function = null;
 
+		/**
+		 * Creates a new <code>MockAsyncCommand</code> instance.
+		 * @param fail Determines if the current <code>MockAsyncCommand</code> should dispatch an error event, default is <code>false</code>.
+		 * @param timeout Determines the amount of milliseconds that the <code>MockAsyncCommand</code> should wait to complete, default is <code>1</code>.
+		 * @param func Optional <code>Function</code> which will be invoked when the <code>execute()</code> method is invoked.
+		 *
+		 */
 		public function MockAsyncCommand(fail:Boolean = false, timeout:Number = 1, func:Function = null) {
 			super();
 			initMockAsyncCommand(fail, timeout, func);
 		}
 
-		private function initMockAsyncCommand(fail:Boolean, timeout:Number, func:Function):void {
+		/**
+		 * Initializes the current <code>MockAsyncCommand</code> instance.
+		 * @param fail Determines if the current <code>MockAsyncCommand</code> should dispatch an error event.
+		 * @param timeout Determines how long the <code>MockAsyncCommand</code> should wait to complete.
+		 * @param func Optional <code>Function</code> which will be invoked when the <code>execute()</code> method is invoked.
+		 */
+		protected function initMockAsyncCommand(fail:Boolean, timeout:Number, func:Function):void {
 			_fail = fail;
 			_timeout = timeout;
 			_func = func;
 		}
 
 
+		/**
+		 * Invokes the specified <code>Function</code> if its not <code>null</code> (its result will be assigned to the <code>result</code> property).<br/>
+		 * The <code>MockAsyncCommand</code> then waits the specified timeout amount and either dispatches an <code>OperationEvent.ERROR</code> or <code>OperationEvent.COMPLETE</code> event, determined by the <code>fail</code> argument.
+		 * @return The result of the specified <code>Function</code>, or <code>void</code> if its <code>null</code>.
+		 */
 		public function execute():* {
 			if (_func != null) {
-				_func();
+				result = _func();
 			}
 			if (_fail) {
 				setTimeout(dispatchErrorEvent, _timeout);

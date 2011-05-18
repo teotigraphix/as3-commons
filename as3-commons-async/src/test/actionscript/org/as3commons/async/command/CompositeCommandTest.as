@@ -38,7 +38,7 @@ package org.as3commons.async.command {
 		}
 
 		[Test]
-		public function testAddCommand():void {
+		public function testAddCommandAndOperation():void {
 			var c:ICommand = ICommand(mockRepository.createStub(ICommand));
 			var o:IOperation = IOperation(mockRepository.createStub(IOperation));
 			mockRepository.replayAll();
@@ -61,11 +61,11 @@ package org.as3commons.async.command {
 			var command2:Function = function():void {
 				Assert.assertEquals(1, counter);
 			}
-			cc.addOperation(MockOperation, ["test1", 2000, false, command1]).addOperation(MockOperation, ["test2", 1000, false, command2]);
+			cc.addOperation(MockOperation, "test1", 2000, false, command1).addOperation(MockOperation, "test2", 1000, false, command2);
 			cc.execute();
 		}
 
-		[Test(async, timeout = "4000")]
+		[Test(async, timeout = "6000")]
 		public function testParallelExecute():void {
 			var cc:CompositeCommand = new CompositeCommand(CompositeCommandKind.PARALLEL);
 			var counter:uint = 0;
@@ -76,7 +76,7 @@ package org.as3commons.async.command {
 				Assert.assertEquals(0, counter);
 				counter++;
 			}
-			cc.addOperation(MockOperation, ["test1", 2000, false, command1, false]).addOperation(MockOperation, ["test2", 1000, false, command2, false]);
+			cc.addOperation(MockOperation, "test1", 5000, false, command1, false).addOperation(MockOperation, "test2", 1000, false, command2, false);
 			cc.execute();
 		}
 
@@ -90,7 +90,7 @@ package org.as3commons.async.command {
 			var command2:Function = function():void {
 				Assert.assertTrue(false);
 			}
-			cc.addOperation(MockOperation, ["test1", 2000, true, command1, false]).addOperation(MockOperation, ["test2", 1000, false, command2, false]);
+			cc.addOperation(MockOperation, "test1", 2000, true, command1, false).addOperation(MockOperation, "test2", 1000, false, command2, false);
 			cc.failOnFault = true;
 			cc.execute();
 		}
@@ -106,7 +106,7 @@ package org.as3commons.async.command {
 			var command2:Function = function():void {
 				Assert.assertEquals(1, counter);
 			}
-			cc.addOperation(MockOperation, ["test1", 2000, true, command1, false]).addOperation(MockOperation, ["test2", 1000, false, command2, false]);
+			cc.addOperation(MockOperation, "test1", 2000, true, command1, false).addOperation(MockOperation, "test2", 1000, false, command2, false);
 			cc.failOnFault = false;
 			cc.execute();
 		}
