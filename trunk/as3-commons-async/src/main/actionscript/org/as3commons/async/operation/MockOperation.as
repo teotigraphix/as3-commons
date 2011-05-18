@@ -18,7 +18,7 @@ package org.as3commons.async.operation {
 	import flash.utils.setTimeout;
 
 	/**
-	 * An async mock operation.
+	 * An async mock operation. For testing purposes, obviously. :)
 	 * @author Christophe Herreman
 	 */
 	public class MockOperation extends AbstractOperation {
@@ -32,6 +32,12 @@ package org.as3commons.async.operation {
 		private var _delay:int = DEFAULT_MAX_DELAY;
 
 		/**
+		 * Creates a new <code>MockOperation</code> instance.
+		 * @param resultData
+		 * @param delay
+		 * @param returnError
+		 * @param func
+		 * @param useRandomDelay
 		 *
 		 */
 		public function MockOperation(resultData:*, delay:int = DEFAULT_MAX_DELAY, returnError:Boolean = false, func:Function = null, useRandomDelay:Boolean = true) {
@@ -41,7 +47,7 @@ package org.as3commons.async.operation {
 
 		protected function initMockOperation(resultData:*, delay:int, returnError:Boolean, func:Function, useRandomDelay:Boolean):void {
 			_result = resultData;
-			_delay = (useRandomDelay) ? Math.random() * _delay : _delay;
+			_delay = (useRandomDelay) ? Math.random() * delay : delay;
 			_func = func;
 
 			//var val:Number = Math.random();

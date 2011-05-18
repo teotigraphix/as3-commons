@@ -18,6 +18,7 @@ package org.as3commons.stageprocessing {
 	/**
 	 * Objects implementing this interface are used to approve (or deny)
 	 * the selection of an object for some action/purpose.
+	 * @author Martino Piccinato
 	 */
 	public interface IObjectSelector {
 
