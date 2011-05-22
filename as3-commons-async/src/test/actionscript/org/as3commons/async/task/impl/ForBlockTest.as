@@ -17,8 +17,12 @@ package org.as3commons.async.task.impl {
 	import asmock.framework.Expect;
 	import asmock.integration.flexunit.IncludeMocksRule;
 
+	import flexunit.framework.Assert;
+
 	import org.as3commons.async.command.ICommand;
+	import org.as3commons.async.operation.MockOperation;
 	import org.as3commons.async.task.ICountProvider;
+	import org.as3commons.async.task.event.TaskEvent;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
 	public class ForBlockTest extends AbstractTestWithMockRepository {
@@ -28,8 +32,15 @@ package org.as3commons.async.task.impl {
 			ICountProvider, //
 			ICommand]);
 
+		private var _counter:int;
+
 		public function ForBlockTest() {
 			super();
+		}
+
+		[Before]
+		public function setUp():void {
+			_counter = 0;
 		}
 
 		[Test]
@@ -43,7 +54,31 @@ package org.as3commons.async.task.impl {
 			mockRepository.replayAll();
 
 			var fb:ForBlock = new ForBlock(count);
-			fb.and(command);
+			fb.and(command).end();
+			fb.execute();
+
+			mockRepository.verifyAll();
+		}
+
+		[Test(async, timeout = 2000)]
+		public function testExecuteWithAsync():void {
+			var count:ICountProvider = ICountProvider(mockRepository.createStrict(ICountProvider));
+
+			Expect.call(count.getCount()).returnValue(10);
+
+			mockRepository.replayAll();
+
+			var command1:Function = function():void {
+				_counter++;
+			}
+
+			var handleComplete:Function = function(event:TaskEvent):void {
+				Assert.assertEquals(10, _counter);
+			}
+
+			var fb:ForBlock = new ForBlock(count);
+			fb.next(MockOperation, "test1", 100, false, command1).end();
+			fb.addEventListener(TaskEvent.TASK_COMPLETE, handleComplete);
 			fb.execute();
 
 			mockRepository.verifyAll();
@@ -62,7 +97,7 @@ package org.as3commons.async.task.impl {
 			mockRepository.replayAll();
 
 			var fb:ForBlock = new ForBlock(count);
-			ForBlock(fb.and(command)).break_().and(command2);
+			fb.and(command).break_().and(command2).end();
 			fb.execute();
 
 			mockRepository.verifyAll();
@@ -81,7 +116,7 @@ package org.as3commons.async.task.impl {
 			mockRepository.replayAll();
 
 			var fb:ForBlock = new ForBlock(count);
-			fb.and(command).continue_().and(command2);
+			fb.and(command).continue_().and(command2).end();
 			fb.execute();
 
 			mockRepository.verifyAll();
