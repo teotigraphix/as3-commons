@@ -263,7 +263,6 @@ package org.as3commons.async.task.impl {
 				.end();
 			task.addEventListener(TaskEvent.TASK_COMPLETE, handleComplete);
 			task.execute();
-
 		}
 
 	}
