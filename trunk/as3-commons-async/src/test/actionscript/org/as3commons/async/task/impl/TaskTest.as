@@ -24,6 +24,8 @@ package org.as3commons.async.task.impl {
 	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.command.MockAsyncCommand;
 	import org.as3commons.async.operation.MockOperation;
+	import org.as3commons.async.task.IConditionProvider;
+	import org.as3commons.async.task.ICountProvider;
 	import org.as3commons.async.task.event.TaskEvent;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
@@ -31,6 +33,8 @@ package org.as3commons.async.task.impl {
 
 		[Rule]
 		public var includeMocks:IncludeMocksRule = new IncludeMocksRule([ //
+			ICountProvider, //
+			IConditionProvider, //
 			ICommand //
 			]);
 
@@ -62,15 +66,23 @@ package org.as3commons.async.task.impl {
 			mockRepository.verifyAll();
 		}
 
+		[Test(async, timeout = 500)]
+		public function testAndAsync():void {
+			var task:Task = new Task();
+			task.and(new MockAsyncCommand(false, 1, incCounter));
+			task.addEventListener(TaskEvent.TASK_COMPLETE, onTaskComplete);
+			task.execute();
+		}
+
 		[Test(async, timeout = 6000)]
 		public function testAndMultipleAsync():void {
 			var counter:uint = 0;
 			var command1:Function = function():void {
-				Assert.assertEquals(0, counter);
-				counter++;
+				Assert.assertEquals(1, counter);
 			}
 			var command2:Function = function():void {
-				Assert.assertEquals(1, counter);
+				Assert.assertEquals(0, counter);
+				counter++;
 			}
 			var handleComplete:Function = function(event:TaskEvent):void {
 				Assert.assertEquals(1, counter);
@@ -85,14 +97,6 @@ package org.as3commons.async.task.impl {
 			Assert.assertEquals(1, _counter);
 		}
 
-		[Test(async, timeout = 500)]
-		public function testAndAsync():void {
-			var task:Task = new Task();
-			task.and(new MockAsyncCommand(false, 1, incCounter));
-			task.addEventListener(TaskEvent.TASK_COMPLETE, onTaskComplete);
-			task.execute();
-		}
-
 		[Test]
 		public function testAndAsyncNotAsyncMixed():void {
 			var c:ICommand = ICommand(mockRepository.createStrict(ICommand));
@@ -104,6 +108,162 @@ package org.as3commons.async.task.impl {
 			task.addEventListener(TaskEvent.TASK_COMPLETE, onTaskComplete);
 			task.execute();
 			mockRepository.verifyAll();
+		}
+
+		[Test]
+		public function testNext():void {
+			var c:ICommand = ICommand(mockRepository.createStrict(ICommand));
+			Expect.call(c.execute()).returnValue(null);
+			mockRepository.replayAll();
+
+			var task:Task = new Task();
+			task.next(c);
+			task.execute();
+
+			mockRepository.verifyAll();
+		}
+
+		[Test(async, timeout = 500)]
+		public function testNextAsync():void {
+			var task:Task = new Task();
+			task.next(new MockAsyncCommand(false, 1, incCounter));
+			task.addEventListener(TaskEvent.TASK_COMPLETE, onTaskComplete);
+			task.execute();
+		}
+
+		[Test(async, timeout = 6000)]
+		public function testNextMultipleAsync():void {
+			var counter:uint = 0;
+			var command1:Function = function():void {
+				Assert.assertEquals(0, counter);
+				counter++;
+			}
+			var command2:Function = function():void {
+				Assert.assertEquals(1, counter);
+			}
+			var handleComplete:Function = function(event:TaskEvent):void {
+				Assert.assertEquals(1, counter);
+			}
+			var task:Task = new Task();
+			task.next(MockOperation, "test1", 5000, false, command1).next(MockOperation, "test2", 1000, false, command2);
+			task.addEventListener(TaskEvent.TASK_COMPLETE, handleComplete);
+			task.execute();
+		}
+
+		[Test]
+		public function testForLoopWithCountProvider():void {
+			var count:ICountProvider = ICountProvider(mockRepository.createStrict(ICountProvider));
+			var command:ICommand = ICommand(mockRepository.createStrict(ICommand));
+
+			Expect.call(count.getCount()).returnValue(10);
+			Expect.call(command.execute()).repeat.times(10, 10).returnValue(null);
+
+			mockRepository.replayAll();
+
+			var handleComplete:Function = function(event:TaskEvent):void {
+				Assert.assertTrue(true);
+			}
+
+			var task:Task = new Task();
+			task //
+				.for_(0, count) //
+				.and(command) //
+				.end();
+			task.addEventListener(TaskEvent.TASK_COMPLETE, handleComplete);
+			task.execute();
+
+			mockRepository.verifyAll();
+		}
+
+		[Test]
+		public function testForLoopWithFixedCount():void {
+			var command:ICommand = ICommand(mockRepository.createStrict(ICommand));
+
+			Expect.call(command.execute()).repeat.times(10, 10).returnValue(null);
+
+			mockRepository.replayAll();
+
+			var handleComplete:Function = function(event:TaskEvent):void {
+				Assert.assertTrue(true);
+			}
+
+			var task:Task = new Task();
+			task.for_(10) //
+				.and(command) //
+				.end();
+			task.addEventListener(TaskEvent.TASK_COMPLETE, handleComplete);
+			task.execute();
+
+			mockRepository.verifyAll();
+		}
+
+		[Test(async, timeout = 2000)]
+		public function testForLoopWithAsyncCommand():void {
+
+			var command1:Function = function():void {
+				_counter++;
+			}
+
+			var handleComplete:Function = function(event:TaskEvent):void {
+				Assert.assertEquals(10, _counter);
+			}
+
+			var task:Task = new Task();
+			task.for_(10) //
+				.next(MockOperation, "test1", 100, false, command1) //
+				.end();
+			task.addEventListener(TaskEvent.TASK_COMPLETE, handleComplete);
+			task.execute();
+		}
+
+		[Test]
+		public function testWhileLoop():void {
+			var returnResult:Function = function():Boolean {
+				return (_counter++ != 10);
+			}
+			var condition:IConditionProvider = new FunctionConditionProvider(returnResult);
+			var command:ICommand = ICommand(mockRepository.createStrict(ICommand));
+
+			Expect.call(command.execute()).repeat.times(10, 10).returnValue(null);
+
+			mockRepository.replayAll();
+
+			var handleComplete:Function = function(event:TaskEvent):void {
+				Assert.assertTrue(true);
+			}
+
+			var task:Task = new Task();
+			task.while_(condition) //
+				.and(command) //
+				.end();
+			task.addEventListener(TaskEvent.TASK_COMPLETE, handleComplete);
+			task.execute();
+
+			mockRepository.verifyAll();
+		}
+
+		[Test(async, timeout = 2000)]
+		public function testWhileLoopWithAsync():void {
+			var returnResult:Function = function():Boolean {
+				return (_counter != 10);
+			}
+			var condition:IConditionProvider = new FunctionConditionProvider(returnResult);
+
+			var handleComplete:Function = function(event:TaskEvent):void {
+				Assert.assertEquals(10, _counter);
+			}
+
+			var command1:Function = function():void {
+				_counter++;
+			}
+
+			var task:Task = new Task();
+			task.while_(condition) //
+				.next(MockOperation, "test1", 100, false, command1) //
+				.end();
+			task.addEventListener(TaskEvent.TASK_COMPLETE, handleComplete);
+			task.execute();
+
 		}
 
 	}

@@ -17,8 +17,12 @@ package org.as3commons.async.task.impl {
 	import asmock.framework.Expect;
 	import asmock.integration.flexunit.IncludeMocksRule;
 
+	import flexunit.framework.Assert;
+
 	import org.as3commons.async.command.ICommand;
+	import org.as3commons.async.operation.MockOperation;
 	import org.as3commons.async.task.IConditionProvider;
+	import org.as3commons.async.task.event.TaskEvent;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
 	public class WhileBlockTest extends AbstractTestWithMockRepository {
@@ -52,6 +56,23 @@ package org.as3commons.async.task.impl {
 			wb.execute();
 
 			mockRepository.verifyAll();
+		}
+
+		[Test(async, timeout = 2000)]
+		public function testExecuteWithAsync():void {
+			var command1:Function = function():void {
+				Assert.assertTrue(_counter < 11);
+			}
+
+			var handleComplete:Function = function(event:TaskEvent):void {
+				Assert.assertEquals(11, _counter);
+			}
+
+			var wb:WhileBlock = new WhileBlock(new FunctionConditionProvider(whileFunction));
+			wb.next(MockOperation, "test1", 100, false, command1).end();
+			wb.addEventListener(TaskEvent.TASK_COMPLETE, handleComplete);
+			wb.execute();
+
 		}
 
 		protected function whileFunction():Boolean {
