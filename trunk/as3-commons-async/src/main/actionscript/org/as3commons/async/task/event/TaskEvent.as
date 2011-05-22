@@ -15,7 +15,6 @@
  */
 package org.as3commons.async.task.event {
 
-	//import flash.events.Event;
 	import flash.events.Event;
 
 	import org.as3commons.async.command.ICommand;
@@ -26,6 +25,7 @@ package org.as3commons.async.task.event {
 	 * @author Roland Zwaga
 	 */
 	public class TaskEvent extends Event {
+
 		/**
 		 * Defines the value of the type property of a <code>TaskEvent.TASK_ERROR</code> event object.
 		 * @eventType String
