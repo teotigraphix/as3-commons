@@ -7,8 +7,7 @@
 	<version>1.0-RC1</version>
 	<name>AS3Commons ASync</name>
 	<url>http://www.as3commons.org/async</url>
-	<description>
-	</description>
+	<description>A pure actionscript 3 library that aims to make working with asynchronous processes easier.</description>
 	<inceptionYear>2011</inceptionYear>
 
 	<properties>
