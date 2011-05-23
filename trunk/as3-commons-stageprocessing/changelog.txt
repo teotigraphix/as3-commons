@@ -3,6 +3,12 @@ AS3COMMONS-STAGEPROCESSING CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.0-RC1 (23.05.2011)
+-----------------------------------
+
+* Added IOrdered support to the lists of IStageObjectProcessors
+* Added a few default IObjectSelector implementations (taken from Spring Actionscript)
+
 Changes in version 1.0-RC1 (11.05.2011)
 -----------------------------------
 

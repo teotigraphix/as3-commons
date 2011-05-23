@@ -30,7 +30,7 @@ package org.as3commons.stageprocessing.impl.selector {
 	 */
 	public class NameBasedObjectSelector implements IObjectSelector {
 
-		private static const LOGGER:ILogger = LoggerFactory.getClassLogger(NameBasedObjectSelector);
+		private static const LOGGER:ILogger = org.as3commons.logging.getClassLogger(NameBasedObjectSelector);
 
 		private static const DEFAULT_NAME_PROPERTY:String = "name";
 

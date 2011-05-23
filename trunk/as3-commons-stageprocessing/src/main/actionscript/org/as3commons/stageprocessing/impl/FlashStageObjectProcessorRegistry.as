@@ -17,13 +17,11 @@ package org.as3commons.stageprocessing.impl {
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;
-	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 
-	import org.as3commons.lang.IDisposable;
+	import org.as3commons.lang.IOrdered;
 	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LoggerFactory;
 	import org.as3commons.stageprocessing.IObjectSelector;
 	import org.as3commons.stageprocessing.IStageObjectDestroyer;
 	import org.as3commons.stageprocessing.IStageObjectProcessor;
@@ -41,6 +39,7 @@ package org.as3commons.stageprocessing.impl {
 		private static const NEW_STAGE_PROCESSOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and existing {2}";
 		private static const STAGE_PROCESSOR_UNREGISTERED:String = "Stage processor with name '{0}' and document '{1}' was unregistered";
 		private static const LOGGER:ILogger = org.as3commons.logging.getClassLogger(FlashStageObjectProcessorRegistry);
+		private static const ORDERED_PROPERTYNAME:String = "order";
 
 		public function FlashStageObjectProcessorRegistry() {
 			super();
@@ -172,6 +171,28 @@ package org.as3commons.stageprocessing.impl {
 			var processors:Vector.<IStageObjectProcessor> = getProcessorVector(rootView, objectSelector);
 			if (processors.indexOf(stageProcessor) < 0) {
 				processors[processors.length] = stageProcessor;
+				sortOrderedVector(processors);
+			}
+		}
+
+		protected static function sortOrderedVector(source:Vector.<IStageObjectProcessor>):void {
+			if (source.length < 2) {
+				return;
+			}
+			var ordered:Array = [];
+			var unordered:Array = [];
+			for each (var obj:IStageObjectProcessor in source) {
+				if (obj is IOrdered) {
+					ordered[ordered.length] = obj;
+				} else {
+					unordered[unordered.length] = obj;
+				}
+			}
+			ordered.sortOn(ORDERED_PROPERTYNAME, Array.NUMERIC);
+			ordered = ordered.concat(unordered);
+			source.length = 0;
+			for each (var proc:IStageObjectProcessor in ordered) {
+				source[source.length] = proc;
 			}
 		}
 
@@ -255,7 +276,7 @@ package org.as3commons.stageprocessing.impl {
 			}
 		}
 
-		protected function getProcessorVector(rootView:DisplayObject, objectSelector:IObjectSelector, create:Boolean = true):Vector.<IStageObjectProcessor> {
+		public function getProcessorVector(rootView:DisplayObject, objectSelector:IObjectSelector, create:Boolean = true):Vector.<IStageObjectProcessor> {
 			if ((_rootViews[rootView] == null) && (create)) {
 				_rootViews[rootView] = new Dictionary();
 			}
