@@ -42,6 +42,15 @@ registry.stage = FlexGlobals.topLevelApplication.stage as Stage;
   }
 }</pre></div>
     	</p>
+    	<p>As3Commons-stageprocessing already offers these implementations for default usage:<br/>
+		<ul>
+			<li><a href="asdoc/org/as3commons/stageprocessing/impl/selector/ClassNameBasedObjectSelector.html" target="_blank">ClassNameBasedObjectSelector</a></li>
+			<li><a href="asdoc/org/as3commons/stageprocessing/impl/selector/ComposedObjectSelector.html" target="_blank">ComposedObjectSelector</a></li>
+			<li><a href="asdoc/org/as3commons/stageprocessing/impl/selector/NameBasedObjectSelector.html" target="_blank">NameBasedObjectSelector</a></li>
+			<li><a href="asdoc/org/as3commons/stageprocessing/impl/selector/PropertyValueBasedObjectSelector.html" target="_blank">PropertyValueBasedObjectSelector</a></li>
+			<li><a href="asdoc/org/as3commons/stageprocessing/impl/selector/TypeBasedObjectSelector.html" target="_blank">TypeBasedObjectSelector</a></li>
+		</ul>
+    	</p>
     </section>
     <section name="Creating an IStageObjectProcessor implementation">
     	<p>The <code>IStageObjectProcessor</code> interface is equally brief:
@@ -74,6 +83,18 @@ registry.stage = FlexGlobals.topLevelApplication.stage as Stage;
     	instance will be regarded as the root for the specified <code>IObjectSelectors</code> and their associated <code>IStageObjectProcessors</code>.<br/>
     	In other words, only <code>DisplayObjects</code> that have this root as their parent will be approved and/or processed by these specific <code>IObjectSelectors</code> and their associated <code>IStageObjectProcessors</code>:
     	<div class="source"><pre>registry.registerStageObjectProcessor(new MystageObjectProcessor(), new MyObjectSelector(), registry.stage.getChildAt(4));</pre></div>
+    	</p>
+    </section>
+    <section name="Controlling the order that IStageObjectProcessors will be executed">
+    	<p>To be able to determine in what order <code>IStageObjectProcessors</code> will be executed, a processor can optionally implement the <code>IOrdered</code> interface:<br/>
+    		<div class="source"><pre>public interface IOrdered {
+
+ function get order():int;
+
+ function set order(value:int):void;
+
+}</pre></div>
+	The actual order can be interpreted as prioritization, with the first object (with the lowest order value) having the highest priority. When collections are sorted that contain objects that do not implement the IOrdered interface first the IOrdered implementations will be sorted with the lowest order value first, after that the remaining objects will be concatenated unordered.
     	</p>
     </section>
     <section name="The IStageObjectDestroyer interface">

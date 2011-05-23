@@ -28,6 +28,7 @@ package org.as3commons.stageprocessing.impl {
 
 	import org.as3commons.stageprocessing.IObjectSelector;
 	import org.as3commons.stageprocessing.IStageObjectProcessor;
+	import org.as3commons.stageprocessing.mock.MockOrderedStageObjectProcessor;
 	import org.as3commons.stageprocessing.test.AbstractTestWithMockRepository;
 
 	public class FlashStageObjectProcessorRegistryTest extends AbstractTestWithMockRepository {
@@ -72,6 +73,25 @@ package org.as3commons.stageprocessing.impl {
 			Assert.assertEquals(1, sel.length);
 			Assert.assertStrictlyEquals(selector, sel[0]);
 			Assert.assertStrictlyEquals(processor, _registry.getStageProcessorsByRootView(_registry.stage)[0]);
+		}
+
+		[Test]
+		public function testRegisterOrderedProcessors():void {
+			var selector:IObjectSelector = IObjectSelector(mockRepository.createStrict(IObjectSelector));
+			mockRepository.replayAll();
+
+			var mock1:MockOrderedStageObjectProcessor = new MockOrderedStageObjectProcessor();
+			mock1.order = 10;
+			var mock2:MockOrderedStageObjectProcessor = new MockOrderedStageObjectProcessor();
+			mock2.order = 2;
+
+			_registry.registerStageObjectProcessor(mock1, selector);
+			_registry.registerStageObjectProcessor(mock2, selector);
+
+			var procs:Vector.<IStageObjectProcessor> = _registry.getProcessorVector(_registry.stage, selector);
+			Assert.assertEquals(2, procs.length);
+			Assert.assertStrictlyEquals(mock2, procs[0]);
+			Assert.assertStrictlyEquals(mock1, procs[1]);
 		}
 
 		[Test]

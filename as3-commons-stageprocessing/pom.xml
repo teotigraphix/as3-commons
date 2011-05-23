@@ -4,7 +4,7 @@
     	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-stageprocessing</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0-RC1</version>
+	<version>1.0-RC2</version>
 	<name>AS3Commons StageProcessing</name>
 	<url>http://www.as3commons.org/stageprocessing</url>
 	<description>
@@ -214,7 +214,7 @@
 					</dependency>
 				</dependencies>
 				<configuration>
-					<templateFile>../src/site/vm/as3commons.vm</templateFile>
+					<!--templateFile>../src/site/vm/as3commons.vm</templateFile-->
 					<reportPlugins>
 
 						<plugin>
@@ -238,18 +238,21 @@
 	</build>
 
 	<dependencies>
-		<dependency>
+	
+		<!--dependency>
 			<groupId>asmock</groupId>
 			<artifactId>asmock</artifactId>
 			<version>${asmock.version}</version>
 			<type>swc</type>			
 		</dependency>
+
 		<dependency>
 			<groupId>asmock</groupId>
 			<artifactId>asmock-flexunit4.1</artifactId>
 			<version>${asmockflexunit4.version}</version>
 			<type>swc</type>			
-		</dependency>
+		</dependency-->
+
 		<dependency>
 		    <groupId>com.adobe.flex.framework</groupId>
 		    <artifactId>common-framework</artifactId>
@@ -260,7 +263,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.3</version>
+			<version>0.3.4</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
@@ -268,13 +271,12 @@
 					<groupId>com.adobe.flex.framework</groupId>
 					<artifactId>playerglobal</artifactId>
 				</exclusion>
-                <exclusion>
-                    <groupId>com.adobe.flex.framework</groupId>
-                    <artifactId>common-framework</artifactId>
-                </exclusion>
+				<exclusion>
+				    <groupId>com.adobe.flex.framework</groupId>
+				    <artifactId>common-framework</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.as3commons</groupId>
@@ -355,48 +357,22 @@
 		    <scope>external</scope>
 		</dependency>
 
-		<dependency>
+		<!--dependency>
 			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
 			<version>${flexunit.version}</version>
 			<type>swc</type>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 
 	</dependencies>
 
 	<reporting>
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 			</plugin>
-            <!--
-			<plugin>
-				<groupId>org.sonatype.flexmojos</groupId>
-				<artifactId>flexmojos-maven-plugin</artifactId>
-				<version>${flex-mojos.version}</version>
-				<inherited>true</inherited>
-				<reportSets>
-					<reportSet>
-						<id>flex-reports</id>
-						<reports>
-							<report>asdoc-report</report>
-						</reports>
-						<configuration>
-							<templateDirectory>../asdoctemplates/flex4/templates</templateDirectory>
-							<reportOutputDirectory>target/site/docs/asdoc2</reportOutputDirectory>
-							<description>API documentation</description>
-							<mainTitle>API documentation</mainTitle>
-							<windowTitle>API documentation</windowTitle>
-							<name>As3CommonsDocs</name>
-						</configuration>
-					</reportSet>
-				</reportSets>
-			</plugin>
-			-->
-
 		</plugins>
 	</reporting>
 
