@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springextensions.actionscript.rpc.net {
+package org.as3commons.async.rpc.net {
 
 	import flash.net.NetConnection;
 
-	import org.springextensions.actionscript.core.operation.IOperation;
-	import org.springextensions.actionscript.rpc.IService;
+	import org.as3commons.async.operation.IOperation;
+	import org.as3commons.async.rpc.IService;
 
 	/**
 	 * Service that invokes methods on a NetConnection and returns an IOperation for each of these calls.

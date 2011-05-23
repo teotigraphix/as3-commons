@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springextensions.actionscript.rpc {
+package org.as3commons.async.rpc {
+	import org.as3commons.async.operation.IOperation;
 
-	import org.springextensions.actionscript.core.operation.IOperation;
 
 	/**
 	 * Defines a service that invokes asynchronous operation on (remote) objects.
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#services
 	 */
 	public interface IService {
 

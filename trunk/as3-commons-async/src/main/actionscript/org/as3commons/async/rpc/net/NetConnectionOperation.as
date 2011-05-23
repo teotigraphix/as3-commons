@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springextensions.actionscript.rpc.net {
+package org.as3commons.async.rpc.net {
 
 	import flash.events.Event;
 	import flash.net.NetConnection;
 	import flash.net.Responder;
 
+	import org.as3commons.async.operation.AbstractOperation;
 	import org.as3commons.lang.Assert;
-	import org.springextensions.actionscript.core.operation.AbstractOperation;
 
 	/**
 	 * An <code>IOperation</code> that invokes a method on a <code>NetConnection</code>.
@@ -96,7 +96,7 @@ package org.springextensions.actionscript.rpc.net {
 		 * The <code>NetConnection</code> used by the current <code>NetConnectionOperation</code>.
 		 * @return the netconnection
 		 */
-		[Bindable(event="netConnectionChange")]
+		[Bindable(event = "netConnectionChange")]
 		protected function get netConnection():NetConnection {
 			return _netConnection;
 		}
