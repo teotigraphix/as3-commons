@@ -60,10 +60,10 @@ package org.as3commons.async.operation.impl {
 			dataFormat = (dataFormat == null) ? URLLoaderDataFormat.TEXT : dataFormat;
 			urlLoader = new URLLoader();
 			urlLoader.dataFormat = dataFormat;
-			urlLoader.addEventListener(Event.COMPLETE, completeHandler);
+			urlLoader.addEventListener(Event.COMPLETE, urlLoaderCompleteHandler);
 			urlLoader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-			urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
-			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+			urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, urlLoaderErrorHandler);
+			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, urlLoaderErrorHandler);
 
 			setTimeout(function():void {
 				urlLoader.load(new URLRequest(url));
@@ -74,7 +74,7 @@ package org.as3commons.async.operation.impl {
 		 * Handles the <code>Event.COMPLETE</code> event of the internally created <code>URLLoader</code>.
 		 * @param event The specified <code>Event.COMPLETE</code> event.
 		 */
-		protected function completeHandler(event:Event):void {
+		protected function urlLoaderCompleteHandler(event:Event):void {
 			result = urlLoader.data;
 			removeEventListeners();
 			dispatchCompleteEvent();
@@ -94,7 +94,7 @@ package org.as3commons.async.operation.impl {
 		 * Handles the <code>SecurityErrorEvent.SECURITY_ERROR</code> and <code>IOErrorEvent.IO_ERROR</code> events of the internally created <code>URLLoader</code>.
 		 * @param event The specified <code>ProgressEvent.PROGRESS</code> or <code>IOErrorEvent.IO_ERROR</code> event.
 		 */
-		protected function errorHandler(event:Event):void {
+		protected function urlLoaderErrorHandler(event:Event):void {
 			removeEventListeners();
 			dispatchErrorEvent(event['text']);
 		}

@@ -18,14 +18,13 @@ package org.as3commons.async.rpc.net {
 	import flash.net.NetConnection;
 
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.rpc.IService;
+	import org.as3commons.async.rpc.AbstractRPCService;
 
 	/**
 	 * Service that invokes methods on a NetConnection and returns an IOperation for each of these calls.
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#services
 	 */
-	public class NetConnectionService implements IService {
+	public class NetConnectionService extends AbstractRPCService {
 
 		// --------------------------------------------------------------------
 		//
@@ -77,7 +76,7 @@ package org.as3commons.async.rpc.net {
 		/**
 		 * @inheritDoc
 		 */
-		public function call(methodName:String, ... parameters):IOperation {
+		override public function call(methodName:String, ... parameters):IOperation {
 			return new NetConnectionOperation(netConnection, methodName, parameters);
 		}
 	}

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.async.operation {
-
 	import flash.events.EventDispatcher;
 	import flash.utils.clearTimeout;
 	import flash.utils.setTimeout;
@@ -23,39 +22,22 @@ package org.as3commons.async.operation {
 	 * Dispatched when the current <code>AbstractOperation</code> has completed its functionality successfully.
 	 * @eventType org.springextensions.actionscript.core.operation.OperationEvent#COMPLETE OperationEvent.COMPLETE
 	 */
-	[Event(name="operationComplete", type="org.springextensions.actionscript.core.operation.OperationEvent")]
-
+	[Event(name = "operationComplete", type = "org.springextensions.actionscript.core.operation.OperationEvent")]
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> encountered an error.
 	 * @eventType org.springextensions.actionscript.core.operation.OperationEvent#ERROR OperationEvent.ERROR
 	 */
-	[Event(name="operationError", type="org.springextensions.actionscript.core.operation.OperationEvent")]
-
+	[Event(name = "operationError", type = "org.springextensions.actionscript.core.operation.OperationEvent")]
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> timed out.
 	 * @eventType org.springextensions.actionscript.core.operation.OperationEvent#TIMEOUT OperationEvent.TIMEOUT
 	 */
-	[Event(name="operationTimeout", type="org.springextensions.actionscript.core.operation.OperationEvent")]
-
+	[Event(name = "operationTimeout", type = "org.springextensions.actionscript.core.operation.OperationEvent")]
 	/**
 	 * Abstract base class for <code>IOperation</code> implementations.
 	 * @author Christophe Herreman
 	 */
 	public class AbstractOperation extends EventDispatcher implements IOperation {
-
-		// --------------------------------------------------------------------
-		//
-		// Private Variables
-		//
-		// --------------------------------------------------------------------
-
-		private var m_autoStartTimeout:Boolean = true;
-
-		/** Identifier for the timeout so we can cancel it. */
-		private var m_timeoutId:uint;
-
-		/** Whether or not this operation timed out. */
-		private var m_timedOut:Boolean = false;
 
 		// --------------------------------------------------------------------
 		//
@@ -80,9 +62,15 @@ package org.as3commons.async.operation {
 			}
 		}
 
+		// ----------------------------
+		// error
+		// ----------------------------
+
+		private var _error:*;
+
 		// --------------------------------------------------------------------
 		//
-		// Implementation: IOperation: Properties
+		// Public Properties
 		//
 		// --------------------------------------------------------------------
 
@@ -90,23 +78,18 @@ package org.as3commons.async.operation {
 		// result
 		// ----------------------------
 
-		/**
-		 * @inheritDoc
-		 */
-		public function get result():* {
-			return _result;
-		}
+		private var _result:*;
 
-		// ----------------------------
-		// error
-		// ----------------------------
+		// --------------------------------------------------------------------
+		//
+		// Private Variables
+		//
+		// --------------------------------------------------------------------
 
-		/**
-		 * @inheritDoc
-		 */
-		public function get error():* {
-			return _error;
-		}
+		private var m_autoStartTimeout:Boolean = true;
+
+		/** Whether or not this operation timed out. */
+		private var m_timedOut:Boolean = false;
 
 		// ----------------------------
 		// timeout
@@ -114,18 +97,8 @@ package org.as3commons.async.operation {
 
 		private var m_timeout:int = 0;
 
-		/**
-		 * @inheritDoc
-		 */
-		public function get timeout():int {
-			return m_timeout;
-		}
-
-		public function set timeout(value:int):void {
-			if (value !== m_timeout) {
-				m_timeout = value;
-			}
-		}
+		/** Identifier for the timeout so we can cancel it. */
+		private var m_timeoutId:uint;
 
 		// --------------------------------------------------------------------
 		//
@@ -152,67 +125,6 @@ package org.as3commons.async.operation {
 		 */
 		public function addTimeoutListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
 			addEventListener(OperationEvent.TIMEOUT, listener, useCapture, priority, useWeakReference);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function removeCompleteListener(listener:Function, useCapture:Boolean = false):void {
-			removeEventListener(OperationEvent.COMPLETE, listener, useCapture);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function removeErrorListener(listener:Function, useCapture:Boolean = false):void {
-			removeEventListener(OperationEvent.ERROR, listener, useCapture);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function removeTimeoutListener(listener:Function, useCapture:Boolean = false):void {
-			removeEventListener(OperationEvent.TIMEOUT, listener, useCapture);
-		}
-
-		// --------------------------------------------------------------------
-		//
-		// Public Properties
-		//
-		// --------------------------------------------------------------------
-
-		// ----------------------------
-		// result
-		// ----------------------------
-
-		private var _result:*;
-
-		/**
-		 * Sets the result of this operation.
-		 *
-		 * @param value the result of this operation
-		 */
-		public function set result(value:*):void {
-			if (value !== result) {
-				_result = value;
-			}
-		}
-
-		// ----------------------------
-		// error
-		// ----------------------------
-
-		private var _error:*;
-
-		/**
-		 * Sets the error of this operation
-		 *
-		 * @param value the error of this operation
-		 */
-		public function set error(value:*):void {
-			if (value !== error) {
-				_error = value;
-			}
 		}
 
 		// --------------------------------------------------------------------
@@ -262,11 +174,103 @@ package org.as3commons.async.operation {
 			return dispatchEvent(OperationEvent.createTimeoutEvent(this));
 		}
 
+		// ----------------------------
+		// error
+		// ----------------------------
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get error():* {
+			return _error;
+		}
+
+		/**
+		 * Sets the error of this operation
+		 *
+		 * @param value the error of this operation
+		 */
+		public function set error(value:*):void {
+			if (value !== error) {
+				_error = value;
+			}
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function removeCompleteListener(listener:Function, useCapture:Boolean = false):void {
+			removeEventListener(OperationEvent.COMPLETE, listener, useCapture);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function removeErrorListener(listener:Function, useCapture:Boolean = false):void {
+			removeEventListener(OperationEvent.ERROR, listener, useCapture);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function removeTimeoutListener(listener:Function, useCapture:Boolean = false):void {
+			removeEventListener(OperationEvent.TIMEOUT, listener, useCapture);
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Implementation: IOperation: Properties
+		//
+		// --------------------------------------------------------------------
+
+		// ----------------------------
+		// result
+		// ----------------------------
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get result():* {
+			return _result;
+		}
+
+		/**
+		 * Sets the result of this operation.
+		 *
+		 * @param value the result of this operation
+		 */
+		public function set result(value:*):void {
+			if (value !== result) {
+				_result = value;
+			}
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get timeout():int {
+			return m_timeout;
+		}
+
+		public function set timeout(value:int):void {
+			if (value !== m_timeout) {
+				m_timeout = value;
+			}
+		}
+
 		// --------------------------------------------------------------------
 		//
 		// Protected Methods
 		//
 		// --------------------------------------------------------------------
+
+		protected function completeHandler(event:OperationEvent):void {
+			stopTimeout();
+		}
+
+		protected function errorHandler(event:OperationEvent):void {
+			stopTimeout();
+		}
 
 		protected function startTimeout():void {
 			if (timeout > 0) {
@@ -279,27 +283,13 @@ package org.as3commons.async.operation {
 			}
 		}
 
-		// --------------------------------------------------------------------
-		//
-		// Private Methods
-		//
-		// --------------------------------------------------------------------
-
-		private function completeHandler(event:OperationEvent):void {
-			stopTimeout();
+		protected function stopTimeout():void {
+			clearTimeout(m_timeoutId);
 		}
 
-		private function errorHandler(event:OperationEvent):void {
-			stopTimeout();
-		}
-
-		private function timeoutHandler():void {
+		protected function timeoutHandler():void {
 			m_timedOut = true;
 			dispatchTimeoutEvent();
-		}
-
-		private function stopTimeout():void {
-			clearTimeout(m_timeoutId);
 		}
 	}
 }

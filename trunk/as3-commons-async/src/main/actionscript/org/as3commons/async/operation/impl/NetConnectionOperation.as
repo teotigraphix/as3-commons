@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.rpc.net {
+package org.as3commons.async.operation.impl {
 
 	import flash.events.Event;
 	import flash.net.NetConnection;
 	import flash.net.Responder;
+	import flash.utils.setTimeout;
 
 	import org.as3commons.async.operation.AbstractOperation;
 	import org.as3commons.lang.Assert;
@@ -26,7 +27,6 @@ package org.as3commons.async.rpc.net {
 	 * An <code>IOperation</code> that invokes a method on a <code>NetConnection</code>.
 	 * @see flash.net.NetConnection
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#common_spring_actionscript_operations
 	 */
 	public class NetConnectionOperation extends AbstractOperation {
 
@@ -44,6 +44,11 @@ package org.as3commons.async.rpc.net {
 		 * @param parameters the parameters passed to the invoked method
 		 */
 		public function NetConnectionOperation(netConnection:NetConnection, methodName:String, parameters:Array = null) {
+			super();
+			initNetConnectionOperation(netConnection, methodName, parameters);
+		}
+
+		protected function initNetConnectionOperation(netConnection:NetConnection, methodName:String, parameters:Array):void {
 			Assert.notNull(netConnection, "The netconnection should not be null");
 			Assert.hasText(methodName, "The method name must not be null or an empty string");
 
@@ -51,8 +56,9 @@ package org.as3commons.async.rpc.net {
 			_methodName = methodName;
 			_parameters = parameters;
 
-			invokeRemoteMethod();
+			setTimeout(invokeRemoteMethod, 0);
 		}
+
 
 		// --------------------------------------------------------------------
 		//
@@ -96,7 +102,6 @@ package org.as3commons.async.rpc.net {
 		 * The <code>NetConnection</code> used by the current <code>NetConnectionOperation</code>.
 		 * @return the netconnection
 		 */
-		[Bindable(event = "netConnectionChange")]
 		protected function get netConnection():NetConnection {
 			return _netConnection;
 		}
@@ -105,10 +110,7 @@ package org.as3commons.async.rpc.net {
 		 * @private
 		 */
 		protected function set netConnection(value:NetConnection):void {
-			if (value !== _netConnection) {
-				_netConnection = value;
-				dispatchEvent(new Event("netConnectionChange"));
-			}
+			_netConnection = value;
 		}
 
 		// --------------------------------------------------------------------
@@ -117,6 +119,10 @@ package org.as3commons.async.rpc.net {
 		//
 		// --------------------------------------------------------------------
 
+		/**
+		 *
+		 *
+		 */
 		protected function invokeRemoteMethod():void {
 			var responder:Responder = new Responder(resultHandler, faultHandler);
 			var parameters:Array = [_methodName, responder];
@@ -124,11 +130,19 @@ package org.as3commons.async.rpc.net {
 			netConnection.call.apply(netConnection, parameters);
 		}
 
+		/**
+		 *
+		 * @param result
+		 */
 		protected function resultHandler(result:Object):void {
 			this.result = result;
 			dispatchCompleteEvent();
 		}
 
+		/**
+		 *
+		 * @param fault
+		 */
 		protected function faultHandler(fault:Object):void {
 			error = fault;
 			dispatchErrorEvent();
