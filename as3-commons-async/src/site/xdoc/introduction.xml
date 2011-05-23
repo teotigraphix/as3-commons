@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <properties>
+    <title>Introduction to as3commons-async</title>
+    <author email="scab@dds.nl">Roland Zwaga</author>
+  </properties>
+
+  <body>
+    <section name="Introduction">
+    <p>One of the most prevalent actions in any Flash or Flex application is: Get stuff from the server back-end. Be it calling a remote object, loading a sub-application, module or resource file, all of these actions have one thing in common: They are asynchronous.<p>
+    <p>The Flex framework and Flash player seem to use different kinds of asynchronous patterns for different kinds of retrieval. There's the responder method, the event based method (all be it with an optional progress reporting mechanism), calls to a singleton that returns an IEventDispatcher instance or some other interface, etc.<br/>
+    <p>AS3Commons-async aims to facilitate a common interface for these different patterns in order to make using and combining them a little easier. The provided interfaces and base classes will give a developer the opportunity to easily write his own logic.<p>
+    </section>
+  </body>
+</document>
