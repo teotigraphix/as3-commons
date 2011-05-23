@@ -4,7 +4,7 @@
     	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-stageprocessing</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0-RC2-SNAPSHOT</version>
+	<version>1.0-RC3-SNAPSHOT</version>
 	<name>AS3Commons StageProcessing</name>
 	<url>http://www.as3commons.org/stageprocessing</url>
 	<description>
@@ -127,7 +127,7 @@
 				<executions> <execution> <id>flex-reports</id> <goals> <goal>asdoc-report</goal>
 					</goals> <phase>site</phase> </execution> </executions>
 				<configuration>
-                    <storepass></storepass>
+                    <storepass />
                     <testTimeout>10000</testTimeout>
 					<configurationReport>true</configurationReport>
 					<targetPlayer>${flashplayer.version.major}</targetPlayer>
@@ -378,9 +378,9 @@
 
 
 	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-stageprocessing</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-stageprocessing</url>
-	  <connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-stageprocessing</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-stageprocessing/RC2</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-stageprocessing/RC2</url>
+	  <connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-stageprocessing/RC2</connection>
   </scm>
 
 	<distributionManagement>
