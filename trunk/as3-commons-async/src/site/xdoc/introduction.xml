@@ -11,5 +11,63 @@
     <p>The Flex framework and Flash player seem to use different kinds of asynchronous patterns for different kinds of retrieval. There's the responder method, the event based method (all be it with an optional progress reporting mechanism), calls to a singleton that returns an IEventDispatcher instance or some other interface, etc.<br/>
     <p>AS3Commons-async aims to facilitate a common interface for these different patterns in order to make using and combining them a little easier. The provided interfaces and base classes will give a developer the opportunity to easily write his own logic.<p>
     </section>
+    <section name="Concepts">
+    	<p>AS3Commons-async, broadly speaking, has four concepts:</p>
+		<ul>
+			<li>Operation: An asynchronous action.</li>
+			<li>Command: An action with deferred execution, can be asynhronous.</li>
+			<li>Service: A collection of related operations.</li>
+			<li>Task: A collection of commands that are executed using a control flow.</li>
+		</ul>
+    </section>
+    <section name="Operations">
+    <p>An operation represents any kind of asynchronous action and is described by the IOperation interface:</p>
+    <div class="source"><pre>public interface IOperation extends IEventDispatcher {
+
+	function get result():*;
+
+	function get error():*;
+
+	function get timeout():int;
+
+	function set timeout(value:int):void;
+
+	function addCompleteListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void;
+
+	function addErrorListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void;
+
+	function addTimeoutListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void;
+
+	function removeCompleteListener(listener:Function, useCapture:Boolean = false):void;
+
+	function removeErrorListener(listener:Function, useCapture:Boolean = false):void;
+
+	function removeTimeoutListener(listener:Function, useCapture:Boolean = false):void;
+
+}</pre></div>
+	<subsection name="Long running operations">
+	<p>Operations that take long amounts of time to complete, such as downloading files benefit from being able to notify the user of their progress. Typically a progress bar could display this. For these types of operations there is the IProgressOperation interface, which is a simple extension of IOperation:</p>
+	<div class="source"><pre>public interface IProgressOperation extends IOperation {
+
+ function get progress():uint;
+
+ function get total():uint;
+
+ function addProgressListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void;
+
+ function removeProgressListener(listener:Function, useCapture:Boolean = false):void;
+}</pre></div>
+	</subsection>
+	<subsection name="Operation queues">
+	<p>In some cases a collection of IOperations need to be run at once, yet each individual OperationEvent.COMPLETE event doesn't need to be listened for. All that is important is that all of the IOperations are completed successfully. For this situation the OperationQueue class can help out. A simple usage of this class might be like this:</p>
+	<div class="source"><pre>var queue:OperationQueue = new OperationQueue();
+queue.addCompleteListener(handleQueueComplete);
+queue.addOperation(new FirstOperation());
+queue.addOperation(new SecondOperation());
+queue.addOperation(new ThirdOperation());
+queue.addOperation(new FourthOperation());</pre></div>
+	<p>And that's all, upon adding the operations the queue immediately starts running. So after all four operations have completed the specified handleQueueComplete method will be invoked and the application can go on about its business.</p>
+	</subsection>
+    </section>
   </body>
 </document>
