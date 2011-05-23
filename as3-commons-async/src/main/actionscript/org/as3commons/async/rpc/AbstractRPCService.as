@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springextensions.actionscript.rpc {
+package org.as3commons.async.rpc {
 	import flash.errors.IllegalOperationError;
-	
-	import org.springextensions.actionscript.core.operation.IOperation;
+
+	import org.as3commons.async.operation.IOperation;
 
 	/**
-	 * Abstract base class for RPC services 
+	 * Abstract base class for RPC services
 	 * @author Roland Zwaga
 	 */
 	public class AbstractRPCService implements IService {
-		
+
 		public function AbstractRPCService() {
 			super();
 		}
