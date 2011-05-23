@@ -24,14 +24,13 @@ package org.as3commons.async.task.command {
 	import org.as3commons.async.task.ITaskFlowControl;
 	import org.as3commons.async.task.event.TaskFlowControlEvent;
 	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LoggerFactory;
 
 	/**
 	 * @author Roland Zwaga
 	 */
 	public class TaskCommand extends CompositeCommand implements IResetable {
 
-		private static const LOGGER:ILogger = LoggerFactory.getClassLogger(TaskCommand);
+		private static const LOGGER:ILogger = org.as3commons.logging.getClassLogger(TaskCommand);
 
 		private var _stopped:Boolean = false;
 		private var _finishedCommands:Array;

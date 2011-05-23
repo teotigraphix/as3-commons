@@ -22,7 +22,6 @@ package org.as3commons.async.command {
 	import org.as3commons.async.operation.OperationEvent;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LoggerFactory;
 
 	/**
 	 * Dispatched when the <code>CompositeCommand</code> is finised executing its collection of <code>ICommands</code>
@@ -53,7 +52,7 @@ package org.as3commons.async.command {
 	 */
 	public class CompositeCommand extends AbstractProgressOperation implements ICompositeCommand {
 
-		private static const LOGGER:ILogger = LoggerFactory.getClassLogger(CompositeCommand);
+		private static const LOGGER:ILogger = org.as3commons.logging.getClassLogger(CompositeCommand);
 
 		/**
 		 * Determines if the execution of all the <code>ICommands</code> should be aborted if an
