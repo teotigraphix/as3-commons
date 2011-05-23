@@ -3,6 +3,14 @@ AS3COMMONS LANG CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 0.3.4 (23.05.2011)
+-----------------------------------
+
+Package org.commons.lang
+
+* Added IOrdered interface
+* Added OrderedUtils static class
+
 Changes in version 0.3.3 (00.00.2011)
 -----------------------------------
 
