@@ -54,17 +54,17 @@ package org.as3commons.async.operation.impl {
 		 */
 		protected function init(url:String):void {
 			_urlStream = new URLStream();
-			_urlStream.addEventListener(Event.COMPLETE, completeHandler, false, 0, true);
+			_urlStream.addEventListener(Event.COMPLETE, urlStreamCompleteHandler, false, 0, true);
 			_urlStream.addEventListener(ProgressEvent.PROGRESS, progressHandler, false, 0, true);
-			_urlStream.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler, false, 0, true);
-			_urlStream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler, false, 0, true);
+			_urlStream.addEventListener(SecurityErrorEvent.SECURITY_ERROR, urlStreamErrorHandler, false, 0, true);
+			_urlStream.addEventListener(IOErrorEvent.IO_ERROR, urlStreamErrorHandler, false, 0, true);
 
 			setTimeout(function():void {
 				_urlStream.load(new URLRequest(url));
 			}, 0);
 		}
 
-		protected function completeHandler(event:Event):void {
+		protected function urlStreamCompleteHandler(event:Event):void {
 			removeEventListeners();
 			dispatchCompleteEvent();
 		}
@@ -83,7 +83,7 @@ package org.as3commons.async.operation.impl {
 		 * Handles the <code>SecurityErrorEvent.SECURITY_ERROR</code> and <code>IOErrorEvent.IO_ERROR</code> events of the internally created <code>URLStream</code>.
 		 * @param event The specified <code>ProgressEvent.PROGRESS</code> or <code>IOErrorEvent.IO_ERROR</code> event.
 		 */
-		protected function errorHandler(event:Event):void {
+		protected function urlStreamErrorHandler(event:Event):void {
 			removeEventListeners();
 			dispatchErrorEvent(event['text']);
 		}
