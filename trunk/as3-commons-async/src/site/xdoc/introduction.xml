@@ -69,5 +69,47 @@ queue.addOperation(new FourthOperation());</pre></div>
 	<p>And that's all, upon adding the operations the queue immediately starts running. So after all four operations have completed the specified handleQueueComplete method will be invoked and the application can go on about its business.</p>
 	</subsection>
     </section>
+    <section name="Commands">
+    	<p>A command is any kind of action whose execution is deferred. Only after invoking the command's execute() method will the action do its work. The basic ICommand interface is very modest:</p>
+    	<div class="source"><pre>public interface ICommand {
+
+ function execute():*;
+
+}</pre></div>
+	<p>This represents a synchronous command, so the logic that is executed by an implementation will be available immediately after the call to the execute() method, and typically be returned in the execute()'s result.
+More interesting is the IAsyncCommand interface which is actually just a combination of the ICommand and IOperation interfaces:</p>
+	<div class="source"><pre>public interface IAsyncCommand extends ICommand, IOperation {
+
+}</pre></div>
+	<p>This interface allows a command to be constructed that will execute an asynchronous action. So contrary to an IOperation instance an IAsyncCommand can be created, but its logic executed at a later moment.
+Because the command is asynchronous the result property will be null directly after the execute() method has been called, also the result of the execute() method will be either null or undefined. To retrieve the result of the IAsyncCommand, add listeners for the OperationEvent.COMPLETE and OperationEvent.ERROR events.</p>
+	<subsection name="Composite commands">
+	<p>Just like IOperations its very well possible that a collection of ICommands or IAsyncCommands (or a mixed collection of them) needs to be executed. For this scenario the CompositeCommand class is ideal. It allows a list of ICommands to be executed in parallel or sequence. The CompositeCommand class is an implementation of the ICompositeCommand interface:</p>
+	<div class="source"><pre>public interface ICompositeCommand extends ICommand, IOperation {
+
+	function addCommand(command:ICommand):ICompositeCommand;
+
+	function addOperation(operationClass:Class, ... constructorArgs):ICompositeCommand;
+
+	function get numCommands():uint;
+
+	function get kind():CompositeCommandKind;
+}</pre></div>
+	<p>Note the addOperation() method, a Class (which implements IOperation) can be passed in along with a number of optional arguments. This IOperation will be wrapped in a GenericOperationCommand instance which can will create the operation class
+	in its execute() method.<br/>
+	A simple example of the usage of a CompositeCommand instance would be like this:</p>
+	<div class="source"><pre>var compositeCommand:CompositeCommand = new CompositeCommand(ComposeiteCommandKind.SEQUENCE);
+compositeCommand.addCommand(new FirstCommand());
+compositeCommand.addCommand(new SecondCommand());
+compositeCommand.addCommand(new ThirdCommand());
+compositeCommand.addCommand(new FourthCommand());
+compositeCommand.addCompleteListener(handleCompositeCommandComplete);
+compositeCommand.addErrorListener(handleCompositeCommandError);
+compositeCommand.execute();</pre></div>
+	<p>This will execute the FirstCommand instance, wait for it to complete, execute the SecondCommand instance, wait for it to complete, etc.
+If all commands complete successfully the specified handleCompositeCommandComplete method will be invoked, if an error occurs the handleCompositeCommandError method is invoked instead.</p>
+	<blockquote>The failOnFault property determines whether the CompositeCommand instance should stop executing its list of commands in the case of an error. Default this property is set to false. So all commands will be executed no matter what their result is.</blockquote>
+	</subsection>
+    </section>
   </body>
 </document>
