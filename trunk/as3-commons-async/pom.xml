@@ -274,6 +274,23 @@
 			</exclusions>
 		</dependency>
 
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-reflect</artifactId>
+			<version>1.3.4</version>
+			<type>swc</type>
+			<scope>external</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>playerglobal</artifactId>
+				</exclusion>
+                <exclusion>
+                    <groupId>com.adobe.flex.framework</groupId>
+                    <artifactId>common-framework</artifactId>
+                </exclusion>
+			</exclusions>
+		</dependency>
 
 		<dependency>
 			<groupId>org.as3commons</groupId>
@@ -424,10 +441,10 @@
 	</distributionManagement>
 
     <repositories>
-		<repository>
+		<!-- repository>
 			<id>flash-nexus-repository</id>
 			<url>http://www.flashnexus.org/nexus/content/groups/public</url>
-		</repository>
+		</repository -->
 		<repository>
     			<id>cairngorm3-repository</id>
     			<url>http://opensource.adobe.com/svn/opensource/cairngorm3/maven-repository</url>
