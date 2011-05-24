@@ -1,13 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
     	<groupId>org.as3commons</groupId>
-	<artifactId>as3commons-async</artifactId>
+	<artifactId>flex-async</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0-RC1-SNAPSHOT</version>
-	<name>AS3Commons ASync</name>
-	<url>http://www.as3commons.org/async</url>
-	<description>A pure actionscript 3 library that aims to make working with asynchronous processes easier.</description>
+	<version>1.0-RC1</version>
+	<name>Flex ASync</name>
+	<url>http://www.as3commons.org/as3-commons-async</url>
+	<description>Flex implementations of AS3Commons-async interfaces.</description>
 	<inceptionYear>2011</inceptionYear>
 
 	<properties>
@@ -90,10 +89,6 @@
              </developer>
      </developers>
 
-	<!--modules>
-		<module>flex-async</module>
-	</modules-->
-
     	<build>
 
         <sourceDirectory>src/main/actionscript</sourceDirectory>
@@ -128,8 +123,8 @@
 				<executions> <execution> <id>flex-reports</id> <goals> <goal>asdoc-report</goal>
 					</goals> <phase>site</phase> </execution> </executions>
 				<configuration>
-                    <storepass></storepass>
-                    <testTimeout>10000</testTimeout>
+					<storepass></storepass>
+					<testTimeout>10000</testTimeout>
 					<configurationReport>true</configurationReport>
 					<targetPlayer>${flashplayer.version.major}</targetPlayer>
 					<locales>
@@ -159,33 +154,9 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
 					<tagBase>
-						https://as3-commons.googlecode.com/svn/tags/as3-commons-async
+						https://as3-commons.googlecode.com/svn/tags/as3-commons-async/flex
 					</tagBase>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptor>
-						src/main/assembly/package.xml
-					</descriptor>
-					<finalName>as3commons-async-latest-snapshot</finalName>
-					<outputDirectory>target/site/downloads</outputDirectory>
-					<workDirectory>target/assembly/work</workDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<!-- this is used for inheritance merges -->
-						<phase>site</phase>
-						<!-- append to the packaging phase. -->
-						<goals>
-							<goal>single</goal>
-							<!-- goals == mojos -->
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
@@ -201,45 +172,12 @@
 					</filesets>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>${maven-site-plugin.version}</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.adobe.flex</groupId>
-						<artifactId>compiler</artifactId>
-						<version>${flex-sdk.version}</version>
-						<type>pom</type>
-					</dependency>
-				</dependencies>
-				<configuration>
-
-					<reportPlugins>
-
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.2</version>
-						</plugin>
-
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-surefire-report-plugin</artifactId>
-							<version>2.6</version>
-						</plugin>
-
-					</reportPlugins>
-				</configuration>
-			</plugin>
-
 		</plugins>
 
 	</build>
 
 	<dependencies>
-		<!--dependency>
+		<dependency>
 			<groupId>asmock</groupId>
 			<artifactId>asmock</artifactId>
 			<version>${asmock.version}</version>
@@ -250,7 +188,7 @@
 			<artifactId>asmock-flexunit4.1</artifactId>
 			<version>${asmockflexunit4.version}</version>
 			<type>swc</type>			
-		</dependency-->
+		</dependency>
 		<dependency>
 		    <groupId>com.adobe.flex.framework</groupId>
 		    <artifactId>common-framework</artifactId>
@@ -262,6 +200,24 @@
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-lang</artifactId>
 			<version>0.3.3</version>
+			<type>swc</type>
+			<scope>external</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>playerglobal</artifactId>
+				</exclusion>
+                <exclusion>
+                    <groupId>com.adobe.flex.framework</groupId>
+                    <artifactId>common-framework</artifactId>
+                </exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-async</artifactId>
+			<version>1.0-RC1-SNAPSHOT</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
@@ -373,13 +329,13 @@
 		    <scope>external</scope>
 		</dependency>
 
-		<!--dependency>
+		<dependency>
 			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
 			<version>${flexunit.version}</version>
 			<type>swc</type>
 			<scope>test</scope>
-		</dependency-->
+		</dependency>
 
 	</dependencies>
 
@@ -390,7 +346,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 			</plugin>
-            <!--
 			<plugin>
 				<groupId>org.sonatype.flexmojos</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>
@@ -403,7 +358,7 @@
 							<report>asdoc-report</report>
 						</reports>
 						<configuration>
-							<templateDirectory>../asdoctemplates/flex4/templates</templateDirectory>
+							<templateDirectory>../../src/asdoc-templates</templateDirectory>
 							<reportOutputDirectory>target/site/docs/asdoc2</reportOutputDirectory>
 							<description>API documentation</description>
 							<mainTitle>API documentation</mainTitle>
@@ -413,7 +368,6 @@
 					</reportSet>
 				</reportSets>
 			</plugin>
-			-->
 
 		</plugins>
 	</reporting>

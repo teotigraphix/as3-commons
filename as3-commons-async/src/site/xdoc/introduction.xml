@@ -7,9 +7,9 @@
 
   <body>
     <section name="Introduction">
-    <p>One of the most prevalent actions in any Flash or Flex application is: Get stuff from the server back-end. Be it calling a remote object, loading a sub-application, module or resource file, all of these actions have one thing in common: They are asynchronous.<p>
+    <p>One of the most prevalent actions in any Flash or Flex application is: Get stuff from the server back-end. Be it calling a remote object, loading a sub-application, module or resource file, all of these actions have one thing in common: They are asynchronous.</p>
     <p>The Flex framework and Flash player seem to use different kinds of asynchronous patterns for different kinds of retrieval. There's the responder method, the event based method (all be it with an optional progress reporting mechanism), calls to a singleton that returns an IEventDispatcher instance or some other interface, etc.<br/>
-    <p>AS3Commons-async aims to facilitate a common interface for these different patterns in order to make using and combining them a little easier. The provided interfaces and base classes will give a developer the opportunity to easily write his own logic.<p>
+    AS3Commons-async aims to facilitate a common interface for these different patterns in order to make using and combining them a little easier. The provided interfaces and base classes will give a developer the opportunity to easily write her or his own logic.</p>
     </section>
     <section name="Concepts">
     	<p>AS3Commons-async, broadly speaking, has four concepts:</p>
@@ -109,6 +109,12 @@ compositeCommand.execute();</pre></div>
 	<p>This will execute the FirstCommand instance, wait for it to complete, execute the SecondCommand instance, wait for it to complete, etc.
 If all commands complete successfully the specified handleCompositeCommandComplete method will be invoked, if an error occurs the handleCompositeCommandError method is invoked instead.</p>
 	<blockquote>The failOnFault property determines whether the CompositeCommand instance should stop executing its list of commands in the case of an error. Default this property is set to false. So all commands will be executed no matter what their result is.</blockquote>
+	</subsection>
+	<subsection name="GenericOperationCommand">
+	<p>Having an ICommand implementation of each and every IOperation in an application isn't always practical, therefore the GenericOperationCommand might help out a little. The GenericOperationCommand is nothing more than a simple IAsyncCommand wrapper. All that a GenericOperationCommand needs is the Class of an arbitrary IOperation and an optional list of constructor arguments. For example, here is how the LoadURLOperation would be wrapped:</p>
+	<div class="source"><pre>var genericOperationCommand = new GenericOperationCommand(LoadURLOperation, 'http://www.mydomain.com/index.html');
+genericOperationCommand.addCompleteHandler(operationCompleteHandler);
+genericOperationCommand.execute();</pre></div>
 	</subsection>
     </section>
   </body>

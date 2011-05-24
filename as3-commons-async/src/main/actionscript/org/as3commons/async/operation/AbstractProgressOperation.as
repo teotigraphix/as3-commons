@@ -17,9 +17,9 @@ package org.as3commons.async.operation {
 
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> has new progress information to report.
-	 * @eventType org.springextensions.actionscript.core.operation.OperationEvent#PROGRESS OperationEvent.PROGRESS
+	 * @eventType org.as3commons.async.operation.OperationEvent#PROGRESS OperationEvent.PROGRESS
 	 */
-	[Event(name="operationComplete", type="org.springextensions.actionscript.core.operation.OperationEvent")]
+	[Event(name = "operationComplete", type = "org.as3commons.async.operation.OperationEvent")]
 	/**
 	 * Abstract base class for <code>IProgressOperation</code> implementations.
 	 * @author Roland Zwaga

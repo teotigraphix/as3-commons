@@ -15,7 +15,6 @@
  */
 package org.as3commons.async.operation.impl {
 
-	import flash.events.Event;
 	import flash.net.NetConnection;
 	import flash.net.Responder;
 	import flash.utils.setTimeout;

@@ -21,15 +21,15 @@ package org.as3commons.async.operation {
 
 	/**
 	 * Dispatched when all the operations in the current <code>OperationQueue</code> have received a result.
-	 * @eventType org.springextensions.actionscript.core.event.OperationEvent#COMPLETE OperationEvent.COMPLETE
+	 * @eventType org.as3commons.async.operation.OperationEvent#COMPLETE OperationEvent.COMPLETE
 	 */
-	[Event(name = "operationComplete", type = "org.springextensions.actionscript.core.operation.OperationEvent")]
+	[Event(name = "operationComplete", type = "org.as3commons.async.operation.OperationEvent")]
 	/**
 	 * A queue of <code>IOperation</code> objects that dispatches an <code>OperationEvent.COMPLETE</code> event when
 	 * all operations in the queue have completed (and dispatched a corresponding <code>OperationEvent.COMPLETE</code>
 	 * event). Useful for invoking multiple operations and getting informed when all operations are finished without
 	 * the need to keep track of each individual instance.
-	 * @see org.springextensions.actionscript.core.operation.OperationEvent OperationEvent
+	 * @see org.as3commons.async.operation.OperationEvent OperationEvent
 	 * @author Christophe Herreman
 	 */
 	public class OperationQueue extends AbstractProgressOperation {

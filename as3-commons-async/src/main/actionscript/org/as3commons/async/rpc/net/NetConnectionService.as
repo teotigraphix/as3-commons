@@ -18,6 +18,7 @@ package org.as3commons.async.rpc.net {
 	import flash.net.NetConnection;
 
 	import org.as3commons.async.operation.IOperation;
+	import org.as3commons.async.operation.impl.NetConnectionOperation;
 	import org.as3commons.async.rpc.AbstractRPCService;
 
 	/**

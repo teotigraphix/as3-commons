@@ -31,6 +31,7 @@ package org.as3commons.async.operation.impl {
 	 * @author Roland Zwaga
 	 */
 	public class LoadURLStreamOperation extends AbstractProgressOperation {
+		private static const TEXT_FIELD_NAME:String = 'text';
 
 		private var _urlStream:URLStream;
 
@@ -59,9 +60,11 @@ package org.as3commons.async.operation.impl {
 			_urlStream.addEventListener(SecurityErrorEvent.SECURITY_ERROR, urlStreamErrorHandler, false, 0, true);
 			_urlStream.addEventListener(IOErrorEvent.IO_ERROR, urlStreamErrorHandler, false, 0, true);
 
-			setTimeout(function():void {
-				_urlStream.load(new URLRequest(url));
-			}, 0);
+			setTimeout(load, 0, url);
+		}
+
+		protected function load(url:String):void {
+			_urlStream.load(new URLRequest(url));
 		}
 
 		protected function urlStreamCompleteHandler(event:Event):void {
@@ -85,7 +88,7 @@ package org.as3commons.async.operation.impl {
 		 */
 		protected function urlStreamErrorHandler(event:Event):void {
 			removeEventListeners();
-			dispatchErrorEvent(event['text']);
+			dispatchErrorEvent(event[TEXT_FIELD_NAME]);
 		}
 
 		/**

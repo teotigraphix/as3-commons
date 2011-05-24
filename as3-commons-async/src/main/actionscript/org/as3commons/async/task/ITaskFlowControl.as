@@ -19,19 +19,19 @@ package org.as3commons.async.task {
 
 	/**
 	 * Dispatched when the current <code>ITaskFlowControl</code> wants to break out of a loop construct.
-	 * @eventType org.springextensions.actionscript.core.task.event.TaskFlowControlEvent#BREAK TaskFlowControlEvent.BREAK
+	 * @eventType org.as3commons.async.task.event.TaskFlowControlEvent#BREAK TaskFlowControlEvent.BREAK
 	 */
-	[Event(name="break", type="org.springextensions.actionscript.core.task.event.TaskFlowControlEvent")]
+	[Event(name = "break", type = "org.as3commons.async.task.event.TaskFlowControlEvent")]
 	/**
 	 * Dispatched when the current <code>ITaskFlowControl</code> wants to continue a loop construct.
-	 * @eventType org.springextensions.actionscript.core.task.event.TaskFlowControlEvent#CONTINUE TaskFlowControlEvent.CONTINUE
+	 * @eventType org.as3commons.async.task.event.TaskFlowControlEvent#CONTINUE TaskFlowControlEvent.CONTINUE
 	 */
-	[Event(name="continue", type="org.springextensions.actionscript.core.task.event.TaskFlowControlEvent")]
+	[Event(name = "continue", type = "org.as3commons.async.task.event.TaskFlowControlEvent")]
 	/**
 	 * Dispatched when the current <code>ITaskFlowControl</code> wants to exit a block construct completely.
-	 * @eventType org.springextensions.actionscript.core.task.event.TaskFlowControlEvent#EXIT TaskFlowControlEvent.EXIT
+	 * @eventType org.as3commons.async.task.event.TaskFlowControlEvent#EXIT TaskFlowControlEvent.EXIT
 	 */
-	[Event(name="exit", type="org.springextensions.actionscript.core.task.event.TaskFlowControlEvent")]
+	[Event(name = "exit", type = "org.as3commons.async.task.event.TaskFlowControlEvent")]
 	/**
 	 * Describes an object that can influence the flow of control within a task.
 	 * @author Roland Zwaga
