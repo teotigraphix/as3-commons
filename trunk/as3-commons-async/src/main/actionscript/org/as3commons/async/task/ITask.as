@@ -21,22 +21,22 @@ package org.as3commons.async.task {
 
 	/**
 	 * Dispatched when the task is aborted.
-	 * @eventType org.springextensions.actionscript.core.task.event.TaskEvent.TASK_ABORTED
+	 * @eventType org.as3commons.async.task.event.TaskEvent.TASK_ABORTED
 	 */
 	[Event(name = "taskAborted", type = "org.as3commons.async.task.event.TaskEvent")]
 	/**
 	 * Dispatched when the task is completed.
-	 * @eventType org.springextensions.actionscript.core.task.event.TaskEvent.TASK_COMPLETE
+	 * @eventType org.as3commons.async.task.event.TaskEvent.TASK_COMPLETE
 	 */
 	[Event(name = "taskComplete", type = "org.as3commons.async.task.event.TaskEvent")]
 	/**
 	 * Dispatched before the task executes an <code>ICommand</code>.
-	 * @eventType org.springextensions.actionscript.core.task.event.TaskEvent.BEFORE_EXECUTE_COMMAND
+	 * @eventType org.as3commons.async.task.event.TaskEvent.BEFORE_EXECUTE_COMMAND
 	 */
 	[Event(name = "taskBeforeExecuteCommand", type = "org.as3commons.async.task.event.TaskEvent")]
 	/**
 	 * Dispatched after the task has executed an <code>ICommand</code>.
-	 * @eventType org.springextensions.actionscript.core.task.event.TaskEvent.AFTER_EXECUTE_COMMAND
+	 * @eventType org.as3commons.async.task.event.TaskEvent.AFTER_EXECUTE_COMMAND
 	 */
 	[Event(name = "taskAfterExecuteCommand", type = "org.as3commons.async.task.event.TaskEvent")]
 	/**

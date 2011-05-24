@@ -17,9 +17,9 @@ package org.as3commons.async.operation {
 
 	/**
 	 * Dispatched after the current <code>IProgressOperation</code> received a progress update.
-	 * @eventType org.springextensions.actionscript.core.operation.OperationEvent.PROGRESS OperationEvent.PROGRESS
+	 * @eventType org.as3commons.async.operation.OperationEvent.PROGRESS OperationEvent.PROGRESS
 	 */
-	[Event(name="operationProgress", type="org.springextensions.actionscript.core.operation.OperationEvent")]
+	[Event(name = "operationProgress", type = "org.as3commons.async.operation.OperationEvent")]
 	/**
 	 * Subinterface of <code>IOperation</code> that contains information about the progress of an operation.
 	 *

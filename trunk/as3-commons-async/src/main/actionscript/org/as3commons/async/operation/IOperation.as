@@ -19,21 +19,21 @@ package org.as3commons.async.operation {
 
 	/**
 	 * Dispatched when the current <code>IOperation</code> completed successfully.
-	 * @eventType org.springextensions.actionscript.core.operation.OperationEvent.COMPLETE OperationEvent.COMPLETE
+	 * @eventType org.as3commons.async.operation.OperationEvent.COMPLETE OperationEvent.COMPLETE
 	 */
-	[Event(name="operationComplete", type="org.springextensions.actionscript.core.operation.OperationEvent")]
+	[Event(name = "operationComplete", type = "org.as3commons.async.operation.OperationEvent")]
 
 	/**
 	 * Dispatched when the current <code>IOperation</code> encountered an error.
-	 * @eventType org.springextensions.actionscript.core.operation.OperationEvent.ERROR OperationEvent.ERROR
+	 * @eventType org.as3commons.async.operation.OperationEvent.ERROR OperationEvent.ERROR
 	 */
-	[Event(name="operationError", type="org.springextensions.actionscript.core.operation.OperationEvent")]
+	[Event(name = "operationError", type = "org.as3commons.async.operation.OperationEvent")]
 
 	/**
 	 * Dispatched when the current <code>IOperation</code> timed out.
-	 * @eventType org.springextensions.actionscript.core.operation.OperationEvent.TIMEOUT OperationEvent.TIMEOUT
+	 * @eventType org.as3commons.async.operation.OperationEvent.TIMEOUT OperationEvent.TIMEOUT
 	 */
-	[Event(name="operationTimeout", type="org.springextensions.actionscript.core.operation.OperationEvent")]
+	[Event(name = "operationTimeout", type = "org.as3commons.async.operation.OperationEvent")]
 
 	/**
 	 * The IOperation interface describes an asynchronous operation. It serves as handle for asynchronous executions

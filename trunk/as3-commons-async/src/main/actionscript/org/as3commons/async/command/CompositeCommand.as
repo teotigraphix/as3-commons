@@ -25,22 +25,22 @@ package org.as3commons.async.command {
 
 	/**
 	 * Dispatched when the <code>CompositeCommand</code> is finised executing its collection of <code>ICommands</code>
-	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.COMPLETE CompositeCommandEvent.COMPLETE
+	 * @eventType org.as3commons.async.command.event.CompositeCommandEvent.COMPLETE CompositeCommandEvent.COMPLETE
 	 */
 	[Event(name = "compositeCommandComplete", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
 	/**
 	 * Dispatched when the <code>CompositeCommand</code> encounters an error.
-	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.ERROR CompositeCommandEvent.ERROR
+	 * @eventType org.as3commons.async.command.event.CompositeCommandEvent.ERROR CompositeCommandEvent.ERROR
 	 */
 	[Event(name = "compositeCommandError", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
 	/**
 	 * Dispatched before an <code>ICommand</code> from the collection is executed.
-	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.BEFORE_EXECUTE_COMMAND CompositeCommandEvent.BEFORE_EXECUTE_COMMAND
+	 * @eventType org.as3commons.async.command.event.CompositeCommandEvent.BEFORE_EXECUTE_COMMAND CompositeCommandEvent.BEFORE_EXECUTE_COMMAND
 	 */
 	[Event(name = "compositeCommandBeforeExecuteCommand", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
 	/**
 	 * Dispatched after an <code>ICommand</code> from the collection was executed.
-	 * @eventType org.springextensions.actionscript.core.command.event.CompositeCommandEvent.AFTER_EXECUTE_COMMAND CompositeCommandEvent.AFTER_EXECUTE_COMMAND
+	 * @eventType org.as3commons.async.command.event.CompositeCommandEvent.AFTER_EXECUTE_COMMAND CompositeCommandEvent.AFTER_EXECUTE_COMMAND
 	 */
 	[Event(name = "compositeCommandAfterExecuteCommand", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
 	/**
@@ -58,7 +58,7 @@ package org.as3commons.async.command {
 		 * Determines if the execution of all the <code>ICommands</code> should be aborted if an
 		 * <code>IAsyncCommand</code> instance dispatches an <code>AsyncCommandFaultEvent</code> event.
 		 * @default false
-		 * @see org.springextensions.actionscript.core.command.IAsyncCommand IAsyncCommand
+		 * @see org.as3commons.async.command.IAsyncCommand IAsyncCommand
 		 */
 		public var failOnFault:Boolean = false;
 
@@ -180,7 +180,7 @@ package org.as3commons.async.command {
 		 * and <code>onCommandFault</code> event handlers are added. Before the <code>ICommand.execute()</code> method is invoked
 		 * the <code>CompositeCommandEvent.EXECUTE_COMMAND</code> event is dispatched.
 		 * <p>When the <code>command</code> argument is <code>null</code> the <code>CompositeCommandEvent.COMPLETE</code> event is dispatched instead.</p>
-		 * @see org.springextensions.actionscript.core.command.event.CommandEvent CompositeCommandEvent
+		 * @see org.as3commons.async.command.event.CommandEvent CompositeCommandEvent
 		 */
 		protected function executeCommand(command:ICommand):void {
 			Assert.notNull(command, "The 'command' must not be null");
