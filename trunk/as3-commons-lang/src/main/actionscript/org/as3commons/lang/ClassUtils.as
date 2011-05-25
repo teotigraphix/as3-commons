@@ -42,7 +42,7 @@ package org.as3commons.lang {
 		 *
 		 * @return the <code>Class</code> that corresponds with the given instance
 		 *
-		 * @see org.springextensions.actionscript.errors.ClassNotFoundError
+		 * @see org.as3commons.lang.ClassNotFoundError
 		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):Class {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
@@ -60,7 +60,7 @@ package org.as3commons.lang {
 		 *
 		 * @return the <code>Class</code> that corresponds with the given name
 		 *
-		 * @see org.springextensions.actionscript.errors.ClassNotFoundError
+		 * @see org.as3commons.lang.ClassNotFoundError
 		 */
 		public static function forName(name:String, applicationDomain:ApplicationDomain = null):Class {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
