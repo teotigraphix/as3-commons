@@ -92,92 +92,87 @@
     	<build>
 
         <sourceDirectory>src/main/actionscript</sourceDirectory>
-		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
+	<testSourceDirectory>src/test/actionscript</testSourceDirectory>
 
-		<plugins>
+	<plugins>
 
-            <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <configuration>
-                            <encoding>UTF-8</encoding>
-                    </configuration>
-            </plugin>
-
-
-            <plugin>
-				<groupId>org.sonatype.flexmojos</groupId>
-				<artifactId>flexmojos-maven-plugin</artifactId>
-				<version>${flex-mojos.version}</version>
-				<extensions>true</extensions>
-
-                <dependencies>
-					<dependency>
-						<groupId>com.adobe.flex</groupId>
-						<artifactId>compiler</artifactId>
-						<version>${flex-sdk.version}</version>
-						<type>pom</type>
-					</dependency>
-				</dependencies>
-
-				<executions> <execution> <id>flex-reports</id> <goals> <goal>asdoc-report</goal>
-					</goals> <phase>site</phase> </execution> </executions>
-				<configuration>
-					<storepass></storepass>
-					<testTimeout>10000</testTimeout>
-					<configurationReport>true</configurationReport>
-					<targetPlayer>${flashplayer.version.major}</targetPlayer>
-					<locales>
-						<param>en_US</param>
-					</locales>
-					<updateSecuritySandbox>true</updateSecuritySandbox>
-					<includeAsClasses>
-						<source>
-							<directory>src/main/actionscript</directory>
-						</source>
-					</includeAsClasses>
-					<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
-					<description>API documentation</description>
-					<mainTitle>API documentation</mainTitle>
-					<windowTitle>API documentation</windowTitle>
-					<name>As3CommonsDocs</name>
-					<keepXml>true</keepXml>
-					<dumpConfigAttach>true</dumpConfigAttach>
-					<showWarnings>true</showWarnings>
-					<lenient>true</lenient>
-				</configuration>
-
-			</plugin>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-resources-plugin</artifactId>
+		    <configuration>
+			    <encoding>UTF-8</encoding>
+		    </configuration>
+		</plugin>
 
 
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>
-						https://as3-commons.googlecode.com/svn/tags/as3-commons-async/flex
-					</tagBase>
-				</configuration>
-			</plugin>
+		<plugin>
+			<groupId>org.sonatype.flexmojos</groupId>
+			<artifactId>flexmojos-maven-plugin</artifactId>
+			<version>${flex-mojos.version}</version>
+			<extensions>true</extensions>
+			<dependencies>
+				<dependency>
+					<groupId>com.adobe.flex</groupId>
+					<artifactId>compiler</artifactId>
+					<version>${flex-sdk.version}</version>
+					<type>pom</type>
+				</dependency>
+			</dependencies>
 
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>src/main/actionscript</directory>
-							<includes>
-								<include>FlexUnitApplication.mxml</include>
-							</includes>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-		</plugins>
+			<executions>
+				<execution>
+					<id>flex-reports</id>
+					<goals>
+						<goal>asdoc-report</goal>
+					</goals>
+					<phase>site</phase>
+				</execution>
+			</executions>
+			<configuration>
+				<storepass></storepass>
+				<testTimeout>10000</testTimeout>
+				<configurationReport>true</configurationReport>
+				<targetPlayer>${flashplayer.version.major}</targetPlayer>
+				<locales>
+					<param>en_US</param>
+				</locales>
+				<updateSecuritySandbox>true</updateSecuritySandbox>
+				<includeAsClasses>
+					<source>
+						<directory>src/main/actionscript</directory>
+					</source>
+				</includeAsClasses>
+				<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
+				<description>API documentation</description>
+				<mainTitle>API documentation</mainTitle>
+				<windowTitle>API documentation</windowTitle>
+				<name>As3CommonsDocs</name>
+				<keepXml>true</keepXml>
+				<dumpConfigAttach>true</dumpConfigAttach>
+				<showWarnings>true</showWarnings>
+				<lenient>true</lenient>
+			</configuration>
+		</plugin>
+
+		<plugin>
+			<artifactId>maven-clean-plugin</artifactId>
+			<configuration>
+				<filesets>
+					<fileset>
+						<directory>src/main/actionscript</directory>
+						<includes>
+							<include>FlexUnitApplication.mxml</include>
+						</includes>
+					</fileset>
+				</filesets>
+			</configuration>
+		</plugin>
+	</plugins>
 
 	</build>
 
 	<dependencies>
-		<dependency>
+		<!--dependency>
 			<groupId>asmock</groupId>
 			<artifactId>asmock</artifactId>
 			<version>${asmock.version}</version>
@@ -188,7 +183,7 @@
 			<artifactId>asmock-flexunit4.1</artifactId>
 			<version>${asmockflexunit4.version}</version>
 			<type>swc</type>			
-		</dependency>
+		</dependency-->
 		<dependency>
 		    <groupId>com.adobe.flex.framework</groupId>
 		    <artifactId>common-framework</artifactId>
@@ -329,13 +324,13 @@
 		    <scope>external</scope>
 		</dependency>
 
-		<dependency>
+		<!--dependency>
 			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
 			<version>${flexunit.version}</version>
 			<type>swc</type>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 
 	</dependencies>
 
