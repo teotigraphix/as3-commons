@@ -67,7 +67,7 @@ package org.as3commons.stageprocessing {
 		/**
 		 * Retrieves a list of all the <code>IObjectSelectors</code> that have been registered with the current <code>IStageProcessorRegistry</code>.
 		 * @return An <code>Array</code> of <code>IObjectSelectors</code>.
-		 * @see org.springextensions.actionscript.stage.IObjectSelector IObjectSelector
+		 * @see org.as3commons.stageprocessing.IObjectSelector IObjectSelector
 		 */
 		function getAllObjectSelectors():Vector.<IObjectSelector>;
 
@@ -80,7 +80,7 @@ package org.as3commons.stageprocessing {
 		/**
 		 * Retrieves a list of all the <code>IStageProcessors</code> that have been registered with the current <code>IStageProcessorRegistry</code>.
 		 * @return An <code>Array</code> of <code>IStageProcessors</code>.
-		 * @see org.springextensions.actionscript.stage.IStageProcessor IStageProcessor
+		 * @see org.as3commons.stageprocessing.IStageProcessor IStageProcessor
 		 */
 		function getAllStageObjectProcessors():Vector.<IStageObjectProcessor>;
 

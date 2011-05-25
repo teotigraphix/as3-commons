@@ -46,6 +46,7 @@ package org.as3commons.stageprocessing.impl.selector {
 		 *
 		 */
 		public function ClassNameBasedObjectSelector(regexpArray:Array = null, approveOnMatch:Boolean = false) {
+			super();
 			this.classRegexpArray = regexpArray;
 			this.approveOnMatch = approveOnMatch;
 		}
