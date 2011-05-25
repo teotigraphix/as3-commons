@@ -297,12 +297,8 @@ package org.as3commons.stageprocessing.impl {
 		}
 
 		/**
-		 * Detects whether an object added to the stage is a candidate for processing through
-		 * the list of <code>StageProcessorRegistration</code> instances, if any <code>IObjectSelector</code>
-		 * approves of the object its associated <code>IStageObjectProcessor</code>'s <code>process()</code> method is invoked.
 		 * @param displayObject a reference to the object that was added to the stage
-		 * @see org.springextensions.actionscript.stage.StageProcessorRegistration StageProcessorRegistration
-		 * @see org.springextensions.actionscript.stage.IStageObjectProcessor IStageObjectProcessor
+		 * @see org.as3commons.stageprocessing.IStageObjectProcessor IStageObjectProcessor
 		 */
 		protected function processDisplayObject(displayObject:DisplayObject):void {
 			if (!displayObject || !_enabled) {
