@@ -36,7 +36,7 @@ package org.as3commons.lang.util {
 		 * is returned.
 		 * @param source The specified <code>Array</code> of object instances.
 		 * @return The sorted <code>Array</code> of object instances.
-		 * @see org.springextensions.actionscript.core.IOrdered IOrdered
+		 * @see org.as3commons.lang.IOrdered IOrdered
 		 */
 		public static function sortOrderedArray(source:Array):Array {
 			var ordered:Array = [];
