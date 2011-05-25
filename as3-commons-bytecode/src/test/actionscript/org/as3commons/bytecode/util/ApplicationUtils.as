@@ -22,15 +22,7 @@ package org.as3commons.bytecode.util {
 
 	/**
 	 * Flex SDK version ignorant utilities for working with Application objects.
-	 *
 	 * @author Christophe Herreman
-	 * @see org.springextensions.actionscript.context.support.mxml.Template#initialized() Template.initialized()
-	 * @see org.springextensions.actionscript.context.support.mxml.Template#complete_handler() Template.complete_handler()
-	 * @see org.springextensions.actionscript.context.support.mxml.MXMLObjectDefinition#initialized() ObjectDefinition.initialized()
-	 * @see org.springextensions.actionscript.context.support.mxml.MXMLObjectDefinition#complete_handler() ObjectDefinition.complete_handler()
-	 * @see org.springextensions.actionscript.context.support.MXMLApplicationContext#initialized() MXMLApplicationContext.initialized()
-	 * @see org.springextensions.actionscript.context.support.MXMLApplicationContext#complete_handler() MXMLApplicationContext.complete_handler()
-	 * @see org.springextensions.actionscript.ioc.factory.config.flex.ApplicationPropertiesResolver#initProperties() ApplicationPropertiesResolver.initProperties(
 	 */
 	public final class ApplicationUtils {
 
