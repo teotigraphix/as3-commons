@@ -98,11 +98,45 @@
 		</plugins>
 
 	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flex-mojos.version}</version>
+				<inherited>true</inherited>
+				<configuration>
+					<configFiles>compiler-config.xml</configFiles>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<id>flex-reports</id>
+						<reports>
+							<report>asdoc-report</report>
+						</reports>
+						<configuration>
+							<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
+							<description>API documentation</description>
+							<mainTitle>API documentation</mainTitle>
+							<windowTitle>API documentation</windowTitle>
+							<name>As3CommonsDocs</name>
+						</configuration>
+					</reportSet>
+				</reportSets>
+			</plugin>
+
+		</plugins>
+	</reporting>
 
 	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9.7</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9.7</url>
-		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode/0.9.7</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode</url>
+		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode</connection>
 	</scm>
 
 	<distributionManagement>
