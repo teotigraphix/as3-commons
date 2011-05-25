@@ -665,13 +665,13 @@ package org.as3commons.reflect {
 		 *
 		 * @param name the name of the method
 		 */
-		public function getMethod(name:String, namespace:String = null):Method {
-			if (namespace == null) {
+		public function getMethod(name:String, ns:String = null):Method {
+			if (ns == null) {
 				return _methods.get(name);
 			} else {
 				var mthds:Array = _methods.getArray();
 				for each (var method:Method in mthds) {
-					if ((method.name == name) && (method.namespaceURI == namespace)) {
+					if ((method.name == name) && (method.namespaceURI == ns)) {
 						return method;
 					}
 				}
@@ -685,17 +685,17 @@ package org.as3commons.reflect {
 		 *
 		 * @param name the name of the field
 		 */
-		public function getField(name:String, namespace:String = null):Field {
+		public function getField(name:String, ns:String = null):Field {
 			//force _fields HashArray to be created
 			if (_fields == null) {
 				createFieldsHashArray();
 			}
-			if (namespace == null) {
+			if (ns == null) {
 				return _fields.get(name);
 			} else {
 				var flds:Array = _fields.getArray();
 				for each (var field:Field in flds) {
-					if ((field.name == name) && (field.namespaceURI == namespace)) {
+					if ((field.name == name) && (field.namespaceURI == ns)) {
 						return field;
 					}
 				}
