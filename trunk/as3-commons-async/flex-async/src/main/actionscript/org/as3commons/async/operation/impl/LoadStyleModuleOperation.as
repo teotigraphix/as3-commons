@@ -34,7 +34,6 @@ package org.as3commons.async.operation.impl {
 	/**
 	 * An <code>IOperation</code> implementation that can load a style module from a specified URL.
 	 * @author Roland Zwaga
-	 * @docref the_operation_api.html#operations
 	 */
 	public class LoadStyleModuleOperation extends AbstractProgressOperation {
 

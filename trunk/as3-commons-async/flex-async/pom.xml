@@ -140,6 +140,7 @@
 				<includeAsClasses>
 					<source>
 						<directory>src/main/actionscript</directory>
+						<directory>../src/main/actionscript</directory>
 					</source>
 				</includeAsClasses>
 				<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
@@ -220,10 +221,10 @@
 					<groupId>com.adobe.flex.framework</groupId>
 					<artifactId>playerglobal</artifactId>
 				</exclusion>
-                <exclusion>
-                    <groupId>com.adobe.flex.framework</groupId>
-                    <artifactId>common-framework</artifactId>
-                </exclusion>
+				<exclusion>
+				    <groupId>com.adobe.flex.framework</groupId>
+				    <artifactId>common-framework</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
