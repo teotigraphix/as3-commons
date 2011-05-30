@@ -19,6 +19,10 @@ package org.as3commons.async.rpc.http {
 
 	import org.as3commons.async.rpc.AbstractRPC;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public class AbstractHTTPServiceOperation extends AbstractRPC {
 
 		protected var httpService:HTTPMultiService;

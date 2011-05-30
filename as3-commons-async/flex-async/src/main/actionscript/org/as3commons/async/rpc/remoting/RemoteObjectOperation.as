@@ -26,7 +26,6 @@ package org.as3commons.async.rpc.remoting {
 	/**
 	 * An <code>IOperation</code> that invokes a method on a remote object.
 	 * @author Christophe Herreman
-	 * @docref the_operation_api.html#services
 	 */
 	public class RemoteObjectOperation extends AbstractRemoteObjectOperation {
 

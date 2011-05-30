@@ -21,6 +21,10 @@ package org.as3commons.async.rpc.http {
 	import org.as3commons.async.rpc.AbstractRPCService;
 	import org.as3commons.lang.Assert;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public class HTTPServiceService extends AbstractRPCService {
 
 		public function HTTPServiceService() {

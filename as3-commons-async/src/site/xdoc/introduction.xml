@@ -14,11 +14,13 @@
     <section name="Concepts">
     	<p>AS3Commons-async, broadly speaking, has four concepts:</p>
 		<ul>
-			<li>Operation: An asynchronous action.</li>
-			<li>Command: An action with deferred execution, can be asynhronous.</li>
-			<li>Service: A collection of related operations.</li>
-			<li>Task: A collection of commands that are executed using a control flow.</li>
+			<li><a href="#Operations">Operation</a>: An asynchronous action.</li>
+			<li><a href="#Commands">Command</a>: An action with deferred execution, can be asynhronous.</li>
+			<li><a href="#Services">Service</a>: A collection of related operations.</li>
+			<li><a href="#Tasks">Task</a>: A collection of commands that are executed using a control flow.</li>
 		</ul>
+	<p>AS3Commons-ASync also offers a number of IOperation implementations for both pure actionscript and Flex specific class:</br>
+	<a href="#Common_operations">Commons operations section</a></p>
     </section>
     <section name="Operations">
     <p>An operation represents any kind of asynchronous action and is described by the IOperation interface:</p>
@@ -116,6 +118,234 @@ If all commands complete successfully the specified handleCompositeCommandComple
 genericOperationCommand.addCompleteHandler(operationCompleteHandler);
 genericOperationCommand.execute();</pre></div>
 	</subsection>
+	<subsection name="The OperationHandler helper class">
+	<p>The OperationHandler is a helper class that generically handles IOperation events and either routes their result or error data to a specified method or assigns them to a specified property on an object instance.<br/>
+	Below are some examples of its usage.</p>
+	<h3>Assigning an operation result to an instance property</h3>
+	<div class="source"><pre>public class MyPresentationModel {
+
+  private var _operationHandler:OperationHandler
+
+  public var products:Array;
+
+  public function MyPresentationModel(){
+    _operationHandler = new OperationHandler(this.errorHandler);
+  }
+
+  public function getProducts():void {
+    var operation:IOperation = serviceImplementation.getProducts();
+    _operationHandler.handleOperation(operation,null,this,"products");
+  }
+
+  protected function errorHandler(error:):void {
+    //implementation omitted
+  }
+}</pre></div>
+	<h3>Assigning an operation result to an instance property using an extra method</h3>
+	<p>If the data returned from the IOperation needs some extra processing, specify an extra method for it like in this example:</p>
+	<div class="source"><pre>public class MyPresentationModel {
+
+  private var _operationHandler:OperationHandler
+
+  public var products:ArrayCollection;
+
+  public function MyPresentationModel(){
+    _operationHandler = new OperationHandler(this.errorHandler);
+  }
+
+  public function getProducts():void {
+    var operation:IOperation = serviceImplementation.getProducts();
+    _operationHandler.handleOperation(operation,convertArray,this,"products");
+  }
+
+  protected function convertArray(input:Array):ArrayCollection {
+    return new ArrayCollection(input);
+  }
+
+  protected function errorHandler(error:):void {
+    //implementation omitted
+  }
+}</pre></div>
+	</subsection>
+	<section name="Services">
+	<p>In a lot of cases it makes sense to encapsulate a number of operations in one interface. The easiest example would be the CRUD operations for a specific object.<br/>
+	Let's imagine a user service whose interface looks like this:</p>
+	<div class="source"><pre>public interface IUserService {
+
+ function createUser():IOperation;
+
+ function updateUser(user:User):IOperation;
+
+ function deleteUser(user:User):IOperation;
+
+}</pre></div>
+	<p>Often the implementation for such a service will rely on a RemoteObject (in a Flex application that is). For this situation AS3commons-async offers the base class RemoteObjectService. So the implementation for the IUserService interface could inherit from this:</p>
+	<div class="source"><pre>public class UserService extends RemoteObjectService implements IUserService {
+
+ public function UserService(remoteObject:RemoteObject) {
+  super(remoteObject);
+ }
+
+ public function createUser():IOperation {
+  return call('createUser');
+ }
+
+ public function updateUser(user:User):IOperation {
+  return call('updateUser', user);
+ }
+
+ public function deleteUser(user:User):IOperation {
+  return call('deleteUser', user);
+ }
+}</pre></div>
+	<p>This service could be injected into a presentation model, a command, a presenter, etc. All depending on the specific patterns used in an application.<br/>
+	Let's look at a command example:</p>
+	<div class="source"><pre>public class CreateUserCommand extends AbstractOperation implements IAsyncCommand {
+
+ private var _userService:IUserService;
+ private var _applicationModel:IApplicationModel;
+
+ public function CreateUserCommand(userService:IUserService, applicationModel:IApplicationModel) {
+  _userService = userService;
+  _applicationModel = applicationModel;
+ }
+
+ public function execute():* {
+  var operation:IOperation = _userService.createUser();
+  operation.addCompleteListener(handleComplete);
+  operation.addErrorListener(handleError);
+ }
+
+ protected function handleComplete(event:OperationEvent):void {
+  _applicationModel.users.addItem(event.result as User);
+  dispatchCompleteEvent(event.result);
+ }
+
+ protected function handleError(event:OperationEvent):void {
+  dispatchErrorEvent(event.error);
+ }
+
+}</pre></div>
+	<p>In this example the command receives a reference to an IUserService and IApplicationModel instance. In this example we assume the IApplicationModel instance has a property called users of type ArrayCollection. Once the IOperation that was received from the service completes it adds the result of the IOperation (which is a User object) to the user collection in the application model.</p>
+	</section>
+	<section name="Tasks">
+	<p>In order to support more complex execution of ICommand collections there is finally the ITask interface. This interface describes an object that not only can execute collections of ICommands both in parallel and in sequence, but also does this with basic control flow functionality.</p>
+	<p>First let's take a quick look and the ITask interface:</p>
+	<div class="source"><pre>public interface ITask extends ICommand, IOperation {
+
+ function get context():Object;
+ function set context(value:Object):void;
+
+ function get parent():ITask;
+ function set parent(value:ITask):void;
+
+ function next(item:Object, ...constructorArgs):ITask;
+
+ function and(item:Object, ...constructorArgs):ITask;
+
+ function if_(condition:IConditionProvider=null, ifElseBlock:IIfElseBlock=null):IIfElseBlock;
+
+ function else_():IIfElseBlock;
+
+ function while_(condition:IConditionProvider=null, whileBlock:IWhileBlock=null):IWhileBlock;
+
+ function for_(count:uint, countProvider:ICountProvider=null, forBlock:IForBlock=null):IForBlock;
+
+ function exit():ITask;
+
+ function reset(doHardReset:Boolean = false):ITask;
+
+ function pause(duration:uint, pauseCommand:ICommand=null):ITask;
+
+ function end():ITask;
+ 
+ function break_():ITask;
+ 
+ function continue_():ITask;
+}</pre></div>
+	<p>First thing that is apparent in this interface is that almost each method returns an ITask instance. This actually implies that this is a so-called fluent interface. Meaning that method calls to a single instance of an ITask can be chained. For instance, if we want to use a Task instance to execute a number of commands in parallel we can write this:</p>
+	<div class="source"><pre>var task:Task = new Task().and(new FirstCommand()).and(new SecondCommand()).and(new ThirdCommand()).and(new FourthCommand());
+task.addEventListener(TaskEvent.TASK_COMPLETE, handleTaskComplete);
+task.execute();</pre></div>
+	<p>This is basically the same as an ICompositeCommand set to CompositeCommandKind.PARALLEL, so not that interesting. But the nice thing about a Task is the opportunity to mix the different types of execution. So if we first want to execute a number of commands in parallel but after that a few in sequence, we can use the same Task instance:</p>
+	<div class="source"><pre>var task:Task = new Task().and(new FirstCommand()).and(new SecondCommand()).next(new ThirdCommand()).next(new FourthCommand());
+task.addEventListener(TaskEvent.TASK_COMPLETE, handleTaskComplete);
+task.execute();</pre></div>
+	<p>This will first execute FirstCommand and SecondCommand in parallel and afterwards execute ThirdCommand and FourthCommand in sequence.<br/>
+	The first argument for the next() and and() methods can be either an ICommand implementation, or a Class that implements the IOperation interface along with an optional list of constructor arguments for the IOperation instantiation. So this can also be a valid invocation:</p>
+	<div class="source"><pre>new Task().and(LoadURLOperation, 'http://www.mydomain.com/index.html');</pre></div>
+	<p>Now let's have a look at some control flow elements, what if a certain command needs to be executed more than once? We can use a for_() invocation for this:</p>
+	<div class="source"><pre>var task:Task = new Task();
+
+task.for_(10)
+ .next(new FirstCommand())
+.end();
+
+task.addEventListener(TaskEvent.TASK_COMPLETE, handleTaskComplete);
+task.execute();</pre></div>
+	<p>This will execute the FirstCommand 10 times. Now, it usually isn't possible to know the exact number of iterations at compile-time. Therefore its possible to pass an optional ICountProvider instance to the for_() method. The ICountProvider interface is quite small:</p>
+	<div class="source"><pre>public interface ICountProvider {
+	 function getCount():uint;
+}</pre></div>
+	<p>Any implementations of this interface can perform their own kind of logic to determine the exact count, this implementation can also be an IOperation so the logic for retrieving the count may be asynchronous, internally the ForBlock will take care of this.<br/>
+	An ICommand may also be executed conditionally, for this use the if_() method and pass an IConditionProvider to it:</p>
+	<div class="source"><pre>var task:Task = new Task();
+
+task.if_(new MyConditionProvider())
+ .next(new FirstCommand())
+.end();
+
+task.addEventListener(TaskEvent.TASK_COMPLETE, handleTaskComplete);
+task.execute();</pre></div>
+	<p>Now let's take a look at the IConditionProvider interface:</p>
+	<div class="source"><pre>public interface IConditionProvider {
+	 function getResult():Boolean;
+}</pre></div>
+	<p>The result of the getResult() method determines whether the commands inside the if block will be executed or not. Again, an IConditionProvider implementation may also itself be an IOperation, and therefore have its logic be executed in an asynchronous manner.<br/>
+	Of course, the if block may also have an else block:</p>
+	<div class="source"><pre>var task:Task = new Task();
+
+task.if_(new ConditionProvider())
+ .next(new FirstCommand())
+ .else_()
+ .next(new SecondCommand())
+.end();
+
+task.addEventListener(TaskEvent.TASK_COMPLETE, handleTaskComplete);
+task.execute();</pre></div>
+	<p>An IConditionProvider can also be used by a while block:</p>
+	<div class="source"><pre>var task:Task = new Task();
+
+task.while_(new MyConditionProvider())
+ .next(new FirstCommand())
+.end();
+
+task.addEventListener(TaskEvent.TASK_COMPLETE, handleTaskComplete);
+task.execute();</pre></div>
+	<p>In this case the FirstCommand will be executed for as long as the IConditionProvider.getResult() method returns true.</p>
+	<p>The control flow of for or while block can be controlled using the break_() and continue() methods:</p>
+	<div class="source"><pre>var task:Task = new Task();
+
+task.while_(new MyConditionProvider())
+ .if(new MyOtherConditionProivder())
+  .next(new FirstCommand())
+ .else
+  .break_()
+ .end()
+.end();
+
+task.addEventListener(TaskEvent.TASK_COMPLETE, handleTaskComplete);
+task.execute();</pre></div>
+	<p>In closing there are three last methods that an ITask implementation offers:</p>
+	<ul>
+		<li>Exit(): stops the execution of the entire task.</li>
+		<li>Reset(): restarts the execution of the current task.</li>
+		<li>Pause(): pauses the execution of the current task for a specified period in milliseconds.</li>
+	</ul>
+	</section>
+    </section>
+    <section name="Common operations">
+    	<p>For pure actionscript related operations AS3Commons already offers these IOperation implementations:<br/>
     </section>
   </body>
 </document>
