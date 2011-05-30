@@ -260,11 +260,6 @@
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<version>${flex-mojos.version}</version>
 				<inherited>true</inherited>
-				<configuration>
-					<definesDeclaration>
-						<property><name>CONFIG::debug</name><value>false</value></property>
-					</definesDeclaration>
-				</configuration>
 				<reportSets>
 					<reportSet>
 						<id>flex-reports</id>
