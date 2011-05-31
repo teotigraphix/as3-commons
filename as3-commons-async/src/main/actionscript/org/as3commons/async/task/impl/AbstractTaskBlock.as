@@ -22,6 +22,7 @@ package org.as3commons.async.task.impl {
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.task.ITask;
 	import org.as3commons.async.task.ITaskBlock;
+	import org.as3commons.async.task.ITaskFlowControl;
 	import org.as3commons.async.task.TaskFlowControlKind;
 	import org.as3commons.async.task.command.TaskCommand;
 	import org.as3commons.async.task.command.TaskFlowControlCommand;
@@ -71,7 +72,7 @@ package org.as3commons.async.task.impl {
 		protected function doFlowControlCheck(command:ICommand):Boolean {
 			var tc:TaskCommand = command as TaskCommand;
 			if (tc != null) {
-				var flowControl:TaskFlowControlCommand = tc.commands[0] as TaskFlowControlCommand;
+				var flowControl:ITaskFlowControl = tc.commands[0] as ITaskFlowControl;
 				if (flowControl != null) {
 					return executeFlowControl(flowControl.kind);
 				}
