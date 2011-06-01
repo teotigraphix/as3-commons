@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Welcome to as3commons-ui</title>
+		<author email="jens@struwe.net">Jens Struwe</author>
+	</properties>
+	<body>
+		<section name="Welcome to as3-commons-ui">
+		
+			<p style="color:#DD0000">Note: The sources of this project have been moved to GitHub.</p>
+			
+			<p>
+				The existing Google Code SVN branch is not longer maintained and only updated to reflect new releases. You still may download the latest release from this page. A ZIP archive containing src, examples, tests, APIDoc and external libraries is available at GitHub.<br />
+				<br />
+				GitHub: <a href="https://github.com/as3commons/as3commons-ui">https://github.com/as3commons/as3commons-ui</a><br />
+				Project documentation: <a href="http://sibirjak.com/osflash/projects/as3commons-ui/">Developer Page AS3Commons UI</a>
+			</p>
+
+			<p>The project contains algorithms and managers for common user interface releated tasks such as layouting, focus and keyboard management, popup handling, drag and drop control and so on. All packages support native Flash display objects. Usage of UI does not require interface implementations.</p>
+			
+			<p>The first version (0.1.x) includes the sole layout package.</p>
+			
+			<ul>
+				<li>Single line: HGroup, VGroup</li>
+				<li>Multiline: HLayout, VLayout</li>
+				<li>Table: Table, DynTable</li>
+			</ul>
+			
+			<p>Version 0.2 adds the Invalidation and LifeCycle package.</p>
+
+			<div id="downloadbox">
+				<h5>Get latest stable</h5>
+				<p>
+					<a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-ui/0.2.1/as3commons-ui-0.2.1.swc">
+						<img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+						Download
+					</a>
+					latest stable (0.2.1)
+				</p>
+				<br/>
+ 
+				<h5>Get lastest development snapshot</h5>
+				<p>
+					<a href="downloads/as3commons-ui-latest-snapshot-bin.zip">
+						<img valign="top" src="images/folder-open.gif" border="0" alt="Download latest snapshot" title="download"/>
+						Download
+					</a>
+					latest snapshot
+				</p>
+			</div>
+					   
+		</section>
+
+	</body>
+</document>
+
