@@ -218,10 +218,10 @@
     </reporting>
 
     <scm>
-        <developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.1.2
+        <developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.2.1
         </developerConnection>
-        <url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.1.2</url>
-        <connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.1.2</connection>
+        <url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.2.1</url>
+        <connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.2.1</connection>
     </scm>
 
     <distributionManagement>
