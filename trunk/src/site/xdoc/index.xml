@@ -95,12 +95,12 @@
 				<td>0.2.1</td>
 				<td>31 May 2011</td>
 			</tr>
-			<tr>
+			<!--tr>
 				<td><strong>ASync</strong></td>
 				<td>A pure actionscript 3 library that aims to make working with asynchronous processes easier. Providing operation, command, service and task interfaces. Also includes an extra SWC with Flex extensions.</td>
 				<td>1.0-RC1</td>
 				<td>29 May 2011</td>
-			</tr>
+			</tr-->
 		</table>
 		</subsection>
 		</section>
