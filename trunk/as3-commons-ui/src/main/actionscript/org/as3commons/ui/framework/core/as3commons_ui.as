@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 The original author or authors.
+ * Copyright 2010 The original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.ui.layout.framework {
+package org.as3commons.ui.framework.core {
 
 	/**
-	 * @author Jens Struwe 21.03.2011
+	 * Namespace of framework internal functionality. 
+	 * 
+	 * @author Jens Struwe 25.05.2011
 	 */
-	public interface IDynamicTable extends IMultilineLayout {
-
-		/*
-		 * Config - Max Size
-		 */
-		
-		function set maxContentWidth(maxContentWidth : uint) : void;
-		
-		function get maxContentWidth() : uint;
-
-		/*
-		 * Info
-		 */
-
-		function get numTableRows() : uint;
-
-		function get numTableColumns() : uint;
-
-	}
+	public namespace as3commons_ui = "http://as3commons.org/ui";
 }
