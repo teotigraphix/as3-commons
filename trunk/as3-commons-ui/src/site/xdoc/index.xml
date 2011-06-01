@@ -18,7 +18,7 @@
 
 			<p>The project contains algorithms and managers for common user interface releated tasks such as layouting, focus and keyboard management, popup handling, drag and drop control and so on. All packages support native Flash display objects. Usage of UI does not require interface implementations.</p>
 			
-			<p>The first version (0.1.x) includes the sole layout package.</p>
+			<p>The first version (0.1) includes the sole layout package.</p>
 			
 			<ul>
 				<li>Single line: HGroup, VGroup</li>
