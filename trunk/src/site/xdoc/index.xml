@@ -8,7 +8,7 @@
 		<section name="Welcome to as3-commons">
 			<p>
 				The AS3Commons project is dedicated to one principal goal: creating and
-				maintaining reusable ActionScript? 3.0 components. This is a place
+				maintaining reusable ActionScript 3.0 components. This is a place
 				for collaboration and sharing, where developers from throughout the
 				community can work together on projects to be shared.
 </p>
@@ -26,6 +26,10 @@
 				levels. Coding, documentation and testing are all critical parts of
 				the software development process. If you are interested in
 				participating in any of these aspects, please join us!
+</p>
+			<p>	All libraries are also available in the Maven repository at 
+				<a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons" target="_blank">
+				http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons</a>
 </p>
 		<subsection name="Project descriptions">
 		<table>
@@ -95,12 +99,12 @@
 				<td>0.3</td>
 				<td>10 Jun 2011</td>
 			</tr>
-			<!--tr>
+			<tr>
 				<td><strong>ASync</strong></td>
 				<td>A pure actionscript 3 library that aims to make working with asynchronous processes easier. Providing operation, command, service and task interfaces. Also includes an extra SWC with Flex extensions.</td>
 				<td>1.0-RC1</td>
-				<td>29 May 2011</td>
-			</tr-->
+				<td>10 Jun 2011</td>
+			</tr>
 		</table>
 		</subsection>
 		</section>
