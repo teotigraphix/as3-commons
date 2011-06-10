@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011 The original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.as3commons.ui.lifecycle.lifecycle {
 
 	import flash.events.Event;
@@ -27,6 +42,11 @@ package org.as3commons.ui.lifecycle.lifecycle {
 		 * Callback for the prepare update event.
 		 */
 		protected var _drawHandler : Function;
+
+		/**
+		 * Callback for the prepare update event.
+		 */
+		protected var _initCompleteHandler : Function;
 
 		/**
 		 * Callback for the prepare update event.
@@ -95,6 +115,13 @@ package org.as3commons.ui.lifecycle.lifecycle {
 		/**
 		 * @inheritDoc
 		 */
+		public function get initialized() : Boolean {
+			return _initialized;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
 		public function autoUpdateBefore(child : DisplayObject) : void {
 			if (child == _component) return;
 			
@@ -112,6 +139,8 @@ package org.as3commons.ui.lifecycle.lifecycle {
 		 * @inheritDoc
 		 */
 		public function invalidate(property : String = null) : void {
+			if (!_initialized) return;
+			
 			_i10n.invalidate(_component, property);
 		}
 
@@ -176,6 +205,13 @@ package org.as3commons.ui.lifecycle.lifecycle {
 		/**
 		 * @inheritDoc
 		 */
+		public function get initCompleteHandler() : Function {
+			return _initCompleteHandler;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
 		public function set prepareUpdateHandler(prepareUpdateHandler : Function) : void {
 			_prepareUpdateHandler = prepareUpdateHandler;
 		}
@@ -213,9 +249,6 @@ package org.as3commons.ui.lifecycle.lifecycle {
 			} else {
 				_component.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 			}
-			
-			
-			i10n.invalidate(_component);
 		}
 
 		/**
@@ -261,6 +294,7 @@ package org.as3commons.ui.lifecycle.lifecycle {
 					onDraw();
 				}
 				_initialized = true;
+				onInitComplete();
 			}
 		}
 
@@ -278,6 +312,12 @@ package org.as3commons.ui.lifecycle.lifecycle {
 		 * Default draw hook.
 		 */
 		protected function onDraw() : void {
+		}
+
+		/**
+		 * Default init complete hook.
+		 */
+		protected function onInitComplete() : void {
 		}
 
 		/**
@@ -319,6 +359,8 @@ package org.as3commons.ui.lifecycle.lifecycle {
 			} else {
 				onInit();
 			}
+			
+			_i10n.invalidate(_component);
 		}
 
 	}
