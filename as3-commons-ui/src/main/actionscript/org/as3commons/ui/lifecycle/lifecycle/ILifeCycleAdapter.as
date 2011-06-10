@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011 The original author or authors.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.as3commons.ui.lifecycle.lifecycle {
 
 	import flash.display.DisplayObject;
@@ -14,6 +29,19 @@ package org.as3commons.ui.lifecycle.lifecycle {
 		 */
 		function get component() : DisplayObject;
 
+		/**
+		 * Flag to indicate if the component has already been initialized.
+		 * 
+		 * <p><code>initialized</code> will be <code>true</code> if both the appropriate
+		 * <code>init()</code> and <code>draw()</code> methods have been called and the
+		 * next attempt to invalidate the component will start an update cycle rather
+		 * than triggering <code>init()</code> and <code>draw()</code>.</p>
+		 * 
+		 * <p>The property might be used to determine if the initial state of the
+		 * component has been drawn and if necessary child objects are available.</p>
+		 */
+		function get initialized() : Boolean;
+		
 		/**
 		 * Registers a component to be updated right before an update is performed.
 		 * 
@@ -120,6 +148,15 @@ package org.as3commons.ui.lifecycle.lifecycle {
 		 */
 		function set drawHandler(drawHandler : Function) : void;
 		
+		/**
+		 * Sets a custom callback for the init complete event.
+		 * 
+		 * <p>If specified, this callback is invoked instead of the protected <code>onInitComplete()</code> hook.</p>
+		 * 
+		 * @param initCompleteHandler The init complete callback.
+		 */
+		function get initCompleteHandler() : Function;
+
 		/**
 		 * Sets a custom callback for the prepare update event.
 		 * 
