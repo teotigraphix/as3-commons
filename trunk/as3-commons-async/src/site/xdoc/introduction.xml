@@ -19,7 +19,7 @@
 			<li><a href="#Services">Service</a>: A collection of related operations.</li>
 			<li><a href="#Tasks">Task</a>: A collection of commands that are executed using a control flow.</li>
 		</ul>
-	<p>AS3Commons-ASync also offers a number of IOperation implementations for both pure actionscript and Flex specific class:</br>
+	<p>AS3Commons-ASync also offers a number of IOperation implementations for both pure actionscript and Flex specific class:<br/>
 	<a href="#Common_operations">Commons operations section</a></p>
     </section>
     <section name="Operations">
@@ -345,7 +345,20 @@ task.execute();</pre></div>
 	</section>
     </section>
     <section name="Common operations">
-    	<p>For pure actionscript related operations AS3Commons already offers these IOperation implementations:<br/>
+    	<p>For pure actionscript related operations AS3Commons offers these IOperation implementations:</p>
+    	<ul>
+    		<li>LoadURLOperation</li>
+    		<li>LoadURLStreamOperation</li>
+    		<li>NetConnectionOperation</li>
+    	</ul>
+    	<p>In a separate extension .swc AS3Commons offers these Flex specific common IOperation implementations:</p>
+    	<ul>
+    		<li>LoadModuleOperation</li>
+    		<li>LoadStyleModuleOperation</li>
+    		<li>HTTPServiceOperation</li>
+    		<li>RemoteObjectOperation</li>
+    		<li>WebServiceOperation</li>
+    	</ul>
     </section>
   </body>
 </document>
