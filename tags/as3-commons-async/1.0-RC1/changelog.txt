@@ -1,0 +1,10 @@
+AS3COMMONS-ÂSYNC CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+Changes in version 1.0-RC1 (00.00.2011)
+-----------------------------------
+
+* Initial release, functionality taken out of Spring Actionscript, more unit tests added
+* Broke library up into two parts: A pure actionscript part and a Flex part
