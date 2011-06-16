@@ -21,8 +21,6 @@
  */
 package org.as3commons.logging.level {
 	
-	import org.as3commons.logging.LogLevel;
-	
 	/**
 	 * Level used with <code>debug()</code> log statements.
 	 * 
@@ -30,5 +28,5 @@ package org.as3commons.logging.level {
 	 * @since 2.0
 	 * @see org.as3commons.logging.ILogger#debug()
 	 */
-	public const DEBUG:LogLevel = new LogLevel("DEBUG", 0x0020);
+	public const DEBUG:int = 0x0020;
 }

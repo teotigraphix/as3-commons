@@ -5,6 +5,7 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.util.SWFInfo;
 	import org.as3commons.logging.util.SWF_SHORT_URL;
 	import org.as3commons.logging.util.SWF_URL;
+	import org.as3commons.logging.util.URL_ERROR;
 
 	/**
 	 * @author mh
@@ -14,8 +15,8 @@ package org.as3commons.logging.setup.target {
 			super(methodName);
 		}
 		public function testSetup(): void {
-			assertEquals( SWF_URL, SWFInfo.URL_ERROR );
-			assertEquals( SWF_SHORT_URL, SWFInfo.URL_ERROR );
+			assertEquals( SWF_URL, URL_ERROR );
+			assertEquals( SWF_SHORT_URL, URL_ERROR );
 			
 			SWFInfo.init( LogTests.STAGE );
 			
@@ -25,8 +26,8 @@ package org.as3commons.logging.setup.target {
 			
 			SWFInfo.init( null );
 			
-			assertEquals( SWF_URL, SWFInfo.URL_ERROR );
-			assertEquals( SWF_SHORT_URL, SWFInfo.URL_ERROR );
+			assertEquals( SWF_URL, URL_ERROR );
+			assertEquals( SWF_SHORT_URL, URL_ERROR );
 		}
 	}
 }

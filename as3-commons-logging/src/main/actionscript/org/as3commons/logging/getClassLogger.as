@@ -47,14 +47,15 @@ package org.as3commons.logging {
 	 * 
 	 * @author Martin Heidegger
 	 * @param input Any object (will be transformed by <code>toLogName</code>).
+	 * @param person Information about the person that requested this logger.
 	 * @return <code>ILogger</code> instance to publish log statements
 	 * @since 2.0
 	 * @see org.as3commons.logging.util#toLogName()
 	 * @see LoggerFactory#getClassLogger()
 	 * @see org.as3commons.logging#LOGGER_FACTORY
 	 */
-	public function getClassLogger(input:*):ILogger {
-		return LOGGER_FACTORY.getNamedLogger(toLogName(input));
+	public function getClassLogger(input:*,person:String=null):ILogger {
+		return LOGGER_FACTORY.getNamedLogger(toLogName(input),person);
 	}
 }
 

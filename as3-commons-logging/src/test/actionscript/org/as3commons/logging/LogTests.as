@@ -48,9 +48,9 @@ package org.as3commons.logging {
 	{
 		public static var STAGE: Stage;
 		
-		private static const debugs: LogLevel = DEBUG;
+		private static const debugs: int = DEBUG;
 		
-		private const debugp: LogLevel = DEBUG;
+		private const debugp: int = DEBUG;
 		
 		public final function LogTests() {
 			STAGE = stage;
@@ -101,7 +101,6 @@ package org.as3commons.logging {
 					+ getSize(ILogSetup)
 					+ getSize(LoggerFactory)
 					+ getSize(Logger)
-					+ getSize(LogLevel)
 					+ getSize(getLogger)
 					+ getSize(toLogName)
 					+ getSize(SimpleTargetSetup)

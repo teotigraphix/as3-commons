@@ -91,8 +91,8 @@ package org.as3commons.logging {
 		 * @see org.as3commons.logging.util#toLogName()
 		 */
 		[Deprecated(replacement="org.as3commons.logging.getClassLogger()", since="2.0")]
-		public static function getClassLogger(input:*): ILogger {
-			return LOGGER_FACTORY.getNamedLogger(toLogName(input));
+		public static function getClassLogger(input:*,person:String=null): ILogger {
+			return LOGGER_FACTORY.getNamedLogger(toLogName(input),person);
 		}
 		
 		/**
@@ -105,15 +105,16 @@ package org.as3commons.logging {
 		 * @deprecated
 		 */
 		[Deprecated(replacement="org.as3commons.logging.getNamedLogger()", since="2.0")]
-		public static function getLogger(name:String):ILogger {
-			return LOGGER_FACTORY.getNamedLogger(name);
+		public static function getLogger(name:String,person:String=null):ILogger {
+			return LOGGER_FACTORY.getNamedLogger(name,person);
 		}
 		
-		private const _loggers:Object/* <String, ILogger> */={};
+		private const _allLoggers:Array/* <ILogger> */=[];
+		private const _loggers:Object/* <String, <String, ILogger> > */={};
+		private const _nullLogger:Object/* <String, ILogger> */={};
+		private const _undefinedLogger:Object/* <String, ILogger> */={};
 		
 		private var _setup:ILogSetup;
-		private var _nullLogger:Logger;
-		private var _undefinedLogger:Logger;
 		
 		/**
 		 * Constructs a new <code>LoggerFactory</code> instance.
@@ -144,14 +145,14 @@ package org.as3commons.logging {
 		
 		public function set setup(setup:ILogSetup):void {
 			_setup = setup;
-			var name: String;
-			
-			for(name in _loggers) {
-				Logger(_loggers[name]).allTargets = null;
+			const l:int = _allLoggers.length;
+			var i: int;
+			for( i=0; i<l; ++i ) {
+				Logger(_allLoggers[i]).allTargets = null;
 			}
 			if(setup) {
-				for(name in _loggers) {
-					setup.applyTo( _loggers[name] );
+				for( i=0; i<l; ++i ) {
+					setup.applyTo( Logger(_allLoggers[i]) );
 				}
 			}
 		}
@@ -160,32 +161,31 @@ package org.as3commons.logging {
 		 * Returns a <code>ILogger</code> instance for the passed-in name.
 		 * 
 		 * @param name Name of the logger to be received, null and undefined are allowed
+		 * @param person Information about the person that requested this logger.
 		 * @return Logger for the passed-in name
 		 */
-		public function getNamedLogger(name:String):ILogger {
-			var result:Logger;
+		public function getNamedLogger(name:String,person:String=null):ILogger {
+			var unpersonalized:Object;
 			var compileSafeName:* = name;
 			if( compileSafeName === null ) {
-				result = _nullLogger;
+				unpersonalized = _nullLogger;
 			} else if( compileSafeName === undefined ) {
-				result = _undefinedLogger;
+				unpersonalized = _undefinedLogger;
 			} else {
-				result = _loggers[name];
+				unpersonalized = _loggers[name] || (_loggers[name]={});
 			}
+			var result:Logger = unpersonalized[person];
 			if(!result) {
-				result = new Logger(name);
+				result = new Logger(name,person);
+				
+				// Store it the array to find later on
+				unpersonalized[person] = result;
+				
+				// Store it in the list of all loggers to later iterate over them
+				_allLoggers[_allLoggers.length] = result;
 				
 				if(_setup) {
 					_setup.applyTo(result);
-				}
-				
-				if(compileSafeName === null) {
-					_nullLogger = result;
-				} else if( compileSafeName === undefined ) {
-					_undefinedLogger = result;
-				} else {
-					// cache the logger
-					_loggers[name] = result;
 				}
 			}
 			

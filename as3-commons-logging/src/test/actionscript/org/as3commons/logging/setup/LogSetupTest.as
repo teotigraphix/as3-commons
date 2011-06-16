@@ -86,11 +86,11 @@ package org.as3commons.logging.setup {
 				_logger.warn( "warn1",  1, 2, myObject);
 				_logger.error("error1", 1, 2, myObject);
 				_logger.fatal("fatal1", 1, 2, myObject);
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq("debug1"), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(INFO),  anyOf(Number), eq("info1"),  alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN),  anyOf(Number), eq("warn1"),  alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq("error1"), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq("fatal1"), alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq("debug1"), alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(INFO),  anyOf(Number), eq("info1"),  alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN),  anyOf(Number), eq("warn1"),  alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq("error1"), alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq("fatal1"), alike([1, 2, myObject]), eq(null)));
 			} else {
 				fail("The Logsystem tells logging is not properly enabled @ debug");
 			}
@@ -107,7 +107,7 @@ package org.as3commons.logging.setup {
 				_logger.warn("Should not be called");
 				_logger.error("Should not be called");
 				_logger.fatal("Should not be called");
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq("debug2"), alike([1, 2, myObject]) ));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq("debug2"), alike([1, 2, myObject]), eq(null) ));
 			} else {
 				fail("The Logsystem tells logging is not properly enabled @ debug-only");
 			}
@@ -125,10 +125,10 @@ package org.as3commons.logging.setup {
 				_logger.warn("warn3", 1, 2, myObject);
 				_logger.error("error3", 1, 2, myObject);
 				_logger.fatal("fatal3", 1, 2, myObject);
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(INFO), anyOf(Number), eq( "info3" ), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN), anyOf(Number), eq( "warn3" ), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error3" ), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal3" ), alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(INFO), anyOf(Number), eq( "info3" ), alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN), anyOf(Number), eq( "warn3" ), alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error3" ), alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal3" ), alike([1, 2, myObject]), eq(null)));
 			} else {
 				fail("The Logsystem tells logging is not enabled @ info.");
 			}
@@ -146,7 +146,7 @@ package org.as3commons.logging.setup {
 				_logger.warn("Should not be called");
 				_logger.error("Should not be called");
 				_logger.fatal("Should not be called");
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(INFO), anyOf(Number), eq("info4"), alike([1, 2, myObject]) ));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(INFO), anyOf(Number), eq("info4"), alike([1, 2, myObject]), eq(null) ));
 			} else {
 				fail("The Logsystem tells logging is not properly enabled @ info-only");
 			}
@@ -164,9 +164,9 @@ package org.as3commons.logging.setup {
 				_logger.warn("warn5", 1, 2, myObject);
 				_logger.error("error5", 1, 2, myObject);
 				_logger.fatal("fatal5", 1, 2, myObject);
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN), anyOf(Number), eq( "warn5" ), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error5" ), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal5" ), alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN), anyOf(Number), eq( "warn5" ), alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error5" ), alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal5" ), alike([1, 2, myObject]), eq(null)));
 			} else {
 				fail("The Logsystem tells logging is not enabled @ warn.");
 			}
@@ -185,7 +185,7 @@ package org.as3commons.logging.setup {
 				_logger.warn("warn6", 1, 2, myObject);
 				_logger.error("Should not be called");
 				_logger.fatal("Should not be called");
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN), anyOf(Number), eq("warn6"), alike([1, 2, myObject]) ));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN), anyOf(Number), eq("warn6"), alike([1, 2, myObject]), eq(null) ));
 			} else {
 				fail("The Logsystem tells logging is not properly enabled @ warn-only");
 			}
@@ -203,8 +203,8 @@ package org.as3commons.logging.setup {
 				_logger.warn("Should not be called");
 				_logger.error("error7", 1, 2, myObject);
 				_logger.fatal("fatal7", 1, 2, myObject);
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error7" ), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal7" ), alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error7" ), alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal7" ), alike([1, 2, myObject]), eq(null)));
 			} else {
 				fail("The Logsystem tells logging is not enabled @ error.");
 			}
@@ -222,7 +222,7 @@ package org.as3commons.logging.setup {
 				_logger.warn("Should not be called");
 				_logger.error("error8", 1, 2, myObject);
 				_logger.fatal("Should not be called");
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq("error8"), alike([1, 2, myObject]) ));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq("error8"), alike([1, 2, myObject]), eq(null) ));
 			} else {
 				fail("The Logsystem tells logging is not properly enabled @ error-only");
 			}
@@ -240,7 +240,7 @@ package org.as3commons.logging.setup {
 				_logger.warn("Should not be called");
 				_logger.error("Should not be called");
 				_logger.fatal("fatal9", 1, 2, myObject);
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal9" ), alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal9" ), alike([1, 2, myObject]), eq(null)));
 			} else {
 				fail("The Logsystem tells logging is not enabled @ fatal.");
 			}
@@ -278,8 +278,8 @@ package org.as3commons.logging.setup {
 				_logger.warn("Should not be called");
 				_logger.error("error10", 1, 2, myObject);
 				_logger.fatal("Should not be called");
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq( "debug10" ), alike([1, 2, myObject])));
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error10" ), alike([1, 2, myObject])));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq( "debug10" ), alike([1, 2, myObject]), eq(null)));
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error10" ), alike([1, 2, myObject]), eq(null)));
 			} else {
 				fail("The Logsystem tells logging is not enabled @ fatal.");
 			}
@@ -302,11 +302,10 @@ package org.as3commons.logging.setup {
 	}
 }
 
-import org.as3commons.logging.LogLevel;
 import org.as3commons.logging.setup.ILogTarget;
 
 class TestLogTarget implements ILogTarget {
 
-	public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:*, parameters:Array):void {
+	public function log(name:String, shortName:String, level:int, timeStamp:Number, message:*, parameters:Array, person:String=null):void {
 	}
 }

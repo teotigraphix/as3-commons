@@ -27,5 +27,5 @@ package org.as3commons.logging.util {
 	 * @author Martin Heidegger
 	 * @see org.as3commons.logging.util.SWFInfo#init()
 	 */
-	public var SWF_SHORT_URL: String;
+	public var SWF_SHORT_URL: String = URL_ERROR;
 }

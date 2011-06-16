@@ -74,6 +74,16 @@ package org.as3commons.logging {
 		 * @see #name 
 		 */
 		function get shortName():String
+
+		/**
+		 * Returns the person that this logger created.
+		 * 
+		 * <p>For person based log statements loggers contain a optional information
+		 * that can be used to filter for persons that created the logggers</p>
+		 * 
+		 * @return Person of the logger.
+		 */
+		function get person():String;
 		
 		/**
 		 * Logs a message for debug purposes.
