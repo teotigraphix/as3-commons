@@ -20,13 +20,11 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.target {
-	
-	import org.as3commons.logging.LogLevel;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
-	import org.as3commons.logging.util.SWFInfo;
 	import org.as3commons.logging.util.SWF_SHORT_URL;
-	
+	import org.as3commons.logging.util.URL_ERROR;
+
 	import flash.desktop.NativeApplication;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -35,6 +33,7 @@ package org.as3commons.logging.setup.target {
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
+	
 	
 	/**
 	 * <code>AirFileTarget</code> logs statements to a log file on the hard disk.
@@ -94,7 +93,7 @@ package org.as3commons.logging.setup.target {
 		
 		// Not customizable since the log-file header would need to adapt
 		private const _formatter: LogMessageFormatter =
-				new LogMessageFormatter( "{logTime} {logLevel} {name} \"{message_dqt}\"" );
+				new LogMessageFormatter( "{logTime} {logLevel} {name}{atPerson} \"{message_dqt}\"" );
 		
 		/**
 		 * Since the output of the files is merely 
@@ -108,8 +107,8 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log(name:String, shortName:String, level:LogLevel,
-							timeStamp:Number,message:*, params:Array):void {
+		public function log(name:String, shortName:String, level:int,
+							timeStamp:Number,message:*, params:Array, person:String=null):void {
 			// TODO: Use another way to verify the date-change. This one is
 			// not super performant.
 			// Note: using the timestamp of the log statment
@@ -143,8 +142,9 @@ package org.as3commons.logging.setup.target {
 									   + "." + date.millisecondsUTC + "\n"+
 									   "#Fields: time x-method x-name x-comment\n");
 			}
+			
 			_stream.writeUTFBytes(
-				_formatter.format(name, shortName, level, timeStamp, message, params)
+				_formatter.format(name, shortName, level, timeStamp, message, params, person)
 				+ "\n"
 			);
 		}
@@ -217,7 +217,7 @@ package org.as3commons.logging.setup.target {
 				dateString += "." + no;
 			}
 			var file : String = SWF_SHORT_URL;
-			if (file == SWFInfo.URL_ERROR) {
+			if (file == URL_ERROR) {
 				file = "out";
 			}
 			return _filePattern.replace( DATE, dateString ).replace( FILE, file);

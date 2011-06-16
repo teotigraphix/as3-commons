@@ -19,39 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.level {
 	
 	/**
-	 * Returns a logger for the passed-in name.
+	 * Returns the name for a level as String.
 	 * 
-	 * <p>Shortest access to get a custom named <code>ILogger</code> instance to
-	 * send your logging statements.</p>
-	 * <p>Short form of now deprecated <code>LoggerFactory.getNamedLogger(name);</code>.</p>
-	 * 
-	 * @example <listing>
-	 * package {
-	 *    
-	 *    import org.as3commons.logging.getNamedLogger;
-	 *    import org.as3commons.logging.ILogger;
-	 *    
-	 *    class MyClass {
-	 *        private static const log: ILogger = getNamedLogger("This is my super name for this logger");
-	 *        function MyClass() {
-	 *            log.info("Hello World");
-	 *        }
-	 *    }
-	 * } 
-	 * </listing>
-	 * 
+	 * @param level Level as integer
 	 * @author Martin Heidegger
-	 * @param input Any object (will be transformed by toLogName)
-	 * @param person Information about the person that requested this logger.
-	 * @return <code>ILogger</code> instance to publish log statements
-	 * @since 2.0
-	 * @see LoggerFactory#getLogger()
-	 * @see org.as3commons.logging#LOGGER_FACTORY
+	 * @since 2.1
 	 */
-	public function getNamedLogger(name:String,person:String=null):ILogger {
-		return LOGGER_FACTORY.getNamedLogger(name,person);
+	public function levelToName( level:int ): String {
+		switch( level ) {
+			case DEBUG: return "DEBUG";
+			case ERROR: return "ERROR";
+			case INFO: return "INFO";
+			case WARN: return "WARN";
+			default: return "FATAL";
+		}
 	}
 }

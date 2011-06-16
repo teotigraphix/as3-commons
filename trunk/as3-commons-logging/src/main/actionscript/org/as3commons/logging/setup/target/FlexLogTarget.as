@@ -21,7 +21,6 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import org.as3commons.logging.LogLevel;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
@@ -49,7 +48,8 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:*, parameters:Array):void {
+		public function log(name:String, shortName:String, level:int,
+							timeStamp:Number, message:*, parameters:Array, person:String=null):void {
 			var target:ILogger = _loggers[name]||(_loggers[name]=Log.getLogger(name));
 			var args: Array = parameters.concat();
 			args.unshift( message ? message["toString"]() : null );

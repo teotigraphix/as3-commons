@@ -21,59 +21,66 @@
  */
 package org.as3commons.logging.setup.target {
 	
+	import com.demonsters.debugger.MonsterDebugger;
 	import flash.utils.Dictionary;
-	import nl.demonsters.debugger.MonsterDebugger;
-	
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
-	import org.as3commons.logging.util.LogMessageFormatter;
 	import org.as3commons.logging.setup.target.IFormattingLogTarget;
-	
+	import org.as3commons.logging.util.LogMessageFormatter;
+
 	/**
-	 * <code>MonsterDebuggerTarget</code> logs directly to the monster debugger.
+	 * <code>MonsterDebugger3TraceTarget</code> traces directly to the Monster Debugger 3 console.
 	 * 
-	 * <p>The Monster Debugger is an alternative way to display your logging statements.
-	 * This target is pretty straightforward about sending it to the Monster Debugger.</p>
+	 * <p>The Monster Debugger is an alternative way to display your logging statements.</p>
 	 * 
+	 * @author Tim Keir
 	 * @author Martin Heidegger
-	 * @since 2.0
-	 * @see http://demonsterdebugger.com
+	 * @see http://demonsterdebugger.com/asdoc/com/demonsters/debugger/MonsterDebugger.html#trace()
+	 * @since 2.1
 	 */
-	public final class MonsterDebuggerTarget implements IFormattingLogTarget {
-	
-		/** Default output format used to stringify the log statements. */
-		public static const DEFAULT_FORMAT: String = "{time} {shortName}{atPerson} - {message}";
-		
+	public final class MonsterDebugger3TraceTarget extends Object implements IFormattingLogTarget
+	{
+		/** Default output format used to stringify log statements via MonsterDebugger.trace(). */
+		public static const DEFAULT_FORMAT:String = "{message}";
+
 		/** Default colors used to color the output statements. */
-		public static const DEFAULT_COLORS: Dictionary = new Dictionary();
+		public static const DEFAULT_COLORS:Dictionary = new Dictionary();
 		{
-			DEFAULT_COLORS[DEBUG] = MonsterDebugger.COLOR_NORMAL;
-			DEFAULT_COLORS[FATAL] = MonsterDebugger.COLOR_ERROR;
-			DEFAULT_COLORS[ERROR] = MonsterDebugger.COLOR_ERROR;
-			DEFAULT_COLORS[INFO] = MonsterDebugger.COLOR_NORMAL;
-			DEFAULT_COLORS[WARN] = MonsterDebugger.COLOR_WARNING;
+			DEFAULT_COLORS[DEBUG] = 0x0030AA;
+			DEFAULT_COLORS[FATAL] = 0xAA0000;
+			DEFAULT_COLORS[ERROR] = 0xFF0000;
+			DEFAULT_COLORS[INFO] = 0x666666;
+			DEFAULT_COLORS[WARN] = 0xff7700;
 		}
+		
 		
 		/** Colors used to display the messages. */
 		private var _colors:Dictionary;
 		
-		/** Formatter that renders the log statements. */
+		/** Formatter that renders the log statements via MonsterDebugger.trace(). */
 		private var _formatter:LogMessageFormatter;
 		
+		/** Depth  */
+		private var _depth: int; 
+		
 		/**
-		 * Constructs a new <code>MonsterDebuggerTarget</code>
+		 * Constructs a new <code>MonsterDebugger3Target</code>
 		 * 
 		 * @param format Default format used to render log statements.
 		 * @param colors Default colors used to color log statements.
+		 * @param depth Depth used to 
 		 */
-		public function MonsterDebuggerTarget(format:String=null,colors:Dictionary=null) {
-			this.format = format||DEFAULT_FORMAT;
-			this.colors = colors||DEFAULT_COLORS;
+		public function MonsterDebugger3TraceTarget(format:String=null,
+													colors:Dictionary=null,
+													depth:int=5) {
+			this.format = format;
+			this.colors = colors;
+			this.depth = depth;
 		}
-		
+
 		/**
 		 * The colors used to to send the log statement.
 		 * 
@@ -81,7 +88,7 @@ package org.as3commons.logging.setup.target {
 		 * can be changed dynamically if you pass here a Dictionary with Colors (numbers)
 		 * used for all levels:</p>
 		 * 
-		 * @example <listing>
+		 * @example <listing version="3.0">
 		 *     import org.as3commons.logging.level.*;
 		 *     
 		 *     var colors: Dictionary = new Dictionary();
@@ -89,8 +96,8 @@ package org.as3commons.logging.setup.target {
 		 *     colors[INFO] = 0x00FFFF;
 		 *     colors[WARN] = 0xFF0000;
 		 *     colors[ERROR] = 0x0000FF;
-		 *     colors[FATAL] = 0xFFFF00;
-		 *     monsterDebuggerTarget.colors = colors;
+		 *     colors[FATAL] = 0xFFFF00; 
+		 *     MONSTER_DEBUGGER_V3_TARGET.colors = colors;
 		 * </listing>
 		 */
 		public function get colors():Dictionary {
@@ -109,17 +116,29 @@ package org.as3commons.logging.setup.target {
 		}
 		
 		/**
+		 * Depth used to introspect objects.
+		 */
+		public function set depth(depth:int):void {
+			_depth = depth;
+		}
+		
+		public function get depth():int {
+			return _depth;
+		}
+		
+		/**
 		 * @inheritDoc
 		 */
-		public function log( name:String, shortName:String, level:int,
-							 timeStamp:Number, message:*, parameters:Array,
-							 person:String=null ): void {
+		public function log(name:String, shortName:String, level:int,
+							timeStamp:Number, message:*, parameters:Array,
+							person:String=null):void {
 			if( message is String ) {
 				message = _formatter.format( name, shortName, level, timeStamp,
-									   message, parameters, person);
+											 message, parameters, person );
 			}
 			
-			MonsterDebugger.trace( name,  message, _colors[ level ]);
+			MonsterDebugger.trace( name, message, person, ""/* Label is not supported */,
+								   _colors[level], _depth );
 		}
 	}
 }

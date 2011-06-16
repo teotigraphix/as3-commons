@@ -25,8 +25,8 @@ package org.as3commons.logging.setup.target {
 			
 			merged.log("A", "a", DEBUG, 1234, "Hello World", ["#"] );
 			
-			inOrder().verify().that( targetA.log( eq("A"), eq("a"), eq( DEBUG), eq(1234), eq("Hello World"), alike(["#"])));
-			inOrder().verify().that( targetB.log( eq("A"), eq("a"), eq( DEBUG), eq(1234), eq("Hello World"), alike(["#"])));
+			inOrder().verify().that( targetA.log( eq("A"), eq("a"), eq( DEBUG), eq(1234), eq("Hello World"), alike(["#"]), eq(null)));
+			inOrder().verify().that( targetB.log( eq("A"), eq("a"), eq( DEBUG), eq(1234), eq("Hello World"), alike(["#"]), eq(null)));
 			
 			verifyNothingCalled( targetA );
 			verifyNothingCalled( targetB );
@@ -72,27 +72,27 @@ package org.as3commons.logging.setup.target {
 			test = mergeTargets(null,targetA,targetB);
 			
 			test.log( "a", "a", DEBUG, 1, "Hello World", [] );
-			inOrder().verify().that( targetA.log( eq("a"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]) ) );
-			inOrder().verify().that( targetB.log( eq("a"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]) ) );
+			inOrder().verify().that( targetA.log( eq("a"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
+			inOrder().verify().that( targetB.log( eq("a"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
 			verifyNothingCalled( targetA );
 			verifyNothingCalled( targetB );
 			
 			test = mergeTargets(targetA,targetA);
-			test.log( "b", "a", DEBUG, 1, "Hello World", [] );
-			inOrder().verify().that( targetA.log( eq("b"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]) ) );
+			test.log( "b", "a", DEBUG, 1, "Hello World", [], null );
+			inOrder().verify().that( targetA.log( eq("b"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
 			verifyNothingCalled( targetA );
 			
 			test = mergeTargets(targetA,mergeTargets(targetA));
-			test.log( "C", "B", DEBUG, 1, "Hello World", [] );
-			inOrder().verify().that( targetA.log( eq("C"), eq("B"), eq(DEBUG), eq(1), eq("Hello World"), alike([]) ) );
+			test.log( "C", "B", DEBUG, 1, "Hello World", [], null );
+			inOrder().verify().that( targetA.log( eq("C"), eq("B"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
 			verifyNothingCalled( targetA );
 			
 			test = mergeTargets(targetA,mergeTargets(null),null,mergeTargets(targetB,targetA,targetC));
-			test.log( "D", "E", DEBUG, 1, "Hello World", [] );
-			inOrder().verify().that( targetA.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]) ) );
-			inOrder().verify().that( targetB.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]) ) );
-			inOrder().verify().that( targetA.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]) ) );
-			inOrder().verify().that( targetC.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]) ) );
+			test.log( "D", "E", DEBUG, 1, "Hello World", [], null );
+			inOrder().verify().that( targetA.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
+			inOrder().verify().that( targetB.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
+			inOrder().verify().that( targetA.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
+			inOrder().verify().that( targetC.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
 			verifyNothingCalled( targetA );
 			verifyNothingCalled( targetB );
 			verifyNothingCalled( targetC );

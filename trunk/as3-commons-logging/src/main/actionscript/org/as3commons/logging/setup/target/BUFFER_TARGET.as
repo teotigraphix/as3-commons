@@ -49,7 +49,6 @@ package org.as3commons.logging.setup.target {
 import org.as3commons.logging.LOGGER_FACTORY;
 import org.as3commons.logging.LoggerFactory;
 import org.as3commons.logging.Logger;
-import org.as3commons.logging.LogLevel;
 import org.as3commons.logging.level.*;
 import org.as3commons.logging.setup.ILogTarget;
 import org.as3commons.logging.setup.target.IFlushableLogTarget;
@@ -64,10 +63,10 @@ internal final class BufferTarget implements IFlushableLogTarget {
 	/**
 	 * @inheritDoc
 	 */
-	public function log(name:String, shortName:String, level:LogLevel,
-						timeStamp:Number, message:*, params:Array): void {
+	public function log(name:String, shortName:String, level:int,
+						timeStamp:Number, message:*, params:Array, person:String=null): void {
 		_logStatements.push(
-			new LogStatement( name, shortName, level, timeStamp, message, params )
+			new LogStatement( name, shortName, level, timeStamp, message, params, person )
 		);
 	}
 	
@@ -78,8 +77,8 @@ internal final class BufferTarget implements IFlushableLogTarget {
 		factory = factory||LOGGER_FACTORY;
 		var i: int = _logStatements.length;
 		while(--i-(-1)) {
-			var statement: LogStatement = LogStatement(_logStatements.shift());
-			var logger: Logger = factory.getNamedLogger(statement.name) as Logger;
+			var statement:LogStatement = LogStatement(_logStatements.shift());
+			var logger:Logger = factory.getNamedLogger(statement.name,statement.person) as Logger;
 			
 			var logTarget: ILogTarget;
 			if(statement.level == DEBUG) {

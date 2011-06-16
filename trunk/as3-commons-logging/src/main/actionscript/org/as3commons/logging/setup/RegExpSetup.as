@@ -82,12 +82,13 @@ package org.as3commons.logging.setup {
 		 * Adds a rule which defines when to use a setup for a logger according
 		 * to the loggers name.
 		 * 
-		 * @param rule The rule to which the name of the logger has to match. 
+		 * @param classRule The rule to which the name of the logger has to match. 
 		 * @param setup Setup to be applied to the loggers that match.
+		 * @param personRule Rule to which the person has to match. (if null, all persons will match)
 		 * @return This setup instance.
 		 */
-		public function addRule(rule: RegExp, setup: ILogSetup): RegExpSetup {
-			var newRule: RegExpRule = new RegExpRule(rule, setup);
+		public function addRule( classRule:RegExp, setup:ILogSetup, personRule:RegExp=null ): RegExpSetup {
+			var newRule: RegExpRule = new RegExpRule(classRule, setup, personRule);
 			if( _lastRule ) {
 				_lastRule.next = newRule;
 			} else {
@@ -107,12 +108,14 @@ package org.as3commons.logging.setup {
 		 * @param rule The rule to which the name of the logger has to match.
 		 * @param target Target used for these loggers.
 		 * @param level Level that can restrict for which levels it should be used.
+		 * @param personRule Rule to which the person has to match. (if null, all persons will match)
 		 * @return This setup instance.
 		 */
-		public function addTargetRule(rule:RegExp, target:ILogTarget, level:LogSetupLevel=null): RegExpSetup {
+		public function addTargetRule(rule:RegExp, target:ILogTarget, level:LogSetupLevel=null, personRule:RegExp=null): RegExpSetup {
 			return addRule(
 				rule,
-				level ? new LevelTargetSetup(target, level) : new SimpleTargetSetup(target)
+				level ? new LevelTargetSetup(target, level) : new SimpleTargetSetup(target),
+				personRule
 			);
 		}
 		
@@ -137,8 +140,11 @@ package org.as3commons.logging.setup {
 			logger.allTargets = null;
 			var current: RegExpRule = _firstRule;
 			var name: String = logger.name;
+			var person: String = logger.person;
 			while( current ) {
-				if( current.rule.test(name) ) {
+				// Apply the setups just to matching targets
+				if( current.classRule.test(name)
+					&& (!current.personRule || current.personRule.test(person)) ) {
 					current.setup.applyTo(logger);
 				}
 				current = current.next;
@@ -161,18 +167,21 @@ package org.as3commons.logging.setup {
 import org.as3commons.logging.ILogSetup;
 
 internal class RegExpRule {
-	public var rule: RegExp;
+	public var classRule: RegExp;
+	public var personRule: RegExp;
 	public var setup: ILogSetup;
 	public var next: RegExpRule;
 	
-	public function RegExpRule(rule: RegExp, setup: ILogSetup) {
-		this.rule = rule;
+	public function RegExpRule(classRule:RegExp, setup:ILogSetup, personRule:RegExp) {
+		this.classRule = classRule;
 		this.setup = setup;
+		this.personRule = personRule;
 	}
 	
 	public function dispose():RegExpRule {
 		var result: RegExpRule = next;
-		rule = null;
+		classRule = null;
+		personRule = null;
 		setup = null;
 		next = null;
 		return result;

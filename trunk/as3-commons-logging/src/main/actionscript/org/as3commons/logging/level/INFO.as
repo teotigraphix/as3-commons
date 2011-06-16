@@ -21,8 +21,6 @@
  */
 package org.as3commons.logging.level {
 	
-	import org.as3commons.logging.LogLevel;
-	
 	/**
 	 * Level used with <code>info()</code> log statements.
 	 * 
@@ -30,5 +28,5 @@ package org.as3commons.logging.level {
 	 * @since 2.0
 	 * @see org.as3commons.logging.ILogger#info()
 	 */
-	public const INFO:LogLevel = new LogLevel("INFO", 0x0010);
+	public const INFO:int = 0x0010;
 }

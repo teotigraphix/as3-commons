@@ -21,7 +21,6 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import org.as3commons.logging.LogLevel;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	import flash.text.TextField;
@@ -38,7 +37,7 @@ package org.as3commons.logging.setup.target {
 	public final class TextFieldTarget extends TextField implements IFormattingLogTarget {
 		
 		/** Default format used to stringify the log statements. */
-		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName} - {message}";
+		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName}{atPerson} - {message}";
 		
 		/** Formatter that formats the log statements. */
 		private var _formatter: LogMessageFormatter;
@@ -60,8 +59,9 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:*, parameters:Array):void {
-			_textField.appendText( _formatter.format( name, shortName, level, timeStamp, message, parameters ) + "\n" );
+		public function log( name:String, shortName:String, level:int, timeStamp:Number,
+							 message:*, parameters:Array, person:String=null ):void {
+			_textField.appendText( _formatter.format( name, shortName, level, timeStamp, message, parameters, person ) + "\n" );
 		}
 		
 		/**

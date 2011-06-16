@@ -21,8 +21,6 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import org.as3commons.logging.LogLevel;
-	
 	/**
 	 * <code>LogStatement</code> is a data holder for the content of one log statement.
 	 * 
@@ -39,7 +37,7 @@ package org.as3commons.logging.setup.target {
 		public var shortName: String;
 		
 		/** Level of the log statement that got triggered. */
-		public var level: LogLevel;
+		public var level: int;
 		
 		/** Time stamp of when the log statement got triggered. */
 		public var timeStamp: Number;
@@ -49,6 +47,9 @@ package org.as3commons.logging.setup.target {
 		
 		/** Parameters for the log statement. */
 		public var parameters: Array;
+		
+		/** Information about the person that logged this. */
+		public var person: String;
 		
 		/**
 		 * Constructs a new <code>LogStatement</code> containing the content
@@ -60,15 +61,18 @@ package org.as3commons.logging.setup.target {
 		 * @param timeStamp Time stamp of when the log statement got triggered.
 		 * @param message Message of the log statement.
 		 * @param parameters Parameters for the log statement.
+		 * @param person Information about the person that filed this log statement.
 		 */
-		public function LogStatement(name:String, shortName:String, level:LogLevel,
-										timeStamp:Number, message:*, parameters:Array) {
+		public function LogStatement(name:String, shortName:String, level:int,
+										timeStamp:Number, message:*, parameters:Array,
+										person:String=null) {
 			this.name = name;
 			this.shortName = shortName;
 			this.level = level;
 			this.timeStamp = timeStamp;
 			this.message = message;
 			this.parameters = parameters;
+			this.person = person;
 		}
 	}
 }
