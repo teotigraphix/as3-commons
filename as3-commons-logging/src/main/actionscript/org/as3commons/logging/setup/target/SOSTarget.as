@@ -21,7 +21,7 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.level.levelToName;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
@@ -38,7 +38,7 @@ package org.as3commons.logging.setup.target {
 	public final class SOSTarget implements IFormattingLogTarget {
 		
 		/** Default format used to format the log statement */
-		public static const DEFAULT_FORMAT: String = "{shortSWF}({time}) {shortName}: {message}";
+		public static const DEFAULT_FORMAT: String = "{shortSWF}({time}) {shortName}{atPerson}: {message}";
 		
 		/** Formatter used to render the log statements. */
 		private var _formatter:LogMessageFormatter;
@@ -61,9 +61,11 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number,
-							message:*, params:Array):void {
-			_gateway.log( level.name, _formatter.format( name, shortName, level, timeStamp, message, params) );
+		public function log(name:String, shortName:String, level:int, timeStamp:Number,
+							message:*, params:Array, person:String=null):void {
+			_gateway.log( levelToName(level),
+				_formatter.format( name, shortName, level, timeStamp, message, params, person)
+			);
 		}
 		
 		/**

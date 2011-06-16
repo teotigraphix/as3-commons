@@ -19,48 +19,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.setup.target {
+package org.as3commons.logging.setup {
 	
-	import org.as3commons.logging.setup.target.IFormattingLogTarget;
-	import org.as3commons.logging.util.LogMessageFormatter;
+	import org.as3commons.logging.ILogSetup;
+	import org.as3commons.logging.Logger;
 	
 	/**
-	 * <code>TraceTarget</code> renders log statements with the <code>trace()</code> method. 
+	 * <code>PersonTargetSetup</code> is a rather simple implementation that
+	 * allows to only log statements filed by certain persons.
 	 * 
-	 * @author Christophe Herreman
+	 * <p>It does nothing more but redirecting the <code>ILogTarget</code> to all
+	 * levels of all loggers.</p>
+	 * 
+	 * <listing>
+	 *   // Logstatements by Martin or Christophe will be redirected, others not
+	 *   LOGGER_FACTORY.setup = new PersonTargetSetup( /^(Martin|Christophe)$/, new SOSTarget );
+	 * </listing>
+	 * 
 	 * @author Martin Heidegger
-	 * @version 2.0
+	 * @since 2.1
+	 * @see org.as3commons.logging.LoggerFactory;
 	 */
-	public final class TraceTarget implements IFormattingLogTarget {
+	public class PersonTargetSetup implements ILogSetup {
 		
-		/** Default format to be used for formatting statements. */
-		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName}{atPerson} - {message}";
+		/** Persons that are accepted */
+		private var _persons: RegExp;
 		
-		/** Formatter to render the log statements */
-		private var _formatter:LogMessageFormatter;
+		/** Target that should be used */
+		private var _target: ILogTarget;
 		
 		/**
-		 * Creates a new <code>TraceTarget</code> instance.
+		 * Creates a new <code>PersonTargetSetup</code> that 
 		 * 
-		 * @param format Format to be used to format the statements.
+		 * @param persons Persons that should be accepted by this setup
+		 * @param target Target that should be used in that case
 		 */
-		public function TraceTarget(format:String=null) {
-			this.format = format;
+		public function PersonTargetSetup( persons:RegExp, target:ILogTarget ) {
+			_persons = persons;
+			_target = target;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function set format(format:String):void {
-			_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:*, parameters:Array, person:String=null):void {
-			trace( _formatter.format( name, shortName, level, timeStamp, message, parameters, person));
+		public function applyTo( logger:Logger ): void {
+			if( _persons.test(logger.person) ) {
+				logger.allTargets = _target;
+			}
 		}
 	}
 }

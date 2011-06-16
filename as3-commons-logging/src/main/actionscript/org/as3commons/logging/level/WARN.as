@@ -21,8 +21,6 @@
  */
 package org.as3commons.logging.level {
 	
-	import org.as3commons.logging.LogLevel;
-	
 	/**
 	 * Level used with <code>warn()</code> log statements.
 	 * 
@@ -30,5 +28,5 @@ package org.as3commons.logging.level {
 	 * @since 2.0
 	 * @see org.as3commons.logging.ILogger#warn()
 	 */
-	public const WARN:LogLevel = new LogLevel("WARN", 0x0008);
+	public const WARN:int = 0x0008;
 }

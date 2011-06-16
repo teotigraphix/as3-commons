@@ -19,39 +19,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.setup.target {
+	
+	import org.as3commons.logging.setup.ILogTarget;
 	
 	/**
-	 * Returns a logger for the passed-in name.
-	 * 
-	 * <p>Shortest access to get a custom named <code>ILogger</code> instance to
-	 * send your logging statements.</p>
-	 * <p>Short form of now deprecated <code>LoggerFactory.getNamedLogger(name);</code>.</p>
-	 * 
-	 * @example <listing>
-	 * package {
-	 *    
-	 *    import org.as3commons.logging.getNamedLogger;
-	 *    import org.as3commons.logging.ILogger;
-	 *    
-	 *    class MyClass {
-	 *        private static const log: ILogger = getNamedLogger("This is my super name for this logger");
-	 *        function MyClass() {
-	 *            log.info("Hello World");
-	 *        }
-	 *    }
-	 * } 
-	 * </listing>
-	 * 
 	 * @author Martin Heidegger
-	 * @param input Any object (will be transformed by toLogName)
-	 * @param person Information about the person that requested this logger.
-	 * @return <code>ILogger</code> instance to publish log statements
-	 * @since 2.0
-	 * @see LoggerFactory#getLogger()
-	 * @see org.as3commons.logging#LOGGER_FACTORY
+	 * @since 2.1
+	 * @see http://demonsterdebugger.com/asdoc/com/demonsters/debugger/MonsterDebugger.html#log()
 	 */
-	public function getNamedLogger(name:String,person:String=null):ILogger {
-		return LOGGER_FACTORY.getNamedLogger(name,person);
+	public const MONSTER_DEBUGGER_3_LOG_TARGET: ILogTarget = new MonsterDebugger3LogTarget();
+}
+
+import com.demonsters.debugger.MonsterDebugger;
+
+import org.as3commons.logging.setup.ILogTarget;
+import org.as3commons.logging.util.LogMessageFormatter;
+
+class MonsterDebugger3LogTarget implements ILogTarget {
+	
+	/** Formatter that renders the log statements via MonsterDebugger.log(). */
+	private const _formatter: LogMessageFormatter = new LogMessageFormatter("{shortName}{atPerson} - {message}");
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function log( name:String, shortName:String, level:int,
+						 timeStamp:Number, message:*, parameters:Array,
+						 person:String=null ): void {
+		
+		if( message is String ) {
+			message = _formatter.format(name, shortName, level, timeStamp, message, parameters);
+		}
+		
+		MonsterDebugger.log( message, (parameters.length > 0) ? parameters : null );
 	}
 }

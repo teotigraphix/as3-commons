@@ -21,8 +21,6 @@
  */
 package org.as3commons.logging.level {
 	
-	import org.as3commons.logging.LogLevel;
-	
 	/**
 	 * Level used with <code>error()</code> log statements.
 	 * 
@@ -30,6 +28,6 @@ package org.as3commons.logging.level {
 	 * @since 2.0
 	 * @see org.as3commons.logging.ILogger#error()
 	 */
-	public const ERROR:LogLevel = new LogLevel("ERROR", 0x0004);
+	public const ERROR:int = 0x0004;
 
 }

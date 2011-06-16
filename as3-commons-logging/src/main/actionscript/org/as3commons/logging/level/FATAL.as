@@ -21,7 +21,6 @@
  */
 package org.as3commons.logging.level {
 	
-	import org.as3commons.logging.LogLevel;
 	
 	/**
 	 * Level used with <code>fatal()</code> log statements.
@@ -30,5 +29,5 @@ package org.as3commons.logging.level {
 	 * @since 2.0
 	 * @see org.as3commons.logging.ILogger#fatal()
 	 */
-	public const FATAL:LogLevel = new LogLevel("FATAL", 0x0002 );
+	public const FATAL:int = 0x0002;
 }

@@ -22,7 +22,6 @@
 package org.as3commons.logging.setup.target {
 	
 	import flash.events.Event;
-	import org.as3commons.logging.LogLevel;
 	import org.as3commons.logging.setup.ILogTarget;
 	
 	import flash.display.Shape;
@@ -101,7 +100,8 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number, message:*, parameters:Array):void {
+		public function log(name:String, shortName:String, level:int,
+							timeStamp:Number, message:*, parameters:Array, person:String=null):void {
 			// Only log it if the statements this frame do not yet exceed
 			// the max statements that can be triggered per frame
 			if( _statementsThisFrame < _statementsPerFrame ) {
@@ -109,7 +109,7 @@ package org.as3commons.logging.setup.target {
 				++_statementsThisFrame;
 			} else {
 				_bufferedStatements[_bufferLength++] =
-					new BufferStatement(name, shortName, level, timeStamp, message, parameters);
+					new LogStatement(name, shortName, level, timeStamp, message, parameters, person);
 			}
 			
 			if( !_isRegistered ) {
@@ -126,7 +126,7 @@ package org.as3commons.logging.setup.target {
 		 */
 		private function flush(): Boolean {
 			for( var i: int = _statementsPerFrame-1; i>-1; --i ) {
-				var statement: BufferStatement = _bufferedStatements.shift();
+				var statement: LogStatement = _bufferedStatements.shift();
 				--_bufferLength;
 				if( statement ) {
 					_target.log(statement.name, statement.shortName,

@@ -264,6 +264,14 @@
 			<scope>external</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>nl.demonsters.debugger</groupId>
+			<artifactId>monsterdebugger</artifactId>
+			<version>3.0.1</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.mockito</groupId>

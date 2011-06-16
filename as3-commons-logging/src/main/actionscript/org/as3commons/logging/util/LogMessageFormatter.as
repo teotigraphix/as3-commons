@@ -20,8 +20,7 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.util {
-	
-	import org.as3commons.logging.LogLevel;
+	import org.as3commons.logging.level.levelToName;
 	
 	/**
 	 * A Formatter that formats a message string using a pattern.
@@ -68,6 +67,12 @@ package org.as3commons.logging.util {
 	 *   
 	 *   <tr><td>{swf}</td>
 	 *       <td>The full SWF path</td></tr>
+	 *   
+	 *   <tr><td>{person}</td>
+	 *       <td>The Person that wrote this statement</td></tr>
+	 *   
+	 *   <tr><td>{atPerson}</td>
+	 *       <td>The Person that wrote this statement with the "@" prefix</td></tr>
 	 * </table>
 	 *
 	 * @author Christophe Herreman
@@ -91,6 +96,8 @@ package org.as3commons.logging.util {
 		private const NAME_TYPE: int		= 12;
 		private const SHORT_NAME_TYPE: int	= 13;
 		private const GMT_OFFSET_TYPE: int	= 14;
+		private const PERSON_TYPE: int		= 15;
+		private const AT_PERSON_TYPE: int	= 16;
 		
 		private const TYPES: Object			= {
 			message:		MESSAGE_TYPE,
@@ -105,7 +112,9 @@ package org.as3commons.logging.util {
 			shortSWF:		SHORT_SWF_TYPE,
 			name:			NAME_TYPE,
 			shortName:		SHORT_NAME_TYPE,
-			gmt:			GMT_OFFSET_TYPE
+			gmt:			GMT_OFFSET_TYPE,
+			person:			PERSON_TYPE,
+			atPerson:		AT_PERSON_TYPE
 		};
 		
 		private const _now: Date = new Date();
@@ -182,12 +191,13 @@ package org.as3commons.logging.util {
 		 * @param level Level of which the output happened.
 		 * @param timeMs Time in ms since 1970, passed to the log target.
 		 * @param message Message that should be logged.
-		 * @param params Parameter that should be filled in the message
+		 * @param params Parameter that should be filled in the message.
+		 * @param person Information about the person that filed this log statement.
 		 * 
 		 * @see org.as3commons.logging.Logger
 		 */
-		public function format(name:String, shortName:String, level:LogLevel, timeMs:Number,
-								message:String, params:Array):String {
+		public function format(name:String, shortName:String, level:int, timeMs:Number,
+								message:String, params:Array, person:String=null):String {
 			
 			var result: String = "";
 			var node: FormatNode = _firstNode;
@@ -273,7 +283,7 @@ package org.as3commons.logging.util {
 						}
 						// 9
 						else { // LEVEL_TYPE
-							if( level ) result += level.name;
+							if( level ) result += levelToName(level);
 						}
 					}
 					// 10
@@ -294,8 +304,20 @@ package org.as3commons.logging.util {
 					result += shortName;
 				}
 				// 14
-				else {
+				else if( type == GMT_OFFSET_TYPE ) {
 					result += _gmt;
+				}
+				// 15
+				else if( type == PERSON_TYPE ) {
+					if(person) {
+						result += person;
+					}
+				}
+				// 16
+				else {
+					if(person) {
+						result += "@"+person;
+					}
 				}
 				node = node.next;
 			}

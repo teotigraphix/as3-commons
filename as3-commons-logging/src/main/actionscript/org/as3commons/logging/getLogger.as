@@ -49,6 +49,7 @@ package org.as3commons.logging {
 	 * @author Martin Heidegger
 	 * @param input If String it will just pass it to <code>getNamedLogger</code>
 	 *        else use it like <code>getClassLogger</code>
+	 * @param person Information about the person that requested this logger.
 	 * @return <code>ILogger</code> instance to publish log statements
 	 * @since 2.0
 	 * @version 1.0
@@ -56,10 +57,10 @@ package org.as3commons.logging {
 	 * @see org.as3commons.logging#getClassLogger()
 	 * @see org.as3commons.logging#LOGGER_FACTORY
 	 */
-	public function getLogger(input:*):ILogger {
+	public function getLogger(input:*,person:String=null):ILogger {
 		if(!(input is String)) {
 			input = toLogName(input);
 		}
-		return LOGGER_FACTORY.getNamedLogger(input);
+		return LOGGER_FACTORY.getNamedLogger(input,person);
 	}
 }

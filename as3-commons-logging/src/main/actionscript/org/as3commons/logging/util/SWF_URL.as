@@ -28,5 +28,5 @@ package org.as3commons.logging.util {
 	 * @since 2.0
 	 * @see org.as3commons.logging.util.SWFInfo#init()
 	 */
-	public var SWF_URL: String;
+	public var SWF_URL: String = URL_ERROR;
 }

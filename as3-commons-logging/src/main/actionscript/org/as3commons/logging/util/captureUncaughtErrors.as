@@ -19,39 +19,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.util {
+	
+	import flash.display.LoaderInfo;
+	import flash.events.EventDispatcher;
 	
 	/**
-	 * Returns a logger for the passed-in name.
-	 * 
-	 * <p>Shortest access to get a custom named <code>ILogger</code> instance to
-	 * send your logging statements.</p>
-	 * <p>Short form of now deprecated <code>LoggerFactory.getNamedLogger(name);</code>.</p>
-	 * 
-	 * @example <listing>
-	 * package {
-	 *    
-	 *    import org.as3commons.logging.getNamedLogger;
-	 *    import org.as3commons.logging.ILogger;
-	 *    
-	 *    class MyClass {
-	 *        private static const log: ILogger = getNamedLogger("This is my super name for this logger");
-	 *        function MyClass() {
-	 *            log.info("Hello World");
-	 *        }
-	 *    }
-	 * } 
-	 * </listing>
+	 * Util that redirects the uncaught global errors to the log as fatal messages. 
 	 * 
 	 * @author Martin Heidegger
-	 * @param input Any object (will be transformed by toLogName)
-	 * @param person Information about the person that requested this logger.
-	 * @return <code>ILogger</code> instance to publish log statements
-	 * @since 2.0
-	 * @see LoggerFactory#getLogger()
-	 * @see org.as3commons.logging#LOGGER_FACTORY
+	 * @since 2.1
+	 * @param loader LoaderInfo, preferrably of the root DisplayObject
 	 */
-	public function getNamedLogger(name:String,person:String=null):ILogger {
-		return LOGGER_FACTORY.getNamedLogger(name,person);
+	public function captureUncaughtErrors( loaderInfo:LoaderInfo ): void {
+		if( loaderInfo.hasOwnProperty("uncaughtErrorEvents") ) {
+			var events: EventDispatcher = loaderInfo["uncaughtErrorEvents"];
+			events.addEventListener( "uncaughtError", doLog, false, 0, true );
+		}
 	}
+}
+import org.as3commons.logging.ILogger;
+import org.as3commons.logging.getLogger;
+
+import flash.events.Event;
+
+const logger: ILogger = getLogger( "org.as3commons.logging.util#captureUncaughtErrors" );
+
+/**
+ * Logs the statements
+ * 
+ * @param e Error that was thrown
+ */
+function doLog( e: Event ): void {
+	e.preventDefault();
+	logger.fatal( e["error"] );
 }
