@@ -79,6 +79,44 @@ logger.<a href="asdoc/org/as3commons/logging/ILogger.html#fatal()">fatal</a>("..
 				This way the <code>complexLogStatement()</code> is just called
 				when really needed. 
 			</p>
+			
+			<p>
+				For a team of users one might want to have loggers per user that
+				sends out the log statement. Since various loggers allow to show
+				them as3commons-logging also offers support to use that.
+				<pre class="source">package {
+    import <a href="asdoc/org/as3commons/logging/ILogger.html">org.as3commons.logging.ILogger</a>;
+    import <a href="asdoc/org/as3commons/logging/package.html#getLogger()">org.as3commons.logging.getLogger</a>;
+    
+    
+    class MyClass {
+        public static const mLog: <a href="asdoc/org/as3commons/logging/ILogger.html">ILogger</a> = <a href="asdoc/org/as3commons/logging/package.html#getLogger()">getLogger</a>( MyClass, "Martin Heidegger");
+        public static const cLog: <a href="asdoc/org/as3commons/logging/ILogger.html">ILogger</a> = <a href="asdoc/org/as3commons/logging/package.html#getLogger()">getLogger</a>( MyClass, "Christophe Herreman");
+
+        public function foo() {
+            mLog.<a href="asdoc/org/as3commons/logging/ILogger.html#info()">info</a>("Some logging message by Martin");
+            cLog.<a href="asdoc/org/as3commons/logging/ILogger.html#info()">info</a>("Some logging message by Christophe");
+        }
+    }
+}</pre>
+				With this it is also possible to later on filter to the statements of users.
+			</p>
+			
+			<p>
+				Since Flash Player 10.2 it is possible to listen to the global error
+				event dispatcher. With version 2.1 as3commons-logging introduced a util
+				to capture that errors and redirect it as fatal log statements.
+				<pre>package {
+    import flash.display.Sprite;
+    import <a href="asdoc/org/as3commons/logging/util/package.html#captureUncaughtErrors()">org.as3commons.logging.util.captureUncaughtErrors</a>;
+    
+    public class MyApplication extends Sprite {
+        public function MyApplication() {
+            captureUncaughtErrors(loaderInfo);
+        }
+    } 
+}</pre>
+			</p>
 		</section>
 		<section name="Setup">
 			<p>
@@ -107,7 +145,7 @@ logger.<a href="asdoc/org/as3commons/logging/ILogger.html#fatal()">fatal</a>("..
 				<pre class="source"><a href="asdoc/org/as3commons/logging/package.html#LOGGER_FACTORY">LOGGER_FACTORY</a>.<a href="asdoc/org/as3commons/logging/LoggerFactory.html#setup()">setup</a> = new <a href="asdoc/org/as3commons/logging/setup/SimpleTargetSetup.html">SimpleTargetSetup</a>( new <a href="asdoc/org/as3commons/logging/setup/target/TextFieldTarget.html">TextFieldTarget</a> );</pre>
 				
 				That would redirect all log statements to the <code>TextFieldTarget</code>.<br/>
-				All list of all targets that are available by default can be found in the
+				A list of all targets that are available by default can be found in the
 				<a href="asdoc/org/as3commons/logging/setup/target/package-detail.html">API docs for the <code>org.as3commons.logging.setup.target</code> package</a>
 			</p>
 			<p>
@@ -173,8 +211,8 @@ logger.<a href="asdoc/org/as3commons/logging/ILogger.html#fatal()">fatal</a>("..
         
         private const _formatter: <a href="asdoc/org/as3commons/logging/util/LogMessageFormatter.html">LogMessageFormatter</a> = new <a href="asdoc/org/as3commons/logging/util/LogMessageFormatter.html">LogMessageFormatter</a>("{logTime} {logLevel} {name} {message}");
         
-        public function log(name:String, shortName:String, level:<a href="asdoc/org/as3commons/logging/LogLevel.html">LogLevel</a>, timeStamp:Number, message:*, parameters:Array):void {
-            trace( _formatter.<a href="asdoc/org/as3commons/logging/util/LogMessageFormatter.html#format()">format</a>( name, shortName, level, timeStamp, message, parameters));
+        public function log(name:String, shortName:String, level:<a href="asdoc/org/as3commons/logging/LogLevel.html">LogLevel</a>, timeStamp:Number, message:*, parameters:Array, person:String=null):void {
+            trace( _formatter.<a href="asdoc/org/as3commons/logging/util/LogMessageFormatter.html#format()">format</a>( name, shortName, level, timeStamp, message, parameters, person));
         }
     }
 }</pre>

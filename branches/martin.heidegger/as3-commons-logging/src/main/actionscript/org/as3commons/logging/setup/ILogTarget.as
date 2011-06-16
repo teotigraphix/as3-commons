@@ -21,7 +21,6 @@
  */
 package org.as3commons.logging.setup {
 	
-	import org.as3commons.logging.LogLevel;
 	
 	/**
 	 * A <code>ILogTarget</code> implementation is to log statements to a target.
@@ -40,8 +39,9 @@ package org.as3commons.logging.setup {
 		 * @param timeStamp Time stamp of when the log statement got triggered.
 		 * @param message Message of the log statement.
 		 * @param parameters Parameters for the log statement.
+		 * @param person Information about the person that filed this log statement.
 		 */
-		function log(name:String, shortName:String, level:LogLevel, timeStamp:Number,
-					message:*, parameters:Array):void;
+		function log(name:String, shortName:String, level:int, timeStamp:Number,
+					message:*, parameters:Array, person:String=null):void;
 	}
 }

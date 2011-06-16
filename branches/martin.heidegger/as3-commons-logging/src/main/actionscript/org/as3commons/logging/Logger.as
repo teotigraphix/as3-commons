@@ -21,14 +21,10 @@
  */
 package org.as3commons.logging {
 	
-	import org.as3commons.logging.level.DEBUG;
-	import org.as3commons.logging.level.ERROR;
-	import org.as3commons.logging.level.FATAL;
-	import org.as3commons.logging.level.INFO;
-	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ILogTarget;
-	
+
 	import flash.utils.getTimer;
+	
 	
 	/**
 	 * Proxy for an <code>ILogger</code> implementation. This class is used
@@ -69,14 +65,18 @@ package org.as3commons.logging {
 		/** Short name of the logger. (Generated from the passed-in name) */
 		private var _shortName:String;
 		
+		/** Optional Personalization option for log statements */
+		private var _person:String;
+		
 		/**
 		 * Creates a new <code>Logger</code> Proxy.
 		 *
 		 * @param name Name of the logger
 		 */
-		public function Logger(name:String) {
+		public function Logger(name:String, person:String=null) {
 			_name = name;
 			_shortName = (_shortName=_name.substr( _name.lastIndexOf(".")+1));
+			_person = person;
 		}
 		
 		/**
@@ -84,7 +84,7 @@ package org.as3commons.logging {
 		 */
 		public function debug(message:*, ... params:*):void {
 			if(debugTarget) {
-				debugTarget.log(_name, _shortName, DEBUG, _startTime+getTimer(), message, params);
+				debugTarget.log(_name, _shortName, 0x0020 /*DEBUG*/, _startTime+getTimer(), message, params, _person);
 			}
 		}
 		
@@ -93,7 +93,7 @@ package org.as3commons.logging {
 		 */
 		public function info(message:*, ... params:*):void {
 			if(infoTarget) {
-				infoTarget.log(_name, _shortName, INFO, _startTime+getTimer(), message, params);
+				infoTarget.log(_name, _shortName, 0x0010 /*INFO*/, _startTime+getTimer(), message, params, _person);
 			}
 		}
 		
@@ -102,7 +102,7 @@ package org.as3commons.logging {
 		 */
 		public function warn(message:*, ... params:*):void {
 			if(warnTarget) {
-				warnTarget.log(_name, _shortName, WARN, _startTime+getTimer(), message, params);
+				warnTarget.log(_name, _shortName, 0x0008 /*WARN*/, _startTime+getTimer(), message, params, _person);
 			}
 		}
 		
@@ -111,7 +111,7 @@ package org.as3commons.logging {
 		 */
 		public function error(message:*, ... params:*):void {
 			if(errorTarget) {
-				errorTarget.log(_name, _shortName, ERROR, _startTime+getTimer(), message, params);
+				errorTarget.log(_name, _shortName, 0x0004 /*ERROR*/, _startTime+getTimer(), message, params, _person);
 			}
 		}
 		
@@ -120,7 +120,7 @@ package org.as3commons.logging {
 		 */
 		public function fatal(message:*, ... params:*):void {
 			if(fatalTarget) {
-				fatalTarget.log(_name, _shortName, FATAL, _startTime+getTimer(), message, params);
+				fatalTarget.log(_name, _shortName, 0x0002 /*FATAL*/, _startTime+getTimer(), message, params, _person);
 			}
 		}
 		
@@ -174,6 +174,13 @@ package org.as3commons.logging {
 		}
 		
 		/**
+		 * @inheritDoc
+		 */
+		public function get person():String {
+			return _person;
+		}
+		
+		/**
 		 * Sets all loggers to the passed-in logTarget.
 		 *
 		 * @param logTarget target to be used for all levels
@@ -186,7 +193,7 @@ package org.as3commons.logging {
 		 * String representation of the Logger.
 		 */
 		public function toString(): String {
-			return "[Logger name='" + _name + "']";
+			return "[Logger name='" + _name + ( _person ? "@" + _person: "" ) + "']";
 		}
 	}
 }

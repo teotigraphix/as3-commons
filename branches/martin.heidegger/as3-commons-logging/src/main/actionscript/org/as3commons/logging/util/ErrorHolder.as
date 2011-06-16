@@ -19,39 +19,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.util {
+	
+	import flash.events.ErrorEvent;
 	
 	/**
-	 * Returns a logger for the passed-in name.
-	 * 
-	 * <p>Shortest access to get a custom named <code>ILogger</code> instance to
-	 * send your logging statements.</p>
-	 * <p>Short form of now deprecated <code>LoggerFactory.getNamedLogger(name);</code>.</p>
-	 * 
-	 * @example <listing>
-	 * package {
-	 *    
-	 *    import org.as3commons.logging.getNamedLogger;
-	 *    import org.as3commons.logging.ILogger;
-	 *    
-	 *    class MyClass {
-	 *        private static const log: ILogger = getNamedLogger("This is my super name for this logger");
-	 *        function MyClass() {
-	 *            log.info("Hello World");
-	 *        }
-	 *    }
-	 * } 
-	 * </listing>
+	 * Error Holder that is easily transferable via JavaScript or alike
 	 * 
 	 * @author Martin Heidegger
-	 * @param input Any object (will be transformed by toLogName)
-	 * @param person Information about the person that requested this logger.
-	 * @return <code>ILogger</code> instance to publish log statements
-	 * @since 2.0
-	 * @see LoggerFactory#getLogger()
-	 * @see org.as3commons.logging#LOGGER_FACTORY
+	 * @since 2.1
 	 */
-	public function getNamedLogger(name:String,person:String=null):ILogger {
-		return LOGGER_FACTORY.getNamedLogger(name,person);
+	public class ErrorHolder {
+		
+		/** Text of the Error */
+		public var text: String;
+		
+		/** Holds the StackTrace */
+		public var stackTrace: String;
+		
+		/** Number of the Error */
+		public var errorNo: int;
+		
+		/**
+		 * Takes errors or ErrorEvents that holds Errors
+		 * 
+		 * @param e Error or ErrorEvent
+		 */
+		public function ErrorHolder( e: Object ) {
+			if( e is ErrorEvent ) {
+				errorNo = ErrorEvent( e ).errorID;
+			} else {
+				errorNo = -1;
+			}
+			if( e.hasOwnProperty("error") ) {
+				e = e["error"];
+			}
+			
+			try {
+				stackTrace = e.getStackTrace();
+				text = e.message;
+				errorNo = e.errorID
+			} catch( error: Error ) {
+				text = e.toString();
+			}
+		}
+		
+		/**
+		 * Stringification of the error
+		 */
+		public function toString(): String {
+			return "Error[" + errorNo + "]: " + text + "\n" + stackTrace;
+		}
 	}
 }

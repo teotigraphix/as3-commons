@@ -21,7 +21,6 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import org.as3commons.logging.LogLevel;
 	import org.as3commons.logging.setup.ILogTarget;
 	
 	/**
@@ -58,10 +57,10 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log(name:String, shortName:String, level:LogLevel, timeStamp:Number,
-							message:*, parameters:Array): void {
-			_logTargetA.log(name, shortName, level, timeStamp, message, parameters);
-			_logTargetB.log(name, shortName, level, timeStamp, message, parameters);
+		public function log(name:String, shortName:String, level:int, timeStamp:Number,
+							message:*, parameters:Array, person:String=null): void {
+			_logTargetA.log(name, shortName, level, timeStamp, message, parameters, person);
+			_logTargetB.log(name, shortName, level, timeStamp, message, parameters, person);
 		}
 	}
 }

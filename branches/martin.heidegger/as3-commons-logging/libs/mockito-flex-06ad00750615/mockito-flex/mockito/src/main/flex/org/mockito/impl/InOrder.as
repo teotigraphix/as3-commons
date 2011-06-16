@@ -13,8 +13,10 @@ public class InOrder implements Verifier
     public function verify(wanted:Invocation, invocations:Invocations):void
     {
         var foundSequence:int = invocations.getSequenceNumberForFirstMatching(wanted, invocations.sequenceNumber);
-        if (invocations.sequenceNumber > foundSequence || foundSequence < 0)
+        if (invocations.sequenceNumber > foundSequence || foundSequence < 0) {
+        	invocations.getSequenceNumberForFirstMatching(wanted, invocations.sequenceNumber);
             throw new InvocationsNotInOrder("Invocation " + wanted.describe() + " not in order.");
+        }
         invocations.sequenceNumber = foundSequence;
     }
 }

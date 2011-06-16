@@ -2,11 +2,11 @@
 <launchConfiguration type="com.powerflasher.fdt.ui.MxmlcGroup">
 <stringAttribute key="ADL_ARGUMENTS" value=""/>
 <stringAttribute key="APP_ARGUMENTS" value=""/>
-<stringAttribute key="ARGUMENTS" value="-target-player={playerVersion}&#10;-library-path+=&quot;{flexSDK}/frameworks/locale/en_US&quot;&#10;-default-size=550,400"/>
-<booleanAttribute key="KILL_PREVIUOS_VIEWER" value="false"/>
+<stringAttribute key="ARGUMENTS" value=""/>
+<booleanAttribute key="KILL_PREVIUOS_VIEWER" value="true"/>
 <stringAttribute key="LAUNCHER_DEPENDENCIES" value="[Self]"/>
-<stringAttribute key="MAIN_CLASS" value="src/test/actionscript/org/as3commons/logging/LogTests.as"/>
-<stringAttribute key="OUTPUT" value="bin/LogTests.swf"/>
+<stringAttribute key="MAIN_CLASS" value="src/test/actionscript/FirebugTest.as"/>
+<stringAttribute key="OUTPUT" value="bin/FirebugTest.swf"/>
 <booleanAttribute key="PASS_CP" value="true"/>
 <booleanAttribute key="PASS_EXTERNS" value="true"/>
 <booleanAttribute key="PASS_MAIN_CLASS" value="true"/>
@@ -18,8 +18,8 @@
 <stringAttribute key="PRE_COMPILE_ANT" value=""/>
 <stringAttribute key="PROJECT_NAME" value="as3-commons-logging"/>
 <stringAttribute key="PUBLISHER_ID" value=""/>
-<booleanAttribute key="START_SWF_ENABLED" value="true"/>
-<stringAttribute key="START_SWF_LOCATION" value="bin/LogTests.swf"/>
+<booleanAttribute key="START_SWF_ENABLED" value="false"/>
+<stringAttribute key="START_SWF_LOCATION" value="bin/FirebugTest.swf"/>
 <stringAttribute key="START_SWF_WITH" value="AIR Debug Launcher"/>
 <booleanAttribute key="USE_PROJECT_COMPILER_ARGUMENTS" value="true"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">

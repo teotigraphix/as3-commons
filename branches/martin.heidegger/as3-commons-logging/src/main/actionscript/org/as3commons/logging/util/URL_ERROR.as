@@ -19,39 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.util {
 	
 	/**
-	 * Returns a logger for the passed-in name.
-	 * 
-	 * <p>Shortest access to get a custom named <code>ILogger</code> instance to
-	 * send your logging statements.</p>
-	 * <p>Short form of now deprecated <code>LoggerFactory.getNamedLogger(name);</code>.</p>
-	 * 
-	 * @example <listing>
-	 * package {
-	 *    
-	 *    import org.as3commons.logging.getNamedLogger;
-	 *    import org.as3commons.logging.ILogger;
-	 *    
-	 *    class MyClass {
-	 *        private static const log: ILogger = getNamedLogger("This is my super name for this logger");
-	 *        function MyClass() {
-	 *            log.info("Hello World");
-	 *        }
-	 *    }
-	 * } 
-	 * </listing>
-	 * 
+	 * Default errors for the URL variables.
 	 * @author Martin Heidegger
-	 * @param input Any object (will be transformed by toLogName)
-	 * @param person Information about the person that requested this logger.
-	 * @return <code>ILogger</code> instance to publish log statements
-	 * @since 2.0
-	 * @see LoggerFactory#getLogger()
-	 * @see org.as3commons.logging#LOGGER_FACTORY
 	 */
-	public function getNamedLogger(name:String,person:String=null):ILogger {
-		return LOGGER_FACTORY.getNamedLogger(name,person);
-	}
+	public const URL_ERROR: String = "[SWF url not initialized. Please call SWFInfo.init(stage).]";
 }

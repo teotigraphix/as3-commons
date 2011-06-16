@@ -1,4 +1,5 @@
 package org.as3commons.logging {
+	import org.as3commons.logging.level.levelToName;
 	import flexunit.framework.Assert;
 
 	import org.as3commons.logging.level.DEBUG;
@@ -14,37 +15,37 @@ package org.as3commons.logging {
 		
 		[Test]
 		public function testDebug():void {
-			var level: LogLevel = DEBUG;
-			assertEquals( level.name, "DEBUG" );
-			assertEquals( level.valueOf(), 0x20 );
+			var level: int = DEBUG;
+			assertEquals( levelToName(level), "DEBUG" );
+			assertEquals( level, 0x20 );
 		}
 		
 		[Test]
 		public function testInfo():void {
-			var level: LogLevel = INFO;
-			assertEquals( level.name, "INFO" );
-			assertEquals( level.valueOf(), 0x10 );
+			var level: int = INFO;
+			assertEquals( levelToName(level), "INFO" );
+			assertEquals( level, 0x10 );
 		}
 		
 		[Test]
 		public function testWarn():void {
-			var level: LogLevel = WARN;
-			assertEquals( level.name, "WARN" );
-			assertEquals( level.valueOf(), 0x08 );
+			var level: int = WARN;
+			assertEquals( levelToName(level), "WARN" );
+			assertEquals( level, 0x08 );
 		}
 		
 		[Test]
 		public function testError():void {
-			var level: LogLevel = ERROR;
-			assertEquals( level.name, "ERROR" );
-			assertEquals( level.valueOf(), 0x04 );
+			var level: int = ERROR;
+			assertEquals( levelToName(level), "ERROR" );
+			assertEquals( level, 0x04 );
 		}
 		
 		[Test]
 		public function testFatal():void {
-			var level: LogLevel = FATAL;
-			assertEquals( level.name, "FATAL" );
-			assertEquals( level.valueOf(), 0x02 );
+			var level: int = FATAL;
+			assertEquals( levelToName(level), "FATAL" );
+			assertEquals( level, 0x02 );
 		}
 	}
 }

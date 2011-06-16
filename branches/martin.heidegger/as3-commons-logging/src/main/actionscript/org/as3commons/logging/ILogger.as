@@ -75,6 +75,8 @@ package org.as3commons.logging {
 		 */
 		function get shortName():String
 		
+		function get person():String;
+		
 		/**
 		 * Logs a message for debug purposes.
 		 * 

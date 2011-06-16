@@ -75,7 +75,7 @@ package org.as3commons.logging.integration {
 			super.addLogger(logger);
 			// Stores the equivalent logger of as3commons in the map
 			if( logger ) {
-				_loggerMap[ logger ] = getNamedLogger(logger.category);
+				_loggerMap[ logger ] = getNamedLogger(logger.category,"flex");
 			}
 		}
 		
