@@ -56,9 +56,9 @@ package org.as3commons.logging.util {
 			}
 			
 			try {
-				stackTrace = e.getStackTrace();
 				text = e.message;
-				errorNo = e.errorID
+				errorNo = e.errorID;
+				stackTrace = e.getStackTrace();
 			} catch( error: Error ) {
 				text = e.toString();
 			}

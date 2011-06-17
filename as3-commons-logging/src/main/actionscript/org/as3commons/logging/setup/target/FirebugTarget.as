@@ -219,7 +219,7 @@ function getProps( value: * ): Array {
 									+ xml["factory"]["variable"] + xml["variable"];
 			
 			for each( var property: XML in properties ) {
-				result[l++] = property.@name.toString();
+				result[l++] = XML( property.@name ).toString();
 			}
 		}
 		storage[cls] = result;

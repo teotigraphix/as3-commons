@@ -22,7 +22,6 @@
 package org.as3commons.logging.setup.target {
 	
 	import com.demonsters.debugger.MonsterDebugger;
-	import flash.utils.Dictionary;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
@@ -47,7 +46,7 @@ package org.as3commons.logging.setup.target {
 		public static const DEFAULT_FORMAT:String = "{message}";
 
 		/** Default colors used to color the output statements. */
-		public static const DEFAULT_COLORS:Dictionary = new Dictionary();
+		public static const DEFAULT_COLORS:Object = {};
 		{
 			DEFAULT_COLORS[DEBUG] = 0x0030AA;
 			DEFAULT_COLORS[FATAL] = 0xAA0000;
@@ -58,7 +57,7 @@ package org.as3commons.logging.setup.target {
 		
 		
 		/** Colors used to display the messages. */
-		private var _colors:Dictionary;
+		private var _colors:Object;
 		
 		/** Formatter that renders the log statements via MonsterDebugger.trace(). */
 		private var _formatter:LogMessageFormatter;
@@ -74,7 +73,7 @@ package org.as3commons.logging.setup.target {
 		 * @param depth Depth used to 
 		 */
 		public function MonsterDebugger3TraceTarget(format:String=null,
-													colors:Dictionary=null,
+													colors:Object=null,
 													depth:int=5) {
 			this.format = format;
 			this.colors = colors;
@@ -100,11 +99,11 @@ package org.as3commons.logging.setup.target {
 		 *     MONSTER_DEBUGGER_V3_TARGET.colors = colors;
 		 * </listing>
 		 */
-		public function get colors():Dictionary {
+		public function get colors():Object {
 			return _colors;
 		}
 		
-		public function set colors(colors:Dictionary):void {
+		public function set colors(colors:Object):void {
 			_colors = colors||DEFAULT_COLORS;
 		}
 		

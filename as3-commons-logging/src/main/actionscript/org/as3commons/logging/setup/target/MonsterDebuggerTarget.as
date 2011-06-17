@@ -20,17 +20,14 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.target {
-	
-	import flash.utils.Dictionary;
 	import nl.demonsters.debugger.MonsterDebugger;
-	
+
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.util.LogMessageFormatter;
-	import org.as3commons.logging.setup.target.IFormattingLogTarget;
 	
 	/**
 	 * <code>MonsterDebuggerTarget</code> logs directly to the monster debugger.
@@ -48,7 +45,7 @@ package org.as3commons.logging.setup.target {
 		public static const DEFAULT_FORMAT: String = "{time} {shortName}{atPerson} - {message}";
 		
 		/** Default colors used to color the output statements. */
-		public static const DEFAULT_COLORS: Dictionary = new Dictionary();
+		public static const DEFAULT_COLORS: Object = {};
 		{
 			DEFAULT_COLORS[DEBUG] = MonsterDebugger.COLOR_NORMAL;
 			DEFAULT_COLORS[FATAL] = MonsterDebugger.COLOR_ERROR;
@@ -58,7 +55,7 @@ package org.as3commons.logging.setup.target {
 		}
 		
 		/** Colors used to display the messages. */
-		private var _colors:Dictionary;
+		private var _colors:Object;
 		
 		/** Formatter that renders the log statements. */
 		private var _formatter:LogMessageFormatter;
@@ -69,7 +66,7 @@ package org.as3commons.logging.setup.target {
 		 * @param format Default format used to render log statements.
 		 * @param colors Default colors used to color log statements.
 		 */
-		public function MonsterDebuggerTarget(format:String=null,colors:Dictionary=null) {
+		public function MonsterDebuggerTarget(format:String=null,colors:Object=null) {
 			this.format = format||DEFAULT_FORMAT;
 			this.colors = colors||DEFAULT_COLORS;
 		}
@@ -93,11 +90,11 @@ package org.as3commons.logging.setup.target {
 		 *     monsterDebuggerTarget.colors = colors;
 		 * </listing>
 		 */
-		public function get colors():Dictionary {
+		public function get colors():Object {
 			return _colors;
 		}
 		
-		public function set colors(colors:Dictionary):void {
+		public function set colors(colors:Object):void {
 			_colors = colors||DEFAULT_COLORS;
 		}
 		

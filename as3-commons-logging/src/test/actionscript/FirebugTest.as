@@ -1,12 +1,15 @@
 package {
-	import org.as3commons.logging.setup.target.FirebugTarget;
-	import org.as3commons.logging.setup.SimpleTargetSetup;
-	import org.as3commons.logging.LOGGER_FACTORY;
-	import org.as3commons.logging.util.captureUncaughtErrors;
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.getLogger;
-
+	import com.demonsters.debugger.MonsterDebugger;
 	import flash.display.Sprite;
+	import org.as3commons.logging.ILogger;
+	import org.as3commons.logging.LOGGER_FACTORY;
+	import org.as3commons.logging.getLogger;
+	import org.as3commons.logging.setup.SimpleTargetSetup;
+	import org.as3commons.logging.setup.target.FirebugTarget;
+	import org.as3commons.logging.setup.target.MonsterDebugger3TraceTarget;
+	import org.as3commons.logging.setup.target.mergeTargets;
+	import org.as3commons.logging.util.captureUncaughtErrors;
+
 	
 	public class FirebugTest extends Sprite {
 		
@@ -14,7 +17,9 @@ package {
 		
 		public function FirebugTest() {
 			
-			LOGGER_FACTORY.setup = new SimpleTargetSetup( new FirebugTarget() );
+			MonsterDebugger.initialize( this );
+			
+			LOGGER_FACTORY.setup = new SimpleTargetSetup( mergeTargets( new FirebugTarget(), new MonsterDebugger3TraceTarget() ) );
 			
 			captureUncaughtErrors( loaderInfo );
 			

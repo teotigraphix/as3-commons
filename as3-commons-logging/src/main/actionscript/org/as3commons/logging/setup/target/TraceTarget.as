@@ -21,7 +21,6 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import org.as3commons.logging.setup.target.IFormattingLogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
