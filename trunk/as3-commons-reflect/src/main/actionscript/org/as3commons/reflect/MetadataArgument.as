@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import flash.utils.Dictionary;
+
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IEquals;
 
@@ -32,6 +34,8 @@ package org.as3commons.reflect {
 
 		public var key:String;
 		public var value:String;
+
+		private static const _cache:Dictionary = new Dictionary();
 
 		/**
 		 * Creates a new MetadataArgument
@@ -48,6 +52,43 @@ package org.as3commons.reflect {
 			Assert.state(other is MetadataArgument, "other argument must be of type MetadataArgument");
 			var otherArgument:MetadataArgument = MetadataArgument(other);
 			return ((otherArgument.key == this.key) && (otherArgument.value == this.value));
+		}
+
+		public static function newInstance(key:String, value:String):MetadataArgument {
+			return getFromCache(key, value);
+		}
+
+		private static function addToCache(metadataArgument:MetadataArgument):void {
+			var cacheKey:String = metadataArgument.key.toLowerCase();
+			var instances:Array = _cache[cacheKey];
+			if (instances == null) {
+				instances = [];
+				instances[0] = metadataArgument;
+				_cache[cacheKey] = instances;
+			} else {
+				instances[instances.length] = metadataArgument;
+			}
+		}
+
+		private static function getFromCache(key:String, value:String):MetadataArgument {
+			var metadataArgument:MetadataArgument = new MetadataArgument(key, value);
+			var instances:Array = _cache[key.toLowerCase()];
+			if (instances == null) {
+				addToCache(metadataArgument);
+			} else {
+				var found:Boolean = false;
+				for each (var mda:MetadataArgument in instances) {
+					if (mda.equals(metadataArgument)) {
+						metadataArgument = mda;
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					addToCache(metadataArgument);
+				}
+			}
+			return metadataArgument;
 		}
 
 	}

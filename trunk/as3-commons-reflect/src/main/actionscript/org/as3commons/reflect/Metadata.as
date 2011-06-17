@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import flash.utils.Dictionary;
+
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IEquals;
 
@@ -33,6 +35,8 @@ package org.as3commons.reflect {
 		public static const TRANSIENT:String = "Transient";
 		public static const BINDABLE:String = "Bindable";
 
+		private static const _cache:Dictionary = new Dictionary();
+
 		private var _name:String;
 		private var _arguments:Array;
 
@@ -43,6 +47,11 @@ package org.as3commons.reflect {
 		 * @param arguments an array of MetadataArgument object that describe this metadata object
 		 */
 		public function Metadata(name:String, arguments:Array = null) {
+			super();
+			initMetadata(name, arguments);
+		}
+
+		protected function initMetadata(name:String, arguments:Array):void {
 			_name = name;
 			_arguments = (arguments == null) ? [] : arguments;
 		}
@@ -118,6 +127,43 @@ package org.as3commons.reflect {
 
 		as3commons_reflect function setName(value:String):void {
 			_name = value;
+		}
+
+		public static function newInstance(name:String, arguments:Array = null):Metadata {
+			return getFromCache(name, arguments);
+		}
+
+		private static function addToCache(metadata:Metadata):void {
+			var cacheKey:String = metadata.name.toLowerCase();
+			var instances:Array = _cache[cacheKey];
+			if (instances == null) {
+				instances = [];
+				instances[0] = metadata;
+				_cache[cacheKey] = instances;
+			} else {
+				instances[instances.length] = metadata;
+			}
+		}
+
+		private static function getFromCache(name:String, arguments:Array):Metadata {
+			var metadata:Metadata = new Metadata(name, arguments);
+			var instances:Array = _cache[name.toLowerCase()];
+			if (instances == null) {
+				addToCache(metadata);
+			} else {
+				var found:Boolean = false;
+				for each (var md:Metadata in instances) {
+					if (md.equals(metadata)) {
+						metadata = md;
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					addToCache(metadata);
+				}
+			}
+			return metadata;
 		}
 
 	}

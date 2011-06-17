@@ -32,5 +32,26 @@ package org.as3commons.reflect {
 			var a:MetadataArgument = new MetadataArgument("key", "value");
 			assertFalse(a.equals(new MetadataArgument("key", "value2")));
 		}
+
+		public function testNewInstanceWithoutSameArguments():void {
+			var mda1:MetadataArgument = MetadataArgument.newInstance("type", "propertyChanged");
+			var mda2:MetadataArgument = MetadataArgument.newInstance("type", "propertyChanged");
+			var mda3:MetadataArgument = MetadataArgument.newInstance("type", "propertyChanged");
+			assertStrictlyEquals(mda1, mda2);
+			assertStrictlyEquals(mda1, mda3);
+		}
+
+		public function testNewInstanceWithoutSameKeyButDifferentValue():void {
+			var mda1:MetadataArgument = MetadataArgument.newInstance("type", "propertyChanged");
+			var mda2:MetadataArgument = MetadataArgument.newInstance("type", "propertyChanged2");
+			assertFalse(mda1 === mda2);
+		}
+
+		public function testNewInstanceWithoutDifferentKeyButSameValue():void {
+			var mda1:MetadataArgument = MetadataArgument.newInstance("type", "propertyChanged");
+			var mda2:MetadataArgument = MetadataArgument.newInstance("type2", "propertyChanged");
+			assertFalse(mda1 === mda2);
+		}
+
 	}
 }

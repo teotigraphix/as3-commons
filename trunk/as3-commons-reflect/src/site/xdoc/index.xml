@@ -10,11 +10,11 @@
             <div id="downloadbox">
                 <h5>Get latest stable</h5>
                 <p>
-                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-reflect/1.3.4/as3commons-reflect-1.3.4.swc">
+                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-reflect/1.4/as3commons-reflect-1.4.swc">
                         <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
                         Download
                     </a>
-                    latest stable (1.3.4)
+                    latest stable (1.4)
                 </p>
                 <br/>
                 <h5>Get lastest development snapshot</h5>
@@ -46,6 +46,11 @@
             	method the new describeTypeJSON method is used to retrieve the type information.
             </p>
             
+            <p>
+            	Metadata, MetadataArgument, Accessor and Parameter arguments are immutable. So, for instance, if the Bindable metadata is used on two
+            	different classes and/or members AS3Commons-reflect will return the same Metadata instance in order to preserve memory.
+            </p>
+
             <p>
             	The library is thoroughly tested and is being intensively used for the
             	<a href="http://www.springactionscript.org/">Spring Actionscript</a> project.
