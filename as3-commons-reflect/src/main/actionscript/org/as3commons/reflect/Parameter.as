@@ -21,6 +21,9 @@
  */
 package org.as3commons.reflect {
 	import flash.system.ApplicationDomain;
+	import flash.utils.Dictionary;
+
+	import org.as3commons.lang.IEquals;
 
 	/**
 	 * Provides information of a parameter passed to a method.
@@ -28,9 +31,11 @@ package org.as3commons.reflect {
 	 * @author Christophe Herreman
 	 * @author Andrew Lewisohn
 	 */
-	public class Parameter {
+	public class Parameter implements IEquals {
 
 		private var _applicationDomain:ApplicationDomain;
+
+		private static const _cache:Dictionary = new Dictionary();
 
 		// -------------------------------------------------------------------------
 		//
@@ -104,6 +109,51 @@ package org.as3commons.reflect {
 
 		as3commons_reflect function setType(value:String):void {
 			typeName = value;
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherParam:Parameter = other as Parameter;
+			if (otherParam != null) {
+				return ((otherParam.index == this.index) && (otherParam.typeName == this.typeName) && (otherParam.isOptional == this.isOptional));
+			}
+			return false;
+		}
+
+		public static function newInstance(index:int, type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false):Parameter {
+			return getFromCache(index, type, applicationDomain, isOptional);
+		}
+
+		private static function addToCache(param:Parameter):void {
+			var cacheKey:String = param.typeName.toLowerCase();
+			var instances:Array = _cache[cacheKey];
+			if (instances == null) {
+				instances = [];
+				instances[0] = param;
+				_cache[cacheKey] = instances;
+			} else {
+				instances[instances.length] = param;
+			}
+		}
+
+		private static function getFromCache(index:int, type:String, applicationDomain:ApplicationDomain, isOptional:Boolean):Parameter {
+			var param:Parameter = new Parameter(index, type, applicationDomain, isOptional);
+			var instances:Array = _cache[param.typeName.toLowerCase()];
+			if (instances == null) {
+				addToCache(param);
+			} else {
+				var found:Boolean = false;
+				for each (var pm:Parameter in instances) {
+					if (pm.equals(param)) {
+						param = pm;
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					addToCache(param);
+				}
+			}
+			return param;
 		}
 
 	}

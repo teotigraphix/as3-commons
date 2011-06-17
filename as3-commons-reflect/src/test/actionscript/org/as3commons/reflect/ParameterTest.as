@@ -56,5 +56,36 @@ package org.as3commons.reflect {
 			assertEquals(true, p.isOptional);
 			assertEquals(Type.forClass(String), p.type);
 		}
+
+		public function testNewInstance():void {
+			var appDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var pm1:Parameter = Parameter.newInstance(1, "MyClass", appDomain, false);
+			var pm2:Parameter = Parameter.newInstance(1, "MyClass", appDomain, false);
+			var pm3:Parameter = Parameter.newInstance(1, "MyClass", appDomain, false);
+			assertStrictlyEquals(pm1, pm2);
+			assertStrictlyEquals(pm1, pm3);
+		}
+
+		public function testNewInstanceWithDifferentIsOptional():void {
+			var appDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var pm1:Parameter = Parameter.newInstance(1, "MyClass", appDomain, false);
+			var pm2:Parameter = Parameter.newInstance(1, "MyClass", appDomain, true);
+			assertFalse(pm1 === pm2);
+		}
+
+		public function testNewInstanceWithDifferentType():void {
+			var appDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var pm1:Parameter = Parameter.newInstance(1, "MyClass", appDomain, false);
+			var pm2:Parameter = Parameter.newInstance(1, "MyClass2", appDomain, false);
+			assertFalse(pm1 === pm2);
+		}
+
+		public function testNewInstanceWithDifferentIndex():void {
+			var appDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var pm1:Parameter = Parameter.newInstance(1, "MyClass", appDomain, false);
+			var pm2:Parameter = Parameter.newInstance(2, "MyClass", appDomain, false);
+			assertFalse(pm1 === pm2);
+		}
+
 	}
 }

@@ -207,7 +207,7 @@ package org.as3commons.reflect {
 			var result:Array = [];
 
 			for each (var accessorXML:XML in accessorsXML) {
-				var accessor:Accessor = new Accessor(accessorXML.@name, AccessorAccess.fromString(accessorXML.@access), accessorXML.@type.toString(), accessorXML.@declaredBy.toString(), isStatic, applicationDomain);
+				var accessor:Accessor = Accessor.newInstance(accessorXML.@name, AccessorAccess.fromString(accessorXML.@access), accessorXML.@type.toString(), accessorXML.@declaredBy.toString(), isStatic, applicationDomain);
 				if (StringUtils.hasText(accessorXML.@uri)) {
 					accessor.as3commons_reflect::setNamespaceURI(accessorXML.@uri.toString());
 				}
@@ -225,9 +225,9 @@ package org.as3commons.reflect {
 				var metadataArgs:Array = [];
 
 				for each (var metadataArgNode:XML in metadataXML.arg) {
-					metadataArgs[metadataArgs.length] = new MetadataArgument(metadataArgNode.@key, metadataArgNode.@value);
+					metadataArgs[metadataArgs.length] = MetadataArgument.newInstance(metadataArgNode.@key, metadataArgNode.@value);
 				}
-				metadata.addMetadata(new Metadata(metadataXML.@name, metadataArgs));
+				metadata.addMetadata(Metadata.newInstance(metadataXML.@name, metadataArgs));
 			}
 		}
 	}

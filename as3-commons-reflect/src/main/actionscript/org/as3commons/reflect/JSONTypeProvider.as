@@ -153,7 +153,7 @@ package org.as3commons.reflect {
 				/*if (acc.declaredBy != type.fullName) {
 					continue;
 				}*/
-				var accessor:Accessor = new Accessor(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
+				var accessor:Accessor = Accessor.newInstance(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
 				accessor.as3commons_reflect::setNamespaceURI(acc.uri);
 				parseMetadata(acc.metadata, accessor);
 				result[result.length] = accessor;
@@ -166,9 +166,9 @@ package org.as3commons.reflect {
 				var metadataArgs:Array = [];
 
 				for each (var metadataArgNode:Object in metadataObj.value) {
-					metadataArgs[metadataArgs.length] = new MetadataArgument(metadataArgNode.key, metadataArgNode.value);
+					metadataArgs[metadataArgs.length] = MetadataArgument.newInstance(metadataArgNode.key, metadataArgNode.value);
 				}
-				metadata.addMetadata(new Metadata(metadataObj.name, metadataArgs));
+				metadata.addMetadata(Metadata.newInstance(metadataObj.name, metadataArgs));
 			}
 		}
 

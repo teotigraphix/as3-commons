@@ -21,8 +21,10 @@
  */
 package org.as3commons.reflect {
 	import flash.system.ApplicationDomain;
+	import flash.utils.Dictionary;
 
 	import org.as3commons.lang.HashArray;
+	import org.as3commons.lang.IEquals;
 
 	/**
 	 * A member defined by getter and setter functions.
@@ -32,7 +34,9 @@ package org.as3commons.reflect {
 	 *
 	 * @see AccessorAccess
 	 */
-	public class Accessor extends Field {
+	public class Accessor extends Field implements IEquals {
+
+		private static const _cache:Dictionary = new Dictionary();
 
 		// -------------------------------------------------------------------------
 		//
@@ -125,5 +129,71 @@ package org.as3commons.reflect {
 		as3commons_reflect function setAccess(value:AccessorAccess):void {
 			_access = value;
 		}
+
+		public function equals(other:Object):Boolean {
+			var otherAccessor:Accessor = other as Accessor;
+			var result:Boolean = false;
+			if (otherAccessor != null) {
+				result = (otherAccessor.name && //
+					otherAccessor.access === this.access && //
+					otherAccessor.type == this.type && //
+					declaringType == this.declaringType && //
+					otherAccessor.isStatic == this.isStatic //
+					);
+				if (result) {
+					for each (var md:Metadata in otherAccessor.metadata) {
+						var mds:Array = this.getMetadata(md.name);
+						for each (var md2:Metadata in mds) {
+							if (md2 == null || !md2.equals(md)) {
+								result = false;
+								break;
+							}
+						}
+						if (!result) {
+							break;
+						}
+					}
+				}
+			}
+			return result;
+		}
+
+		public static function newInstance(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Accessor {
+			return getFromCache(name, access, type, declaringType, isStatic, applicationDomain, metadata);
+		}
+
+		private static function addToCache(accessor:Accessor):void {
+			var cacheKey:String = accessor.name.toLowerCase();
+			var instances:Array = _cache[cacheKey];
+			if (instances == null) {
+				instances = [];
+				instances[0] = accessor;
+				_cache[cacheKey] = instances;
+			} else {
+				instances[instances.length] = accessor;
+			}
+		}
+
+		private static function getFromCache(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Accessor {
+			var accessor:Accessor = new Accessor(name, access, type, declaringType, isStatic, applicationDomain, metadata);
+			var instances:Array = _cache[name.toLowerCase()];
+			if (instances == null) {
+				addToCache(accessor);
+			} else {
+				var found:Boolean = false;
+				for each (var acc:Accessor in instances) {
+					if (acc.equals(metadata)) {
+						accessor = acc;
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					addToCache(accessor);
+				}
+			}
+			return accessor;
+		}
+
 	}
 }
