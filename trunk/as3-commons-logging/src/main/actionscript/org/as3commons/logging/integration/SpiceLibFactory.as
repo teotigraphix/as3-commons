@@ -12,7 +12,7 @@ package org.as3commons.logging.integration {
 		
 		public function getLogger( name: Object ): Logger {
 			var nameStr: String = name.toString();
-			return _cache[ nameStr ] || ( _cache[ nameStr ] = getNamedLogger( nameStr ) );
+			return _cache[ nameStr ] || ( _cache[ nameStr ] = new LoggerWrapper( getNamedLogger( nameStr ) ) );
 		}
 	}
 }
@@ -28,27 +28,27 @@ class LoggerWrapper implements Logger {
 	}
 	
 	public function debug( message:String, ...args:* ):void {	
-		_logger.debug.apply( null, arguments );
+		_logger.debug.apply( null, [ message ].concat( args ) );
 	}
 
 	public function error( message:String, ...args:* ):void {	
-		_logger.error.apply( null, arguments );
+		_logger.error.apply( null, [ message ].concat( args ) );
 	}
 
 	public function fatal( message:String, ...args:* ):void {	
-		_logger.fatal.apply( null, arguments );
+		_logger.fatal.apply( null, [ message ].concat( args ) );
 	}
 
-	public function info( message:String, ...args:*):void {	
-		_logger.info.apply( null, arguments );
+	public function info( message:String, ...args:*):void {
+		_logger.info.apply( null, [ message ].concat( args ) );
 	}
 
 	public function trace( message:String, ...args:* ):void {	
-		_logger.info.apply( null, arguments );
+		_logger.info.apply( null, [ message ].concat( args ) );
 	}
 
 	public function warn( message:String, ...args:* ):void {	
-		_logger.warn.apply( null, arguments );
+		_logger.warn.apply( null, [ message ].concat( args ) );
 	}
 
 	public function isDebugEnabled():Boolean {

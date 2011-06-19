@@ -11,7 +11,7 @@ package org.as3commons.logging.setup.target {
 	 * @author mh
 	 */
 	public class SpiceLibTarget implements IFormattingLogTarget {
-		private static const DEFAULT_FORMAT: String = "{shortName} {message}";
+		private static const DEFAULT_FORMAT: String = "{message}";
 		
 		/** All the SpliceLib loggers requested for that logger */
 		private const _loggers:Object = {};
