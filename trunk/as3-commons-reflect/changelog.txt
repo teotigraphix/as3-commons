@@ -3,7 +3,7 @@ AS3COMMONS-REFLECT CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.4 (XX.XX.2011)
+Changes in version 1.4 (19.06.2011)
 -----------------------------------
 
 * Removed the index property from the Parameter class, it is unnecessary because it can be derived from the array and makes caching more sufficient.
