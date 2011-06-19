@@ -50,8 +50,7 @@ package org.as3commons.reflect {
 		 * @param type the class type of the parameter
 		 * @param isOptional whether the parameter is optional or not
 		 */
-		public function Parameter(index:int, type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false) {
-			_index = index;
+		public function Parameter(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false) {
 			typeName = type;
 			_applicationDomain = applicationDomain;
 			_isOptional = isOptional;
@@ -62,16 +61,6 @@ package org.as3commons.reflect {
 		//  Properties
 		//
 		// -------------------------------------------------------------------------
-
-		// ----------------------------
-		// index
-		// ----------------------------
-
-		private var _index:int;
-
-		public function get index():int {
-			return _index;
-		}
 
 		// ----------------------------
 		// isOptional
@@ -99,10 +88,6 @@ package org.as3commons.reflect {
 		//
 		// -------------------------------------------------------------------------
 
-		as3commons_reflect function setIndex(value:int):void {
-			_index = value;
-		}
-
 		as3commons_reflect function setIsOptional(value:Boolean):void {
 			_isOptional = value;
 		}
@@ -114,13 +99,13 @@ package org.as3commons.reflect {
 		public function equals(other:Object):Boolean {
 			var otherParam:Parameter = other as Parameter;
 			if (otherParam != null) {
-				return ((otherParam.index == this.index) && (otherParam.typeName == this.typeName) && (otherParam.isOptional == this.isOptional));
+				return ((otherParam._applicationDomain === this._applicationDomain) && (otherParam.typeName == this.typeName) && (otherParam.isOptional == this.isOptional));
 			}
 			return false;
 		}
 
-		public static function newInstance(index:int, type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false):Parameter {
-			return getFromCache(index, type, applicationDomain, isOptional);
+		public static function newInstance(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false):Parameter {
+			return getFromCache(type, applicationDomain, isOptional);
 		}
 
 		private static function addToCache(param:Parameter):void {
@@ -135,8 +120,8 @@ package org.as3commons.reflect {
 			}
 		}
 
-		private static function getFromCache(index:int, type:String, applicationDomain:ApplicationDomain, isOptional:Boolean):Parameter {
-			var param:Parameter = new Parameter(index, type, applicationDomain, isOptional);
+		private static function getFromCache(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean):Parameter {
+			var param:Parameter = new Parameter(type, applicationDomain, isOptional);
 			var instances:Array = _cache[param.typeName.toLowerCase()];
 			if (instances == null) {
 				addToCache(param);

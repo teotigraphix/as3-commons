@@ -4,10 +4,14 @@ package org.as3commons.reflect {
 
 	import flexunit.framework.TestCase;
 
+	import org.as3commons.lang.HashArray;
+
 	/**
 	 * @author Christophe Herreman
 	 */
 	public class AccessorTest extends TestCase {
+
+		public var appDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 
 		public function AccessorTest(methodName:String = null) {
 			super(methodName);
@@ -113,7 +117,26 @@ package org.as3commons.reflect {
 		// --------------------------------------------------------------------
 
 		private function newAccessor(access:AccessorAccess):Accessor {
-			return new Accessor("test", access, "test", "test", false, ApplicationDomain.currentDomain);
+			return new Accessor("test", access, "test", "test", false, appDomain);
+		}
+
+		public function testNewInstanceWithCacheAndEqualParams():void {
+			var acc1:Accessor = Accessor.newInstance("test", AccessorAccess.READ_ONLY, "test", "test", false, appDomain);
+			var acc2:Accessor = Accessor.newInstance("test", AccessorAccess.READ_ONLY, "test", "test", false, appDomain);
+			assertStrictlyEquals(acc1, acc2);
+		}
+
+		public function testNewInstanceWithCacheAndDifferentParams():void {
+			var acc1:Accessor = Accessor.newInstance("test", AccessorAccess.READ_ONLY, "test", "test", false, appDomain);
+			var acc2:Accessor = Accessor.newInstance("test", AccessorAccess.READ_WRITE, "test", "test", false, appDomain);
+			assertFalse(acc1 === acc2);
+		}
+
+		public function testNewInstanceWithCacheAndEqualParamsAndDifferentMetadata():void {
+			var md:HashArray = new HashArray("name", false, [Metadata.newInstance("Bindable")]);
+			var acc1:Accessor = Accessor.newInstance("test", AccessorAccess.READ_ONLY, "test", "test", false, appDomain, md);
+			var acc2:Accessor = Accessor.newInstance("test", AccessorAccess.READ_ONLY, "test", "test", false, appDomain);
+			assertFalse(acc1 === acc2);
 		}
 	}
 }

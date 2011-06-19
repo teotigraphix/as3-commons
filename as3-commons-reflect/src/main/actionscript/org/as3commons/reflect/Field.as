@@ -23,6 +23,7 @@ package org.as3commons.reflect {
 	import flash.system.ApplicationDomain;
 
 	import org.as3commons.lang.HashArray;
+	import org.as3commons.lang.IEquals;
 
 	/**
 	 * A field of a class.
