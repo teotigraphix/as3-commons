@@ -4,7 +4,7 @@
     <groupId>org.as3commons</groupId>
 	<artifactId>as3commons-reflect</artifactId>
 	<packaging>swc</packaging>
-	<version>1.4</version>
+	<version>1.5-SNAPSHOT</version>
 	<name>AS3Commons Reflect</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
@@ -419,9 +419,9 @@
 
 
 	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.4</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.4</url>
-	  <connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.4</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</url>
+	  <connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-reflect</connection>
   </scm>
 
 	<distributionManagement>
