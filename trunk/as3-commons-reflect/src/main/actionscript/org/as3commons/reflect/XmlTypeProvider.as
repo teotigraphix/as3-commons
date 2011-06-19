@@ -23,6 +23,7 @@ package org.as3commons.reflect {
 	 * describeType XML parser
 	 */
 	public class XmlTypeProvider extends AbstractTypeProvider {
+		private static const TRUE_VALUE:String = "true";
 
 
 		public function XmlTypeProvider() {
@@ -69,18 +70,18 @@ package org.as3commons.reflect {
 				type.parameters[type.parameters.length] = param;
 			}
 			type.clazz = cls;
-			type.isDynamic = (description.@isDynamic.toString() == "true");
-			type.isFinal = (description.@isFinal.toString() == "true");
-			type.isStatic = (description.@isStatic.toString() == "true");
+			type.isDynamic = (description.@isDynamic.toString() == TRUE_VALUE);
+			type.isFinal = (description.@isFinal.toString() == TRUE_VALUE);
+			type.isStatic = (description.@isStatic.toString() == TRUE_VALUE);
 			type.alias = description.@alias;
 			type.isInterface = (cls === Object) ? false : (description.factory.extendsClass.length() == 0);
 			type.constructor = parseConstructor(type, description.factory.constructor, applicationDomain);
 			type.accessors = parseAccessors(type, description, applicationDomain);
 			type.methods = parseMethods(type, description, applicationDomain);
-			type.staticConstants = parseMembers(Constant, description.constant, fullyQualifiedClassName, true, applicationDomain);
-			type.constants = parseMembers(Constant, description.factory.constant, fullyQualifiedClassName, false, applicationDomain);
-			type.staticVariables = parseMembers(Variable, description.variable, fullyQualifiedClassName, true, applicationDomain);
-			type.variables = parseMembers(Variable, description.factory.variable, fullyQualifiedClassName, false, applicationDomain);
+			type.staticConstants = parseMembers(Constant, Constant.doCacheCheck, description.constant, fullyQualifiedClassName, true, applicationDomain);
+			type.constants = parseMembers(Constant, Constant.doCacheCheck, description.factory.constant, fullyQualifiedClassName, false, applicationDomain);
+			type.staticVariables = parseMembers(Variable, Variable.doCacheCheck, description.variable, fullyQualifiedClassName, true, applicationDomain);
+			type.variables = parseMembers(Variable, Variable.doCacheCheck, description.factory.variable, fullyQualifiedClassName, false, applicationDomain);
 			type.extendsClasses = parseExtendsClasses(description.factory.extendsClass, type.applicationDomain);
 			parseMetadata(description.factory[0].metadata, type);
 			type.interfaces = parseImplementedInterfaces(description.factory.implementsInterface);
@@ -139,7 +140,7 @@ package org.as3commons.reflect {
 		/**
 		 *
 		 */
-		private function parseMembers(memberClass:Class, members:XMLList, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain):Array {
+		private function parseMembers(memberClass:Class, cacheMethod:Function, members:XMLList, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
 
 			for each (var m:XML in members) {
@@ -148,6 +149,7 @@ package org.as3commons.reflect {
 					INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.@uri.toString());
 				}
 				parseMetadata(m.metadata, member);
+				member = cacheMethod(member);
 				result[result.length] = member;
 			}
 			return result;
@@ -196,7 +198,7 @@ package org.as3commons.reflect {
 			var params:Array = [];
 
 			for each (var paramXML:XML in paramsXML) {
-				var param:Parameter = new Parameter(paramXML.@index, paramXML.@type, applicationDomain, paramXML.@optional == "true" ? true : false);
+				var param:Parameter = Parameter.newInstance(paramXML.@type, applicationDomain, paramXML.@optional == TRUE_VALUE ? true : false);
 				params[params.length] = param;
 			}
 
@@ -207,11 +209,12 @@ package org.as3commons.reflect {
 			var result:Array = [];
 
 			for each (var accessorXML:XML in accessorsXML) {
-				var accessor:Accessor = Accessor.newInstance(accessorXML.@name, AccessorAccess.fromString(accessorXML.@access), accessorXML.@type.toString(), accessorXML.@declaredBy.toString(), isStatic, applicationDomain);
+				var accessor:Accessor = new Accessor(accessorXML.@name, AccessorAccess.fromString(accessorXML.@access), accessorXML.@type.toString(), accessorXML.@declaredBy.toString(), isStatic, applicationDomain);
 				if (StringUtils.hasText(accessorXML.@uri)) {
 					accessor.as3commons_reflect::setNamespaceURI(accessorXML.@uri.toString());
 				}
 				parseMetadata(accessorXML.metadata, accessor);
+				accessor = Accessor.doCacheCheck(accessor);
 				result[result.length] = accessor;
 			}
 			return result;

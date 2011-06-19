@@ -140,7 +140,7 @@ package org.as3commons.reflect {
 			var result:Array = [];
 			var idx:int = 1;
 			for each (var paramObj:Object in params) {
-				var param:Parameter = new Parameter(idx++, paramObj.type, applicationDomain, paramObj.optional);
+				var param:Parameter = Parameter.newInstance(paramObj.type, applicationDomain, paramObj.optional);
 				result[result.length] = param;
 			}
 			return result;

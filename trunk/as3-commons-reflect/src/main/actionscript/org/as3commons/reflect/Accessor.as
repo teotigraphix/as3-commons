@@ -130,39 +130,27 @@ package org.as3commons.reflect {
 			_access = value;
 		}
 
-		public function equals(other:Object):Boolean {
+		override public function equals(other:Object):Boolean {
 			var otherAccessor:Accessor = other as Accessor;
 			var result:Boolean = false;
 			if (otherAccessor != null) {
-				result = (otherAccessor.name && //
-					otherAccessor.access === this.access && //
-					otherAccessor.type == this.type && //
-					declaringType == this.declaringType && //
-					otherAccessor.isStatic == this.isStatic //
-					);
+				result = super.equals(other);
 				if (result) {
-					for each (var md:Metadata in otherAccessor.metadata) {
-						var mds:Array = this.getMetadata(md.name);
-						for each (var md2:Metadata in mds) {
-							if (md2 == null || !md2.equals(md)) {
-								result = false;
-								break;
-							}
-						}
-						if (!result) {
-							break;
-						}
-					}
+					result = (otherAccessor.access === this.access);
+				}
+				if (result) {
+					result = compareMetadata(otherAccessor.metadata);
 				}
 			}
 			return result;
 		}
 
 		public static function newInstance(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Accessor {
-			return getFromCache(name, access, type, declaringType, isStatic, applicationDomain, metadata);
+			var accessor:Accessor = new Accessor(name, access, type, declaringType, isStatic, applicationDomain, metadata);
+			return doCacheCheck(accessor);
 		}
 
-		private static function addToCache(accessor:Accessor):void {
+		public static function addToCache(accessor:Accessor):void {
 			var cacheKey:String = accessor.name.toLowerCase();
 			var instances:Array = _cache[cacheKey];
 			if (instances == null) {
@@ -174,15 +162,14 @@ package org.as3commons.reflect {
 			}
 		}
 
-		private static function getFromCache(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Accessor {
-			var accessor:Accessor = new Accessor(name, access, type, declaringType, isStatic, applicationDomain, metadata);
-			var instances:Array = _cache[name.toLowerCase()];
+		public static function doCacheCheck(accessor:Accessor):Accessor {
+			var instances:Array = _cache[accessor.name];
 			if (instances == null) {
 				addToCache(accessor);
 			} else {
 				var found:Boolean = false;
 				for each (var acc:Accessor in instances) {
-					if (acc.equals(metadata)) {
+					if (acc.equals(accessor)) {
 						accessor = acc;
 						found = true;
 						break;

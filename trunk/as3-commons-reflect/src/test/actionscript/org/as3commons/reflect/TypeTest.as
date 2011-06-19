@@ -134,20 +134,17 @@ package org.as3commons.reflect {
 			var firstParameter:Parameter = constructor.parameters[0];
 
 			assertFalse(firstParameter.isOptional);
-			assertEquals(1, firstParameter.index);
 			assertEquals(String, firstParameter.type.clazz);
 
 			var secondParameter:Parameter = constructor.parameters[1];
 
 			assertFalse(secondParameter.isOptional);
-			assertEquals(2, secondParameter.index);
 			assertEquals(Number, secondParameter.type.clazz);
 
 
 			var thirdParameter:Parameter = constructor.parameters[2];
 
 			assertTrue(thirdParameter.isOptional);
-			assertEquals(3, thirdParameter.index);
 			assertEquals(Array, thirdParameter.type.clazz);
 		}
 
@@ -166,7 +163,6 @@ package org.as3commons.reflect {
 			var firstParameter:Parameter = constructor.parameters[0];
 
 			assertTrue(firstParameter.isOptional);
-			assertEquals(1, firstParameter.index);
 			assertEquals(String, firstParameter.type.clazz);
 
 			//Assertion depends on which player version is used for the unit tests,

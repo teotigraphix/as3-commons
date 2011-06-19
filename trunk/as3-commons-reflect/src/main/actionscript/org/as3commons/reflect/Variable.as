@@ -21,6 +21,9 @@
  */
 package org.as3commons.reflect {
 	import flash.system.ApplicationDomain;
+	import flash.utils.Dictionary;
+
+	import org.as3commons.lang.HashArray;
 
 	/**
 	 * A property defined with the <code>var</code> keyword.
@@ -28,6 +31,8 @@ package org.as3commons.reflect {
 	 * @author Christophe Herreman
 	 */
 	public class Variable extends Field {
+
+		private static const _cache:Dictionary = new Dictionary();
 
 		/**
 		 * Creates a new <code>Variable</code> object.
@@ -37,8 +42,46 @@ package org.as3commons.reflect {
 		 * @param declaringType the type that declares the variable
 		 * @param isStatic whether or not this member is static (class member)
 		 */
-		public function Variable(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain) {
-			super(name, type, declaringType, isStatic, applicationDomain);
+		public function Variable(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) {
+			super(name, type, declaringType, isStatic, applicationDomain, metadata);
 		}
+
+		public static function newInstance(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Variable {
+			var variable:Variable = new Variable(name, type, declaringType, isStatic, applicationDomain, metadata);
+			return doCacheCheck(variable);
+		}
+
+		public static function addToCache(variable:Variable):void {
+			var cacheKey:String = variable.name;
+			var instances:Array = _cache[cacheKey];
+			if (instances == null) {
+				instances = [];
+				instances[0] = variable;
+				_cache[cacheKey] = instances;
+			} else {
+				instances[instances.length] = variable;
+			}
+		}
+
+		public static function doCacheCheck(variable:Variable):Variable {
+			var instances:Array = _cache[variable.name];
+			if (instances == null) {
+				addToCache(variable);
+			} else {
+				var found:Boolean = false;
+				for each (var vr:Variable in instances) {
+					if (vr.equals(variable)) {
+						variable = vr;
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					addToCache(variable);
+				}
+			}
+			return variable;
+		}
+
 	}
 }

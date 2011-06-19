@@ -24,6 +24,7 @@ package org.as3commons.reflect {
 
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.HashArray;
+	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -32,7 +33,7 @@ package org.as3commons.reflect {
 	 * @author Christophe Herreman
 	 * @author Andrew Lewisohn
 	 */
-	public class AbstractMember extends MetadataContainer implements IMember, INamespaceOwner {
+	public class AbstractMember extends MetadataContainer implements IEquals, IMember, INamespaceOwner {
 
 		// -------------------------------------------------------------------------
 		//
@@ -52,7 +53,7 @@ package org.as3commons.reflect {
 		 * @private
 		 * Stores the string name of the type impl.
 		 */
-		private var typeName:String;
+		protected var typeName:String;
 
 		// -------------------------------------------------------------------------
 		//
@@ -149,6 +150,41 @@ package org.as3commons.reflect {
 
 		public function get type():Type {
 			return Type.forName(typeName, applicationDomain);
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherField:AbstractMember = other as AbstractMember;
+			var result:Boolean = false;
+			if (otherField != null) {
+				result = ((otherField.name == this.name) && //
+					(otherField.typeName == this.typeName) && //
+					(otherField.declaringTypeName == this.declaringTypeName) && //
+					(otherField.isStatic == this.isStatic) && //
+					(otherField.applicationDomain === this.applicationDomain) //
+					);
+				if (result) {
+					result = compareMetadata(otherField.metadata);
+				}
+			}
+			return result;
+		}
+
+
+		protected function compareMetadata(metadataArray:Array):Boolean {
+			var result:Boolean = ((metadataArray.length == 0) && (this.metadata.length == 0));
+			for each (var md:Metadata in metadataArray) {
+				var mds:Array = this.getMetadata(md.name);
+				for each (var md2:Metadata in mds) {
+					if (md2 == null || !md2.equals(md)) {
+						result = false;
+						break;
+					}
+				}
+				if (!result) {
+					break;
+				}
+			}
+			return result;
 		}
 
 		// -------------------------------------------------------------------------

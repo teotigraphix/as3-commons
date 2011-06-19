@@ -47,11 +47,9 @@ package org.as3commons.reflect {
 			assertStrictlyEquals(type, type.constructor.declaringType);
 			assertEquals(2, type.constructor.parameters.length);
 			var param:Parameter = type.constructor.parameters[0];
-			assertEquals(1, param.index);
 			assertEquals(false, param.isOptional);
 			assertEquals("String", param.type.name);
 			param = type.constructor.parameters[1];
-			assertEquals(2, param.index);
 			assertEquals(false, param.isOptional);
 			assertEquals("int", param.type.name);
 			//variables
