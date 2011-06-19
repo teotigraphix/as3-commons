@@ -47,7 +47,7 @@
             </p>
             
             <p>
-            	Metadata, MetadataArgument, Accessor and Parameter arguments are immutable. So, for instance, if the Bindable metadata is used on two
+            	Metadata, MetadataArgument, Accessor, Constant, Variable and Parameter arguments are immutable. So, for instance, if the Bindable metadata is used on two
             	different classes and/or members AS3Commons-reflect will return the same Metadata instance in order to preserve memory.
             </p>
 
