@@ -54,10 +54,10 @@ package org.as3commons.reflect {
 			type.constructor = parseConstructor(type, instanceInfo.traits.constructor, applicationDomain);
 			type.accessors = parseAccessors(type, instanceInfo.traits.accessors, applicationDomain, false).concat(parseAccessors(type, classInfo.traits.accessors, applicationDomain, true));
 			type.methods = parseMethods(type, instanceInfo.traits.methods, applicationDomain, false).concat(parseMethods(type, classInfo.traits.methods, applicationDomain, true));
-			type.staticConstants = parseMembers(type, Constant, classInfo.traits.variables, fullyQualifiedClassName, true, true, applicationDomain);
-			type.constants = parseMembers(type, Constant, instanceInfo.traits.variables, fullyQualifiedClassName, false, true, applicationDomain);
-			type.staticVariables = parseMembers(type, Variable, classInfo.traits.variables, fullyQualifiedClassName, true, false, applicationDomain);
-			type.variables = parseMembers(type, Variable, instanceInfo.traits.variables, fullyQualifiedClassName, false, false, applicationDomain);
+			type.staticConstants = parseMembers(type, Constant, Constant.doCacheCheck, classInfo.traits.variables, fullyQualifiedClassName, true, true, applicationDomain);
+			type.constants = parseMembers(type, Constant, Constant.doCacheCheck, instanceInfo.traits.variables, fullyQualifiedClassName, false, true, applicationDomain);
+			type.staticVariables = parseMembers(type, Variable, Variable.doCacheCheck, classInfo.traits.variables, fullyQualifiedClassName, true, false, applicationDomain);
+			type.variables = parseMembers(type, Variable, Variable.doCacheCheck, instanceInfo.traits.variables, fullyQualifiedClassName, false, false, applicationDomain);
 			type.extendsClasses = instanceInfo.traits.bases.concat();
 			parseMetadata(instanceInfo.traits.metadata, type);
 			type.interfaces = parseImplementedInterfaces(instanceInfo.traits.interfaces);
@@ -150,12 +150,10 @@ package org.as3commons.reflect {
 			var result:Array = [];
 
 			for each (var acc:Object in accessors) {
-				/*if (acc.declaredBy != type.fullName) {
-					continue;
-				}*/
-				var accessor:Accessor = Accessor.newInstance(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
+				var accessor:Accessor = new Accessor(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
 				accessor.as3commons_reflect::setNamespaceURI(acc.uri);
 				parseMetadata(acc.metadata, accessor);
+				accessor = Accessor.doCacheCheck(accessor);
 				result[result.length] = accessor;
 			}
 			return result;
@@ -172,7 +170,7 @@ package org.as3commons.reflect {
 			}
 		}
 
-		private function parseMembers(type:Type, memberClass:Class, members:Array, declaringType:String, isStatic:Boolean, isConstant:Boolean, applicationDomain:ApplicationDomain):Array {
+		private function parseMembers(type:Type, memberClass:Class, cacheMethod:Function, members:Array, declaringType:String, isStatic:Boolean, isConstant:Boolean, applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
 
 			for each (var m:Object in members) {
@@ -186,6 +184,7 @@ package org.as3commons.reflect {
 					INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.uri);
 				}
 				parseMetadata(m.metadata, member);
+				member = cacheMethod(member);
 				result[result.length] = member;
 			}
 			return result;

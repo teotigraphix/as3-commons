@@ -23,8 +23,10 @@ package org.as3commons.reflect {
 	 * describeType XML parser
 	 */
 	public class XmlTypeProvider extends AbstractTypeProvider {
-		private static const TRUE_VALUE:String = "true";
 
+		private static const TRUE_VALUE:String = "true";
+		private static const METHODS_NAME:String = "methods";
+		private static const ACCESSORS_NAME:String = "accessors";
 
 		public function XmlTypeProvider() {
 			super();
@@ -90,8 +92,8 @@ package org.as3commons.reflect {
 			var numInterfaces:int = type.interfaces.length;
 			for (var i:int = 0; i < numInterfaces; i++) {
 				var interfaze:Type = Type.forName(type.interfaces[i], applicationDomain);
-				concatMetadata(type, interfaze.methods, "methods");
-				concatMetadata(type, interfaze.accessors, "accessors");
+				concatMetadata(type, interfaze.methods, METHODS_NAME);
+				concatMetadata(type, interfaze.accessors, ACCESSORS_NAME);
 				var interfaceMetadata:Array = interfaze.metadata;
 				var numMetadata:int = interfaceMetadata.length;
 
