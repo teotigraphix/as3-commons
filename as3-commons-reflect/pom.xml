@@ -4,7 +4,7 @@
     <groupId>org.as3commons</groupId>
 	<artifactId>as3commons-reflect</artifactId>
 	<packaging>swc</packaging>
-	<version>1.4.1</version>
+	<version>1.4.1-SNAPSHOT</version>
 	<name>AS3Commons Reflect</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
