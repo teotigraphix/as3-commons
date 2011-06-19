@@ -138,5 +138,14 @@ package org.as3commons.reflect {
 			var acc2:Accessor = Accessor.newInstance("test", AccessorAccess.READ_ONLY, "test", "test", false, appDomain);
 			assertFalse(acc1 === acc2);
 		}
+
+		public function testNewInstanceWithIllegalName():void {
+			var acc1:Accessor = Accessor.newInstance("hasOwnProperty", AccessorAccess.READ_ONLY, "test", "test", false, appDomain);
+			var acc2:Accessor = Accessor.newInstance("hasOwnProperty", AccessorAccess.READ_ONLY, "test", "test", false, appDomain);
+			var acc3:Accessor = Accessor.newInstance("hasOwnProperty", AccessorAccess.READ_ONLY, "test", "test", false, appDomain);
+			assertStrictlyEquals(acc1, acc2);
+			assertStrictlyEquals(acc1, acc3);
+		}
+
 	}
 }

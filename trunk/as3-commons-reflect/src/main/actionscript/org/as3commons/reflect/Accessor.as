@@ -151,7 +151,7 @@ package org.as3commons.reflect {
 		}
 
 		public static function addToCache(accessor:Accessor):void {
-			var cacheKey:String = accessor.name.toLowerCase();
+			var cacheKey:String = accessor.name.toUpperCase();
 			var instances:Array = _cache[cacheKey];
 			if (instances == null) {
 				instances = [];
@@ -163,7 +163,7 @@ package org.as3commons.reflect {
 		}
 
 		public static function doCacheCheck(accessor:Accessor):Accessor {
-			var instances:Array = _cache[accessor.name];
+			var instances:Array = _cache[accessor.name.toUpperCase()];
 			if (instances == null) {
 				addToCache(accessor);
 			} else {

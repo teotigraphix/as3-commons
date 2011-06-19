@@ -3,6 +3,11 @@ AS3COMMONS-REFLECT CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.4.1 (19.06.2011)
+-----------------------------------
+
+* Fixed critical issue concerning illegal cache key names such as hasOwnProperty in member caching
+
 Changes in version 1.4 (19.06.2011)
 -----------------------------------
 
