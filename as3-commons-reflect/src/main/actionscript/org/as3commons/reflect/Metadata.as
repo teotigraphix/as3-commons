@@ -134,7 +134,7 @@ package org.as3commons.reflect {
 		}
 
 		private static function addToCache(metadata:Metadata):void {
-			var cacheKey:String = metadata.name.toLowerCase();
+			var cacheKey:String = metadata.name.toUpperCase();
 			var instances:Array = _cache[cacheKey];
 			if (instances == null) {
 				instances = [];
@@ -147,7 +147,7 @@ package org.as3commons.reflect {
 
 		private static function getFromCache(name:String, arguments:Array):Metadata {
 			var metadata:Metadata = new Metadata(name, arguments);
-			var instances:Array = _cache[name.toLowerCase()];
+			var instances:Array = _cache[name.toUpperCase()];
 			if (instances == null) {
 				addToCache(metadata);
 			} else {

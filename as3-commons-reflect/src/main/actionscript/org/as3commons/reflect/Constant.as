@@ -52,7 +52,7 @@ package org.as3commons.reflect {
 		}
 
 		public static function addToCache(constant:Constant):void {
-			var cacheKey:String = constant.name;
+			var cacheKey:String = constant.name.toUpperCase();
 			var instances:Array = _cache[cacheKey];
 			if (instances == null) {
 				instances = [];
@@ -64,7 +64,7 @@ package org.as3commons.reflect {
 		}
 
 		public static function doCacheCheck(constant:Constant):Constant {
-			var instances:Array = _cache[constant.name];
+			var instances:Array = _cache[constant.name.toUpperCase()];
 			if (instances == null) {
 				addToCache(constant);
 			} else {

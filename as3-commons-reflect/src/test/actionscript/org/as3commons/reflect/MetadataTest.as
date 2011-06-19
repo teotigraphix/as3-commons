@@ -1,5 +1,7 @@
 package org.as3commons.reflect {
 
+	import flash.utils.Dictionary;
+
 	import flexunit.framework.TestCase;
 
 	/**
@@ -89,6 +91,12 @@ package org.as3commons.reflect {
 			var md1:Metadata = Metadata.newInstance("Bindable", [MetadataArgument.newInstance("type", "propertyChanged"), MetadataArgument.newInstance("type2", "propertyChanged")]);
 			var md2:Metadata = Metadata.newInstance("Bindable", [MetadataArgument.newInstance("type", "propertyChanged"), MetadataArgument.newInstance("type3", "propertyChanged")]);
 			assertFalse(md1 === md2);
+		}
+
+		public function testNewInstanceWithIllegalName():void {
+			var md1:Metadata = Metadata.newInstance("hasOwnProperty");
+			var md2:Metadata = Metadata.newInstance("hasOwnProperty");
+			assertStrictlyEquals(md1, md2);
 		}
 
 	}

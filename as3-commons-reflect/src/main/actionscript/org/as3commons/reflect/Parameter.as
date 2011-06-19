@@ -109,7 +109,7 @@ package org.as3commons.reflect {
 		}
 
 		private static function addToCache(param:Parameter):void {
-			var cacheKey:String = param.typeName.toLowerCase();
+			var cacheKey:String = param.typeName.toUpperCase();
 			var instances:Array = _cache[cacheKey];
 			if (instances == null) {
 				instances = [];
@@ -122,7 +122,7 @@ package org.as3commons.reflect {
 
 		private static function getFromCache(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean):Parameter {
 			var param:Parameter = new Parameter(type, applicationDomain, isOptional);
-			var instances:Array = _cache[param.typeName.toLowerCase()];
+			var instances:Array = _cache[param.typeName.toUpperCase()];
 			if (instances == null) {
 				addToCache(param);
 			} else {
