@@ -14,8 +14,6 @@ package org.as3commons.logging.integration {
 	import org.as3commons.logging.util.alike;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.MockitoTestCase;
-
-	import flash.display.Sprite;
 	/**
 	 * @author mh
 	 */
@@ -33,8 +31,6 @@ package org.as3commons.logging.integration {
 			
 			Logger.enabled = true;
 			Logger.loggingFunction = Progression4Integration;
-			
-			var sprite: Sprite = new Sprite();
 			
 			Logger.info( "a log message" );
 			Logger.info( "a log message", true );

@@ -1,8 +1,17 @@
-package org.as3commons.logging {
-	import org.as3commons.logging.integration.Progression4IntegrationTest;
-	import org.as3commons.logging.integration.Progression3IntegrationTest;
-	import org.as3commons.logging.integration.SpiceLibIntegrationTest;
+package {
+	import org.as3commons.logging.ILogSetup;
+	import org.as3commons.logging.LogLevelTest;
+	import org.as3commons.logging.Logger;
+	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.getLogger;
+	import org.as3commons.logging.integration.ASAPIntegrationTest;
 	import org.as3commons.logging.integration.FlexIntegrationTest;
+	import org.as3commons.logging.integration.MateIntegrationTest;
+	import org.as3commons.logging.integration.Progression3IntegrationTest;
+	import org.as3commons.logging.integration.Progression4IntegrationTest;
+	import org.as3commons.logging.integration.PushButtonIntegrationTest;
+	import org.as3commons.logging.integration.SpiceLibIntegrationTest;
+	import org.as3commons.logging.integration.SwizIntegrationTest;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
@@ -10,11 +19,11 @@ package org.as3commons.logging {
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ComplexSetupTest;
 	import org.as3commons.logging.setup.FlexSetupTest;
+	import org.as3commons.logging.setup.LeveledTargetSetupTest;
 	import org.as3commons.logging.setup.LogSetupTest;
 	import org.as3commons.logging.setup.LogTargetLevelTest;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
 	import org.as3commons.logging.setup.SimpleTargetSetupTest;
-	import org.as3commons.logging.setup.LeveledTargetSetupTest;
 	import org.as3commons.logging.setup.target.AirTargetTest;
 	import org.as3commons.logging.setup.target.BufferTest;
 	import org.as3commons.logging.setup.target.FrameBufferTest;
@@ -29,7 +38,6 @@ package org.as3commons.logging {
 	import org.flexunit.runner.FlexUnitCore;
 
 	import mx.logging.AbstractTarget;
-	import mx.logging.ILogger;
 	import mx.logging.ILoggingTarget;
 	import mx.logging.Log;
 	import mx.logging.LogEvent;
@@ -43,6 +51,8 @@ package org.as3commons.logging {
 	import flash.display.Stage;
 	import flash.sampler.getSize;
 	import flash.utils.getTimer;
+
+
 
 	/**
 	 * @author Martin
@@ -120,10 +130,13 @@ package org.as3commons.logging {
 			trace("Size of as3-commons-logging in memory, min: " + as3commonsSize);
 			trace("Difference: " + (mxLoggingSize-as3commonsSize)  );
 			
-			
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
 			core.run( [
+				new MateIntegrationTest(),
+				new SwizIntegrationTest(),
+				new PushButtonIntegrationTest(),
+				new ASAPIntegrationTest(),
 				new SpiceLibIntegrationTest(),
 				new Progression3IntegrationTest(),
 				new Progression4IntegrationTest(),

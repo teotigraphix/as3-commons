@@ -6,7 +6,7 @@ package org.as3commons.logging.integration {
 	/**
 	 * @author mh
 	 */
-	public class SpiceLibFactory implements LogFactory {
+	public class SpiceLibIntegration implements LogFactory {
 		
 		private var _cache: Object = {};
 		

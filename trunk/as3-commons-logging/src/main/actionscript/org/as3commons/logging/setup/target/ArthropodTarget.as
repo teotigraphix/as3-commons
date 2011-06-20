@@ -38,7 +38,7 @@ package org.as3commons.logging.setup.target {
 	 * @version 1.0
 	 * @since 2.1
 	 */
-	public class ArthopodTarget implements IFormattingLogTarget {
+	public class ArthropodTarget implements IFormattingLogTarget {
 		
 		/** Default format used to log statements */
 		public static const DEFAULT_FORMAT:String = "{shortName}{atPerson} {message}";
@@ -67,7 +67,7 @@ package org.as3commons.logging.setup.target {
 		 * 
 		 * @param colors Colors used to display the 
 		 */
-		public function ArthopodTarget( format:String=null, colors:Object=null, warnLevels:LogSetupLevel=null  ) {
+		public function ArthropodTarget( format:String=null, colors:Object=null, warnLevels:LogSetupLevel=null  ) {
 			this.format = format;
 			this.warnLevels = warnLevels;
 			this.colors = colors;
