@@ -3,11 +3,19 @@ AS3COMMONS LOGGING CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 2.1 (16.06.2011)
+Changes in version 2.1 (21.06.2011)
 -----------------------------------
 * Added support for loggers used by certain persons
 * Added MonsterDebugger 3 console support
 * Added Firebug Console support
+* Added ThunderBolt support
+* Added SpiceLib Engine support
+* Added Arthropod support
+* Added Mate support
+* Added Swiz Framework support
+* Added Progression support
+* Added PushButton Engine support
+* Added ASAPLibrary support
 * Added util to handle global errors - captureUncaughtErrors()
 * Removed LogLevel as class since it cost just compile & runtime performance
 * Fixed default output of SWF_URL & SWF_SHORT_URL

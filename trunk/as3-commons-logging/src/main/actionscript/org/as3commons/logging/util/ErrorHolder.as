@@ -55,6 +55,7 @@ package org.as3commons.logging.util {
 				e = e["error"];
 			}
 			
+			/*FDT_IGNORE*/
 			try {
 				text = e.message;
 				errorNo = e.errorID;
@@ -62,6 +63,7 @@ package org.as3commons.logging.util {
 			} catch( error: Error ) {
 				text = e.toString();
 			}
+			/*FDT_IGNORE*/
 		}
 		
 		/**

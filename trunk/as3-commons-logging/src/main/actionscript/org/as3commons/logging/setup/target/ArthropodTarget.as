@@ -38,7 +38,7 @@ package org.as3commons.logging.setup.target {
 	 * @version 1.0
 	 * @since 2.1
 	 */
-	public class ArthropodTarget implements IFormattingLogTarget {
+	public final class ArthropodTarget implements IFormattingLogTarget {
 		
 		/** Default format used to log statements */
 		public static const DEFAULT_FORMAT:String = "{shortName}{atPerson} {message}";

@@ -74,10 +74,12 @@ package org.as3commons.logging.setup.target {
 		/** Expression to find the position of {file} in the path pattern. */
 		private static const FILE: RegExp = /{file}/g;
 		
+		/*FDT_IGNORE*/
 		/** Month names to stringify the date */
 		private static const MONTHS: Array = [ "JAN", "FEB", "MAR", "APR", "MAY",
 												"JUN", "JUL", "AUG", "SEP", "OCT",
 												"NOV", "DEC" ];
+		/*FDT_IGNORE*/
 		
 		/** Pattern used to generate the files. */ 
 		private var _filePattern:String;
@@ -128,6 +130,7 @@ package org.as3commons.logging.setup.target {
 				_stream.addEventListener(OutputProgressEvent.OUTPUT_PROGRESS, disposeFinished, false, 0, true);
 				_stream.openAsync(_file, FileMode.APPEND);
 				NativeApplication.nativeApplication.addEventListener( "exiting", dispose );
+				/*FDT_IGNORE*/
 				var descriptor: XML = NativeApplication.nativeApplication.applicationDescriptor;
 				var ns: Namespace = descriptor.namespace();
 				_stream.writeUTFBytes("#Version: 1.0\n" +
@@ -141,6 +144,7 @@ package org.as3commons.logging.setup.target {
 									   + ":" + date.minutesUTC + ":" + date.secondsUTC
 									   + "." + date.millisecondsUTC + "\n"+
 									   "#Fields: time x-method x-name x-comment\n");
+				/*FDT_IGNORE*/
 			}
 			
 			_stream.writeUTFBytes(
