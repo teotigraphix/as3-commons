@@ -20,13 +20,14 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.target {
+	
 	import nl.demonsters.debugger.MonsterDebugger;
-
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
+	import org.as3commons.logging.setup.target.IColorableLogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
@@ -37,10 +38,10 @@ package org.as3commons.logging.setup.target {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
+	 * @version 1.1
 	 * @see http://demonsterdebugger.com
 	 */
-	public final class MonsterDebuggerTarget implements IFormattingLogTarget {
-	
+	public final class MonsterDebuggerTarget implements IColorableLogTarget {
 		/** Default output format used to stringify the log statements. */
 		public static const DEFAULT_FORMAT: String = "{time} {shortName}{atPerson} - {message}";
 		
@@ -72,28 +73,8 @@ package org.as3commons.logging.setup.target {
 		}
 		
 		/**
-		 * The colors used to to send the log statement.
-		 * 
-		 * <p>Monster Debugger supports custom colors for log statements. These
-		 * can be changed dynamically if you pass here a Dictionary with Colors (numbers)
-		 * used for all levels:</p>
-		 * 
-		 * @example <listing>
-		 *     import org.as3commons.logging.level.*;
-		 *     
-		 *     var colors: Dictionary = new Dictionary();
-		 *     colors[DEBUG] = 0x00FF00;
-		 *     colors[INFO] = 0x00FFFF;
-		 *     colors[WARN] = 0xFF0000;
-		 *     colors[ERROR] = 0x0000FF;
-		 *     colors[FATAL] = 0xFFFF00;
-		 *     monsterDebuggerTarget.colors = colors;
-		 * </listing>
+		 * @inheritDoc
 		 */
-		public function get colors():Object {
-			return _colors;
-		}
-		
 		public function set colors(colors:Object):void {
 			_colors = colors||DEFAULT_COLORS;
 		}

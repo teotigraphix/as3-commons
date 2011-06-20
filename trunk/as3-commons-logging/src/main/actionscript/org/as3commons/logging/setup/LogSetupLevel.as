@@ -84,7 +84,7 @@ package org.as3commons.logging.setup {
 		 * @return <code>LogSetupLevel</code> matching to the value.
 		 */
 		public static function getLevelByValue(value:int):LogSetupLevel {
-			return _levels[value] || new LogSetupLevel(value);
+			return _levels[value] || ( _levels[value] = new LogSetupLevel(value) );
 		}
 		
 		private var _value:int;

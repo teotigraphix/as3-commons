@@ -27,11 +27,10 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.util.ErrorHolder;
 	import org.as3commons.logging.util.LogMessageFormatter;
-
+	
 	import flash.events.ErrorEvent;
 	import flash.external.ExternalInterface;
 	import flash.utils.getQualifiedClassName;
-	
 	
 	/**
 	 * <code>FirebugTarget</code> sends the output to the Firebug console. Also

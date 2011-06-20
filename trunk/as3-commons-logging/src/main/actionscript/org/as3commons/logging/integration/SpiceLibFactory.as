@@ -2,7 +2,7 @@ package org.as3commons.logging.integration {
 	import org.as3commons.logging.getNamedLogger;
 	import org.spicefactory.lib.logging.LogFactory;
 	import org.spicefactory.lib.logging.Logger;
-
+	
 	/**
 	 * @author mh
 	 */
@@ -16,6 +16,7 @@ package org.as3commons.logging.integration {
 		}
 	}
 }
+
 import org.as3commons.logging.ILogger;
 import org.spicefactory.lib.logging.Logger;
 

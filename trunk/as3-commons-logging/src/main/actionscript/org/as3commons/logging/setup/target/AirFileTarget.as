@@ -20,11 +20,12 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.target {
+	
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	import org.as3commons.logging.util.SWF_SHORT_URL;
 	import org.as3commons.logging.util.URL_ERROR;
-
+	
 	import flash.desktop.NativeApplication;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -33,7 +34,6 @@ package org.as3commons.logging.setup.target {
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
-	
 	
 	/**
 	 * <code>AirFileTarget</code> logs statements to a log file on the hard disk.
