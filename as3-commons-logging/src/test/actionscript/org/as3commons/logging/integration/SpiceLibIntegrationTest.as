@@ -33,7 +33,7 @@ package org.as3commons.logging.integration {
 			
 			LOGGER_FACTORY.setup = new SimpleTargetSetup( target ); 
 			
-			LogContext.factory = new SpiceLibFactory();
+			LogContext.factory = new SpiceLibIntegration();
 			
 			var logger: Logger = LogContext.getLogger( "test" );
 			

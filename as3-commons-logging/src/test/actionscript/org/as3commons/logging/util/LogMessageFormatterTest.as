@@ -1,7 +1,6 @@
 package org.as3commons.logging.util {
 	import flexunit.framework.TestCase;
 
-	import org.as3commons.logging.LogTests;
 
 	/**
 	 * @author mh

@@ -1,11 +1,10 @@
 package org.as3commons.logging.setup.target {
 	import flexunit.framework.TestCase;
-
-	import org.as3commons.logging.LogTests;
 	import org.as3commons.logging.util.SWFInfo;
 	import org.as3commons.logging.util.SWF_SHORT_URL;
 	import org.as3commons.logging.util.SWF_URL;
 	import org.as3commons.logging.util.URL_ERROR;
+
 
 	/**
 	 * @author mh

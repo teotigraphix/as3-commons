@@ -1,16 +1,15 @@
 package org.as3commons.logging.setup.target {
+	import flash.events.Event;
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
 	import flexunit.framework.TestCase;
-
-	import org.as3commons.logging.LogTests;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.util.SWFInfo;
 	import org.hamcrest.AssertionError;
 
-	import flash.events.Event;
-	import flash.filesystem.File;
-	import flash.filesystem.FileMode;
-	import flash.filesystem.FileStream;
+
 
 	/**
 	 * @author mh

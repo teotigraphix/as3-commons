@@ -1,4 +1,6 @@
 package {
+	import org.as3commons.logging.setup.target.ThunderBoltTarget;
+	import com.asfusion.mate.core.MateManager;
 	import org.as3commons.logging.setup.target.MonsterDebugger3LogTarget;
 	import com.demonsters.debugger.MonsterDebugger;
 	import com.junkbyte.console.Cc;
@@ -7,7 +9,7 @@ package {
 	import org.as3commons.logging.LOGGER_FACTORY;
 	import org.as3commons.logging.getLogger;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
-	import org.as3commons.logging.setup.target.ArthopodTarget;
+	import org.as3commons.logging.setup.target.ArthropodTarget;
 	import org.as3commons.logging.setup.target.FirebugTarget;
 	import org.as3commons.logging.setup.target.FlashConsoleTarget;
 	import org.as3commons.logging.setup.target.MonsterDebugger3TraceTarget;
@@ -38,7 +40,8 @@ package {
 			LOGGER_FACTORY.setup = new SimpleTargetSetup( mergeTargets(
 				new FirebugTarget(), new MonsterDebugger3TraceTarget(),
 				new MonsterDebugger3LogTarget(),
-				new ArthopodTarget(), new FlashConsoleTarget() )
+				new ArthropodTarget(), new FlashConsoleTarget(),
+				new ThunderBoltTarget())
 			);
 			
 			captureUncaughtErrors( loaderInfo );
