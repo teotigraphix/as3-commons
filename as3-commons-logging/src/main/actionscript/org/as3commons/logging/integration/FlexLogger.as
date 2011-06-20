@@ -21,11 +21,13 @@
  */
 package org.as3commons.logging.integration {
 	
-	import org.as3commons.logging.getNamedLogger;
+	/*FDT_IGNORE*/
+	import mx.logging.LogEventLevel;
+	/*FDT_IGNORE*/
 	
+	import org.as3commons.logging.getNamedLogger;
 	import mx.logging.AbstractTarget;
 	import mx.logging.LogEvent;
-	import mx.logging.LogEventLevel;
 	import mx.logging.ILogger;
 	import mx.logging.ILoggingTarget;
 	
@@ -85,6 +87,7 @@ package org.as3commons.logging.integration {
 		 * @param event Event triggered by the flex event system.
 		 */
 		override public function logEvent(event:LogEvent):void {
+			/*FDT_IGNORE*/
 			// Retrieves the logger from as3commons from the cache. 
 			var logger: org.as3commons.logging.ILogger = _loggerMap[ event.target ];
 			if( event.level < LogEventLevel.FATAL ) {
@@ -104,6 +107,7 @@ package org.as3commons.logging.integration {
 			} else {
 				logger.fatal( event.message );
 			}
+			/*FDT_IGNORE*/
 		}
 	}
 }
