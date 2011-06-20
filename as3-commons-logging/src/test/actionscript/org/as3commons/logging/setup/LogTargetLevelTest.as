@@ -134,7 +134,7 @@ package org.as3commons.logging.setup {
 			assertEquals( level.valueOf(), 0x04 );
 			assertStrictlyEquals( level, LogSetupLevel.getLevelByValue( level.valueOf() ) );
 			assertStrictlyEquals( level.or( level ), level );
-			level.applyTo( logger, testTarget);
+			level.applyTo( logger, testTarget );
 			assertTrue( logger.debugTarget != testTarget );
 			assertTrue( logger.infoTarget != testTarget );
 			assertTrue( logger.warnTarget != testTarget );

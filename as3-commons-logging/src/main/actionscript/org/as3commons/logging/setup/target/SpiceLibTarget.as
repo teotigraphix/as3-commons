@@ -1,25 +1,26 @@
 package org.as3commons.logging.setup.target {
+
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
+	import org.as3commons.logging.setup.target.IFormattingLogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	import org.spicefactory.lib.logging.LogContext;
 	import org.spicefactory.lib.logging.Logger;
-	/**
-	 * @author mh
-	 */
-	public class SpiceLibTarget implements IFormattingLogTarget {
-		private static const DEFAULT_FORMAT: String = "{message}";
+	
+	public final class SpiceLibTarget implements IFormattingLogTarget {
+	
+		public static const DEFAULT_FORMAT: String = "{message}";
 		
 		/** All the SpliceLib loggers requested for that logger */
 		private const _loggers:Object = {};
 		
 		private var _formatter: LogMessageFormatter;
 		
-		public function SpiceLibTarget( format:String=null ) {
-			this.format = format;
+		public function SpiceLibTarget() {
+			this.format = DEFAULT_FORMAT;
 		}
 		
 		public function set format( format:String ): void {
@@ -51,3 +52,4 @@ package org.as3commons.logging.setup.target {
 		}
 	}
 }
+

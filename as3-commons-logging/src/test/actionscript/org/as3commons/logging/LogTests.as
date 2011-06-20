@@ -1,4 +1,5 @@
 package org.as3commons.logging {
+	import org.as3commons.logging.integration.Progression4IntegrationTest;
 	import org.as3commons.logging.integration.Progression3IntegrationTest;
 	import org.as3commons.logging.integration.SpiceLibIntegrationTest;
 	import org.as3commons.logging.integration.FlexIntegrationTest;
@@ -124,8 +125,9 @@ package org.as3commons.logging {
 			core.addListener( new TraceListener() );
 			core.run( [
 				new SpiceLibIntegrationTest(),
-				new Progression3IntegrationTest()
-				/*new LogLevelTest(),
+				new Progression3IntegrationTest(),
+				new Progression4IntegrationTest(),
+				new LogLevelTest(),
 				new LogTargetLevelTest(),
 				new LogSetupTest(),
 				new LogMessageFormatterTest(),
@@ -139,7 +141,7 @@ package org.as3commons.logging {
 				new BufferTest(),
 				new MergedTest(),
 				new TextFieldTest(),
-				new AirTargetTest()*/
+				new AirTargetTest()
 			]);
 		}
 	}

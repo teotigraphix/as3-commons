@@ -27,9 +27,8 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
-	import org.as3commons.logging.setup.target.IFormattingLogTarget;
 	import org.as3commons.logging.util.LogMessageFormatter;
-
+	
 	/**
 	 * <code>MonsterDebugger3TraceTarget</code> traces directly to the Monster Debugger 3 console.
 	 * 
@@ -40,8 +39,8 @@ package org.as3commons.logging.setup.target {
 	 * @see http://demonsterdebugger.com/asdoc/com/demonsters/debugger/MonsterDebugger.html#trace()
 	 * @since 2.1
 	 */
-	public final class MonsterDebugger3TraceTarget extends Object implements IFormattingLogTarget
-	{
+	public final class MonsterDebugger3TraceTarget extends Object
+												  implements IColorableLogTarget {
 		/** Default output format used to stringify log statements via MonsterDebugger.trace(). */
 		public static const DEFAULT_FORMAT:String = "{message}";
 
@@ -54,7 +53,6 @@ package org.as3commons.logging.setup.target {
 			DEFAULT_COLORS[INFO] = 0x666666;
 			DEFAULT_COLORS[WARN] = 0xff7700;
 		}
-		
 		
 		/** Colors used to display the messages. */
 		private var _colors:Object;
@@ -79,30 +77,10 @@ package org.as3commons.logging.setup.target {
 			this.colors = colors;
 			this.depth = depth;
 		}
-
-		/**
-		 * The colors used to to send the log statement.
-		 * 
-		 * <p>Monster Debugger supports custom colors for log statements. These
-		 * can be changed dynamically if you pass here a Dictionary with Colors (numbers)
-		 * used for all levels:</p>
-		 * 
-		 * @example <listing version="3.0">
-		 *     import org.as3commons.logging.level.*;
-		 *     
-		 *     var colors: Dictionary = new Dictionary();
-		 *     colors[DEBUG] = 0x00FF00;
-		 *     colors[INFO] = 0x00FFFF;
-		 *     colors[WARN] = 0xFF0000;
-		 *     colors[ERROR] = 0x0000FF;
-		 *     colors[FATAL] = 0xFFFF00; 
-		 *     MONSTER_DEBUGGER_V3_TARGET.colors = colors;
-		 * </listing>
-		 */
-		public function get colors():Object {
-			return _colors;
-		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function set colors(colors:Object):void {
 			_colors = colors||DEFAULT_COLORS;
 		}
@@ -119,10 +97,6 @@ package org.as3commons.logging.setup.target {
 		 */
 		public function set depth(depth:int):void {
 			_depth = depth;
-		}
-		
-		public function get depth():int {
-			return _depth;
 		}
 		
 		/**

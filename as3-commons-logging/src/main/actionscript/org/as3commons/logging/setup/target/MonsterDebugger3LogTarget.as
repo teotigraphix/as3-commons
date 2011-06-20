@@ -19,11 +19,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- package org.as3commons.logging.setup.target {
- 	
+package org.as3commons.logging.setup.target {
+	
+	import com.demonsters.debugger.MonsterDebugger;
+	
+	import org.as3commons.logging.setup.ILogTarget;
+	import org.as3commons.logging.util.LogMessageFormatter;
+	
 	/**
 	 * @author Martin Heidegger
 	 * @since 2.1
+	 * @see http://demonsterdebugger.com/asdoc/com/demonsters/debugger/MonsterDebugger.html#log()
 	 */
-	public const MONSTER_DEBUGGER_3_TRACE_TARGET: MonsterDebugger3TraceTarget = new MonsterDebugger3TraceTarget();
+	public class MonsterDebugger3LogTarget implements ILogTarget {
+		
+		/** Formatter that renders the log statements via MonsterDebugger.log(). */
+		private const _formatter: LogMessageFormatter = new LogMessageFormatter("{logLevel} {shortName}{atPerson} - {message}");
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function log( name:String, shortName:String, level:int,
+							 timeStamp:Number, message:*, parameters:Array,
+							 person:String=null ): void {
+			
+			if( message is String || parameters.length > 0 ) {
+				message = _formatter.format(name, shortName, level, timeStamp, message, parameters);
+				MonsterDebugger.log( message );
+			} else {
+				MonsterDebugger.log( message );
+			}
+		}
+	}
 }

@@ -214,7 +214,7 @@ package org.as3commons.logging.util {
 				const numParams:int = params ? params.length: 0;
 				for (var i:int = 0; i < numParams; ++i) {
 					var param: * = params[i];
-					message = message.replace( "{"+i+"}", param );
+					message = message.split( "{"+i+"}" ).join( param );
 				}
 			}
 			_now.time = isNaN( timeMs ) ? 0.0 : timeMs;

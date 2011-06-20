@@ -49,6 +49,7 @@ package org.as3commons.logging.integration {
 		
 		public function testLogger(): void {
 			var arr: Array = [];
+			Verbose.enabled = true;
 			Verbose.loggingFunction = function( message: String, ...rest: Array ): void {
 				arr.push( message );
 			};
