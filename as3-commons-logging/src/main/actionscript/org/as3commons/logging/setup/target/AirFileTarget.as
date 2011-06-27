@@ -36,18 +36,6 @@ package org.as3commons.logging.setup.target {
 	import flash.filesystem.FileStream;
 	
 	/**
-	 * <code>AirFileTarget</code> logs statements to a log file on the hard disk.
-	 * 
-	 * <p>For air application files you might want to store your log on the local
-	 * File system. It is stored in a extended log format which should be possible 
-	 * to be read with common log file parsers.</p>
-	 * 
-	 * <p>Per application startup and at the turn of every day it will change to
-	 * a new file named with the date of that day and containing the application
-	 * startup number if started more than once. The file will be named using the
-	 * <code>SWF_URL</code>.</p>
-	 * 
-	 * <listing>LOGGER_FACTORY.setup = new SimpleTargetSetup( new AirFileTarget );</listing>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0

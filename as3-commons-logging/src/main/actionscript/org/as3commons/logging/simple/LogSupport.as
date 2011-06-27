@@ -20,8 +20,10 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
+	
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.getLogger;
+	
 	/**
 	 * @author mh
 	 */

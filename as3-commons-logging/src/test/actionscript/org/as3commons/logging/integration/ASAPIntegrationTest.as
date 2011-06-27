@@ -72,6 +72,10 @@ package org.as3commons.logging.integration {
 				storage
 			);
 		}
+		
+		override public function tearDown(): void {
+			LOGGER_FACTORY.setup = null;
+		}
 
 	}
 }

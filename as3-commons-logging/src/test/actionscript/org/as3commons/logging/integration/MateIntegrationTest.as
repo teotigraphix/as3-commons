@@ -80,7 +80,9 @@ import mx.logging.ILoggingTarget;
 
 class Storage implements ILoggingTarget {
 	
-	private const _statements: Array = [];
+	private const _statements : Array = [];
+	
+	public function Storage() {}
 	
 	public function addLogger( logger: ILogger ): void {
 		if( logger ) {

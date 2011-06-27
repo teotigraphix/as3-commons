@@ -72,7 +72,7 @@ package org.as3commons.logging.util {
 	 *       <td>The Person that wrote this statement</td></tr>
 	 *   
 	 *   <tr><td>{atPerson}</td>
-	 *       <td>The Person that wrote this statement with the "@" prefix</td></tr>
+	 *       <td>The Person that wrote this statement with the 'at' prefix</td></tr>
 	 * </table>
 	 *
 	 * @author Christophe Herreman

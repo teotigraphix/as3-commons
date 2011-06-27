@@ -35,6 +35,8 @@ package org.as3commons.logging.integration {
 		
 		private const _cache: Object = {};
 		
+		public function SwizIntegration() {}
+		
 		override protected function logEvent( event:SwizLogEvent ):void {
 			var category: String = SwizLogger( event.target ).category.replace("::", ".");
 			var logger: ILogger = _cache[ category ] || (_cache[ category ] = getLogger( category, "swiz" ) );
