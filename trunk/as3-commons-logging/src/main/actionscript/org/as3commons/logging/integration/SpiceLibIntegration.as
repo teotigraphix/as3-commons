@@ -31,6 +31,8 @@ package org.as3commons.logging.integration {
 		
 		private var _cache: Object = {};
 		
+		public function SpiceLibIntegration() {}
+		
 		public function getLogger( name: Object ): Logger {
 			var nameStr: String;
 			/*FDT_IGNORE*/

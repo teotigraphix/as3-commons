@@ -7,7 +7,6 @@ package {
 	import org.as3commons.logging.integration.ASAPIntegrationTest;
 	import org.as3commons.logging.integration.FlexIntegrationTest;
 	import org.as3commons.logging.integration.MateIntegrationTest;
-	import org.as3commons.logging.integration.Progression3IntegrationTest;
 	import org.as3commons.logging.integration.Progression4IntegrationTest;
 	import org.as3commons.logging.integration.PushButtonIntegrationTest;
 	import org.as3commons.logging.integration.SpiceLibIntegrationTest;
@@ -138,7 +137,6 @@ package {
 				new PushButtonIntegrationTest(),
 				new ASAPIntegrationTest(),
 				new SpiceLibIntegrationTest(),
-				new Progression3IntegrationTest(),
 				new Progression4IntegrationTest(),
 				new LogLevelTest(),
 				new LogTargetLevelTest(),

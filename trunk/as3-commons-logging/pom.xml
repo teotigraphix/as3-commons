@@ -257,7 +257,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>nl.demonsters.debugger</groupId>
+			<groupId>nl.monsterdebugger</groupId>
 			<artifactId>monsterdebugger</artifactId>
 			<version>2.0.3</version>
 			<type>swc</type>
@@ -265,13 +265,82 @@
 		</dependency>
 
 		<dependency>
-			<groupId>nl.demonsters.debugger</groupId>
-			<artifactId>monsterdebugger</artifactId>
+			<groupId>com.demonsters.debugger</groupId>
+			<artifactId>MonsterDebugger3</artifactId>
 			<version>3.0.1</version>
 			<type>swc</type>
 			<scope>external</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.osflash</groupId>
+			<artifactId>thunderbolt</artifactId>
+			<version>2.3</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>jp.progression</groupId>
+			<artifactId>progression</artifactId>
+			<version>4</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.carlcaldern.arthropod</groupId>
+			<artifactId>arthropod</artifactId>
+			<version>1.0.0</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.asaplibrary</groupId>
+			<artifactId>asaplibrary</artifactId>
+			<version>20080713_rev252</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.swizframework</groupId>
+			<artifactId>swizframework</artifactId>
+			<version>1.2</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.asfusion</groupId>
+			<artifactId>mate</artifactId>
+			<version>0.9.1</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.junkbytes</groupId>
+			<artifactId>console</artifactId>
+			<version>2.52</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.pblabs</groupId>
+			<artifactId>pushbuttonengine</artifactId>
+			<version>r1103</version>
+			<type>swc</type>
+		</dependency> 
+		
+		<dependency>
+			<groupId>org.spicefactory</groupId>
+			<artifactId>spicelib-flex</artifactId>
+			<version>2.4.0</version>
+			<type>swc</type>
+		</dependency> 
 
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -339,6 +408,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>flexmojos-plugin</id>
@@ -351,7 +421,6 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-
-
+	
 </project>
 

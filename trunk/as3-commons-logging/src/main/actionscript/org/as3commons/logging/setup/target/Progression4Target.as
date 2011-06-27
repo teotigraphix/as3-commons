@@ -31,9 +31,7 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
-	 * 
-	 * 
-	 * <p>Built on version "4.4".
+	 * <p>Built on version '4.0.22'.</p>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.1

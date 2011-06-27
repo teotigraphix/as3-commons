@@ -1,6 +1,5 @@
 package org.as3commons.logging.integration {
 	import jp.nium.core.debug.Logger;
-	import jp.progression.core.debug.Verbose;
 
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LOGGER_FACTORY;
@@ -71,7 +70,7 @@ package org.as3commons.logging.integration {
 		
 		override public function tearDown() : void {
 			
-			Verbose.loggingFunction = null;
+			Logger.loggingFunction = null;
 			LOGGER_FACTORY.setup = null;
 		}
 	}

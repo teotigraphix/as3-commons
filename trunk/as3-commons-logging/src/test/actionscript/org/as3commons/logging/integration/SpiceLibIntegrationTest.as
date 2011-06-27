@@ -1,5 +1,4 @@
 package org.as3commons.logging.integration {
-	import jp.progression.core.debug.Verbose;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.LOGGER_FACTORY;
 	import org.as3commons.logging.getLogger;
@@ -85,7 +84,6 @@ package org.as3commons.logging.integration {
 			
 			LogContext.factory = factory;
 			
-			Verbose.enabled = true;
 			LOGGER_FACTORY.setup = new SimpleTargetSetup( new SpiceLibTarget() );
 			
 			var logger: ILogger = getLogger("moose");
