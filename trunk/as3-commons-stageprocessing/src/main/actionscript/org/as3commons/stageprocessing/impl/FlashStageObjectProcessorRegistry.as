@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.as3commons.stageprocessing.impl {
+
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
-
 	import org.as3commons.lang.IOrdered;
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.stageprocessing.IObjectSelector;
@@ -35,11 +35,32 @@ package org.as3commons.stageprocessing.impl {
 
 		private static const CANNOT_INSTANTIATE_ERROR:String = "Cannot instantiate FlashStageProcessorRegistry directly, invoke getInstance() instead";
 		private static const FLASH_STAGE_PROCESSOR_REGISTRY_INITIALIZED:String = "FlashStageProcessorRegistry was initialized";
+		private static const LOGGER:ILogger = org.as3commons.logging.getClassLogger(FlashStageObjectProcessorRegistry);
 		private static const NEW_STAGE_PROCESSOR_AND_SELECTOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and new {2}";
 		private static const NEW_STAGE_PROCESSOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and existing {2}";
-		private static const STAGE_PROCESSOR_UNREGISTERED:String = "Stage processor with name '{0}' and document '{1}' was unregistered";
-		private static const LOGGER:ILogger = org.as3commons.logging.getClassLogger(FlashStageObjectProcessorRegistry);
 		private static const ORDERED_PROPERTYNAME:String = "order";
+		private static const STAGE_PROCESSOR_UNREGISTERED:String = "Stage processor with name '{0}' and document '{1}' was unregistered";
+
+		protected static function sortOrderedVector(source:Vector.<IStageObjectProcessor>):void {
+			if (source.length < 2) {
+				return;
+			}
+			var ordered:Array = [];
+			var unordered:Array = [];
+			for each (var obj:IStageObjectProcessor in source) {
+				if (obj is IOrdered) {
+					ordered[ordered.length] = obj;
+				} else {
+					unordered[unordered.length] = obj;
+				}
+			}
+			ordered.sortOn(ORDERED_PROPERTYNAME, Array.NUMERIC);
+			ordered = ordered.concat(unordered);
+			source.length = 0;
+			for each (var proc:IStageObjectProcessor in ordered) {
+				source[source.length] = proc;
+			}
+		}
 
 		public function FlashStageObjectProcessorRegistry() {
 			super();
@@ -50,6 +71,7 @@ package org.as3commons.stageprocessing.impl {
 		private var _initialized:Boolean;
 		private var _rootViews:Dictionary;
 		private var _stage:Stage;
+		private var _useStageDestroyers:Boolean = true;
 
 		public function clear():void {
 			_initialized = false;
@@ -116,6 +138,20 @@ package org.as3commons.stageprocessing.impl {
 			return result;
 		}
 
+		public function getProcessorVector(rootView:DisplayObject, objectSelector:IObjectSelector, create:Boolean = true):Vector.<IStageObjectProcessor> {
+			if ((_rootViews[rootView] == null) && (create)) {
+				_rootViews[rootView] = new Dictionary();
+			}
+			var objectSelectors:Dictionary = _rootViews[rootView];
+			if (objectSelectors == null) {
+				return null;
+			}
+			if ((objectSelectors[objectSelector] == null) && (create)) {
+				objectSelectors[objectSelector] = new Vector.<IStageObjectProcessor>();
+			}
+			return objectSelectors[objectSelector] as Vector.<IStageObjectProcessor>;
+		}
+
 		public function getStageObjectProcessorsByType(type:Class):Vector.<IStageObjectProcessor> {
 			var result:Vector.<IStageObjectProcessor> = new Vector.<IStageObjectProcessor>();
 			var processors:Vector.<IStageObjectProcessor> = getAllStageObjectProcessors();
@@ -175,27 +211,6 @@ package org.as3commons.stageprocessing.impl {
 			}
 		}
 
-		protected static function sortOrderedVector(source:Vector.<IStageObjectProcessor>):void {
-			if (source.length < 2) {
-				return;
-			}
-			var ordered:Array = [];
-			var unordered:Array = [];
-			for each (var obj:IStageObjectProcessor in source) {
-				if (obj is IOrdered) {
-					ordered[ordered.length] = obj;
-				} else {
-					unordered[unordered.length] = obj;
-				}
-			}
-			ordered.sortOn(ORDERED_PROPERTYNAME, Array.NUMERIC);
-			ordered = ordered.concat(unordered);
-			source.length = 0;
-			for each (var proc:IStageObjectProcessor in ordered) {
-				source[source.length] = proc;
-			}
-		}
-
 		/**
 		 *
 		 * @inheritDoc
@@ -229,10 +244,20 @@ package org.as3commons.stageprocessing.impl {
 			}
 		}
 
+		public function get useStageDestroyers():Boolean {
+			return _useStageDestroyers;
+		}
+
+		public function set useStageDestroyers(value:Boolean):void {
+			_useStageDestroyers = value;
+		}
+
 		protected function addEventListeners(root:DisplayObject):void {
 			if (root != null) {
 				root.addEventListener(Event.ADDED_TO_STAGE, added_handler, true);
-				root.addEventListener(Event.REMOVED_FROM_STAGE, removed_handler, true);
+				if (_useStageDestroyers) {
+					root.addEventListener(Event.REMOVED_FROM_STAGE, removed_handler, true);
+				}
 			}
 		}
 
@@ -276,20 +301,6 @@ package org.as3commons.stageprocessing.impl {
 			}
 		}
 
-		public function getProcessorVector(rootView:DisplayObject, objectSelector:IObjectSelector, create:Boolean = true):Vector.<IStageObjectProcessor> {
-			if ((_rootViews[rootView] == null) && (create)) {
-				_rootViews[rootView] = new Dictionary();
-			}
-			var objectSelectors:Dictionary = _rootViews[rootView];
-			if (objectSelectors == null) {
-				return null;
-			}
-			if ((objectSelectors[objectSelector] == null) && (create)) {
-				objectSelectors[objectSelector] = new Vector.<IStageObjectProcessor>();
-			}
-			return objectSelectors[objectSelector] as Vector.<IStageObjectProcessor>;
-		}
-
 		protected function init():void {
 			_enabled = false;
 			_initialized = false;
@@ -319,8 +330,6 @@ package org.as3commons.stageprocessing.impl {
 		 */
 		protected function processDisplayObjectRecursively(displayObject:DisplayObject):void {
 			processDisplayObject(displayObject);
-
-			// recursively process this display object's children if it is a display object container
 			if (displayObject is DisplayObjectContainer) {
 				var displayObjectContainer:DisplayObjectContainer = DisplayObjectContainer(displayObject);
 				var numChildren:int = displayObjectContainer.numChildren;
