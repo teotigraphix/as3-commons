@@ -106,6 +106,12 @@ registry.stage = FlexGlobals.topLevelApplication.stage as Stage;
 	Right after an object has been removed the <code>destroy()</code> method will be invoked.<br/>
 	An <code>IStageObjectDestroyer</code> can be used to undo the logic of an <code>IStageObjectProcessor</code>. For instance, a processor might add event listeners, whereas a destroyer will remove them.
 	</p>
+	<subsection name="Turning off the stage destroyer functionality">
+		<p>When the <code>IStageObjectDestroyer</code> functionality isn't desired at all it is possible to turn it off completely by setting the <code>useStageDestroyers</code> property
+		on the <code>IStageObjectProcessorRegistry</code> to false:<br/>
+		<div class="source"><pre>registry.useStageDestroyers = false;</pre></div>
+		</p>
+	</subsection>
     </section>
   </body>
 </document>
