@@ -24,7 +24,10 @@ package org.as3commons.stageprocessing {
 	 */
 	public interface IStageObjectProcessorRegistry {
 
-		function get stage():Stage;
+		/**
+		 * Clears the all processor and context registrations in the current <code>IStageProcessorRegistry</code>
+		 */
+		function clear():void;
 
 		/**
 		 * Determines if the current <code>IStageProcessorRegistry</code> is enabled.
@@ -35,34 +38,6 @@ package org.as3commons.stageprocessing {
 		 * @private
 		 */
 		function set enabled(value:Boolean):void;
-
-		/**
-		 * True if the current <code>IStageProcessorRegistry</code> has been initialized.
-		 */
-		function get initialized():Boolean;
-
-		/**
-		 * Performs initialization of the <code>IStageProcessorRegistry</code>.
-		 */
-		function initialize():void;
-
-		/**
-		 * Clears the all processor and context registrations in the current <code>IStageProcessorRegistry</code>
-		 */
-		function clear():void;
-
-		/**
-		 * Adds the specified <code>IStageProcessor</code> instance to the collection.
-		 * @param stageProcessor The specified <code>IStageProcessor</code> instance.
-		 * @param objectSelector The specified <code>IObjectSelector</code> instance.
-		 */
-		function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void;
-
-		/**
-		 * Removes the specified <code>IStageProcessor</code> that is associated with the specified <code>IObjectSelector</code>.
-		 * @param name The name of the <code>IStageProcessor</code> that will be removed
-		 */
-		function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void;
 
 		/**
 		 * Retrieves a list of all the <code>IObjectSelectors</code> that have been registered with the current <code>IStageProcessorRegistry</code>.
@@ -85,6 +60,13 @@ package org.as3commons.stageprocessing {
 		function getAllStageObjectProcessors():Vector.<IStageObjectProcessor>;
 
 		/**
+		 * Retrieves the <code>IObjectSelector</code> instances that are associated with the specified <code>IStageProcessor</code> instance.
+		 * @param stageProcessor The specified <code>IStageProcessor</code>.
+		 * @return The <code>IObjectSelector</code> instances that are associated with the specified <code>IStageProcessor</code>.
+		 */
+		function getObjectSelectorsForStageProcessor(stageProcessor:IStageObjectProcessor):Vector.<IObjectSelector>;
+
+		/**
 		 * Retrieves a list of all the <code>IStageProcessors</code> of the specified <code>Class</code>.
 		 * @param type the specified <code>Class</code>.
 		 * @return An <code>Array</code> of <code>IStageProcessors</code>.
@@ -99,11 +81,14 @@ package org.as3commons.stageprocessing {
 		function getStageProcessorsByRootView(rootView:Object):Vector.<IStageObjectProcessor>;
 
 		/**
-		 * Retrieves the <code>IObjectSelector</code> instances that are associated with the specified <code>IStageProcessor</code> instance.
-		 * @param stageProcessor The specified <code>IStageProcessor</code>.
-		 * @return The <code>IObjectSelector</code> instances that are associated with the specified <code>IStageProcessor</code>.
+		 * Performs initialization of the <code>IStageProcessorRegistry</code>.
 		 */
-		function getObjectSelectorsForStageProcessor(stageProcessor:IStageObjectProcessor):Vector.<IObjectSelector>;
+		function initialize():void;
+
+		/**
+		 * True if the current <code>IStageProcessorRegistry</code> has been initialized.
+		 */
+		function get initialized():Boolean;
 
 		/**
 		 * Recursively loops through the stage displaylist and processes every object therein.
@@ -111,5 +96,30 @@ package org.as3commons.stageprocessing {
 		 */
 		function processStage(startComponent:DisplayObject = null):void;
 
+		/**
+		 * Adds the specified <code>IStageProcessor</code> instance to the collection.
+		 * @param stageProcessor The specified <code>IStageProcessor</code> instance.
+		 * @param objectSelector The specified <code>IObjectSelector</code> instance.
+		 */
+		function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void;
+
+		function get stage():Stage;
+
+		/**
+		 * Removes the specified <code>IStageProcessor</code> that is associated with the specified <code>IObjectSelector</code>.
+		 * @param name The name of the <code>IStageProcessor</code> that will be removed
+		 */
+		function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void;
+
+		/**
+		 * Determines whether the current <code>IStageObjectProcessorRegistry</code> will listen for the <code>REMOVED_FROM_STAGE</code> event and
+		 * use any registered <code>IStageDestroyers</code>.
+		 * @default true
+		 */
+		function get useStageDestroyers():Boolean;
+		/**
+		 * @private
+		 */
+		function set useStageDestroyers(value:Boolean):void;
 	}
 }
