@@ -60,6 +60,11 @@ package org.as3commons.ui.layer {
 		/**
 		 * PopUpManager constructor.
 		 * 
+		 * <p>The <code>PopUpManager</code> will add all popups to the specified
+		 * container. The container should be positioned at (0,0) on the stage.</p>
+		 * 
+		 * TODO Remove contructor argument to be able to run this class with a singleton manager. 
+		 * 
 		 * @param container Popup container.
 		 */
 		public function PopUpManager(container : Sprite) {
@@ -70,6 +75,22 @@ package org.as3commons.ui.layer {
 			_height = _container.stage.stageHeight;
 			
 			_popUps = new LinkedMap();
+		}
+		
+		/**
+		 * Optional method to explicitly set the popup container size.
+		 * 
+		 * <p>To calculate the centered position and size a modal overlay the PopUpManager
+		 * uses by default the stage's <code>stageWidth</code> and <code>stageHeight</code>
+		 * properties. In certain cases these properties may not be set propertly at the
+		 * time of instantiation. Is is possible to specify a size using this method.</p>
+		 * 
+		 * @param width The popup container width.
+		 * @param height The popup container height.
+		 */
+		public function setSize(width : uint, height : uint) : void {
+			_width = width;
+			_height = height;
 		}
 		
 		/**
@@ -140,6 +161,24 @@ package org.as3commons.ui.layer {
 		}
 
 		/**
+		 * <code>true</code> if at least one modal popup is present.
+		 * 
+		 * <p>If a display object is given, the method will check if that
+		 * object is an active modal popup.</p>
+		 * 
+		 * @param displayObject The object to test if it is an active modal popup.
+		 * @return <code>true</code> if at least one modal popup is present.
+		 */
+		public function hasModalPopUp(displayObject : DisplayObject = null) : Boolean {
+			if (displayObject) {
+				var popUpData : PopUpData = _popUps.itemFor(displayObject);
+				if (!popUpData) return false;
+				return popUpData.isModal;
+			}
+			return _numModalPopUps > 0;	
+		}
+
+		/**
 		 * Number of popups added.
 		 */
 		public function get numPopUps() : uint {
@@ -154,16 +193,7 @@ package org.as3commons.ui.layer {
 		}
 
 		/**
-		 * <code>true</code> if at least one modal popup is present.
-		 * 
-		 * @return <code>true</code> if at least one modal popup is present.
-		 */
-		public function hasModalPopUp() : Boolean {
-			return _numModalPopUps > 0;	
-		}
-
-		/**
-		 * Tests if an object is allowed to be focused.
+		 * Tests whether the given object is allowed to be focused by key or mouse.
 		 * 
 		 * <p>Checks if the object is placed underneath a modal popup and returns then <code>false</code>.</p>
 		 * 

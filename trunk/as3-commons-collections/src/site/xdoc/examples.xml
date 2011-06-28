@@ -6,7 +6,7 @@
     </properties>
     <body>
         <section name="Introduction">
-		<p>Here is a list of examples that showcase the classes found in as3commons-collections.</p>                       
+		<p>Here is a sub list of examples that showcase the classes found in as3commons-collections. This list is not longer maintained an may be outdated some time. There are more and more recent examples in the ZIP download package or in the example directory of the source repository. See also the <a href="http://sibirjak.com/osflash/projects/as3commons-collections/examples/">developer page</a> which provides comfortable navigation through format all examples.</p>                       
         </section>
         
         <section name="Examples">
