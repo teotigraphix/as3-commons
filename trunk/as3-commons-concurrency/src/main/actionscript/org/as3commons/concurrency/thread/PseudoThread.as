@@ -234,7 +234,7 @@
 		 * @return boolean true/false if the thread is running
 		 * */
 		public function isRunning():Boolean {
-			return intTimer.running;
+			return (intTimer != null) ? intTimer.running : false;
 		}
 		
 		/**
