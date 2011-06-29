@@ -32,11 +32,11 @@
 			<div id="downloadbox">
 				<h5>Get latest stable</h5>
 				<p>
-					<a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-collections/1.3.0/as3commons-collections-1.3.0.swc">
+					<a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-collections/1.3.1/as3commons-collections-1.3.1.swc">
 						<img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
 						Download
 					</a>
-					latest stable (1.3.0)
+					latest stable (1.3.1)
 				</p>
 				<br/>
 
