@@ -103,6 +103,10 @@ package org.as3commons.stageprocessing {
 		 */
 		function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void;
 
+		/**
+		 * A reference to the Flash stage that is used to add the event listeners to. This property is requried to be s et to a valid reference, otherwise
+		 * the <code>IStageObjectProcessorRegistry</code> will not be able to perform its logic.
+		 */
 		function get stage():Stage;
 
 		/**
