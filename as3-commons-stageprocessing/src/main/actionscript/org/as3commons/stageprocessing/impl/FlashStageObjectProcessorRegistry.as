@@ -27,6 +27,10 @@ package org.as3commons.stageprocessing.impl {
 	import org.as3commons.stageprocessing.IStageObjectProcessor;
 	import org.as3commons.stageprocessing.IStageObjectProcessorRegistry;
 
+	/**
+	 * Pure actionscript implementation of the <code>IStageObjectProcessorRegistry</code> interface.
+	 * @author Roland Zwaga
+	 */
 	public class FlashStageObjectProcessorRegistry implements IStageObjectProcessorRegistry {
 
 		protected static const STAGE_PROCESSING_COMPLETED:String = "Stage processing completed";
@@ -41,6 +45,12 @@ package org.as3commons.stageprocessing.impl {
 		private static const ORDERED_PROPERTYNAME:String = "order";
 		private static const STAGE_PROCESSOR_UNREGISTERED:String = "Stage processor with name '{0}' and document '{1}' was unregistered";
 
+		/**
+		 * Sorts a vector of <code>IStageObjectProcessor</code> that may or may not contain <code>IOrdered</code> implementations.
+		 * First all the <code>IOrdered</code> implementations are sorted and then any left over instances are added at the end of the
+		 * <code>Vector.&lt,IStageObjectProcessor&gt;</code>
+		 * @param source
+		 */
 		protected static function sortOrderedVector(source:Vector.<IStageObjectProcessor>):void {
 			if (source.length < 2) {
 				return;
@@ -62,6 +72,9 @@ package org.as3commons.stageprocessing.impl {
 			}
 		}
 
+		/**
+		 * Creates a new <code>FlashStageObjectProcessorRegistry</code> instance.
+		 */
 		public function FlashStageObjectProcessorRegistry() {
 			super();
 			init();
@@ -73,20 +86,32 @@ package org.as3commons.stageprocessing.impl {
 		private var _stage:Stage;
 		private var _useStageDestroyers:Boolean = true;
 
+		/**
+		 * @inheritDoc
+		 */
 		public function clear():void {
 			_initialized = false;
 			removeEventListeners(_stage);
 			LOGGER.debug(STAGE_PROCESSOR_REGISTRY_CLEARED);
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get enabled():Boolean {
 			return _enabled;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set enabled(value:Boolean):void {
 			_enabled = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function getAllObjectSelectors():Vector.<IObjectSelector> {
 			var result:Vector.<IObjectSelector> = new Vector.<IObjectSelector>();
 			for (var rootView:* in _rootViews) {
@@ -98,6 +123,9 @@ package org.as3commons.stageprocessing.impl {
 			return result;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function getAllRootViews():Vector.<DisplayObject> {
 			var result:Vector.<DisplayObject> = new Vector.<DisplayObject>();
 			for (var rootView:* in _rootViews) {
@@ -106,6 +134,9 @@ package org.as3commons.stageprocessing.impl {
 			return result;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function getAllStageObjectProcessors():Vector.<IStageObjectProcessor> {
 			var result:Vector.<IStageObjectProcessor> = new Vector.<IStageObjectProcessor>();
 			for (var rootView:* in _rootViews) {
@@ -122,6 +153,9 @@ package org.as3commons.stageprocessing.impl {
 			return result;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function getObjectSelectorsForStageProcessor(stageProcessor:IStageObjectProcessor):Vector.<IObjectSelector> {
 			var result:Vector.<IObjectSelector> = new Vector.<IObjectSelector>();
 			for (var view:* in _rootViews) {
@@ -138,6 +172,9 @@ package org.as3commons.stageprocessing.impl {
 			return result;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function getProcessorVector(rootView:DisplayObject, objectSelector:IObjectSelector, create:Boolean = true):Vector.<IStageObjectProcessor> {
 			if ((_rootViews[rootView] == null) && (create)) {
 				_rootViews[rootView] = new Dictionary();
@@ -152,6 +189,9 @@ package org.as3commons.stageprocessing.impl {
 			return objectSelectors[objectSelector] as Vector.<IStageObjectProcessor>;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function getStageObjectProcessorsByType(type:Class):Vector.<IStageObjectProcessor> {
 			var result:Vector.<IStageObjectProcessor> = new Vector.<IStageObjectProcessor>();
 			var processors:Vector.<IStageObjectProcessor> = getAllStageObjectProcessors();
@@ -163,6 +203,9 @@ package org.as3commons.stageprocessing.impl {
 			return result;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function getStageProcessorsByRootView(rootView:Object):Vector.<IStageObjectProcessor> {
 			var result:Vector.<IStageObjectProcessor> = new Vector.<IStageObjectProcessor>();
 			var selectors:Dictionary = _rootViews[rootView];
@@ -174,6 +217,9 @@ package org.as3commons.stageprocessing.impl {
 			return result;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function initialize():void {
 			if ((!_initialized) && (_stage != null)) {
 				setInitialized();
@@ -183,6 +229,9 @@ package org.as3commons.stageprocessing.impl {
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get initialized():Boolean {
 			return _initialized;
 		}
@@ -202,6 +251,9 @@ package org.as3commons.stageprocessing.impl {
 			LOGGER.debug(STAGE_PROCESSING_COMPLETED);
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void {
 			rootView ||= _stage;
 			var processors:Vector.<IStageObjectProcessor> = getProcessorVector(rootView, objectSelector);
@@ -212,9 +264,7 @@ package org.as3commons.stageprocessing.impl {
 		}
 
 		/**
-		 *
 		 * @inheritDoc
-		 *
 		 */
 		public function get stage():Stage {
 			return _stage;
@@ -229,6 +279,9 @@ package org.as3commons.stageprocessing.impl {
 			_stage = value;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void {
 			rootView ||= _stage;
 			var processors:Vector.<IStageObjectProcessor> = getProcessorVector(rootView, objectSelector);
@@ -244,10 +297,16 @@ package org.as3commons.stageprocessing.impl {
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get useStageDestroyers():Boolean {
 			return _useStageDestroyers;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set useStageDestroyers(value:Boolean):void {
 			_useStageDestroyers = value;
 		}
