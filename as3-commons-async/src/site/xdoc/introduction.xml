@@ -355,6 +355,7 @@ task.execute();</pre></div>
     	<ul>
     		<li>LoadModuleOperation</li>
     		<li>LoadStyleModuleOperation</li>
+    		<li>LoadResourceModuleOperation</li>
     		<li>HTTPServiceOperation</li>
     		<li>RemoteObjectOperation</li>
     		<li>WebServiceOperation</li>
