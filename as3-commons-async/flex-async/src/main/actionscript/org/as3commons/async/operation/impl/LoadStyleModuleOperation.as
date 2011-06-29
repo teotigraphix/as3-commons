@@ -93,7 +93,7 @@ package org.as3commons.async.operation.impl {
 				eventDispatcher.addEventListener(StyleEvent.ERROR, moduleErrorHandler);
 				eventDispatcher.addEventListener(StyleEvent.PROGRESS, progressHandler);
 			}
-			timer.addEventListener(TimerEvent.TIMER, timerHandler, false, 0, true);
+			timer.addEventListener(TimerEvent.TIMER, timerHandler);
 			timer.start();
 		}
 
