@@ -69,8 +69,8 @@ package org.as3commons.async.operation.impl {
 				timer.stop();
 				timer = null;
 				eventDispatcher = resourceManager.loadResourceModule(resourceModuleURL, update, applicationDomain, securityDomain);
-				eventDispatcher.addEventListener(ResourceEvent.COMPLETE, completeHandler);
-				eventDispatcher.addEventListener(ResourceEvent.ERROR, errorHandler);
+				eventDispatcher.addEventListener(ResourceEvent.COMPLETE, resourceModuleCompleteHandler);
+				eventDispatcher.addEventListener(ResourceEvent.ERROR, resourceModuleErrorHandler);
 				eventDispatcher.addEventListener(ResourceEvent.PROGRESS, progressHandler);
 			}
 			timer.addEventListener(TimerEvent.TIMER, timerHandler);
@@ -80,7 +80,7 @@ package org.as3commons.async.operation.impl {
 		/**
 		 * Handles the <code>ResourceEvent.COMPLETE</code> event.
 		 */
-		protected function completeHandler(event:ResourceEvent):void {
+		protected function resourceModuleCompleteHandler(event:ResourceEvent):void {
 			removeEventListeners();
 			dispatchCompleteEvent(resourceModuleURL);
 		}
@@ -88,7 +88,7 @@ package org.as3commons.async.operation.impl {
 		/**
 		 * Handles the <code>ResourceEvent.ERROR</code> event.
 		 */
-		protected function errorHandler(event:ResourceEvent):void {
+		protected function resourceModuleErrorHandler(event:ResourceEvent):void {
 			removeEventListeners();
 			dispatchErrorEvent(event.errorText);
 		}
