@@ -1,61 +1,111 @@
+/*
+ * Copyright (c) 2008-2009 the original author or authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.as3commons.logging.util {
 	
 	import flash.utils.Dictionary;
 	
 	/**
+	 * Copies any generic object.
+	 * 
+	 * <p>If the object has a <code>clone</code> or <code>copy</code> method it
+	 * will be used to copy the object, else it will attempt to copy it using a
+	 * bytearray.</p>
+	 * 
+	 * <p>Primitive objects, namely <code>String</code>, <code>Number</code>,
+	 * <code>Boolean</code>, <code>Function<code>, <code>Namespace</code>, 
+	 * <code>QName</code> instances can not be copied anywhere are simply 
+	 * returned.</p>
+	 * 
+	 * @param object Object to be cloned
+	 * @param storage Storage of all the instances created
+	 *        (not necessary to be passed)
+	 * @return Clone of the object
 	 * @author Martin Heidegger
+	 * @since 2.1
 	 */
-	public function clone( object: *, cloned: Dictionary = null ): * {
-		if( object is QName ) {
-			return {
-				localName: object["localName"],
-				uri: object["uri"]
-			};
+	public function clone( object: *, storage: Dictionary = null ): * {
+		// Core types can not be modified anyways so dont even try to copy them
+		if( object is QName || object is String || object is Boolean
+			|| object is Namespace || object is Number || object == null
+			|| object is Function ) {
+			return object;
 		}
 		var theClone: * = null;
-		if( cloned ) {
-			theClone = cloned[ object ];
+		if( storage ) {
+			// Pick it from the storag eif necessary
+			theClone = storage[ object ];
 		}
 		if( !theClone ) {
-			if( object is String || object is Boolean || object is Namespace || object is Number || object == null || object is Function ) {
-				return object;
-			} else {
-				if( !cloned ) {
-					cloned = new Dictionary();
-				}
-				if( object is Array ) {
-					var resultArr: Array = [];
-					var arr: Array = object;
-					var l: int = arr.length;
-					for( var i: int = 0; i<l; ++i ) {
-						resultArr[i] = clone(arr[i], cloned || (cloned = new Dictionary()));
-					}
-					theClone = resultArr;
-				} else {
-					try {
-						theClone = object["clone"]();
-					} catch( e: Error ) {
+			try {
+				// First we try "clone" method, since some classes are not
+				// really copyable and this allows a flexible implementation
+				// any Interface might interfere with existing interfaces. 
+				theClone = object["clone"]();
+			} catch( e: Error ) {
+				try {
+					// Some frameworks think the "copy" naming is more fun.
+					theClone = object["copy"]();
+				} catch( e1: Error ) {
+					if( object is Array ) {
+						// Arrays are in any way faster copied by iteration
+						var resultArr: Array = [];
+						var arr: Array = object;
+						var l: int = arr.length;
+						for( var i: int = 0; i<l; ++i ) {
+							resultArr[i] = clone(arr[i], storage || (storage = new Dictionary()));
+						}
+						theClone = resultArr;
+					} else {
 						try {
+							// Try to copy it to a bytearray, its a very safe,
+							// iteration-free way but does take some time.
 							BYTE_ARRAY.position = 0;
 							BYTE_ARRAY.writeObject(object);
 							BYTE_ARRAY.position = 0;
 							theClone = BYTE_ARRAY.readObject();
 						} catch( e2: Error ) {
+							// In case it didn't work out fetch the properties by hand and
+							// copy them into generic objects.
 							var resultObj: Object = {};
 							var props: Array = allProperties( object );
 							for( var prop: String in object ) {
-								resultObj[prop] = clone(object[prop], cloned || (cloned = new Dictionary()));
+								resultObj[prop] = clone(object[prop], storage || (storage = new Dictionary()));
 							}
 							theClone = resultObj;
 						}
 					}
 				}
-				cloned[object] = theClone;
+			}
+			if( storage ) {
+				// Store the clone so we dont need to evaluate this instance
+				// again. (protects from endless recursions too!)
+				// If the storage is not available: No recursion has occurend and
+				// therefore its not necessary
+				storage[object] = theClone;
 			}
 		}
 		return theClone;
 	}
 }
 import flash.utils.ByteArray;
-
+// Used to copy that thing.
 const BYTE_ARRAY: ByteArray = new ByteArray();
