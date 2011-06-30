@@ -26,6 +26,21 @@ package org.as3commons.lang {
 	 */
 	public final class StringUtils {
 
+		/** Character code for the WINDOWS line break. */
+		private static var WIN_BREAK:String = String.fromCharCode(13)+String.fromCharCode(10);
+
+		/** Character code for the APPLE line break. */
+		private static var MAC_BREAK:String = String.fromCharCode(13);
+		
+		/** Default map for escaping strings. */	
+		public static var DEFAULT_ESCAPE_MAP:Array = 
+			["\\t", "\t", "\\n", "\n", "\\r", "\r", "\\\"", "\"", "\\\\", "\\",
+			"\\'", "\'", "\\f", "\f", "\\b", "\b", "\\", ""];
+		
+		/** The characters that have to be escaped. */
+		private static var PROPERTIES_ESCAPE_MAP:Array = ["\\t", "\t", "\\n", "\n", "\\r", "\r",
+			"\\\"", "\"", "\\\\", "\\", "\\'", "\'", "\\f", "\f"];
+
 		/**
 		 * The empty String <code>""</code>
 		 */
@@ -35,11 +50,6 @@ package org.as3commons.lang {
 		 * Represents a failed index search.
 		 */
 		private static const INDEX_NOT_FOUND:int = -1;
-
-		/**
-		 * The control character code
-		 */
-		private static const WHITE:uint = 32;
 
 		/**
 		 * <p>The maximum size to which the padding constant(s) can expand.</p>
@@ -120,7 +130,7 @@ package org.as3commons.lang {
 			if (isEmpty(str) || separator == null) {
 				return str;
 			}
-			return str.replace(new RegExp(separator + '$', ''), '')
+			return str.replace(new RegExp(separator + '$', ''), '');
 		}
 
 		/**
@@ -2405,7 +2415,6 @@ package org.as3commons.lang {
 		public static function tokenizeToArray(string:String, delimiters:String):Array {
 			var result:Array = [];
 			var numCharacters:int = string.length;
-			var delimiterFound:Boolean = false;
 			var token:String = "";
 
 			for (var i:int = 0; i < numCharacters; i++) {
@@ -2454,6 +2463,54 @@ package org.as3commons.lang {
 
 			return str;
 		}
+		
+		/**
+		 * Replaces keys defined in a keymap.
+		 * 
+		 * <p>This method helps if you need to escape characters in a string. But it
+		 * can be basically used for any kind of keys to be replaced.
+		 * 
+		 * <p>To be expected as keymap is a map like:
+		 * <code>
+		 *   ["keyToReplace1", "replacedTo1", "keyToReplace2", "replacedTo2", ... ]
+		 * </code> 
+		 * 
+		 * @param string String that contains content to be removed.
+		 * @param keyMap Map that contains all keys. (DEFAULT_ESCAPE_MAP will be used
+		 * 		  if no keyMap gets passed.
+		 * @param ignoreUnicode Pass "true" to ignore automatic parsing of unicode escaped characters.
+		 * @return Escaped string.
+		 */
+		public static function escape(string:String, keyMap:Array=null, ignoreUnicode:Boolean=true):String {
+			if (string == null) {
+				return string;
+			}
+			if (!keyMap) {
+				keyMap = DEFAULT_ESCAPE_MAP;
+			}
+			var i:Number = 0;
+			var l:Number = keyMap.length;
+			while (i<l) {
+				string = string.split(keyMap[i]).join(keyMap[i+1]);
+				i+=2;
+			}
+			if (!ignoreUnicode) {
+				i = 0;
+				l = string.length;
+				while (i<l) {
+					if (string.substring(i, i+2) == "\\u") {
+						string = 
+							string.substring(0,i) + 
+							String.fromCharCode(
+								parseInt(string.substring(i+2, i+6), 16)
+							) +
+							string.substring(i+6);
+					}
+					i++;
+				}
+			}
+			return string;
+		}
 
 		/**
 		 * Determines whether the specified filename is valid
@@ -2467,7 +2524,75 @@ package org.as3commons.lang {
 			return false;
 		}
 
-
-
+		/**
+		 * Parses the given <p>source</p> and creates a <p>Properties</p> instance from
+		 * it.
+		 * 
+		 * <p>Ported from as2lib</p>
+		 * 
+		 * @param source the source to parse
+		 * @param properties the properties instance to populate with the properties of the
+		 * given source
+		 * @return the properties defined by the given <p>source</p>
+		 * @author Martin Heidegger
+		 * @author Simon Wacker
+		 */
+		public static function parseProperties(str:String,properties:Object=null):Object {
+			properties = properties || {};
+			var i:Number;
+			var lines:Array = str.split(WIN_BREAK).join("\n").split(MAC_BREAK).join("\n").split("\n");
+			var length:Number = lines.length;
+			var key:String;
+			var value:String;
+			var formerKey:String;
+			var formerValue:String;
+			var useNextLine:Boolean = false;;
+			for (i = 0; i < length; ++i) {
+				var line:String = lines[i];
+				// Trim the line
+				line = trim(line);
+				// Ignore Comments
+				if (line.indexOf("#") != 0 && line.indexOf("!") != 0 && line.length != 0) {
+					// Line break processing
+					if (useNextLine) {
+						key = formerKey;
+						value = formerValue + line;
+						useNextLine = false;
+					}
+					else {
+						var sep:Number;
+						// Gets the seperationated
+						var j:Number;
+						var l:Number = line.length;
+						for (j = 0; j < l; j++) {
+							var char:String = line.charAt(j);
+							if (char == "'") {
+								j++;
+							}
+							else {
+								if (char == ":" || char == "=" || char == "	") break;
+							}
+						}
+						sep = ((j == l) ? line.length : j);
+						key = rightTrim(line.substr(0, sep));
+						value = line.substring(sep + 1);
+						formerKey = key;
+						formerValue = value;
+					}
+					// Trim the content
+					value = leftTrim(value);
+					// Allow normal lines
+					if (value.charAt(value.length - 1) == "\\") {
+						formerValue = value =  value.substr(0, value.length - 1);
+						useNextLine = true;
+					}
+					else {
+						// Commit Property
+						properties[key] = escape( value, PROPERTIES_ESCAPE_MAP, false );
+					}
+				}
+			}
+			return properties;
+		}
 	}
 }
