@@ -38,11 +38,15 @@ package org.as3commons.logging.util {
 	 * @param object Object to be cloned
 	 * @param storage Storage of all the instances created
 	 *        (not necessary to be passed)
+	 * @param useByteArray <code>True</code> It will try copy using a bytearray (and preserving the type)
+	 *        or just copy the objects to primitive objects.
+	 * @param introspectDepth depth to which the objects should be introspected
+	 *        in case it cant be copied using a bytearray, copy or clone.
 	 * @return Clone of the object
 	 * @author Martin Heidegger
 	 * @since 2.1
 	 */
-	public function clone( object: *, storage: Dictionary = null ): * {
+	public function clone( object: *, storage: Dictionary = null, useByteArray:Boolean=true, introspectDepth:int = int.MAX_VALUE ): * {
 		// Core types can not be modified anyways so dont even try to copy them
 		if( object is QName || object is String || object is Boolean
 			|| object is Namespace || object is Number || object == null
@@ -51,7 +55,7 @@ package org.as3commons.logging.util {
 		}
 		var theClone: * = null;
 		if( storage ) {
-			// Pick it from the storag eif necessary
+			// Pick it from the storage if available
 			theClone = storage[ object ];
 		}
 		if( !theClone ) {
@@ -65,16 +69,22 @@ package org.as3commons.logging.util {
 					// Some frameworks think the "copy" naming is more fun.
 					theClone = object["copy"]();
 				} catch( e1: Error ) {
+					var nextDepth: int;
 					if( object is Array ) {
 						// Arrays are in any way faster copied by iteration
 						var resultArr: Array = [];
 						var arr: Array = object;
 						var l: int = arr.length;
-						for( var i: int = 0; i<l; ++i ) {
-							resultArr[i] = clone(arr[i], storage || (storage = new Dictionary()));
+						if( introspectDepth > 0 ) {
+							nextDepth = introspectDepth-1;
+							for( var i: int = 0; i<l; ++i ) {
+								resultArr[i] = clone(arr[i],
+									storage || (storage = new Dictionary()),
+									useByteArray, nextDepth);
+							}
 						}
 						theClone = resultArr;
-					} else {
+					} else if( useByteArray ) {
 						try {
 							// Try to copy it to a bytearray, its a very safe,
 							// iteration-free way but does take some time.
@@ -82,16 +92,23 @@ package org.as3commons.logging.util {
 							BYTE_ARRAY.writeObject(object);
 							BYTE_ARRAY.position = 0;
 							theClone = BYTE_ARRAY.readObject();
-						} catch( e2: Error ) {
-							// In case it didn't work out fetch the properties by hand and
-							// copy them into generic objects.
-							var resultObj: Object = {};
-							var props: Array = allProperties( object );
+						} catch( e2: Error ) {}
+					}
+					if( !theClone ) {
+						// In case it didn't work out fetch the properties by hand and
+						// copy them into generic objects.
+						var resultObj: Object = {};
+						var props: Array = allProperties( object );
+						if( introspectDepth > 0 ) {
+							nextDepth = introspectDepth-1;
 							for( var prop: String in object ) {
-								resultObj[prop] = clone(object[prop], storage || (storage = new Dictionary()));
+								resultObj[prop] = clone(
+									object[prop],
+									storage || (storage = new Dictionary()),
+									useByteArray, nextDepth);
 							}
-							theClone = resultObj;
 						}
+						theClone = resultObj;
 					}
 				}
 			}
