@@ -59,7 +59,7 @@ package org.as3commons.lang {
 			for (var i:uint; i < len; i++) {
 				val = _list[i];
 				if (val != null) {
-					addToLookup(val)
+					addToLookup(val);
 				}
 			}
 		}
@@ -68,7 +68,7 @@ package org.as3commons.lang {
 			var value:* = _lookup[item[_lookUpPropertyName]];
 			if ((value is Array) && (_allowDuplicates)) {
 				var arr:Array = (value as Array);
-				var idx:int = ArrayUtils.removeFirstOccurance(arr, item);
+				ArrayUtils.removeFirstOccurance(arr, item);
 				if (arr.length < 1) {
 					delete _lookup[item[_lookUpPropertyName]];
 				}

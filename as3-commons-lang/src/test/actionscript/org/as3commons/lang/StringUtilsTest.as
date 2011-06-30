@@ -55,6 +55,8 @@ package org.as3commons.lang {
 			assertEquals(StringUtils.trim('     '), '');
 			assertEquals(StringUtils.trim('abc'), 'abc');
 			assertEquals(StringUtils.trim('    abc    '), 'abc');
+			assertEquals(StringUtils.trim('    a bc    '), 'a bc');
+			assertEquals(StringUtils.trim(' \t  a b\tc  \t  '), 'a b\tc');
 		}
 		
 		public function testTrimToNull():void {
@@ -418,7 +420,7 @@ package org.as3commons.lang {
 			assertEquals("('abc', null)", -1, StringUtils.indexOfAnyBut('abc', null));
 			assertEquals("('abc', '')", -1, StringUtils.indexOfAnyBut('abc', ''));
 			assertEquals("('zzabyycdxx', 'za')", 3, StringUtils.indexOfAnyBut('zzabyycdxx', 'za'));
-			assertEquals("('aba', 'ab')", -1, StringUtils.indexOfAnyBut('aba', 'ab'))
+			assertEquals("('aba', 'ab')", -1, StringUtils.indexOfAnyBut('aba', 'ab'));
 		}
 		
 		public function testDifference():void {
@@ -680,8 +682,8 @@ package org.as3commons.lang {
 			assertEquals("c", tokens[2]);
 			assertEquals("d", tokens[3]);
 		}
-
-        //=====================================================================
+		
+		//=====================================================================
         // isValidFileName(string:String):Boolean
         //=====================================================================
 		public function testIsFileNameValid():void {
@@ -699,6 +701,47 @@ package org.as3commons.lang {
 			assertFalse(StringUtils.isValidFileName("|.csv"));
 			assertFalse(StringUtils.isValidFileName("%.csv"));
 		}
-
+	
+		public function testProperties():void {
+			var testProps:String = "# Commenting\n"
+				+" # Commenting again.\n"
+				+"# comment.valid.entry=Entry\n"
+				+"# Next line is a empty line\n"
+				+"\n"
+				+"using.normal=Answer\n"
+				+"using.tabs	Answer\n"
+				+"using.dots:Answer\n"
+				+"using.normal.with.spaces = Answer.   \n"
+				+"using.one.argument=Answer {0} is 2\n"
+				+"using.more.arguments=Answer {0} is {1}\n"
+				+"using.special.characters=Ich komme aus Österreich.\n"
+				+"using.escaping.1=This is a '{0} escaped entry.\n"
+				+"using.escaping.2=This is a ''escaped'' entry.\n"
+				+"using.escaping.3=This is a ''' invalid entry.\n"
+				+"using.escaping.4=This is a \\\\ really escaped entry.\n"
+				+"using.escaping.5=This is a \\n really escaped entry.\n"
+				+"using.double.names=This may not be available.\n"
+				+"using.double.names=This should be available.\n"
+				+"using.multiple.lines=This is content and as long no other content arrives this will stay the content. \\\n"
+				+"  If you don''t believe me than its your fault. Your Problem and not mine!  \n"
+				+"using.multiple.lines.with.same=This is content and as long no other contet arrives this will stay the content.\\n\\\n"
+				+"You may handle '= with a different purpose but it will sound unrealistic if you planned to use it continuosly.";
+			
+			var props:Object = StringUtils.parseProperties(testProps);
+			assertEquals(props["not.existant"], null);
+			assertEquals(props["using.normal"], "Answer");
+			assertEquals(props["using.tabs"], "Answer");
+			assertEquals(props["using.dots"], "Answer");
+			assertEquals(props["using.normal.with.spaces"], "Answer.");
+			assertEquals(props["using.one.argument"], "Answer {0} is 2");
+			assertEquals(props["using.special.characters"], "Ich komme aus Österreich.");
+			assertEquals(props["using.escaping.1"], "This is a '{0} escaped entry.");
+			assertEquals(props["using.escaping.2"], "This is a ''escaped'' entry.");
+			assertEquals(props["using.escaping.3"], "This is a ''' invalid entry.");
+			assertEquals(props["using.escaping.4"], "This is a \\ really escaped entry.");
+			assertEquals(props["using.escaping.5"], "This is a \n really escaped entry.");
+			assertEquals(props["using.double.names"], "This should be available.");
+			assertEquals(props["using.multiple.lines"], "This is content and as long no other content arrives this will stay the content. If you don''t believe me than its your fault. Your Problem and not mine!");
+		}
 	}
 }
