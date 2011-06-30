@@ -20,16 +20,14 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.target {
-	
-	import flash.utils.Dictionary;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
-	import org.as3commons.logging.util.ErrorHolder;
 	import org.as3commons.logging.util.LogMessageFormatter;
-	
-	import flash.events.ErrorEvent;
+	import org.as3commons.logging.util.introspect;
+
 	import flash.external.ExternalInterface;
+	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 	
 	/**
@@ -156,80 +154,5 @@ package org.as3commons.logging.setup.target {
 				}
 			}
 		}
-		
-		/**
-		 * Introspects a object, makes it js transferable and returns it.
-		 * 
-		 * @param value any object
-		 * @return js valid representation
-		 */
-		private function introspect( value: *, map: Dictionary, levels: uint ): * {
-			if( value is Boolean ) {
-				return value;
-			}
-			if( value is Error || value is ErrorEvent ) {
-				return new ErrorHolder( value );
-			}
-			var result: Object = map[ value ];
-			if( !result ) {
-				map[ value ] = result = {};
-				var props: Array = getProps( value );
-				for each( var prop: String in props ) {
-					var child: * = value[ prop ];
-					if( child is Function || child is Class ) {
-						child = getQualifiedClassName( child );
-					}
-					if( child is String ) {
-						child = String( child ).split("\\").join("\\\\");
-					} else if( child is Object && !( child is Number || child is Boolean ) ) {
-						if( levels > 0 ) {
-							child = introspect( child, map, levels - 1 );
-						} else {
-							// Next Loop, introspection amount done
-							continue;
-						}
-					}
-					result[ prop ] = child;
-				}
-			}
-			return result;
-		}
-	}
-}
-import flash.utils.describeType;
-import flash.utils.getQualifiedClassName;
-
-const DYNAMIC: Array = [];
-const storage: Object = {};
-
-function getProps( value: * ): Array {
-	var cls: String = getQualifiedClassName( value );
-	var result: Array = storage[ cls ];
-	var l: int = 0;
-	if( !result ) {
-		var xml: XML = describeType( value );
-		if( xml.@isDynamic == "true" ) {
-			result = DYNAMIC;
-		} else {
-			result = [];
-			var properties: XMLList = (
-										xml["factory"]["accessor"] + xml["accessor"]
-									  ).( @access=="readwrite" || @access=="readonly" )
-									+ xml["factory"]["variable"] + xml["variable"];
-			
-			for each( var property: XML in properties ) {
-				result[l++] = XML( property.@name ).toString();
-			}
-		}
-		storage[cls] = result;
-	}
-	if( result == DYNAMIC ) {
-		result = [];
-		for( var i: String in value ) {
-			result[l] = i;
-		}
-		return result;
-	} else {
-		return result;
 	}
 }

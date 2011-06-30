@@ -21,6 +21,8 @@
  */
 package org.as3commons.logging.setup.target {
 	
+	import org.as3commons.logging.util.clone;
+	
 	/**
 	 * <code>LogStatement</code> is a data holder for the content of one log statement.
 	 * 
@@ -42,14 +44,14 @@ package org.as3commons.logging.setup.target {
 		/** Time stamp of when the log statement got triggered. */
 		public var timeStamp: Number;
 		
+		/** Information about the person that logged this. */
+		public var person: String;
+		
 		/** Message of the log statement. */
 		public var message: *;
 		
 		/** Parameters for the log statement. */
 		public var parameters: Array;
-		
-		/** Information about the person that logged this. */
-		public var person: String;
 		
 		/**
 		 * Constructs a new <code>LogStatement</code> containing the content
@@ -65,14 +67,24 @@ package org.as3commons.logging.setup.target {
 		 */
 		public function LogStatement(name:String, shortName:String, level:int,
 										timeStamp:Number, message:*, parameters:Array,
-										person:String=null) {
+										person:String) {
 			this.name = name;
 			this.shortName = shortName;
 			this.level = level;
 			this.timeStamp = timeStamp;
-			this.message = message;
-			this.parameters = parameters;
+			
+			this.message = ( message is String || message is Number || message is Boolean || message == null ) ? message : clone(message);
+			var l: int = parameters.length;
+			var foundNonPrimitive: Boolean = false;
+			for( var i: int = 0; i<l; ++i) {
+				var m: * = parameters[i]; 
+				if( !(m is String || m is Number || m is Boolean) ) {
+					foundNonPrimitive = true;
+					break;
+				}
+			}
+			this.parameters = foundNonPrimitive ? clone(parameters) : parameters;
 			this.person = person;
 		}
 	}
-}
+} 

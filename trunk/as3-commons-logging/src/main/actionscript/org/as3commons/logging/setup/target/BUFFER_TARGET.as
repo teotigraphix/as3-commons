@@ -66,7 +66,8 @@ internal final class BufferTarget implements IFlushableLogTarget {
 	public function log(name:String, shortName:String, level:int,
 						timeStamp:Number, message:*, params:Array, person:String=null): void {
 		_logStatements.push(
-			new LogStatement( name, shortName, level, timeStamp, message, params, person )
+			new LogStatement(name, shortName, level, timeStamp,
+							message, params, person)
 		);
 	}
 	
