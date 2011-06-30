@@ -1,4 +1,5 @@
 package {
+	import org.as3commons.logging.util.ByteArrayCopyTest;
 	import org.as3commons.logging.ILogSetup;
 	import org.as3commons.logging.LogLevelTest;
 	import org.as3commons.logging.Logger;
@@ -132,10 +133,10 @@ package {
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
 			core.run( [
-				new MateIntegrationTest(),
+				new ByteArrayCopyTest(),
 				new SwizIntegrationTest(),
 				new PushButtonIntegrationTest(),
-				new ASAPIntegrationTest(),
+				//new ASAPIntegrationTest(),
 				new SpiceLibIntegrationTest(),
 				new Progression4IntegrationTest(),
 				new LogLevelTest(),

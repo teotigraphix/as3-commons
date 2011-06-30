@@ -40,6 +40,9 @@ package org.as3commons.logging.setup.target {
 		/** Default format used to format the log statement */
 		public static const DEFAULT_FORMAT: String = "{shortSWF}({time}) {shortName}{atPerson}: {message}";
 		
+		/** Contains the standard gateway used if no custom one is required. */
+		public static const DEFAULT_GATEWAY: SOSGateway = new SOSGateway();
+		
 		/** Formatter used to render the log statements. */
 		private var _formatter:LogMessageFormatter;
 		
@@ -49,13 +52,13 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * Constructs a new <code>SOSTarget</code>
 		 * 
-		 * @param format Format in which the logger will
+		 * @param format Format to be used to format the statements.
 		 * @param gateway Gateway to the SOS that runs. Will use the default gateway
 		 *        in case no custom one is provided. 
 		 */
 		public function SOSTarget(format:String=null, gateway:SOSGateway=null) {
 			this.format = format;
-			_gateway = gateway||SOSGateway.INSTANCE;
+			_gateway = gateway||DEFAULT_GATEWAY;
 		}
 		
 		/**
@@ -64,7 +67,7 @@ package org.as3commons.logging.setup.target {
 		public function log(name:String, shortName:String, level:int, timeStamp:Number,
 							message:*, params:Array, person:String=null):void {
 			_gateway.log( levelToName(level),
-				_formatter.format( name, shortName, level, timeStamp, message, params, person)
+				_formatter.format(name, shortName, level, timeStamp, message, params, person)
 			);
 		}
 		

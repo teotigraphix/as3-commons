@@ -45,9 +45,6 @@ package org.as3commons.logging.setup.target {
 		
 		/** Default host to be used if none is defined */
 		public static const DEFAULT_HOST: String = "localhost";
-		
-		/** Contains the standard gateway used if no custom one is required. */
-		public static const INSTANCE: SOSGateway = new SOSGateway();
 		 
 		private var _host: String;
 		private var _port: uint;
@@ -63,7 +60,7 @@ package org.as3commons.logging.setup.target {
 		 * Constructs a new <code>SOSGateway</code>
 		 * 
 		 * @param host Host on which the SOS console is running (default: localhost)
-		 * @param port Port on whcih the SOS console is running (default: 4444)
+		 * @param port Port on which the SOS console is running (default: 4444)
 		 */
 		public function SOSGateway(host: String = null, port: uint = 4444) {
 			_host = host || DEFAULT_HOST;
