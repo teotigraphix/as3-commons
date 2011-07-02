@@ -98,7 +98,8 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number,message:*, params:Array, person:String=null):void {
+							timeStamp:Number,message:*, params:Array,
+							person:String):void {
 			// TODO: Use another way to verify the date-change. This one is
 			// not super performant.
 			// Note: using the timestamp of the log statment

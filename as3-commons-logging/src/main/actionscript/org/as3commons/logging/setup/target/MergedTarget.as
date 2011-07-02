@@ -57,8 +57,9 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log(name:String, shortName:String, level:int, timeStamp:Number,
-							message:*, parameters:Array, person:String=null): void {
+		public function log(name:String, shortName:String, level:int,
+							timeStamp:Number, message:*, parameters:Array,
+							person:String): void {
 			_logTargetA.log(name, shortName, level, timeStamp, message, parameters, person);
 			_logTargetB.log(name, shortName, level, timeStamp, message, parameters, person);
 		}

@@ -31,6 +31,8 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
+	 * 
+	 * 
 	 * <p>Built on version '4.0.22'.</p>
 	 * 
 	 * @author Martin Heidegger
@@ -45,6 +47,10 @@ package org.as3commons.logging.setup.target {
 		/** Formater used to format log messages */
 		private var _formatter: LogMessageFormatter;
 		
+		/**
+		 * Creates a new <code>Progression4Target</code>
+		 * 
+		 */
 		public function Progression4Target( format:String=null ) {
 			this.format = format;
 		}
@@ -59,9 +65,9 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log( name: String, shortName: String, level: int,
-							 timeStamp: Number, message: *, parameters: Array,
-							 person: String = null ): void {
+		public function log(name:String, shortName:String, level:int,
+							timeStamp:Number, message:*, parameters:Array,
+							person:String): void {
 			message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
 			switch( level ) {
 				case DEBUG:

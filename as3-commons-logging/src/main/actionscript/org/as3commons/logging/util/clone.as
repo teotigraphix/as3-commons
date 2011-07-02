@@ -24,29 +24,30 @@ package org.as3commons.logging.util {
 	import flash.utils.Dictionary;
 	
 	/**
-	 * Copies any generic object.
+	 * Copies/Clones any generic object.
 	 * 
 	 * <p>If the object has a <code>clone</code> or <code>copy</code> method it
 	 * will be used to copy the object, else it will attempt to copy it using a
 	 * bytearray.</p>
 	 * 
 	 * <p>Primitive objects, namely <code>String</code>, <code>Number</code>,
-	 * <code>Boolean</code>, <code>Function<code>, <code>Namespace</code>, 
+	 * <code>Boolean</code>, <code>Function</code>, <code>Namespace</code>, 
 	 * <code>QName</code> instances can not be copied anywhere are simply 
 	 * returned.</p>
 	 * 
 	 * @param object Object to be cloned
 	 * @param storage Storage of all the instances created
 	 *        (not necessary to be passed)
-	 * @param useByteArray <code>True</code> It will try copy using a bytearray (and preserving the type)
-	 *        or just copy the objects to primitive objects.
+	 * @param useByteArray <code>True</code> It will try copy using a bytearray
+	 *        (and preserving the type) or just copy the objects to primitive objects.
 	 * @param introspectDepth depth to which the objects should be introspected
 	 *        in case it cant be copied using a bytearray, copy or clone.
 	 * @return Clone of the object
 	 * @author Martin Heidegger
 	 * @since 2.1
 	 */
-	public function clone( object: *, storage: Dictionary = null, useByteArray:Boolean=true, introspectDepth:int = int.MAX_VALUE ): * {
+	public function clone( object:*, introspectDepth:uint=4.294967295E9	,
+						   storage:Dictionary=null, useByteArray:Boolean=true):* {
 		// Core types can not be modified anyways so dont even try to copy them
 		if( object is QName || object is String || object is Boolean
 			|| object is Namespace || object is Number || object == null
@@ -69,7 +70,7 @@ package org.as3commons.logging.util {
 					// Some frameworks think the "copy" naming is more fun.
 					theClone = object["copy"]();
 				} catch( e1: Error ) {
-					var nextDepth: int;
+					var nextDepth: uint;
 					if( object is Array ) {
 						// Arrays are in any way faster copied by iteration
 						var resultArr: Array = [];
@@ -78,9 +79,9 @@ package org.as3commons.logging.util {
 						if( introspectDepth > 0 ) {
 							nextDepth = introspectDepth-1;
 							for( var i: int = 0; i<l; ++i ) {
-								resultArr[i] = clone(arr[i],
+								resultArr[i] = clone(arr[i], nextDepth,
 									storage || (storage = new Dictionary()),
-									useByteArray, nextDepth);
+									useByteArray);
 							}
 						}
 						theClone = resultArr;
@@ -103,9 +104,9 @@ package org.as3commons.logging.util {
 							nextDepth = introspectDepth-1;
 							for( var prop: String in object ) {
 								resultObj[prop] = clone(
-									object[prop],
+									object[prop], nextDepth,
 									storage || (storage = new Dictionary()),
-									useByteArray, nextDepth);
+									useByteArray);
 							}
 						}
 						theClone = resultObj;

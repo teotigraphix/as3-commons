@@ -31,15 +31,28 @@ package org.as3commons.logging.setup.target {
 	import org.osflash.thunderbolt.Logger;
 	
 	/**
+	 * <code>ThunderBoltTarget</code> sends all statements to the ThunderBolt logger
+	 * from Jens Krause.
+	 * 
 	 * @author Martin Heidegger
+	 * @since 2.1
+	 * @see http://code.google.com/p/flash-thunderbolt
 	 */
 	public final class ThunderBoltTarget implements ILogTarget {
 		
+		/** Default format to be used for formatting statements. */
 		public static const DEFAULT_FORMAT:String = "{logTime} {name}{atPerson}: {message}";
 		
-		private var _formatter : LogMessageFormatter;
+		/** Formatter to render the log statements */
+		private var _formatter:LogMessageFormatter;
 		
-		public function ThunderBoltTarget( format:String=null ) {
+		/**
+		 * Creates a new <code>ThunderBoltTarget</code>.
+		 * 
+		 * @param format Default format to for the logging, if null, it will use
+		 *        the <code>DEFAULT_FORMAT</code>.
+		 */
+		public function ThunderBoltTarget(format:String=null) {
 			// Exclude time, the time of our logger is more accurate
 			Logger.includeTime = false;
 			// It will use the wrong caller, so just disable it
@@ -47,15 +60,22 @@ package org.as3commons.logging.setup.target {
 			this.format = format;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function set format( format:String ): void {
 			_formatter = new LogMessageFormatter( format||DEFAULT_FORMAT );
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function log( name:String, shortName:String, level:int,
 							 timeStamp:Number, message:*, parameters:Array,
-							 person:String=null): void {
+							 person:String): void {
 			if( message is String || parameters.length != 0 ) {
-				message = _formatter.format(name, shortName, level, timeStamp, message, parameters );
+				message = _formatter.format(name, shortName, level, timeStamp,
+					message, parameters, person);
 			}
 			switch( level ) {
 				case DEBUG:

@@ -25,8 +25,20 @@ package org.as3commons.logging.integration {
 	import org.as3commons.logging.ILogger;
 	import org.as3commons.logging.getNamedLogger;
 	import org.asaplibrary.util.debug.LogEvent;
+	
 	/**
-	 * @author mh
+	 * <code>ASAPLibrary</code> is a integration Hook for the ASAP Library that
+	 * can be used to redirect ASAP log statements to as3commons logging.
+	 * 
+	 * <listing>
+	 *   import org.asaplibrary.util.debug.Log;
+	 *   
+	 *   Log.addLogListener( ASAPIntegration );
+	 * </listing>
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.1
+	 * @see http://asaplibrary.org/
 	 */
 	public function ASAPIntegration( event:LogEvent ):void {
 		var nameStr: String = event.sender.replace("::",".");

@@ -19,29 +19,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.setup {
+package org.as3commons.logging.setup.target {
 	
+	import org.as3commons.logging.setup.ILogTarget;
 	
 	/**
-	 * A <code>ILogTarget</code> implementation is to log statements to a target.
+	 * Defines a target that needs to store data before logging it.
+	 * 
+	 * <p>To preserve the variables passed in to the log statement asynchronous
+	 * loggers need to clone instances to store the log statements. They use
+	 * for this the <code>clone</code> method.</p>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2
+	 * @since 2.1
+	 * @see org.as3commons.logging.util#clone
 	 */
-	public interface ILogTarget {
+	public interface IAsyncLogTarget extends ILogTarget {
 		
 		/**
-		 * Renders a log statement.
-		 * 
-		 * @param name Name of the logger that triggered the log statement.
-		 * @param shortName Shortened form of the name.
-		 * @param level Level of the log statement that got triggered.
-		 * @param timeStamp Time stamp of when the log statement got triggered.
-		 * @param message Message of the log statement.
-		 * @param parameters Parameters for the log statement.
-		 * @param person Information about the person that filed this log statement.
+		 * Asynchronous targets need to introspect variables to store them,
+		 * for that the introspection depth defines how deep the variables should
+		 * be serialized. (default=uint.MAX_VALUE)
 		 */
-		function log(name:String, shortName:String, level:int, timeStamp:Number,
-					message:*, parameters:Array, person:String):void;
+		function set introspectDepth(depth:uint): void;
 	}
 }

@@ -19,29 +19,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.setup {
+package org.as3commons.logging.util {
 	
+	import org.as3commons.logging.setup.ILogTarget;
+	import org.as3commons.logging.setup.target.LogStatement;
 	
 	/**
-	 * A <code>ILogTarget</code> implementation is to log statements to a target.
+	 * Logs a list of log statements to a log target.
 	 * 
-	 * @author Martin Heidegger
-	 * @since 2
+	 * @param statements Array of log statements (first=oldest, last=newest);
+	 * @param factory <code>ILogTarget</code> to flush to. 
+	 * @since 2.1
 	 */
-	public interface ILogTarget {
-		
-		/**
-		 * Renders a log statement.
-		 * 
-		 * @param name Name of the logger that triggered the log statement.
-		 * @param shortName Shortened form of the name.
-		 * @param level Level of the log statement that got triggered.
-		 * @param timeStamp Time stamp of when the log statement got triggered.
-		 * @param message Message of the log statement.
-		 * @param parameters Parameters for the log statement.
-		 * @param person Information about the person that filed this log statement.
-		 */
-		function log(name:String, shortName:String, level:int, timeStamp:Number,
-					message:*, parameters:Array, person:String):void;
+	public function passToTarget(statements:Array,logTarget:ILogTarget):void {
+		if(logTarget) {
+			var i: int = statements.length;
+			while(--i-(-1)) {
+				var statement:LogStatement = LogStatement(statements[i]);
+				logTarget.log(
+					statement.name, statement.shortName, statement.level,
+					statement.timeStamp, statement.message, statement.parameters,
+					statement.person
+				);
+			}
+		}
 	}
 }

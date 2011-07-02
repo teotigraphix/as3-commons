@@ -258,8 +258,8 @@ package org.as3commons.logging.setup {
 				_logger.warn("Should not be called");
 				_logger.error("Should not be called");
 				_logger.fatal("Should not be called");
-				logTarget.log("", "", DEBUG, 123.0, "test", null);
-				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq( "test" ), eq(null)));
+				logTarget.log("", "", DEBUG, 123.0, "test", null, null);
+				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq( "test" ), eq(null), eq(null)));
 			} else {
 				fail("The Logsystem tells logging is not enabled @ fatal.");
 			}

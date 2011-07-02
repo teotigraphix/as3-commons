@@ -21,25 +21,58 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import org.as3commons.logging.LoggerFactory;
-	import org.as3commons.logging.setup.ILogTarget;
-	
 	/**
-	 * A <code>IFlushableLogTarget</code> describes a target that stores some
-	 * log statements and that allows to flush those statements to a logger
-	 * at a later statement.
-	 * 
 	 * @author Martin Heidegger
-	 * @since 2.0
 	 */
-	public interface IFlushableLogTarget extends ILogTarget {
+	public final class BufferTarget implements IAsyncLogTarget {
+		
+		private var _logStatements:Array /* LogStatement */ = new Array();
+		
+		/** Holds the length of the log statements */
+		private var _length:int = 0;
+		
+		private var _introspectDepth:uint;
+		private var _maxStatements:uint;
+		
+		public function BufferTarget(maxStatements:uint=uint.MAX_VALUE, introspectDepth:uint=5) {
+			_maxStatements=maxStatements;
+			_introspectDepth=introspectDepth;
+		}
+		
+		public function get statements():Array {
+			return _logStatements;
+		}
+		
+		public function set maxStatements(max:uint):void {
+			_maxStatements=max;
+		}
+		
+		public function set introspectDepth(depth:uint): void {
+			_introspectDepth=depth;
+		}
 		
 		/**
-		 * Flushes the content of this target to the logger of the factory.
-		 * 
-		 * @param factory <code>LoggerFactory</code> to flush to.
-		 *                <code>LOGGER_FACTORY</code> will be used if null is passed-in. 
+		 * @inheritDoc
 		 */
-		function flush(factory:LoggerFactory=null):void;
+		public function log(name:String, shortName:String, level:int,
+							timeStamp:Number, message:*, params:Array,
+							person:String): void {
+			_logStatements[++_length] =
+				new LogStatement(name, shortName, level, timeStamp,
+									message, params, person, _introspectDepth);
+			
+			while(_maxStatements > _length) {
+				_logStatements.shift();
+				--_length;
+			}
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function clear():void {
+			_logStatements = [];
+			_length = 0;
+		}
 	}
 }

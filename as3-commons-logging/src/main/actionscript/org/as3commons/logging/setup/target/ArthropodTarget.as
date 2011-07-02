@@ -87,7 +87,7 @@ package org.as3commons.logging.setup.target {
 		
 		public function log( name: String, shortName: String, level: int,
 							 timeStamp: Number, message: *, parameters: Array,
-							 person: String = null ): void {
+							 person: String): void {
 			var color: uint = _colors[ level ];
 			if( parameters.length == 0 ){
 				if( message is String ) {

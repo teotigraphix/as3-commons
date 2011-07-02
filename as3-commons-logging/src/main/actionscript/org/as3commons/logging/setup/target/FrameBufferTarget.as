@@ -41,12 +41,17 @@ package org.as3commons.logging.setup.target {
 	 * @author Martin Heidegger
 	 * @version 2.0
 	 */
-	public class FrameBufferTarget implements ILogTarget {
+	public class FrameBufferTarget implements ILogTarget, IAsyncLogTarget {
 		
 		/**
 		 * Buffers that are supposed to be cleared.
 		 */
-		private static const _buffers: Array /* FrameBufferTarget */ = [];
+		private static const _buffers:Array /* FrameBufferTarget */ = [];
+		
+		/**
+		 * Keeps record of how many levels to introspect
+		 */
+		private var _introspectDepth:uint = uint.MAX_VALUE;
 		
 		/**
 		 * Clears the buffers that should be cleared (called onEnterFrame)
@@ -101,15 +106,16 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:*, parameters:Array, person:String=null):void {
+							timeStamp:Number, message:*, parameters:Array, person:String):void {
 			// Only log it if the statements this frame do not yet exceed
 			// the max statements that can be triggered per frame
 			if( _statementsThisFrame < _statementsPerFrame ) {
-				_target.log(name, shortName, level, timeStamp, message, parameters);
+				_target.log(name, shortName, level, timeStamp, message, parameters, person);
 				++_statementsThisFrame;
 			} else {
 				_bufferedStatements[_bufferLength++] =
-					new LogStatement(name, shortName, level, timeStamp, message, parameters, person);
+					new LogStatement(name, shortName, level, timeStamp, message,
+								     parameters, person, _introspectDepth);
 			}
 			
 			if( !_isRegistered ) {
@@ -131,7 +137,7 @@ package org.as3commons.logging.setup.target {
 				if( statement ) {
 					_target.log(statement.name, statement.shortName,
 							statement.level, statement.timeStamp, statement.message,
-							statement.parameters);
+							statement.parameters, statement.person);
 				} else {
 					break;
 				}
@@ -144,6 +150,13 @@ package org.as3commons.logging.setup.target {
 			} else {
 				return false;
 			}
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function set introspectDepth(depth:uint):void {
+			_introspectDepth = depth;
 		}
 	}
 }

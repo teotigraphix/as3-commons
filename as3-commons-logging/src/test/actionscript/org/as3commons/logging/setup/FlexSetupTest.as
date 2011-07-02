@@ -57,11 +57,11 @@ package org.as3commons.logging.setup {
 			var loggerB: Logger = factory.getNamedLogger( "com.me.Example" ) as Logger;
 			var loggerC: Logger = factory.getNamedLogger( "com.ma.rup" ) as Logger;
 			var loggerD: Logger = factory.getNamedLogger( "com.ma.sup" ) as Logger;
-			loggerA.debugTarget.log( "com.mux", "mux", DEBUG, 123, "hello {0}", ["world"]);
-			loggerB.infoTarget.log( "com.me.Example", "Example", INFO, 123, "{0} {1}", ["hello","world"] );
-			loggerC.warnTarget.log( "com.ma.rup", "rup", WARN, 123, "{0} world", ["hello"] );
-			loggerD.errorTarget.log( "com.ma.sup", "sup", ERROR, 123, "{1} {0}", ["world","hello"] );
-			loggerC.fatalTarget.log( "com.ma.rup", "rup", FATAL, 123, "hello world", [] );
+			loggerA.debugTarget.log( "com.mux", "mux", DEBUG, 123, "hello {0}", ["world"], null);
+			loggerB.infoTarget.log( "com.me.Example", "Example", INFO, 123, "{0} {1}", ["hello","world"], null );
+			loggerC.warnTarget.log( "com.ma.rup", "rup", WARN, 123, "{0} world", ["hello"], null );
+			loggerD.errorTarget.log( "com.ma.sup", "sup", ERROR, 123, "{1} {0}", ["world","hello"], null );
+			loggerC.fatalTarget.log( "com.ma.rup", "rup", FATAL, 123, "hello world", [], null );
 			
 			var event: LogEvent;
 			

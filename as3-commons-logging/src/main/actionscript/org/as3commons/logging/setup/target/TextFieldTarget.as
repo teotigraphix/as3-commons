@@ -29,18 +29,17 @@ package org.as3commons.logging.setup.target {
 	 * <code>TextFieldTarget</code> is a simple target that formats log statements
 	 * and renders them to a <code>TextField</code>.
 	 * 
-	 * <p></p>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2
+	 * @since 2.0
 	 */
 	public final class TextFieldTarget extends TextField implements IFormattingLogTarget {
 		
 		/** Default format used to stringify the log statements. */
-		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName}{atPerson} - {message}";
+		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName}{atPerson} - {message}\n";
 		
 		/** Formatter that formats the log statements. */
-		private var _formatter: LogMessageFormatter;
+		private var _formatter:LogMessageFormatter;
 		
 		/** Textfield that shows the content */
 		private var _textField:TextField;
@@ -48,8 +47,10 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * Creates a new TextFieldTarget.
 		 * 
-		 * @param format Default format to for the logging, if null, it will use the <code>DEFAULT_FORMAT</code>.
-		 * @param textField <code>TextField</code> to be used for logging, if null it will log to itself.
+		 * @param format Default format to for the logging, if null, it will use
+		 *        the <code>DEFAULT_FORMAT</code>.
+		 * @param textField <code>TextField</code> to be used for logging, if null
+		 *        it will log to itself.
 		 */
 		public function TextFieldTarget(format:String=null, textField:TextField=null) {
 			this.format = format;
@@ -59,9 +60,13 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log( name:String, shortName:String, level:int, timeStamp:Number,
-							 message:*, parameters:Array, person:String=null ):void {
-			_textField.appendText( _formatter.format( name, shortName, level, timeStamp, message, parameters, person ) + "\n" );
+		public function log(name:String, shortName:String, level:int,
+							timeStamp:Number, message:*, parameters:Array,
+							person:String):void {
+			_textField.appendText(
+				_formatter.format(name, shortName, level, timeStamp,
+								  message, parameters, person)
+			);
 		}
 		
 		/**
