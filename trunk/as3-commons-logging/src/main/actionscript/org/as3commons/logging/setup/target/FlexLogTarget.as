@@ -36,7 +36,7 @@ package org.as3commons.logging.setup.target {
 	 * 
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
-	 * @version 2.0
+	 * @since 2.0
 	 */
 	public class FlexLogTarget implements ILogTarget {
 		
@@ -49,7 +49,8 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:*, parameters:Array, person:String=null):void {
+							timeStamp:Number, message:*, parameters:Array,
+							person:String):void {
 			var target:ILogger = _loggers[name]||(_loggers[name]=Log.getLogger(name));
 			var args: Array = parameters.concat();
 			args.unshift( message ? message["toString"]() : null );

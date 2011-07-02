@@ -31,26 +31,48 @@ package org.as3commons.logging.setup.target {
 	import org.spicefactory.lib.logging.LogContext;
 	import org.spicefactory.lib.logging.Logger;
 	
+	/**
+	 * <code>SpiceLibTarget</code> can be used to send statements from your code
+	 * that uses as3commons-logging to your setup that focusses on <code>SpiceFactory</code>
+	 * 
+	 * @see http://www.spicefactory.org/parsley/
+	 * @author Martin Heidegger
+	 * @since 2.1
+	 */
 	public final class SpiceLibTarget implements IFormattingLogTarget {
-	
+		
+		/** Default format used to format the log statement */
 		public static const DEFAULT_FORMAT: String = "{message}";
 		
 		/** All the SpliceLib loggers requested for that logger */
 		private const _loggers:Object = {};
 		
+		/** Formatter that formats the log statements. */
 		private var _formatter: LogMessageFormatter;
 		
-		public function SpiceLibTarget() {
-			this.format = DEFAULT_FORMAT;
+		/**
+		 * Creates a new <code>SpiceLibTarget</code> instance.
+		 * 
+		 * @param format Default format to for the logging, if null, it will use
+		 *        the <code>DEFAULT_FORMAT</code>.
+		 */
+		public function SpiceLibTarget( format:String=null ) {
+			this.format = format;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function set format( format:String ): void {
 			_formatter = new LogMessageFormatter( format||DEFAULT_FORMAT );
 		}
 		
-		public function log( name: String, shortName: String, level: int,
-							 timeStamp: Number, message: *, parameters: Array,
-							 person: String = null ): void {
+		/**
+		 * @inheritDoc
+		 */
+		public function log(name:String, shortName:String, level:int,
+							timeStamp:Number, message:*, parameters:Array,
+							person:String):void {
 			message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
 			var logger: Logger = _loggers[ name ] || (_loggers[ name ]=LogContext.getLogger( name ));
 			switch( level ) {

@@ -19,29 +19,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.setup {
+package org.as3commons.logging.setup.target {
 	
+	import org.as3commons.logging.level.FATAL;
 	
 	/**
-	 * A <code>ILogTarget</code> implementation is to log statements to a target.
+	 * <p><code>FatalBuffer</code> passes all statements sent to it to another
+	 * target once one fatal statement was sent.</p>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2
+	 * @since 2.1
 	 */
-	public interface ILogTarget {
+	public final class FatalBuffer extends ConditionalBuffer {
 		
 		/**
-		 * Renders a log statement.
-		 * 
-		 * @param name Name of the logger that triggered the log statement.
-		 * @param shortName Shortened form of the name.
-		 * @param level Level of the log statement that got triggered.
-		 * @param timeStamp Time stamp of when the log statement got triggered.
-		 * @param message Message of the log statement.
-		 * @param parameters Parameters for the log statement.
-		 * @param person Information about the person that filed this log statement.
+		 * @inheritDoc
 		 */
-		function log(name:String, shortName:String, level:int, timeStamp:Number,
-					message:*, parameters:Array, person:String):void;
+		public function FatalBuffer(target:*, maxStatements:uint=uint.MAX_VALUE,
+									introspectDepth:uint=5) {
+			super(target,maxStatements,introspectDepth);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function  test(name:String, shortName:String, level:int,
+							timeStamp:Number, message:*, params:Array,
+							person:String):Boolean {
+			return level == FATAL;
+			name; shortName; timeStamp; message; person; params;
+		}
 	}
 }

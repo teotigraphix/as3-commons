@@ -23,7 +23,7 @@ package org.as3commons.logging.setup.target {
 			
 			var merged: MergedTarget = new MergedTarget( targetA, targetB );
 			
-			merged.log("A", "a", DEBUG, 1234, "Hello World", ["#"] );
+			merged.log("A", "a", DEBUG, 1234, "Hello World", ["#"], null );
 			
 			inOrder().verify().that( targetA.log( eq("A"), eq("a"), eq( DEBUG), eq(1234), eq("Hello World"), alike(["#"]), eq(null)));
 			inOrder().verify().that( targetB.log( eq("A"), eq("a"), eq( DEBUG), eq(1234), eq("Hello World"), alike(["#"]), eq(null)));
@@ -37,21 +37,21 @@ package org.as3commons.logging.setup.target {
 			var merged: MergedTarget = new MergedTarget( null, null );
 			
 			try {
-				merged.log( "A", "a", DEBUG, 1, "message", [] );
+				merged.log( "A", "a", DEBUG, 1, "message", [], null );
 				fail( "If both targets are missing it should throw an error");
 			} catch( e: Error ) {}
 			
 			merged = new MergedTarget( target, null );
 			
 			try {
-				merged.log( "A", "a", DEBUG, 1, "message", [] );
+				merged.log( "A", "a", DEBUG, 1, "message", [], null );
 				fail( "If second target is missing it should throw an error");
 			} catch( e: Error ) {}
 			
 			merged = new MergedTarget( null, target );
 			
 			try {
-				merged.log( "A", "a", DEBUG, 1, "message", [] );
+				merged.log( "A", "a", DEBUG, 1, "message", [], null );
 				fail( "If first target is missing it should throw an error");
 			} catch( e: Error ) {}
 		}
@@ -71,7 +71,7 @@ package org.as3commons.logging.setup.target {
 			
 			test = mergeTargets(null,targetA,targetB);
 			
-			test.log( "a", "a", DEBUG, 1, "Hello World", [] );
+			test.log( "a", "a", DEBUG, 1, "Hello World", [], null );
 			inOrder().verify().that( targetA.log( eq("a"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
 			inOrder().verify().that( targetB.log( eq("a"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
 			verifyNothingCalled( targetA );

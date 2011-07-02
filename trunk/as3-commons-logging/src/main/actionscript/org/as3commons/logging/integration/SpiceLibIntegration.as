@@ -20,12 +20,15 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.integration {
+	
 	import org.as3commons.logging.getNamedLogger;
 	import org.spicefactory.lib.logging.LogFactory;
 	import org.spicefactory.lib.logging.Logger;
 	
 	/**
-	 * @author mh
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.1
 	 */
 	public class SpiceLibIntegration implements LogFactory {
 		

@@ -60,9 +60,9 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log( name: String, shortName: String, level: int,
-							 timeStamp: Number, message: *, parameters: Array,
-							 person: String = null ): void {
+		public function log(name:String, shortName:String, level:int,
+							 timeStamp:Number, message:*, parameters:Array,
+							 person:String): void {
 			message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
 			switch( level ) {
 				case DEBUG:

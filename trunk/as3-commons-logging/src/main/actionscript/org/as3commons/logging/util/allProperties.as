@@ -33,7 +33,7 @@ package org.as3commons.logging.util {
 	 */
 	public function allProperties( value: * ): Array {
 		var cls:String = getQualifiedClassName(value);
-		var result: Array = properties[ cls ];
+		var result: Array = storage[ cls ];
 		var dyn: Boolean = isDynamic[ cls ];
 		var l: int = 0;
 		
@@ -41,11 +41,11 @@ package org.as3commons.logging.util {
 			// Evaluate the properties from the xml
 			var xml: XML = describeType( value );
 			result = [];
-			var properties: XMLList = (
+			var xmlProp: XMLList = (
 										xml["factory"]["accessor"] + xml["accessor"]
 									  ).( @access=="readwrite" || @access=="readonly" )
 									+ xml["factory"]["variable"] + xml["variable"];
-			for each( var property: XML in properties ) {
+			for each( var property: XML in xmlProp ) {
 				result[l++] = XML( property.@name ).toString();
 			}
 			
@@ -53,7 +53,7 @@ package org.as3commons.logging.util {
 			result.sort();
 			
 			// And store them for speed!
-			properties[cls] = result;
+			storage[cls] = result;
 			isDynamic[cls] = dyn = (xml.@isDynamic == "true");
 		}
 		// If its dynamic the properties have to be checke per instances (sucks, i know)
@@ -78,4 +78,4 @@ package org.as3commons.logging.util {
 // Store if the class was dynamic
 const isDynamic: Object = {};
 // Store of properties
-const properties: Object = {};
+const storage: Object = {};

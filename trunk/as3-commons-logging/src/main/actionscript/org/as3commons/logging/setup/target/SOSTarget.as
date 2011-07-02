@@ -64,8 +64,9 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log(name:String, shortName:String, level:int, timeStamp:Number,
-							message:*, params:Array, person:String=null):void {
+		public function log(name:String, shortName:String, level:int,
+							timeStamp:Number, message:*, params:Array,
+							person:String):void {
 			_gateway.log( levelToName(level),
 				_formatter.format(name, shortName, level, timeStamp, message, params, person)
 			);

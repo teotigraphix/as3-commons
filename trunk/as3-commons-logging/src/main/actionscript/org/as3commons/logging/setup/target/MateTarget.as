@@ -32,27 +32,41 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
-	 * @author mh
+	 * Logger that allows tracing to the current configuration in Mate.
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.1
+	 * @see http://mate.asfusion.com
 	 */
 	public final class MateTarget implements IFormattingLogTarget {
 		
+		/** Default formatting used if none(null) given */
 		public static const DEFAULT_FORMAT:String = "{message}";
 		
-		private var _formatter : LogMessageFormatter;
+		/** Formats the log messages */
+		private var _formatter: LogMessageFormatter;
+		
+		/** Formats the log messages */
 		private var _logger: IMateLogger;
 		
-		public function MateTarget( format:String=null ) {
+		public function MateTarget(format:String=null) {
 			_logger = MateManager.instance.getLogger(true);
 			this.format = format;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function set format( format:String ): void {
 			_formatter = new LogMessageFormatter( format||DEFAULT_FORMAT );
 		}
 		
-		public function log( name: String, shortName: String, level: int,
-							 timeStamp: Number, message: *, parameters: Array,
-							 person: String = null ): void {
+		/**
+		 * @inheritDoc
+		 */
+		public function log(name:String, shortName:String, level:int,
+							 timeStamp:Number, message:*, parameters:Array,
+							 person:String): void {
 			message = _formatter.format(name, shortName, level, timeStamp,
 										message, parameters, person);
 			switch( level ) {

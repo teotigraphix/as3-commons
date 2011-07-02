@@ -41,7 +41,8 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * Creates a new <code>TraceTarget</code> instance.
 		 * 
-		 * @param format Format to be used to format the statements.
+		 * @param format Default format to for the logging, if null, it will use
+		 *        the <code>DEFAULT_FORMAT</code>.
 		 */
 		public function TraceTarget(format:String=null) {
 			this.format = format;
@@ -58,7 +59,8 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:*, parameters:Array, person:String=null):void {
+							timeStamp:Number, message:*, parameters:Array,
+							person:String):void {
 			trace( _formatter.format( name, shortName, level, timeStamp, message, parameters, person));
 		}
 	}

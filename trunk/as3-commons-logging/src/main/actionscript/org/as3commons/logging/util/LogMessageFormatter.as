@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.util {
+	
 	import org.as3commons.logging.level.levelToName;
 	
 	/**
@@ -196,8 +197,9 @@ package org.as3commons.logging.util {
 		 * 
 		 * @see org.as3commons.logging.Logger
 		 */
-		public function format(name:String, shortName:String, level:int, timeMs:Number,
-								message:String, params:Array, person:String=null):String {
+		public function format(name:String, shortName:String, level:int,
+							   timeMs:Number, message:String, params:Array,
+							   person:String):String {
 			
 			var result: String = "";
 			var node: FormatNode = _firstNode;

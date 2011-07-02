@@ -64,26 +64,17 @@ package org.as3commons.logging.setup.target {
 		 * @param message Message of the log statement.
 		 * @param parameters Parameters for the log statement.
 		 * @param person Information about the person that filed this log statement.
+		 * @param introspectDepth Depth to which the passed in objects should be introspected.
 		 */
 		public function LogStatement(name:String, shortName:String, level:int,
 										timeStamp:Number, message:*, parameters:Array,
-										person:String) {
+										person:String, introspectDepth:uint) {
 			this.name = name;
 			this.shortName = shortName;
 			this.level = level;
 			this.timeStamp = timeStamp;
-			
-			this.message = ( message is String || message is Number || message is Boolean || message == null ) ? message : clone(message);
-			var l: int = parameters.length;
-			var foundNonPrimitive: Boolean = false;
-			for( var i: int = 0; i<l; ++i) {
-				var m: * = parameters[i]; 
-				if( !(m is String || m is Number || m is Boolean) ) {
-					foundNonPrimitive = true;
-					break;
-				}
-			}
-			this.parameters = foundNonPrimitive ? clone(parameters) : parameters;
+			this.message = clone(message,introspectDepth);
+			this.parameters = clone(parameters,introspectDepth);
 			this.person = person;
 		}
 	}

@@ -27,7 +27,11 @@ package org.as3commons.logging.integration {
 	import com.pblabs.engine.debug.ILogAppender;
 	
 	/**
-	 * @author mh
+	 * 
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.1
+	 * @see http://pushbuttonengine.com
 	 */
 	public class PushButtonIntegration implements ILogAppender {
 		
