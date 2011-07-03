@@ -31,13 +31,15 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
-	 * 
+	 * <code>Progression4Target</code> can send log statements to the 
+	 * logging mechanism used in the <code>Progression</code> framework.
 	 * 
 	 * <p>Built on version '4.0.22'.</p>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.1
 	 * @see http://progression.jp/ja/download/
+	 * @see org.as3commons.logging.setup#Progression4Integration()
 	 */
 	public class Progression4Target implements IFormattingLogTarget {
 		

@@ -20,8 +20,13 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
+	
 	/**
-	 * @author mh
+	 * <code>true</code> if <code>info</code> actually does something.
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.1
+	 * @see org.as3commons.logging.simple#info()
 	 */
 	public function isInfoEnabled(): Boolean {
 		return DIRECT_LOGGER.infoEnabled;

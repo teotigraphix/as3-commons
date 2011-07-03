@@ -24,8 +24,17 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.level.FATAL;
 	
 	/**
-	 * <p><code>FatalBuffer</code> passes all statements sent to it to another
-	 * target once one fatal statement was sent.</p>
+	 * <code>FatalBuffer</code> passes all statements sent to it to another
+	 * target once one fatal statement was sent.
+	 * 
+	 * <listing>
+	 *    LOGGER_SETUP.setup = new SimpleTargetSetup(
+	 *      new FatalBuffer( new HttpTarget( "http://my.domain/logger") )
+	 *    );
+	 *    
+	 *    // This setup will log the last 50 statements to the domain in case
+	 *    // a fatal log statement was triggered.
+	 * </listing>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.1

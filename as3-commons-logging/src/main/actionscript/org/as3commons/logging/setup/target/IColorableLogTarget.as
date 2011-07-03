@@ -39,6 +39,9 @@ package org.as3commons.logging.setup.target {
 		 * can be changed dynamically if you pass here a Dictionary with Colors (numbers)
 		 * used for all levels:</p>
 		 * 
+		 * <p>The default colors used in case <code>null</code> got passed-in
+		 * should be documented in the implementations.</p>
+		 * 
 		 * @example <listing>
 		 *     import org.as3commons.logging.level.*;
 		 *     

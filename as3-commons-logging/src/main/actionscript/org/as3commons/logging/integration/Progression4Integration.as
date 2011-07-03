@@ -20,8 +20,20 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.integration {
+	
 	/**
-	 * @author mh
+	 * Added as <i>Progression 4</i> target this function will send Progression
+	 * log events to the as3commons system.
+	 * 
+	 * <listing>
+	 *   import jp.nium.core.debug.Logger;
+	 *   
+	 *   Logger.enabled = true;
+	 *   Logger.loggingFunction = Progression4Integration;
+	 * </listing>
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.1
 	 */
 	public function Progression4Integration( ...messages: Array ): void {
 		var message: String;

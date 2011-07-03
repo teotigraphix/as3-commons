@@ -27,8 +27,13 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
+	 * <code>MonsterDebugger3LogTarget</code> uses the log statement to address
+	 * the Monster Debugger 3 console.
+	 * 
+	 * @author Tim Keir
 	 * @author Martin Heidegger
 	 * @since 2.1
+	 * @see org.as3commons.logging.setup.target.MonsterDebugger3TraceTarget
 	 * @see http://demonsterdebugger.com/asdoc/com/demonsters/debugger/MonsterDebugger.html#log()
 	 */
 	public class MonsterDebugger3LogTarget implements ILogTarget {

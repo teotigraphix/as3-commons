@@ -22,7 +22,25 @@
 package org.as3commons.logging.simple {
 	
 	/**
+     * Logs a message for debug purposes to the <code>DIRECT_LOGGER</code>
+	 * 
+	 * <p>Debug messages should be messages that are additional output used
+	 * to ease the debugging of an application.</p>
+	 * 
+	 * <p>A message can contain place holders that are filled with the additional
+	 * parameters. The <code>ILogTarget</code> implementation may treat the 
+	 * options as they want.</p>
+	 * 
+	 * <p>Example for a message with parameters:</p>
+	 * <listing>
+	 *   error("A: {0} is B: {1}", "Hello", "World");
+	 *   // A: Hello is B: World
+	 * </listing>
+	 * 
+	 * @param message Message that should be logged.
+	 * @param params List of parameters.
 	 * @author Martin Heidegger
+	 * @since 2.1
 	 */
 	public function debug( message: *, ...parameters:Array ): void {
 		DIRECT_LOGGER.debug.apply( [message].concat( parameters ) );

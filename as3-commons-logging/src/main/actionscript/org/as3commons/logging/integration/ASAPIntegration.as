@@ -38,7 +38,8 @@ package org.as3commons.logging.integration {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.1
-	 * @see http://asaplibrary.org/
+	 * @see http://asaplibrary.org
+	 * @see org.as3commons.logging.setup.target.ASAPTarget
 	 */
 	public function ASAPIntegration( event:LogEvent ):void {
 		var nameStr: String = event.sender.replace("::",".");

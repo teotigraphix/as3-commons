@@ -47,11 +47,13 @@ package org.as3commons.logging.setup.target {
 		/** Information about the person that logged this. */
 		public var person: String;
 		
-		/** Message of the log statement. */
-		public var message: *;
+		private var _message: *;
 		
 		/** Parameters for the log statement. */
-		public var parameters: Array;
+		private var _parameters: Array;
+		
+		/** Message of the log statement. */
+		private var introspectDepth: uint;
 		
 		/**
 		 * Constructs a new <code>LogStatement</code> containing the content
@@ -69,13 +71,32 @@ package org.as3commons.logging.setup.target {
 		public function LogStatement(name:String, shortName:String, level:int,
 										timeStamp:Number, message:*, parameters:Array,
 										person:String, introspectDepth:uint) {
+			this.introspectDepth = introspectDepth;
 			this.name = name;
 			this.shortName = shortName;
 			this.level = level;
 			this.timeStamp = timeStamp;
-			this.message = clone(message,introspectDepth);
-			this.parameters = clone(parameters,introspectDepth);
+			this.message = message;
+			this.parameters = parameters;
 			this.person = person;
+		}
+		
+		/** Message of the log statement. (stored as cloned) */
+		public function get message():* {
+			return _message;
+		}
+		
+		public function set message(message:*):void {
+			_message = clone(message,introspectDepth);
+		}
+		
+		/** Parameters for the log statement. */
+		public function get parameters():Array {
+			return _parameters;
+		}
+
+		public function set parameters(parameters:Array):void {
+			_parameters = clone(parameters,introspectDepth);
 		}
 	}
 } 

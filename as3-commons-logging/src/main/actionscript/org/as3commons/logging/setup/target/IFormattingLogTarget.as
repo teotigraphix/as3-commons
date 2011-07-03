@@ -81,6 +81,12 @@ package org.as3commons.logging.setup.target {
 		 *   
 		 *   <tr><td>{swf}</td>
 		 *       <td>The full SWF path</td></tr>
+		 *   
+		 *   <tr><td>{person}</td>
+		 *       <td>The Person that wrote this statement</td></tr>
+		 *   
+		 *   <tr><td>{atPerson}</td>
+		 *       <td>The Person that wrote this statement with the 'at' prefix</td></tr>
 		 * </table>
 		 * 
 		 * @example <listing>

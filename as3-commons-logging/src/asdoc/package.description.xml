@@ -31,8 +31,12 @@
 			<shortDescription><![CDATA[Various output targets that can be used in the setup process.]]></shortDescription>
 			<description><![CDATA[]]></description>
 		</package>
+		<package name="org.as3commons.logging.simple" >
+			<shortDescription><![CDATA[A set of tools to log without a big hazzle.]]></shortDescription>
+			<description><![CDATA[]]></description>
+		</package>
 		<package name="org.as3commons.logging.util" >
-			<shortDescription><![CDATA[Formatting utils.]]></shortDescription>
+			<shortDescription><![CDATA[Utils for more specific logging systems.]]></shortDescription>
 			<description><![CDATA[]]></description>
 		</package>
 	</packages>

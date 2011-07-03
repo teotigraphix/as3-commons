@@ -35,9 +35,21 @@ package org.as3commons.logging.integration {
 	/*FDT_IGNORE*/
 	
 	/**
-	 * @author mh
+	 * Once instanciated it will add itself as debugger to the <code>MateManager</code>
+	 * and redirect all Mate log statements to as3commons.
+	 * 
+	 * <listing>
+	 *    new MateIntegration(); // Mate metapher, those guys like it like that.
+	 *    
+	 *    // And works!
+	 * </listing>
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.1
+	 * @see http://mate.asfusion.com
+	 * @see org.as3commons.logging.setup.target.MateTarget
 	 */
-	public class MateIntegration implements ILoggingTarget {
+	public final class MateIntegration implements ILoggingTarget {
 		
 		/*FDT_IGNORE*/
 		private const _cache: Object = {};
@@ -46,11 +58,17 @@ package org.as3commons.logging.integration {
 		private var _filters: Array;
 		private var _level: int;
 		
+		/**
+		 * Constructs and registers the MateIntegration.
+		 */
 		public function MateIntegration() {
 			// Same like MateLogger, just to have fun :)
 			MateManager.instance.debugger = this;
 		}
 		
+		/**
+		 * 
+		 */
 		public function get filters() : Array {
 			return _filters;
 		}
@@ -90,6 +108,11 @@ package org.as3commons.logging.integration {
 			}
 		}
 		
+		/**
+		 * Sends the logevent to as3commons.
+		 * 
+		 * @param event event that should be sent.
+		 */
 		private function logHandler( event:LogEvent ):void {
 			/*FDT_IGNORE*/
 			var category: String = IMateLogger( event.target ).category;

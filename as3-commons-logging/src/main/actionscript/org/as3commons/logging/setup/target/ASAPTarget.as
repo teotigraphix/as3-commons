@@ -30,22 +30,42 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
-	 * @author mh
+	 * <code>ASAPTarget</code> can be used to send statements from your code
+	 * that uses as3commons-logging to your Asap library setup.
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.1
+	 * @see http://asaplibrary.org
+	 * @see org.as3commons.logging.integration#ASAPIntegration
 	 */
 	public final class ASAPTarget implements IFormattingLogTarget {
 		
+		/** Default format used to stringify the log statements. */
 		public static const DEFAULT_FORMAT:String = "{message}";
 		
+		/** Formatter to render the log statements */
 		private var _formatter: LogMessageFormatter;
 		
+		/**
+		 * Creates a new <code>ASAPTarget</code> instance.
+		 * 
+		 * @param format Default format to for the logging, if null, it will use
+		 *        the <code>DEFAULT_FORMAT</code>.
+		 */
 		public function ASAPTarget( format:String=null ) {
 			this.format = format;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function set format( format:String ): void {
 			_formatter = new LogMessageFormatter( format||DEFAULT_FORMAT );
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function log(name:String, shortName:String, level:int,
 							 timeStamp:Number, message: *, parameters: Array,
 							 person:String): void {

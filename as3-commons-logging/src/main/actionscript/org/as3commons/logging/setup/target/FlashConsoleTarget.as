@@ -32,6 +32,9 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
+	 * <code>FlashConsoleTarget</code> sends log statements to the FlashConsole
+	 * user interface by Lu-Aye Oo.
+	 * 
 	 * <p>Built on Version 2.5</p>
 	 * 
 	 * @author Martin Heidegger

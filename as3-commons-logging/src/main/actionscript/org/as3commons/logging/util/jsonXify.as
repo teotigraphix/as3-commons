@@ -21,8 +21,15 @@
  */
 package org.as3commons.logging.util {
 	import flash.utils.Dictionary;
+	
 	/**
+	 * Creates a json string from a given object.
+	 * 
+	 * <p>We are using a extended json fromat that uses references, much alike
+	 * the dojo format.</p> 
+	 * 
 	 * @author Martin Heidegger
+	 * @since 2.1
 	 * @see http://www.sitepen.com/blog/2008/06/17/json-referencing-in-dojo/
 	 * @see http://dojotoolkit.org/reference-guide/dojox/json/ref.html
 	 * @see http://dojotoolkit.org/api/1.5/dojox/json/ref

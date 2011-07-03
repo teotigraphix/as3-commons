@@ -20,8 +20,27 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
+	
 	/**
-	 * @author mh
+	 * Logs a message for warning about a undesirable application state to the
+	 * <code>DIRECT_LOGGER</code>.
+	 * 
+	 * <p>Warnings are designated to be used in case code got executed that
+	 * is not desirable for performance, memory or clarity reasons but didn't
+	 * result in any error.</p>
+	 * 
+	 * <p>A message can contain place holders that are filled with the additional
+	 * parameters. The <code>ILogTarget</code> implementation may treat the 
+	 * options as they want.</p>
+	 * 
+	 * <p>Example for a message with parameters:</p>
+	 * <listing>
+	 *   warn("A: {0} is B: {1}", "Hello", "World");
+	 *   // A: Hello is B: World
+	 * </listing>
+	 * 
+	 * @param message Message that should be logged.
+	 * @param params List of parameters.
 	 */
 	public function warn( message: *, ...parameters:Array ): void {
 		DIRECT_LOGGER.warn.apply( [message].concat( parameters ) );

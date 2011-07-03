@@ -42,7 +42,7 @@ package org.as3commons.logging.integration {
 	 * logging system you can either change all references to from Flex to as3commons
 	 * or use this <code>FlexLogger</code> in the <code>mx.commons</code> setup.</p>
 	 * 
-	 * @example <listing>
+	 * <listing>
 	 *    mx.logging.Log.addTarget( new org.as3commons.logging.FlexLogger() );
 	 *    
 	 *    mx.logging.Log.getLogger( "MyClass" ).debug( "Hello World" );
@@ -53,7 +53,7 @@ package org.as3commons.logging.integration {
 	 * @author Martin Heidegger
 	 * @since 2
 	 */
-	public class FlexLogger extends AbstractTarget implements ILoggingTarget {
+	public final class FlexLogger extends AbstractTarget implements ILoggingTarget {
 		
 		/** Caches the as3commons loggers. */
 		private var _loggerMap:Dictionary /* mx.logging.ILogger -> org.as3commons.logging.ILogger */ = new Dictionary();

@@ -26,16 +26,35 @@ package org.as3commons.logging.integration {
 	import org.spicefactory.lib.logging.Logger;
 	
 	/**
+	 * <code>SpiceLibIntegration</code> sends log statements from SpiceLib
+	 * to the as3commons.
+	 * 
+	 * <listing>
+	 *   import org.spicefactory.lib.logging.LogContext;
+	 *   LogContext.factory = new SpiceLibIntegration();
+	 * </listing>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.1
+	 * @see http://www.spicefactory.org/parsley
+	 * @see org.as3commons.logging.setup.target.SpiceLibTarget
 	 */
-	public class SpiceLibIntegration implements LogFactory {
+	public final class SpiceLibIntegration implements LogFactory {
 		
-		private var _cache: Object = {};
+		// Cache of LoggerWrapper, so we dont need to create them more
+		// often than necessary.
+		private var _cache: Object /* String -> LoggerWrapper */ = {};
 		
+		/**
+		 * Constructs the integration.
+		 */
 		public function SpiceLibIntegration() {}
 		
+		/**
+		 * Creates a logger for the Swiz system.
+		 * 
+		 * @param name Name of the logger to wrap.
+		 */
 		public function getLogger( name: Object ): Logger {
 			var nameStr: String;
 			/*FDT_IGNORE*/
