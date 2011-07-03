@@ -20,8 +20,29 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
+	
 	/**
-	 * @author mh
+	 * Logs a message to notify about an error that was dodged by the application
+	 * to the <code>DIRECT_LOGGER</code>
+	 * 
+	 * <p>The Error level is designated to be used in case an error occurred
+	 * and the error could be dodged. It should contain hints about why
+	 * that error occurs and if there is a common case where this error occurs.</p>
+	 * 
+	 * <p>A message can contain place holders that are filled with the additional
+	 * parameters. The <code>ILogTarget</code> implementation may treat the 
+	 * options as they want.</p>
+	 * 
+	 * <p>Example for a message with parameters:</p>
+	 * <listing>
+	 *   error("A: {0} is B: {1}", "Hello", "World");
+	 *   // A: Hello is B: World
+	 * </listing>
+	 * 
+	 * @param message Message that should be logged.
+	 * @param params List of parameters.
+	 * @author Martin Heidegger
+	 * @since 2.1
 	 */
 	public function error( message: *, ...parameters:Array ): void {
 		DIRECT_LOGGER.error.apply( [message].concat( parameters ) );

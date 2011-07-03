@@ -19,6 +19,9 @@ Changes in version 2.1 (21.06.2011)
 * Added util to handle global errors - captureUncaughtErrors()
 * Removed LogLevel as class since it cost just compile & runtime performance
 * Fixed default output of SWF_URL & SWF_SHORT_URL
+* Added HttpTarget that allows to send LogStatements as JSON objects to a server
+* Added "simple" package for lazy developers
+* Refactored BufferLogStatements to support new ways of working with logging
 
 Changes in version 2.0 (05.02.2011)
 -----------------------------------

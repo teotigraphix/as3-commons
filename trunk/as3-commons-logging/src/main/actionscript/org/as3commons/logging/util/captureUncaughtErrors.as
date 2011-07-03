@@ -27,9 +27,9 @@ package org.as3commons.logging.util {
 	/**
 	 * Util that redirects the uncaught global errors to the log as fatal messages. 
 	 * 
+	 * @param loader LoaderInfo, preferrably of the root DisplayObject
 	 * @author Martin Heidegger
 	 * @since 2.1
-	 * @param loader LoaderInfo, preferrably of the root DisplayObject
 	 */
 	public function captureUncaughtErrors( loaderInfo:LoaderInfo ): void {
 		if( loaderInfo.hasOwnProperty("uncaughtErrorEvents") ) {

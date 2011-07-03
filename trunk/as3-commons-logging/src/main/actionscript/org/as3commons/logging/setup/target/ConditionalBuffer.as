@@ -31,19 +31,33 @@ package org.as3commons.logging.setup.target {
 	 * condition is met. In that case it will forward all stored statements to
 	 * the defined target.
 	 * 
-	 * <p><b>Note:</b>This is a abstract class use implementations like
-	 * <code>FataBuffer</code></p>
+	 * <p>As target <code>ILogTarget</code> as well as <code>LoggerFactories</code>
+	 * are an option.</p>
+	 * 
+	 * <p>This is a abstract class use implementations like <code>FatalBuffer</code>.
+	 * Override the <code>test</code> method to implement your condition.</p>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.1
+	 * @see org.as3commons.logging.setup.target.FatalBuffer
 	 */
 	public class ConditionalBuffer implements IAsyncLogTarget {
 		
+		/** Buffered statements. */
 		private const _buffer:BufferTarget = new BufferTarget();
-		private var _logTarget:ILogTarget;
-		private var _logFactory:LoggerFactory;
-		private var _condition:Function;
 		
+		/** Target to be adressed. */
+		private var _logTarget:ILogTarget;
+		
+		/** Factory to be adressed. */
+		private var _logFactory:LoggerFactory;
+		
+		/**
+		 * Constructs a new <code>ConditionalBuffer</code> instance.
+		 * 
+		 * @param target Target that should receive the log statements.
+		 * @param maxStatements Max amount of statements to be buffered.
+		 */
 		public function ConditionalBuffer(target:*,
 											maxStatements:uint=uint.MAX_VALUE,
 											introspectDepth:uint=5) {
@@ -52,6 +66,10 @@ package org.as3commons.logging.setup.target {
 			this.target = target;
 		}
 		
+		/**
+		 * Target to be called with all the buffered statements, once the 
+		 * condition has been reached.
+		 */
 		public function set target(target:*):void {
 			if( target is ILogTarget ) {
 				this.logTarget = target;
@@ -60,19 +78,33 @@ package org.as3commons.logging.setup.target {
 			}
 		}
 		
-		public function set maxStatements(maxStatements:uint): void {
-			_buffer.maxStatements = maxStatements;
-		}
-		
+		/**
+		 * @inheritDoc
+		 */
 		public function set introspectDepth(depth:uint): void {
 			_buffer.introspectDepth = depth;
 		}
 		
+		/**
+		 * @copy BufferTarget#maxStatements
+		 */
+		public function set maxStatements(maxStatements:uint): void {
+			_buffer.maxStatements = maxStatements;
+		}
+		
+		/**
+		 * <code>ILogTarget</code> to be called with all the buffered statements, once the 
+		 * condition has been reached.
+		 */
 		public function set logTarget(logTarget:ILogTarget):void {
 			_logTarget = logTarget;
 			_logFactory = null;
 		}
 		
+		/**
+		 * <code>LoggerFactory</code> to be called with all the buffered statements, once the 
+		 * condition has been reached.
+		 */
 		public function set logFactory(logFactory:LoggerFactory):void {
 			_logTarget = null;
 			_logFactory = logFactory;

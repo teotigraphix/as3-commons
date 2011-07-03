@@ -20,8 +20,13 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
+	
 	/**
-	 * @author mh
+	 * <code>true</code> if <code>error</code> actually does something.
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.1
+	 * @see org.as3commons.logging.simple#error()
 	 */
 	public function isErrorEnabled(): Boolean {
 		return DIRECT_LOGGER.errorEnabled;

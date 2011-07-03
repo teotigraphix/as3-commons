@@ -29,14 +29,38 @@ package org.as3commons.logging.integration {
 	import org.swizframework.utils.logging.SwizLogger;
 	
 	/**
-	 * @author mh
+	 * <code>SwizIntegration</code> can be used as <code>LoggingTarget</code>
+	 * for the Swizframework that sends all log requests to as3commons.
+	 * 
+	 * <listing>
+	 *   import org.swizframework.utils.logging.SwizLogger;
+	 *   
+	 *   SwizLogger.addLoggingTarget( new SwizIntegration() );
+	 * </listing>
+	 * 
+	 * <p><b>Note:</b> Unlike Mate, SpiceLib, Progression or Flex there
+	 * is no way for us to implement a SwizTarget that would allow logging
+	 * from as3commons to Swizframework.</p>
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.1
+	 * @see http://swizframework.org
 	 */
-	public class SwizIntegration extends AbstractSwizLoggingTarget {
+	public final class SwizIntegration extends AbstractSwizLoggingTarget {
 		
-		private const _cache: Object = {};
+		// Holds ILoggers for the categories
+		private const _cache: Object /* String -> ILogger */ = {};
 		
+		/**
+		 * 
+		 */
 		public function SwizIntegration() {}
 		
+		/**
+		 * Logs the event to as3commons
+		 * 
+		 * @param event event to log
+		 */
 		override protected function logEvent( event:SwizLogEvent ):void {
 			var category: String = SwizLogger( event.target ).category.replace("::", ".");
 			var logger: ILogger = _cache[ category ] || (_cache[ category ] = getLogger( category, "swiz" ) );

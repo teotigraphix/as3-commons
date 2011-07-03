@@ -22,31 +22,73 @@
 package org.as3commons.logging.setup.target {
 	
 	/**
+	 * The <code>BufferTarget</code> allows to store log statements for a
+	 * unlimited amount of time for a optionally restrictable amount of statements.
+	 * 
+	 * <p>A common use case for buffer targets is lazy configuration. Just
+	 * set a <code>BufferTarget</code> interrim as default target and flush it later to the
+	 * target of choice. For example:</p>
+	 * 
+	 * <listing>
+	 *   var buffer: BufferTarget = new BufferTarget();
+	 *   
+	 *   LOGGER_SETUP.setup = new SimpleTarget(buffer);
+	 *   
+	 *   // After some loading
+	 *   LOGGER_SETUP.setup = ... // your new setup
+	 *   
+	 *   flushToTarget(buffer.statements);
+	 * </listing>
+	 * 
 	 * @author Martin Heidegger
+	 * @since 2.1
+	 * @see org.as3commons.logging.util#flushToTarget();
+	 * @see org.as3commons.logging.util#flushToFactory();
 	 */
 	public final class BufferTarget implements IAsyncLogTarget {
 		
+		/** List of logstatements buffered. */
 		private var _logStatements:Array /* LogStatement */ = new Array();
 		
 		/** Holds the length of the log statements */
 		private var _length:int = 0;
 		
+		/** Depth used to introspect objects to store them. */
 		private var _introspectDepth:uint;
+		
+		/** Max amount of statements stored. */
 		private var _maxStatements:uint;
 		
-		public function BufferTarget(maxStatements:uint=uint.MAX_VALUE, introspectDepth:uint=5) {
+		/**
+		 * Creates a new <code>BufferTarget</code> instance.
+		 * 
+		 * @param maxStatements Amount of statements stored in this buffer
+		 * @param introspectDepth Depth to be used to cache statements
+		 */
+		public function BufferTarget(maxStatements:uint=uint.MAX_VALUE,
+									 introspectDepth:uint=5) {
 			_maxStatements=maxStatements;
 			_introspectDepth=introspectDepth;
 		}
 		
-		public function get statements():Array {
-			return _logStatements;
-		}
-		
+		/**
+		 * Maximum amount of statements buffered, if the buffer is full, 
+		 * the old statements will be dropped
+		 */
 		public function set maxStatements(max:uint):void {
 			_maxStatements=max;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		public function get statements():Array {
+			return _logStatements;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function set introspectDepth(depth:uint): void {
 			_introspectDepth=depth;
 		}
@@ -57,13 +99,20 @@ package org.as3commons.logging.setup.target {
 		public function log(name:String, shortName:String, level:int,
 							timeStamp:Number, message:*, params:Array,
 							person:String): void {
-			_logStatements[++_length] =
-				new LogStatement(name, shortName, level, timeStamp,
-									message, params, person, _introspectDepth);
-			
-			while(_maxStatements > _length) {
-				_logStatements.shift();
-				--_length;
+			if(_maxStatements == _length) {
+				var statement: LogStatement = _logStatements.shift();
+				statement.name = name;
+				statement.shortName = shortName;
+				statement.level = level;
+				statement.timeStamp = timeStamp;
+				statement.message = message;
+				statement.parameters = params;
+				statement.person = person;
+				_logStatements[_length] = statement;
+			} else {
+				_logStatements[++_length] =
+					new LogStatement(name, shortName, level, timeStamp,
+										message, params, person, _introspectDepth);
 			}
 		}
 		

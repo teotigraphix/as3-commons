@@ -32,11 +32,12 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
-	 * 
+	 * Sends log statements to the <code>Athropod</code> Logging client.
 	 * 
 	 * @author Martin Heidegger
 	 * @version 1.0
 	 * @since 2.1
+	 * @see http://arthropod.stopp.se
 	 */
 	public final class ArthropodTarget implements IFormattingLogTarget {
 		
@@ -65,29 +66,49 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * Creates a new <code>Arthopod</code> log target.
 		 * 
-		 * @param colors Colors used to display the 
+		 * @param format Default format to for the logging, if null, it will use
+		 *        the <code>DEFAULT_FORMAT</code>.
+		 * @param colors Colors used to display the different log statements
+		 *        (default=DEFAULT_COLORS)
+		 * @param warnLevels Levels that use the warn method instead of the log method
+		 *        (default=WARN_ONLY);
 		 */
-		public function ArthropodTarget( format:String=null, colors:Object=null, warnLevels:LogSetupLevel=null  ) {
+		public function ArthropodTarget( format:String=null, colors:Object=null,
+										 warnLevels:LogSetupLevel=null  ) {
 			this.format = format;
 			this.warnLevels = warnLevels;
 			this.colors = colors;
 		}
 		
+		/**
+		 * Athropod supports <code>log</code> and <code>warn</code> statements.
+		 * With this property you can define which levels should use the warn
+		 * statement and which should use the log statements.
+		 */
 		public function set warnLevels( warnLevels:LogSetupLevel ):void {
 			_warnLevels = warnLevels||LogSetupLevel.WARN_ONLY;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function set format( format:String ):void {
 			_formatter = new LogMessageFormatter(format||DEFAULT_FORMAT);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function set colors( colors:Object ):void {
 			_colors = colors||DEFAULT_COLORS;
 		}
 		
-		public function log( name: String, shortName: String, level: int,
-							 timeStamp: Number, message: *, parameters: Array,
-							 person: String): void {
+		/**
+		 * @inheritDoc
+		 */
+		public function log(name: String, shortName: String, level: int,
+							timeStamp: Number, message: *, parameters: Array,
+							person: String): void {
 			var color: uint = _colors[ level ];
 			if( parameters.length == 0 ){
 				if( message is String ) {

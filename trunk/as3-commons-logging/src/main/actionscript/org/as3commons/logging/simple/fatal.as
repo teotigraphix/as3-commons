@@ -20,8 +20,27 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
+	
 	/**
-	 * @author mh
+	 * Logs a message to notify about an error that broke the application and
+	 * couldn't be fixed automatically to the <code>DIRECT_LOGGER</code>.
+	 * 
+	 * <p>The Fatal level is designated to be used in case an error occurred
+	 * that couldn't be stopped. A fatal error usually results in a inconsistent
+	 * or inperceivable application state.</p>
+	 * 
+	 * <p>A message can contain place holders that are filled with the additional
+	 * parameters. The <code>ILogTarget</code> implementation may treat the 
+	 * options as they want.</p>
+	 * 
+	 * <p>Example for a message with parameters:</p>
+	 * <listing>
+	 *   fatal("A: {0} is B: {1}", "Hello", "World");
+	 *   // A: Hello is B: World
+	 * </listing>
+	 * 
+	 * @param message Message that should be logged.
+	 * @param params List of parameters.
 	 */
 	public function fatal( message: *, ...parameters:Array ): void {
 		DIRECT_LOGGER.fatal.apply( [message].concat( parameters ) );

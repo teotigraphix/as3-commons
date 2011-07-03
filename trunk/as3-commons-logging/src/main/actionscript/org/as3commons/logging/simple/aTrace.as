@@ -22,7 +22,7 @@
 package org.as3commons.logging.simple {
 	
 	/**
-	 * Trace subsitute.
+	 * Subsitute for the native trace framework.
 	 * 
 	 * <p>In many applications the classic <code>trace</code> is used to trace
 	 * statements. To refactor this code one can use this function in a search&amp;replace

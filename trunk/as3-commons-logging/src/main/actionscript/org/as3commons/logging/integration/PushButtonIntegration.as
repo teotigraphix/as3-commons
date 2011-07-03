@@ -27,16 +27,39 @@ package org.as3commons.logging.integration {
 	import com.pblabs.engine.debug.ILogAppender;
 	
 	/**
+	 * <code>PushButtonIntegration</code> can be used as <code>ILogAppender</code>
+	 * for the Push Button Engine that sends all log requests to as3commons.
 	 * 
+	 * <listing>
+	 *   import com.pblabs.engine.debug.Logger;
+	 *   
+	 *   com.pblabs.engine.PBE.IS_SHIPPING_BUILD = true;
+	 *   
+	 *   Logger.startup();
+	 *   Logger.registerListener( new PushButtonIntegration() );
+	 * </listing>
+	 * 
+	 * <p><b>Note:</b> Unlike Mate, SpiceLib, Progression or Flex there
+	 * is no way for us to implement a PushButtonTarget that would allow logging
+	 * from as3commons to Push Button Engine.</p>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.1
 	 * @see http://pushbuttonengine.com
 	 */
-	public class PushButtonIntegration implements ILogAppender {
+	public final class PushButtonIntegration implements ILogAppender {
 		
-		private static const _cache: Object = {};
+		// Stores loggers related to the targets
+		private static const _cache: Object /* ILogger */ = {};
 		
+		/**
+		 * Sends the log statements to as3commons logging. (implementation of
+		 * ILogAppender hook)
+		 * 
+		 * @param level Level of the log entry
+		 * @param loggerName Name of the logger
+		 * @param message Message that was supposed to be logged
+		 */
 		public function addLogMessage(level:String, loggerName:String, message:String):void {
 			var logger: ILogger = _cache[ loggerName ] || ( _cache[ loggerName ] = getNamedLogger( loggerName.replace("::", "."), "pushbutton" ) );
 			switch( level ) {

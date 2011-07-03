@@ -37,6 +37,7 @@ package org.as3commons.logging.setup.target {
 	 * @author Martin Heidegger
 	 * @since 2.1
 	 * @see http://mate.asfusion.com
+	 * @see org.as3commons.logging.integration.MateIntegration
 	 */
 	public final class MateTarget implements IFormattingLogTarget {
 		
