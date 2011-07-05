@@ -80,7 +80,6 @@ package org.as3commons.logging {
 		private const _allLoggers:Array/* <ILogger> */=[];
 		private const _loggers:Object/* <String, <String, ILogger> > */={};
 		private const _nullLogger:Object/* <String, ILogger> */={};
-		private const _undefinedLogger:Object/* <String, ILogger> */={};
 		
 		private var _setup:ILogSetup;
 		

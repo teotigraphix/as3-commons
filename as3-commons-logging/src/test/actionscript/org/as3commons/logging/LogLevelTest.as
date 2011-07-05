@@ -1,12 +1,12 @@
 package org.as3commons.logging {
-	import org.as3commons.logging.level.levelToName;
 	import flexunit.framework.Assert;
-
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
+	import org.as3commons.logging.util.levelToName;
+
 
 	/**
 	 * @author Martin

@@ -3,8 +3,9 @@ AS3COMMONS LOGGING CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 2.1 (21.06.2011)
+Changes in version 2.5 (6.07.2011)
 -----------------------------------
+* API: Changed all log statements to be like logger.debug( message: String, parameter: Array = null ) to gain performance
 * Added support for loggers used by certain persons
 * Added MonsterDebugger 3 console support
 * Added Firebug Console support
@@ -21,6 +22,7 @@ Changes in version 2.1 (21.06.2011)
 * Fixed default output of SWF_URL & SWF_SHORT_URL
 * Added HttpTarget that allows to send LogStatements as JSON objects to a server
 * Added "simple" package for lazy developers
+* Added "here()" util to tell where this log statement is
 * Refactored BufferLogStatements to support new ways of working with logging
 
 Changes in version 2.0 (05.02.2011)
