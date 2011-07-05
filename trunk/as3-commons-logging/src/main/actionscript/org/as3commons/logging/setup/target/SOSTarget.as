@@ -21,8 +21,8 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import org.as3commons.logging.level.levelToName;
 	import org.as3commons.logging.util.LogMessageFormatter;
+	import org.as3commons.logging.util.levelToName;
 	
 	/**
 	 * <code>SOSTarget</code> logs all statements to the SOS console from powerflasher.

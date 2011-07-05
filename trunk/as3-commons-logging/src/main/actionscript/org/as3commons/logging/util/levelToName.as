@@ -19,7 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.level {
+package org.as3commons.logging.util {
+	import org.as3commons.logging.level.DEBUG;
+	import org.as3commons.logging.level.ERROR;
+	import org.as3commons.logging.level.INFO;
+	import org.as3commons.logging.level.WARN;
 	
 	/**
 	 * Returns the name for a level as String.

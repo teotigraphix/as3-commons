@@ -21,7 +21,6 @@
  */
 package org.as3commons.logging.util {
 	
-	import org.as3commons.logging.level.levelToName;
 	
 	/**
 	 * A Formatter that formats a message string using a pattern.
@@ -120,7 +119,6 @@ package org.as3commons.logging.util {
 		
 		private const _now: Date = new Date();
 		private const _braceRegexp: RegExp = /{(?P<field>[a-zA-Z_]+)}/g;
-		private const _gmt: String = calculateGMT();
 		
 		/** First no in the generated set */
 		private var _firstNode: FormatNode;
@@ -307,7 +305,7 @@ package org.as3commons.logging.util {
 				}
 				// 14
 				else if( type == GMT_OFFSET_TYPE ) {
-					result += _gmt;
+					result += GMT;
 				}
 				// 15
 				else if( type == PERSON_TYPE ) {
@@ -324,28 +322,6 @@ package org.as3commons.logging.util {
 				node = node.next;
 			}
 			return result;
-		}
-		
-		/**
-		 * Calculates the GMT of the running swf
-		 */
-		private function calculateGMT():String {
-			var date: Date = new Date();
-			var mins: int = date.timezoneOffset;
-			var hours: int = mins / 60;
-			var pre: String;
-			
-			if( mins <= 0 ) {
-				pre = "+";
-				mins = mins * -1;
-				hours = hours * -1;
-			} else {
-				pre = "-";
-			}
-			
-			hours = Math.floor(hours);
-			mins = mins - (hours * 60);
-			return "GMT"+pre+(( hours < 10 ) ? "0"+hours : hours)+(( mins < 10 ) ? "0"+mins : mins);
 		}
 	}
 }
