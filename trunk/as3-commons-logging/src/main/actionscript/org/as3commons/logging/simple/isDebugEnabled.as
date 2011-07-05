@@ -25,7 +25,7 @@ package org.as3commons.logging.simple {
 	 * <code>true</code> if <code>debug</code> actually does something.
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see org.as3commons.logging.simple#debug()
 	 */
 	public function isDebugEnabled(): Boolean {

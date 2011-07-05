@@ -28,7 +28,7 @@ package org.as3commons.logging.setup.target {
 	 * 
 	 * @author Martin Heidegger
 	 * @version 1.0
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public interface IColorableLogTarget extends ILogTarget {
 		

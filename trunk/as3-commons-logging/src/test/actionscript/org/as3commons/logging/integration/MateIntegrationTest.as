@@ -55,11 +55,11 @@ package org.as3commons.logging.integration {
 			LOGGER_FACTORY.setup = new SimpleTargetSetup( new MateTarget() );
 			
 			var logger:ILogger = getLogger( "hello.world" );
-			logger.debug( "A Debug{1}{0}", "1", 2 );
-			logger.info( "A Info", true, "me" );
-			logger.warn( "A Warn", "a", "b" );
-			logger.error( "A Error", "max", 1 );
-			logger.fatal( "A Fatal", "mo", "ho" );
+			logger.debug( "A Debug{1}{0}", ["1", 2] );
+			logger.info( "A Info", [true, "me"] );
+			logger.warn( "A Warn", ["a", "b"] );
+			logger.error( "A Error", ["max", 1] );
+			logger.fatal( "A Fatal", ["mo", "ho"] );
 			
 			assertObjectEquals(
 				[

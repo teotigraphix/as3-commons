@@ -41,19 +41,13 @@ package org.as3commons.logging.setup.target {
 			passToFactory(logCache.statements, factory);
 			logCache.clear();
 			
+			assertEquals(logCache.statements.length, 0);
+			
 			inOrder().verify().that( target.log( eq("debug"), eq("test"), eq(DEBUG), eq(1234), eq("debug"), alike([]), eq(null)));
+			inOrder().verify().that( target.log( eq("info"), eq("test"), eq(INFO), eq(0), eq("info"), alike([]), eq(null)));
 			inOrder().verify().that( target.log( eq("fatal"), eq("test"), eq(FATAL), eq(1), eq("fatal"), alike([]), eq(null)));
 			
-			verifyNothingCalled( setup );
 			verifyNothingCalled( target );
-			
-			logCache.log( "fatal", "test", FATAL, 123, "fatal", [], null );
-			
-			factory.setup = setup;
-			
-			passToFactory(logCache.statements, factory);
-			
-			verifyNothingCalled( setup );
 		}
 	}
 }

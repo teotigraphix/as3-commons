@@ -44,7 +44,7 @@ package org.as3commons.logging.util {
 	 *        in case it cant be copied using a bytearray, copy or clone.
 	 * @return Clone of the object
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public function clone( object:*, introspectDepth:uint=4.294967295E9	,
 						   storage:Dictionary=null, useByteArray:Boolean=true):* {

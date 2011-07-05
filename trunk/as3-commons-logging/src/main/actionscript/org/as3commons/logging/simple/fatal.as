@@ -42,7 +42,7 @@ package org.as3commons.logging.simple {
 	 * @param message Message that should be logged.
 	 * @param params List of parameters.
 	 */
-	public function fatal( message: *, ...parameters:Array ): void {
-		DIRECT_LOGGER.fatal.apply( [message].concat( parameters ) );
+	public function fatal( message: *, parameters:Array=null ): void {
+		DIRECT_LOGGER.fatal( message, parameters );
 	}
 }

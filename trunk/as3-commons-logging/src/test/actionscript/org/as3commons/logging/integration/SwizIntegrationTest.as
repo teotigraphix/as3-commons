@@ -33,11 +33,11 @@ package org.as3commons.logging.integration {
 			logger.error( "A Error", "max", 1 );
 			logger.fatal( "A Fatal", "mo", "ho" );
 			
-			inOrder().verify().that( target.log( eq("org.swizframework.utils.logging.SwizLogger"), eq("SwizLogger"), eq(DEBUG), notNull(), eq( "A Debug21" ), alike([]), eq("swiz") ) );
-			inOrder().verify().that( target.log( eq("org.swizframework.utils.logging.SwizLogger"), eq("SwizLogger"), eq(INFO), notNull(), eq( "A Info" ), alike([]), eq("swiz") ) );
-			inOrder().verify().that( target.log( eq("org.swizframework.utils.logging.SwizLogger"), eq("SwizLogger"), eq(WARN), notNull(), eq( "A Warn" ), alike([]), eq("swiz") ) );
-			inOrder().verify().that( target.log( eq("org.swizframework.utils.logging.SwizLogger"), eq("SwizLogger"), eq(ERROR), notNull(), eq( "A Error" ), alike([]), eq("swiz") ) );
-			inOrder().verify().that( target.log( eq("org.swizframework.utils.logging.SwizLogger"), eq("SwizLogger"), eq(FATAL), notNull(), eq( "A Fatal" ), alike([]), eq("swiz") ) );
+			inOrder().verify().that( target.log( eq("org.swizframework.utils.logging.SwizLogger"), eq("SwizLogger"), eq(DEBUG), notNull(), eq( "A Debug21" ), eq(null), eq("swiz") ) );
+			inOrder().verify().that( target.log( eq("org.swizframework.utils.logging.SwizLogger"), eq("SwizLogger"), eq(INFO), notNull(), eq( "A Info" ), eq(null), eq("swiz") ) );
+			inOrder().verify().that( target.log( eq("org.swizframework.utils.logging.SwizLogger"), eq("SwizLogger"), eq(WARN), notNull(), eq( "A Warn" ), eq(null), eq("swiz") ) );
+			inOrder().verify().that( target.log( eq("org.swizframework.utils.logging.SwizLogger"), eq("SwizLogger"), eq(ERROR), notNull(), eq( "A Error" ), eq(null), eq("swiz") ) );
+			inOrder().verify().that( target.log( eq("org.swizframework.utils.logging.SwizLogger"), eq("SwizLogger"), eq(FATAL), notNull(), eq( "A Fatal" ), eq(null), eq("swiz") ) );
 		}
 	}
 }

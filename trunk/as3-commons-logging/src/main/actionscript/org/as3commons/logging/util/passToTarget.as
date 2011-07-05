@@ -29,12 +29,12 @@ package org.as3commons.logging.util {
 	 * 
 	 * @param statements Array of log statements (first=oldest, last=newest);
 	 * @param factory <code>ILogTarget</code> to flush to. 
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public function passToTarget(statements:Array,logTarget:ILogTarget):void {
 		if(logTarget) {
-			var i: int = statements.length;
-			while(--i-(-1)) {
+			const l: int = statements.length;
+			for( var i:int = 0; i<l; ++i) {
 				var statement:LogStatement = LogStatement(statements[i]);
 				logTarget.log(
 					statement.name, statement.shortName, statement.level,

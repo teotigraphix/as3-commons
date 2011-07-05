@@ -29,7 +29,7 @@ package org.as3commons.logging.util {
 	 * the dojo format.</p> 
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see http://www.sitepen.com/blog/2008/06/17/json-referencing-in-dojo/
 	 * @see http://dojotoolkit.org/reference-guide/dojox/json/ref.html
 	 * @see http://dojotoolkit.org/api/1.5/dojox/json/ref

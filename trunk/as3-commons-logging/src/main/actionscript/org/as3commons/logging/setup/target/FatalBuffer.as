@@ -37,7 +37,7 @@ package org.as3commons.logging.setup.target {
 	 * </listing>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public final class FatalBuffer extends ConditionalBuffer {
 		

@@ -58,7 +58,7 @@ package org.as3commons.logging {
 	 * @see org.as3commons.logging#LOGGER_FACTORY
 	 */
 	public function getLogger(input:*,person:String=null):ILogger {
-		if(!(input is String)) {
+		if(input && !(input is String)) {
 			input = toLogName(input);
 		}
 		return LOGGER_FACTORY.getNamedLogger(input,person);

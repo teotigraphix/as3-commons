@@ -45,7 +45,7 @@ package org.as3commons.logging.integration {
 	 * </listing>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see http://mate.asfusion.com
 	 * @see org.as3commons.logging.setup.target.MateTarget
 	 */
@@ -120,19 +120,19 @@ package org.as3commons.logging.integration {
 			var logger: org.as3commons.logging.ILogger = _cache[ category ] || (_cache[ category ] = getLogger( category, "mate" ) );
 			switch( event.level ) {
 				case LogEventLevel.DEBUG:
-					logger.debug.apply( null, [event.message].concat(e.parameters) );
+					logger.debug( event.message, e.parameters );
 					break;
 				case LogEventLevel.INFO:
-					logger.info.apply( null, [event.message].concat(e.parameters) );
+					logger.info( event.message, e.parameters );
 					break;
 				case LogEventLevel.WARN:
-					logger.warn.apply( null, [event.message].concat(e.parameters) );
+					logger.warn( event.message, e.parameters );
 					break;
 				case LogEventLevel.ERROR:
-					logger.error.apply( null, [event.message].concat(e.parameters) );
+					logger.error( event.message, e.parameters );
 					break;
 				case LogEventLevel.FATAL:
-					logger.fatal.apply( null, [event.message].concat(e.parameters) );
+					logger.fatal( event.message, e.parameters );
 					break;
 			}
 			/*FDT_IGNORE*/

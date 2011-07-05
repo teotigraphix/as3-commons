@@ -29,7 +29,7 @@ package org.as3commons.logging.util {
 	 * 
 	 * @param value Value of which all properties should be evaluated
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public function allProperties( value: * ): Array {
 		var cls:String = getQualifiedClassName(value);

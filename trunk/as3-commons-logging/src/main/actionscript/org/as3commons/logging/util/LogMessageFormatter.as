@@ -219,7 +219,7 @@ package org.as3commons.logging.util {
 					message = message.split( "{"+i+"}" ).join( param );
 				}
 			}
-			_now.time = isNaN( timeMs ) ? 0.0 : timeMs;
+			_now.time = isNaN( timeMs ) ? 0.0 : START_TIME+timeMs;
 			
 			while( node ) {
 				

@@ -28,7 +28,7 @@ package org.as3commons.logging.simple {
 	 * Default instance used in this package to log statements.
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 */
-	public const DIRECT_LOGGER: ILogger = getNamedLogger("","unknown");
+	public const DIRECT_LOGGER: ILogger = getNamedLogger("direct",null);
 }

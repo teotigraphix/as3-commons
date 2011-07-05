@@ -43,7 +43,7 @@ package org.as3commons.logging.integration {
 	 * from as3commons to Swizframework.</p>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see http://swizframework.org
 	 */
 	public final class SwizIntegration extends AbstractSwizLoggingTarget {

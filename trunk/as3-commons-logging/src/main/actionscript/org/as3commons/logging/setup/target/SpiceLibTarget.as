@@ -36,7 +36,7 @@ package org.as3commons.logging.setup.target {
 	 * that uses as3commons-logging to your setup that focusses on <code>SpiceFactory</code>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see http://www.spicefactory.org/parsley
 	 * @see org.as3commons.logging.integration.SpiceLibIntegration
 	 */

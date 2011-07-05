@@ -38,7 +38,7 @@ package org.as3commons.logging.setup.target {
 	 * Override the <code>test</code> method to implement your condition.</p>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see org.as3commons.logging.setup.target.FatalBuffer
 	 */
 	public class ConditionalBuffer implements IAsyncLogTarget {

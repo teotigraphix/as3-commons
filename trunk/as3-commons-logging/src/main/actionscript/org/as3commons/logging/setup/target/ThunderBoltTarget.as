@@ -35,7 +35,7 @@ package org.as3commons.logging.setup.target {
 	 * from Jens Krause.
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see http://code.google.com/p/flash-thunderbolt
 	 */
 	public final class ThunderBoltTarget implements ILogTarget {

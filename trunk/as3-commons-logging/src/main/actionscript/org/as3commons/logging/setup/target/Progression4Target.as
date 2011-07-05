@@ -37,7 +37,7 @@ package org.as3commons.logging.setup.target {
 	 * <p>Built on version '4.0.22'.</p>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see http://progression.jp/ja/download/
 	 * @see org.as3commons.logging.setup#Progression4Integration()
 	 */

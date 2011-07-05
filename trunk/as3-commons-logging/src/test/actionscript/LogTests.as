@@ -1,4 +1,5 @@
 package {
+	import org.as3commons.logging.util.HereTest;
 	import org.as3commons.logging.util.JsonXifyTest;
 	import org.as3commons.logging.setup.target.HttpTargetTest;
 	import org.as3commons.logging.util.ByteArrayCopyTest;
@@ -135,11 +136,12 @@ package {
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
 			core.run( [
-				new JsonXifyTest()
-				/*new ByteArrayCopyTest(),
+				new JsonXifyTest(),
+				new HereTest(),
+				new ByteArrayCopyTest(),
 				new SwizIntegrationTest(),
 				new PushButtonIntegrationTest(),
-				//new ASAPIntegrationTest(),
+				new ASAPIntegrationTest(),
 				new SpiceLibIntegrationTest(),
 				new Progression4IntegrationTest(),
 				new LogLevelTest(),
@@ -156,7 +158,7 @@ package {
 				new BufferTest(),
 				new MergedTest(),
 				new TextFieldTest(),
-				new AirTargetTest()*/
+				new AirTargetTest()
 			]);
 		}
 	}

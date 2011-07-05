@@ -36,7 +36,7 @@ package org.as3commons.logging.setup {
 	 * </listing>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public class SimpleRegExpSetup implements ILogSetup {
 		

@@ -32,7 +32,7 @@ package org.as3commons.logging.setup.target {
 	 * 
 	 * @author Tim Keir
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see org.as3commons.logging.setup.target.MonsterDebugger3TraceTarget
 	 * @see http://demonsterdebugger.com/asdoc/com/demonsters/debugger/MonsterDebugger.html#log()
 	 */

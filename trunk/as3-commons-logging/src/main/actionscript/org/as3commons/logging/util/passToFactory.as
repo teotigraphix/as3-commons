@@ -38,12 +38,12 @@ package org.as3commons.logging.util {
 	 * @param statements Array of log statements (first=oldest, last=newest);
 	 * @param factory <code>LoggerFactory</code> to flush to.
 	 *                <code>LOGGER_FACTORY</code> will be used if null is passed-in. 
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public function passToFactory(statements:Array,factory:LoggerFactory=null):void {
-		factory = factory||LOGGER_FACTORY;
-		var i: int = statements.length;
-		while(--i-(-1)) {
+		factory||=LOGGER_FACTORY;
+		const l: int = statements.length;
+		for( var i:int = 0; i<l; ++i) {
 			var statement:LogStatement = LogStatement(statements[i]);
 			var logger:Logger = factory.getNamedLogger(statement.name,statement.person) as Logger;
 			

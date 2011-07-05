@@ -40,9 +40,9 @@ package org.as3commons.logging.simple {
 	 * @param message Message that should be logged.
 	 * @param params List of parameters.
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 */
-	public function debug( message: *, ...parameters:Array ): void {
-		DIRECT_LOGGER.debug.apply( [message].concat( parameters ) );
+	public function debug( message: *, parameters:Array = null ): void {
+		DIRECT_LOGGER.debug( message, parameters );
 	}
 }

@@ -34,7 +34,7 @@ package org.as3commons.logging.setup.target {
 	 * that uses as3commons-logging to your Asap library setup.
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see http://asaplibrary.org
 	 * @see org.as3commons.logging.integration#ASAPIntegration
 	 */

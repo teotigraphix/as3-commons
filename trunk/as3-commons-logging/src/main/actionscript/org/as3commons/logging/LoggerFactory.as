@@ -21,8 +21,6 @@
  */
 package org.as3commons.logging {
 	
-	import org.as3commons.logging.util.toLogName;
-	
 	/**
 	 * Use the <code>LoggerFactory</code> to obtain a logger. This is the main class used when
 	 * working with the as3commons-logging library.
@@ -79,36 +77,6 @@ package org.as3commons.logging {
 	 */
 	public class LoggerFactory {
 		
-		/**
-		 * Generates a name for the passed-in <code>input</code> with <code>
-		 * toLogName()</code> and generates the <code>ILogger</code> for that name.
-		 * 
-		 * <p>Deprecated: Use org.as3commons.logging.getClassLogger</p>
-		 *
-		 * @param name Any Object can be used to generate the name
-		 * @return <code>ILogger</code> for the generated name.
-		 * @deprecated
-		 * @see org.as3commons.logging.util#toLogName()
-		 */
-		[Deprecated(replacement="org.as3commons.logging.getClassLogger()", since="2.0")]
-		public static function getClassLogger(input:*,person:String=null): ILogger {
-			return LOGGER_FACTORY.getNamedLogger(toLogName(input),person);
-		}
-		
-		/**
-		 * Generates and returns a <code>ILogger</code> for the passed-in name.
-		 *
-		 * <p>Deprecated: Use org.as3commons.logging.getNamedLogger</p> 
-		 *
-		 * @param name Any String can be used as name
-		 * @return <code>ILogger</code> for that name.
-		 * @deprecated
-		 */
-		[Deprecated(replacement="org.as3commons.logging.getNamedLogger()", since="2.0")]
-		public static function getLogger(name:String,person:String=null):ILogger {
-			return LOGGER_FACTORY.getNamedLogger(name,person);
-		}
-		
 		private const _allLoggers:Array/* <ILogger> */=[];
 		private const _loggers:Object/* <String, <String, ILogger> > */={};
 		private const _nullLogger:Object/* <String, ILogger> */={};
@@ -127,7 +95,7 @@ package org.as3commons.logging {
 		 *        instances.
 		 * @see LOGGER_FACTORY;
 		 */
-		public function LoggerFactory(setup:ILogSetup) {
+		public function LoggerFactory(setup:ILogSetup=null) {
 			this.setup = setup;
 		}
 		
@@ -169,8 +137,7 @@ package org.as3commons.logging {
 			var compileSafeName:* = name;
 			if( compileSafeName === null ) {
 				unpersonalized = _nullLogger;
-			} else if( compileSafeName === undefined ) {
-				unpersonalized = _undefinedLogger;
+				name = "null";
 			} else {
 				unpersonalized = _loggers[name] || (_loggers[name]={});
 			}
