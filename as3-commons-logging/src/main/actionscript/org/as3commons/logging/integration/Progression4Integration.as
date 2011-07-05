@@ -33,7 +33,7 @@ package org.as3commons.logging.integration {
 	 * </listing>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public function Progression4Integration( ...messages: Array ): void {
 		var message: String;

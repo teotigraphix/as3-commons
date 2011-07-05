@@ -40,7 +40,7 @@ package org.as3commons.logging.simple {
 	 * @param message Message that should be logged.
 	 * @param params List of parameters.
 	 */
-	public function info( message: *, ...parameters:Array ): void {
-		DIRECT_LOGGER.info.apply( [message].concat( parameters ) );
+	public function info( message: *, parameters:Array=null ): void {
+		DIRECT_LOGGER.info( message, parameters );
 	}
 }

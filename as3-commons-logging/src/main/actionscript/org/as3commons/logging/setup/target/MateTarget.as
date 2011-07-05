@@ -35,7 +35,7 @@ package org.as3commons.logging.setup.target {
 	 * Logger that allows tracing to the current configuration in Mate.
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see http://mate.asfusion.com
 	 * @see org.as3commons.logging.integration.MateIntegration
 	 */

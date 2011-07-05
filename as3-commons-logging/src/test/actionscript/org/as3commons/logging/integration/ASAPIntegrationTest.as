@@ -1,4 +1,5 @@
 package org.as3commons.logging.integration {
+	
 	import org.asaplibrary.util.debug.LogEvent;
 	import org.as3commons.logging.setup.target.ASAPTarget;
 	import org.as3commons.logging.getLogger;
@@ -11,9 +12,9 @@ package org.as3commons.logging.integration {
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
-	import org.as3commons.logging.util.alike;
 	import org.asaplibrary.util.debug.Log;
 	import org.mockito.MockitoTestCase;
+	
 	/**
 	 * @author mh
 	 */
@@ -36,12 +37,12 @@ package org.as3commons.logging.integration {
 			Log.error( "A Error", "my.super::Sender" );
 			Log.fatal( "A Fatal", "my.super::Sender" );
 			
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(DEBUG), notNull(), eq( "A Debug" ), alike([]), eq("asap") ) );
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(INFO), notNull(), eq( "A Status" ), alike([]), eq("asap") ) );
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(INFO), notNull(), eq( "A Info" ), alike([]), eq("asap") ) );
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(WARN), notNull(), eq( "A Warn" ), alike([]), eq("asap") ) );
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(ERROR), notNull(), eq( "A Error" ), alike([]), eq("asap") ) );
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(FATAL), notNull(), eq( "A Fatal" ), alike([]), eq("asap") ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(DEBUG), notNull(), eq( "A Debug" ), eq(null), eq("asap") ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(INFO), notNull(), eq( "A Status" ), eq(null), eq("asap") ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(INFO), notNull(), eq( "A Info" ), eq(null), eq("asap") ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(WARN), notNull(), eq( "A Warn" ), eq(null), eq("asap") ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(ERROR), notNull(), eq( "A Error" ), eq(null), eq("asap") ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(FATAL), notNull(), eq( "A Fatal" ), eq(null), eq("asap") ) );
 		}
 		
 		public function testTarget():void {
@@ -55,11 +56,11 @@ package org.as3commons.logging.integration {
 			LOGGER_FACTORY.setup = new SimpleTargetSetup( new ASAPTarget() );
 			
 			var logger:ILogger = getLogger( "hello.world" );
-			logger.debug( "A Debug{1}{0}", "1", 2 );
-			logger.info( "A Info", true, "me" );
-			logger.warn( "A Warn", "a", "b" );
-			logger.error( "A Error", "max", 1 );
-			logger.fatal( "A Fatal", "mo", "ho" );
+			logger.debug( "A Debug{1}{0}", ["1", 2] );
+			logger.info( "A Info", [true, "me"] );
+			logger.warn( "A Warn", ["a", "b"] );
+			logger.error( "A Error", ["max", 1] );
+			logger.fatal( "A Fatal", ["mo", "ho"] );
 			
 			assertObjectEquals(
 				[
@@ -74,6 +75,7 @@ package org.as3commons.logging.integration {
 		}
 		
 		override public function tearDown(): void {
+			Log.removeLogListener(ASAPIntegration);
 			LOGGER_FACTORY.setup = null;
 		}
 

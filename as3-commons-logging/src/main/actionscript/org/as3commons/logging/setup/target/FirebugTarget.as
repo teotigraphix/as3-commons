@@ -38,7 +38,7 @@ package org.as3commons.logging.setup.target {
 	 * @see http://getfirebug.com/
 	 * @author Martin Heidegger
 	 * @version 1.0
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public class FirebugTarget implements IFormattingLogTarget {
 		

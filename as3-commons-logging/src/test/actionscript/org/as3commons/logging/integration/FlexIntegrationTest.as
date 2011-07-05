@@ -47,13 +47,13 @@ package org.as3commons.logging.integration
 			logger.error( "Estaz!" );
 			logger.fatal( "Santa domingo!" );
 			
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), notNull(), eq( "Hello World" ), alike([]), eq("flex") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), notNull(), eq( "Hello Mario" ), alike([]), eq("flex") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), notNull(), eq( "Hola!" ), alike([]), eq("flex") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), notNull(), eq( "Amigo Santa Maria" ), alike([]), eq("flex") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(WARN), notNull(), eq( "Como!" ), alike([]), eq("flex") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(ERROR), notNull(), eq( "Estaz!" ), alike([]), eq("flex") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(FATAL), notNull(), eq( "Santa domingo!" ), alike([]), eq("flex") ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), notNull(), eq( "Hello World" ), eq(null), eq("flex") ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), notNull(), eq( "Hello Mario" ), eq(null), eq("flex") ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), notNull(), eq( "Hola!" ), eq(null), eq("flex") ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), notNull(), eq( "Amigo Santa Maria" ), eq(null), eq("flex") ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(WARN), notNull(), eq( "Como!" ), eq(null), eq("flex") ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(ERROR), notNull(), eq( "Estaz!" ), eq(null), eq("flex") ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(FATAL), notNull(), eq( "Santa domingo!" ), eq(null), eq("flex") ) );
 			
 			verifyNothingCalled( target );
 		}

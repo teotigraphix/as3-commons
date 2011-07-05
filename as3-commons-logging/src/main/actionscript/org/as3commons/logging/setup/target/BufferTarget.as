@@ -41,7 +41,7 @@ package org.as3commons.logging.setup.target {
 	 * </listing>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see org.as3commons.logging.util#flushToTarget();
 	 * @see org.as3commons.logging.util#flushToFactory();
 	 */
@@ -110,7 +110,7 @@ package org.as3commons.logging.setup.target {
 				statement.person = person;
 				_logStatements[_length] = statement;
 			} else {
-				_logStatements[++_length] =
+				_logStatements[_length++] =
 					new LogStatement(name, shortName, level, timeStamp,
 										message, params, person, _introspectDepth);
 			}

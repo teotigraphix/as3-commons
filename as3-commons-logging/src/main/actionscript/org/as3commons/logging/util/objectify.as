@@ -31,7 +31,7 @@ package org.as3commons.logging.util {
 	 * 
 	 * @param value any object
 	 * @return js valid representation
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public function objectify(value:*, map:Dictionary=null, levels:uint=5): * {
 		if( !map ) {

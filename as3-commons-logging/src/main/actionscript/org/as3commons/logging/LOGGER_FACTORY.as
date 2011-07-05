@@ -21,9 +21,6 @@
  */
 package org.as3commons.logging {
 	
-	import org.as3commons.logging.setup.target.TRACE_TARGET;
-	import org.as3commons.logging.setup.SimpleTargetSetup;
-	
 	/**
 	 * <code>LOGGER_FACTORY</code> contains the default <code>LoggerFactory</code>
 	 * used by <code>getLogger</code> and its siblings.
@@ -43,5 +40,5 @@ package org.as3commons.logging {
 	 * @see org.as3commons.logging#getNamedLogger()
 	 * @see org.as3commons.logging#getClassLogger()
 	 */
-	public const LOGGER_FACTORY: LoggerFactory = new LoggerFactory( new SimpleTargetSetup( TRACE_TARGET ) );
+	public const LOGGER_FACTORY: LoggerFactory = new LoggerFactory();
 }

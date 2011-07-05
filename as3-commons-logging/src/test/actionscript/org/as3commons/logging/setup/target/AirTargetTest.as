@@ -1,13 +1,16 @@
 package org.as3commons.logging.setup.target {
+	import flexunit.framework.TestCase;
+
+	import org.as3commons.logging.level.DEBUG;
+	import org.as3commons.logging.level.ERROR;
+	import org.as3commons.logging.util.START_TIME;
+	import org.as3commons.logging.util.SWFInfo;
+	import org.as3commons.logging.util.assertRegExp;
+
 	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
-	import flexunit.framework.TestCase;
-	import org.as3commons.logging.level.DEBUG;
-	import org.as3commons.logging.level.ERROR;
-	import org.as3commons.logging.util.SWFInfo;
-	import org.hamcrest.AssertionError;
 
 
 
@@ -35,10 +38,10 @@ package org.as3commons.logging.setup.target {
 			_randomTime2 = Math.random() * 123456;
 			
 			_target = new AirFileTarget();
-			_target.log( "test", "test", DEBUG, _randomTime, "Hello World", [], null );
+			_target.log( "test", "test", DEBUG, _randomTime-START_TIME, "Hello World", [], null );
 			_eventHolder = addAsync( analyzeFile, 1000 );
 			_target.addEventListener( Event.COMPLETE, _eventHolder );
-			_target.log( "test.the.long.way", "way", ERROR, _randomTime2, "Some statement with \n new lines and \" doublequotes and \t tabs and # s", null, null );
+			_target.log( "test.the.long.way", "way", ERROR, _randomTime2-START_TIME, "Some statement with \n new lines and \" doublequotes and \t tabs and # s", null, null );
 		}
 		
 		private function analyzeFile(e : Event): void {
@@ -57,7 +60,7 @@ package org.as3commons.logging.setup.target {
 			var lines: Array = readFile( file );
 			assertEquals( "#Version: 1.0", lines.shift() );
 			assertRegExp( /^#Software\: \S* v(\S|\.)* \(running in Adobe Air (\S|\.)*\, publisherID\: (\S|\.)* \)$/, lines.shift() );
-			assertRegExp( /^#Date\: (?P<date>.{2})\-(?P<month>.{3})\-(?P<year>.{4}) .{1,2}:.{1,2}:.{1,2}\..{1,3}$/, lines.shift() );
+			assertRegExp( /^#Date\: (?P<date>.{1,2})\-(?P<month>.{3})\-(?P<year>.{4}) .{1,2}:.{1,2}:.{1,2}\..{1,3}$/, lines.shift() );
 			assertEquals( "#Fields: time x-method x-name x-comment", lines.shift() );
 			
 			assertEquals( logDate(_randomTime) + " DEBUG test \"Hello World\"",lines.shift());
@@ -85,12 +88,6 @@ package org.as3commons.logging.setup.target {
 				ms = "0"+ms;
 			}
 			return hrs+":"+mins+":"+secs+"."+ms;
-		}
-		
-		private function assertRegExp( regexp: RegExp, str: String ): void {
-			if( !regexp.test( str ) ) {
-				throw new AssertionError( str + " didnt match regexp: " + regexp );
-			}
 		}
 		
 		public function readFile( file: File ): Array {

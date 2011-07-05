@@ -31,7 +31,11 @@ package org.as3commons.logging.util {
 	 * @return Classname prepared to be used within the logging framework.
 	 */
 	public function toLogName(input:*):String {
-		// replace the colons (::) in the name since this is not allowed in the Flex logging API
-		return getQualifiedClassName(input).replace("::", ".");
+		if(input == null) {
+			return input;
+		} else {
+			// replace the colons (::) in the name since this is not allowed in the Flex logging API
+			return getQualifiedClassName(input).replace("::", ".");
+		}
 	}
 }

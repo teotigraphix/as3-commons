@@ -35,7 +35,7 @@ package org.as3commons.logging.integration {
 	 * </listing>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see http://www.spicefactory.org/parsley
 	 * @see org.as3commons.logging.setup.target.SpiceLibTarget
 	 */
@@ -77,27 +77,27 @@ class LoggerWrapper implements Logger {
 	}
 	
 	public function debug( message:String, ...args:* ):void {	
-		_logger.debug.apply( null, [ message ].concat( args ) );
+		_logger.debug( message, args );
 	}
 
 	public function error( message:String, ...args:* ):void {	
-		_logger.error.apply( null, [ message ].concat( args ) );
+		_logger.error( message, args );
 	}
 
 	public function fatal( message:String, ...args:* ):void {	
-		_logger.fatal.apply( null, [ message ].concat( args ) );
+		_logger.fatal( message, args );
 	}
 
 	public function info( message:String, ...args:*):void {
-		_logger.info.apply( null, [ message ].concat( args ) );
+		_logger.info( message, args );
 	}
 
 	public function trace( message:String, ...args:* ):void {	
-		_logger.info.apply( null, [ message ].concat( args ) );
+		_logger.info( message, args );
 	}
 
 	public function warn( message:String, ...args:* ):void {	
-		_logger.warn.apply( null, [ message ].concat( args ) );
+		_logger.warn( message, args );
 	}
 
 	public function isDebugEnabled():Boolean {

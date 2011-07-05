@@ -102,9 +102,9 @@ package org.as3commons.logging {
 		 * </listing>
 		 * 
 		 * @param message Message that should be logged.
-		 * @param params List of parameters.
+		 * @param parameters List of parameters.
 		 */
-		function debug(message:*, ... parameters):void;
+		function debug(message:*, parameters:Array=null):void;
 		
 		/**
 		 * Logs a message for notification purposes.
@@ -123,9 +123,9 @@ package org.as3commons.logging {
 		 * </listing>
 		 * 
 		 * @param message Message that should be logged.
-		 * @param params List of parameters.
+		 * @param parameters List of parameters.
 		 */
-		function info(message:*, ... parameters):void;
+		function info(message:*, parameters:Array=null):void;
 		
 		/**
 		 * Logs a message for warning about a undesirable application state.
@@ -145,9 +145,9 @@ package org.as3commons.logging {
 		 * </listing>
 		 * 
 		 * @param message Message that should be logged.
-		 * @param params List of parameters.
+		 * @param parameters List of parameters.
 		 */
-		function warn(message:*, ... params):void;
+		function warn(message:*, parameters:Array=null):void;
 		
 		/**
 		 * Logs a message to notify about an error that was dodged by the application.
@@ -167,9 +167,9 @@ package org.as3commons.logging {
 		 * </listing>
 		 * 
 		 * @param message Message that should be logged.
-		 * @param params List of parameters.
+		 * @param parameters List of parameters.
 		 */
-		function error(message:*, ... parameters):void;
+		function error(message:*, parameters:Array=null):void;
 		
 		/**
 		 * Logs a message to notify about an error that broke the application and
@@ -190,9 +190,9 @@ package org.as3commons.logging {
 		 * </listing>
 		 * 
 		 * @param message Message that should be logged.
-		 * @param params List of parameters.
+		 * @param parameters List of parameters.
 		 */
-		function fatal(message:*, ... parameters):void;
+		function fatal(message:*, parameters:Array=null):void;
 		
 		/**
 		 * <code>true</code> if <code>debug</code> actually does something.

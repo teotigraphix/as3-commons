@@ -19,13 +19,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.setup.target {
+package org.as3commons.logging.util {
 	
 	/**
-	 * Default <code>TraceTarget</code> to be used by the <code>LoggerFactory</code>
-	 *
+	 * Extracts the current method name/linenumber from the calling position if
+	 * possible.
+	 * 
+	 * <p>In the release player it is not possible to retreive the current location.</p>
+	 * 
+	 * <p>Warning: Performance intense task, use with care!</p> 
+	 * 
 	 * @author Martin Heidegger
-	 * @since 2.0
+	 * @since 2.5
 	 */
-	public const TRACE_TARGET: IFormattingLogTarget = new TraceTarget();
+	public function here(): String {
+		var error: Error = new Error();
+		var stackTrace: String = error.getStackTrace();
+		if( stackTrace ) {
+			// just in debug player
+			var nextLine: int = stackTrace.indexOf("\n");
+			// chop first two lines
+			stackTrace = stackTrace.substr(nextLine+1);
+			nextLine = stackTrace.indexOf("\n");
+			stackTrace = stackTrace.substr(nextLine+1);
+			nextLine = stackTrace.indexOf("\n");
+			if( nextLine != -1 ) {
+				stackTrace = stackTrace.substring(0, nextLine);
+			} 
+			var braces: int = stackTrace.indexOf("(");
+			var name: String = stackTrace.substring(4,braces);
+			if( braces != stackTrace.length-2 ) {
+				 name += stackTrace.substring( stackTrace.lastIndexOf(":"), stackTrace.length-1 );
+			}
+			return name;
+		}
+		return "";
+	}
 }

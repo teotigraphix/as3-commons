@@ -1,4 +1,5 @@
 package org.as3commons.logging.setup {
+	import org.as3commons.logging.getClassLogger;
 	import org.as3commons.logging.getNamedLogger;
 	import org.as3commons.logging.getLogger;
 	import org.as3commons.logging.LOGGER_FACTORY;
@@ -38,9 +39,7 @@ package org.as3commons.logging.setup {
 			assertStrictlyEquals(getLogger(""), getLogger(""));
 			assertStrictlyEquals(getLogger("test.more"), getLogger("test.more"));
 			assertStrictlyEquals(getLogger(null), getLogger(null));
-			assertStrictlyEquals(getLogger(null), getLogger("null") );
 			assertStrictlyEquals(getLogger(undefined), getLogger(undefined));
-			assertStrictlyEquals(getLogger(undefined), getLogger("void"));
 			
 			var aLogger: ILogger = getLogger( AClass );
 			var bLogger: ILogger = getLogger( new AClass );
@@ -81,11 +80,11 @@ package org.as3commons.logging.setup {
 				&& _logger.warnEnabled
 				&& _logger.errorEnabled
 				&& _logger.fatalEnabled ) {
-				_logger.debug("debug1", 1, 2, myObject);
-				_logger.info( "info1",  1, 2, myObject);
-				_logger.warn( "warn1",  1, 2, myObject);
-				_logger.error("error1", 1, 2, myObject);
-				_logger.fatal("fatal1", 1, 2, myObject);
+				_logger.debug("debug1", [1, 2, myObject]);
+				_logger.info( "info1",  [1, 2, myObject]);
+				_logger.warn( "warn1",  [1, 2, myObject]);
+				_logger.error("error1", [1, 2, myObject]);
+				_logger.fatal("fatal1", [1, 2, myObject]);
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq("debug1"), alike([1, 2, myObject]), eq(null)));
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(INFO),  anyOf(Number), eq("info1"),  alike([1, 2, myObject]), eq(null)));
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN),  anyOf(Number), eq("warn1"),  alike([1, 2, myObject]), eq(null)));
@@ -102,7 +101,7 @@ package org.as3commons.logging.setup {
 				&& !_logger.warnEnabled
 				&& !_logger.errorEnabled
 				&& !_logger.fatalEnabled ) {
-				_logger.debug("debug2", 1, 2, myObject);
+				_logger.debug("debug2", [1, 2, myObject]);
 				_logger.info("Should not be called");
 				_logger.warn("Should not be called");
 				_logger.error("Should not be called");
@@ -121,10 +120,10 @@ package org.as3commons.logging.setup {
 				&&  _logger.errorEnabled
 				&&  _logger.fatalEnabled ) {
 				_logger.debug("Should not be called");
-				_logger.info("info3", 1, 2, myObject);
-				_logger.warn("warn3", 1, 2, myObject);
-				_logger.error("error3", 1, 2, myObject);
-				_logger.fatal("fatal3", 1, 2, myObject);
+				_logger.info("info3", [1, 2, myObject]);
+				_logger.warn("warn3", [1, 2, myObject]);
+				_logger.error("error3", [1, 2, myObject]);
+				_logger.fatal("fatal3", [1, 2, myObject]);
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(INFO), anyOf(Number), eq( "info3" ), alike([1, 2, myObject]), eq(null)));
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN), anyOf(Number), eq( "warn3" ), alike([1, 2, myObject]), eq(null)));
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error3" ), alike([1, 2, myObject]), eq(null)));
@@ -142,7 +141,7 @@ package org.as3commons.logging.setup {
 				&& !_logger.errorEnabled
 				&& !_logger.fatalEnabled ) {
 				_logger.debug("Should not be called");
-				_logger.info("info4", 1, 2, myObject);
+				_logger.info("info4", [1, 2, myObject]);
 				_logger.warn("Should not be called");
 				_logger.error("Should not be called");
 				_logger.fatal("Should not be called");
@@ -161,9 +160,9 @@ package org.as3commons.logging.setup {
 				&&  _logger.fatalEnabled ) {
 				_logger.debug("Should not be called");
 				_logger.info("Should not be called");
-				_logger.warn("warn5", 1, 2, myObject);
-				_logger.error("error5", 1, 2, myObject);
-				_logger.fatal("fatal5", 1, 2, myObject);
+				_logger.warn("warn5", [1, 2, myObject]);
+				_logger.error("error5", [1, 2, myObject]);
+				_logger.fatal("fatal5", [1, 2, myObject]);
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN), anyOf(Number), eq( "warn5" ), alike([1, 2, myObject]), eq(null)));
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error5" ), alike([1, 2, myObject]), eq(null)));
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal5" ), alike([1, 2, myObject]), eq(null)));
@@ -182,7 +181,7 @@ package org.as3commons.logging.setup {
 				&& !_logger.fatalEnabled ) {
 				_logger.debug("Should not be called");
 				_logger.info("Should not be called");
-				_logger.warn("warn6", 1, 2, myObject);
+				_logger.warn("warn6", [1, 2, myObject]);
 				_logger.error("Should not be called");
 				_logger.fatal("Should not be called");
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(WARN), anyOf(Number), eq("warn6"), alike([1, 2, myObject]), eq(null) ));
@@ -201,8 +200,8 @@ package org.as3commons.logging.setup {
 				_logger.debug("Should not be called");
 				_logger.info("Should not be called");
 				_logger.warn("Should not be called");
-				_logger.error("error7", 1, 2, myObject);
-				_logger.fatal("fatal7", 1, 2, myObject);
+				_logger.error("error7", [1, 2, myObject]);
+				_logger.fatal("fatal7", [1, 2, myObject]);
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error7" ), alike([1, 2, myObject]), eq(null)));
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal7" ), alike([1, 2, myObject]), eq(null)));
 			} else {
@@ -220,7 +219,7 @@ package org.as3commons.logging.setup {
 				_logger.debug("Should not be called");
 				_logger.info("Should not be called");
 				_logger.warn("Should not be called");
-				_logger.error("error8", 1, 2, myObject);
+				_logger.error("error8", [1, 2, myObject]);
 				_logger.fatal("Should not be called");
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq("error8"), alike([1, 2, myObject]), eq(null) ));
 			} else {
@@ -239,7 +238,7 @@ package org.as3commons.logging.setup {
 				_logger.info("Should not be called");
 				_logger.warn("Should not be called");
 				_logger.error("Should not be called");
-				_logger.fatal("fatal9", 1, 2, myObject);
+				_logger.fatal("fatal9", [1, 2, myObject]);
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(FATAL), anyOf(Number), eq( "fatal9" ), alike([1, 2, myObject]), eq(null)));
 			} else {
 				fail("The Logsystem tells logging is not enabled @ fatal.");
@@ -273,10 +272,10 @@ package org.as3commons.logging.setup {
 				&& !_logger.warnEnabled
 				&&  _logger.errorEnabled
 				&& !_logger.fatalEnabled ) {
-				_logger.debug("debug10", 1, 2, myObject);
+				_logger.debug("debug10", [1, 2, myObject]);
 				_logger.info("Should not be called");
 				_logger.warn("Should not be called");
-				_logger.error("error10", 1, 2, myObject);
+				_logger.error("error10", [1, 2, myObject]);
 				_logger.fatal("Should not be called");
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(DEBUG), anyOf(Number), eq( "debug10" ), alike([1, 2, myObject]), eq(null)));
 				inOrder().verify().that(logTarget.log(eq(""), eq(""), eq(ERROR), anyOf(Number), eq( "error10" ), alike([1, 2, myObject]), eq(null)));
@@ -284,8 +283,16 @@ package org.as3commons.logging.setup {
 				fail("The Logsystem tells logging is not enabled @ fatal.");
 			}
 		}
-
-		[Test]
+		
+		public function testNullLogger(): void {
+			assertEquals("null", getLogger(null).name );
+			assertEquals("null", getLogger(undefined).name );
+			assertEquals("null", getNamedLogger(null).name );
+			assertEquals("null", getNamedLogger(undefined).name );
+			assertEquals("null", getClassLogger(null).name );
+			assertEquals("null", getClassLogger(undefined).name );
+		}
+		
 		public function testEmptyLogger():void {
 			assertFalse( Object( _logger ).toString(), _logger.debugEnabled );
 			assertFalse( Object( _logger ).toString(),_logger.infoEnabled );
@@ -294,7 +301,6 @@ package org.as3commons.logging.setup {
 			assertFalse( Object( _logger ).toString(),_logger.fatalEnabled );
 		}
 		
-		[After]
 		override public function tearDown():void {
 			super.tearDown();
 			LOGGER_FACTORY.setup = null;
@@ -306,6 +312,6 @@ import org.as3commons.logging.setup.ILogTarget;
 
 class TestLogTarget implements ILogTarget {
 
-	public function log(name:String, shortName:String, level:int, timeStamp:Number, message:*, parameters:Array, person:String=null):void {
+	public function log(name:String, shortName:String, level:int, timeStamp:Number, message:*, parameters:Array, person:String):void {
 	}
 }

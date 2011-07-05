@@ -29,7 +29,7 @@ package org.as3commons.logging.util {
 	 * 
 	 * @param loader LoaderInfo, preferrably of the root DisplayObject
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public function captureUncaughtErrors( loaderInfo:LoaderInfo ): void {
 		if( loaderInfo.hasOwnProperty("uncaughtErrorEvents") ) {

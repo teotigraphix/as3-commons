@@ -31,7 +31,7 @@ package org.as3commons.logging.setup.target {
 	 * for this the <code>clone</code> method.</p>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see org.as3commons.logging.util#clone
 	 */
 	public interface IAsyncLogTarget extends ILogTarget {

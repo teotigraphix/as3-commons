@@ -26,7 +26,7 @@ package org.as3commons.logging.level {
 	 * 
 	 * @param level Level as integer
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 */
 	public function levelToName( level:int ): String {
 		switch( level ) {

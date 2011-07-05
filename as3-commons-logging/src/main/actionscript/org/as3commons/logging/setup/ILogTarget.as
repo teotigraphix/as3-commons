@@ -33,13 +33,18 @@ package org.as3commons.logging.setup {
 		/**
 		 * Renders a log statement.
 		 * 
+		 * <p>In version 2.5 the person information was added and the time stamp
+		 * was modified to represent the local time rather than the time in gmt.
+		 * Add <code>START_TIME</code> to get the time in ms since 1970.</p>
+		 * 
 		 * @param name Name of the logger that triggered the log statement.
 		 * @param shortName Shortened form of the name.
 		 * @param level Level of the log statement that got triggered.
-		 * @param timeStamp Time stamp of when the log statement got triggered.
+		 * @param timeStamp getTimer() Timestame of when the log statement was triggered.
 		 * @param message Message of the log statement.
 		 * @param parameters Parameters for the log statement.
 		 * @param person Information about the person that filed this log statement.
+		 * @version 2
 		 */
 		function log(name:String, shortName:String, level:int, timeStamp:Number,
 					message:*, parameters:Array, person:String):void;

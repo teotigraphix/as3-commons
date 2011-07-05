@@ -44,7 +44,7 @@ package org.as3commons.logging.integration {
 	 * from as3commons to Push Button Engine.</p>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see http://pushbuttonengine.com
 	 */
 	public final class PushButtonIntegration implements ILogAppender {

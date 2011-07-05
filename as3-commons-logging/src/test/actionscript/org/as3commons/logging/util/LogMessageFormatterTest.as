@@ -35,7 +35,7 @@ package org.as3commons.logging.util {
 		public function testMixedMessages(): void {
 			var time: Date = new Date( DAY + MINUTE + SECOND + 23 );
 			
-			assertEquals( "TimeUTC: (0:1:1.23), Time: \"9:1:1.23\", Message: [hello world]", new LogMessageFormatter( "TimeUTC: ({timeUTC}), Time: \"{time}\", Message: [{message}]" ).format( "", "", 0, time.time, "hello world", null, null ));
+			assertEquals( "TimeUTC: (0:1:1.23), Time: \"9:1:1.23\", Message: [hello world]", new LogMessageFormatter( "TimeUTC: ({timeUTC}), Time: \"{time}\", Message: [{message}]" ).format( "", "", 0, time.time-START_TIME, "hello world", null, null ));
 		}
 		
 		public function testSimpleMessages(): void {
@@ -60,17 +60,17 @@ package org.as3commons.logging.util {
 			assertEquals( "a mess\\\"age", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, "a mess\"age", null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, null, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, undefined, null, null ) );
-			assertEquals( "9:1:1.23", new LogMessageFormatter( "{time}" ).format( null, null, 0, time.getTime(), null, null, null ) );
-			assertEquals( "0:1:1.23", new LogMessageFormatter( "{timeUTC}" ).format( null, null, 0, time.getTime(), null, null, null ) );
-			assertEquals( "00:01:01.023", new LogMessageFormatter( "{logTime}" ).format( null, null, 0, time.getTime(), null, null, null ) );
-			assertEquals( "1970/1/2", new LogMessageFormatter( "{date}" ).format( null, null, 0, time.getTime(), null, null, null ) );
-			assertEquals( "1970/1/2", new LogMessageFormatter( "{dateUTC}" ).format( null, null, 0, time.getTime(), null, null, null ) );
-			assertEquals( "1970/1/2", new LogMessageFormatter( "{dateUTC}" ).format( null, null, 0, time.getTime(), null, null, null ) );
+			assertEquals( "9:1:1.23", new LogMessageFormatter( "{time}" ).format( null, null, 0, time.getTime()-START_TIME, null, null, null ) );
+			assertEquals( "0:1:1.23", new LogMessageFormatter( "{timeUTC}" ).format( null, null, 0, time.getTime()-START_TIME, null, null, null ) );
+			assertEquals( "00:01:01.023", new LogMessageFormatter( "{logTime}" ).format( null, null, 0, time.getTime()-START_TIME, null, null, null ) );
+			assertEquals( "1970/1/2", new LogMessageFormatter( "{date}" ).format( null, null, 0, time.getTime()-START_TIME, null, null, null ) );
+			assertEquals( "1970/1/2", new LogMessageFormatter( "{dateUTC}" ).format( null, null, 0, time.getTime()-START_TIME, null, null, null ) );
+			assertEquals( "1970/1/2", new LogMessageFormatter( "{dateUTC}" ).format( null, null, 0, time.getTime()-START_TIME, null, null, null ) );
 			assertEquals( "9:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, 0, NaN, null, null, null ) );
-			assertEquals( "9:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, 0, null, null, null, null ) );
-			assertEquals( "0:0:0.0", new LogMessageFormatter( "{timeUTC}" ).format( null, null, 0, null, null, null, null ) );
+			assertEquals( "0:0:0.0", new LogMessageFormatter( "{timeUTC}" ).format( null, null, 0, NaN, null, null, null ) );
 			assertEquals( "GMT+0900", new LogMessageFormatter( "{gmt}" ).format( null, null, 0, null, null, null, null ) );
 			assertEquals( "{0}", new LogMessageFormatter( "{0}" ).format( null, null, 0, NaN, null, ["a"], null ) );
+			assertEquals( "{0}", new LogMessageFormatter( "{0}" ).format( null, null, 0, NaN, null, null, null ) );
 			assertEquals( "a", new LogMessageFormatter( "{message}" ).format( null, null, 0, NaN, "{0}", ["a"], null ) );
 			assertEquals( "f", new LogMessageFormatter( "{message}" ).format( null, null, 0, NaN, "{5}", ["a","b","c","d","e","f"], null ) );
 			assertEquals( URL_ERROR, new LogMessageFormatter( "{swf}" ).format( null, null, 0, NaN, null, null, null ) );

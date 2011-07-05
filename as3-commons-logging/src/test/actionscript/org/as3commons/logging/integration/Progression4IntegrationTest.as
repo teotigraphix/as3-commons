@@ -10,7 +10,6 @@ package org.as3commons.logging.integration {
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
 	import org.as3commons.logging.setup.target.Progression4Target;
-	import org.as3commons.logging.util.alike;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.MockitoTestCase;
 	/**
@@ -36,10 +35,10 @@ package org.as3commons.logging.integration {
 			Logger.warn( "a warning" );
 			Logger.error( "a error" );
 			
-			inOrder().verify().that( target.log( eq("jp.nium.core.debug.Logger"), eq("Logger"), eq(INFO), anyOf(Number), eq("a log message"), alike([]), eq("Progression")) );
-			inOrder().verify().that( target.log( eq("jp.nium.core.debug.Logger"), eq("Logger"), eq(INFO), anyOf(Number), eq("a log message"), alike([]), eq("Progression")) );
-			inOrder().verify().that( target.log( eq("jp.nium.core.debug.Logger"), eq("Logger"), eq(WARN), anyOf(Number), eq("a warning"), alike([]), eq("Progression")) );
-			inOrder().verify().that( target.log( eq("jp.nium.core.debug.Logger"), eq("Logger"), eq(ERROR), anyOf(Number), eq("a error"), alike([]), eq("Progression")) );
+			inOrder().verify().that( target.log( eq("jp.nium.core.debug.Logger"), eq("Logger"), eq(INFO), anyOf(Number), eq("a log message"), eq(null), eq("Progression")) );
+			inOrder().verify().that( target.log( eq("jp.nium.core.debug.Logger"), eq("Logger"), eq(INFO), anyOf(Number), eq("a log message"), eq(null), eq("Progression")) );
+			inOrder().verify().that( target.log( eq("jp.nium.core.debug.Logger"), eq("Logger"), eq(WARN), anyOf(Number), eq("a warning"), eq(null), eq("Progression")) );
+			inOrder().verify().that( target.log( eq("jp.nium.core.debug.Logger"), eq("Logger"), eq(ERROR), anyOf(Number), eq("a error"), eq(null), eq("Progression")) );
 			verifyNothingCalled( target );
 		}
 		

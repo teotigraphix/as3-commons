@@ -82,45 +82,50 @@ package org.as3commons.logging {
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:*, ... params:*):void {
+		public function debug(message:*, parameters:Array=null):void {
 			if(debugTarget) {
-				debugTarget.log(_name, _shortName, 0x0020 /*DEBUG*/, _startTime+getTimer(), message, params, _person);
+				debugTarget.log(_name, _shortName, 0x0020 /*DEBUG*/,
+							_startTime+getTimer(), message, parameters, _person);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:*, ... params:*):void {
+		public function info(message:*, parameters:Array=null):void {
 			if(infoTarget) {
-				infoTarget.log(_name, _shortName, 0x0010 /*INFO*/, _startTime+getTimer(), message, params, _person);
+				infoTarget.log(_name, _shortName, 0x0010 /*INFO*/,
+							_startTime+getTimer(), message, parameters, _person);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:*, ... params:*):void {
+		public function warn(message:*, parameters:Array=null):void {
 			if(warnTarget) {
-				warnTarget.log(_name, _shortName, 0x0008 /*WARN*/, _startTime+getTimer(), message, params, _person);
+				warnTarget.log(_name, _shortName, 0x0008 /*WARN*/,
+							_startTime+getTimer(), message, parameters, _person);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:*, ... params:*):void {
+		public function error(message:*, parameters:Array=null):void {
 			if(errorTarget) {
-				errorTarget.log(_name, _shortName, 0x0004 /*ERROR*/, _startTime+getTimer(), message, params, _person);
+				errorTarget.log(_name, _shortName, 0x0004 /*ERROR*/,
+							_startTime+getTimer(), message, parameters, _person);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal(message:*, ... params:*):void {
+		public function fatal(message:*, parameters:Array=null):void {
 			if(fatalTarget) {
-				fatalTarget.log(_name, _shortName, 0x0002 /*FATAL*/, _startTime+getTimer(), message, params, _person);
+				fatalTarget.log(_name, _shortName, 0x0002 /*FATAL*/,
+							_startTime+getTimer(), message, parameters, _person);
 			}
 		}
 		

@@ -25,7 +25,7 @@ package org.as3commons.logging.simple {
 	 * <code>true</code> if <code>error</code> actually does something.
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.1
+	 * @since 2.5
 	 * @see org.as3commons.logging.simple#error()
 	 */
 	public function isErrorEnabled(): Boolean {
