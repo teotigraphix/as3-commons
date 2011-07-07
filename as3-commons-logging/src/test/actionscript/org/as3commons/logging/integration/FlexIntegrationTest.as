@@ -1,13 +1,16 @@
 package org.as3commons.logging.integration
 {
-	import org.as3commons.logging.setup.SimpleTargetSetup;
-	import org.as3commons.logging.LOGGER_FACTORY;
+	import mx.logging.ILogger;
+	import mx.logging.Log;
+	import mx.logging.LogEventLevel;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ILogTarget;
+	import org.as3commons.logging.setup.SimpleTargetSetup;
 	import org.as3commons.logging.util.alike;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.integrations.eq;
@@ -16,9 +19,6 @@ package org.as3commons.logging.integration
 	import org.mockito.integrations.mock;
 	import org.mockito.integrations.notNull;
 
-	import mx.logging.ILogger;
-	import mx.logging.Log;
-	import mx.logging.LogEventLevel;
 
 	/**
 	 * @author mh

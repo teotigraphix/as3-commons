@@ -60,8 +60,8 @@ package org.as3commons.logging.integration {
 }
 
 import jp.nium.core.debug.Logger;
+import org.as3commons.logging.api.ILogger;
+import org.as3commons.logging.api.getLogger;
 
-import org.as3commons.logging.ILogger;
-import org.as3commons.logging.getLogger;
 
 const logger: ILogger = getLogger( Logger, "Progression" );

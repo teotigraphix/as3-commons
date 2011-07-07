@@ -21,8 +21,8 @@
  */
 package org.as3commons.logging.integration {
 	
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.getLogger;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 	import org.swizframework.utils.logging.AbstractSwizLoggingTarget;
 	import org.swizframework.utils.logging.SwizLogEvent;
 	import org.swizframework.utils.logging.SwizLogEventLevel;

@@ -21,9 +21,9 @@
  */
 package org.as3commons.logging.integration {
 	
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getNamedLogger;
 	import org.asaplibrary.util.debug.Log;
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.getNamedLogger;
 	import org.asaplibrary.util.debug.LogEvent;
 	
 	/**

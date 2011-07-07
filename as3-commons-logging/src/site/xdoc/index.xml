@@ -1,53 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
     <properties>
-        <title>Welcome to as3commons-logging</title>
+        <title>Welcome to AS3commons logging</title>
+        <author email="mh@leichtgewicht.at">Martin Heidegger</author>
         <author email="mp@yoolab.com">Martino Piccinato</author>
     </properties>
     <body>
-        <section name="Welcome to as3-commons-logging">
-            
-            <div id="downloadbox">
-                <h5>Get latest stable</h5>
-                <p>
-                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-logging/2.0/as3commons-logging-2.0.swc">
-                        <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
-                        Download
-                    </a>
-                    latest stable (2.0)
-                </p>
-                <br/>
-                <h5>Get lastest development snapshot</h5>
-                <p>
-                    <a href="downloads/as3commons-logging-latest-snapshot-bin.zip">
-                        <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest snapshot" title="download"/>
-                        Download
-                    </a>
-                    latest snapshot
-                </p>
-            </div>
-
-            <p>
-                AS3Commons-logging is an open-source library providing an abstraction over 
-                logging framework implementations. Being a pure actionscript library it can 
-                be used for any Flash/Flex/AIR project. Its use is recommended for use
-                with other libraries/framework trying to be logging framework agnostic.
-            </p>
-            
-            <p>
-            	The library provides a common interface to logger creation and logging and 
-            	it provides some basic loggers implementations: 
-            	<ul>
-            		<li>a default logger using <code>trace()</code></li>
-            		<li>a null logger that can be used to ignore logging</li>
-            		<li>a flex logger (<code>mx.logging.ILogger</code>) implementation</li>
-            	</ul>
-            </p>
-
-            <p>
-                Other implementations can be created by users for any other logging framework.
-            </p>
-
+        <section name="Welcome to AS3commons logging">
+             AS3commons-logging is an open-source library providing an abstraction over 
+             logging framework implementations. Being a pure actionscript library it can 
+             be used for any Flash/Flex/AIR project.
+        </section>
+        
+        <section name="Download">
+             <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-logging/2.5/as3commons-logging-2.5.swc">
+                     <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                 Download latest stable (2.5)
+             </a> (please visit the <a href="changes.html">Important Changes</a> page if you used logging before)
+             <br/>
+             <a href="downloads/as3commons-logging-latest-snapshot-bin.zip">
+                 <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest snapshot" title="download"/>
+                 Download latest snapshot
+             </a>
+        </section>	
+        
+        <section name="Features">
+                We worked hard to provide many useful features that you can use
+                on demand. From useful small util's that help ease your day in
+                daily production to full blown configuration monsters. And even if
+                a feature is missing, the whole system can be plugged together
+                in a lot of ways.
+        </section>
+        
+        <section name="Performance &amp; Size">
+                Albeit the extended feature list, AS3commons-logging offers a high-performing
+                logging solution with up to 1000000 calls in <strong>4ms</strong> in a
+                deactivated state. It also has a minimum (non-configured) size
+                of <strong>2.1kB</strong> putting minimum overhead to your 
+                productive application.
+        </section>
+        
+        <section name="Support">
+                By default AS3commons-logging offers a range of frameworks and
+                logging UI's that are immediately integratable. This should
+                eases the transition from a former framework to as3commons.
+                
+                <img src="images/integration-support.png" usemap="#m_loggingfuturesupport"/>
+                <map name="m_loggingfuturesupport" id="m_loggingfuturesupport">
+	                <area shape="rect" coords="353,57,408,110" href="asdoc/index.html?org/as3commons/logging/integration/FlexLogger.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="226,36,344,64" href="asdoc/index.html?org/as3commons/logging/setup/target/FirebugTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="226,74,344,94" href="asdoc/index.html?org/as3commons/logging/setup/target/Progression4Target.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="174,101,344,118" href="asdoc/index.html?org/as3commons/logging/integration/SwizIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="263,120,307,180" href="asdoc/index.html?org/as3commons/logging/setup/target/SOSTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="307,120,494,156" href="asdoc/index.html?org/as3commons/logging/setup/target/ThunderBoltTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="326,156,452,203" href="asdoc/index.html?org/as3commons/logging/integration/MateIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="181,188,326,228" href="asdoc/index.html?org/as3commons/logging/setup/target/ASAPTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="4,101,159,135" href="asdoc/index.html?org/as3commons/logging/setup/target/ArthropodTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="34,177,181,228" href="asdoc/index.html?org/as3commons/logging/integration/PushButtonIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="111,135,250,177" href="asdoc/index.html?org/as3commons/logging/integration/SpiceLibIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="34,64,201,101" href="asdoc/index.html?org/as3commons/logging/setup/target/MonsterDebugger3TraceTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
+					<area shape="rect" coords="96,9,226,64" href="asdoc/index.html?org/as3commons/logging/setup/target/FlashConsoleTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
+				</map>
         </section>
 
     </body>

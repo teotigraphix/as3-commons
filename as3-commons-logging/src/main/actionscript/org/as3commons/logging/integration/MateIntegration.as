@@ -30,7 +30,7 @@ package org.as3commons.logging.integration {
 	/*FDT_IGNORE*/
 	import com.asfusion.mate.events.MateLogEvent;
 	import com.asfusion.mate.utils.debug.IMateLogger;
-	import org.as3commons.logging.getLogger;
+	import org.as3commons.logging.api.getLogger;
 	import mx.logging.LogEventLevel;
 	/*FDT_IGNORE*/
 	
@@ -117,7 +117,7 @@ package org.as3commons.logging.integration {
 			/*FDT_IGNORE*/
 			var category: String = IMateLogger( event.target ).category;
 			var e: MateLogEvent = MateLogEvent( event );
-			var logger: org.as3commons.logging.ILogger = _cache[ category ] || (_cache[ category ] = getLogger( category, "mate" ) );
+			var logger: org.as3commons.logging.api.ILogger = _cache[ category ] || (_cache[ category ] = getLogger( category, "mate" ) );
 			switch( event.level ) {
 				case LogEventLevel.DEBUG:
 					logger.debug( event.message, e.parameters );

@@ -19,26 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.api {
+	
 	import org.as3commons.logging.util.toLogName;
 	
 	/**
-	 * Returns a logger for the passed-in input that can be eighter a String
-	 * or a Class.
+	 * Returns a logger for the passed-in class.
 	 * 
-	 * <p>Shortest access to get a custom named <code>ILogger</code> instance to
+	 * <p>Shortest access to get a <code>ILogger</code> for a class instance to
 	 * send your logging statements.</p>
-	 * <p>It chooses depending on the input whether it should act like
-	 * <code>getNamedLogger(name);</code> or <code>getClassLogger();</code>.</p>
+	 * <p>Short form of now deprecated <code>LoggerFactory.getClassLogger(name);</code>.</p>
 	 * 
-	 * @example <listing version="3.0">
+	 * @example <listing>
 	 * package {
 	 *    
-	 *    import org.as3commons.logging.getLogger;
-	 *    import org.as3commons.logging.ILogger;
+	 *    import org.as3commons.logging.api.getClassLogger;
+	 *    import org.as3commons.logging.api.ILogger;
 	 *    
 	 *    class MyClass {
-	 *        private static const log: ILogger = getLogger("This is my super name for this logger");
+	 *        private static const log: ILogger = getClassLogger(MyClass);
 	 *        function MyClass() {
 	 *            log.info("Hello World");
 	 *        }
@@ -47,20 +46,17 @@ package org.as3commons.logging {
 	 * </listing>
 	 * 
 	 * @author Martin Heidegger
-	 * @param input If String it will just pass it to <code>getNamedLogger</code>
-	 *        else use it like <code>getClassLogger</code>
+	 * @param input Any object (will be transformed by <code>toLogName</code>).
 	 * @param person Information about the person that requested this logger.
 	 * @return <code>ILogger</code> instance to publish log statements
 	 * @since 2.0
-	 * @version 1.0
-	 * @see org.as3commons.logging#getNamedLogger()
-	 * @see org.as3commons.logging#getClassLogger()
-	 * @see org.as3commons.logging#LOGGER_FACTORY
+	 * @version 2
+	 * @see org.as3commons.logging.util#toLogName()
+	 * @see LoggerFactory#getClassLogger()
+	 * @see org.as3commons.logging.api#LOGGER_FACTORY
 	 */
-	public function getLogger(input:*,person:String=null):ILogger {
-		if(input && !(input is String)) {
-			input = toLogName(input);
-		}
-		return LOGGER_FACTORY.getNamedLogger(input,person);
+	public function getClassLogger(input:*,person:String=null):ILogger {
+		return LOGGER_FACTORY.getNamedLogger(toLogName(input),person);
 	}
 }
+

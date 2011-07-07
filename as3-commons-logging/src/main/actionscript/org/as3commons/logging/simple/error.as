@@ -40,7 +40,7 @@ package org.as3commons.logging.simple {
 	 * </listing>
 	 * 
 	 * @param message Message that should be logged.
-	 * @param params List of parameters.
+	 * @param parameters List of parameters.
 	 * @author Martin Heidegger
 	 * @since 2.5
 	 */

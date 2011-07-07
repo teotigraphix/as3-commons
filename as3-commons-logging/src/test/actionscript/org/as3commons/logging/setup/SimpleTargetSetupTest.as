@@ -1,6 +1,6 @@
 package org.as3commons.logging.setup {
+	import org.as3commons.logging.api.Logger;
 	import org.as3commons.logging.util.verifyNothingCalled;
-	import org.as3commons.logging.Logger;
 	import org.mockito.MockitoTestCase;
 	/**
 	 * @author mh

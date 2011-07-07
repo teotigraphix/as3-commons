@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.api {
 	
 	import org.as3commons.logging.setup.ILogTarget;
 
@@ -37,7 +37,8 @@ package org.as3commons.logging {
 	 * @author Martin Heidegger
 	 * @author Christophe Herreman
 	 * @version 2.0
-	 * @see org.as3commons.logging.ILogSetup
+	 * @version 2
+	 * @see org.as3commons.logging.api.ILogSetup
 	 */
 	public final class Logger implements ILogger {
 		

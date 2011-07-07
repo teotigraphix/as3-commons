@@ -1,13 +1,22 @@
 package {
-	import org.as3commons.logging.util.HereTest;
-	import org.as3commons.logging.util.JsonXifyTest;
-	import org.as3commons.logging.setup.target.HttpTargetTest;
-	import org.as3commons.logging.util.ByteArrayCopyTest;
-	import org.as3commons.logging.ILogSetup;
+	import flash.display.Sprite;
+	import flash.display.Stage;
+	import flash.sampler.getSize;
+	import flash.utils.getTimer;
+	import mx.logging.AbstractTarget;
+	import mx.logging.ILoggingTarget;
+	import mx.logging.Log;
+	import mx.logging.LogEvent;
+	import mx.logging.LogEventLevel;
+	import mx.logging.LogLogger;
+	import mx.logging.errors.InvalidCategoryError;
+	import mx.logging.errors.InvalidFilterError;
+	import mx.logging.targets.TraceTarget;
 	import org.as3commons.logging.LogLevelTest;
-	import org.as3commons.logging.Logger;
-	import org.as3commons.logging.LoggerFactory;
-	import org.as3commons.logging.getLogger;
+	import org.as3commons.logging.api.ILogSetup;
+	import org.as3commons.logging.api.Logger;
+	import org.as3commons.logging.api.LoggerFactory;
+	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.logging.integration.ASAPIntegrationTest;
 	import org.as3commons.logging.integration.FlexIntegrationTest;
 	import org.as3commons.logging.integration.MateIntegrationTest;
@@ -33,6 +42,9 @@ package {
 	import org.as3commons.logging.setup.target.MergedTest;
 	import org.as3commons.logging.setup.target.SWFInfoTest;
 	import org.as3commons.logging.setup.target.TextFieldTest;
+	import org.as3commons.logging.util.ByteArrayCopyTest;
+	import org.as3commons.logging.util.HereTest;
+	import org.as3commons.logging.util.JsonXifyTest;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	import org.as3commons.logging.util.LogMessageFormatterTest;
 	import org.as3commons.logging.util.SWFInfo;
@@ -40,20 +52,7 @@ package {
 	import org.flexunit.internals.TraceListener;
 	import org.flexunit.runner.FlexUnitCore;
 
-	import mx.logging.AbstractTarget;
-	import mx.logging.ILoggingTarget;
-	import mx.logging.Log;
-	import mx.logging.LogEvent;
-	import mx.logging.LogEventLevel;
-	import mx.logging.LogLogger;
-	import mx.logging.errors.InvalidCategoryError;
-	import mx.logging.errors.InvalidFilterError;
-	import mx.logging.targets.TraceTarget;
 
-	import flash.display.Sprite;
-	import flash.display.Stage;
-	import flash.sampler.getSize;
-	import flash.utils.getTimer;
 
 
 
@@ -113,7 +112,7 @@ package {
 					+ getSize(mx.logging.targets.TraceTarget);
 			
 			var as3commonsSize: uint = 0
-					+ getSize(org.as3commons.logging.ILogger)
+					+ getSize(org.as3commons.logging.api.ILogger)
 					+ getSize(ILogSetup)
 					+ getSize(LoggerFactory)
 					+ getSize(Logger)
@@ -139,6 +138,7 @@ package {
 				new JsonXifyTest(),
 				new HereTest(),
 				new ByteArrayCopyTest(),
+				new MateIntegrationTest(),
 				new SwizIntegrationTest(),
 				new PushButtonIntegrationTest(),
 				new ASAPIntegrationTest(),

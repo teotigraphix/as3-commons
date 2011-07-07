@@ -1,10 +1,10 @@
 package perf {
-	import org.as3commons.logging.LOGGER_FACTORY;
-	import org.as3commons.logging.Logger;
-	import org.as3commons.logging.getLogger;
+	import flash.utils.getTimer;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
+	import org.as3commons.logging.api.Logger;
+	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
 
-	import flash.utils.getTimer;
 
 	/**
 	 * @author mh

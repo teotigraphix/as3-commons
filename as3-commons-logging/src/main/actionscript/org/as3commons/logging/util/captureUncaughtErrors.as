@@ -38,10 +38,10 @@ package org.as3commons.logging.util {
 		}
 	}
 }
-import org.as3commons.logging.ILogger;
-import org.as3commons.logging.getLogger;
-
 import flash.events.Event;
+import org.as3commons.logging.api.ILogger;
+import org.as3commons.logging.api.getLogger;
+
 
 const logger: ILogger = getLogger( "org.as3commons.logging.util#captureUncaughtErrors" );
 

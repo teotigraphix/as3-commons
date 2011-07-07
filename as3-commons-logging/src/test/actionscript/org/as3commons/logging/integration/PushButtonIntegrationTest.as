@@ -2,8 +2,7 @@ package org.as3commons.logging.integration {
 	import com.pblabs.engine.PBE;
 	import com.pblabs.engine.debug.LogEntry;
 	import com.pblabs.engine.debug.Logger;
-
-	import org.as3commons.logging.LOGGER_FACTORY;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.INFO;
@@ -12,6 +11,7 @@ package org.as3commons.logging.integration {
 	import org.as3commons.logging.setup.SimpleTargetSetup;
 	import org.as3commons.logging.util.alike;
 	import org.mockito.MockitoTestCase;
+
 	/**
 	 * @author mh
 	 */

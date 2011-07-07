@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.api {
 	
 	/**
 	 * <code>ILogSetup</code> augments <code>Logger</code> instances created by
@@ -27,7 +27,7 @@ package org.as3commons.logging {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
-	 * @see org.as3commons.logging.LoggerFactory#setup
+	 * @see org.as3commons.logging.api.LoggerFactory#setup
 	 */
 	public interface ILogSetup {
 		

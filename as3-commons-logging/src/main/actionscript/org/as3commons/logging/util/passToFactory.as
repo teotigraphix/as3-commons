@@ -21,9 +21,9 @@
  */
 package org.as3commons.logging.util {
 	
-	import org.as3commons.logging.LOGGER_FACTORY;
-	import org.as3commons.logging.Logger;
-	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
+	import org.as3commons.logging.api.Logger;
+	import org.as3commons.logging.api.LoggerFactory;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;

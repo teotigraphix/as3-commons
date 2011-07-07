@@ -1,10 +1,8 @@
 package org.as3commons.logging.integration {
 	
-	import org.asaplibrary.util.debug.LogEvent;
-	import org.as3commons.logging.setup.target.ASAPTarget;
-	import org.as3commons.logging.getLogger;
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LOGGER_FACTORY;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
+	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
@@ -12,7 +10,9 @@ package org.as3commons.logging.integration {
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
+	import org.as3commons.logging.setup.target.ASAPTarget;
 	import org.asaplibrary.util.debug.Log;
+	import org.asaplibrary.util.debug.LogEvent;
 	import org.mockito.MockitoTestCase;
 	
 	/**

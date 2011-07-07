@@ -3,8 +3,9 @@ AS3COMMONS LOGGING CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 2.5 (6.07.2011)
+Changes in version 2.5 (8.07.2011)
 -----------------------------------
+* API: To allow possible backwards support moved getLogger methods to subpackage "api"
 * API: Changed all log statements to be like logger.debug( message: String, parameter: Array = null ) to gain performance
 * Added support for loggers used by certain persons
 * Added MonsterDebugger 3 console support

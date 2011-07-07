@@ -21,9 +21,13 @@
  */
 package org.as3commons.logging.setup {
 	
-	import org.as3commons.logging.setup.SimpleTargetSetup;
-	import org.as3commons.logging.LoggerFactory;
-	import org.as3commons.logging.Logger;
+	import mx.logging.ILoggingTarget;
+	import mx.logging.Log;
+	import mx.logging.LogEvent;
+	import mx.logging.LogEventLevel;
+	import mx.logging.LogLogger;
+	import org.as3commons.logging.api.Logger;
+	import org.as3commons.logging.api.LoggerFactory;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
@@ -32,11 +36,6 @@ package org.as3commons.logging.setup {
 	import org.as3commons.logging.setup.target.FlexLogTarget;
 	import org.mockito.integrations.flexunit3.MockitoTestCase;
 
-	import mx.logging.ILoggingTarget;
-	import mx.logging.Log;
-	import mx.logging.LogEvent;
-	import mx.logging.LogEventLevel;
-	import mx.logging.LogLogger;
 
 	/**
 	 * @author Martin Heidegger

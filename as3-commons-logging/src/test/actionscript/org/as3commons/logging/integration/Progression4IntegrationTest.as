@@ -1,9 +1,8 @@
 package org.as3commons.logging.integration {
 	import jp.nium.core.debug.Logger;
-
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LOGGER_FACTORY;
-	import org.as3commons.logging.getLogger;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
+	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
@@ -12,6 +11,7 @@ package org.as3commons.logging.integration {
 	import org.as3commons.logging.setup.target.Progression4Target;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.MockitoTestCase;
+
 	/**
 	 * @author mh
 	 */

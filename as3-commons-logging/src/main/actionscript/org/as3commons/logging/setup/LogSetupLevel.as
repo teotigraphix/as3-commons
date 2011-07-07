@@ -21,7 +21,7 @@
  */
 package org.as3commons.logging.setup {
 	
-	import org.as3commons.logging.Logger;
+	import org.as3commons.logging.api.Logger;
 	
 	/**
 	 * <code>LogSetupLevel</code>, in contrary to the <code>LogLevel</code>, can
