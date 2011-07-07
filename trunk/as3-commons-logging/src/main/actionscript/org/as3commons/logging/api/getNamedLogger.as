@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.api {
 	
 	/**
 	 * Returns a logger for the passed-in name.
@@ -31,8 +31,8 @@ package org.as3commons.logging {
 	 * @example <listing>
 	 * package {
 	 *    
-	 *    import org.as3commons.logging.getNamedLogger;
-	 *    import org.as3commons.logging.ILogger;
+	 *    import org.as3commons.logging.api.getNamedLogger;
+	 *    import org.as3commons.logging.api.ILogger;
 	 *    
 	 *    class MyClass {
 	 *        private static const log: ILogger = getNamedLogger("This is my super name for this logger");
@@ -48,8 +48,9 @@ package org.as3commons.logging {
 	 * @param person Information about the person that requested this logger.
 	 * @return <code>ILogger</code> instance to publish log statements
 	 * @since 2.0
+	 * @version 1.0
 	 * @see LoggerFactory#getLogger()
-	 * @see org.as3commons.logging#LOGGER_FACTORY
+	 * @see org.as3commons.logging.api#LOGGER_FACTORY
 	 */
 	public function getNamedLogger(name:String,person:String=null):ILogger {
 		return LOGGER_FACTORY.getNamedLogger(name,person);

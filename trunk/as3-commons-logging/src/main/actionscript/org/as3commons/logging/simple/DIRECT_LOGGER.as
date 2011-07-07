@@ -21,8 +21,8 @@
  */
 package org.as3commons.logging.simple {
 	
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.getNamedLogger;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getNamedLogger;
 	
 	/**
 	 * Default instance used in this package to log statements.

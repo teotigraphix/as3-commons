@@ -21,9 +21,8 @@
  */
 package org.as3commons.logging.setup {
 	
-	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.Logger;
-	import org.as3commons.logging.setup.SimpleTargetSetup;
+	import org.as3commons.logging.api.ILogSetup;
+	import org.as3commons.logging.api.Logger;
 	
 	/**
 	 * The <code>RegExpSetup</code> allows to filter different <code>ILogSetup</code>
@@ -164,7 +163,7 @@ package org.as3commons.logging.setup {
 	}
 }
 
-import org.as3commons.logging.ILogSetup;
+import org.as3commons.logging.api.ILogSetup;
 
 internal class RegExpRule {
 	public var classRule: RegExp;

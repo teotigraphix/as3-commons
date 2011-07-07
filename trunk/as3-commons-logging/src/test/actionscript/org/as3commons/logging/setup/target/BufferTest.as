@@ -1,13 +1,13 @@
 package org.as3commons.logging.setup.target {
-	import org.as3commons.logging.util.passToFactory;
-	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.api.ILogSetup;
+	import org.as3commons.logging.api.LoggerFactory;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
 	import org.as3commons.logging.util.alike;
+	import org.as3commons.logging.util.passToFactory;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.integrations.eq;
 	import org.mockito.integrations.flexunit3.MockitoTestCase;

@@ -21,8 +21,8 @@
  */
 package org.as3commons.logging.setup {
 	
-	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.Logger;
+	import org.as3commons.logging.api.ILogSetup;
+	import org.as3commons.logging.api.Logger;
 	
 	/**
 	 * The simplest way to use any <code>ILogTarget</code> in the setup process

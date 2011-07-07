@@ -19,20 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.api {
 	
 	/**
 	 * Use the <code>LoggerFactory</code> to obtain a logger. This is the main class used when
 	 * working with the as3commons-logging library.
 	 *
-	 * <p>You can either request a logger via the long <code>LoggerFactory.getLogger()</code>
-	 * or <code>LoggerFactory.getNamedLogger()</code> methods or use the short methods
-	 * <code>getLogger()</code>, <code>getNamedLogger()</code>, <code>getClassLogger()</code>.</p>
-	 *
 	 * <listing>
 	 * package {
-	 *   import org.as3commons.logging.ILogger;
-	 *   import org.as3commons.logging.getLogger;
+	 *   import org.as3commons.logging.api.ILogger;
+	 *   import org.as3commons.logging.api.getLogger;
 	 *
 	 *   public class MyClass {
 	 *   
@@ -51,10 +47,10 @@ package org.as3commons.logging {
 	 * of the logger factory.</p>
 	 * 
 	 * <listing>
-	 *    org.as3commons.logging.LOGGER_FACTORY.setup = new FlexSetup();
+	 *    org.as3commons.logging.api.LOGGER_FACTORY.setup = new FlexSetup();
 	 *    // will redirect all output to the flex logging mechanism 
 	 
-	 *    org.as3commons.logging.LOGGER_FACTORY.setup = null;
+	 *    org.as3commons.logging.api.LOGGER_FACTORY.setup = null;
 	 *    // will clear all output
 	 * </listing>
 	 * 
@@ -70,9 +66,9 @@ package org.as3commons.logging {
 	 * @author Martin Heidegger
 	 * @version 2
 	 * @see ILogSetup
-	 * @see org.as3commons.logging#getLogger()
-	 * @see org.as3commons.logging#getNamedLogger()
-	 * @see org.as3commons.logging#getClassLogger()
+	 * @see org.as3commons.logging.api#getLogger()
+	 * @see org.as3commons.logging.api#getNamedLogger()
+	 * @see org.as3commons.logging.api#getClassLogger()
 	 * @see org.as3commons.logging.setup.ILogTarget
 	 */
 	public class LoggerFactory {

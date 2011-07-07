@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.api {
 	
 	/**
 	 * <code>LOGGER_FACTORY</code> contains the default <code>LoggerFactory</code>
@@ -36,9 +36,9 @@ package org.as3commons.logging {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
-	 * @see org.as3commons.logging#getLogger()
-	 * @see org.as3commons.logging#getNamedLogger()
-	 * @see org.as3commons.logging#getClassLogger()
+	 * @see org.as3commons.logging.api#getLogger()
+	 * @see org.as3commons.logging.api#getNamedLogger()
+	 * @see org.as3commons.logging.api#getClassLogger()
 	 */
 	public const LOGGER_FACTORY: LoggerFactory = new LoggerFactory();
 }

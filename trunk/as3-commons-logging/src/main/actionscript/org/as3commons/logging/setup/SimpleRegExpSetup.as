@@ -21,8 +21,8 @@
  */
 package org.as3commons.logging.setup {
 	
-	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.Logger;
+	import org.as3commons.logging.api.ILogSetup;
+	import org.as3commons.logging.api.Logger;
 	
 	/**
 	 * <code>SimpleRegExpSetup</code> allows to apply targets just in certain caes. 

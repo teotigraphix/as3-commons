@@ -21,10 +21,10 @@
  */
 package org.as3commons.logging.integration {
 	
-	import com.pblabs.engine.debug.LogEntry;
-	import org.as3commons.logging.getNamedLogger;
-	import org.as3commons.logging.ILogger;
 	import com.pblabs.engine.debug.ILogAppender;
+	import com.pblabs.engine.debug.LogEntry;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getNamedLogger;
 	
 	/**
 	 * <code>PushButtonIntegration</code> can be used as <code>ILogAppender</code>

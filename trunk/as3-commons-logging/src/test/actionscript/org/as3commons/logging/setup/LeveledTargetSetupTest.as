@@ -1,7 +1,7 @@
 package org.as3commons.logging.setup {
 	
-	import org.as3commons.logging.Logger;
-	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.api.Logger;
+	import org.as3commons.logging.api.LoggerFactory;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.MockitoTestCase;
 	

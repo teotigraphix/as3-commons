@@ -1,5 +1,5 @@
 package org.as3commons.logging.integration {
-	import org.as3commons.logging.LOGGER_FACTORY;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;

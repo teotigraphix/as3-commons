@@ -25,13 +25,13 @@ package org.as3commons.logging.integration {
 	import mx.logging.LogEventLevel;
 	/*FDT_IGNORE*/
 	
-	import org.as3commons.logging.getNamedLogger;
+	import flash.utils.Dictionary;
 	import mx.logging.AbstractTarget;
-	import mx.logging.LogEvent;
 	import mx.logging.ILogger;
 	import mx.logging.ILoggingTarget;
+	import mx.logging.LogEvent;
+	import org.as3commons.logging.api.getNamedLogger;
 	
-	import flash.utils.Dictionary;
 	
 	/**
 	 * The <code>FlexLogger</code> implements Flex's <code>ILoggingTarget</code>
@@ -89,7 +89,7 @@ package org.as3commons.logging.integration {
 		override public function logEvent(event:LogEvent):void {
 			/*FDT_IGNORE*/
 			// Retrieves the logger from as3commons from the cache. 
-			var logger: org.as3commons.logging.ILogger = _loggerMap[ event.target ];
+			var logger: org.as3commons.logging.api.ILogger = _loggerMap[ event.target ];
 			if( event.level < LogEventLevel.FATAL ) {
 				if( event.level < LogEventLevel.WARN ) {
 					if( event.level < LogEventLevel.INFO ) {

@@ -21,9 +21,9 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import org.as3commons.logging.util.passToFactory;
-	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.api.LoggerFactory;
 	import org.as3commons.logging.setup.ILogTarget;
+	import org.as3commons.logging.util.passToFactory;
 	import org.as3commons.logging.util.passToTarget;
 	
 	/**

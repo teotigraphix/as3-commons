@@ -8,10 +8,16 @@
 			<code>org.as3commons.logging</code> contains all that is necessary 
 			for a enduser: Just log and done!
 			</p>
+			<h4>API Changes</h4>
+			<p>
+				For version <strong>2.5</strong> we changed the API for performance
+				reasons. it is now in the <code>.api</code> package which allows
+				us to deploy a compatibility package.
+			</p>
 		]]></description>
 	</all-packages>
 	<packages>
-		<package name="org.as3commons.logging" >
+		<package name="org.as3commons.logging.api" >
 			<shortDescription><![CDATA[Main access points to the logging framework.]]></shortDescription>
 			<description><![CDATA[]]></description>
 		</package>

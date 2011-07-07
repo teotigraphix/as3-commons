@@ -1,9 +1,9 @@
 package org.as3commons.logging.setup {
 	import flexunit.framework.Assert;
-
-	import org.as3commons.logging.Logger;
+	import org.as3commons.logging.api.Logger;
 	import org.as3commons.logging.setup.target.TextFieldTarget;
 	import org.as3commons.logging.setup.target.TraceTarget;
+
 
 	/**
 	 * @author mh

@@ -1,7 +1,7 @@
 package org.as3commons.logging.setup {
+	import org.as3commons.logging.api.ILogSetup;
+	import org.as3commons.logging.api.Logger;
 	import org.as3commons.logging.setup.target.TextFieldTarget;
-	import org.as3commons.logging.Logger;
-	import org.as3commons.logging.ILogSetup;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.integrations.flexunit3.MockitoTestCase;
 	import org.mockito.integrations.inOrder;

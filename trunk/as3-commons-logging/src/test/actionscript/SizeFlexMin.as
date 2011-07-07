@@ -12,9 +12,7 @@ package {
 		public static const logger : ILogger = Log.getLogger(getQualifiedClassName(SizeFlexMin));
 		
 		public function SizeFlexMin() {
-			if( Log.isDebug() ) {
-				logger.debug( "Hello World" );
-			}
+			logger.debug( "Hello World" );
 		}
 	}
 }

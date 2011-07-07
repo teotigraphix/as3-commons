@@ -1,21 +1,21 @@
 package org.as3commons.logging.setup {
-	import org.as3commons.logging.getClassLogger;
-	import org.as3commons.logging.getNamedLogger;
-	import org.as3commons.logging.getLogger;
-	import org.as3commons.logging.LOGGER_FACTORY;
-	import org.as3commons.logging.ILogSetup;
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.setup.LogSetupLevel;
-	import org.as3commons.logging.setup.LevelTargetSetup;
-	import org.as3commons.logging.setup.SimpleTargetSetup;
-	import org.as3commons.logging.level.*;
-	import org.as3commons.logging.setup.ILogTarget;
+	import flash.utils.getQualifiedClassName;
+	import org.as3commons.logging.api.ILogSetup;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
+	import org.as3commons.logging.api.getClassLogger;
+	import org.as3commons.logging.api.getLogger;
+	import org.as3commons.logging.api.getNamedLogger;
+	import org.as3commons.logging.level.DEBUG;
+	import org.as3commons.logging.level.ERROR;
+	import org.as3commons.logging.level.FATAL;
+	import org.as3commons.logging.level.INFO;
+	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.util.AClass;
 	import org.as3commons.logging.util.alike;
 	import org.as3commons.logging.util.verifyNothingCalled;
 	import org.mockito.MockitoTestCase;
 
-	import flash.utils.getQualifiedClassName;
 
 	/**
 	 * @author Martin Heidegger mh@leichtgewicht.at

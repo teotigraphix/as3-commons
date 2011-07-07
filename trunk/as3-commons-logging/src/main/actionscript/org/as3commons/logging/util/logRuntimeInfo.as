@@ -7,7 +7,10 @@ package org.as3commons.logging.util {
 	import flash.display.Stage;
 	
 	/**
+	 * Logs as much informations about the current runtime as it can get.
+	 * 
 	 * @author Martin Heidegger
+	 * @since 2.5
 	 */
 	public function logRuntimeInfo(stage:Stage): void {
 		if( logger.infoEnabled ) {
@@ -35,8 +38,8 @@ package org.as3commons.logging.util {
 		}
 	}
 }
-import org.as3commons.logging.ILogger;
-import org.as3commons.logging.getLogger;
+import org.as3commons.logging.api.ILogger;
+import org.as3commons.logging.api.getLogger;
 
 const logger: ILogger = getLogger("org.as3commons.logging.util/logRuntimeInfo");
 

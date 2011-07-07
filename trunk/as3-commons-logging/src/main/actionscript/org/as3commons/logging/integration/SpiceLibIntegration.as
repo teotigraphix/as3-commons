@@ -21,7 +21,7 @@
  */
 package org.as3commons.logging.integration {
 	
-	import org.as3commons.logging.getNamedLogger;
+	import org.as3commons.logging.api.getNamedLogger;
 	import org.spicefactory.lib.logging.LogFactory;
 	import org.spicefactory.lib.logging.Logger;
 	
@@ -65,7 +65,7 @@ package org.as3commons.logging.integration {
 	}
 }
 
-import org.as3commons.logging.ILogger;
+import org.as3commons.logging.api.ILogger;
 import org.spicefactory.lib.logging.Logger;
 
 class LoggerWrapper implements Logger {

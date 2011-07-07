@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging {
+package org.as3commons.logging.api {
 	
 	/**
 	 * A <code>ILogger</code> defines the public access for any kind of logging
@@ -47,9 +47,10 @@ package org.as3commons.logging {
 	 * 
 	 * @author Christophe Herreman
 	 * @author Martin Heidegger
+	 * @version 2
 	 * @see LoggerFactory
-	 * @see #getLogger()
-	 * @see #getNamedLogger()
+	 * @see org.as3commons.logging.api#getLogger()
+	 * @see org.as3commons.logging.api#getNamedLogger()
 	 */
 	public interface ILogger {
 		

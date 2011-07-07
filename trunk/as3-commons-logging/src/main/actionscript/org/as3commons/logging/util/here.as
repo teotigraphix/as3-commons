@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.util {
+	import flash.system.Capabilities;
 	
 	/**
 	 * Extracts the current method name/linenumber from the calling position if
@@ -33,25 +34,27 @@ package org.as3commons.logging.util {
 	 * @since 2.5
 	 */
 	public function here(): String {
-		var error: Error = new Error();
-		var stackTrace: String = error.getStackTrace();
-		if( stackTrace ) {
-			// just in debug player
-			var nextLine: int = stackTrace.indexOf("\n");
-			// chop first two lines
-			stackTrace = stackTrace.substr(nextLine+1);
-			nextLine = stackTrace.indexOf("\n");
-			stackTrace = stackTrace.substr(nextLine+1);
-			nextLine = stackTrace.indexOf("\n");
-			if( nextLine != -1 ) {
-				stackTrace = stackTrace.substring(0, nextLine);
-			} 
-			var braces: int = stackTrace.indexOf("(");
-			var name: String = stackTrace.substring(4,braces);
-			if( braces != stackTrace.length-2 ) {
-				 name += stackTrace.substring( stackTrace.lastIndexOf(":"), stackTrace.length-1 );
+		if( Capabilities.isDebugger ) {
+			var error: Error = new Error();
+			var stackTrace: String = error.getStackTrace();
+			if( stackTrace ) {
+				// just in debug player
+				var nextLine: int = stackTrace.indexOf("\n");
+				// chop first two lines
+				stackTrace = stackTrace.substr(nextLine+1);
+				nextLine = stackTrace.indexOf("\n");
+				stackTrace = stackTrace.substr(nextLine+1);
+				nextLine = stackTrace.indexOf("\n");
+				if( nextLine != -1 ) {
+					stackTrace = stackTrace.substring(0, nextLine);
+				} 
+				var braces: int = stackTrace.indexOf("(");
+				var name: String = stackTrace.substring(4,braces);
+				if( braces != stackTrace.length-2 ) {
+					 name += stackTrace.substring( stackTrace.lastIndexOf(":"), stackTrace.length-1 );
+				}
+				return name;
 			}
-			return name;
 		}
 		return "";
 	}
