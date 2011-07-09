@@ -26,7 +26,7 @@ package org.as3commons.logging.level {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
-	 * @see org.as3commons.logging.ILogger#info()
+	 * @see org.as3commons.logging.api.ILogger#info()
 	 */
 	public const INFO:int = 0x0010;
 }

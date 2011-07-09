@@ -63,10 +63,15 @@ package org.as3commons.logging.setup.target {
 		 * Creates a new <code>BufferTarget</code> instance.
 		 * 
 		 * @param maxStatements Amount of statements stored in this buffer
-		 * @param introspectDepth Depth to be used to cache statements
+		 * @param introspectDepth Depth to be used to cache statements, needs to
+		 *        be bigger than 0.
+		 * @throws Error if introspectDepth is 0;
 		 */
 		public function BufferTarget(maxStatements:uint=uint.MAX_VALUE,
 									 introspectDepth:uint=5) {
+			if(maxStatements == 0 ){
+				throw new Error("Buffer must have a size bigger than 0!");
+			}
 			_maxStatements=maxStatements;
 			_introspectDepth=introspectDepth;
 		}
@@ -108,7 +113,7 @@ package org.as3commons.logging.setup.target {
 				statement.message = message;
 				statement.parameters = params;
 				statement.person = person;
-				_logStatements[_length] = statement;
+				_logStatements[_length-1] = statement;
 			} else {
 				_logStatements[_length++] =
 					new LogStatement(name, shortName, level, timeStamp,

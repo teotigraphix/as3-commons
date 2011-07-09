@@ -13,10 +13,10 @@
                      we now use the a lot faster syntax (performance-wise) 
                      <pre class="source">logger.info("{0}*{0}={1}", [3, 9]);</pre>
                      to make sure that you have the fastest logging at your finger
-                     tips. We will publish within the next days a <code>.swc</code> which allows
-                     you to use the api as you are used to for backwards compatibility.
-                     To be offer this new backwards compatibility all the <code>.api</code> package
-                     was introduced.
+                     tips.
+                     <br/>
+                     If you dont want to change all your code: We offer
+                     a backwards compatible adapter .swc: <a href="downloads/as3commons-logging-2.legacy.swc">as3commons-logging-2.legacy.swc</a>
                      <br/>
                      For details: <a href="https://bugs.adobe.com/jira/browse/ASL-224" target="_blank">Adobe Bug #224</a>
                  </li>

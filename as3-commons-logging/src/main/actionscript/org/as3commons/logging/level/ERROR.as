@@ -26,7 +26,7 @@ package org.as3commons.logging.level {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
-	 * @see org.as3commons.logging.ILogger#error()
+	 * @see org.as3commons.logging.api.ILogger#error()
 	 */
 	public const ERROR:int = 0x0004;
 

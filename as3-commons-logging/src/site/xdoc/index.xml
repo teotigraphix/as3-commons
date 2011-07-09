@@ -13,9 +13,9 @@
         </section>
         
         <section name="Download">
-             <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-logging/2.5/as3commons-logging-2.5.swc">
+             <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-logging/2.5.1/as3commons-logging-2.5.1.swc">
                      <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
-                 Download latest stable (2.5)
+                 Download latest stable (2.5.1)
              </a> (please visit the <a href="changes.html">Important Changes</a> page if you used logging before)
              <br/>
              <a href="downloads/as3commons-logging-latest-snapshot-bin.zip">
@@ -41,13 +41,14 @@
         </section>
         
         <section name="Support">
-                By default AS3commons-logging offers a range of frameworks and
-                logging UI's that are immediately integratable. This should
-                eases the transition from a former framework to as3commons.
+                By default AS3commons-logging offers a large range of frameworks and
+                logging UI's that can be immediately integrated. This should
+                ease the transition from a former framework to as3commons.
                 
                 <img src="images/integration-support.png" usemap="#m_loggingfuturesupport"/>
                 <map name="m_loggingfuturesupport" id="m_loggingfuturesupport">
-	                <area shape="rect" coords="353,57,408,110" href="asdoc/index.html?org/as3commons/logging/integration/FlexLogger.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
+                    <area shape="rect" coords="365,35,524,58" href="asdoc/index.html?org/as3commons/logging/integration/YUILoggerFactory.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
+                    <area shape="rect" coords="353,57,408,110" href="asdoc/index.html?org/as3commons/logging/integration/FlexLogger.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
 					<area shape="rect" coords="226,36,344,64" href="asdoc/index.html?org/as3commons/logging/setup/target/FirebugTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
 					<area shape="rect" coords="226,74,344,94" href="asdoc/index.html?org/as3commons/logging/setup/target/Progression4Target.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
 					<area shape="rect" coords="174,101,344,118" href="asdoc/index.html?org/as3commons/logging/integration/SwizIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />

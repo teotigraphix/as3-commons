@@ -110,7 +110,7 @@ package org.as3commons.logging.setup.target {
 							timeStamp: Number, message: *, parameters: Array,
 							person: String): void {
 			var color: uint = _colors[ level ];
-			if( parameters.length == 0 ){
+			if( parameters && parameters.length == 0 ){
 				if( message is String ) {
 					message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
 					if( (_warnLevels.valueOf() & level) == level ) {

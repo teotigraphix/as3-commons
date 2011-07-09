@@ -1,4 +1,5 @@
 package {
+	import org.as3commons.logging.integration.YUIIntegrationTest;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.sampler.getSize;
@@ -138,6 +139,7 @@ package {
 				new JsonXifyTest(),
 				new HereTest(),
 				new ByteArrayCopyTest(),
+				new YUIIntegrationTest(),
 				new MateIntegrationTest(),
 				new SwizIntegrationTest(),
 				new PushButtonIntegrationTest(),

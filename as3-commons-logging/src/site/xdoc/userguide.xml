@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
 	<properties>
-		<title>Introduction to as3commons-logging 2.5</title>
+		<title>Introduction to as3commons-logging 2.5.1</title>
 		<author email="mh@leichtgewicht.at">Martin Heidegger</author>
 	</properties>
 	<body>
@@ -222,7 +222,8 @@ logger.<a href="asdoc/org/as3commons/logging/api/ILogger.html#fatal()">fatal</a>
     
     public final class VerySimpleTraceTarget implements <a href="asdoc/org/as3commons/logging/setup/ILogTarget.html">ILogTarget</a> {
         
-        private const _formatter: <a href="asdoc/org/as3commons/logging/util/LogMessageFormatter.html">LogMessageFormatter</a> = new <a href="asdoc/org/as3commons/logging/util/LogMessageFormatter.html">LogMessageFormatter</a>("{logTime} {logLevel} {name} {message}");
+        private const _formatter: <a href="asdoc/org/as3commons/logging/util/LogMessageFormatter.html">LogMessageFormatter</a>
+            = new <a href="asdoc/org/as3commons/logging/util/LogMessageFormatter.html">LogMessageFormatter</a>("{logTime} {logLevel} {name} {message}");
         
         public function log(name:String, shortName:String, level:int, timeStamp:Number,
                             message:*, parameters:Array, person:String):void {
