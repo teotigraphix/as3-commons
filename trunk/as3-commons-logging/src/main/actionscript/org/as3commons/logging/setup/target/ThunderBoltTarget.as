@@ -73,7 +73,7 @@ package org.as3commons.logging.setup.target {
 		public function log( name:String, shortName:String, level:int,
 							 timeStamp:Number, message:*, parameters:Array,
 							 person:String): void {
-			if( message is String || parameters.length != 0 ) {
+			if( message is String || (parameters && parameters.length != 0) ) {
 				message = _formatter.format(name, shortName, level, timeStamp,
 					message, parameters, person);
 			}

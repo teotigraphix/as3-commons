@@ -27,7 +27,7 @@ package org.as3commons.logging.level {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
-	 * @see org.as3commons.logging.ILogger#fatal()
+	 * @see org.as3commons.logging.api.ILogger#fatal()
 	 */
 	public const FATAL:int = 0x0002;
 }

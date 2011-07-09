@@ -26,7 +26,7 @@ package org.as3commons.logging.level {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
-	 * @see org.as3commons.logging.ILogger#debug()
+	 * @see org.as3commons.logging.api.ILogger#debug()
 	 */
 	public const DEBUG:int = 0x0020;
 }

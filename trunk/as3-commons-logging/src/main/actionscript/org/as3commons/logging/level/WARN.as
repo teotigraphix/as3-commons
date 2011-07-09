@@ -26,7 +26,7 @@ package org.as3commons.logging.level {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
-	 * @see org.as3commons.logging.ILogger#warn()
+	 * @see org.as3commons.logging.api.ILogger#warn()
 	 */
 	public const WARN:int = 0x0008;
 }

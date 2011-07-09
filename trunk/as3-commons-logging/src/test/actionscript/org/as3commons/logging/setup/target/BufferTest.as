@@ -1,4 +1,5 @@
 package org.as3commons.logging.setup.target {
+	import org.as3commons.logging.util.AlikeMatcher;
 	import org.as3commons.logging.api.ILogSetup;
 	import org.as3commons.logging.api.LoggerFactory;
 	import org.as3commons.logging.level.DEBUG;
@@ -48,6 +49,30 @@ package org.as3commons.logging.setup.target {
 			inOrder().verify().that( target.log( eq("fatal"), eq("test"), eq(FATAL), eq(1), eq("fatal"), alike([]), eq(null)));
 			
 			verifyNothingCalled( target );
+		}
+		
+		public function testLimitedBuffer():void {
+			var buffer: BufferTarget;
+			var error: Boolean = false;;
+			try {
+				buffer = new BufferTarget( 0 );
+			} catch(e:Error) {
+				error = true;
+			}
+			assertTrue( "Buffer 0 should throw an error", error );
+			
+			buffer = new BufferTarget( 2 );
+			buffer.log("a.a","a",DEBUG,123,"HelloA",null, null);
+			buffer.log("b.b","b",INFO, 124,"HelloB", null, null);
+			buffer.log("c.c","c",DEBUG,125,"HelloC", null, null);
+			
+			assertObjectEquals(
+				buffer.statements,
+				[
+					new LogStatement( "b.b", "b", INFO, 124, "HelloB", null, null, 1),
+					new LogStatement( "c.c", "c", DEBUG, 125, "HelloC", null, null, 1)
+				]
+			);
 		}
 	}
 }
