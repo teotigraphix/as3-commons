@@ -47,7 +47,7 @@
                 
                 <img src="images/integration-support.png" usemap="#m_loggingfuturesupport"/>
                 <map name="m_loggingfuturesupport" id="m_loggingfuturesupport">
-                    <area shape="rect" coords="365,35,524,58" href="asdoc/index.html?org/as3commons/logging/integration/YUILoggerFactory.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
+                    <area shape="rect" coords="363,3,466,65" href="asdoc/index.html?org/as3commons/logging/integration/YUILoggerFactory.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
                     <area shape="rect" coords="353,57,408,110" href="asdoc/index.html?org/as3commons/logging/integration/FlexLogger.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
 					<area shape="rect" coords="226,36,344,64" href="asdoc/index.html?org/as3commons/logging/setup/target/FirebugTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
 					<area shape="rect" coords="226,74,344,94" href="asdoc/index.html?org/as3commons/logging/setup/target/Progression4Target.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />

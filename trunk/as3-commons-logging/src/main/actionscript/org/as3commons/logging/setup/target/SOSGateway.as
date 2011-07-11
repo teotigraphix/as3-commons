@@ -54,7 +54,7 @@ package org.as3commons.logging.setup.target {
 		private var _ready: Boolean;
 		private var _broken: Boolean;
 		
-		private var _cache: Array;
+		private var _cache : Array;
 		
 		/**
 		 * Constructs a new <code>SOSGateway</code>
@@ -92,8 +92,26 @@ package org.as3commons.logging.setup.target {
 					}
 					_cache.push( new SOSCacheStatement(key,message) );
 				}
-			} else {
-				_socket.send("!SOS<showMessage key=\"" + key + "\"><![CDATA[" + message.replace(/\<\!\[CDATA\[/gi, "").replace(/]]\>/gi,"") + "]]></showMessage>\n");
+			} else if( message ) {
+				message = message.replace(/\<\!\[CDATA\[/gi, "").replace(/]]\>/gi,"");
+				var linebreak: int = message.indexOf("\n");
+				var title: String = null;
+				var name: String = "showMessage";
+				if( linebreak != -1 ) {
+					title = message.substr(0, linebreak) + " ...";
+					message = message.substr(linebreak+1);
+					name = "showFoldMessage";
+				} else if( message.length > 100 ) {
+					title = message.substr(0,100) + " ...";
+					message = message.substr(100);
+					name = "showFoldMessage";
+				}
+				message = 
+					"!SOS<" + name+ " key=\"" + key + "\">"
+					+ ( title ? "<title><![CDATA[" + title + "]]></title><message>": "")
+					+ "<![CDATA[" + message + "]]>" + ( title ? "</message>" : "")
+					+ "</"+ name+ ">\n";
+				_socket.send( message );
 			}
 		}
 		
