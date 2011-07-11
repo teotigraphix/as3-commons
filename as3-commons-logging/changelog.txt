@@ -3,8 +3,9 @@ AS3COMMONS LOGGING CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 2.4.1 (10.07.2011)
+Changes in version 2.5.1 (10.07.2011)
 -----------------------------------
+* Improved: SOSTarget now uses folding if there is a linebreak or the length exceeds 100 chars.
 * Added: YUIFrameworks support.
 * Fixed: Buffer didnt work properly for a limited amount
 * Fixed: Arthropod and Thunderbolt targets both required arrays to work properly, now optional.
