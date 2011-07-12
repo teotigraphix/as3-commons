@@ -1,4 +1,7 @@
 package {
+	import org.as3commons.logging.setup.target.AlconTarget;
+	import org.as3commons.logging.setup.target.DConsoleTarget;
+	import com.furusystems.dconsole2.DConsole;
 	import com.demonsters.debugger.MonsterDebugger;
 	import com.junkbyte.console.Cc;
 	import flash.display.Sprite;
@@ -36,10 +39,14 @@ package {
 				trace("hi");
 			};
 			
+			addChild( DConsole.view );
+			DConsole.show();
+			
 			LOGGER_FACTORY.setup = new SimpleTargetSetup( mergeTargets(
-				new FirebugTarget(), new MonsterDebugger3TraceTarget(), new MonsterDebugger3LogTarget(),
+				new FirebugTarget(), new MonsterDebugger3TraceTarget(),
+				new MonsterDebugger3LogTarget(),
 				new ArthropodTarget(), new FlashConsoleTarget(),
-				new ThunderBoltTarget())
+				new ThunderBoltTarget(), new DConsoleTarget(), new AlconTarget() )
 			);
 			
 			captureUncaughtErrors( loaderInfo );
@@ -52,6 +59,7 @@ package {
 					where: { isyour: "house?" }
 				}
 			});
+			logger.info( {Hello: "World"} );
 			logger.debug("My Text {0}ly is a {1}{2} and {1}{3}", [true, {nice:"andwarm"}, "house", 1.0] );
 			
 			//throw new Error("And here some uncaught exception\n");

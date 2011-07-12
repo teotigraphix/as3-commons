@@ -1,4 +1,6 @@
 package {
+	import org.as3commons.logging.integration.SLF4ASIntegrationTest;
+	import jp.progression.scenes.SceneLoader;
 	import org.as3commons.logging.integration.YUIIntegrationTest;
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -142,6 +144,7 @@ package {
 				new YUIIntegrationTest(),
 				new MateIntegrationTest(),
 				new SwizIntegrationTest(),
+				new SLF4ASIntegrationTest(),
 				new PushButtonIntegrationTest(),
 				new ASAPIntegrationTest(),
 				new SpiceLibIntegrationTest(),

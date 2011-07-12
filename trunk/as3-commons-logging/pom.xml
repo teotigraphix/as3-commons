@@ -372,6 +372,22 @@
         </dependency>
 
         <dependency>
+            <groupId>com.hexagonstar</groupId>
+            <artifactId>alcon</artifactId>
+            <version>3.1.4</version>
+            <type>swc</type>
+            <scope>external</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.furusystems</groupId>
+            <artifactId>dconsole</artifactId>
+            <version>v2r203</version>
+            <type>swc</type>
+            <scope>external</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.seasar</groupId>
             <artifactId>yui</artifactId>
             <version>fx3-fp9-1.1.0</version>
