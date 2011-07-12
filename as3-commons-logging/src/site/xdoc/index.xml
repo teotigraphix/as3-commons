@@ -47,20 +47,22 @@
                 
                 <img src="images/integration-support.png" usemap="#m_loggingfuturesupport"/>
                 <map name="m_loggingfuturesupport" id="m_loggingfuturesupport">
-                    <area shape="rect" coords="363,3,466,65" href="asdoc/index.html?org/as3commons/logging/integration/YUILoggerFactory.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
-                    <area shape="rect" coords="353,57,408,110" href="asdoc/index.html?org/as3commons/logging/integration/FlexLogger.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="226,36,344,64" href="asdoc/index.html?org/as3commons/logging/setup/target/FirebugTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="226,74,344,94" href="asdoc/index.html?org/as3commons/logging/setup/target/Progression4Target.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="174,101,344,118" href="asdoc/index.html?org/as3commons/logging/integration/SwizIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="263,120,307,180" href="asdoc/index.html?org/as3commons/logging/setup/target/SOSTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="307,120,494,156" href="asdoc/index.html?org/as3commons/logging/setup/target/ThunderBoltTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="326,156,452,203" href="asdoc/index.html?org/as3commons/logging/integration/MateIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="181,188,326,228" href="asdoc/index.html?org/as3commons/logging/setup/target/ASAPTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="4,101,159,135" href="asdoc/index.html?org/as3commons/logging/setup/target/ArthropodTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="34,177,181,228" href="asdoc/index.html?org/as3commons/logging/integration/PushButtonIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="111,135,250,177" href="asdoc/index.html?org/as3commons/logging/integration/SpiceLibIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="34,64,201,101" href="asdoc/index.html?org/as3commons/logging/setup/target/MonsterDebugger3TraceTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
-					<area shape="rect" coords="96,9,226,64" href="asdoc/index.html?org/as3commons/logging/setup/target/FlashConsoleTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="" />
+                    <area shape="rect" coords="14,13,96,64" href="asdoc/index.html?org/as3commons/logging/setup/target/DConsoleTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Doomsday Console integration" />
+                    <area shape="rect" coords="459,85,508,132" href="asdoc/index.html?org/as3commons/logging/setup/target/AlconTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Alcon Console integration" />
+                    <area shape="rect" coords="370,6,462,64" href="asdoc/index.html?org/as3commons/logging/integration/YUILoggerFactory.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="YUI Framework integration" />
+                    <area shape="rect" coords="386,67,440,119" href="asdoc/index.html?org/as3commons/logging/integration/FlexLogger.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Flex logging integration" />
+					<area shape="rect" coords="252,42,359,75" href="asdoc/index.html?org/as3commons/logging/setup/target/FirebugTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Firebug logging integration" />
+					<area shape="rect" coords="245,83,369,106" href="asdoc/index.html?org/as3commons/logging/setup/target/Progression4Target.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Progression framework integration" />
+					<area shape="rect" coords="191,109,366,133" href="asdoc/index.html?org/as3commons/logging/integration/SwizIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Swiz framework integration" />
+					<area shape="rect" coords="292,138,339,198" href="asdoc/index.html?org/as3commons/logging/setup/target/SOSTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="SOS Console integration" />
+					<area shape="rect" coords="340,136,527,166" href="asdoc/index.html?org/as3commons/logging/setup/target/ThunderBoltTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="ThunderBolt integration" />
+					<area shape="rect" coords="354,177,482,215" href="asdoc/index.html?org/as3commons/logging/integration/MateIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Mate integration" />
+					<area shape="rect" coords="211,201,357,244" href="asdoc/index.html?org/as3commons/logging/setup/target/ASAPTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="ASAP integration" />
+					<area shape="rect" coords="25,114,180,156" href="asdoc/index.html?org/as3commons/logging/setup/target/ArthropodTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Arthropod integration" />
+					<area shape="rect" coords="44,189,207,235" href="asdoc/index.html?org/as3commons/logging/integration/PushButtonIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Push Button Engine integration" />
+					<area shape="rect" coords="135,157,266,176" href="asdoc/index.html?org/as3commons/logging/integration/SpiceLibIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Spicelib integration" />
+					<area shape="rect" coords="47,77,223,104" href="asdoc/index.html?org/as3commons/logging/setup/target/MonsterDebugger3TraceTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="MonsterDebugger integration" />
+					<area shape="rect" coords="115,19,246,68" href="asdoc/index.html?org/as3commons/logging/setup/target/FlashConsoleTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Flash Console integration" />
 				</map>
         </section>
 
