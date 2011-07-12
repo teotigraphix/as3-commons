@@ -37,7 +37,7 @@ package org.as3commons.logging.setup.target {
 	 * <p>This will need the alcon.swc which you can aquire with the help in 
 	 * the alcon logger!</p>
 	 * 
-	 * <p>Note: This version is built for r25.</p>
+	 * <p>Note: This version is built for 3.1.4.</p>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.5.1
