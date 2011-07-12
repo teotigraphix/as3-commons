@@ -43,7 +43,7 @@ package org.as3commons.logging.setup.target {
 	 * @since 2.5.1
 	 * @see http://www.hexagonstar.com/project/alcon/#download
 	 */
-	public class AlconTarget implements ILogTarget {
+	public final class AlconTarget implements ILogTarget {
 		
 		/** Default format to be used for formatting statements. */
 		public static const DEFAULT_FORMAT: String = "{time} {logLevel} - {shortName}{atPerson} - {message}";

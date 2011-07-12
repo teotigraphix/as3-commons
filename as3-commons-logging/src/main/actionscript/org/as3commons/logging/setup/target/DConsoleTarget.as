@@ -50,7 +50,7 @@ package org.as3commons.logging.setup.target {
 	 * @see org.as3commons.logging.integration.SLF4ASIntegration
 	 * @since 2.5.1
 	 */
-	public class DConsoleTarget implements IFormattingLogTarget {
+	public final class DConsoleTarget implements IFormattingLogTarget {
 		
 		/** Default format used to stringify the log statements. */
 		public static const DEFAULT_FORMAT: String = "{atPerson} {message}\n";

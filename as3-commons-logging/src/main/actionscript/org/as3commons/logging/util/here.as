@@ -28,10 +28,14 @@ package org.as3commons.logging.util {
 	 * 
 	 * <p>In the release player it is not possible to retreive the current location.</p>
 	 * 
+	 * <p>Note: It is just with the debug player possible to get the current target,
+	 * see: Bug FP-644 in the adobe bug base.</p> 
+	 * 
 	 * <p>Warning: Performance intense task, use with care!</p> 
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.5
+	 * @see https://bugs.adobe.com/jira/browse/FP-644
 	 */
 	public function here(): String {
 		if( Capabilities.isDebugger ) {
