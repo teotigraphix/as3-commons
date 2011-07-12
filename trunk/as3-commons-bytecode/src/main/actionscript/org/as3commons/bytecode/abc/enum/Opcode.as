@@ -123,7 +123,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static const getlocal_1:Opcode = new Opcode(0xd1, "getlocal_1");
 		public static const getlocal_2:Opcode = new Opcode(0xd2, "getlocal_2");
 		public static const getlocal_3:Opcode = new Opcode(0xd3, "getlocal_3");
-		public static const getouterscope:Opcode = new Opcode(0x67, "getouterscope", [BaseMultiname, AbcSpec.U30]); //Added
+		public static const getouterscope:Opcode = new Opcode(0x67, "getouterscope", [int, AbcSpec.U30]); //Added
 		public static const getproperty:Opcode = new Opcode(0x66, "getproperty", [BaseMultiname, AbcSpec.U30]);
 		public static const getscopeobject:Opcode = new Opcode(0x65, "getscopeobject", [int, AbcSpec.U8]); // unsigned byte - using U8 for the same reasons as pushbyte
 		public static const getslot:Opcode = new Opcode(0x6c, "getslot", [int, AbcSpec.U30]);
