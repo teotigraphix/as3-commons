@@ -7,6 +7,12 @@
 		<version>1.2</version>
 	</skin>
 
+	  <bannerLeft>
+	    <name>AS3commons</name>
+	    <src>images/as3commons.png</src>
+	    <href>index.html</href>
+	  </bannerLeft>
+
 	<body>
 		<menu name="Project">
 			<item name="Home" href="index.html" />

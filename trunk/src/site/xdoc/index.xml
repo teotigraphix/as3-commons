@@ -72,8 +72,8 @@
 			<tr>
 				<td><strong>Logging</strong></td>
 				<td>An abstraction over logging framework implementations. Being a pure actionscript library it can be used for any Flash/Flex/AIR project. Its use is recommended for use with other libraries/framework trying to be logging framework agnostic.</td>
-				<td>2.0</td>
-				<td>05 Feb 2011</td>
+				<td>2.5.1</td>
+				<td>14 Jul 2011</td>
 			</tr>
 			<tr>
 				<td><strong>Reflect</strong></td>
