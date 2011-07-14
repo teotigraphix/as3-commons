@@ -8,6 +8,7 @@ Changes in version 1.0-RC4 (00.00.2011)
 
 * Fixed some issues concerning parsing of opcodes that involve lookupswitches
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=45
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=62
 * Added opcode properties to ExceptionInfo
 * Before serializing exceptioninfo locations are updated to correct opcode base location
 
