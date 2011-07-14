@@ -21,8 +21,8 @@ package org.as3commons.bytecode.reflect {
 
 	public class ByteCodeParameter extends Parameter {
 
-		public function ByteCodeParameter(index:int, type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false, defaultValue:* = null) {
-			super(index, type, applicationDomain, isOptional);
+		public function ByteCodeParameter(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false, defaultValue:* = null) {
+			super(type, applicationDomain, isOptional);
 			_defaultValue = defaultValue;
 		}
 

@@ -173,7 +173,7 @@ package org.as3commons.bytecode.reflect {
 				var params:Array = [];
 				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
 					var paramQName:QualifiedName = MultinameUtil.convertToQualifiedName(constantPool.multinamePool[readU30()]);
-					var newParam:ByteCodeParameter = new ByteCodeParameter(argumentIndex, paramQName.fullName, applicationDomain);
+					var newParam:ByteCodeParameter = new ByteCodeParameter(paramQName.fullName, applicationDomain);
 					newParam.as3commons_reflect::setName("argument " + argumentIndex.toString());
 					params[params.length] = newParam;
 				}
