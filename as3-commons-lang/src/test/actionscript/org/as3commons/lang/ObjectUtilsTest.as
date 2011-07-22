@@ -15,12 +15,15 @@
  */
 package org.as3commons.lang {
 	
+	import flash.utils.Dictionary;
+	
 	import flexunit.framework.TestCase;
 	
 	import org.as3commons.lang.testclasses.PublicClass;
 	
 	/**
 	 * @author Christophe Herreman
+	 * @author James Ghandour
 	 */
 	public class ObjectUtilsTest extends TestCase {
 		
@@ -41,6 +44,13 @@ package org.as3commons.lang {
 			var iterator:IIterator = ObjectUtils.getIterator(new PublicClass());
 			assertNotNull(iterator);
 			assertNotNull(iterator.next());
+		}
+		
+		public function testToDictionary():void {
+			var obj : Object = {a:"a1", b:"b2"};
+			var dict : Dictionary = ObjectUtils.toDictionary(obj);
+			assertEquals(dict["a"], "a1");
+			assertEquals(dict["b"], "b2");
 		}
 	}
 }

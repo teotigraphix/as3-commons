@@ -18,12 +18,14 @@ package org.as3commons.lang {
 	import flash.net.ObjectEncoding;
 	import flash.net.registerClassAlias;
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 	import flash.utils.describeType;
 	
 	/**
 	 * Provides utility methods for working with Object objects.
 	 *
 	 * @author Christophe Herreman
+	 * @author James Ghandour
 	 */
 	public final class ObjectUtils {
 		
@@ -51,6 +53,17 @@ package org.as3commons.lang {
 			
 			return false;
 		}
+		
+		/**
+		 * Returns a dictionary of key and values of this object.
+		 */
+		public static function toDictionary(instance:Object):Dictionary {
+			var result:Dictionary = new Dictionary();
+			for each (var key:* in getKeys(instance)) {
+				result[key] = instance[key];
+			}
+			return result;
+		}		
 		
 		/**
 		 * Returns an array with the keys of this object.
@@ -207,5 +220,6 @@ package org.as3commons.lang {
 			
 			return new ObjectIterator(instance, keys);;
 		}
+	
 	}
 }
