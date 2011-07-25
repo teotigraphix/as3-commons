@@ -27,8 +27,8 @@ package org.as3commons.reflect {
 	import org.as3commons.lang.ClassNotFoundError;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.HashArray;
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 
 	/**
 	 * Provides information about the characteristics of a class or an interface.
@@ -94,7 +94,7 @@ package org.as3commons.reflect {
 			typeProviderKind = TypeProviderKind.JSON;
 		}
 
-		private static var logger:ILogger = LoggerFactory.getClassLogger(Type);
+		private static var logger:ILogger = getLogger(Type);
 
 		private static var typeProvider:ITypeProvider;
 
@@ -149,7 +149,7 @@ package org.as3commons.reflect {
 					} catch (e:ReferenceError) {
 						logger.warn("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
 					} catch (e:ClassNotFoundError) {
-						logger.warn("The class with the name '{0}' could not be found in the application domain '{1}'", name, applicationDomain);
+						logger.warn("The class with the name '{0}' could not be found in the application domain '{1}'", [name, applicationDomain]);
 					}
 			}
 			return result;
@@ -749,7 +749,7 @@ package org.as3commons.reflect {
 				}
 			}
 		}
-		
+
 		as3commons_reflect function setParameters(value:Array):void {
 			_parameters = value;
 		}
