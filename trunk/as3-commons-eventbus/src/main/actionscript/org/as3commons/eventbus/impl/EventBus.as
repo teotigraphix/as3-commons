@@ -24,8 +24,8 @@ package org.as3commons.eventbus.impl {
 	import org.as3commons.eventbus.IEventListenerInterceptor;
 	import org.as3commons.eventbus.impl.collection.WeakLinkedList;
 	import org.as3commons.eventbus.impl.collection.WeakLinkedListIterator;
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.reflect.MethodInvoker;
 
 	/**
@@ -44,7 +44,7 @@ package org.as3commons.eventbus.impl {
 	 */
 	public class EventBus implements IEventBus, IEventBusListener {
 
-		private static var LOGGER:ILogger = LoggerFactory.getClassLogger(EventBus);
+		private static var LOGGER:ILogger = getLogger(EventBus);
 
 		// --------------------------------------------------------------------
 		//
