@@ -53,6 +53,17 @@
                 </tr>
                 <tr>
                     <td>
+                        <a href="https://github.com/martypitt/ParsleyServices">Parsely Services</a>
+                    </td>
+                    <td>
+                        Marty Pitt
+                    </td>
+                    <td>
+                        Parsley extension for dynamic services.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <a href="https://github.com/DavidArno/AS3Introspection">AS3Introspection</a>
                     </td>
                     <td>
