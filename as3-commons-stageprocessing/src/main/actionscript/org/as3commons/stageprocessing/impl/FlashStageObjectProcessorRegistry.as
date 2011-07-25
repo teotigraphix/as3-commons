@@ -20,8 +20,10 @@ package org.as3commons.stageprocessing.impl {
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
+
 	import org.as3commons.lang.IOrdered;
-	import org.as3commons.logging.ILogger;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.stageprocessing.IObjectSelector;
 	import org.as3commons.stageprocessing.IStageObjectDestroyer;
 	import org.as3commons.stageprocessing.IStageObjectProcessor;
@@ -39,7 +41,7 @@ package org.as3commons.stageprocessing.impl {
 
 		private static const CANNOT_INSTANTIATE_ERROR:String = "Cannot instantiate FlashStageProcessorRegistry directly, invoke getInstance() instead";
 		private static const FLASH_STAGE_PROCESSOR_REGISTRY_INITIALIZED:String = "FlashStageProcessorRegistry was initialized";
-		private static const LOGGER:ILogger = org.as3commons.logging.getClassLogger(FlashStageObjectProcessorRegistry);
+		private static const LOGGER:ILogger = getLogger(FlashStageObjectProcessorRegistry);
 		private static const NEW_STAGE_PROCESSOR_AND_SELECTOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and new {2}";
 		private static const NEW_STAGE_PROCESSOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and existing {2}";
 		private static const ORDERED_PROPERTYNAME:String = "order";
@@ -246,7 +248,7 @@ package org.as3commons.stageprocessing.impl {
 
 			startComponent ||= _stage.root;
 
-			LOGGER.debug(STAGE_PROCESSING_STARTED, startComponent);
+			LOGGER.debug(STAGE_PROCESSING_STARTED, [startComponent]);
 			processDisplayObjectRecursively(startComponent);
 			LOGGER.debug(STAGE_PROCESSING_COMPLETED);
 		}
