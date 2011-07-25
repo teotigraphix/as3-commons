@@ -15,8 +15,8 @@
  */
 package org.as3commons.stageprocessing.impl.selector {
 
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.stageprocessing.IObjectSelector;
 
 	/**
@@ -30,7 +30,7 @@ package org.as3commons.stageprocessing.impl.selector {
 	 */
 	public class NameBasedObjectSelector implements IObjectSelector {
 
-		private static const LOGGER:ILogger = org.as3commons.logging.getClassLogger(NameBasedObjectSelector);
+		private static const LOGGER:ILogger = getLogger(NameBasedObjectSelector);
 
 		private static const DEFAULT_NAME_PROPERTY:String = "name";
 
