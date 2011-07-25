@@ -20,11 +20,11 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect.errors {
-	
+
 	import org.as3commons.lang.ClassNotFoundError;
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LoggerFactory;
-	
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
+
 	/**
 	 * Thrown when an application tries to retrieve a class by its name and
 	 * the corresponding class could not be found.
@@ -32,9 +32,9 @@ package org.as3commons.reflect.errors {
 	 * @author Christophe Herreman
 	 */
 	public class ClassNotFoundError extends org.as3commons.lang.ClassNotFoundError {
-		
-		private static var logger:ILogger = LoggerFactory.getClassLogger(org.as3commons.reflect.errors.ClassNotFoundError);
-		
+
+		private static var logger:ILogger = getLogger(org.as3commons.lang.ClassNotFoundError);
+
 		/**
 		 * Creates a new <code>ClassNotFoundError</code> object.
 		 */
