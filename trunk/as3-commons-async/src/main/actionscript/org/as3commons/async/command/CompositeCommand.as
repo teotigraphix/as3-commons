@@ -21,7 +21,8 @@ package org.as3commons.async.command {
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.OperationEvent;
 	import org.as3commons.lang.Assert;
-	import org.as3commons.logging.ILogger;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 
 	/**
 	 * Dispatched when the <code>CompositeCommand</code> is finised executing its collection of <code>ICommands</code>
@@ -52,7 +53,7 @@ package org.as3commons.async.command {
 	 */
 	public class CompositeCommand extends AbstractProgressOperation implements ICompositeCommand {
 
-		private static const LOGGER:ILogger = org.as3commons.logging.getClassLogger(CompositeCommand);
+		private static const LOGGER:ILogger = getLogger(CompositeCommand);
 
 		/**
 		 * Determines if the execution of all the <code>ICommands</code> should be aborted if an
@@ -132,11 +133,11 @@ package org.as3commons.async.command {
 			if (_commands) {
 				switch (_kind) {
 					case CompositeCommandKind.SEQUENCE:
-						LOGGER.debug("Executing composite command '{0}' in sequence", this);
+						LOGGER.debug("Executing composite command '{0}' in sequence", [this]);
 						executeNextCommand();
 						break;
 					case CompositeCommandKind.PARALLEL:
-						LOGGER.debug("Executing composite command '{0}' in parallel", this);
+						LOGGER.debug("Executing composite command '{0}' in parallel", [this]);
 						executeCommandsInParallel();
 						break;
 					default:
@@ -202,11 +203,11 @@ package org.as3commons.async.command {
 
 			// execute the next command if the executed command was synchronous
 			if (command is IOperation) {
-				LOGGER.debug("Command '{0}' is asynchronous. Waiting for response.", command);
+				LOGGER.debug("Command '{0}' is asynchronous. Waiting for response.", [command]);
 			} else {
 				progress++;
 				dispatchProgressEvent();
-				LOGGER.debug("Command '{0}' is synchronous and is executed. Trying to execute next command.", command);
+				LOGGER.debug("Command '{0}' is synchronous and is executed. Trying to execute next command.", [command]);
 				executeNextCommand();
 			}
 		}
@@ -219,10 +220,10 @@ package org.as3commons.async.command {
 			var nextCommand:ICommand = _commands.shift() as ICommand;
 
 			if (nextCommand) {
-				LOGGER.debug("Executing next command '{0}'. Remaining number of commands: '{1}'", nextCommand, _commands.length);
+				LOGGER.debug("Executing next command '{0}'. Remaining number of commands: '{1}'", [nextCommand, _commands.length]);
 				executeCommand(nextCommand);
 			} else {
-				LOGGER.debug("All commands in '{0}' have been executed. Dispatching 'complete' event.", this);
+				LOGGER.debug("All commands in '{0}' have been executed. Dispatching 'complete' event.", [this]);
 				dispatchCompleteEvent();
 			}
 		}
@@ -281,7 +282,7 @@ package org.as3commons.async.command {
 		protected function onCommandResult(event:OperationEvent):void {
 			progress++;
 			dispatchProgressEvent();
-			LOGGER.debug("Asynchronous command '{0}' returned result. Executing next command.", event.target);
+			LOGGER.debug("Asynchronous command '{0}' returned result. Executing next command.", [event.target]);
 			removeCommandListeners(IOperation(event.target));
 			dispatchAfterCommandEvent(ICommand(event.target));
 			switch (_kind) {
@@ -297,7 +298,7 @@ package org.as3commons.async.command {
 		}
 
 		protected function onCommandFault(event:OperationEvent):void {
-			LOGGER.debug("Asynchronous command '{0}' returned error.", event.target);
+			LOGGER.debug("Asynchronous command '{0}' returned error.", [event.target]);
 			dispatchErrorEvent(event.error);
 			removeCommandListeners(event.target as IOperation);
 			switch (_kind) {

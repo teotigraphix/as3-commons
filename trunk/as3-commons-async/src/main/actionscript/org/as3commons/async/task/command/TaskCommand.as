@@ -23,14 +23,15 @@ package org.as3commons.async.task.command {
 	import org.as3commons.async.task.ITask;
 	import org.as3commons.async.task.ITaskFlowControl;
 	import org.as3commons.async.task.event.TaskFlowControlEvent;
-	import org.as3commons.logging.ILogger;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 
 	/**
 	 * @author Roland Zwaga
 	 */
 	public class TaskCommand extends CompositeCommand implements IResetable {
 
-		private static const LOGGER:ILogger = org.as3commons.logging.getClassLogger(TaskCommand);
+		private static const LOGGER:ILogger = getLogger(TaskCommand);
 
 		private var _stopped:Boolean = false;
 		private var _finishedCommands:Array;
@@ -68,12 +69,12 @@ package org.as3commons.async.task.command {
 				_finishedCommands[_finishedCommands.length] = nextCommand;
 			}
 
-			LOGGER.debug("Executing next command '{0}'. Remaining number of commands: '{1}'", nextCommand, commands.length);
+			LOGGER.debug("Executing next command '{0}'. Remaining number of commands: '{1}'", [nextCommand, commands.length]);
 
 			if (nextCommand) {
 				executeCommand(nextCommand);
 			} else {
-				LOGGER.debug("All commands in '{0}' have been executed. Dispatching 'complete' event.", this);
+				LOGGER.debug("All commands in '{0}' have been executed. Dispatching 'complete' event.", [this]);
 				dispatchCompleteEvent();
 			}
 
