@@ -30,8 +30,6 @@ package org.as3commons.lang {
 	 */
 	public final class ClassUtils {
 
-		private static const PACKAGE_CLASS_SEPARATOR:String = "::";
-
 		/**
 		 * Returns a <code>Class</code> object that corresponds with the given
 		 * instance. If no correspoding class was found, a
@@ -45,9 +43,13 @@ package org.as3commons.lang {
 		 * @see org.as3commons.lang.ClassNotFoundError
 		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):Class {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
-			var className:String = getQualifiedClassName(instance);
-			return forName(className, applicationDomain);
+			if (instance.hasOwnProperty(CONSTRUCTOR_FIELD_NAME)) {
+				return instance[CONSTRUCTOR_FIELD_NAME] as Class;
+			} else {
+				applicationDomain ||= ApplicationDomain.currentDomain;
+				var className:String = getQualifiedClassName(instance);
+				return forName(className, applicationDomain);
+			}
 		}
 
 		/**
@@ -63,7 +65,7 @@ package org.as3commons.lang {
 		 * @see org.as3commons.lang.ClassNotFoundError
 		 */
 		public static function forName(name:String, applicationDomain:ApplicationDomain = null):Class {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Class;
 
 			if (!applicationDomain) {
@@ -142,7 +144,7 @@ package org.as3commons.lang {
 		 * @return the boolean value indicating whether objects of the type clazz2 can be assigned to objects of clazz1
 		 */
 		public static function isAssignableFrom(clazz1:Class, clazz2:Class, applicationDomain:ApplicationDomain = null):Boolean {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			return (clazz1 === clazz2) || isSubclassOf(clazz2, clazz1, applicationDomain) || isImplementationOf(clazz2, clazz1, applicationDomain);
 		}
 
@@ -178,7 +180,7 @@ package org.as3commons.lang {
 		 * method instead.
 		 */
 		public static function isSubclassOf(clazz:Class, parentClass:Class, applicationDomain:ApplicationDomain = null):Boolean {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var parentName:String = getQualifiedClassName(parentClass);
 			return (classDescription.factory.extendsClass.(@type == parentName).length() != 0);
@@ -193,7 +195,7 @@ package org.as3commons.lang {
 		 * @returns the super class or null if no parent class was found
 		 */
 		public static function getSuperClass(clazz:Class, applicationDomain:ApplicationDomain = null):Class {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Class;
 			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var superClasses:XMLList = classDescription.factory.extendsClass;
@@ -245,7 +247,7 @@ package org.as3commons.lang {
 		 * @return true if the clazz object implements the given interface; false if not
 		 */
 		public static function isImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Boolean;
 
 			if (clazz == null) {
@@ -267,7 +269,7 @@ package org.as3commons.lang {
 		 * @return true if the clazz object implements the methods of the given interface; false if not
 		 */
 		public static function isInformalImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Boolean = true;
 
 			if (clazz == null) {
@@ -340,7 +342,7 @@ package org.as3commons.lang {
 		 * given class implements.
 		 */
 		public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean = false, applicationDomain:ApplicationDomain = null):Array {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Array = [];
 			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var interfacesDescription:XMLList = classDescription.factory.implementsInterface;
@@ -364,7 +366,7 @@ package org.as3commons.lang {
 		 * Returns an array of all interface names that the given class implements.
 		 */
 		public static function getImplementedInterfaces(clazz:Class, applicationDomain:ApplicationDomain = null):Array {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Array = getFullyQualifiedImplementedInterfaceNames(clazz);
 
 			for (var i:int = 0; i < result.length; i++) {
@@ -444,6 +446,8 @@ package org.as3commons.lang {
 		public static const CLEAR_CACHE_INTERVAL:uint = 60000;
 		private static const AS3VEC_SUFFIX:String = '__AS3__.vec';
 		private static const LESS_THAN:String = '<';
+		private static const CONSTRUCTOR_FIELD_NAME:String = "constructor";
+		private static const PACKAGE_CLASS_SEPARATOR:String = "::";
 
 		/**
 		 * The interval (in miliseconds) at which the cache will be cleared. Note that this value is only used
@@ -476,7 +480,7 @@ package org.as3commons.lang {
 		 * @return
 		 */
 		public static function getClassParameterFromFullyQualifiedName(fullName:String, applicationDomain:ApplicationDomain = null):Class {
-			applicationDomain = (applicationDomain != null) ? applicationDomain : ApplicationDomain.currentDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			if (StringUtils.startsWith(fullName, AS3VEC_SUFFIX)) {
 				var startIdx:int = fullName.indexOf(LESS_THAN) + 1;
 				var len:int = (fullName.length - startIdx) - 1;
@@ -525,7 +529,7 @@ package org.as3commons.lang {
 				}
 
 				if (!(object is Class)) {
-					if (object.hasOwnProperty("constructor")) {
+					if (object.hasOwnProperty(CONSTRUCTOR_FIELD_NAME)) {
 						object = object.constructor;
 					} else {
 						object = forName(className, applicationDomain);
@@ -553,7 +557,7 @@ package org.as3commons.lang {
 		 *             may be in the following forms: package.Class or package::Class
 		 */
 		private static function getFromString(className:String, applicationDomain:ApplicationDomain = null):XML {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			var classDefinition:Class = forName(className, applicationDomain);
 
 			// Calling getFromObject seems double, as it results in the getObjectMethod getting
