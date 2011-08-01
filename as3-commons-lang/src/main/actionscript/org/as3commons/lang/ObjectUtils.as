@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-	
+
 	import flash.net.ObjectEncoding;
 	import flash.net.registerClassAlias;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
-	
+
 	/**
 	 * Provides utility methods for working with Object objects.
 	 *
@@ -28,13 +28,14 @@ package org.as3commons.lang {
 	 * @author James Ghandour
 	 */
 	public final class ObjectUtils {
-		
-		/**
-		 * @private
-		 */
-		public function ObjectUtils() {
-		}
-		
+
+		private static const DOT:String = '.';
+		private static const NUMBER_CLASSNAME:String = "number";
+		private static const STRING_FIELD_NAME:String = "string";
+		private static const BOOLEAN_FIELD_NAME:String = "boolean";
+		private static const OBJECT_FIELD_NAME:String = "object";
+		private static const VARIABLE_ELEMENT_NAME:String = "variable";
+
 		/**
 		 * Returns whether or not the given object is simple data type.
 		 *
@@ -43,17 +44,17 @@ package org.as3commons.lang {
 		 */
 		public static function isSimple(object:Object):Boolean {
 			switch (typeof(object)) {
-				case "number":
-				case "string":
-				case "boolean":
+				case NUMBER_CLASSNAME:
+				case STRING_FIELD_NAME:
+				case BOOLEAN_FIELD_NAME:
 					return true;
-				case "object":
+				case OBJECT_FIELD_NAME:
 					return (object is Date) || (object is Array);
 			}
-			
+
 			return false;
 		}
-		
+
 		/**
 		 * Returns a dictionary of key and values of this object.
 		 */
@@ -63,20 +64,20 @@ package org.as3commons.lang {
 				result[key] = instance[key];
 			}
 			return result;
-		}		
-		
+		}
+
 		/**
 		 * Returns an array with the keys of this object.
 		 */
 		public static function getKeys(object:Object):Array {
 			var result:Array = [];
-			
-			for (var k:*in object) {
+
+			for (var k:* in object) {
 				result.push(k);
 			}
 			return result;
 		}
-		
+
 		/**
 		 * Returns the number of properties in the given object.
 		 *
@@ -85,25 +86,25 @@ package org.as3commons.lang {
 		 */
 		public static function getNumProperties(object:Object):int {
 			var result:int = 0;
-			
+
 			for (var p:String in object) {
 				result++;
 			}
 			return result;
 		}
-		
+
 		/**
 		 * Returns an array with the properties of the given object.
 		 */
 		public static function getProperties(object:Object):Array {
 			var result:Array = [];
-			
+
 			for each (var p:Object in object) {
 				result.push(p);
 			}
 			return result;
 		}
-		
+
 		/**
 		 *
 		 */
@@ -113,7 +114,7 @@ package org.as3commons.lang {
 			byteArray.position = 0;
 			return byteArray.readObject();
 		}
-		
+
 		/**
 		 * Converts a plain vanilla object to be an instance of the class
 		 * passed as the second variable.  This is not a recursive funtion
@@ -137,32 +138,32 @@ package org.as3commons.lang {
 		public static function toInstance(object:Object, clazz:Class):* {
 			var bytes:ByteArray = new ByteArray();
 			bytes.objectEncoding = ObjectEncoding.AMF0;
-			
+
 			// Find the objects and byetArray.writeObject them, adding in the
 			// class configuration variable name -- essentially, we're constructing
 			// and AMF packet here that contains the class information so that
 			// we can simplly byteArray.readObject the sucker for the translation
-			
+
 			// Write out the bytes of the original object
 			var objBytes:ByteArray = new ByteArray();
 			objBytes.objectEncoding = ObjectEncoding.AMF0;
 			objBytes.writeObject(object);
-			
+
 			// Register all of the classes so they can be decoded via AMF
 			var typeInfo:XML = describeType(clazz);
 			var fullyQualifiedName:String = typeInfo.@name.toString().replace(/::/, ".");
 			registerClassAlias(fullyQualifiedName, clazz);
-			
+
 			// Write the new object information starting with the class information
 			var len:int = fullyQualifiedName.length;
 			bytes.writeByte(0x10); // 0x10 is AMF0 for "typed object (class instance)"
 			bytes.writeUTF(fullyQualifiedName);
 			// After the class name is set up, write the rest of the object
 			bytes.writeBytes(objBytes, 1);
-			
+
 			// Read in the object with the class property added and return that
 			bytes.position = 0;
-			
+
 			// This generates some ReferenceErrors of the object being passed in
 			// has properties that aren't in the class instance, and generates TypeErrors
 			// when property values cannot be converted to correct values (such as false
@@ -174,7 +175,7 @@ package org.as3commons.lang {
 			var result:* = bytes.readObject();
 			return result;
 		}
-		
+
 		/**
 		 * Checks if the given object is an explicit instance of the given class.
 		 *
@@ -187,39 +188,56 @@ package org.as3commons.lang {
 		 */
 		public static function isExplicitInstanceOf(object:Object, clazz:Class):Boolean {
 			var c:Class = ClassUtils.forInstance(object);
-			return (c == clazz);
+			return (c === clazz);
 		}
-		
+
 		/**
 		 * Returns the class name of the given object.
 		 */
 		public static function getClassName(object:Object):String {
 			return ClassUtils.getName(ClassUtils.forInstance(object));
 		}
-		
+
 		/**
 		 * Returns the fully qualified class name of the given object.
 		 */
 		public static function getFullyQualifiedClassName(object:Object, replaceColons:Boolean = false):String {
 			return ClassUtils.getFullyQualifiedName(ClassUtils.forInstance(object), replaceColons);
 		}
-		
+
 		/**
 		 * Returns an object iterator
 		 */
 		public static function getIterator(instance:Object):IIterator {
 			var name:String = getFullyQualifiedClassName(instance);
-			var keys:XMLList; 
-			
-			if((keys = ObjectIterator.getDescription(name)) == null) {
+			var keys:XMLList;
+
+			if ((keys = ObjectIterator.getDescription(name)) == null) {
 				var description:XML = describeType(instance);
-				keys = description.descendants("variable").@name 
-					+ description.descendants("accessor").(@access == "readwrite").@name;
+				keys = description.descendants(VARIABLE_ELEMENT_NAME).@name + description.descendants("accessor").(@access == "readwrite").@name;
 				ObjectIterator.setDescription(name, keys);
 			}
-			
-			return new ObjectIterator(instance, keys);;
+
+			return new ObjectIterator(instance, keys);
 		}
-	
+
+		/**
+		 * Returns the value of a property that is specified by a property chain. I.e. <code>MyObject.myVariable.myField.myValue</code>.<br/>
+		 * This method will fail if one of the property values in the chain is null.
+		 * @param chain A string representing a property chain. I.e. <code>MyObject.myVariable.myField.myValue</code>.
+		 * @param targetObject The instance that represents the start of the chain. So in the case of <code>MyObject.myVariable.myField.myValue</code> the target instance would be MyObject.
+		 * @return The value of the last property in the specified property chain. So in the case of <code>MyObject.myVariable.myField.myValue</code> this would be the value of <code>myValue</code>.
+		 */
+		public static function resolvePropertyChain(chain:String, targetInstance:Object):* {
+			var propertyNames:Array = chain.split(DOT);
+			var field:String = String(propertyNames.pop());
+			var propName:String;
+			for each (propName in propertyNames) {
+				targetInstance = targetInstance[propName];
+			}
+			return targetInstance[field];
+		}
+
+
 	}
 }
