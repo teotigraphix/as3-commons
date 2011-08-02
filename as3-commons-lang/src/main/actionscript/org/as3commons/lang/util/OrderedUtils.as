@@ -51,5 +51,21 @@ package org.as3commons.lang.util {
 			ordered.sortOn(ORDERED_PROPERTYNAME, Array.NUMERIC);
 			return ordered.concat(unordered);
 		}
+
+		public static function orderedCompareFunction(itemA:*, itemB:*):int {
+			if ((itemA is IOrdered) && (itemB is IOrdered)) {
+				var vA:int = IOrdered(itemA).order;
+				var vB:int = IOrdered(itemB).order;
+				if (vA < vB) {
+					return -1;
+				} else if (vA == vB) {
+					return 0;
+				} else {
+					return 1;
+				}
+			} else {
+				return 0;
+			}
+		}
 	}
 }
