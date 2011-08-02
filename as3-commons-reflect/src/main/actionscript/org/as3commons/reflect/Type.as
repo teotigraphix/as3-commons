@@ -110,7 +110,7 @@ package org.as3commons.reflect {
 		 * @param instance the instance from which to get a type description
 		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):Type {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Type;
 			var clazz:Class = org.as3commons.lang.ClassUtils.forInstance(instance, applicationDomain);
 
