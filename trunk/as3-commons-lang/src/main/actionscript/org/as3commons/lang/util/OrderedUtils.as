@@ -52,6 +52,12 @@ package org.as3commons.lang.util {
 			return ordered.concat(unordered);
 		}
 
+		/**
+		 *
+		 * @param itemA
+		 * @param itemB
+		 * @return
+		 */
 		public static function orderedCompareFunction(itemA:*, itemB:*):int {
 			if ((itemA is IOrdered) && (itemB is IOrdered)) {
 				var vA:int = IOrdered(itemA).order;
@@ -63,6 +69,10 @@ package org.as3commons.lang.util {
 				} else {
 					return 1;
 				}
+			} else if (itemA is IOrdered) {
+				return -1;
+			} else if (itemB is IOrdered) {
+				return 1;
 			} else {
 				return 0;
 			}
