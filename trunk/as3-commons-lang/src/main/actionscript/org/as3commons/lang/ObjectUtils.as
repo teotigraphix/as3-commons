@@ -29,12 +29,12 @@ package org.as3commons.lang {
 	 */
 	public final class ObjectUtils {
 
-		private static const DOT:String = '.';
-		private static const NUMBER_CLASSNAME:String = "number";
-		private static const STRING_FIELD_NAME:String = "string";
-		private static const BOOLEAN_FIELD_NAME:String = "boolean";
-		private static const OBJECT_FIELD_NAME:String = "object";
-		private static const VARIABLE_ELEMENT_NAME:String = "variable";
+		public static const DOT:String = '.';
+		public static const NUMBER_CLASSNAME:String = "number";
+		public static const STRING_FIELD_NAME:String = "string";
+		public static const BOOLEAN_FIELD_NAME:String = "boolean";
+		public static const OBJECT_FIELD_NAME:String = "object";
+		public static const VARIABLE_ELEMENT_NAME:String = "variable";
 
 		/**
 		 * Returns whether or not the given object is simple data type.
@@ -222,11 +222,11 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * Returns the value of a property that is specified by a property chain. I.e. <code>MyObject.myVariable.myField.myValue</code>.<br/>
+		 * Returns the value of a property that is specified by a property chain. I.e. <code>myVariable.myField.myValue</code>.<br/>
 		 * This method will fail if one of the property values in the chain is null.
-		 * @param chain A string representing a property chain. I.e. <code>MyObject.myVariable.myField.myValue</code>.
-		 * @param targetObject The instance that represents the start of the chain. So in the case of <code>MyObject.myVariable.myField.myValue</code> the target instance would be MyObject.
-		 * @return The value of the last property in the specified property chain. So in the case of <code>MyObject.myVariable.myField.myValue</code> this would be the value of <code>myValue</code>.
+		 * @param chain A string representing a property chain. I.e. <code>myVariable.myField.myValue</code>.
+		 * @param targetObject The instance that represents the start of the chain. So in the case of <code>myVariable.myField.myValue</code> the target instance would be the object that has a property called <code>myVariable</code>.
+		 * @return The value of the last property in the specified property chain. So in the case of <code>myVariable.myField.myValue</code> this would be the value of <code>myValue</code>.
 		 */
 		public static function resolvePropertyChain(chain:String, targetInstance:Object):* {
 			var propertyNames:Array = chain.split(DOT);
