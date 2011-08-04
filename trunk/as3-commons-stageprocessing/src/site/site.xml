@@ -10,6 +10,12 @@
     <publishDate format="dd MMM yyyy"/>
     <version/>
     
+  <bannerLeft>
+    <name>AS3commons StageProcessing</name>
+    <src>images/as3commons-stageprocessing.png</src>
+    <href>index.html</href>
+  </bannerLeft>
+
   <body>
 
     <menu name="Project">

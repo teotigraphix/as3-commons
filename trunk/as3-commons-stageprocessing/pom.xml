@@ -4,7 +4,7 @@
     	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-stageprocessing</artifactId>
 	<packaging>swc</packaging>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>AS3Commons StageProcessing</name>
 	<url>http://www.as3commons.org/stageprocessing</url>
 	<description>
@@ -214,7 +214,7 @@
 					</dependency>
 				</dependencies>
 				<configuration>
-					<!--templateFile>../src/site/vm/as3commons.vm</templateFile-->
+					<templateFile>../src/site/vm/as3commons.vm</templateFile>
 					<reportPlugins>
 
 						<plugin>
