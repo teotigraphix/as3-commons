@@ -7,6 +7,12 @@
         <version>1.2</version>
     </skin>
 
+  <bannerLeft>
+    <name>AS3commons reflect</name>
+    <src>images/as3commons-reflect.png</src>
+    <href>index.html</href>
+  </bannerLeft>
+
     <publishDate format="dd MMM yyyy"/>
     <version/>
     
