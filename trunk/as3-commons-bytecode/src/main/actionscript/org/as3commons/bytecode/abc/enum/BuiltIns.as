@@ -52,7 +52,7 @@ package org.as3commons.bytecode.abc.enum {
 		public static const NUMBER:QualifiedName = new QualifiedName("Number", LNamespace.PUBLIC);
 
 		/**
-		 * <code>*:*</code>
+		 * <code>ANY</code>
 		 */
 		public static const ANY:QualifiedName = new QualifiedName("*", LNamespace.ASTERISK);
 

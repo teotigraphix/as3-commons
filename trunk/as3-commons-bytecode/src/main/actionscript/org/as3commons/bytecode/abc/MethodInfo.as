@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
-	import flash.utils.Dictionary;
 
+	import flash.utils.Dictionary;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.lang.ICloneable;
@@ -33,12 +33,13 @@ package org.as3commons.bytecode.abc {
 	public final class MethodInfo implements ICloneable {
 
 		private static const ILLEGAL_TRAITINFO_TYPE:String = "Argument must be of type FunctionTrait or MethodTrait";
-		private var _as3commonsByteCodeAssignedMethodTrait:TraitInfo;
+
+		public function MethodInfo() {
+			super();
+			initMethodInfo();
+		}
 
 		public var argumentCollection:Array;
-		public var returnType:BaseMultiname;
-		public var methodName:String;
-		public var scopeName:String;
 
 		/**
 		 * The <code>method_info</code> entries written by the compiler have never had a name when I have parsed them, so
@@ -46,13 +47,25 @@ package org.as3commons.bytecode.abc {
 		 * itself; it is inferred by the traits associated with the method during deserialization.
 		 *
 		 * <p>
-		 * This value is always assigned one of the following values: <code>null<code>, a <code>QualifiedName</code>, or
+		 * This value is always assigned one of the following values: <code>null</code>, a <code>QualifiedName</code>, or
 		 * a <code>String</code>
 		 * </p>
 		 *
 		 * @see QualifiedName
 		 */
 		public var as3commonsBytecodeName:*;
+		public var flags:uint;
+		public var methodBody:MethodBody;
+		public var methodName:String;
+		public var returnType:BaseMultiname;
+		public var scopeName:String;
+		private var _as3commonsByteCodeAssignedMethodTrait:TraitInfo;
+
+		public function addArgument(argument:Argument):void {
+			if (argumentCollection.indexOf(argument) < 0) {
+				argumentCollection[argumentCollection.length] = argument;
+			}
+		}
 
 		/**
 		 * Association of this instance with its <code>MethodTrait</code>. The ABC file format never directly links these elements,
@@ -69,23 +82,6 @@ package org.as3commons.bytecode.abc {
 				throw IllegalArgumentError(ILLEGAL_TRAITINFO_TYPE);
 			}
 		}
-		public var flags:uint;
-		public var methodBody:MethodBody;
-
-		public function MethodInfo() {
-			super();
-			initMethodInfo();
-		}
-
-		protected function initMethodInfo():void {
-			argumentCollection = [];
-		}
-
-		public function addArgument(argument:Argument):void {
-			if (argumentCollection.indexOf(argument) < 0) {
-				argumentCollection[argumentCollection.length] = argument;
-			}
-		}
 
 		public function clone():* {
 			var clone:MethodInfo = new MethodInfo();
@@ -93,13 +89,6 @@ package org.as3commons.bytecode.abc {
 			clone.returnType = returnType;
 			clone.methodName = methodName;
 			return clone;
-		}
-
-		/**
-		 * Returns the total number of parameters to this method, both formal and informal
-		 */
-		public function get paramCount():int {
-			return arguments.length;
 		}
 
 		/**
@@ -125,6 +114,13 @@ package org.as3commons.bytecode.abc {
 			return optionalParams;
 		}
 
+		/**
+		 * Returns the total number of parameters to this method, both formal and informal
+		 */
+		public function get paramCount():int {
+			return arguments.length;
+		}
+
 		public function toString():String {
 			var nameString:String;
 			var namespaceString:String;
@@ -143,6 +139,10 @@ package org.as3commons.bytecode.abc {
 			}
 
 			return StringUtils.substitute("{0} function {1}({2}) : {3}", (namespaceString) ? namespaceString : "(no namespace)", as3commonsBytecodeName, argumentCollection.join(", "), returnType);
+		}
+
+		protected function initMethodInfo():void {
+			argumentCollection = [];
 		}
 	}
 }

@@ -113,6 +113,13 @@ package org.as3commons.bytecode.proxy {
 		function proxyAccessor(accessorName:String, namespace:String = null):void;
 
 		/**
+		 * Adds the specified interface to the proxy, this automatically adds all the interface's members to
+		 * the proxy instance.
+		 * @param interfaze The specified interface.
+		 */
+		//function introduceInterface(interfaze:Class):void;
+
+		/**
 		 * The specified <code>Class</code> will be merged with the generated proxy.
 		 * @param clazz The specified <code>Class</code>.
 		 */
