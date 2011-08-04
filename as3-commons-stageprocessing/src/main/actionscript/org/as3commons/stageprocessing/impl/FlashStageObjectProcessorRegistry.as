@@ -21,6 +21,7 @@ package org.as3commons.stageprocessing.impl {
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 
+	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.IOrdered;
 	import org.as3commons.logging.api.ILogger;
 	import org.as3commons.logging.api.getLogger;
@@ -46,6 +47,17 @@ package org.as3commons.stageprocessing.impl {
 		private static const NEW_STAGE_PROCESSOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and existing {2}";
 		private static const ORDERED_PROPERTYNAME:String = "order";
 		private static const STAGE_PROCESSOR_UNREGISTERED:String = "Stage processor with name '{0}' and document '{1}' was unregistered";
+		private static const MXCORE_FLEX_GLOBALS:String = "mx.core.FlexGlobals";
+		private static const TOP_LEVEL_APPLICATION:String = "topLevelApplication";
+		private static const APPLICATION:String = "application";
+		private static const SYSTEM_MANAGER_FIELD_NAME:String = "systemManager";
+		private static const STAGE_FIELD_NAME:String = "stage";
+		private static const MXCORE_FLEX_VERSION_CLASS_NAME:String = "mx.core.FlexVersion";
+		private static const CURRENT_VERSION_FIELD_NAME:String = "CURRENT_VERSION";
+		private static const MXCORE_APPLICATION_CLASS_NAME:String = "mx.core.Application";
+		private static const APPLICATION_FIELD_NAME:String = "Application";
+		private static const MXCORE_CONTAINER_CLASSNAME:String = "mx.core.Container";
+		private static const CREATING_CONTENT_PANE_FIELD_NAME:String = "creatingContentPane";
 
 		/**
 		 * Sorts a vector of <code>IStageObjectProcessor</code> that may or may not contain <code>IOrdered</code> implementations.
@@ -87,6 +99,8 @@ package org.as3commons.stageprocessing.impl {
 		private var _rootViews:Dictionary;
 		private var _stage:Stage;
 		private var _useStageDestroyers:Boolean = true;
+		private var _flexVersion:uint;
+		private var _mxContainerClass:Class;
 
 		/**
 		 * @inheritDoc
@@ -223,12 +237,40 @@ package org.as3commons.stageprocessing.impl {
 		 * @inheritDoc
 		 */
 		public function initialize():void {
+			_stage ||= findFlexStage();
 			if ((!_initialized) && (_stage != null)) {
 				setInitialized();
 				processStage();
 				addEventListeners(_stage);
 				LOGGER.debug(FLASH_STAGE_PROCESSOR_REGISTRY_INITIALIZED);
 			}
+		}
+
+		protected function findFlexStage():Stage {
+			var fxVersion:uint = getFlexVersion();
+			if (fxVersion > 0) {
+				_mxContainerClass = ClassUtils.forName(MXCORE_CONTAINER_CLASSNAME);
+				if (_flexVersion < 0x04000000) {
+					var applicationClass:Class = ClassUtils.forName(MXCORE_APPLICATION_CLASS_NAME);
+					return applicationClass[APPLICATION_FIELD_NAME][SYSTEM_MANAGER_FIELD_NAME][STAGE_FIELD_NAME];
+				} else {
+					var flexGlobalsClass:Class = ClassUtils.forName(MXCORE_FLEX_GLOBALS);
+					return flexGlobalsClass[TOP_LEVEL_APPLICATION][SYSTEM_MANAGER_FIELD_NAME][STAGE_FIELD_NAME];
+				}
+			}
+			return null;
+		}
+
+		protected function getFlexVersion():uint {
+			if (_flexVersion == uint.MAX_VALUE) {
+				try {
+					var cls:Class = ClassUtils.forName(MXCORE_FLEX_VERSION_CLASS_NAME);
+					_flexVersion = cls[CURRENT_VERSION_FIELD_NAME];
+				} catch (e:Error) {
+					_flexVersion = 0;
+				}
+			}
+			return _flexVersion;
 		}
 
 		/**
@@ -257,7 +299,10 @@ package org.as3commons.stageprocessing.impl {
 		 * @inheritDoc
 		 */
 		public function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void {
-			rootView ||= _stage;
+			if ((rootView is Stage) && (_stage == null)) {
+				_stage = Stage(rootView);
+			}
+			rootView ||= _stage ||= findFlexStage();
 			var processors:Vector.<IStageObjectProcessor> = getProcessorVector(rootView, objectSelector);
 			if (processors.indexOf(stageProcessor) < 0) {
 				processors[processors.length] = stageProcessor;
@@ -329,23 +374,28 @@ package org.as3commons.stageprocessing.impl {
 		 */
 		protected function added_handler(event:Event):void {
 			if (_enabled) {
-				processDisplayObject(event.target as DisplayObject);
+				var displayObject:DisplayObject = DisplayObject(event.target);
+				processDisplayObject(displayObject);
 			}
 		}
 
 		protected function approveDisplayObjectAfterAdding(displayObject:DisplayObject, objectSelector:IObjectSelector, processors:Vector.<IStageObjectProcessor>):void {
 			if (objectSelector.approve(displayObject)) {
-				for each (var processor:IStageObjectProcessor in processors) {
-					processor.process(displayObject);
+				if (!isBeingReparented(displayObject)) {
+					for each (var processor:IStageObjectProcessor in processors) {
+						processor.process(displayObject);
+					}
 				}
 			}
 		}
 
 		protected function approveDisplayObjectAfterRemoving(displayObject:DisplayObject, objectSelector:IObjectSelector, processors:Vector.<IStageObjectProcessor>):void {
 			if (objectSelector.approve(displayObject)) {
-				for each (var processor:IStageObjectProcessor in processors) {
-					if (processor is IStageObjectDestroyer) {
-						IStageObjectDestroyer(processor).destroy(displayObject);
+				if (!isBeingReparented(displayObject)) {
+					for each (var processor:IStageObjectProcessor in processors) {
+						if (processor is IStageObjectDestroyer) {
+							IStageObjectDestroyer(processor).destroy(displayObject);
+						}
 					}
 				}
 			}
@@ -363,6 +413,7 @@ package org.as3commons.stageprocessing.impl {
 		}
 
 		protected function init():void {
+			_flexVersion = uint.MAX_VALUE;
 			_enabled = false;
 			_initialized = false;
 			_rootViews = new Dictionary(true);
@@ -423,7 +474,8 @@ package org.as3commons.stageprocessing.impl {
 
 		protected function removed_handler(event:Event):void {
 			if (_enabled) {
-				processDisplayObjectRemoval(event.target as DisplayObject);
+				var displayObject:DisplayObject = DisplayObject(event.target);
+				processDisplayObjectRemoval(displayObject);
 			}
 		}
 
@@ -431,5 +483,22 @@ package org.as3commons.stageprocessing.impl {
 			_initialized = true;
 			_enabled = true;
 		}
+
+		protected function isBeingReparented(target:DisplayObject):Boolean {
+			if (_flexVersion == 0) {
+				return false;
+			}
+			var parent:DisplayObjectContainer = target.parent;
+			while (parent) {
+				if (parent.hasOwnProperty(CREATING_CONTENT_PANE_FIELD_NAME)) {
+					if (parent[CREATING_CONTENT_PANE_FIELD_NAME] == true) {
+						return true;
+					}
+				}
+				parent = parent.parent;
+			}
+			return false;
+		}
+
 	}
 }
