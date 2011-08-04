@@ -208,7 +208,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.0-beta-2</version>
+                <version>3.0-beta-3</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.adobe.flex</groupId>
@@ -218,7 +218,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-
+			<templateFile>../src/site/vm/as3commons.vm</templateFile>
                     <reportPlugins>
 
                         <plugin>
@@ -484,7 +484,7 @@
         </repository>
         <site>
             <id>yoolab.org-as3commons</id>
-            <url>scp://www.as3commons.org/srv/www/www.as3commons.org/public_html/as3-commons-logging</url>
+            <url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-logging</url>
         </site>
     </distributionManagement>
 
