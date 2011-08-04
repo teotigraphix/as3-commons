@@ -7,6 +7,12 @@
         <version>1.2</version>
     </skin>
 
+  <bannerLeft>
+    <name>AS3commons lang</name>
+    <src>images/as3commons-lang.png</src>
+    <href>index.html</href>
+  </bannerLeft>
+
   <body>
 
     <menu name="Project">
