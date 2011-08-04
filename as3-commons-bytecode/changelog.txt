@@ -3,7 +3,7 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.0-RC4 (00.00.2011)
+Changes in version 1.0-RC4 (04.08.2011)
 -----------------------------------
 
 * Fixed some issues concerning parsing of opcodes that involve lookupswitches
@@ -11,6 +11,8 @@ Changes in version 1.0-RC4 (00.00.2011)
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=62
 * Added opcode properties to ExceptionInfo
 * Before serializing exceptioninfo locations are updated to correct opcode base location
+* Upgraded dependency to as3commons-logging v2.5.1
+* Upgraded dependency to as3commons-reflect v1.4.2
 
 Changes in version 1.0-RC3 (14.03.2011)
 -----------------------------------

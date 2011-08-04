@@ -56,71 +56,70 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.MetadataContainer;
-	import org.as3commons.reflect.Method;
 
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="getMethodInvocationInterceptor", type="org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
+	[Event(name = "getMethodInvocationInterceptor", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="beforeGetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "beforeGetterBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="afterGetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "afterGetterBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="beforeSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "beforeSetterBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="afterSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "afterSetterBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="beforeMethodBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "beforeMethodBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="afterMethodBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "afterMethodBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="beforeConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "beforeConstructorBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="afterConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "afterConstructorBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="afterProxyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "afterProxyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="complete", type="flash.events.Event")]
+	[Event(name = "complete", type = "flash.events.Event")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="ioError", type="flash.events.IOErrorEvent")]
+	[Event(name = "ioError", type = "flash.events.IOErrorEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="verifyError", type="flash.events.IOErrorEvent")]
+	[Event(name = "verifyError", type = "flash.events.IOErrorEvent")]
 	/**
 	 * Basic implementation of the <code>IProxyFactory</code> interface.
 	 * @author Roland Zwaga
 	 */
 	public class ProxyFactory extends AbstractProxyFactory implements IProxyFactory {
 
-		private static const LOGGER:ILogger = LoggerFactory.getClassLogger(ProxyFactory);
+		private static const LOGGER:ILogger = getLogger(ProxyFactory);
 
 		//used namespaces
 		use namespace as3commons_bytecode_proxy;
@@ -309,7 +308,7 @@ package org.as3commons.bytecode.proxy.impl {
 			var infos:Array = _domains[applicationDomain] as Array;
 			var info:IClassProxyInfo = new ClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
 			infos[infos.length] = info;
-			LOGGER.debug("Defined proxy class for {0}", proxiedClass);
+			LOGGER.debug("Defined proxy class for {0}", [proxiedClass]);
 			return info;
 		}
 
@@ -359,7 +358,7 @@ package org.as3commons.bytecode.proxy.impl {
 			_abcBuilder.addEventListener(IOErrorEvent.IO_ERROR, redispatch);
 			_abcBuilder.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch, false, 0, true);
 			_abcBuilder.buildAndLoad(applicationDomain);
-			LOGGER.debug("Loading proxies into application domain {0}", applicationDomain);
+			LOGGER.debug("Loading proxies into application domain {0}", [applicationDomain]);
 		}
 
 		/**
@@ -368,7 +367,7 @@ package org.as3commons.bytecode.proxy.impl {
 		public function createProxy(clazz:Class, constructorArgs:Array = null):* {
 			var proxyInfo:ProxyInfo = _classProxyLookup[clazz] as ProxyInfo;
 			if (proxyInfo != null) {
-				LOGGER.debug("Creating proxy for class {0} with arguments: {1}", clazz, (constructorArgs != null) ? constructorArgs.join(',') : "");
+				LOGGER.debug("Creating proxy for class {0} with arguments: {1}", [clazz, (constructorArgs != null) ? constructorArgs.join(',') : ""]);
 				return ClassUtils.newInstance(proxyInfo.proxyClass, constructorArgs);
 			}
 			return null;
@@ -481,7 +480,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 
 			dispatchEvent(new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_PROXY_BUILD, null, classBuilder, classProxyInfo.proxiedClass));
-			LOGGER.debug("Generated proxy class {0} for class {1}", proxyClassName, classProxyInfo.proxiedClass);
+			LOGGER.debug("Generated proxy class {0} for class {1}", [proxyClassName, classProxyInfo.proxiedClass]);
 			return new ProxyInfo(proxyClassName.split(MultinameUtil.SINGLE_COLON).join(MultinameUtil.PERIOD));
 		}
 
@@ -516,7 +515,7 @@ package org.as3commons.bytecode.proxy.impl {
 				var nss:NamespaceSet = new NamespaceSet(nsa);
 				var multiname:Multiname = new Multiname(MULTINAME_NAME, nss, MultinameKind.MULTINAME);
 				_generatedMultinames[generatedClassName] = multiname;
-				LOGGER.debug("Created multiname for proxy class {0}:\n{1}", generatedClassName, multiname);
+				LOGGER.debug("Created multiname for proxy class {0}:\n{1}", [generatedClassName, multiname]);
 				return multiname;
 			}
 		}
@@ -550,7 +549,7 @@ package org.as3commons.bytecode.proxy.impl {
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
 			reflectMethods(classProxyInfo, type, applicationDomain);
 			reflectAccessors(classProxyInfo, type, applicationDomain);
-			LOGGER.debug("ClassInfoProxy for class {0} populated based on reflection", classProxyInfo.proxiedClass);
+			LOGGER.debug("ClassInfoProxy for class {0} populated based on reflection", [classProxyInfo.proxiedClass]);
 		}
 
 		protected function reflectMethods(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {

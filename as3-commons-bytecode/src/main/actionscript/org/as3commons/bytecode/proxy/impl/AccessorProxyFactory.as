@@ -38,11 +38,11 @@ package org.as3commons.bytecode.proxy.impl {
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="beforeGetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "beforeGetterBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="beforeSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "beforeSetterBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	public class AccessorProxyFactory extends AbstractMethodBodyFactory implements IAccessorProxyFactory {
 
 		public function AccessorProxyFactory() {
@@ -113,7 +113,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 		/**
 		 * Generates a getter method for the specified <code>IAccessorBuilder</code> instance.
-		 * <p>The specified <code>Multiname</code> and <code>QualifiedName</code> instances are passed on to the <code>addGetterBody()</code> method.
+		 * <p>The specified <code>Multiname</code> and <code>QualifiedName</code> instances are passed on to the <code>addGetterBody()</code> method.</p>
 		 * @param accessorBuilder The specified <code>IAccessorBuilder</code> instance.
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
@@ -128,7 +128,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 		/**
 		 * Generates a setter method for the specified <code>IAccessorBuilder</code> instance.
-		 * <p>The specified <code>Multiname</code> and <code>QualifiedName</code> instances are passed on to the <code>addSetterBody()</code> method.
+		 * <p>The specified <code>Multiname</code> and <code>QualifiedName</code> instances are passed on to the <code>addSetterBody()</code> method.</p>
 		 * @param accessorBuilder The specified <code>IAccessorBuilder</code> instance.
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.

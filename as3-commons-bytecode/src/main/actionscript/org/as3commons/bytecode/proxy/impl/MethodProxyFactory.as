@@ -73,7 +73,7 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * Generates a method body that passes the method's arguments to the generated <code>methodInvocationInterceptor</code> property value's <code>intercept</code> method,
 		 * along with a reference to the current instance, a <code>QName</code> for the current method, and a reference to the super method instance.
-		 * <p>The actionscript would look like this:</code>
+		 * <p>The actionscript would look like this:</p>
 		 * <listing version="3.0">
 		 * override public function returnStringWithParameters(param:String):String {
 		 *  return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.METHOD, new QName("", "returnStringWithParameters"), [param], super.returnStringWithParameters);

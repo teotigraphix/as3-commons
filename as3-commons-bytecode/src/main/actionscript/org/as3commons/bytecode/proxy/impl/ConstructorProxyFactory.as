@@ -26,24 +26,24 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeParameter;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
-	import org.as3commons.logging.ILogger;
-	import org.as3commons.logging.LoggerFactory;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="beforeConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "beforeConstructorBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name="afterConstructorBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name = "afterConstructorBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
 	public class ConstructorProxyFactory extends AbstractMethodBodyFactory implements IConstructorProxyFactory {
 
-		private static const LOGGER:ILogger = LoggerFactory.getClassLogger(ConstructorProxyFactory);
+		private static const LOGGER:ILogger = getLogger(ConstructorProxyFactory);
 
 		public function ConstructorProxyFactory() {
 			super();
