@@ -24,6 +24,10 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.lang.StringUtils;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public class InterfaceMethodBuilder extends MethodBuilder {
 
 		private static const INTERFACE_METHOD_NAME:String = "{0}:{1}/{0}:{1}:{2}";
