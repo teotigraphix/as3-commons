@@ -10,11 +10,11 @@
             <div id="downloadbox">
                 <h5>Get latest stable</h5>
                 <p>
-                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-reflect/1.4.1/as3commons-reflect-1.4.1.swc">
+                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-reflect/1.4.2/as3commons-reflect-1.4.2.swc">
                         <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
                         Download
                     </a>
-                    latest stable (1.4.1)
+                    latest stable (1.4.2)
                 </p>
                 <br/>
                 <h5>Get lastest development snapshot</h5>
