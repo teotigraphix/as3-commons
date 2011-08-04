@@ -23,11 +23,8 @@
 registry.stage = stage;
 </pre></div>
 	Where 'stage' is a valid reference to the current stage, of course.</p>
-	<p>In Flex 4 the stage can be assigned like this:
-    	<div class="source"><pre>var registry:FlashStageObjectProcessorRegistry = new FlashStageObjectProcessorRegistry();
-registry.stage = FlexGlobals.topLevelApplication.stage as Stage;
-</pre></div>
-    	</p>
+	<p><em>When the <code>FlashStageObjectProcessorRegistry</code> is created in a Flex application the <code>stage</code> doesn't have to be set. The library will find the stage reference
+	by itself by looking for the appropriate <code>SystemManager</code> instance.</em></p>
     </section>
     <section name="Creating an IObjectSelector implementation">
     	<p>Creating an <code>IObjectSelector</code> is very straighforward, the interface contains only one method:
