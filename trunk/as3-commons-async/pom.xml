@@ -215,7 +215,7 @@
 					</dependency>
 				</dependencies>
 				<configuration>
-
+					<templateFile>../src/site/vm/as3commons.vm</templateFile>
 					<reportPlugins>
 
 						<plugin>

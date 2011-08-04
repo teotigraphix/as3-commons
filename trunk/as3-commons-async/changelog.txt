@@ -1,7 +1,12 @@
-AS3COMMONS-ÂSYNC CHANGELOG
+AS3COMMONS-ASYNC CHANGELOG
 ============================
 
 Note: dates are in DD.MM.YYYY format
+
+Changes in version 1.0 (??.??.2011)
+-----------------------------------
+
+* Added a few missing IOperation implementations from Spring Actionscript v1.1
 
 Changes in version 1.0-RC1 (10.06.2011)
 -----------------------------------
