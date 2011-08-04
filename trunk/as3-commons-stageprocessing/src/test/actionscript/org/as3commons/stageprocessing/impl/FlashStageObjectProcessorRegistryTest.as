@@ -40,11 +40,12 @@ package org.as3commons.stageprocessing.impl {
 			]);
 
 		private var _registry:FlashStageObjectProcessorRegistry;
+		private var _stage:Stage;
 
 		[Before]
 		public function setUp():void {
 			_registry = new FlashStageObjectProcessorRegistry();
-			_registry.stage = FlexGlobals.topLevelApplication.stage as Stage;
+			_stage = FlexGlobals.topLevelApplication.stage as Stage;
 		}
 
 		[After]
@@ -72,7 +73,7 @@ package org.as3commons.stageprocessing.impl {
 			var sel:Vector.<IObjectSelector> = _registry.getObjectSelectorsForStageProcessor(processor);
 			Assert.assertEquals(1, sel.length);
 			Assert.assertStrictlyEquals(selector, sel[0]);
-			Assert.assertStrictlyEquals(processor, _registry.getStageProcessorsByRootView(_registry.stage)[0]);
+			Assert.assertStrictlyEquals(processor, _registry.getStageProcessorsByRootView(_stage)[0]);
 		}
 
 		[Test]
@@ -88,7 +89,7 @@ package org.as3commons.stageprocessing.impl {
 			_registry.registerStageObjectProcessor(mock1, selector);
 			_registry.registerStageObjectProcessor(mock2, selector);
 
-			var procs:Vector.<IStageObjectProcessor> = _registry.getProcessorVector(_registry.stage, selector);
+			var procs:Vector.<IStageObjectProcessor> = _registry.getProcessorVector(_stage, selector);
 			Assert.assertEquals(2, procs.length);
 			Assert.assertStrictlyEquals(mock2, procs[0]);
 			Assert.assertStrictlyEquals(mock1, procs[1]);
@@ -171,13 +172,13 @@ package org.as3commons.stageprocessing.impl {
 			var processor:IStageObjectProcessor = IStageObjectProcessor(mockRepository.createStub(IStageObjectProcessor));
 			var selector:IObjectSelector = IObjectSelector(mockRepository.createStub(IObjectSelector));
 			SetupResult.forCall(selector.approve(childView)).ignoreArguments().returnValue(true);
-			SetupResult.forCall(selector.approve(_registry.stage.root)).ignoreArguments().returnValue(false);
+			SetupResult.forCall(selector.approve(_stage.root)).ignoreArguments().returnValue(false);
 			Expect.call(processor.process(null)).ignoreArguments().returnValue(null);
 			mockRepository.replayAll();
 
 			_registry.registerStageObjectProcessor(processor, selector);
 			_registry.initialize();
-			_registry.stage.addChild(childView);
+			_stage.addChild(childView);
 
 			mockRepository.verifyAll();
 		}
@@ -191,16 +192,16 @@ package org.as3commons.stageprocessing.impl {
 			var selector:IObjectSelector = IObjectSelector(mockRepository.createStub(IObjectSelector));
 
 			SetupResult.forCall(selector.approve(childView)).ignoreArguments().returnValue(true);
-			SetupResult.forCall(selector.approve(_registry.stage.root)).ignoreArguments().returnValue(false);
+			SetupResult.forCall(selector.approve(_stage.root)).ignoreArguments().returnValue(false);
 			Expect.call(processor.process(childView)).returnValue(childView);
 			Expect.notCalled(processor.process(childView2));
 			mockRepository.replayAll();
 
-			_registry.stage.addChild(rootView);
+			_stage.addChild(rootView);
 			_registry.registerStageObjectProcessor(processor, selector, rootView);
 			_registry.initialize();
 			rootView.addChild(childView);
-			_registry.stage.addChild(childView2);
+			_stage.addChild(childView2);
 
 			mockRepository.verifyAll();
 		}
@@ -217,13 +218,13 @@ package org.as3commons.stageprocessing.impl {
 			var selector:IObjectSelector = IObjectSelector(mockRepository.createStub(IObjectSelector));
 
 			SetupResult.forCall(selector.approve(childView2)).ignoreArguments().returnValue(true);
-			SetupResult.forCall(selector.approve(_registry.stage.root)).ignoreArguments().returnValue(false);
+			SetupResult.forCall(selector.approve(_stage.root)).ignoreArguments().returnValue(false);
 			SetupResult.forCall(selector.approve(childView1)).ignoreArguments().returnValue(false);
 			Expect.call(processor.process(childView2)).returnValue(childView2);
 			Expect.notCalled(processor.process(childView1));
 			mockRepository.replayAll();
 
-			_registry.stage.addChild(rootView);
+			_stage.addChild(rootView);
 			_registry.registerStageObjectProcessor(processor, selector, rootView);
 			_registry.initialize();
 			rootView.addChild(childView1);
