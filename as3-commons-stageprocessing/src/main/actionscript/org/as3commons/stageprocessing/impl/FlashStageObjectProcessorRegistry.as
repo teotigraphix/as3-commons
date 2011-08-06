@@ -100,7 +100,6 @@ package org.as3commons.stageprocessing.impl {
 		private var _stage:Stage;
 		private var _useStageDestroyers:Boolean = true;
 		private var _flexVersion:uint;
-		private var _mxContainerClass:Class;
 
 		/**
 		 * @inheritDoc
@@ -249,7 +248,6 @@ package org.as3commons.stageprocessing.impl {
 		protected function findFlexStage():Stage {
 			var fxVersion:uint = getFlexVersion();
 			if (fxVersion > 0) {
-				_mxContainerClass = ClassUtils.forName(MXCORE_CONTAINER_CLASSNAME);
 				if (_flexVersion < 0x04000000) {
 					var applicationClass:Class = ClassUtils.forName(MXCORE_APPLICATION_CLASS_NAME);
 					return applicationClass[APPLICATION_FIELD_NAME][SYSTEM_MANAGER_FIELD_NAME][STAGE_FIELD_NAME];
