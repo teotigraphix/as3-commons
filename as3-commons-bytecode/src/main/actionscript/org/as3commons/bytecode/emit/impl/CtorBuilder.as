@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.errors.IllegalOperationError;
+
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
@@ -23,6 +25,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
+	import org.as3commons.bytecode.emit.IMetadataBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.io.AbcDeserializer;
 	import org.as3commons.bytecode.util.MultinameUtil;
@@ -30,6 +33,7 @@ package org.as3commons.bytecode.emit.impl {
 	public class CtorBuilder extends MethodBuilder implements ICtorBuilder {
 
 		public static const STATIC_CONSTRUCTOR_NAME_SUFFIX:String = '$cinit';
+		private static const CONSTRUCTORS_CANNOT_HAVE_METADATA_ERROR:String = "Constructors cannot have metadata";
 
 		public function CtorBuilder() {
 			super("", MemberVisibility.PUBLIC);
@@ -53,6 +57,10 @@ package org.as3commons.bytecode.emit.impl {
 				trait.traitMultiname = qname;
 			}
 			return trait;
+		}
+
+		override public function defineMetadata(name:String = null, arguments:Array = null):IMetadataBuilder {
+			throw new IllegalOperationError(CONSTRUCTORS_CANNOT_HAVE_METADATA_ERROR);
 		}
 
 	}
