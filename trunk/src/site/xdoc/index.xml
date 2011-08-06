@@ -42,8 +42,8 @@
 			<tr>
 				<td><strong>Bytecode</strong></td>
 				<td>Bytecode parsing and publishing formerly known as Loom. Capable of generating classes at runtime, bytecode based reflection and more.</td>
-				<td>1.0-RC3</td>
-				<td>10 Mar 2011</td>
+				<td>1.0-RC4</td>
+				<td>04 Aug 2011</td>
 			</tr>
 			<tr>
 				<td><strong>EventBus</strong></td>
@@ -78,8 +78,8 @@
 			<tr>
 				<td><strong>Reflect</strong></td>
 				<td>A reflection API for ActionScript 3.0. Being a pure actionscript library it can be used for any Flash/Flex/AIR project. It functions as a wrapper for the native describeType and describeTypeJSON methods. Results are statically cached to improve performance.</td>
-				<td>1.4.1</td>
-				<td>19 Jun 2011</td>
+				<td>1.4.2</td>
+				<td>04 Aug 2011</td>
 			</tr>
 			<tr>
 				<td><strong>Serialization</strong></td>
