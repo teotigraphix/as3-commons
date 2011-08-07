@@ -37,9 +37,10 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.Type;
 
-	[Event(name="extendedClassesNotFound", type="org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
+	[Event(name = "extendedClassesNotFound", type = "org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
 	/**
 	 * @author Roland Zwaga
 	 */
@@ -53,6 +54,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _classBuilderLookup:Dictionary;
 		private var _namespaceBuilderLookup:Dictionary;
 		private var _constantPool:IConstantPool;
+		private var _isDefaultPackage:Boolean;
 
 		/**
 		 * Creates a new <code>PackageBuilder</code> instance.
@@ -64,7 +66,7 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		private function init(name:String, abcFile:AbcFile):void {
-			Assert.hasText(name, "name argument must not be null or empty");
+			_isDefaultPackage = !StringUtils.hasText(name);
 			_eventDispatcher = new EventDispatcher();
 			_packageName = removeTrailingPeriod(name);
 			_classBuilders = [];
