@@ -147,7 +147,7 @@ package org.as3commons.bytecode.emit.impl {
 			assertStrictlyEquals(evt, instance[qn]);
 		}
 
-		public function testBuildClassWithMethod():void {
+		public function testBuildClassWithMethodThatReturnsString():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
 			methodBuilder.name = "testMe";
@@ -160,6 +160,19 @@ package org.as3commons.bytecode.emit.impl {
 			_abcBuilder.buildAndLoad();
 		}
 
+		public function testBuildClassWithMethodThatReturnsInt():void {
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest");
+			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
+			methodBuilder.name = "testMe";
+			methodBuilder.returnType = "String";
+			methodBuilder.addOpcode(Opcode.getlocal_0);
+			methodBuilder.addOpcode(Opcode.pushscope);
+			methodBuilder.addOpcode(Opcode.pushint, [0]);
+			methodBuilder.addOpcode(Opcode.returnvalue);
+			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(methodBuildSuccessHandler2, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+		}
+
 		private function methodBuildSuccessHandler(event:Event):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest") as Class;
 			assertNotNull(cls);
@@ -167,6 +180,15 @@ package org.as3commons.bytecode.emit.impl {
 			assertNotNull(instance);
 			var result:String = instance.testMe();
 			assertEquals("testReturnString", result);
+		}
+
+		private function methodBuildSuccessHandler2(event:Event):void {
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest") as Class;
+			assertNotNull(cls);
+			var instance:Object = new cls();
+			assertNotNull(instance);
+			var result:int = instance.testMe();
+			assertEquals(0, result);
 		}
 
 		public function testBuildClassReadOnlyAccessor():void {

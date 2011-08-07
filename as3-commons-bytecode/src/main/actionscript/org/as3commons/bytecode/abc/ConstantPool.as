@@ -51,6 +51,7 @@ package org.as3commons.bytecode.abc {
 		private static const NAMESPACE_SET_PROPERTYNAME:String = "namespaceSet";
 		private static const NAME_PROPERTYNAME:String = "name";
 		private static const LOCKED_CONSTANTPOOL_ERROR:String = "Constantpool is locked";
+		private static const ZERO_VALUE:String = "zero";
 
 		private var _dupeCheck:Boolean = true;
 		private var _integerPool:Array;
@@ -109,12 +110,12 @@ package org.as3commons.bytecode.abc {
 			_namespaceSetLookup = new Dictionary();
 			_multinameLookup = new Dictionary();
 
-			_integerPool = [0];
-			_integerLookup[0] = 0;
-			_uintPool = [0];
-			_uintLookup[0] = 0;
-			_doublePool = [0];
-			_doubleLookup[0] = 0;
+			_integerPool = [ZERO_VALUE];
+			_integerLookup[ZERO_VALUE] = 0;
+			_uintPool = [ZERO_VALUE];
+			_uintLookup[ZERO_VALUE] = 0;
+			_doublePool = [NaN];
+			_doubleLookup[NaN] = 0;
 			_classInfo = [];
 			_stringPool = [LNamespace.ASTERISK.name];
 			_stringLookup.set(LNamespace.ASTERISK.name, 0);
