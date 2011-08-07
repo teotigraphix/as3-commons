@@ -31,11 +31,21 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function testAddInt():void {
+			assertEquals(0, _fixture.addInt(0));
 			assertEquals(1, _fixture.addInt(1));
 			assertEquals(2, _fixture.addInt(2));
 			assertEquals(1, _fixture.addInt(1));
 			assertEquals(2, _fixture.addInt(2));
 			assertEquals(3, _fixture.integerPool.length);
+		}
+
+		public function testAddDouble():void {
+			assertEquals(0, _fixture.addDouble(0));
+			assertEquals(1, _fixture.addDouble(1));
+			assertEquals(2, _fixture.addDouble(2));
+			assertEquals(1, _fixture.addDouble(1));
+			assertEquals(2, _fixture.addDouble(2));
+			assertEquals(3, _fixture.doublePool.length);
 		}
 
 		public function testAddNamespace():void {
