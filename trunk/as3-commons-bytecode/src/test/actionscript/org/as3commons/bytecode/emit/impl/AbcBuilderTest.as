@@ -148,7 +148,7 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function testBuildClassWithMethodThatReturnsString():void {
-			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest");
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest1");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
 			methodBuilder.name = "testMe";
 			methodBuilder.returnType = "String";
@@ -161,10 +161,10 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		public function testBuildClassWithMethodThatReturnsInt():void {
-			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest");
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest2");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
 			methodBuilder.name = "testMe";
-			methodBuilder.returnType = "String";
+			methodBuilder.returnType = "int";
 			methodBuilder.addOpcode(Opcode.getlocal_0);
 			methodBuilder.addOpcode(Opcode.pushscope);
 			methodBuilder.addOpcode(Opcode.pushint, [0]);
@@ -173,8 +173,35 @@ package org.as3commons.bytecode.emit.impl {
 			_abcBuilder.buildAndLoad();
 		}
 
+		public function testBuildClassWithMethodThatReturnsUint():void {
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest3");
+			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
+			methodBuilder.name = "testMe";
+			methodBuilder.returnType = "uint";
+			methodBuilder.addOpcode(Opcode.getlocal_0);
+			methodBuilder.addOpcode(Opcode.pushscope);
+			methodBuilder.addOpcode(Opcode.pushuint, [0]);
+			methodBuilder.addOpcode(Opcode.returnvalue);
+			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(methodBuildSuccessHandler3, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+		}
+
+		public function testBuildClassWithMethodThatReturnsDouble():void {
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest4");
+			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
+			methodBuilder.name = "testMe";
+			methodBuilder.returnType = "Number";
+			methodBuilder.addOpcode(Opcode.getlocal_0);
+			methodBuilder.addOpcode(Opcode.pushscope);
+			methodBuilder.addOpcode(Opcode.pushdouble, [0]);
+			methodBuilder.addOpcode(Opcode.returnvalue);
+			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(methodBuildSuccessHandler4, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+		}
+
+
 		private function methodBuildSuccessHandler(event:Event):void {
-			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest") as Class;
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest1") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
 			assertNotNull(instance);
@@ -183,11 +210,29 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		private function methodBuildSuccessHandler2(event:Event):void {
-			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest") as Class;
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest2") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
 			assertNotNull(instance);
 			var result:int = instance.testMe();
+			assertEquals(0, result);
+		}
+
+		private function methodBuildSuccessHandler3(event:Event):void {
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest3") as Class;
+			assertNotNull(cls);
+			var instance:Object = new cls();
+			assertNotNull(instance);
+			var result:uint = instance.testMe();
+			assertEquals(0, result);
+		}
+
+		private function methodBuildSuccessHandler4(event:Event):void {
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest4") as Class;
+			assertNotNull(cls);
+			var instance:Object = new cls();
+			assertNotNull(instance);
+			var result:Number = instance.testMe();
 			assertEquals(0, result);
 		}
 
