@@ -41,7 +41,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.Type;
 
-	[Event(name="extendedClassesNotFound", type="org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
+	[Event(name = "extendedClassesNotFound", type = "org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
 	/**
 	 * @author Roland Zwaga
 	 */
@@ -197,6 +197,12 @@ package org.as3commons.bytecode.emit.impl {
 			return ctorBuilder;
 		}
 
+		/**
+		 *
+		 * @param superClassName
+		 * @param applicationDomain
+		 * @return
+		 */
 		protected function calculateHierarchDepth(superClassName:String, applicationDomain:ApplicationDomain):uint {
 			var extendedClasses:Array = [];
 			if (applicationDomain.hasDefinition(superClassName)) {

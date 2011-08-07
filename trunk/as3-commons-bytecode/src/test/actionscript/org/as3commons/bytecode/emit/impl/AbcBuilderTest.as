@@ -151,9 +151,11 @@ package org.as3commons.bytecode.emit.impl {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
 			methodBuilder.name = "testMe";
+			methodBuilder.returnType = "String";
 			methodBuilder.addOpcode(Opcode.getlocal_0);
 			methodBuilder.addOpcode(Opcode.pushscope);
-			methodBuilder.addOpcode(Opcode.returnvoid);
+			methodBuilder.addOpcode(Opcode.pushstring, ["testReturnString"]);
+			methodBuilder.addOpcode(Opcode.returnvalue);
 			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(methodBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
@@ -163,8 +165,8 @@ package org.as3commons.bytecode.emit.impl {
 			assertNotNull(cls);
 			var instance:Object = new cls();
 			assertNotNull(instance);
-                        instance.testMe();
-                        assertTrue(true);
+			var result:String = instance.testMe();
+			assertEquals("testReturnString", result);
 		}
 
 		public function testBuildClassReadOnlyAccessor():void {
