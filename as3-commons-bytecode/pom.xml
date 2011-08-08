@@ -4,7 +4,7 @@
     	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-bytecode</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0-RC4</version>
+	<version>1.0-RC5</version>
 	<name>AS3Commons Byetcode</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
