@@ -25,6 +25,26 @@ package org.as3commons.stageprocessing {
 	public interface IStageObjectProcessorRegistry {
 
 		/**
+		 * The <code>IObjectSelector</code> that will be used when no instance is passed into the <code>registerStageObjectProcessor()</code> and <code>unregisterStageObjectProcessor()</code>
+		 * methods are invoked.
+		 */
+		function get defaultSelector():IObjectSelector;
+		/**
+		 * @private
+		 */
+		function set defaultSelector(value:IObjectSelector):void;
+
+		/**
+		 * The <code>Class</code> of the <code>IObjectSelector</code> that will be used when no instance is passed into the <code>registerStageObjectProcessor()</code> and <code>unregisterStageObjectProcessor()</code>
+		 * methods are invoked.
+		 */
+		function get defaultSelectorClass():Class;
+		/**
+		 * @private
+		 */
+		function set defaultSelectorClass(value:Class):void;
+
+		/**
 		 * Clears the all processor and context registrations in the current <code>IStageProcessorRegistry</code>
 		 */
 		function clear():void;
@@ -101,7 +121,7 @@ package org.as3commons.stageprocessing {
 		 * @param stageProcessor The specified <code>IStageProcessor</code> instance.
 		 * @param objectSelector The specified <code>IObjectSelector</code> instance.
 		 */
-		function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void;
+		function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector = null, rootView:DisplayObject = null):void;
 
 		/**
 		 * A reference to the Flash stage that is used to add the event listeners to. This property is requried to be s et to a valid reference, otherwise
@@ -113,7 +133,7 @@ package org.as3commons.stageprocessing {
 		 * Removes the specified <code>IStageProcessor</code> that is associated with the specified <code>IObjectSelector</code>.
 		 * @param name The name of the <code>IStageProcessor</code> that will be removed
 		 */
-		function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void;
+		function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector = null, rootView:DisplayObject = null):void;
 
 		/**
 		 * Determines whether the current <code>IStageObjectProcessorRegistry</code> will listen for the <code>REMOVED_FROM_STAGE</code> event and

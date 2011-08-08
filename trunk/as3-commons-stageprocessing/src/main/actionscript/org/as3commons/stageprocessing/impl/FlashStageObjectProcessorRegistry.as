@@ -21,6 +21,7 @@ package org.as3commons.stageprocessing.impl {
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 
+	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.IOrdered;
 	import org.as3commons.logging.api.ILogger;
@@ -29,6 +30,7 @@ package org.as3commons.stageprocessing.impl {
 	import org.as3commons.stageprocessing.IStageObjectDestroyer;
 	import org.as3commons.stageprocessing.IStageObjectProcessor;
 	import org.as3commons.stageprocessing.IStageObjectProcessorRegistry;
+	import org.as3commons.stageprocessing.impl.selector.AllowAllObjectSelector;
 
 	/**
 	 * Pure actionscript implementation of the <code>IStageObjectProcessorRegistry</code> interface.
@@ -39,25 +41,24 @@ package org.as3commons.stageprocessing.impl {
 		protected static const STAGE_PROCESSING_COMPLETED:String = "Stage processing completed";
 		protected static const STAGE_PROCESSING_STARTED:String = "Stage processing starting with component '{0}'";
 		protected static const STAGE_PROCESSOR_REGISTRY_CLEARED:String = "StageProcessorRegistry was cleared";
-
-		private static const CANNOT_INSTANTIATE_ERROR:String = "Cannot instantiate FlashStageProcessorRegistry directly, invoke getInstance() instead";
-		private static const FLASH_STAGE_PROCESSOR_REGISTRY_INITIALIZED:String = "FlashStageProcessorRegistry was initialized";
-		private static const LOGGER:ILogger = getLogger(FlashStageObjectProcessorRegistry);
-		private static const NEW_STAGE_PROCESSOR_AND_SELECTOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and new {2}";
-		private static const NEW_STAGE_PROCESSOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and existing {2}";
-		private static const ORDERED_PROPERTYNAME:String = "order";
-		private static const STAGE_PROCESSOR_UNREGISTERED:String = "Stage processor with name '{0}' and document '{1}' was unregistered";
-		private static const MXCORE_FLEX_GLOBALS:String = "mx.core.FlexGlobals";
-		private static const TOP_LEVEL_APPLICATION:String = "topLevelApplication";
-		private static const APPLICATION:String = "application";
-		private static const SYSTEM_MANAGER_FIELD_NAME:String = "systemManager";
-		private static const STAGE_FIELD_NAME:String = "stage";
-		private static const MXCORE_FLEX_VERSION_CLASS_NAME:String = "mx.core.FlexVersion";
-		private static const CURRENT_VERSION_FIELD_NAME:String = "CURRENT_VERSION";
-		private static const MXCORE_APPLICATION_CLASS_NAME:String = "mx.core.Application";
-		private static const APPLICATION_FIELD_NAME:String = "Application";
-		private static const MXCORE_CONTAINER_CLASSNAME:String = "mx.core.Container";
-		private static const CREATING_CONTENT_PANE_FIELD_NAME:String = "creatingContentPane";
+		protected static const CANNOT_INSTANTIATE_ERROR:String = "Cannot instantiate FlashStageProcessorRegistry directly, invoke getInstance() instead";
+		protected static const FLASH_STAGE_PROCESSOR_REGISTRY_INITIALIZED:String = "FlashStageProcessorRegistry was initialized";
+		protected static const LOGGER:ILogger = getLogger(FlashStageObjectProcessorRegistry);
+		protected static const NEW_STAGE_PROCESSOR_AND_SELECTOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and new {2}";
+		protected static const NEW_STAGE_PROCESSOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and existing {2}";
+		protected static const ORDERED_PROPERTYNAME:String = "order";
+		protected static const STAGE_PROCESSOR_UNREGISTERED:String = "Stage processor with name '{0}' and document '{1}' was unregistered";
+		protected static const MXCORE_FLEX_GLOBALS:String = "mx.core.FlexGlobals";
+		protected static const TOP_LEVEL_APPLICATION:String = "topLevelApplication";
+		protected static const APPLICATION:String = "application";
+		protected static const SYSTEM_MANAGER_FIELD_NAME:String = "systemManager";
+		protected static const STAGE_FIELD_NAME:String = "stage";
+		protected static const MXCORE_FLEX_VERSION_CLASS_NAME:String = "mx.core.FlexVersion";
+		protected static const CURRENT_VERSION_FIELD_NAME:String = "CURRENT_VERSION";
+		protected static const MXCORE_APPLICATION_CLASS_NAME:String = "mx.core.Application";
+		protected static const APPLICATION_FIELD_NAME:String = "Application";
+		protected static const MXCORE_CONTAINER_CLASSNAME:String = "mx.core.Container";
+		protected static const CREATING_CONTENT_PANE_FIELD_NAME:String = "creatingContentPane";
 
 		/**
 		 * Sorts a vector of <code>IStageObjectProcessor</code> that may or may not contain <code>IOrdered</code> implementations.
@@ -100,6 +101,8 @@ package org.as3commons.stageprocessing.impl {
 		private var _stage:Stage;
 		private var _useStageDestroyers:Boolean = true;
 		private var _flexVersion:uint;
+		private var _defaultSelector:IObjectSelector;
+		private var _defaultSelectorClass:Class;
 
 		/**
 		 * @inheritDoc
@@ -296,7 +299,8 @@ package org.as3commons.stageprocessing.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void {
+		public function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector = null, rootView:DisplayObject = null):void {
+			objectSelector ||= getDefaultSelector();
 			if ((rootView is Stage) && (_stage == null)) {
 				_stage = Stage(rootView);
 			}
@@ -306,6 +310,13 @@ package org.as3commons.stageprocessing.impl {
 				processors[processors.length] = stageProcessor;
 				sortOrderedVector(processors);
 			}
+		}
+
+		protected function getDefaultSelector():IObjectSelector {
+			if (_defaultSelector == null) {
+				_defaultSelector = new defaultSelectorClass();
+			}
+			return _defaultSelector;
 		}
 
 		/**
@@ -327,7 +338,8 @@ package org.as3commons.stageprocessing.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector, rootView:DisplayObject = null):void {
+		public function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector = null, rootView:DisplayObject = null):void {
+			objectSelector ||= getDefaultSelector();
 			rootView ||= _stage;
 			var processors:Vector.<IStageObjectProcessor> = getProcessorVector(rootView, objectSelector);
 			if (processors != null) {
@@ -415,6 +427,7 @@ package org.as3commons.stageprocessing.impl {
 			_enabled = false;
 			_initialized = false;
 			_rootViews = new Dictionary(true);
+			_defaultSelectorClass = AllowAllObjectSelector;
 		}
 
 		/**
@@ -496,6 +509,24 @@ package org.as3commons.stageprocessing.impl {
 				parent = parent.parent;
 			}
 			return false;
+		}
+
+		public function get defaultSelector():IObjectSelector {
+			return _defaultSelector;
+		}
+
+		public function set defaultSelector(value:IObjectSelector):void {
+			_defaultSelector = value;
+		}
+
+		public function get defaultSelectorClass():Class {
+			return _defaultSelectorClass;
+		}
+
+		public function set defaultSelectorClass(value:Class):void {
+			Assert.notNull(value, "defaultSelectorClass cannot be set to null");
+			Assert.isTrue(ClassUtils.isImplementationOf(value, IObjectSelector), "defaultSelectorClass must implement IObjectSelector interface");
+			_defaultSelectorClass = value;
 		}
 
 	}
