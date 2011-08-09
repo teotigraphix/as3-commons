@@ -17,6 +17,7 @@ package org.as3commons.stageprocessing.test {
 	import org.as3commons.stageprocessing.impl.FlashStageObjectProcessorRegistryTest;
 	import org.as3commons.stageprocessing.impl.selector.AllowAllObjectSelectorTest;
 	import org.as3commons.stageprocessing.impl.selector.ClassNameBasedObjectSelectorTest;
+	import org.as3commons.stageprocessing.impl.selector.ComposedObjectSelectorTest;
 
 
 	[Suite]
@@ -25,5 +26,6 @@ package org.as3commons.stageprocessing.test {
 		public var t1:FlashStageObjectProcessorRegistryTest;
 		public var t2:AllowAllObjectSelectorTest;
 		public var t3:ClassNameBasedObjectSelectorTest;
+		public var t4:ComposedObjectSelectorTest;
 	}
 }
