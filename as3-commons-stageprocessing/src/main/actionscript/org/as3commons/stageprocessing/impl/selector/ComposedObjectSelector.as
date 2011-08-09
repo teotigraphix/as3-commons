@@ -30,7 +30,7 @@ package org.as3commons.stageprocessing.impl.selector {
 	 */
 	public class ComposedObjectSelector implements IObjectSelector {
 
-		private var _objectSelectors:Array;
+		private var _objectSelectors:Vector.<IObjectSelector>;
 
 		private var _approveIfUnanimous:Boolean;
 
@@ -43,7 +43,7 @@ package org.as3commons.stageprocessing.impl.selector {
 		 * @param approveOnFirst if <code>true</code> it will approve the object on first
 		 * approval.
 		 */
-		public function ComposedObjectSelector(objectSelectors:Array = null, approveIfUnanimous:Boolean = true) {
+		public function ComposedObjectSelector(objectSelectors:Vector.<IObjectSelector>=null, approveIfUnanimous:Boolean=true) {
 			super();
 			this._objectSelectors = objectSelectors;
 			this._approveIfUnanimous = approveIfUnanimous;
@@ -63,7 +63,8 @@ package org.as3commons.stageprocessing.impl.selector {
 
 			if (this._approveIfUnanimous) { // AND
 				for each (objectSelector in this._objectSelectors) {
-					if (!objectSelector.approve(object)) {
+					var approved:Boolean = objectSelector.approve(object);
+					if (!approved) {
 						return false; // An object selector did not approve the object
 					}
 				}
@@ -86,7 +87,7 @@ package org.as3commons.stageprocessing.impl.selector {
 		 * <code>IObjectSelector</code> that will be iterated to
 		 * approve or deny the passed object.
 		 */
-		public function set objectSelectors(objectSelectors:Array):void {
+		public function set objectSelectors(objectSelectors:Vector.<IObjectSelector>):void {
 			this._objectSelectors = objectSelectors;
 		}
 
