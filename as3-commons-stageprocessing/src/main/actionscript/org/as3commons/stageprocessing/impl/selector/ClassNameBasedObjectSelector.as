@@ -45,11 +45,19 @@ package org.as3commons.stageprocessing.impl.selector {
 		 * approve the object in case the fully qualified name MATCHES all passed regexps.
 		 *
 		 */
-		public function ClassNameBasedObjectSelector(regexpArray:Array = null, approveOnMatch:Boolean = false) {
+		public function ClassNameBasedObjectSelector(regexpList:Vector.<String>=null, approveOnMatch:Boolean=false) {
 			super();
-			this.classRegexpArray = regexpArray;
+			init(regexpList, approveOnMatch);
+		}
+
+		protected function init(regexpList:Vector.<String>, approveOnMatch:Boolean):void {
+			_classNameRegexpList = (regexpList != null) ? new Vector.<RegExp>() : null;
+			for each (var item:String in regexpList) {
+				_classNameRegexpList[_classNameRegexpList.length] = new RegExp(item);
+			}
 			this.approveOnMatch = approveOnMatch;
 		}
+
 
 		// --------------------------------------------------------------------
 		//
@@ -61,19 +69,14 @@ package org.as3commons.stageprocessing.impl.selector {
 		// classRegexpArray
 		// ----------------------------
 
-		private var _classRegexpArray:Array;
+		private var _classNameRegexpList:Vector.<RegExp>;
 
 		/**
 		 * @param regexpArray The array of <code>Regexp</code> to match the object fully qualified
 		 * class name against.
 		 */
-		public function set classRegexpArray(regexpArray:Array):void {
-			_classRegexpArray = regexpArray;
-			if (_classRegexpArray) {
-				_classRegexpArray = _classRegexpArray.map(function(item:String, index:int, arr:Array):RegExp {
-					return new RegExp(item);
-				});
-			}
+		public function set classNameRegexpList(value:Vector.<RegExp>):void {
+			_classNameRegexpList = value;
 		}
 
 		// ----------------------------
@@ -122,11 +125,11 @@ package org.as3commons.stageprocessing.impl.selector {
 		 * @return true if a match, false if not
 		 */
 		private function objectMatchRegexps(object:Object):Boolean {
-			if (!_classRegexpArray)
+			if (!_classNameRegexpList)
 				return true;
 
 			var className:String = getQualifiedClassName(object);
-			for each (var re:RegExp in _classRegexpArray) {
+			for each (var re:RegExp in _classNameRegexpList) {
 				if (className.search(re) > -1) {
 					return true;
 				}

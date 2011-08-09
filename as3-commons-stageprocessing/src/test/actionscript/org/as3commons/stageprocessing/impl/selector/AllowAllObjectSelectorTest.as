@@ -13,17 +13,20 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.stageprocessing.test {
-	import org.as3commons.stageprocessing.impl.FlashStageObjectProcessorRegistryTest;
-	import org.as3commons.stageprocessing.impl.selector.AllowAllObjectSelectorTest;
-	import org.as3commons.stageprocessing.impl.selector.ClassNameBasedObjectSelectorTest;
+package org.as3commons.stageprocessing.impl.selector {
+	import org.flexunit.asserts.assertTrue;
 
 
-	[Suite]
-	[RunWith("org.flexunit.runners.Suite")]
-	public class StageProcessingTestSuite {
-		public var t1:FlashStageObjectProcessorRegistryTest;
-		public var t2:AllowAllObjectSelectorTest;
-		public var t3:ClassNameBasedObjectSelectorTest;
+	public class AllowAllObjectSelectorTest {
+
+		public function AllowAllObjectSelectorTest() {
+			super();
+		}
+
+		[Test]
+		public function testAprove():void {
+			var selector:AllowAllObjectSelector = new AllowAllObjectSelector();
+			assertTrue(selector.approve(null));
+		}
 	}
 }
