@@ -3,6 +3,11 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.0-RC5 (??.??.2011)
+-----------------------------------
+
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=68
+
 Changes in version 1.0-RC5 (08.08.2011)
 -----------------------------------
 
