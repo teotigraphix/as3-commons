@@ -39,7 +39,7 @@ package org.as3commons.bytecode.util {
 		public static const VECTOR_INDICATOR:String = "<";
 		public static const ASTERISK:String = "*";
 
-		public static function toArgumentMultiName(className:String, kind:NamespaceKind = null):BaseMultiname {
+		public static function toArgumentMultiName(className:String, kind:NamespaceKind=null):BaseMultiname {
 			if (className.indexOf(VECTOR_INDICATOR) < 0) {
 				return toQualifiedName(className, kind);
 			} else {
@@ -78,7 +78,7 @@ package org.as3commons.bytecode.util {
 			}
 		}
 
-		public static function toQualifiedName(className:String, kind:NamespaceKind = null):QualifiedName {
+		public static function toQualifiedName(className:String, kind:NamespaceKind=null, nameSpaceURI:String=null):QualifiedName {
 			var name:QualifiedName;
 			kind ||= NamespaceKind.PACKAGE_NAMESPACE;
 
@@ -120,14 +120,14 @@ package org.as3commons.bytecode.util {
 						classNamePortion = String(portions.pop());
 						namespacePortion = portions.join(PERIOD);
 					}
-					name = new QualifiedName(classNamePortion, toLNamespace(className, kind));
+					name = new QualifiedName(classNamePortion, toLNamespace(className, kind, nameSpaceURI));
 					break;
 			}
 
 			return name;
 		}
 
-		public static function toMultiName(className:String, kind:NamespaceKind = null):Multiname {
+		public static function toMultiName(className:String, kind:NamespaceKind=null):Multiname {
 			kind ||= NamespaceKind.PACKAGE_NAMESPACE;
 			var portions:Array;
 			var classNamePortion:String;
@@ -143,7 +143,7 @@ package org.as3commons.bytecode.util {
 			return new Multiname(classNamePortion, namespSet);
 		}
 
-		public static function toLNamespace(className:String, kind:NamespaceKind):LNamespace {
+		public static function toLNamespace(className:String, kind:NamespaceKind, nameSpaceURI:String=null):LNamespace {
 			var namesp:LNamespace;
 
 			switch (className) {
@@ -186,8 +186,10 @@ package org.as3commons.bytecode.util {
 					}
 					if (kind == NamespaceKind.PACKAGE_NAMESPACE) {
 						namesp = new LNamespace(kind, namespacePortion);
+					} else if (nameSpaceURI == null) {
+						namesp = new LNamespace(kind, namespacePortion + SINGLE_COLON + classNamePortion);
 					} else {
-						namesp = new LNamespace(kind, namespacePortion + ':' + classNamePortion);
+						namesp = new LNamespace(kind, nameSpaceURI);
 					}
 					break;
 			}

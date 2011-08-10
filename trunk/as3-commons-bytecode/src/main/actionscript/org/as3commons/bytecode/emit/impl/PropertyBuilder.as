@@ -23,6 +23,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
+	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
@@ -31,6 +32,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.util.EmitUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.StringUtils;
 
 	public class PropertyBuilder extends EmitMember implements IPropertyBuilder {
 
@@ -146,32 +148,21 @@ package org.as3commons.bytecode.emit.impl {
 					}
 				}
 				result[result.length] = Opcode.constructprop.op([propertyTypeMultiname, _memberInitialization.constructorArguments.length]);
-				result[result.length] = Opcode.initproperty.op([createPropertyQualifiedName()]);
+				var propertyQualifiedName:QualifiedName = createPropertyQualifiedName();
+				result[result.length] = Opcode.initproperty.op([propertyQualifiedName]);
 			}
 			return result;
 		}
 
 		protected function createPropertyTypeQualifiedName():QualifiedName {
-			return MultinameUtil.toQualifiedName(_type, MultinameUtil.getNamespaceKind(visibility));
+			return MultinameUtil.toQualifiedName(_type, NamespaceKind.PACKAGE_NAMESPACE);
 		}
 
 		protected function createPropertyQualifiedName():QualifiedName {
-			return MultinameUtil.toQualifiedName(name, MultinameUtil.getNamespaceKind(visibility));
+			return MultinameUtil.toQualifiedName(name, MultinameUtil.getNamespaceKind(visibility), namespaceURI);
 		}
 
-		/*
-		getlocal_0
-		findpropstrict	QName[Namespace[public::flash.events]:Event]
-		pushstring	customEvent
-		constructprop	QName[Namespace[public::flash.events]:Event]	1
-		initproperty	QName[Namespace[public]:event]
-		getlocal_0
-		getlocal_0
-		callproperty	QName[Namespace[public]:createEvent]	0
-		initproperty	QName[Namespace[public]:flexEvent]
-		*/
-
-		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+		public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
 			_eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
 
@@ -183,7 +174,7 @@ package org.as3commons.bytecode.emit.impl {
 			return _eventDispatcher.hasEventListener(type);
 		}
 
-		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
+		public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void {
 			_eventDispatcher.removeEventListener(type, listener, useCapture);
 		}
 

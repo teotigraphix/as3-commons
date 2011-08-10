@@ -20,6 +20,7 @@ package org.as3commons.bytecode.emit.impl {
 	import flexunit.framework.TestCase;
 
 	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.bytecode.as3commons_bytecode_proxy;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
@@ -160,6 +161,15 @@ package org.as3commons.bytecode.emit.impl {
 			_abcBuilder.buildAndLoad();
 		}
 
+		public function testBuildClassWithCustomNameSpacedProperty():void {
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyCustomNamespacedPropertyClass");
+			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("nameSpacedProperty", "Object");
+			propertyBuilder.namespaceURI = as3commons_bytecode_proxy;
+			propertyBuilder.memberInitialization = new MemberInitialization();
+			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(customNamespcaedPropertyBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+		}
+
 		public function testBuildClassWithMethodThatReturnsInt():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest2");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
@@ -199,6 +209,15 @@ package org.as3commons.bytecode.emit.impl {
 			_abcBuilder.buildAndLoad();
 		}
 
+		private function customNamespcaedPropertyBuildSuccessHandler(event:Event):void {
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyCustomNamespacedPropertyClass") as Class;
+			assertNotNull(cls);
+			var instance:Object = new cls();
+			assertNotNull(instance);
+			var result:Object = instance.as3commons_bytecode_proxy::nameSpacedProperty;
+			assertNotNull(result);
+
+		}
 
 		private function methodBuildSuccessHandler(event:Event):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest1") as Class;
