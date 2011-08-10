@@ -50,7 +50,7 @@ package org.as3commons.async.task.impl {
 		}
 
 		override public function execute():* {
-			finishedCommandList = [];
+			finishedCommandList = new Vector.<ICommand>();
 			var async:IOperation = _countProvider as IOperation;
 			if (async != null) {
 				if (async.result == null) {
@@ -75,7 +75,7 @@ package org.as3commons.async.task.impl {
 
 		protected function executeBlock():void {
 			if (_count > 0) {
-				finishedCommandList = [];
+				finishedCommandList = new Vector.<ICommand>();
 				executeNextCommand();
 			} else {
 				completeExecution();

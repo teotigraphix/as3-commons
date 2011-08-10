@@ -28,22 +28,22 @@ package org.as3commons.async.command {
 	 * Dispatched when the <code>CompositeCommand</code> is finised executing its collection of <code>ICommands</code>
 	 * @eventType org.as3commons.async.command.event.CompositeCommandEvent.COMPLETE CompositeCommandEvent.COMPLETE
 	 */
-	[Event(name = "compositeCommandComplete", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
+	[Event(name="compositeCommandComplete", type="org.as3commons.async.command.event.CompositeCommandEvent")]
 	/**
 	 * Dispatched when the <code>CompositeCommand</code> encounters an error.
 	 * @eventType org.as3commons.async.command.event.CompositeCommandEvent.ERROR CompositeCommandEvent.ERROR
 	 */
-	[Event(name = "compositeCommandError", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
+	[Event(name="compositeCommandError", type="org.as3commons.async.command.event.CompositeCommandEvent")]
 	/**
 	 * Dispatched before an <code>ICommand</code> from the collection is executed.
 	 * @eventType org.as3commons.async.command.event.CompositeCommandEvent.BEFORE_EXECUTE_COMMAND CompositeCommandEvent.BEFORE_EXECUTE_COMMAND
 	 */
-	[Event(name = "compositeCommandBeforeExecuteCommand", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
+	[Event(name="compositeCommandBeforeExecuteCommand", type="org.as3commons.async.command.event.CompositeCommandEvent")]
 	/**
 	 * Dispatched after an <code>ICommand</code> from the collection was executed.
 	 * @eventType org.as3commons.async.command.event.CompositeCommandEvent.AFTER_EXECUTE_COMMAND CompositeCommandEvent.AFTER_EXECUTE_COMMAND
 	 */
-	[Event(name = "compositeCommandAfterExecuteCommand", type = "org.as3commons.async.command.event.CompositeCommandEvent")]
+	[Event(name="compositeCommandAfterExecuteCommand", type="org.as3commons.async.command.event.CompositeCommandEvent")]
 	/**
 	 * Basic implementation of the <code>ICompositeCommand</code> that executes a list of <code>ICommand</code> instances
 	 * that were added through the <code>addCommand()</code> method. The commands are executed in the order in which
@@ -63,13 +63,13 @@ package org.as3commons.async.command {
 		 */
 		public var failOnFault:Boolean = false;
 
-		private var _commands:Array = [];
+		private var _commands:Vector.<ICommand> = new Vector.<ICommand>();
 
-		public function get commands():Array {
+		public function get commands():Vector.<ICommand> {
 			return _commands;
 		}
 
-		protected function setCommands(value:Array):void {
+		protected function setCommands(value:Vector.<ICommand>):void {
 			_commands = value;
 		}
 
@@ -83,7 +83,7 @@ package org.as3commons.async.command {
 		 * Creates a new <code>CompositeCommand</code> instance.
 		 * @default CompositeCommandKind.SEQUENCE
 		 */
-		public function CompositeCommand(kind:CompositeCommandKind = null) {
+		public function CompositeCommand(kind:CompositeCommandKind=null) {
 			super();
 			_kind = (kind != null) ? kind : CompositeCommandKind.SEQUENCE;
 		}

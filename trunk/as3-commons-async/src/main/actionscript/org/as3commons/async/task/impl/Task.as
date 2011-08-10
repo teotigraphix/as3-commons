@@ -52,11 +52,11 @@ package org.as3commons.async.task.impl {
 		/**
 		 * Internal <code>Array</code> of the commands, tasks and controlflow objects that will be executed.
 		 */
-		protected var commandList:Array;
+		protected var commandList:Vector.<ICommand>;
 		/**
 		 * Internal <code>Array</code> of the commands, tasks and controlflow objects that have been executed.
 		 */
-		protected var finishedCommandList:Array;
+		protected var finishedCommandList:Vector.<ICommand>;
 		/**
 		 * The current <code>ICommand</code> instance that is being executed.
 		 */
@@ -109,7 +109,7 @@ package org.as3commons.async.task.impl {
 		}
 
 		protected function initTask():void {
-			commandList = [];
+			commandList = new Vector.<ICommand>();
 			_context = {};
 		}
 
@@ -196,7 +196,7 @@ package org.as3commons.async.task.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function if_(conditionProvider:IConditionProvider = null, ifElseBlock:IIfElseBlock = null):IIfElseBlock {
+		public function if_(conditionProvider:IConditionProvider=null, ifElseBlock:IIfElseBlock=null):IIfElseBlock {
 			ifElseBlock = (ifElseBlock != null) ? ifElseBlock : new IfElseBlock(conditionProvider);
 			var cmd:ICommand = commandList[commandList.length - 1];
 			if ((cmd is ICompositeCommand) || ((cmd is ITask) && (ITask(cmd).isClosed))) {
@@ -225,9 +225,9 @@ package org.as3commons.async.task.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function while_(conditionProvider:IConditionProvider = null, whileBlock:IWhileBlock = null):IWhileBlock {
+		public function while_(conditionProvider:IConditionProvider=null, whileBlock:IWhileBlock=null):IWhileBlock {
 			whileBlock = (whileBlock != null) ? whileBlock : new WhileBlock(conditionProvider);
-			var cmd:ICommand = commandList[commandList.length - 1];
+			var cmd:ICommand = (commandList.length > 0) ? commandList[commandList.length - 1] : null;
 			if ((cmd is ICompositeCommand) || ((cmd is ITask) && (ITask(cmd).isClosed))) {
 				addToCommandList(whileBlock);
 			} else {
@@ -239,7 +239,7 @@ package org.as3commons.async.task.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function for_(count:uint, countProvider:ICountProvider = null, forBlock:IForBlock = null):IForBlock {
+		public function for_(count:uint, countProvider:ICountProvider=null, forBlock:IForBlock=null):IForBlock {
 			countProvider = ((countProvider == null) && (forBlock == null)) ? new CountProvider(count) : countProvider;
 			forBlock = (forBlock != null) ? forBlock : new ForBlock(countProvider);
 			var cmd:ICommand = (commandList.length > 0) ? commandList[commandList.length - 1] : null;
@@ -276,7 +276,7 @@ package org.as3commons.async.task.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function pause(duration:uint, pauseCommand:ICommand = null):ITask {
+		public function pause(duration:uint, pauseCommand:ICommand=null):ITask {
 			var result:ITask;
 			pauseCommand = (pauseCommand == null) ? new PauseCommand(duration) : pauseCommand;
 			result = addCommand(pauseCommand, CompositeCommandKind.SEQUENCE);
@@ -287,7 +287,7 @@ package org.as3commons.async.task.impl {
 		 * @inheritDoc
 		 */
 		public function execute():* {
-			finishedCommandList = [];
+			finishedCommandList = new Vector.<ICommand>();
 			executeNextCommand();
 		}
 
@@ -323,7 +323,7 @@ package org.as3commons.async.task.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function reset(doHardReset:Boolean = false):ITask {
+		public function reset(doHardReset:Boolean=false):ITask {
 			if (doHardReset) {
 				resetCommandList();
 			} else {
@@ -436,7 +436,7 @@ package org.as3commons.async.task.impl {
 			}
 		}
 
-		protected function dispatchTaskEvent(eventType:String, command:ICommand = null):void {
+		protected function dispatchTaskEvent(eventType:String, command:ICommand=null):void {
 			dispatchEvent(new TaskEvent(eventType, this, command));
 		}
 
