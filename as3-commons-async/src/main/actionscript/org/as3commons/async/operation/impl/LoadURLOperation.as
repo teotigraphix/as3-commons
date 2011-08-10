@@ -44,8 +44,7 @@ package org.as3commons.async.operation.impl {
 		 * @param dataFormat Optional argument that specifies the data format of the expected data. Use the <code>flash.net.URLLoaderDataFormat</code> enumeration for this.
 		 * @see flash.net.URLLoaderDataFormat
 		 */
-		public function LoadURLOperation(url:String, dataFormat:String = null) {
-			Assert.hasText(url, "url argument must not be null or empty");
+		public function LoadURLOperation(url:String, dataFormat:String=null) {
 			super();
 			init(url, dataFormat);
 		}
@@ -56,7 +55,8 @@ package org.as3commons.async.operation.impl {
 		 * @param dataFormat Optional argument that specifies the data format of the expected data. Use the <code>flash.net.URLLoaderDataFormat</code> enumeration for this. Default is "text".
 		 * @see flash.net.URLLoaderDataFormat
 		 */
-		protected function init(url:String, dataFormat:String = "text"):void {
+		protected function init(url:String, dataFormat:String="text"):void {
+			Assert.hasText(url, "url argument must not be null or empty");
 			dataFormat = (dataFormat == null) ? URLLoaderDataFormat.TEXT : dataFormat;
 			urlLoader = new URLLoader();
 			urlLoader.dataFormat = dataFormat;

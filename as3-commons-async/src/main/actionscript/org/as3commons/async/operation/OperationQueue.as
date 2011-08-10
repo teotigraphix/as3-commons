@@ -23,7 +23,7 @@ package org.as3commons.async.operation {
 	 * Dispatched when all the operations in the current <code>OperationQueue</code> have received a result.
 	 * @eventType org.as3commons.async.operation.OperationEvent#COMPLETE OperationEvent.COMPLETE
 	 */
-	[Event(name = "operationComplete", type = "org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationComplete", type="org.as3commons.async.operation.OperationEvent")]
 	/**
 	 * A queue of <code>IOperation</code> objects that dispatches an <code>OperationEvent.COMPLETE</code> event when
 	 * all operations in the queue have completed (and dispatched a corresponding <code>OperationEvent.COMPLETE</code>
@@ -41,7 +41,7 @@ package org.as3commons.async.operation {
 		private var _name:String;
 
 		/** The operations in this queue. */
-		private var _operations:Array = [];
+		private var _operations:Vector.<IOperation> = new Vector.<IOperation>();
 
 		// --------------------------------------------------------------------
 		//
@@ -53,7 +53,7 @@ package org.as3commons.async.operation {
 		 * Creates a new <code>OperationQueue</code> instance.
 		 * @param name the name of the queue; if no name is given, one will be generated.
 		 */
-		public function OperationQueue(name:String = "") {
+		public function OperationQueue(name:String="") {
 			_queueCounter++;
 			_name = (!name) ? "queue_" + _queueCounter.toString() : name;
 		}
@@ -114,7 +114,7 @@ package org.as3commons.async.operation {
 		 */
 		protected function operation_completeHandler(event:OperationEvent):void {
 			removeOperationListeners(event.operation);
-			ArrayUtils.removeItem(_operations, event.operation);
+			removeOperation(event.operation);
 			progress++;
 
 			if (_operations.length == 0) {
@@ -124,12 +124,19 @@ package org.as3commons.async.operation {
 			}
 		}
 
+		protected function removeOperation(operation:IOperation):void {
+			var idx:int = _operations.indexOf(operation);
+			if (idx > -1) {
+				_operations.splice(1, idx);
+			}
+		}
+
 		/**
 		 * Handles an error from an operation in this queue.
 		 */
 		protected function operation_errorHandler(event:OperationEvent):void {
 			removeOperationListeners(event.operation);
-			ArrayUtils.removeItem(_operations, event.operation);
+			removeOperation(event.operation);
 			progress++;
 
 			// redispatch an error from an operation in this queue

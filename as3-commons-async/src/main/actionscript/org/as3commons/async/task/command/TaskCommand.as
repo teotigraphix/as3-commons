@@ -34,13 +34,13 @@ package org.as3commons.async.task.command {
 		private static const LOGGER:ILogger = getLogger(TaskCommand);
 
 		private var _stopped:Boolean = false;
-		private var _finishedCommands:Array;
+		private var _finishedCommands:Vector.<ICommand>;
 
 		/**
 		 * Creates a new <code>TaskCommand</code> instance.
 		 * @param kind
 		 */
-		public function TaskCommand(kind:CompositeCommandKind = null) {
+		public function TaskCommand(kind:CompositeCommandKind=null) {
 			super(kind);
 		}
 
@@ -52,13 +52,13 @@ package org.as3commons.async.task.command {
 					ITask(cmd).reset(true);
 				}
 			}
-			_finishedCommands ||= [];
+			_finishedCommands ||= new Vector.<ICommand>();
 			setCommands(_finishedCommands.concat(commands));
-			_finishedCommands = [];
+			_finishedCommands = new Vector.<ICommand>();
 		}
 
 		override public function execute():* {
-			_finishedCommands = [];
+			_finishedCommands = new Vector.<ICommand>();
 			_stopped = false;
 			return super.execute();
 		}

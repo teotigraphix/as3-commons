@@ -44,7 +44,7 @@ package org.as3commons.async.task.impl {
 		}
 
 		override public function execute():* {
-			finishedCommandList = [];
+			finishedCommandList = new Vector.<ICommand>();
 			var async:IOperation = _conditionProvider as IOperation;
 			if (async != null) {
 				addConditionalListeners(async);
