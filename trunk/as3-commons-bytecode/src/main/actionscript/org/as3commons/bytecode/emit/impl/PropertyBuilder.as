@@ -35,6 +35,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.lang.StringUtils;
 
 	public class PropertyBuilder extends EmitMember implements IPropertyBuilder {
+		private static const DOT:String = '.';
 
 		private var _eventDispatcher:IEventDispatcher;
 
@@ -118,40 +119,65 @@ package org.as3commons.bytecode.emit.impl {
 		public function buildPropertyInitializers():Array {
 			var result:Array = [];
 			if (_memberInitialization != null) {
-				var propertyTypeMultiname:QualifiedName = createPropertyTypeQualifiedName();
 				result[result.length] = Opcode.getlocal_0.op();
-				result[result.length] = Opcode.findpropstrict.op([propertyTypeMultiname]);
-				for each (var arg:* in _memberInitialization.constructorArguments) {
-					switch (true) {
-						case (arg is String):
-							result[result.length] = Opcode.pushstring.op([arg]);
-							break;
-						case (arg is int):
-							result[result.length] = Opcode.pushint.op([arg]);
-							break;
-						case (arg is uint):
-							result[result.length] = Opcode.pushuint.op([arg]);
-							break;
-						case (arg is Number):
-							result[result.length] = Opcode.pushdouble.op([arg]);
-							break;
-						case (arg is Boolean):
-							if (Boolean(arg) == true) {
-								result[result.length] = Opcode.pushtrue.op();
-							} else {
-								result[result.length] = Opcode.pushfalse.op();
-							}
-							break;
-						case (arg == null):
-							result[result.length] = Opcode.pushnull.op();
-							break;
-					}
+				if (!StringUtils.hasText(_memberInitialization.factoryMethodName)) {
+					createSimplePropertyInitializer(result);
+				} else {
+					createComplexPropertyInitializer(result);
 				}
-				result[result.length] = Opcode.constructprop.op([propertyTypeMultiname, _memberInitialization.constructorArguments.length]);
 				var propertyQualifiedName:QualifiedName = createPropertyQualifiedName();
 				result[result.length] = Opcode.initproperty.op([propertyQualifiedName]);
 			}
 			return result;
+		}
+
+		protected function createComplexPropertyInitializer(result:Array):void {
+			var factoryMethodQualifiedName:QualifiedName;
+			if (_memberInitialization.factoryMethodName.indexOf(DOT) > -1) {
+				var parts:Array = _memberInitialization.factoryMethodName.split(DOT);
+				var methodName:String = String(parts.pop());
+				factoryMethodQualifiedName = MultinameUtil.toQualifiedName(parts.join(DOT), NamespaceKind.PACKAGE_NAMESPACE);
+				var methodNameQualifiedName:QualifiedName = MultinameUtil.toQualifiedName(methodName, NamespaceKind.PACKAGE_NAMESPACE);
+				result[result.length] = Opcode.findpropstrict.op([factoryMethodQualifiedName]);
+				result[result.length] = Opcode.getproperty.op([factoryMethodQualifiedName]);
+				result[result.length] = Opcode.callproperty.op([methodNameQualifiedName, 0]);
+			} else {
+				factoryMethodQualifiedName = MultinameUtil.toQualifiedName(_memberInitialization.factoryMethodName, NamespaceKind.PACKAGE_NAMESPACE);
+				result[result.length] = Opcode.findpropstrict.op([factoryMethodQualifiedName]);
+				result[result.length] = Opcode.callproperty.op([factoryMethodQualifiedName, 0]);
+			}
+		}
+
+		protected function createSimplePropertyInitializer(result:Array):void {
+			var propertyTypeMultiname:QualifiedName = createPropertyTypeQualifiedName();
+			result[result.length] = Opcode.findpropstrict.op([propertyTypeMultiname]);
+			for each (var arg:* in _memberInitialization.constructorArguments) {
+				switch (true) {
+					case (arg is String):
+						result[result.length] = Opcode.pushstring.op([arg]);
+						break;
+					case (arg is int):
+						result[result.length] = Opcode.pushint.op([arg]);
+						break;
+					case (arg is uint):
+						result[result.length] = Opcode.pushuint.op([arg]);
+						break;
+					case (arg is Number):
+						result[result.length] = Opcode.pushdouble.op([arg]);
+						break;
+					case (arg is Boolean):
+						if (Boolean(arg) == true) {
+							result[result.length] = Opcode.pushtrue.op();
+						} else {
+							result[result.length] = Opcode.pushfalse.op();
+						}
+						break;
+					case (arg == null):
+						result[result.length] = Opcode.pushnull.op();
+						break;
+				}
+			}
+			result[result.length] = Opcode.constructprop.op([propertyTypeMultiname, _memberInitialization.constructorArguments.length]);
 		}
 
 		protected function createPropertyTypeQualifiedName():QualifiedName {

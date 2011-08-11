@@ -34,6 +34,7 @@ package org.as3commons.bytecode.emit.impl {
 	public class AbcBuilderTest extends TestCase {
 
 		private var _abcBuilder:IAbcBuilder;
+		private static var _staticWasCalled:Boolean;
 
 		public function AbcBuilderTest() {
 			super();
@@ -85,11 +86,54 @@ package org.as3commons.bytecode.emit.impl {
 			assertTrue(mthd.hasMetadata('CustomMethod'));
 		}
 
+		public function testBuildClassWithSimplePropertyWithStaticInitializer():void {
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MySimplePropertyTestWithStaticInitializerClass");
+			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testString", "String");
+			propertyBuilder.memberInitialization = new MemberInitialization();
+			propertyBuilder.memberInitialization.factoryMethodName = "createString";
+			var methodBuilder:IMethodBuilder = classBuilder.defineMethod("createString");
+			methodBuilder.isStatic = true;
+			methodBuilder.returnType = "String";
+			methodBuilder.addOp(Opcode.getlocal_0.op()).addOp(Opcode.pushscope.op()).addOp(Opcode.pushstring.op(["testValue"])).addOp(Opcode.returnvalue.op());
+			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertySimpleWithStaticInitializerBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+		}
+
+		public function testBuildClassWithSimplePropertyWithStaticInitializerOnDifferentClass():void {
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MySimplePropertyTestWithStaticInitializerClassOnDifferentClass");
+			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testString", "String");
+			propertyBuilder.memberInitialization = new MemberInitialization();
+			propertyBuilder.memberInitialization.factoryMethodName = "org.as3commons.bytecode.emit.impl.AbcBuilderTest.createString";
+			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertySimpleWithStaticInitializerOnDifferentClassBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+		}
+
+		private function propertySimpleWithStaticInitializerOnDifferentClassBuildSuccessHandler(event:Event):void {
+			_staticWasCalled = false;
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyTestWithStaticInitializerClassOnDifferentClass") as Class;
+			assertNotNull(cls);
+			var instance:Object = new cls();
+			assertEquals("testValue", instance.testString);
+			assertTrue(_staticWasCalled);
+		}
+
+		public static function createString():String {
+			_staticWasCalled = true;
+			return "testValue";
+		}
+
 		public function testBuildClassWithComplexProperty():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyComplexPropertyTest");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testObject", "flash.events.Event");
 			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertyComplexBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
+		}
+
+		private function propertySimpleWithStaticInitializerBuildSuccessHandler(event:Event):void {
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyTestWithStaticInitializerClass") as Class;
+			assertNotNull(cls);
+			var instance:Object = new cls();
+			assertEquals("testValue", instance.testString);
 		}
 
 		private function propertyComplexBuildSuccessHandler(event:Event):void {
