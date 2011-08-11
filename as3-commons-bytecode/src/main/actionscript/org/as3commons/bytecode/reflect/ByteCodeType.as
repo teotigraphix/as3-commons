@@ -61,7 +61,7 @@ package org.as3commons.bytecode.reflect {
 		private var _byteArray:ByteArray;
 		private var _constantPool:IConstantPool;
 
-		public function ByteCodeType(applicationDomain:ApplicationDomain, byteArray:ByteArray = null, constantPool:IConstantPool = null) {
+		public function ByteCodeType(applicationDomain:ApplicationDomain, byteArray:ByteArray=null, constantPool:IConstantPool=null) {
 			super(applicationDomain);
 			_byteArray = byteArray;
 			_constantPool = constantPool;
@@ -143,7 +143,7 @@ package org.as3commons.bytecode.reflect {
 		 * @param input The specified <code>ByteArray</code>.
 		 * @param applicationDomain The <code>ApplicationDomain</code> that is associated with the specified <code>ByteArray</code>.
 		 */
-		public static function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain = null, isLoaderBytes:Boolean = true):void {
+		public static function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
 			Assert.notNull(input, "input argument must not be null");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(input, applicationDomain, isLoaderBytes);
@@ -153,7 +153,7 @@ package org.as3commons.bytecode.reflect {
 		 * Returns a <code>ByteCodeType</code> object that describes the given instance.
 		 * @param instance the instance from which to get a type description
 		 */
-		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):ByteCodeType {
+		public static function forInstance(instance:*, applicationDomain:ApplicationDomain=null):ByteCodeType {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:ByteCodeType = null;
 			var clazz:Class = ClassUtils.forInstance(instance, applicationDomain);
@@ -170,7 +170,7 @@ package org.as3commons.bytecode.reflect {
 		 *
 		 * @param name the classname from which to get a type description
 		 */
-		public static function forName(name:String, applicationDomain:ApplicationDomain = null):ByteCodeType {
+		public static function forName(name:String, applicationDomain:ApplicationDomain=null):ByteCodeType {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:ByteCodeType;
 
@@ -200,12 +200,12 @@ package org.as3commons.bytecode.reflect {
 		 *
 		 * @param clazz the class from which to get a type description
 		 */
-		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain = null):ByteCodeType {
+		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain=null):ByteCodeType {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:ByteCodeType;
 			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz, true);
 			var type:ByteCodeType = forName(fullyQualifiedClassName, applicationDomain);
-			if (type.clazz == null) {
+			if ((type != null) && (type.clazz == null)) {
 				type.clazz = clazz;
 			}
 			return type;
@@ -331,11 +331,8 @@ package org.as3commons.bytecode.reflect {
 			if (extendsClasses.length > 0) {
 				var tempMethods:Array = methods;
 				var parentType:Type = forName(this.extendsClasses[0], this.applicationDomain);
-				if (parentType == null) {
-					parentType = Type.forName(this.extendsClasses[0], this.applicationDomain);
-				}
 				if (parentType != null) {
-					for each (var method:Method in parentType.methods) {
+					for each (var method:ByteCodeMethod in parentType.methods) {
 						if (!objectExists(method, tempMethods)) {
 							tempMethods[tempMethods.length] = method;
 						}
@@ -360,7 +357,7 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		protected function objectExists(objectToCheck:Object, methods:Array):Boolean {
-			for each (var obj:Object in methods) {
+			for each (var obj:ByteCodeMethod in methods) {
 				if ((obj.name == objectToCheck.name) && (obj.namespaceURI == objectToCheck.namespaceURI)) {
 					return true;
 				}
