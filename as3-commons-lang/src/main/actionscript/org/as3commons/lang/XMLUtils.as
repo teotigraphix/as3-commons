@@ -111,5 +111,27 @@ package org.as3commons.lang {
 			return xml;
 		}
 
+		/**
+		 *
+		 * @param source
+		 * @param toMerge
+		 * @return
+		 */
+		public static function mergeXML(source:XML, toMerge:XML):XML {
+			Assert.notNull(toMerge, "toMerge argument must not be null");
+			if (source == null) {
+				return toMerge;
+			}
+			var nspaces:Array = toMerge.namespaceDeclarations();
+			for each (var ns:Namespace in nspaces) {
+				if (source.namespace(ns) === undefined) {
+					source = source.addNamespace(ns);
+				}
+			}
+			var childNodes:XMLList = toMerge.children();
+			source.appendChild(childNodes);
+			return source;
+		}
+
 	}
 }
