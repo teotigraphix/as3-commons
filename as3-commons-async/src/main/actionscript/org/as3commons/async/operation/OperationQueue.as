@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.async.operation {
-
 	import flash.utils.setTimeout;
-
 	import org.as3commons.lang.ArrayUtils;
 
 	/**
@@ -37,12 +35,6 @@ package org.as3commons.async.operation {
 		/** A static counter of queues. */
 		private static var _queueCounter:uint = 0;
 
-		/** The name of the queue. */
-		private var _name:String;
-
-		/** The operations in this queue. */
-		private var _operations:Vector.<IOperation> = new Vector.<IOperation>();
-
 		// --------------------------------------------------------------------
 		//
 		// Constructor
@@ -57,6 +49,9 @@ package org.as3commons.async.operation {
 			_queueCounter++;
 			_name = (!name) ? "queue_" + _queueCounter.toString() : name;
 		}
+
+		private var _name:String;
+		private var _operations:Vector.<IOperation> = new Vector.<IOperation>();
 
 		// --------------------------------------------------------------------
 		//
@@ -99,6 +94,17 @@ package org.as3commons.async.operation {
 			return "[OperationQueue(name='" + name + "',operations:'" + _operations.length + "', total:'" + total.toString() + "', progress:'" + progress.toString() + "')]";
 		}
 
+		/**
+		 * Adds the <code>operation_completeHandler</code> and <code>operation_errorHandler</code> event handler to
+		 * the specified <code>operation</code> instance.
+		 */
+		protected function addOperationListeners(operation:IOperation):void {
+			if (operation) {
+				operation.addCompleteListener(operation_completeHandler);
+				operation.addErrorListener(operation_errorHandler);
+			}
+		}
+
 		// --------------------------------------------------------------------
 		//
 		// Protected Methods
@@ -121,13 +127,6 @@ package org.as3commons.async.operation {
 				dispatchCompleteEvent();
 			} else {
 				dispatchProgressEvent();
-			}
-		}
-
-		protected function removeOperation(operation:IOperation):void {
-			var idx:int = _operations.indexOf(operation);
-			if (idx > -1) {
-				_operations.splice(idx, 1);
 			}
 		}
 
@@ -156,14 +155,20 @@ package org.as3commons.async.operation {
 			redispatchErrorAndContinue(event.error);
 		}
 
-		/**
-		 * Adds the <code>operation_completeHandler</code> and <code>operation_errorHandler</code> event handler to
-		 * the specified <code>operation</code> instance.
-		 */
-		protected function addOperationListeners(operation:IOperation):void {
-			if (operation) {
-				operation.addCompleteListener(operation_completeHandler);
-				operation.addErrorListener(operation_errorHandler);
+		protected function redispatchErrorAndContinue(error:*):void {
+			dispatchErrorEvent(error);
+
+			if (_operations.length == 0) {
+				dispatchCompleteEvent();
+			} else {
+				dispatchProgressEvent();
+			}
+		}
+
+		protected function removeOperation(operation:IOperation):void {
+			var idx:int = _operations.indexOf(operation);
+			if (idx > -1) {
+				_operations.splice(idx, 1);
 			}
 		}
 
@@ -177,22 +182,5 @@ package org.as3commons.async.operation {
 				operation.removeErrorListener(operation_errorHandler);
 			}
 		}
-
-		// --------------------------------------------------------------------
-		//
-		// Private Methods
-		//
-		// --------------------------------------------------------------------
-
-		private function redispatchErrorAndContinue(error:*):void {
-			dispatchErrorEvent(error);
-
-			if (_operations.length == 0) {
-				dispatchCompleteEvent();
-			} else {
-				dispatchProgressEvent();
-			}
-		}
-
 	}
 }
