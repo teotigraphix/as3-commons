@@ -127,7 +127,7 @@ package org.as3commons.async.operation {
 		protected function removeOperation(operation:IOperation):void {
 			var idx:int = _operations.indexOf(operation);
 			if (idx > -1) {
-				_operations.splice(1, idx);
+				_operations.splice(idx, 1);
 			}
 		}
 
