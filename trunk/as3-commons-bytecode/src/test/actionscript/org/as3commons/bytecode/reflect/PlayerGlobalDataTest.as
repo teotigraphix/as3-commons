@@ -18,14 +18,25 @@ package org.as3commons.bytecode.reflect {
 
 	import flexunit.framework.TestCase;
 
+	import mx.core.FlexGlobals;
+
+	import spark.components.Application;
+
 	public class PlayerGlobalDataTest extends TestCase {
 
-		public function PlayerGlobalDataTest(methodName:String = null) {
+		public function PlayerGlobalDataTest(methodName:String=null) {
 			super(methodName);
 		}
 
+		override public function setUp():void {
+			ByteCodeType.fromLoader(Application(FlexGlobals.topLevelApplication).loaderInfo);
+		}
+
 		public function testForNameEventDispatcher():void {
-			var type:ByteCodeType = ByteCodeType.forClass(EventDispatcher);
+			var type:ByteCodeType = ByteCodeType.forClass(Application);
+			for each (var method:ByteCodeMethod in type.methods) {
+				var i:int = 0;
+			}
 			assertNotNull(type);
 		}
 	}
