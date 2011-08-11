@@ -356,8 +356,8 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
-		protected function objectExists(objectToCheck:Object, methods:Array):Boolean {
-			for each (var obj:ByteCodeMethod in methods) {
+		protected function objectExists(objectToCheck:Object, members:Array):Boolean {
+			for each (var obj:Object in members) {
 				if ((obj.name == objectToCheck.name) && (obj.namespaceURI == objectToCheck.namespaceURI)) {
 					return true;
 				}
