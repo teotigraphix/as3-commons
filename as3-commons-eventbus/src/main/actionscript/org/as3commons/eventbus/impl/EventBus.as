@@ -17,12 +17,14 @@ package org.as3commons.eventbus.impl {
 
 	import flash.events.Event;
 	import flash.utils.Dictionary;
+
 	import org.as3commons.eventbus.IEventBus;
 	import org.as3commons.eventbus.IEventBusListener;
 	import org.as3commons.eventbus.IEventInterceptor;
 	import org.as3commons.eventbus.IEventListenerInterceptor;
 	import org.as3commons.eventbus.impl.collection.WeakLinkedList;
 	import org.as3commons.eventbus.impl.collection.WeakLinkedListIterator;
+	import org.as3commons.lang.IDisposable;
 	import org.as3commons.logging.api.ILogger;
 	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.reflect.MethodInvoker;
@@ -41,7 +43,7 @@ package org.as3commons.eventbus.impl {
 	 * @author Christophe Herreman
 	 * @author Roland Zwaga
 	 */
-	public class EventBus implements IEventBus, IEventBusListener {
+	public class EventBus implements IEventBus, IEventBusListener, IDisposable {
 
 		private static var LOGGER:ILogger = getLogger(EventBus);
 
@@ -113,11 +115,12 @@ package org.as3commons.eventbus.impl {
 
 		/** The IEventBusListener objects that listen to all events on the event bus. */
 		protected var listeners:EventBusCollectionLookup = new EventBusCollectionLookup();
+		private var _isDisposed:Boolean;
 
 		/**
 		 * @inheritDoc
 		 */
-		public function addEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor, topic:Object = null):void {
+		public function addEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor, topic:Object=null):void {
 			if (eventClassInterceptors[eventClass] == null) {
 				eventClassInterceptors[eventClass] = new EventBusCollectionLookup();
 			}
@@ -128,7 +131,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addEventClassListener(eventClass:Class, listener:Function, useWeakReference:Boolean = false, topic:Object = null):Boolean {
+		public function addEventClassListener(eventClass:Class, listener:Function, useWeakReference:Boolean=false, topic:Object=null):Boolean {
 			if (classListeners[eventClass] == null) {
 				classListeners[eventClass] = new EventBusCollectionLookup();
 			}
@@ -141,7 +144,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void {
+		public function addEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object=null):void {
 			if (eventClassListenerInterceptors[eventClass] == null) {
 				eventClassListenerInterceptors[eventClass] = new EventBusCollectionLookup();
 			}
@@ -152,7 +155,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, useWeakReference:Boolean = false, topic:Object = null):Boolean {
+		public function addEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, useWeakReference:Boolean=false, topic:Object=null):Boolean {
 			if (classProxyListeners[eventClass] == null) {
 				classProxyListeners[eventClass] = new EventBusCollectionLookup();
 			}
@@ -165,7 +168,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object = null):void {
+		public function addEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object=null):void {
 			if (eventInterceptors[type] == null) {
 				eventInterceptors[type] = new EventBusCollectionLookup();
 			}
@@ -176,7 +179,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addEventListener(type:String, listener:Function, useWeakReference:Boolean = false, topic:Object = null):Boolean {
+		public function addEventListener(type:String, listener:Function, useWeakReference:Boolean=false, topic:Object=null):Boolean {
 			if (eventListeners[type] == null) {
 				eventListeners[type] = new EventBusCollectionLookup();
 			}
@@ -189,7 +192,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void {
+		public function addEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object=null):void {
 			if (eventListenerInterceptors[type] == null) {
 				eventListenerInterceptors[type] = new EventBusCollectionLookup();
 			}
@@ -200,7 +203,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addEventListenerProxy(type:String, proxy:MethodInvoker, useWeakReference:Boolean = false, topic:Object = null):Boolean {
+		public function addEventListenerProxy(type:String, proxy:MethodInvoker, useWeakReference:Boolean=false, topic:Object=null):Boolean {
 			if (eventListenerProxies[type] == null) {
 				eventListenerProxies[type] = new EventBusCollectionLookup();
 			}
@@ -213,14 +216,14 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addInterceptor(interceptor:IEventInterceptor, topic:Object = null):void {
+		public function addInterceptor(interceptor:IEventInterceptor, topic:Object=null):void {
 			interceptors.add(interceptor, false, topic);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function addListener(listener:IEventBusListener, useWeakReference:Boolean = false, topic:Object = null):Boolean {
+		public function addListener(listener:IEventBusListener, useWeakReference:Boolean=false, topic:Object=null):Boolean {
 			var result:Boolean = internalAddListener(listeners, listener, useWeakReference, topic, null);
 			LOGGER.debug("Added IEventBusListener {0}", [listener]);
 			return result;
@@ -229,7 +232,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void {
+		public function addListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object=null):void {
 			listenerInterceptors.add(interceptor, false, topic);
 		}
 
@@ -244,14 +247,14 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function dispatch(type:String, topic:Object = null):Boolean {
+		public function dispatch(type:String, topic:Object=null):Boolean {
 			return dispatchEvent(new Event(type), topic);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function dispatchEvent(event:Event, topic:Object = null):Boolean {
+		public function dispatchEvent(event:Event, topic:Object=null):Boolean {
 			if (!event) {
 				return false;
 			}
@@ -269,63 +272,63 @@ package org.as3commons.eventbus.impl {
 			return false;
 		}
 
-		public function getClassInterceptorCount(clazz:Class, topic:Object = null):uint {
+		public function getClassInterceptorCount(clazz:Class, topic:Object=null):uint {
 			if (eventClassInterceptors[clazz] != null) {
 				return EventBusCollectionLookup(eventClassInterceptors[clazz]).getCollectionCount(topic);
 			}
 			return 0;
 		}
 
-		public function getClassListenerCount(clazz:Class, topic:Object = null):uint {
+		public function getClassListenerCount(clazz:Class, topic:Object=null):uint {
 			if (classListeners[clazz] != null) {
 				return EventBusCollectionLookup(classListeners[clazz]).getCollectionCount(topic);
 			}
 			return 0;
 		}
 
-		public function getClassListenerInterceptorCount(eventClass:Class, topic:Object = null):uint {
+		public function getClassListenerInterceptorCount(eventClass:Class, topic:Object=null):uint {
 			if (eventClassListenerInterceptors[eventClass] != null) {
 				return EventBusCollectionLookup(eventClassListenerInterceptors[eventClass]).getCollectionCount(topic);
 			}
 			return 0;
 		}
 
-		public function getClassProxyListenerCount(clazz:Class, topic:Object = null):uint {
+		public function getClassProxyListenerCount(clazz:Class, topic:Object=null):uint {
 			if (classProxyListeners[clazz] != null) {
 				return EventBusCollectionLookup(classProxyListeners[clazz]).getCollectionCount(topic);
 			}
 			return 0;
 		}
 
-		public function getEventInterceptorCount(eventType:String, topic:Object = null):uint {
+		public function getEventInterceptorCount(eventType:String, topic:Object=null):uint {
 			if (eventInterceptors[eventType] != null) {
 				return EventBusCollectionLookup(eventInterceptors[eventType]).getCollectionCount(topic);
 			}
 			return 0;
 		}
 
-		public function getEventListenerCount(eventType:String, topic:Object = null):uint {
+		public function getEventListenerCount(eventType:String, topic:Object=null):uint {
 			if (eventListeners[eventType] != null) {
 				return EventBusCollectionLookup(eventListeners[eventType]).getCollectionCount(topic);
 			}
 			return 0;
 		}
 
-		public function getEventListenerInterceptorCount(eventType:String, topic:Object = null):uint {
+		public function getEventListenerInterceptorCount(eventType:String, topic:Object=null):uint {
 			if (eventListenerInterceptors[eventType] != null) {
 				return EventBusCollectionLookup(eventListenerInterceptors[eventType]).getCollectionCount(topic);
 			}
 			return 0;
 		}
 
-		public function getEventListenerProxyCount(eventType:String, topic:Object = null):uint {
+		public function getEventListenerProxyCount(eventType:String, topic:Object=null):uint {
 			if (eventListenerProxies[eventType] != null) {
 				return EventBusCollectionLookup(eventListenerProxies[eventType]).getCollectionCount(topic);
 			}
 			return 0;
 		}
 
-		public function getInterceptorCount(topic:Object = null):uint {
+		public function getInterceptorCount(topic:Object=null):uint {
 			return interceptors.getCollectionCount(topic);
 		}
 
@@ -335,11 +338,11 @@ package org.as3commons.eventbus.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function getListenerCount(topic:Object = null):uint {
+		public function getListenerCount(topic:Object=null):uint {
 			return listeners.getCollectionCount(topic);
 		}
 
-		public function getListenerInterceptorCount(topic:Object = null):uint {
+		public function getListenerInterceptorCount(topic:Object=null):uint {
 			return listenerInterceptors.getCollectionCount(topic);
 		}
 
@@ -359,16 +362,17 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeAllInterceptors(topic:Object = null):void {
+		public function removeAllInterceptors(topic:Object=null):void {
 			eventClassInterceptors = new Dictionary();
 			eventInterceptors = new Dictionary();
 			interceptors = new EventBusCollectionLookup();
+			listenerInterceptors = new EventBusCollectionLookup();
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function removeAllListeners(topic:Object = null):void {
+		public function removeAllListeners(topic:Object=null):void {
 			classListeners = new Dictionary();
 			classProxyListeners = new Dictionary();
 			listeners = new EventBusCollectionLookup();
@@ -380,7 +384,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor, topic:Object = null):void {
+		public function removeEventClassInterceptor(eventClass:Class, interceptor:IEventInterceptor, topic:Object=null):void {
 			if (eventClassInterceptors[eventClass] != null) {
 				var clsInterceptors:EventBusCollectionLookup = EventBusCollectionLookup(eventClassInterceptors[eventClass]);
 				clsInterceptors.remove(interceptor, topic);
@@ -390,7 +394,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeEventClassListener(eventClass:Class, listener:Function, topic:Object = null):void {
+		public function removeEventClassListener(eventClass:Class, listener:Function, topic:Object=null):void {
 			if (classListeners[eventClass] != null) {
 				var listeners:EventBusCollectionLookup = EventBusCollectionLookup(classListeners[eventClass]);
 				listeners.remove(listener, topic);
@@ -401,7 +405,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object = null):void {
+		public function removeEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object=null):void {
 			if (eventClassListenerInterceptors[eventClass] == null) {
 				var classListenerInterceptors:EventBusCollectionLookup = EventBusCollectionLookup(eventClassListenerInterceptors[eventClass]);
 				classListenerInterceptors.remove(interceptor, topic);
@@ -411,7 +415,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, topic:Object = null):void {
+		public function removeEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, topic:Object=null):void {
 			if (classProxyListeners[eventClass] != null) {
 				var proxies:EventBusCollectionLookup = EventBusCollectionLookup(classProxyListeners[eventClass]);
 				proxies.remove(proxy, topic);
@@ -422,7 +426,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object = null):void {
+		public function removeEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object=null):void {
 			if (eventInterceptors[type] != null) {
 				var evtInterceptors:EventBusCollectionLookup = EventBusCollectionLookup(eventInterceptors[type]);
 				evtInterceptors.remove(interceptor, topic);
@@ -432,7 +436,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeEventListener(type:String, listener:Function, topic:Object = null):void {
+		public function removeEventListener(type:String, listener:Function, topic:Object=null):void {
 			if (eventListeners[type] != null) {
 				var eventListenerCollection:EventBusCollectionLookup = EventBusCollectionLookup(eventListeners[type]);
 				eventListenerCollection.remove(listener, topic);
@@ -443,7 +447,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object = null):void {
+		public function removeEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object=null):void {
 			if (eventListenerInterceptors[type] == null) {
 				var evtListenerInterceptors:EventBusCollectionLookup = EventBusCollectionLookup(eventListenerInterceptors[type]);
 				evtListenerInterceptors.remove(interceptor, topic);
@@ -453,7 +457,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeEventListenerProxy(type:String, proxy:MethodInvoker, topic:Object = null):void {
+		public function removeEventListenerProxy(type:String, proxy:MethodInvoker, topic:Object=null):void {
 			if (eventListenerProxies[type] != null) {
 				var proxies:EventBusCollectionLookup = EventBusCollectionLookup(eventListenerProxies[type]);
 				proxies.remove(proxy, topic);
@@ -464,14 +468,14 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeInterceptor(interceptor:IEventInterceptor, topic:Object = null):void {
+		public function removeInterceptor(interceptor:IEventInterceptor, topic:Object=null):void {
 			interceptors.remove(interceptor, topic);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function removeListener(listener:IEventBusListener, topic:Object = null):void {
+		public function removeListener(listener:IEventBusListener, topic:Object=null):void {
 			listeners.remove(listener, topic);
 			LOGGER.debug("Removed IEventBusListener {0} for topic {1}", [listener, topic]);
 		}
@@ -479,7 +483,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object = null):void {
+		public function removeListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object=null):void {
 			listenerInterceptors.remove(interceptor, topic);
 		}
 
@@ -623,7 +627,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		protected function notifyEventBusListeners(event:Event, topic:Object = null):void {
+		protected function notifyEventBusListeners(event:Event, topic:Object=null):void {
 			// notify all event bus listeners
 			var lst:WeakLinkedList = listeners.getCollection(topic);
 			if (lst != null) {
@@ -716,7 +720,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		protected function notifySpecificEventListeners(event:Event, topic:Object = null):void {
+		protected function notifySpecificEventListeners(event:Event, topic:Object=null):void {
 			// notify all specific event listeners
 			if (eventListeners[event.type] != null) {
 				var listeners:WeakLinkedList = EventBusCollectionLookup(eventListeners[event.type]).getCollection(topic);
@@ -756,6 +760,44 @@ package org.as3commons.eventbus.impl {
 				return false;
 			}
 		}
+
+		public function get isDisposed():Boolean {
+			return _isDisposed;
+		}
+
+		public function dispose():void {
+			if (!_isDisposed) {
+				var item:*;
+				for (item in eventClassListenerInterceptors) {
+					EventBusCollectionLookup(eventClassListenerInterceptors[item]).dispose();
+				}
+				eventClassListenerInterceptors = null;
+				for (item in eventInterceptors) {
+					EventBusCollectionLookup(eventInterceptors[item]).dispose();
+				}
+				eventInterceptors = null;
+				for (item in eventListenerInterceptors) {
+					EventBusCollectionLookup(eventListenerInterceptors[item]).dispose();
+				}
+				eventListenerInterceptors = null;
+				for (item in eventListenerProxies) {
+					EventBusCollectionLookup(eventListenerProxies[item]).dispose();
+				}
+				eventListenerProxies = null;
+				for (item in eventListeners) {
+					EventBusCollectionLookup(eventListeners[item]).dispose();
+				}
+				eventListeners = null;
+				interceptors.dispose();
+				interceptors = null;
+				listenerInterceptors.dispose();
+				listenerInterceptors = null;
+				listeners.dispose();
+				listeners = null;
+				_isDisposed = true;
+			}
+		}
+
 	}
 
 }
