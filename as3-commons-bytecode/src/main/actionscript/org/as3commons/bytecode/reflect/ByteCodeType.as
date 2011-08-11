@@ -330,24 +330,24 @@ package org.as3commons.bytecode.reflect {
 			_initialized = true;
 			if (extendsClasses.length > 0) {
 				var tempMethods:Array = methods;
-				var parentType:Type = forName(this.extendsClasses[0], this.applicationDomain);
+				var parentType:ByteCodeType = forName(this.extendsClasses[0], this.applicationDomain);
 				if (parentType != null) {
 					for each (var method:ByteCodeMethod in parentType.methods) {
 						if (!objectExists(method, tempMethods)) {
 							tempMethods[tempMethods.length] = method;
 						}
 					}
-					for each (var variable:Variable in parentType.variables) {
+					for each (var variable:ByteCodeVariable in parentType.variables) {
 						if (!objectExists(variable, variables)) {
 							this.variables[this.variables.length] = variable;
 						}
 					}
-					for each (var acc:Accessor in parentType.accessors) {
+					for each (var acc:ByteCodeAccessor in parentType.accessors) {
 						if (!objectExists(acc, accessors)) {
 							this.accessors[this.accessors.length] = acc;
 						}
 					}
-					for each (var constant:Constant in parentType.constants) {
+					for each (var constant:ByteCodeConstant in parentType.constants) {
 						this.constants[this.constants.length] = constant;
 					}
 					this.methods = tempMethods;
