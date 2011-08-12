@@ -19,7 +19,7 @@ package org.as3commons.async.task.command {
 
 	import flexunit.framework.Assert;
 
-	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.event.OperationEvent;
 
 	public class PauseCommandTest {
 
@@ -27,7 +27,7 @@ package org.as3commons.async.task.command {
 			super();
 		}
 
-		[Test(async, timeout = 2000)]
+		[Test(async, timeout=2000)]
 		public function testExecute():void {
 			var pc:PauseCommand = new PauseCommand(500);
 			var handleError:Function = function():void {

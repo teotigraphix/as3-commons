@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.operation {
+package org.as3commons.async.operation.impl {
 
 	[ExcludeClass]
 	/**
@@ -52,7 +52,7 @@ package org.as3commons.async.operation {
 		 * @param resultMethod
 		 * @param errorMethod
 		 */
-		public function OperationHandlerData(resultPropertyName:String = null, resultTargetObject:Object = null, resultMethod:Function = null, errorMethod:Function = null) {
+		public function OperationHandlerData(resultPropertyName:String=null, resultTargetObject:Object=null, resultMethod:Function=null, errorMethod:Function=null) {
 			super();
 			initOperationHandler(resultPropertyName, resultTargetObject, resultMethod, errorMethod);
 		}

@@ -18,12 +18,14 @@ package org.as3commons.async.operation {
 
 	import flexunit.framework.Assert;
 
+	import org.as3commons.async.operation.event.OperationEvent;
 	import org.as3commons.async.operation.impl.AbstractOperation;
+	import org.as3commons.async.operation.impl.OperationHandler;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
 	public class OperationHandlerTest extends AbstractTestWithMockRepository {
 
-		private var _operationHandler:OperationHandler;
+		private var _operationHandler:IOperationHandler;
 
 		[Rule]
 		public var includeMocks:IncludeMocksRule = new IncludeMocksRule([ //

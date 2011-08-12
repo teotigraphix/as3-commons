@@ -20,7 +20,7 @@ package org.as3commons.async.command {
 
 	import org.as3commons.async.command.impl.GenericOperationCommand;
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.event.OperationEvent;
 	import org.as3commons.async.operation.impl.MockOperation;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 

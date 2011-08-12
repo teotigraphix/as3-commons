@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.rpc {
-	import flash.errors.IllegalOperationError;
+package org.as3commons.async.rpc.impl.soap {
 
-	import org.as3commons.async.operation.IOperation;
+	import mx.rpc.soap.WebService;
+
+	import org.as3commons.async.rpc.AbstractRPC;
+	import org.as3commons.lang.Assert;
 
 	/**
-	 * Abstract base class for RPC services
+	 *
 	 * @author Roland Zwaga
 	 */
-	public class AbstractRPCService implements IService {
+	public class AbstractWebServiceOperation extends AbstractRPC {
 
-		public function AbstractRPCService() {
-			super();
-		}
+		protected var webService:WebService;
 
-		public function call(methodName:String, ... parameters):IOperation {
-			throw new IllegalOperationError("Not implemented in base class");
+		public function AbstractWebServiceOperation(webService:WebService, methodName:String, parameters:Array=null) {
+			Assert.notNull(webService, "webService argument must not be null");
+			super(methodName, parameters);
+			this.webService = webService;
 		}
 	}
 }

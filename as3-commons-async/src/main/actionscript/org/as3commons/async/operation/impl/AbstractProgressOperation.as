@@ -15,7 +15,7 @@
  */
 package org.as3commons.async.operation.impl {
 	import org.as3commons.async.operation.IProgressOperation;
-	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.event.OperationEvent;
 
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> has new progress information to report.

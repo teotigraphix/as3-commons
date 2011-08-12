@@ -23,7 +23,6 @@ package org.as3commons.async.task.command {
 	import flexunit.framework.Assert;
 
 	import org.as3commons.async.command.ICommand;
-	import org.as3commons.async.operation.OperationEvent;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
 	public class TaskCommandTest extends AbstractTestWithMockRepository {
