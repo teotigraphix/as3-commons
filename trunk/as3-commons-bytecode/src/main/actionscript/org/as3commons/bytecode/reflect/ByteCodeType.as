@@ -18,7 +18,6 @@ package org.as3commons.bytecode.reflect {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
@@ -36,60 +35,18 @@ package org.as3commons.bytecode.reflect {
 
 	public class ByteCodeType extends Type {
 		private static const FLASH_NATIVE_PACKAGE_PREFIX:String = 'flash.';
+		private static const nativeClassNames:Dictionary = new Dictionary();
 
 		private static var typeProvider:ITypeProvider;
-		private static const nativeClassNames:Dictionary = new Dictionary();
-		{
-			nativeClassNames['Object'] = true;
-			nativeClassNames['Function'] = true;
-			nativeClassNames['RegExp'] = true;
-			nativeClassNames['Array'] = true;
-			nativeClassNames['Error'] = true;
-			nativeClassNames['DefinitionError'] = true;
-			nativeClassNames['EvalError'] = true;
-			nativeClassNames['RangeError'] = true;
-			nativeClassNames['ReferenceError'] = true;
-			nativeClassNames['SecurityError'] = true;
-			nativeClassNames['SyntaxError'] = true;
-			nativeClassNames['TypeError'] = true;
-			nativeClassNames['URIError'] = true;
-			nativeClassNames['VerifyError'] = true;
-			nativeClassNames['UninitializedError'] = true;
-			nativeClassNames['ArgumentError'] = true;
-		}
-
-		private var _byteArray:ByteArray;
-		private var _constantPool:IConstantPool;
-
-		public function ByteCodeType(applicationDomain:ApplicationDomain, byteArray:ByteArray=null, constantPool:IConstantPool=null) {
-			super(applicationDomain);
-			_byteArray = byteArray;
-			_constantPool = constantPool;
-		}
-
-		public function get constantPool():IConstantPool {
-			return _constantPool;
-		}
-
-		public function get byteArray():ByteArray {
-			return _byteArray;
-		}
-
-		public static function getTypeProvider():ITypeProvider {
-			if (typeProvider == null) {
-				typeProvider = new ByteCodeTypeProvider();
-			}
-			return typeProvider;
-		}
 
 		/**
-		 * Generates a lookup of metadata name -&gt; <code>Array</code> of class names.
-		 * @param loader The loader whose bytecode will be used to generate the lookup
-		 * @return A lookup of metadata name -&gt; <code>Array</code> of class names.
+		 * Retrieves a list of all class names found in the specified <code>ByteArray</code>.
+		 * @param input The <code>ByteArray</code> will be used to generate the classname <code>Array</code>.
+		 * @return A list of all class names found in the specified <code>ByteArray</code>.
 		 */
-		public static function metaDataLookupFromLoader(loader:LoaderInfo):Object {
-			Assert.notNull(loader, "loader argument must not be null");
-			return (getTypeProvider() as ByteCodeTypeProvider).metaDataLookupFromLoader(loader);
+		public static function definitionNamesFromByteArray(input:ByteArray):Array {
+			Assert.notNull(input, "input argument must not be null");
+			return (getTypeProvider() as ByteCodeTypeProvider).definitionNamesFromByteArray(input);
 		}
 
 		/**
@@ -103,50 +60,19 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		/**
-		 * Generates a lookup of metadata name -&gt; <code>Array</code> of class names.
-		 * @param input The <code>ByteArray</code> will be used to generate the lookup
-		 * @return A lookup of metadata name -&gt; <code>Array</code> of class names.
+		 * Returns a <code>ByteCodeType</code> object that describes the given class.
+		 *
+		 * @param clazz the class from which to get a type description
 		 */
-		public static function metaDataLookupFromByteArray(input:ByteArray):Object {
-			Assert.notNull(input, "input argument must not be null");
-			return (getTypeProvider() as ByteCodeTypeProvider).metaDataLookupFromByteArray(input);
-		}
-
-		/**
-		 * Retrieves a list of all class names found in the specified <code>ByteArray</code>.
-		 * @param input The <code>ByteArray</code> will be used to generate the classname <code>Array</code>.
-		 * @return A list of all class names found in the specified <code>ByteArray</code>.
-		 */
-		public static function definitionNamesFromByteArray(input:ByteArray):Array {
-			Assert.notNull(input, "input argument must not be null");
-			return (getTypeProvider() as ByteCodeTypeProvider).definitionNamesFromByteArray(input);
-		}
-
-		/**
-		 * Generates <code>ByteCodeType</code> instances for all classes found in the specified <code>LoaderInfo</code>'s
-		 * bytecode.
-		 * @param loader The specified <code>LoaderInfo</code>.
-		 */
-		public static function fromLoader(loader:LoaderInfo):void {
-			Assert.notNull(loader, "loader argument must not be null");
-			var loaderBytesPosition:uint = loader.bytes.position;
-			try {
-				loader.bytes.position = 0;
-				(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(loader.bytes, loader.applicationDomain);
-			} finally {
-				loader.bytes.position = loaderBytesPosition;
-			}
-		}
-
-		/**
-		 * Generates <code>ByteCodeType</code> instances for all classes found in the specified <code>ByteArray</code>.
-		 * @param input The specified <code>ByteArray</code>.
-		 * @param applicationDomain The <code>ApplicationDomain</code> that is associated with the specified <code>ByteArray</code>.
-		 */
-		public static function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
-			Assert.notNull(input, "input argument must not be null");
+		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain=null):ByteCodeType {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
-			(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(input, applicationDomain, isLoaderBytes);
+			var result:ByteCodeType;
+			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz, true);
+			var type:ByteCodeType = forName(fullyQualifiedClassName, applicationDomain);
+			if ((type != null) && (type.clazz == null)) {
+				type.clazz = clazz;
+			}
+			return type;
 		}
 
 		/**
@@ -187,6 +113,66 @@ package org.as3commons.bytecode.reflect {
 			return result;
 		}
 
+		/**
+		 * Generates <code>ByteCodeType</code> instances for all classes found in the specified <code>ByteArray</code>.
+		 * @param input The specified <code>ByteArray</code>.
+		 * @param applicationDomain The <code>ApplicationDomain</code> that is associated with the specified <code>ByteArray</code>.
+		 */
+		public static function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
+			Assert.notNull(input, "input argument must not be null");
+			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(input, applicationDomain, isLoaderBytes);
+		}
+
+		/**
+		 * Generates <code>ByteCodeType</code> instances for all classes found in the specified <code>LoaderInfo</code>'s
+		 * bytecode.
+		 * @param loader The specified <code>LoaderInfo</code>.
+		 */
+		public static function fromLoader(loader:LoaderInfo):void {
+			Assert.notNull(loader, "loader argument must not be null");
+			var loaderBytesPosition:uint = loader.bytes.position;
+			try {
+				loader.bytes.position = 0;
+				(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(loader.bytes, loader.applicationDomain);
+			} finally {
+				loader.bytes.position = loaderBytesPosition;
+			}
+		}
+
+		/**
+		 * Returns the <code>ByteCodeTypeCache</code> that contains all the <code>ByteCodeType</code> instances
+		 * that have been extracted.
+		 */
+		public static function getCache():ByteCodeTypeCache {
+			return getTypeProvider().getTypeCache() as ByteCodeTypeCache;
+		}
+
+		/**
+		 * Returns an <code>Array</code> of class names that have been annotated with the specified metadata name.
+		 * @param metaDataName The specified metadata name.
+		 * @return an <code>Array</code> of class names.
+		 */
+		public static function getClassesWithMetadata(metaDataName:String):Array {
+			return getCache().getClassesWithMetadata(metaDataName);
+		}
+
+		/**
+		 * Returns an <code>Array</code> of class names that implement the specified interface.
+		 * @param intf The specified interface.
+		 * @return an <code>Array</code> of class names.
+		 */
+		public static function getImplementationNames(intf:Class):Array {
+			return getCache().getImplementationNames(intf);
+		}
+
+		public static function getTypeProvider():ITypeProvider {
+			if (typeProvider == null) {
+				typeProvider = new ByteCodeTypeProvider();
+			}
+			return typeProvider;
+		}
+
 		public static function isNativeName(name:String):Boolean {
 			return ( //
 				(StringUtils.startsWith(name, FLASH_NATIVE_PACKAGE_PREFIX)) || //
@@ -196,19 +182,71 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		/**
-		 * Returns a <code>ByteCodeType</code> object that describes the given class.
-		 *
-		 * @param clazz the class from which to get a type description
+		 * Generates a lookup of metadata name -&gt; <code>Array</code> of class names.
+		 * @param input The <code>ByteArray</code> will be used to generate the lookup
+		 * @return A lookup of metadata name -&gt; <code>Array</code> of class names.
 		 */
-		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain=null):ByteCodeType {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
-			var result:ByteCodeType;
-			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz, true);
-			var type:ByteCodeType = forName(fullyQualifiedClassName, applicationDomain);
-			if ((type != null) && (type.clazz == null)) {
-				type.clazz = clazz;
-			}
-			return type;
+		public static function metaDataLookupFromByteArray(input:ByteArray):Object {
+			Assert.notNull(input, "input argument must not be null");
+			return (getTypeProvider() as ByteCodeTypeProvider).metaDataLookupFromByteArray(input);
+		}
+
+		/**
+		 * Generates a lookup of metadata name -&gt; <code>Array</code> of class names.
+		 * @param loader The loader whose bytecode will be used to generate the lookup
+		 * @return A lookup of metadata name -&gt; <code>Array</code> of class names.
+		 */
+		public static function metaDataLookupFromLoader(loader:LoaderInfo):Object {
+			Assert.notNull(loader, "loader argument must not be null");
+			return (getTypeProvider() as ByteCodeTypeProvider).metaDataLookupFromLoader(loader);
+		}
+
+		{
+			nativeClassNames['Object'] = true;
+			nativeClassNames['Function'] = true;
+			nativeClassNames['RegExp'] = true;
+			nativeClassNames['Array'] = true;
+			nativeClassNames['Error'] = true;
+			nativeClassNames['DefinitionError'] = true;
+			nativeClassNames['EvalError'] = true;
+			nativeClassNames['RangeError'] = true;
+			nativeClassNames['ReferenceError'] = true;
+			nativeClassNames['SecurityError'] = true;
+			nativeClassNames['SyntaxError'] = true;
+			nativeClassNames['TypeError'] = true;
+			nativeClassNames['URIError'] = true;
+			nativeClassNames['VerifyError'] = true;
+			nativeClassNames['UninitializedError'] = true;
+			nativeClassNames['ArgumentError'] = true;
+		}
+
+		public function ByteCodeType(applicationDomain:ApplicationDomain, byteArray:ByteArray=null, constantPool:IConstantPool=null) {
+			super(applicationDomain);
+			_byteArray = byteArray;
+			_constantPool = constantPool;
+		}
+
+		private var _byteArray:ByteArray;
+		private var _constantPool:IConstantPool;
+
+		private var _initialized:Boolean = false;
+
+		private var _instanceConstructor:ByteCodeMethod;
+
+		private var _isNative:Boolean = false;
+
+		private var _isProtected:Boolean;
+
+		private var _isSealed:Boolean;
+
+		private var _namespaceName:String = "";
+
+		private var _protectedNamespace:String = "";
+
+		private var _staticConstructor:ByteCodeMethod;
+
+		public function get byteArray():ByteArray {
+			return _byteArray;
 		}
 
 		override public function get clazz():Class {
@@ -222,108 +260,75 @@ package org.as3commons.bytecode.reflect {
 			return super.clazz;
 		}
 
-		// ----------------------------
-		// isNative
-		// ----------------------------
-
-		private var _isNative:Boolean = false;
-
-		public function get isNative():Boolean {
-			return _isNative;
+		public function get constantPool():IConstantPool {
+			return _constantPool;
 		}
 
-		// ----------------------------
-		// staticConstructor
-		// ----------------------------
-
-		private var _staticConstructor:ByteCodeMethod;
-
-		public function get staticConstructor():ByteCodeMethod {
-			return _staticConstructor;
+		/**
+		 * List of all fully qualified definition names that have been encountered in all
+		 * the bytecode that was scanned.
+		 */
+		public static function get definitionNames():Array {
+			return getCache().definitionNames;
 		}
 
-		// ----------------------------
-		// instanceConstructor
-		// ----------------------------
-
-		private var _instanceConstructor:ByteCodeMethod;
+		as3commons_reflect function get initialized():Boolean {
+			return _initialized;
+		}
 
 		public function get instanceConstructor():ByteCodeMethod {
 			return _instanceConstructor;
 		}
 
-		// ----------------------------
-		// isProtected
-		// ----------------------------
+		/**
+		 * A lookup of interface name -&gt; <code>Array</code> of class names.
+		 * <p>For example, to retrieve all the names of classes that implement the com.interfaces.ITestInterface:</p>
+		 * <p>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().interfaceLookup['com.interfaces.ITestInterface'];</p>
+		 */
+		public static function get interfaceLookup():Object {
+			return getCache().interfaceLookup;
+		}
 
-		private var _isProtected:Boolean;
+		public function get isNative():Boolean {
+			return _isNative;
+		}
 
 		public function get isProtected():Boolean {
 			return _isProtected;
 		}
 
-		// ----------------------------
-		// protectedNamespace
-		// ----------------------------
-
-		private var _protectedNamespace:String = "";
-
-		public function get protectedNamespace():String {
-			return _protectedNamespace;
-		}
-
-		// ----------------------------
-		// isSealed
-		// ----------------------------
-
-		private var _isSealed:Boolean;
-
 		public function get isSealed():Boolean {
 			return _isSealed;
 		}
 
-		// ----------------------------
-		// namespaceName
-		// ----------------------------
-
-		private var _namespaceName:String = "";
+		/**
+		 * A lookup of metadata name -&gt; <code>Array</code> of class names.
+		 * <p>For example, to retrieve all the names of classes that are annotated with the [Mixin] metadata:</p>
+		 * <p>var classnames:Array = ByteCodeType.getClassesWithMetadata('Mixin');</p>
+		 */
+		public static function get metaDataLookup():Object {
+			return getCache().metaDataLookup;
+		}
 
 		public function get namespaceName():String {
 			return _namespaceName;
 		}
 
-		as3commons_reflect function setIsNative(value:Boolean):void {
-			_isNative = value;
+		public function get protectedNamespace():String {
+			return _protectedNamespace;
 		}
 
-		as3commons_reflect function setNamespaceName(value:String):void {
-			_namespaceName = value;
+		public function get staticConstructor():ByteCodeMethod {
+			return _staticConstructor;
 		}
 
-		as3commons_reflect function setIsSealed(value:Boolean):void {
-			_isSealed = value;
-		}
-
-		as3commons_reflect function setIsProtected(value:Boolean):void {
-			_isProtected = value;
-		}
-
-		as3commons_reflect function setProtectedNamespace(value:String):void {
-			_protectedNamespace = value;
-		}
-
-		as3commons_reflect function setStaticConstructor(value:ByteCodeMethod):void {
-			_staticConstructor = value;
-		}
-
-		as3commons_reflect function setInstanceConstructor(value:ByteCodeMethod):void {
-			_instanceConstructor = value;
-		}
-
-		private var _initialized:Boolean = false;
-
-		as3commons_reflect function get initialized():Boolean {
-			return _initialized;
+		protected function objectExists(objectToCheck:Object, members:Array):Boolean {
+			for each (var obj:Object in members) {
+				if ((obj.name == objectToCheck.name) && (obj.namespaceURI == objectToCheck.namespaceURI)) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		as3commons_reflect function initialize():void {
@@ -356,65 +361,32 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
-		protected function objectExists(objectToCheck:Object, members:Array):Boolean {
-			for each (var obj:Object in members) {
-				if ((obj.name == objectToCheck.name) && (obj.namespaceURI == objectToCheck.namespaceURI)) {
-					return true;
-				}
-			}
-			return false;
+		as3commons_reflect function setInstanceConstructor(value:ByteCodeMethod):void {
+			_instanceConstructor = value;
 		}
 
-		/**
-		 * Returns the <code>ByteCodeTypeCache</code> that contains all the <code>ByteCodeType</code> instances
-		 * that have been extracted.
-		 */
-		public static function getCache():ByteCodeTypeCache {
-			return getTypeProvider().getTypeCache() as ByteCodeTypeCache;
+		as3commons_reflect function setIsNative(value:Boolean):void {
+			_isNative = value;
 		}
 
-		/**
-		 * List of all fully qualified definition names that have been encountered in all
-		 * the bytecode that was scanned.
-		 */
-		public static function get definitionNames():Array {
-			return getCache().definitionNames;
+		as3commons_reflect function setIsProtected(value:Boolean):void {
+			_isProtected = value;
 		}
 
-		/**
-		 * A lookup of metadata name -&gt; <code>Array</code> of class names.
-		 * <p>For example, to retrieve all the names of classes that are annotated with the [Mixin] metadata:</p>
-		 * <p>var classnames:Array = ByteCodeType.getClassesWithMetadata('Mixin');</p>
-		 */
-		public static function get metaDataLookup():Object {
-			return getCache().metaDataLookup;
+		as3commons_reflect function setIsSealed(value:Boolean):void {
+			_isSealed = value;
 		}
 
-		/**
-		 * A lookup of interface name -&gt; <code>Array</code> of class names.
-		 * <p>For example, to retrieve all the names of classes that implement the com.interfaces.ITestInterface:</p>
-		 * <p>var classnames:Array = ByteCodeType.getTypeProvider().getTypeCache().interfaceLookup['com.interfaces.ITestInterface'];</p>
-		 */
-		public static function get interfaceLookup():Object {
-			return getCache().interfaceLookup;
+		as3commons_reflect function setNamespaceName(value:String):void {
+			_namespaceName = value;
 		}
 
-		/**
-		 * Returns an <code>Array</code> of class names that implement the specified interface.
-		 * @param intf The specified interface.
-		 * @return an <code>Array</code> of class names.
-		 */
-		public static function getImplementationNames(intf:Class):Array {
-			return getCache().getImplementationNames(intf);
+		as3commons_reflect function setProtectedNamespace(value:String):void {
+			_protectedNamespace = value;
 		}
 
-		/**
-		 * Returns an <code>Array</code> of class names that have been annotated with the specified metadata name.
-		 * @param metaDataName The specified metadata name.
-		 * @return an <code>Array</code> of class names.
-		 */
-		public static function getClassesWithMetadata(metaDataName:String):Array {
-			return getCache().getClassesWithMetadata(metaDataName);
+		as3commons_reflect function setStaticConstructor(value:ByteCodeMethod):void {
+			_staticConstructor = value;
 		}
 	}
 }
