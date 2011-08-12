@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.operation {
+package org.as3commons.async.operation.impl {
 
 	import flash.utils.setTimeout;
 
@@ -40,7 +40,7 @@ package org.as3commons.async.operation {
 		 * @param useRandomDelay
 		 *
 		 */
-		public function MockOperation(resultData:*, delay:int = DEFAULT_MAX_DELAY, returnError:Boolean = false, func:Function = null, useRandomDelay:Boolean = true) {
+		public function MockOperation(resultData:*, delay:int=DEFAULT_MAX_DELAY, returnError:Boolean=false, func:Function=null, useRandomDelay:Boolean=true) {
 			super();
 			initMockOperation(resultData, delay, returnError, func, useRandomDelay);
 		}

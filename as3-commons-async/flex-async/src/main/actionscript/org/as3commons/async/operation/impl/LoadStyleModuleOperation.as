@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.async.operation.impl {
-
 	import flash.events.IEventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.system.ApplicationDomain;
@@ -27,7 +26,6 @@ package org.as3commons.async.operation.impl {
 	import mx.events.StyleEvent;
 	import mx.styles.StyleManager;
 
-	import org.as3commons.async.operation.AbstractProgressOperation;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 
@@ -36,16 +34,11 @@ package org.as3commons.async.operation.impl {
 	 * @author Roland Zwaga
 	 */
 	public class LoadStyleModuleOperation extends AbstractProgressOperation {
-
+		private static const APPLICATION:String = "application";
 		private static const GET_STYLE_MANAGER_METHOD:String = "getStyleManager";
 		private static const LOAD_STYLE_DECLARATIONS_METHOD:String = "loadStyleDeclarations";
 		private static const MXCORE_FLEX_GLOBALS:String = "mx.core.FlexGlobals";
 		private static const TOP_LEVEL_APPLICATION:String = "topLevelApplication";
-		private static const APPLICATION:String = "application";
-
-		protected var eventDispatcher:IEventDispatcher;
-
-		protected var styleModuleURL:String;
 		private static var _currentApplication:Object;
 
 		/**
@@ -55,11 +48,15 @@ package org.as3commons.async.operation.impl {
 		 * @param applicationDomain
 		 * @param securityDomain
 		 */
-		public function LoadStyleModuleOperation(styleModuleURL:String, update:Boolean = true, applicationDomain:ApplicationDomain = null, securityDomain:SecurityDomain = null, flexModuleFactory:IFlexModuleFactory = null) {
+		public function LoadStyleModuleOperation(styleModuleURL:String, update:Boolean=true, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null, flexModuleFactory:IFlexModuleFactory=null) {
 			Assert.hasText(styleModuleURL, "the styleModuleURL argument cannot be null or empty");
 			super();
 			init(styleModuleURL, update, applicationDomain, securityDomain, flexModuleFactory);
 		}
+
+		protected var eventDispatcher:IEventDispatcher;
+
+		protected var styleModuleURL:String;
 
 		public static function get currentApplication():Object {
 			if (_currentApplication == null) {

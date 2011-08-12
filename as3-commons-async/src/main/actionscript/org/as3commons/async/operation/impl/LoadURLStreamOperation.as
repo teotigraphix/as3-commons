@@ -23,7 +23,6 @@ package org.as3commons.async.operation.impl {
 	import flash.net.URLStream;
 	import flash.utils.setTimeout;
 
-	import org.as3commons.async.operation.AbstractProgressOperation;
 	import org.as3commons.lang.Assert;
 
 	/**

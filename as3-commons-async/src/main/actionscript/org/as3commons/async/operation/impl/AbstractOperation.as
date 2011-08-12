@@ -13,26 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.operation {
+package org.as3commons.async.operation.impl {
 	import flash.events.EventDispatcher;
 	import flash.utils.clearTimeout;
 	import flash.utils.setTimeout;
+
+	import org.as3commons.async.operation.IOperation;
+	import org.as3commons.async.operation.OperationEvent;
 
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> has completed its functionality successfully.
 	 * @eventType org.as3commons.async.operation.OperationEvent#COMPLETE OperationEvent.COMPLETE
 	 */
-	[Event(name = "operationComplete", type = "org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationComplete", type="org.as3commons.async.operation.OperationEvent")]
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> encountered an error.
 	 * @eventType org.as3commons.async.operation.OperationEvent#ERROR OperationEvent.ERROR
 	 */
-	[Event(name = "operationError", type = "org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationError", type="org.as3commons.async.operation.OperationEvent")]
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> timed out.
 	 * @eventType org.as3commons.async.operation.OperationEvent#TIMEOUT OperationEvent.TIMEOUT
 	 */
-	[Event(name = "operationTimeout", type = "org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationTimeout", type="org.as3commons.async.operation.OperationEvent")]
 	/**
 	 * Abstract base class for <code>IOperation</code> implementations.
 	 * @author Christophe Herreman
@@ -51,7 +54,7 @@ package org.as3commons.async.operation {
 		 * @param timeoutInMilliseconds
 		 * @param autoStartTimeout
 		 */
-		public function AbstractOperation(timeoutInMilliseconds:int = 0, autoStartTimeout:Boolean = true) {
+		public function AbstractOperation(timeoutInMilliseconds:int=0, autoStartTimeout:Boolean=true) {
 			super(this);
 
 			m_timeout = timeoutInMilliseconds;
@@ -109,21 +112,21 @@ package org.as3commons.async.operation {
 		/**
 		 * @inheritDoc
 		 */
-		public function addCompleteListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+		public function addCompleteListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
 			addEventListener(OperationEvent.COMPLETE, listener, useCapture, priority, useWeakReference);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function addErrorListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+		public function addErrorListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
 			addEventListener(OperationEvent.ERROR, listener, useCapture, priority, useWeakReference);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function addTimeoutListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+		public function addTimeoutListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
 			addEventListener(OperationEvent.TIMEOUT, listener, useCapture, priority, useWeakReference);
 		}
 
@@ -138,7 +141,7 @@ package org.as3commons.async.operation {
 		 *
 		 * @return true if the event was dispatched; false if not
 		 */
-		public function dispatchCompleteEvent(result:* = null):Boolean {
+		public function dispatchCompleteEvent(result:*=null):Boolean {
 			if (m_timedOut) {
 				return false;
 			}
@@ -154,7 +157,7 @@ package org.as3commons.async.operation {
 		 *
 		 * @return true if the event was dispatched; false if not
 		 */
-		public function dispatchErrorEvent(error:* = null):Boolean {
+		public function dispatchErrorEvent(error:*=null):Boolean {
 			if (m_timedOut) {
 				return false;
 			}
@@ -199,21 +202,21 @@ package org.as3commons.async.operation {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeCompleteListener(listener:Function, useCapture:Boolean = false):void {
+		public function removeCompleteListener(listener:Function, useCapture:Boolean=false):void {
 			removeEventListener(OperationEvent.COMPLETE, listener, useCapture);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function removeErrorListener(listener:Function, useCapture:Boolean = false):void {
+		public function removeErrorListener(listener:Function, useCapture:Boolean=false):void {
 			removeEventListener(OperationEvent.ERROR, listener, useCapture);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function removeTimeoutListener(listener:Function, useCapture:Boolean = false):void {
+		public function removeTimeoutListener(listener:Function, useCapture:Boolean=false):void {
 			removeEventListener(OperationEvent.TIMEOUT, listener, useCapture);
 		}
 

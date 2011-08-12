@@ -17,13 +17,11 @@ package org.as3commons.async.task.impl {
 	import asmock.framework.Expect;
 	import asmock.integration.flexunit.IncludeMocksRule;
 
-	import flash.events.Event;
-
 	import flexunit.framework.Assert;
 
 	import org.as3commons.async.command.ICommand;
-	import org.as3commons.async.command.MockAsyncCommand;
-	import org.as3commons.async.operation.MockOperation;
+	import org.as3commons.async.command.impl.MockAsyncCommand;
+	import org.as3commons.async.operation.impl.MockOperation;
 	import org.as3commons.async.task.IConditionProvider;
 	import org.as3commons.async.task.ICountProvider;
 	import org.as3commons.async.task.event.TaskEvent;
@@ -66,7 +64,7 @@ package org.as3commons.async.task.impl {
 			mockRepository.verifyAll();
 		}
 
-		[Test(async, timeout = 500)]
+		[Test(async, timeout=500)]
 		public function testAndAsync():void {
 			var task:Task = new Task();
 			task.and(new MockAsyncCommand(false, 1, incCounter));
@@ -74,7 +72,7 @@ package org.as3commons.async.task.impl {
 			task.execute();
 		}
 
-		[Test(async, timeout = 6000)]
+		[Test(async, timeout=6000)]
 		public function testAndMultipleAsync():void {
 			var counter:uint = 0;
 			var command1:Function = function():void {
@@ -123,7 +121,7 @@ package org.as3commons.async.task.impl {
 			mockRepository.verifyAll();
 		}
 
-		[Test(async, timeout = 500)]
+		[Test(async, timeout=500)]
 		public function testNextAsync():void {
 			var task:Task = new Task();
 			task.next(new MockAsyncCommand(false, 1, incCounter));
@@ -131,7 +129,7 @@ package org.as3commons.async.task.impl {
 			task.execute();
 		}
 
-		[Test(async, timeout = 6000)]
+		[Test(async, timeout=6000)]
 		public function testNextMultipleAsync():void {
 			var counter:uint = 0;
 			var command1:Function = function():void {
@@ -197,7 +195,7 @@ package org.as3commons.async.task.impl {
 			mockRepository.verifyAll();
 		}
 
-		[Test(async, timeout = 2000)]
+		[Test(async, timeout=2000)]
 		public function testForLoopWithAsyncCommand():void {
 
 			var command1:Function = function():void {
@@ -242,7 +240,7 @@ package org.as3commons.async.task.impl {
 			mockRepository.verifyAll();
 		}
 
-		[Test(async, timeout = 2000)]
+		[Test(async, timeout=2000)]
 		public function testWhileLoopWithAsync():void {
 			var returnResult:Function = function():Boolean {
 				return (_counter != 10);
