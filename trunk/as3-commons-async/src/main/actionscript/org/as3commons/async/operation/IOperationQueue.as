@@ -16,7 +16,7 @@
 package org.as3commons.async.operation {
 
 
-	public interface IOperationQueue extends IOperation {
+	public interface IOperationQueue extends IProgressOperation {
 
 		function get name():String;
 
