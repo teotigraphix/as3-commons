@@ -20,7 +20,7 @@ package org.as3commons.async.command.impl {
 	import org.as3commons.async.command.IAsyncCommand;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.IProgressOperation;
-	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.event.OperationEvent;
 	import org.as3commons.async.operation.impl.AbstractProgressOperation;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;

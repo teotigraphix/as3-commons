@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.operation {
+package org.as3commons.async.operation.impl {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
+
+	import org.as3commons.async.operation.IOperation;
+	import org.as3commons.async.operation.event.OperationEvent;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.async.operation.IOperationHandler;
 
 	/**
 	 * Helper class that generically handles <code>IOperation</code> events and either routes their result or error
@@ -74,7 +78,7 @@ package org.as3commons.async.operation {
 	 * </listing>
 	 * @author Roland Zwaga
 	 */
-	public class OperationHandler extends EventDispatcher {
+	public class OperationHandler extends EventDispatcher implements IOperationHandler {
 
 		private static const BUSY_CHANGE_EVENT:String = "busyChanged";
 
@@ -82,7 +86,7 @@ package org.as3commons.async.operation {
 		 * Creates a new <code>OperationHandler</code> instance.
 		 * @param defaultErrorhandler a default method that is invoked when an operation returns an error.
 		 */
-		public function OperationHandler(defaultErrorHandler:Function = null) {
+		public function OperationHandler(defaultErrorHandler:Function=null) {
 			super();
 			initOperationHandler(defaultErrorHandler);
 		}
@@ -91,7 +95,7 @@ package org.as3commons.async.operation {
 		private var _defaultErrorHandler:Function;
 		private var _operations:Dictionary;
 
-		[Bindable(event = "busyChanged")]
+		[Bindable(event="busyChanged")]
 		/**
 		 * Returns <code>true</code> if the current <code>OperationHandler</code> is waiting for an <code>IOperation</code>
 		 * to complete.
@@ -118,7 +122,7 @@ package org.as3commons.async.operation {
 		 * @param resultPropertyName The property name on the <code>resultTargetObject</code> that will have the <code>IOperation.result</code> or <code>resultMethod</code> result assigned to it.
 		 * @param errorMethod A <code>Function</code> that will be invoked using the <code>IOperation.error</code> as a parameter.
 		 */
-		public function handleOperation(operation:IOperation, resultMethod:Function = null, resultTargetObject:Object = null, resultPropertyName:String = null, errorMethod:Function = null):void {
+		public function handleOperation(operation:IOperation, resultMethod:Function=null, resultTargetObject:Object=null, resultPropertyName:String=null, errorMethod:Function=null):void {
 			if (operation != null) {
 				busy = true;
 				_operations[operation] = new OperationHandlerData(resultPropertyName, resultTargetObject, resultMethod, errorMethod);

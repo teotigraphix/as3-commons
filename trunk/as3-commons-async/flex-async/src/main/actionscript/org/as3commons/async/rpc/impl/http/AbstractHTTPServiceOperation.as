@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.rpc.http {
+package org.as3commons.async.rpc.impl.http {
 
 	import mx.rpc.http.HTTPMultiService;
 
@@ -27,7 +27,7 @@ package org.as3commons.async.rpc.http {
 
 		protected var httpService:HTTPMultiService;
 
-		public function AbstractHTTPServiceOperation(httpService:HTTPMultiService, methodName:String, parameters:Array = null) {
+		public function AbstractHTTPServiceOperation(httpService:HTTPMultiService, methodName:String, parameters:Array=null) {
 			super(methodName, parameters);
 			this.httpService = httpService;
 		}

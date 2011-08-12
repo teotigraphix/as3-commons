@@ -19,23 +19,23 @@ package org.as3commons.async.operation.impl {
 	import flash.utils.setTimeout;
 
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.event.OperationEvent;
 
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> has completed its functionality successfully.
 	 * @eventType org.as3commons.async.operation.OperationEvent#COMPLETE OperationEvent.COMPLETE
 	 */
-	[Event(name="operationComplete", type="org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationComplete", type="org.as3commons.async.operation.event.OperationEvent")]
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> encountered an error.
 	 * @eventType org.as3commons.async.operation.OperationEvent#ERROR OperationEvent.ERROR
 	 */
-	[Event(name="operationError", type="org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationError", type="org.as3commons.async.operation.event.OperationEvent")]
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> timed out.
 	 * @eventType org.as3commons.async.operation.OperationEvent#TIMEOUT OperationEvent.TIMEOUT
 	 */
-	[Event(name="operationTimeout", type="org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationTimeout", type="org.as3commons.async.operation.event.OperationEvent")]
 	/**
 	 * Abstract base class for <code>IOperation</code> implementations.
 	 * @author Christophe Herreman

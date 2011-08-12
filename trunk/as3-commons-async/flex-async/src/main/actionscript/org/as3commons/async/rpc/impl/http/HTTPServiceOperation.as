@@ -13,33 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.rpc.soap {
+package org.as3commons.async.rpc.impl.http {
 
 	import mx.rpc.AsyncToken;
 	import mx.rpc.Responder;
-	import mx.rpc.soap.Operation;
-	import mx.rpc.soap.WebService;
+	import mx.rpc.http.HTTPMultiService;
+	import mx.rpc.http.HTTPService;
+	import mx.rpc.http.Operation;
 
 	/**
-	 * An <code>IOperation</code> that invokes a method on a SOAP based webservice.
+	 * An <code>IOperation</code> that invokes a method on a HTTP webservice.
 	 * @author Roland Zwaga
 	 */
-	public class WebServiceOperation extends AbstractWebServiceOperation {
+	public class HTTPServiceOperation extends AbstractHTTPServiceOperation {
 
 		/**
-		 * Creates a new <code>WebServiceOperation</code> instance.
-		 * @param webService
+		 * Creates a new <code>HTTPServiceOperation</code> instance.
+		 * @param httpService
 		 * @param methodName
 		 * @param parameters
+		 *
 		 */
-		public function WebServiceOperation(webService:WebService, methodName:String, parameters:Array = null) {
-			super(webService, methodName, parameters);
+		public function HTTPServiceOperation(httpService:HTTPMultiService, methodName:String, parameters:Array=null) {
+			super(httpService, methodName, parameters);
 			invokeRemoteMethod();
 		}
 
 		override protected function invokeRemoteMethod():void {
 
-			var operation:Operation = Operation(webService.getOperation(methodName));
+			var operation:Operation = Operation(httpService.getOperation(methodName));
 			operation.arguments = parameters;
 
 			var token:AsyncToken = operation.send();

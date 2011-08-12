@@ -16,6 +16,7 @@
 package org.as3commons.async.operation {
 	import asmock.integration.flexunit.IncludeMocksRule;
 
+	import org.as3commons.async.operation.event.OperationEvent;
 	import org.as3commons.async.operation.impl.AbstractOperation;
 	import org.as3commons.async.operation.impl.OperationQueue;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;

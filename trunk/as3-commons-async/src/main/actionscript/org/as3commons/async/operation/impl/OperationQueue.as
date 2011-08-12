@@ -18,8 +18,7 @@ package org.as3commons.async.operation.impl {
 
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.IOperationQueue;
-	import org.as3commons.async.operation.OperationEvent;
-	import org.as3commons.lang.ArrayUtils;
+	import org.as3commons.async.operation.event.OperationEvent;
 
 	/**
 	 * Dispatched when all the operations in the current <code>OperationQueue</code> have received a result.

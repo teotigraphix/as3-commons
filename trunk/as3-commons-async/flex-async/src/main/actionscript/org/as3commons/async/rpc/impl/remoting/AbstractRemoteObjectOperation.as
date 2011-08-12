@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.rpc.remoting {
+package org.as3commons.async.rpc.impl.remoting {
 
 	import mx.rpc.remoting.RemoteObject;
 
@@ -34,7 +34,7 @@ package org.as3commons.async.rpc.remoting {
 		/**
 		 * Creates a new <code>AbstractRemoteObjectOperation</code> instance.
 		 */
-		public function AbstractRemoteObjectOperation(remoteObject:RemoteObject, methodName:String, parameters:Array = null) {
+		public function AbstractRemoteObjectOperation(remoteObject:RemoteObject, methodName:String, parameters:Array=null) {
 			Assert.notNull(remoteObject, "The remoteObject argument must not be null.");
 			super(methodName, parameters);
 			this.remoteObject = remoteObject;

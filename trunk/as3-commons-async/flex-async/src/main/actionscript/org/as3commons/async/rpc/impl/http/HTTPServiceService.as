@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.rpc.http {
+package org.as3commons.async.rpc.impl.http {
 
 	import mx.rpc.http.HTTPMultiService;
 
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.rpc.AbstractRPCService;
+	import org.as3commons.async.rpc.impl.AbstractRPCService;
 	import org.as3commons.lang.Assert;
 
 	/**

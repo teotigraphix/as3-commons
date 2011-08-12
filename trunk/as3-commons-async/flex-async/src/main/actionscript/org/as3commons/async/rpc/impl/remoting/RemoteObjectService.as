@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.rpc.remoting {
+package org.as3commons.async.rpc.impl.remoting {
 
 	import mx.rpc.remoting.RemoteObject;
 
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.rpc.AbstractRPCService;
+	import org.as3commons.async.rpc.impl.AbstractRPCService;
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -39,7 +39,7 @@ package org.as3commons.async.rpc.remoting {
 		 *
 		 * @param remoteObject the remote object
 		 */
-		public function RemoteObjectService(remoteObject:RemoteObject = null) {
+		public function RemoteObjectService(remoteObject:RemoteObject=null) {
 			super();
 			this.remoteObject = remoteObject;
 		}

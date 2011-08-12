@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.rpc.remoting {
+package org.as3commons.async.rpc.impl.remoting {
 
 	import mx.rpc.AsyncToken;
 	import mx.rpc.Responder;
 	import mx.rpc.remoting.Operation;
 	import mx.rpc.remoting.RemoteObject;
 
-	import org.as3commons.async.rpc.remoting.AbstractRemoteObjectOperation;
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -41,7 +40,7 @@ package org.as3commons.async.rpc.remoting {
 		 * @param methodName
 		 * @param parameters
 		 */
-		public function RemoteObjectOperation(remoteObject:RemoteObject, methodName:String, parameters:Array = null) {
+		public function RemoteObjectOperation(remoteObject:RemoteObject, methodName:String, parameters:Array=null) {
 			Assert.notNull(remoteObject, "The remote object is required");
 			Assert.hasText(methodName, "The method name must not be null or an empty string");
 

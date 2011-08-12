@@ -16,10 +16,9 @@
 package org.as3commons.async.task.impl {
 	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.event.OperationEvent;
 	import org.as3commons.async.task.ICountProvider;
 	import org.as3commons.async.task.IForBlock;
-	import org.as3commons.async.task.ITaskFlowControl;
 	import org.as3commons.async.task.event.TaskEvent;
 	import org.as3commons.async.task.event.TaskFlowControlEvent;
 	import org.as3commons.lang.Assert;

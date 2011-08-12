@@ -19,7 +19,7 @@ package org.as3commons.async.task.impl {
 	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.command.impl.GenericOperationCommand;
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.event.OperationEvent;
 	import org.as3commons.async.operation.impl.AbstractOperation;
 	import org.as3commons.async.task.IConditionProvider;
 	import org.as3commons.async.task.ICountProvider;
