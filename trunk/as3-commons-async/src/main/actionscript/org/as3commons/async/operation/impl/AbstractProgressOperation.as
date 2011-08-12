@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.operation {
+package org.as3commons.async.operation.impl {
+	import org.as3commons.async.operation.IProgressOperation;
+	import org.as3commons.async.operation.OperationEvent;
 
 	/**
 	 * Dispatched when the current <code>AbstractOperation</code> has new progress information to report.
 	 * @eventType org.as3commons.async.operation.OperationEvent#PROGRESS OperationEvent.PROGRESS
 	 */
-	[Event(name = "operationProgress", type = "org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationProgress", type="org.as3commons.async.operation.OperationEvent")]
 	/**
 	 * Abstract base class for <code>IProgressOperation</code> implementations.
 	 * @author Roland Zwaga
@@ -35,7 +37,7 @@ package org.as3commons.async.operation {
 		/**
 		 * Creates a new <code>AbstractProgressOperation</code> instance.
 		 */
-		public function AbstractProgressOperation(timeoutInMilliseconds:uint = 0, autoStartTimeout:Boolean = true) {
+		public function AbstractProgressOperation(timeoutInMilliseconds:uint=0, autoStartTimeout:Boolean=true) {
 			super(timeoutInMilliseconds, autoStartTimeout);
 		}
 
@@ -68,14 +70,14 @@ package org.as3commons.async.operation {
 		/**
 		 * @inheritDoc
 		 */
-		public function addProgressListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+		public function addProgressListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
 			addEventListener(OperationEvent.PROGRESS, listener, useCapture, priority, useWeakReference);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function removeProgressListener(listener:Function, useCapture:Boolean = false):void {
+		public function removeProgressListener(listener:Function, useCapture:Boolean=false):void {
 			removeEventListener(OperationEvent.PROGRESS, listener, useCapture);
 		}
 

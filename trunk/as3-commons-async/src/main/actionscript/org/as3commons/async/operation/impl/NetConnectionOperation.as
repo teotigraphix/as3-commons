@@ -19,7 +19,6 @@ package org.as3commons.async.operation.impl {
 	import flash.net.Responder;
 	import flash.utils.setTimeout;
 
-	import org.as3commons.async.operation.AbstractOperation;
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -42,7 +41,7 @@ package org.as3commons.async.operation.impl {
 		 * @param methodName the name of the method to be invoked
 		 * @param parameters the parameters passed to the invoked method
 		 */
-		public function NetConnectionOperation(netConnection:NetConnection, methodName:String, parameters:Array = null) {
+		public function NetConnectionOperation(netConnection:NetConnection, methodName:String, parameters:Array=null) {
 			super();
 			initNetConnectionOperation(netConnection, methodName, parameters);
 		}

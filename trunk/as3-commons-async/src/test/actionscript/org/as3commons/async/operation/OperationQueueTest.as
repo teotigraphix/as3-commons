@@ -16,6 +16,8 @@
 package org.as3commons.async.operation {
 	import asmock.integration.flexunit.IncludeMocksRule;
 
+	import org.as3commons.async.operation.impl.AbstractOperation;
+	import org.as3commons.async.operation.impl.OperationQueue;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 	import org.flexunit.asserts.assertStrictlyEquals;
 
@@ -37,7 +39,7 @@ package org.as3commons.async.operation {
 			_queue = new OperationQueue();
 		}
 
-		[Test(async, timeout = 1000)]
+		[Test(async, timeout=1000)]
 		public function testQueue():void {
 			var o1:AbstractOperation = AbstractOperation(mockRepository.createDynamic(AbstractOperation));
 			var o2:AbstractOperation = AbstractOperation(mockRepository.createDynamic(AbstractOperation));

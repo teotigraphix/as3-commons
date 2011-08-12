@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 package org.as3commons.async.operation.impl {
-
 	import flash.events.TimerEvent;
 	import flash.system.ApplicationDomain;
 	import flash.system.SecurityDomain;
 	import flash.utils.Timer;
-
 	import mx.events.ModuleEvent;
 	import mx.modules.IModuleInfo;
 	import mx.modules.ModuleManager;
-
-	import org.as3commons.async.operation.AbstractProgressOperation;
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -35,22 +31,22 @@ package org.as3commons.async.operation.impl {
 	public class LoadModuleOperation extends AbstractProgressOperation {
 
 		/**
-		 * The <code>IModuleInfo</code> instance that is used to listen for <code>ModuleEvent.READY</code>, <code>ModuleEvent.ERROR</code>
-		 * and <code>ModuleEvent.PROGRESS</code> events.
-		 */
-		protected var moduleInfo:IModuleInfo;
-
-		/**
 		 * Creates a new <code>LoadModuleOperation</code> instance.
 		 * @param moduleURL The specified URL for the Flex module.
 		 * @param applicationDomain An optional <code>ApplicationDomain</code> for the loaded Flex module.
 		 * @param securityDomain An optional <code>SecurityDomain</code> for the loaded Flex module.
 		 */
-		public function LoadModuleOperation(moduleURL:String, applicationDomain:ApplicationDomain = null, securityDomain:SecurityDomain = null) {
+		public function LoadModuleOperation(moduleURL:String, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null) {
 			Assert.hasText(moduleURL, "The moduleURL argument must not be null or empty");
 			super();
 			init(moduleURL, applicationDomain, securityDomain);
 		}
+
+		/**
+		 * The <code>IModuleInfo</code> instance that is used to listen for <code>ModuleEvent.READY</code>, <code>ModuleEvent.ERROR</code>
+		 * and <code>ModuleEvent.PROGRESS</code> events.
+		 */
+		protected var moduleInfo:IModuleInfo;
 
 		/**
 		 * Creates a <code>IModuleInfo</code> instance by invoking <code>ModuleManager.getModule()</code> and adds appropriate event handlers.
@@ -72,14 +68,6 @@ package org.as3commons.async.operation.impl {
 		}
 
 		/**
-		 * Handles the <code>ModuleEvent.READY</code> event.
-		 */
-		protected function readyHandler(event:ModuleEvent):void {
-			removeEventListeners();
-			dispatchCompleteEvent(moduleInfo);
-		}
-
-		/**
 		 * Handles the <code>ModuleEvent.ERROR</code> event.
 		 */
 		protected function moduleErrorHandler(event:ModuleEvent):void {
@@ -97,6 +85,14 @@ package org.as3commons.async.operation.impl {
 		}
 
 		/**
+		 * Handles the <code>ModuleEvent.READY</code> event.
+		 */
+		protected function readyHandler(event:ModuleEvent):void {
+			removeEventListeners();
+			dispatchCompleteEvent(moduleInfo);
+		}
+
+		/**
 		 * Removes the <code>ModuleEvent.READY</code>, <code>ModuleEvent.ERROR</code>
 		 * and <code>ModuleEvent.PROGRESS</code> event listeners.
 		 */
@@ -108,6 +104,5 @@ package org.as3commons.async.operation.impl {
 			}
 
 		}
-
 	}
 }

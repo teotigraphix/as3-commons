@@ -14,14 +14,14 @@
 * limitations under the License.
 */
 package org.as3commons.async.command {
-	import asmock.framework.Expect;
 	import asmock.integration.flexunit.IncludeMocksRule;
 
 	import flexunit.framework.Assert;
 
+	import org.as3commons.async.command.impl.GenericOperationCommand;
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.operation.MockOperation;
 	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.impl.MockOperation;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
 	public class GenericOperationCommandTest extends AbstractTestWithMockRepository {
@@ -47,7 +47,7 @@ package org.as3commons.async.command {
 			Assert.assertEquals(null, gc.constructorArguments[2]);
 		}
 
-		[Test(async, timeout = 2000)]
+		[Test(async, timeout=2000)]
 		public function testExecute():void {
 
 			var result:Object = {};

@@ -19,7 +19,7 @@ package org.as3commons.async.task.command {
 	import flash.utils.Timer;
 
 	import org.as3commons.async.command.ICommand;
-	import org.as3commons.async.operation.AbstractOperation;
+	import org.as3commons.async.operation.impl.AbstractOperation;
 
 
 	/**

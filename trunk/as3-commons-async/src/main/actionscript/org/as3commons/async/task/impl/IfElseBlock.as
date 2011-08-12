@@ -16,11 +16,11 @@
 package org.as3commons.async.task.impl {
 	import flash.events.Event;
 
-	import org.as3commons.async.command.GenericOperationCommand;
 	import org.as3commons.async.command.ICommand;
-	import org.as3commons.async.operation.AbstractOperation;
+	import org.as3commons.async.command.impl.GenericOperationCommand;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.impl.AbstractOperation;
 	import org.as3commons.async.task.IConditionProvider;
 	import org.as3commons.async.task.ICountProvider;
 	import org.as3commons.async.task.IForBlock;
@@ -189,7 +189,7 @@ package org.as3commons.async.task.impl {
 			dispatchEvent(event.clone());
 		}
 
-		public function reset(doHardReset:Boolean = false):ITask {
+		public function reset(doHardReset:Boolean=false):ITask {
 			if (!isClosed) {
 				_currentBlock.reset(doHardReset);
 			}
@@ -212,7 +212,7 @@ package org.as3commons.async.task.impl {
 			return this;
 		}
 
-		public function if_(condition:IConditionProvider = null, ifElseBlock:IIfElseBlock = null):IIfElseBlock {
+		public function if_(condition:IConditionProvider=null, ifElseBlock:IIfElseBlock=null):IIfElseBlock {
 			if (!isClosed) {
 				_currentBlock.if_(condition, ifElseBlock);
 			}
@@ -226,14 +226,14 @@ package org.as3commons.async.task.impl {
 			return this;
 		}
 
-		public function while_(condition:IConditionProvider = null, whileBlock:IWhileBlock = null):IWhileBlock {
+		public function while_(condition:IConditionProvider=null, whileBlock:IWhileBlock=null):IWhileBlock {
 			if (!isClosed) {
 				return _currentBlock.while_(condition, whileBlock);
 			}
 			return null;
 		}
 
-		public function for_(count:uint, countProvider:ICountProvider = null, forBlock:IForBlock = null):IForBlock {
+		public function for_(count:uint, countProvider:ICountProvider=null, forBlock:IForBlock=null):IForBlock {
 			if (!isClosed) {
 				return _currentBlock.for_(count, countProvider, forBlock);
 			}
@@ -252,7 +252,7 @@ package org.as3commons.async.task.impl {
 			return this;
 		}
 
-		public function pause(duration:uint, pauseCommand:ICommand = null):ITask {
+		public function pause(duration:uint, pauseCommand:ICommand=null):ITask {
 			if (!isClosed) {
 				return _currentBlock.pause(duration, pauseCommand);
 			}

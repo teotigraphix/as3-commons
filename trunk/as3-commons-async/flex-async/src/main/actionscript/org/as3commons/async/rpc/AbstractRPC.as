@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 package org.as3commons.async.rpc {
-
 	import flash.errors.IllegalOperationError;
-
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
-
-	import org.as3commons.async.operation.AbstractOperation;
+	import org.as3commons.async.operation.impl.AbstractOperation;
 
 	/**
 	 * Abstract base class for RPC operations.
@@ -35,16 +32,13 @@ package org.as3commons.async.rpc {
 		//
 		// --------------------------------------------------------------------
 
-		public function AbstractRPC(methodName:String, parameters:Array = null) {
+		public function AbstractRPC(methodName:String, parameters:Array=null) {
 			super();
 			initAbstractRPC(methodName, parameters);
 		}
 
-		private function initAbstractRPC(methodName:String, parameters:Array):void {
-			_methodName = methodName;
-			_parameters = parameters;
-		}
-
+		private var _methodName:String;
+		private var _parameters:Array;
 
 		// --------------------------------------------------------------------
 		//
@@ -52,24 +46,23 @@ package org.as3commons.async.rpc {
 		//
 		// --------------------------------------------------------------------
 
-		// ----------------------------
-		// methodName
-		// ----------------------------
-
-		private var _methodName:String;
-
 		public function get methodName():String {
 			return _methodName;
 		}
 
-		// ----------------------------
-		// parameters
-		// ----------------------------
-
-		private var _parameters:Array;
-
 		public function get parameters():Array {
 			return _parameters;
+		}
+
+		/**
+		 * Assigns the <code>FaultEvent</code> value to the <code>error</code> property
+		 * and dispatches the <code>OperationEvent.ERROR</code> event.
+		 * @param event The specified <code>FaultEvent</code>
+		 * @see org.as3commons.async.operation.OperationEvent#ERROR OperationEvent.ERROR
+		 */
+		protected function faultHandler(event:FaultEvent):void {
+			error = event;
+			dispatchErrorEvent();
 		}
 
 		// --------------------------------------------------------------------
@@ -93,16 +86,9 @@ package org.as3commons.async.rpc {
 			dispatchCompleteEvent();
 		}
 
-		/**
-		 * Assigns the <code>FaultEvent</code> value to the <code>error</code> property
-		 * and dispatches the <code>OperationEvent.ERROR</code> event.
-		 * @param event The specified <code>FaultEvent</code>
-		 * @see org.as3commons.async.operation.OperationEvent#ERROR OperationEvent.ERROR
-		 */
-		protected function faultHandler(event:FaultEvent):void {
-			error = event;
-			dispatchErrorEvent();
+		private function initAbstractRPC(methodName:String, parameters:Array):void {
+			_methodName = methodName;
+			_parameters = parameters;
 		}
-
 	}
 }

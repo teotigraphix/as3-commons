@@ -20,8 +20,7 @@ package org.as3commons.async.task.impl {
 	import flexunit.framework.Assert;
 
 	import org.as3commons.async.command.ICommand;
-	import org.as3commons.async.operation.MockOperation;
-	import org.as3commons.async.task.IConditionProvider;
+	import org.as3commons.async.operation.impl.MockOperation;
 	import org.as3commons.async.task.event.TaskEvent;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
@@ -58,7 +57,7 @@ package org.as3commons.async.task.impl {
 			mockRepository.verifyAll();
 		}
 
-		[Test(async, timeout = 2000)]
+		[Test(async, timeout=2000)]
 		public function testExecuteWithAsync():void {
 			var command1:Function = function():void {
 				Assert.assertTrue(_counter < 11);

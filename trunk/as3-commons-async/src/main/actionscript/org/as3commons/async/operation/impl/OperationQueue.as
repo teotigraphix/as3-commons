@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.operation {
+package org.as3commons.async.operation.impl {
 	import flash.utils.setTimeout;
+
+	import org.as3commons.async.operation.IOperation;
+	import org.as3commons.async.operation.IOperationQueue;
+	import org.as3commons.async.operation.OperationEvent;
 	import org.as3commons.lang.ArrayUtils;
 
 	/**
@@ -30,7 +34,7 @@ package org.as3commons.async.operation {
 	 * @see org.as3commons.async.operation.OperationEvent OperationEvent
 	 * @author Christophe Herreman
 	 */
-	public class OperationQueue extends AbstractProgressOperation {
+	public class OperationQueue extends AbstractProgressOperation implements IOperationQueue {
 
 		/** A static counter of queues. */
 		private static var _queueCounter:uint = 0;
@@ -78,13 +82,17 @@ package org.as3commons.async.operation {
 		 * @return true if the operation was added; false if not
 		 */
 		public function addOperation(operation:IOperation):Boolean {
-			if (_operations.indexOf(operation) == -1) {
+			if (!hasOperation(operation)) {
 				_operations.push(operation);
 				addOperationListeners(operation);
 				total++;
 				return true;
 			}
 			return false;
+		}
+
+		public function hasOperation(operation:IOperation):Boolean {
+			return (_operations.indexOf(operation) > -1);
 		}
 
 		/**

@@ -18,9 +18,9 @@ package org.as3commons.async.command {
 
 	import flexunit.framework.Assert;
 
-	import org.as3commons.async.command.event.CompositeCommandEvent;
+	import org.as3commons.async.command.impl.CompositeCommand;
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.operation.MockOperation;
+	import org.as3commons.async.operation.impl.MockOperation;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
 	public class CompositeCommandTest extends AbstractTestWithMockRepository {
@@ -50,7 +50,7 @@ package org.as3commons.async.command {
 			Assert.assertEquals(2, cc.numCommands);
 		}
 
-		[Test(async, timeout = "4000")]
+		[Test(async, timeout="4000")]
 		public function testSequenceExecute():void {
 			var cc:CompositeCommand = new CompositeCommand(CompositeCommandKind.SEQUENCE);
 			var counter:uint = 0;
@@ -65,7 +65,7 @@ package org.as3commons.async.command {
 			cc.execute();
 		}
 
-		[Test(async, timeout = "6000")]
+		[Test(async, timeout="6000")]
 		public function testParallelExecute():void {
 			var cc:CompositeCommand = new CompositeCommand(CompositeCommandKind.PARALLEL);
 			var counter:uint = 0;
@@ -80,7 +80,7 @@ package org.as3commons.async.command {
 			cc.execute();
 		}
 
-		[Test(async, timeout = "4000")]
+		[Test(async, timeout="4000")]
 		public function testFailOnfaultIsTrue():void {
 			var cc:CompositeCommand = new CompositeCommand(CompositeCommandKind.SEQUENCE);
 			var counter:uint = 0;
@@ -95,7 +95,7 @@ package org.as3commons.async.command {
 			cc.execute();
 		}
 
-		[Test(async, timeout = "4000")]
+		[Test(async, timeout="4000")]
 		public function testFailOnfaultIsFalse():void {
 			var cc:CompositeCommand = new CompositeCommand(CompositeCommandKind.SEQUENCE);
 			var counter:uint = 0;

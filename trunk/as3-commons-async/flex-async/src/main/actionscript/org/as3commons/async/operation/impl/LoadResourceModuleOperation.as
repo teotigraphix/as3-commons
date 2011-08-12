@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 package org.as3commons.async.operation.impl {
-
 	import flash.events.IEventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.system.ApplicationDomain;
 	import flash.system.SecurityDomain;
 	import flash.utils.Timer;
-
 	import mx.events.ResourceEvent;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
-
-	import org.as3commons.async.operation.AbstractProgressOperation;
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -35,31 +31,30 @@ package org.as3commons.async.operation.impl {
 	public class LoadResourceModuleOperation extends AbstractProgressOperation {
 
 		/**
-		 * The <code>IEventDispatcher</code> returned from the <code>loadResourceModule()</code> call
-		 * and that is used to listen for <code>ResourceEvent.COMPLETE</code>, <code>ResourceEvent.ERROR</code>
-		 * and <code>ResourceEvent.PROGRESS</code> events.
-		 */
-		protected var eventDispatcher:IEventDispatcher;
-
-		protected var resourceManager:IResourceManager = ResourceManager.getInstance();
-
-		/**
-		 * The specified URL for the resource module.
-		 */
-		protected var resourceModuleURL:String;
-
-		/**
 		 * Creates a new <code>LoadResourceModuleOperation</code> instance.
 		 * @param resourceModuleURL The specified URL for the resource module.
 		 * @param update
 		 * @param applicationDomain
 		 * @param securityDomain
 		 */
-		public function LoadResourceModuleOperation(resourceModuleURL:String, update:Boolean = true, applicationDomain:ApplicationDomain = null, securityDomain:SecurityDomain = null) {
+		public function LoadResourceModuleOperation(resourceModuleURL:String, update:Boolean=true, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null) {
 			Assert.hasText(resourceModuleURL, "The resourceModuleURL argument must not be null or empty");
 			super();
 			init(resourceModuleURL, update, applicationDomain, securityDomain);
 		}
+
+		/**
+		 * The <code>IEventDispatcher</code> returned from the <code>loadResourceModule()</code> call
+		 * and that is used to listen for <code>ResourceEvent.COMPLETE</code>, <code>ResourceEvent.ERROR</code>
+		 * and <code>ResourceEvent.PROGRESS</code> events.
+		 */
+		protected var eventDispatcher:IEventDispatcher;
+		protected var resourceManager:IResourceManager = ResourceManager.getInstance();
+
+		/**
+		 * The specified URL for the resource module.
+		 */
+		protected var resourceModuleURL:String;
 
 		protected function init(resourceModuleURL:String, update:Boolean, applicationDomain:ApplicationDomain, securityDomain:SecurityDomain):void {
 			this.resourceModuleURL = resourceModuleURL;
@@ -75,22 +70,6 @@ package org.as3commons.async.operation.impl {
 			}
 			timer.addEventListener(TimerEvent.TIMER, timerHandler);
 			timer.start();
-		}
-
-		/**
-		 * Handles the <code>ResourceEvent.COMPLETE</code> event.
-		 */
-		protected function resourceModuleCompleteHandler(event:ResourceEvent):void {
-			removeEventListeners();
-			dispatchCompleteEvent(resourceModuleURL);
-		}
-
-		/**
-		 * Handles the <code>ResourceEvent.ERROR</code> event.
-		 */
-		protected function resourceModuleErrorHandler(event:ResourceEvent):void {
-			removeEventListeners();
-			dispatchErrorEvent(event.errorText);
 		}
 
 		/**
@@ -117,5 +96,20 @@ package org.as3commons.async.operation.impl {
 
 		}
 
+		/**
+		 * Handles the <code>ResourceEvent.COMPLETE</code> event.
+		 */
+		protected function resourceModuleCompleteHandler(event:ResourceEvent):void {
+			removeEventListeners();
+			dispatchCompleteEvent(resourceModuleURL);
+		}
+
+		/**
+		 * Handles the <code>ResourceEvent.ERROR</code> event.
+		 */
+		protected function resourceModuleErrorHandler(event:ResourceEvent):void {
+			removeEventListeners();
+			dispatchErrorEvent(event.errorText);
+		}
 	}
 }

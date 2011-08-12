@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.command {
+package org.as3commons.async.command.impl {
 
 	import flash.utils.setTimeout;
 
-	import org.as3commons.async.operation.AbstractOperation;
+	import org.as3commons.async.command.ICommand;
+	import org.as3commons.async.operation.impl.AbstractOperation;
 
 	/**
 	 * An async mock command. For testing purposes, obviously. :)
@@ -36,7 +37,7 @@ package org.as3commons.async.command {
 		 * @param func Optional <code>Function</code> which will be invoked when the <code>execute()</code> method is invoked.
 		 *
 		 */
-		public function MockAsyncCommand(fail:Boolean = false, timeout:Number = 1, func:Function = null) {
+		public function MockAsyncCommand(fail:Boolean=false, timeout:Number=1, func:Function=null) {
 			super();
 			initMockAsyncCommand(fail, timeout, func);
 		}

@@ -15,9 +15,9 @@
  */
 package org.as3commons.async.task.command {
 
-	import org.as3commons.async.command.CompositeCommand;
 	import org.as3commons.async.command.CompositeCommandKind;
 	import org.as3commons.async.command.ICommand;
+	import org.as3commons.async.command.impl.CompositeCommand;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.task.IResetable;
 	import org.as3commons.async.task.ITask;

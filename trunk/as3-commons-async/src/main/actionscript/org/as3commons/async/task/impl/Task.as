@@ -15,15 +15,15 @@
  */
 package org.as3commons.async.task.impl {
 
-	import org.as3commons.async.command.CompositeCommand;
 	import org.as3commons.async.command.CompositeCommandKind;
-	import org.as3commons.async.command.GenericOperationCommand;
 	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.command.ICompositeCommand;
 	import org.as3commons.async.command.event.CompositeCommandEvent;
-	import org.as3commons.async.operation.AbstractOperation;
+	import org.as3commons.async.command.impl.CompositeCommand;
+	import org.as3commons.async.command.impl.GenericOperationCommand;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.impl.AbstractOperation;
 	import org.as3commons.async.task.IConditionProvider;
 	import org.as3commons.async.task.ICountProvider;
 	import org.as3commons.async.task.IForBlock;

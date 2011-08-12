@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.command {
+package org.as3commons.async.command.impl {
 
 	import flash.system.ApplicationDomain;
 
-	import org.as3commons.async.operation.AbstractProgressOperation;
+	import org.as3commons.async.command.IAsyncCommand;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.IProgressOperation;
 	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.impl.AbstractProgressOperation;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.IApplicationDomainAware;
@@ -82,7 +83,7 @@ package org.as3commons.async.command {
 			initGenericOperationCommand(operationClass, constructorArgs);
 		}
 
-		protected function initGenericOperationCommand(operationClass:Class, constructorArgs:Array = null):void {
+		protected function initGenericOperationCommand(operationClass:Class, constructorArgs:Array=null):void {
 			Assert.notNull(operationClass, "operationClass argument must not be null");
 			if (!ClassUtils.isImplementationOf(operationClass, IOperation, _applicationDomain)) {
 				throw new IllegalArgumentError("operationClass argument must be an implementation of IOperation");
@@ -149,7 +150,7 @@ package org.as3commons.async.command {
 		 * @param constructorArgs An optional <code>Array</code> of constructor arguments for the specified <code>Class</code>.
 		 * @return A new <code>GenericOperationCommand</code> instance.
 		 */
-		public static function createNew(clazz:Class, constructorArgs:Array = null):GenericOperationCommand {
+		public static function createNew(clazz:Class, constructorArgs:Array=null):GenericOperationCommand {
 			var goc:GenericOperationCommand = new GenericOperationCommand(clazz);
 			if (constructorArgs != null) {
 				goc.constructorArguments = constructorArgs;

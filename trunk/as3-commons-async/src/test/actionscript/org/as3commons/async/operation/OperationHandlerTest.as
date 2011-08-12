@@ -14,11 +14,11 @@
 * limitations under the License.
 */
 package org.as3commons.async.operation {
-	import asmock.framework.Expect;
 	import asmock.integration.flexunit.IncludeMocksRule;
 
 	import flexunit.framework.Assert;
 
+	import org.as3commons.async.operation.impl.AbstractOperation;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
 
 	public class OperationHandlerTest extends AbstractTestWithMockRepository {
@@ -39,7 +39,7 @@ package org.as3commons.async.operation {
 			_operationHandler = new OperationHandler();
 		}
 
-		[Test(async, timeout = 1000)]
+		[Test(async, timeout=1000)]
 		public function testHandleOperationWithResultMethod():void {
 			var o:AbstractOperation = AbstractOperation(mockRepository.createDynamic(AbstractOperation));
 			mockRepository.stubEvents(o);
@@ -55,7 +55,7 @@ package org.as3commons.async.operation {
 			o.dispatchEvent(new OperationEvent(OperationEvent.COMPLETE, o));
 		}
 
-		[Test(async, timeout = 1000)]
+		[Test(async, timeout=1000)]
 		public function testHandleOperationWithObjectProperty():void {
 			var o:AbstractOperation = AbstractOperation(mockRepository.createDynamic(AbstractOperation));
 			mockRepository.stubEvents(o);
@@ -71,7 +71,7 @@ package org.as3commons.async.operation {
 			Assert.assertStrictlyEquals(result, resultObject.testProperty);
 		}
 
-		[Test(async, timeout = 1000)]
+		[Test(async, timeout=1000)]
 		public function testHandleOperationWithObjectPropertyAndResultMethod():void {
 			var o:AbstractOperation = AbstractOperation(mockRepository.createDynamic(AbstractOperation));
 			mockRepository.stubEvents(o);
@@ -92,7 +92,7 @@ package org.as3commons.async.operation {
 			Assert.assertStrictlyEquals(resultMethodObject, resultObject.testProperty);
 		}
 
-		[Test(async, timeout = 1000)]
+		[Test(async, timeout=1000)]
 		public function testHandleOperationWithNothing():void {
 			var o:AbstractOperation = AbstractOperation(mockRepository.createDynamic(AbstractOperation));
 			mockRepository.stubEvents(o);

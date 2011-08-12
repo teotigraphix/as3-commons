@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.async.command {
+package org.as3commons.async.command.impl {
 
+	import org.as3commons.async.command.CompositeCommandKind;
+	import org.as3commons.async.command.ICommand;
+	import org.as3commons.async.command.ICompositeCommand;
 	import org.as3commons.async.command.event.CommandEvent;
 	import org.as3commons.async.command.event.CompositeCommandEvent;
-	import org.as3commons.async.operation.AbstractProgressOperation;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.OperationEvent;
+	import org.as3commons.async.operation.impl.AbstractProgressOperation;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.logging.api.ILogger;
 	import org.as3commons.logging.api.getLogger;
@@ -85,7 +88,7 @@ package org.as3commons.async.command {
 		 */
 		public function CompositeCommand(kind:CompositeCommandKind=null) {
 			super();
-			_kind = (kind != null) ? kind : CompositeCommandKind.SEQUENCE;
+			_kind = kind ||= CompositeCommandKind.SEQUENCE;
 		}
 
 		// --------------------------------------------------------------------

@@ -24,7 +24,6 @@ package org.as3commons.async.operation.impl {
 	import flash.net.URLRequest;
 	import flash.utils.setTimeout;
 
-	import org.as3commons.async.operation.AbstractProgressOperation;
 	import org.as3commons.lang.Assert;
 
 	/**
