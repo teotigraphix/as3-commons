@@ -27,19 +27,16 @@ package org.as3commons.lang {
 	public final class StringUtils {
 
 		/** Character code for the WINDOWS line break. */
-		private static var WIN_BREAK:String = String.fromCharCode(13)+String.fromCharCode(10);
+		private static var WIN_BREAK:String = String.fromCharCode(13) + String.fromCharCode(10);
 
 		/** Character code for the APPLE line break. */
 		private static var MAC_BREAK:String = String.fromCharCode(13);
-		
-		/** Default map for escaping strings. */	
-		public static var DEFAULT_ESCAPE_MAP:Array = 
-			["\\t", "\t", "\\n", "\n", "\\r", "\r", "\\\"", "\"", "\\\\", "\\",
-			"\\'", "\'", "\\f", "\f", "\\b", "\b", "\\", ""];
-		
+
+		/** Default map for escaping strings. */
+		public static var DEFAULT_ESCAPE_MAP:Array = ["\\t", "\t", "\\n", "\n", "\\r", "\r", "\\\"", "\"", "\\\\", "\\", "\\'", "\'", "\\f", "\f", "\\b", "\b", "\\", ""];
+
 		/** The characters that have to be escaped. */
-		private static var PROPERTIES_ESCAPE_MAP:Array = ["\\t", "\t", "\\n", "\n", "\\r", "\r",
-			"\\\"", "\"", "\\\\", "\\", "\\'", "\'", "\\f", "\f"];
+		private static var PROPERTIES_ESCAPE_MAP:Array = ["\\t", "\t", "\\n", "\n", "\\r", "\r", "\\\"", "\"", "\\\\", "\\", "\\'", "\'", "\\f", "\f"];
 
 		/**
 		 * The empty String <code>""</code>
@@ -1286,7 +1283,7 @@ package org.as3commons.lang {
 			}
 			return new RegExp('(' + searchStr + ')', 'g').test(str);
 		}
-		
+
 		/**
 		 * <p>Checks if String contains a search String, ignoring the case and handling <code>null</code>.
 		 *
@@ -1305,15 +1302,15 @@ package org.as3commons.lang {
 		 * @param searchStr  the String to find, may be null
 		 * @return true if the String contains the search String,
 		 *  false if not or <code>null</code> string input
-		 */		
+		 */
 		public static function containsIgnoreCase(str:String, searchStr:String):Boolean {
 			if (str == null || searchStr == null) {
 				return false;
 			}
-			
+
 			return new RegExp('(' + searchStr.toUpperCase() + ')', 'g').test(str.toUpperCase());
 		}
-		
+
 		/**
 		 * <p>Checks that the String does not contain certain characters.</p>
 		 *
@@ -1933,8 +1930,8 @@ package org.as3commons.lang {
 			} else {
 				return false;
 			}
-		}			
-		
+		}
+
 		/**
 		 * <p>Checks if the String start characters match the given start string.</p>
 		 *
@@ -1958,7 +1955,7 @@ package org.as3commons.lang {
 				return false;
 			}
 		}
-		
+
 		/**
 		 * <p>Checks if the String start characters match the given start string.</p>
 		 *
@@ -1981,7 +1978,7 @@ package org.as3commons.lang {
 			} else {
 				return false;
 			}
-		}		
+		}
 
 		/**
 		 * Compares two strings lexicographically, ignoring case
@@ -2241,7 +2238,7 @@ package org.as3commons.lang {
 		 * @returns -1 if not enough ocurances of needle are found
 		 * @returns charIndex of nth needle ocurances
 		 */
-		public static function nthIndexOf(haystack:String, n:uint, needle:String, startIndex:Number = 0):int {
+		public static function nthIndexOf(haystack:String, n:uint, needle:String, startIndex:Number=0):int {
 			var result:int = startIndex;
 
 			if (n >= 1) {
@@ -2437,6 +2434,33 @@ package org.as3commons.lang {
 		}
 
 		/**
+		 * Tokenizes a string to an array using the given delimiters.
+		 */
+		public static function tokenizeToVector(string:String, delimiters:String):Vector.<String> {
+			var result:Vector.<String> = new Vector.<String>();
+			var numCharacters:int = string.length;
+			var token:String = "";
+
+			for (var i:int = 0; i < numCharacters; i++) {
+				var character:String = string.charAt(i);
+
+				if (delimiters.indexOf(character) == -1) {
+					token += character;
+				} else {
+					result[result.length] = token;
+					token = "";
+				}
+
+				// add the last token if we reached the end of the string
+				if (i == numCharacters - 1) {
+					result[result.length] = token;
+				}
+			}
+
+			return result;
+		}
+
+		/**
 		 * Replace all of the parameters in the str argument. Placeholders are defined like {0},{1},etc
 		 * @param str
 		 * @param rest
@@ -2463,18 +2487,18 @@ package org.as3commons.lang {
 
 			return str;
 		}
-		
+
 		/**
 		 * Replaces keys defined in a keymap.
-		 * 
+		 *
 		 * <p>This method helps if you need to escape characters in a string. But it
 		 * can be basically used for any kind of keys to be replaced.
-		 * 
+		 *
 		 * <p>To be expected as keymap is a map like:
 		 * <code>
 		 *   ["keyToReplace1", "replacedTo1", "keyToReplace2", "replacedTo2", ... ]
-		 * </code> 
-		 * 
+		 * </code>
+		 *
 		 * @param string String that contains content to be removed.
 		 * @param keyMap Map that contains all keys. (DEFAULT_ESCAPE_MAP will be used
 		 * 		  if no keyMap gets passed.
@@ -2490,21 +2514,16 @@ package org.as3commons.lang {
 			}
 			var i:Number = 0;
 			var l:Number = keyMap.length;
-			while (i<l) {
-				string = string.split(keyMap[i]).join(keyMap[i+1]);
-				i+=2;
+			while (i < l) {
+				string = string.split(keyMap[i]).join(keyMap[i + 1]);
+				i += 2;
 			}
 			if (!ignoreUnicode) {
 				i = 0;
 				l = string.length;
-				while (i<l) {
-					if (string.substring(i, i+2) == "\\u") {
-						string = 
-							string.substring(0,i) + 
-							String.fromCharCode(
-								parseInt(string.substring(i+2, i+6), 16)
-							) +
-							string.substring(i+6);
+				while (i < l) {
+					if (string.substring(i, i + 2) == "\\u") {
+						string = string.substring(0, i) + String.fromCharCode(parseInt(string.substring(i + 2, i + 6), 16)) + string.substring(i + 6);
 					}
 					i++;
 				}
@@ -2527,9 +2546,9 @@ package org.as3commons.lang {
 		/**
 		 * Parses the given <p>source</p> and creates a <p>Properties</p> instance from
 		 * it.
-		 * 
+		 *
 		 * <p>Ported from as2lib</p>
-		 * 
+		 *
 		 * @param source the source to parse
 		 * @param properties the properties instance to populate with the properties of the
 		 * given source
@@ -2537,7 +2556,7 @@ package org.as3commons.lang {
 		 * @author Martin Heidegger
 		 * @author Simon Wacker
 		 */
-		public static function parseProperties(str:String,properties:Object=null):Object {
+		public static function parseProperties(str:String, properties:Object=null):Object {
 			properties = properties || {};
 			var i:Number;
 			var lines:Array = str.split(WIN_BREAK).join("\n").split(MAC_BREAK).join("\n").split("\n");
@@ -2546,7 +2565,8 @@ package org.as3commons.lang {
 			var value:String;
 			var formerKey:String;
 			var formerValue:String;
-			var useNextLine:Boolean = false;;
+			var useNextLine:Boolean = false;
+			;
 			for (i = 0; i < length; ++i) {
 				var line:String = lines[i];
 				// Trim the line
@@ -2558,8 +2578,7 @@ package org.as3commons.lang {
 						key = formerKey;
 						value = formerValue + line;
 						useNextLine = false;
-					}
-					else {
+					} else {
 						var sep:Number;
 						// Gets the seperationated
 						var j:Number;
@@ -2568,9 +2587,9 @@ package org.as3commons.lang {
 							var char:String = line.charAt(j);
 							if (char == "'") {
 								j++;
-							}
-							else {
-								if (char == ":" || char == "=" || char == "	") break;
+							} else {
+								if (char == ":" || char == "=" || char == "	")
+									break;
 							}
 						}
 						sep = ((j == l) ? line.length : j);
@@ -2583,12 +2602,11 @@ package org.as3commons.lang {
 					value = leftTrim(value);
 					// Allow normal lines
 					if (value.charAt(value.length - 1) == "\\") {
-						formerValue = value =  value.substr(0, value.length - 1);
+						formerValue = value = value.substr(0, value.length - 1);
 						useNextLine = true;
-					}
-					else {
+					} else {
 						// Commit Property
-						properties[key] = escape( value, PROPERTIES_ESCAPE_MAP, false );
+						properties[key] = escape(value, PROPERTIES_ESCAPE_MAP, false);
 					}
 				}
 			}
