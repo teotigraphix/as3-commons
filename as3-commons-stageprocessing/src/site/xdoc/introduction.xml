@@ -73,6 +73,11 @@ registry.stage = stage;
     	<div class="source"><pre>registry.initialize();</pre></div>
     	This will let the <code>FlashStageObjectProcessorRegistry</code> loop recursively through all the display objects that are already present
     	on the stage and let them be approved and/or processed by the registered <code>IObjectSelectors</code> and <code>IStageObjectProcessors</code>.
+    	<blockquote>
+    	  It is allowed to register an <code>IStageObjectProcessor</code> without providing an <code>IObjectSelector</code>. In this case the <code>defaultObjectSelector</code>
+    	  property is used to register the <code>IStageObjectProcessor</code>. The type of this <code>defaultObjectSelector</code> is determined by the <code>defaultObjectSelectorClass</code> property.
+    	  By default the <code>Class</code> is set to <code>AllowAllObjectSelector</code>.
+    	</blockquote>
     	</p>
     </section>
     <section name="Registering the IStageProcessor with an IObjectSelector and a custom root view">
