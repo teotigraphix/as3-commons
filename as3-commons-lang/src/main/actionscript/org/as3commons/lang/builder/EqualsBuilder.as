@@ -54,7 +54,7 @@ package org.as3commons.lang.builder {
 		 * Creates a new EqualsBuilder
 		 */
 		public function EqualsBuilder() {
-			super();	
+			super();
 		}
 
 		/**
