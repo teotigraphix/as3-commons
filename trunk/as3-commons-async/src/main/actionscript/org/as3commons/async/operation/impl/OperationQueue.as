@@ -82,7 +82,7 @@ package org.as3commons.async.operation.impl {
 		 */
 		public function addOperation(operation:IOperation):Boolean {
 			if (!hasOperation(operation)) {
-				_operations.push(operation);
+				_operations[_operations.length] = operation;
 				addOperationListeners(operation);
 				total++;
 				return true;
