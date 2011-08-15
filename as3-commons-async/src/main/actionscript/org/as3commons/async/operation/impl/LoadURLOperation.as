@@ -22,6 +22,7 @@ package org.as3commons.async.operation.impl {
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
+	import flash.utils.clearTimeout;
 	import flash.utils.setTimeout;
 
 	import org.as3commons.lang.Assert;
@@ -36,6 +37,7 @@ package org.as3commons.async.operation.impl {
 		 * Internal <code>URLLoader</code> instance that is used to do the actual loading of the data.
 		 */
 		protected var urlLoader:URLLoader;
+		protected var timeOutToken:uint;
 
 		/**
 		 * Creates a new <code>LoadURLOperation</code> instance.
@@ -56,17 +58,20 @@ package org.as3commons.async.operation.impl {
 		 */
 		protected function init(url:String, dataFormat:String="text"):void {
 			Assert.hasText(url, "url argument must not be null or empty");
-			dataFormat = (dataFormat == null) ? URLLoaderDataFormat.TEXT : dataFormat;
+			dataFormat ||= URLLoaderDataFormat.TEXT;
+
+			timeOutToken = setTimeout(createLoader, 1, url, dataFormat);
+		}
+
+		protected function createLoader(url:String, dataFormat:String):void {
+			clearTimeout(timeOutToken);
 			urlLoader = new URLLoader();
 			urlLoader.dataFormat = dataFormat;
 			urlLoader.addEventListener(Event.COMPLETE, urlLoaderCompleteHandler);
 			urlLoader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, urlLoaderErrorHandler);
 			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, urlLoaderErrorHandler);
-
-			setTimeout(function():void {
-				urlLoader.load(new URLRequest(url));
-			}, 0);
+			urlLoader.load(new URLRequest(url));
 		}
 
 		/**
