@@ -15,10 +15,15 @@
                      to make sure that you have the fastest logging at your finger
                      tips.
                      <br/>
-                     If you dont want to change all your code: We offer
-                     a backwards compatible adapter .swc: <a href="downloads/as3commons-logging-2.legacy.swc">as3commons-logging-2.legacy.swc</a>
+                     As this breaks with the existing API we decided to move
+                     the API methods from <code>org.as3commons.logging</code>
+                     to <code>org.as3commons.logging.api</code>!<br/>
                      <br/>
-                     For details: <a href="https://bugs.adobe.com/jira/browse/ASL-224" target="_blank">Adobe Bug #224</a>
+                     If you dont want to change your code, feel free to use
+                     additionally this swc that contains a wrapper for the old api:
+                     <a href="downloads/as3commons-logging-2.legacy.swc">as3commons-logging-2.legacy.swc</a><br/>
+                     <br/>
+                     For details about the performance issue: <a href="https://bugs.adobe.com/jira/browse/ASL-224" target="_blank">Adobe Bug #224</a>
                  </li>
                  <li>
                      By default the logging framework does <strong>not</strong> render statements

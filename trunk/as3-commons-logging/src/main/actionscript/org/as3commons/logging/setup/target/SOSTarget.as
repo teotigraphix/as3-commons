@@ -20,9 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.target {
-	
+	import org.as3commons.logging.util.LEVEL_NAMES;
 	import org.as3commons.logging.util.LogMessageFormatter;
-	import org.as3commons.logging.util.levelToName;
 	
 	/**
 	 * <code>SOSTarget</code> logs all statements to the SOS console from powerflasher.
@@ -67,7 +66,7 @@ package org.as3commons.logging.setup.target {
 		public function log(name:String, shortName:String, level:int,
 							timeStamp:Number, message:*, params:Array,
 							person:String):void {
-			_gateway.log( levelToName(level),
+			_gateway.log( LEVEL_NAMES[level] || "FATAL",
 				_formatter.format(name, shortName, level, timeStamp, message, params, person)
 			);
 		}

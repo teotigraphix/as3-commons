@@ -283,7 +283,7 @@ package org.as3commons.logging.util {
 						}
 						// 9
 						else { // LEVEL_TYPE
-							if( level ) result += levelToName(level);
+							if( level ) result += LEVEL_NAMES[level] || "FATAL";
 						}
 					}
 					// 10

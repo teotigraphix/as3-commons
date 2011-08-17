@@ -47,7 +47,7 @@ package org.as3commons.logging.integration {
 	 * @since 2.5.1
 	 * @see http://yui-docs.akabana.info/
 	 */
-	public class YUILoggerFactory implements ILoggerFactory {
+	public final class YUILoggerFactory implements ILoggerFactory {
 		
 		private var _loggers: Dictionary = new Dictionary(true);
 		
@@ -82,7 +82,7 @@ package org.as3commons.logging.integration {
 /*FDT_IGNORE*/
 import org.as3commons.logging.api.ILogger;
 
-class YUILogger implements org.seasar.akabana.yui.core.logging.ILogger {
+final class YUILogger implements org.seasar.akabana.yui.core.logging.ILogger {
 	
 	private var _target: ILogger;
 	

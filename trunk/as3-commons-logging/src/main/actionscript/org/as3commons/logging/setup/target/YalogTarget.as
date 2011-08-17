@@ -21,54 +21,75 @@
  */
 package org.as3commons.logging.setup.target {
 	
+	import nl.acidcats.yalog.Yalog;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.level.FATAL;
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
-	import org.as3commons.logging.setup.ILogTarget;
-	
-	import mx.logging.ILogger;
-	import mx.logging.Log;
+	import org.as3commons.logging.util.LogMessageFormatter;
 	
 	/**
-	 * Target that sends the targets to the <code>mx.logging</code> log system from Flex.
+	 * <code>YalogTarget</code> sends all statements to the Yalog logger
 	 * 
-	 * @author Christophe Herreman
-	 * @author Martin Heidegger
-	 * @since 2.0
+	 * <listing>
+	 *   LOGGER_FACTORY.setup = new SimpleTargetSetup( new YalogTarget );
+	 * </listing>
+	 * 
+	 * @author Martin Heidegger mh@leichtgewicht.at
+	 * @since 2.5.2
+	 * @see https://code.google.com/p/yalog/
 	 */
-	public class FlexLogTarget implements ILogTarget {
+	public final class YalogTarget implements IFormattingLogTarget {
 		
-		/** All the Flex loggers requested for that logger */
-		private const _loggers:Object = {};
+		/** Default format to be used for formatting statements. */
+		private static const DEFAULT_FORMAT: String = "{message}";
 		
-		public function FlexLogTarget() {}
+		/** Formater used to format log messages */
+		private var _formatter: LogMessageFormatter;
+		
+		/**
+		 * Creates a new <code>YalogTarget</code>
+		 * 
+		 * @param format Default format to for the logging, if null, it will use
+		 *        the <code>DEFAULT_FORMAT</code>.
+		 */
+		public function YalogTarget( format:String=null ) {
+			this.format = format;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function set format( format:String ): void {
+			_formatter = new LogMessageFormatter( format||DEFAULT_FORMAT );
+		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
 							timeStamp:Number, message:*, parameters:Array,
-							person:String):void {
-			var target:ILogger = _loggers[name]||(_loggers[name]=Log.getLogger(name));
-			var args: Array = parameters ? parameters.concat() : [];
-			args.unshift( message ? message["toString"]() : null );
+							person:String): void {
+			message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
+			if( person ) {
+				name += "@"+person;
+			}
 			switch( level ) {
 				case DEBUG:
-					target.debug.apply( null, args );
+					Yalog.debug( message, name );
 					break;
 				case INFO:
-					target.info.apply( null, args );
+					Yalog.info( message, name );
 					break;
 				case WARN:
-					target.warn.apply( null, args );
+					Yalog.warn( message, name );
 					break;
 				case ERROR:
-					target.error.apply( null, args );
+					Yalog.error( message, name );
 					break;
 				case FATAL:
-					target.fatal.apply( null, args );
+					Yalog.fatal( message, name );
 					break;
 			}
 		}

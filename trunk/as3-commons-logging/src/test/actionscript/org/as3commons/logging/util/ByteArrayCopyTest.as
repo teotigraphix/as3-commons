@@ -67,7 +67,6 @@ package org.as3commons.logging.util {
 		}
 	}
 }
-import avmplus.getQualifiedClassName;
 
 import org.as3commons.logging.util.allProperties;
 import org.flexunit.AssertionError;

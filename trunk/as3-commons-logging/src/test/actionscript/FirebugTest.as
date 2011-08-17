@@ -1,4 +1,6 @@
 package {
+	import org.as3commons.logging.setup.target.TrazzleTarget;
+	import org.as3commons.logging.setup.target.YalogTarget;
 	import org.as3commons.logging.setup.target.AlconTarget;
 	import org.as3commons.logging.setup.target.DConsoleTarget;
 	import com.furusystems.dconsole2.DConsole;
@@ -46,7 +48,8 @@ package {
 				new FirebugTarget(), new MonsterDebugger3TraceTarget(),
 				new MonsterDebugger3LogTarget(),
 				new ArthropodTarget(), new FlashConsoleTarget(),
-				new ThunderBoltTarget(), new DConsoleTarget(), new AlconTarget() )
+				new ThunderBoltTarget(), new DConsoleTarget(), new AlconTarget(),
+				new YalogTarget(), new TrazzleTarget(4, null, stage, "My App") )
 			);
 			
 			captureUncaughtErrors( loaderInfo );

@@ -7,7 +7,6 @@ package org.as3commons.logging.integration {
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
-	import org.as3commons.logging.util.alike;
 	import org.mockito.MockitoTestCase;
 	import org.swizframework.utils.logging.SwizLogger;
 	/**

@@ -1,6 +1,8 @@
 package {
+	import org.as3commons.logging.simple.aTrace;
+	import org.as3commons.logging.integration.LogMeisterIntegrationTest;
+	import org.as3commons.logging.integration.OSMFIntegrationTest;
 	import org.as3commons.logging.integration.SLF4ASIntegrationTest;
-	import jp.progression.scenes.SceneLoader;
 	import org.as3commons.logging.integration.YUIIntegrationTest;
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -76,6 +78,8 @@ package {
 			DEBUG;
 			debugp;
 			debugs;
+			
+			aTrace();
 			
 			var i: int = 0;
 			var t: Number;
@@ -163,7 +167,9 @@ package {
 				new BufferTest(),
 				new MergedTest(),
 				new TextFieldTest(),
-				new AirTargetTest()
+				new AirTargetTest(),
+				new OSMFIntegrationTest(),
+				new LogMeisterIntegrationTest()
 			]);
 		}
 	}
