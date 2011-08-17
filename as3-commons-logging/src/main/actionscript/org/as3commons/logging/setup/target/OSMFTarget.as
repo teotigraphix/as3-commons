@@ -27,48 +27,53 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.level.INFO;
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ILogTarget;
-	
-	import mx.logging.ILogger;
-	import mx.logging.Log;
+	import org.osmf.logging.Log;
+	import org.osmf.logging.Logger;
 	
 	/**
-	 * Target that sends the targets to the <code>mx.logging</code> log system from Flex.
+	 * Sends log statements to the Open source media frameworks logging system.
 	 * 
-	 * @author Christophe Herreman
-	 * @author Martin Heidegger
-	 * @since 2.0
+	 * <listing>
+	 *   LOGGER_FACTORY.setup = new SimpleTargetSetup( new OSMFTarget );
+	 * </listing>
+	 * 
+	 * @author Martin Heidegger mh@leichtgewicht.at
+	 * @since 2.5.2
+	 * @see　http://sourceforge.net/apps/mediawiki/osmf.adobe/index.php?title=Logging
+	 * @see http://osmf.org/dev/osmf/specpdfs/LoggingFrameworkSpecification.pdf
+	 * @see org.as3commons.logging.integration.OSMFIntegration
 	 */
-	public class FlexLogTarget implements ILogTarget {
+	public class OSMFTarget implements ILogTarget {
 		
-		/** All the Flex loggers requested for that logger */
-		private const _loggers:Object = {};
-		
-		public function FlexLogTarget() {}
+		/** Loggers of the OSMF used to log output */
+		private static const _loggers: Object = {};
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
 							timeStamp:Number, message:*, parameters:Array,
-							person:String):void {
-			var target:ILogger = _loggers[name]||(_loggers[name]=Log.getLogger(name));
-			var args: Array = parameters ? parameters.concat() : [];
-			args.unshift( message ? message["toString"]() : null );
+							person:String): void {
+			var logName: String = name;
+			if( person ) {
+				logName += "@person";
+			}
+			var logger: Logger = _loggers[logName] || (_loggers[logName] = Log.getLogger(logName));
 			switch( level ) {
 				case DEBUG:
-					target.debug.apply( null, args );
+					logger.debug.apply( message, parameters );
 					break;
 				case INFO:
-					target.info.apply( null, args );
+					logger.info.apply( message, parameters );
 					break;
 				case WARN:
-					target.warn.apply( null, args );
+					logger.warn.apply( message, parameters );
 					break;
 				case ERROR:
-					target.error.apply( null, args );
+					logger.error.apply( message, parameters );
 					break;
 				case FATAL:
-					target.fatal.apply( null, args );
+					logger.fatal.apply( message, parameters );
 					break;
 			}
 		}

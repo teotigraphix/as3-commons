@@ -47,6 +47,11 @@
                 
                 <img src="images/integration-support.png" usemap="#m_loggingfuturesupport"/>
                 <map name="m_loggingfuturesupport" id="m_loggingfuturesupport">
+                    <area shape="rect" coords="264,7,374,30" href="asdoc/index.html?org/as3commons/logging/integration/LogMeisterIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="LogMeister integration" />
+                    <area shape="rect" coords="10,101,81,260" href="asdoc/index.html?org/as3commons/logging/integration/FlexUnitListener.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="FlexUnit integration" />
+                    <area shape="rect" coords="100,230,217,276" href="asdoc/index.html?org/as3commons/logging/setup/target/TrazzleTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Trazzle integration" />
+                    <area shape="rect" coords="252,242,352,278" href="asdoc/index.html?org/as3commons/logging/setup/target/YalogTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Yalog integration" />
+                    <area shape="rect" coords="370,225,527,260" href="asdoc/index.html?org/as3commons/logging/integration/OSMFIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="OSMF integration" />
                     <area shape="rect" coords="14,13,96,64" href="asdoc/index.html?org/as3commons/logging/setup/target/DConsoleTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Doomsday Console integration" />
                     <area shape="rect" coords="459,85,508,132" href="asdoc/index.html?org/as3commons/logging/setup/target/AlconTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Alcon Console integration" />
                     <area shape="rect" coords="370,6,462,64" href="asdoc/index.html?org/as3commons/logging/integration/YUILoggerFactory.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="YUI Framework integration" />

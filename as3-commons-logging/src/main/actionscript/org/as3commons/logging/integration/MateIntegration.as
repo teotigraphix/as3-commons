@@ -21,18 +21,15 @@
  */
 package org.as3commons.logging.integration {
 	
-	import mx.logging.ILogger;
+	import com.asfusion.mate.events.MateLogEvent;
+	import com.asfusion.mate.utils.debug.DebuggerHelper;
 	import com.asfusion.mate.core.MateManager;
 	
 	import mx.logging.ILoggingTarget;
 	import mx.logging.LogEvent;
 	
-	/*FDT_IGNORE*/
-	import com.asfusion.mate.events.MateLogEvent;
-	import com.asfusion.mate.utils.debug.IMateLogger;
 	import org.as3commons.logging.api.getLogger;
 	import mx.logging.LogEventLevel;
-	/*FDT_IGNORE*/
 	
 	/**
 	 * Once instanciated it will add itself as debugger to the <code>MateManager</code>
@@ -51,19 +48,24 @@ package org.as3commons.logging.integration {
 	 */
 	public final class MateIntegration implements ILoggingTarget {
 		
-		/*FDT_IGNORE*/
 		private const _cache: Object = {};
-		/*FDT_IGNORE*/
 		
 		private var _filters: Array;
 		private var _level: int;
 		
+		/** Used to show a proper helper definition */
+		private var _helper: DebuggerHelper;
+		
 		/**
 		 * Constructs and registers the MateIntegration.
+		 * 
+		 * @param helper Custom helper, optionally used in case one
+		 *        had its own implementation.
 		 */
-		public function MateIntegration() {
+		public function MateIntegration(helper:DebuggerHelper = null) {
 			// Same like MateLogger, just to have fun :)
 			MateManager.instance.debugger = this;
+			_helper = helper||new DebuggerHelper();
 		}
 		
 		/**
@@ -91,7 +93,7 @@ package org.as3commons.logging.integration {
 		 *
 		 *  @param logger The ILogger that this target should listen to.
 		 */
-		public function addLogger(logger:ILogger):void {
+		public function addLogger(logger:mx.logging.ILogger):void {
 			if(logger) {
 				logger.addEventListener( LogEvent.LOG, logHandler,false,0,true);
 			}
@@ -102,7 +104,7 @@ package org.as3commons.logging.integration {
 		 *
 		 *  @param logger The ILogger that this target should ignore.
 		 */		
-		public function removeLogger( logger:ILogger ):void {
+		public function removeLogger( logger:mx.logging.ILogger ):void {
 			if(logger) {
 				logger.addEventListener( LogEvent.LOG, logHandler,false,0,true);
 			}
@@ -114,28 +116,38 @@ package org.as3commons.logging.integration {
 		 * @param event event that should be sent.
 		 */
 		private function logHandler( event:LogEvent ):void {
-			/*FDT_IGNORE*/
-			var category: String = IMateLogger( event.target ).category;
-			var e: MateLogEvent = MateLogEvent( event );
+			var target: mx.logging.ILogger = (mx.logging.ILogger)( event.target );
+			var parameters: Array = ( event is MateLogEvent ) ? MateLogEvent(event).parameters : null;
+			if( parameters.length > 0 ) {
+				parameters = null; 
+			}
+			var category: String = target.category;
 			var logger: org.as3commons.logging.api.ILogger = _cache[ category ] || (_cache[ category ] = getLogger( category, "mate" ) );
+			var message: String = _helper.getMessage(event);
+			if( message != event.message ) {
+				if( message == "Cannot debug" ) {
+					message = event.message;
+				} else {
+					message = event.message + " " + message;
+				}
+			}
 			switch( event.level ) {
 				case LogEventLevel.DEBUG:
-					logger.debug( event.message, e.parameters );
+					logger.debug( message, parameters );
 					break;
 				case LogEventLevel.INFO:
-					logger.info( event.message, e.parameters );
+					logger.info( message, parameters );
 					break;
 				case LogEventLevel.WARN:
-					logger.warn( event.message, e.parameters );
+					logger.warn( message, parameters );
 					break;
 				case LogEventLevel.ERROR:
-					logger.error( event.message, e.parameters );
+					logger.error( message, parameters );
 					break;
 				case LogEventLevel.FATAL:
-					logger.fatal( event.message, e.parameters );
+					logger.fatal( message, parameters );
 					break;
 			}
-			/*FDT_IGNORE*/
 		}
 	}
 }

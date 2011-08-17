@@ -20,10 +20,6 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.util {
-	import org.as3commons.logging.level.DEBUG;
-	import org.as3commons.logging.level.ERROR;
-	import org.as3commons.logging.level.INFO;
-	import org.as3commons.logging.level.WARN;
 	
 	/**
 	 * Returns the name for a level as String.
@@ -33,12 +29,6 @@ package org.as3commons.logging.util {
 	 * @since 2.5
 	 */
 	public function levelToName( level:int ): String {
-		switch( level ) {
-			case DEBUG: return "DEBUG";
-			case ERROR: return "ERROR";
-			case INFO: return "INFO";
-			case WARN: return "WARN";
-			default: return "FATAL";
-		}
+		return LEVEL_NAMES[level] || "FATAL";
 	}
 }

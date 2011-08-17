@@ -21,7 +21,8 @@
  */
 package org.as3commons.logging.setup.target {
 	
-	import jp.nium.core.debug.Logger;
+	import flash.display.BitmapData;
+	import com.nesium.logging.TrazzleLogger;
 	
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
@@ -30,40 +31,65 @@ package org.as3commons.logging.setup.target {
 	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.util.LogMessageFormatter;
 	
+	import flash.display.Stage;
+	
 	/**
-	 * <code>Progression4Target</code> can send log statements to the 
-	 * logging mechanism used in the <code>Progression</code> framework.
+	 * <code>TrazzleTarget</code> sends log statements to the mac-only
+	 * <code>Trazzle</code> logger.
 	 * 
-	 * <p>Built on version '4.0.22'.</p>
-	 * 
-	 * @author Martin Heidegger
-	 * @since 2.5
-	 * @see http://progression.jp/ja/download/
-	 * @see org.as3commons.logging.setup#Progression4Integration()
+	 * @author Martin Heidegger mh@leichtgewicht.at
+	 * @since 2.5.2
+	 * @see http://www.nesium.com/products/trazzle
 	 */
-	public class Progression4Target implements IFormattingLogTarget {
+	public final class TrazzleTarget implements IFormattingLogTarget {
 		
 		/** Default format to be used for formatting statements. */
-		private static const DEFAULT_FORMAT: String = "{shortName} {message}";
+		private static const DEFAULT_FORMAT: String = "{message}";
 		
 		/** Formater used to format log messages */
-		private var _formatter: LogMessageFormatter;
+		private const _formatters: Object = {};
+		
+		/** Logger used to push the statements */
+		private var _instance: TrazzleLogger;
+		
+		/** Line of the stack trace element. */
+		private var _stackIndex: uint;
 		
 		/**
-		 * Creates a new <code>Progression4Target</code>
+		 * Creates a new <code>TrazzleTarget</code>
 		 * 
+		 * <p>This method will initialize the TrazzleLogger if both title and
+		 * stage are given.</p>
+		 * 
+		 * @param stackIndex Line used from the stacktrace. (can be different
+		 *        in different setups).
 		 * @param format Default format to for the logging, if null, it will use
 		 *        the <code>DEFAULT_FORMAT</code>.
+		 * @param stage Stage used to initialize the logger
+		 * @param title Title of this application.
 		 */
-		public function Progression4Target( format:String=null ) {
+		public function TrazzleTarget( stackIndex:uint, format:String=null,
+										stage:Stage=null, title:String=null ) {
+			if( stage && title ) {
+				zz_init(stage, title);
+			}
 			this.format = format;
+			_stackIndex = stackIndex;
+			_instance = TrazzleLogger.instance();
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function set format( format:String ): void {
-			_formatter = new LogMessageFormatter( format||DEFAULT_FORMAT );
+			if( !format ) {
+				format = DEFAULT_FORMAT;
+			}
+			_formatters[ DEBUG ] = new LogMessageFormatter( "d "+format );
+			_formatters[ INFO ] =  new LogMessageFormatter( "i "+format );
+			_formatters[ WARN ] =  new LogMessageFormatter( "n "+format );
+			_formatters[ ERROR ] = new LogMessageFormatter( "e "+format );
+			_formatters[ FATAL ] = new LogMessageFormatter( "f "+format );
 		}
 		
 		/**
@@ -72,23 +98,15 @@ package org.as3commons.logging.setup.target {
 		public function log(name:String, shortName:String, level:int,
 							timeStamp:Number, message:*, parameters:Array,
 							person:String): void {
-			message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
-			switch( level ) {
-				case DEBUG:
-					Logger.info( message );
-					break;
-				case INFO:
-					Logger.info( message );
-					break;
-				case WARN:
-					Logger.warn( message );
-					break;
-				case ERROR:
-					Logger.error( message );
-					break;
-				case FATAL:
-					Logger.error( message );
-					break;
+			if( message is BitmapData) {
+				_instance.logBitmapData(message);
+			} else if (parameters && message == "{0}" && parameters[0] is BitmapData){
+				_instance.logBitmapData(parameters[0]);
+			} else {
+				_instance.log( LogMessageFormatter( _formatters[level] || _formatters[ FATAL ] )
+					.format(name, shortName, level, timeStamp, message, parameters, person),
+					_stackIndex
+				);
 			}
 		}
 	}

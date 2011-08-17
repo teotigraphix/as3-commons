@@ -68,7 +68,7 @@ package org.as3commons.logging.integration {
 import org.as3commons.logging.api.ILogger;
 import org.spicefactory.lib.logging.Logger;
 
-class LoggerWrapper implements Logger {
+final class LoggerWrapper implements Logger {
 	
 	private var _logger: ILogger;
 	

@@ -332,6 +332,38 @@
         </dependency>
 
         <dependency>
+            <groupId>org.osmf</groupId>
+            <artifactId>OSMF</artifactId>
+            <version>1.5</version>
+            <type>swc</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>nl.acidcats</groupId>
+            <artifactId>yalog</artifactId>
+            <version>3.0.1</version>
+            <type>swc</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>nl.base42</groupId>
+            <artifactId>LogMeister</artifactId>
+            <version>1.8.2</version>
+            <type>swc</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nesium</groupId>
+            <artifactId>TrazzleCore</artifactId>
+            <version>1.5</version>
+            <type>swc</type>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
             <groupId>com.asunit</groupId>
             <artifactId>asunit</artifactId>
             <version>20071011</version>

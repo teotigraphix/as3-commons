@@ -1,4 +1,8 @@
 package org.as3commons.logging.integration {
+	
+	import com.asfusion.mate.utils.debug.ILoggerProvider;
+	import com.asfusion.mate.utils.debug.LogInfo;
+	import com.asfusion.mate.utils.debug.LogTypes;
 	import com.asfusion.mate.core.MateManager;
 	import com.asfusion.mate.utils.debug.IMateLogger;
 	import mx.logging.LogEventLevel;
@@ -13,15 +17,17 @@ package org.as3commons.logging.integration {
 	import org.as3commons.logging.setup.ILogTarget;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
 	import org.as3commons.logging.setup.target.MateTarget;
-	import org.as3commons.logging.util.alike;
 	import org.mockito.MockitoTestCase;
-
-
+	
 	/**
 	 * @author mh
 	 */
 	public class MateIntegrationTest extends MockitoTestCase {
+		
+		private static var provider:ILoggerProvider;
+		
 		public function MateIntegrationTest() {
+			provider = new TempLoggingProvider();
 			super([ILogTarget]);
 		}
 		
@@ -33,17 +39,18 @@ package org.as3commons.logging.integration {
 			new MateIntegration(); // Mate metapher, those guys like it like that.
 			
 			var logger: IMateLogger = MateManager.instance.getLogger(true);
-			logger.debug( "A Debug", "1", 2 );
-			logger.info( "A Info", true, "me" );
-			logger.warn( "A Warn", "a", "b" );
-			logger.error( "A Error", "max", 1 );
-			logger.fatal( "A Fatal", "mo", "ho" );
 			
-			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(DEBUG), notNull(), eq( "A Debug" ), alike(["1",2]), eq("mate") ) );
-			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(INFO), notNull(), eq( "A Info" ), alike([true,"me"]), eq("mate") ) );
-			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(WARN), notNull(), eq( "A Warn" ), alike(["a","b"]), eq("mate") ) );
-			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(ERROR), notNull(), eq( "A Error" ), alike(["max",1]), eq("mate") ) );
-			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(FATAL), notNull(), eq( "A Fatal" ), alike(["mo","ho"]), eq("mate") ) );
+			logger.debug( LogTypes.IS_NOT_AN_EVENT, new LogInfo(provider, this, null, "helloWorld") );
+			logger.info( LogTypes.METHOD_NOT_FOUND, new LogInfo(provider, this, null, "helloWorld") );
+			logger.warn( LogTypes.SEQUENCE_END, new LogInfo(provider, this, null, "helloWorld") );
+			logger.error( LogTypes.SOURCE_NULL, new LogInfo(provider, this, null, "helloWorld") );
+			logger.fatal( LogTypes.SEQUENCE_TRIGGER, new LogInfo(provider, this, null, "helloWorld") );
+			
+			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(DEBUG), notNull(), eq( "Not an Event \n---------------------------------------------------------\n- ERROR: Unable to dispatch MateIntegrationTest because it is not an Event \n- METHOD: helloWorld\n- FILE: null\n- NO ARGUMENTS SUPPLIED \n---------------------------------------------------------\n" ), eq(null), eq("mate") ) );
+			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(INFO), notNull(), eq( "Method not found \n---------------------------------------------------------\n- ERROR: Method helloWorld not found in class MateIntegrationTest \n- METHOD: helloWorld\n- FILE: null\n- NO ARGUMENTS SUPPLIED \n---------------------------------------------------------\n" ), eq(null), eq("mate") ) );
+			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(WARN), notNull(), eq( "Sequence ended" ), eq(null), eq("mate") ) );
+			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(ERROR), notNull(), eq( "Source null" ), eq(null), eq("mate") ) );
+			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(FATAL), notNull(), eq( "Sequence triggered" ), eq(null), eq("mate") ) );
 		}
 		
 		public function testTarget():void {
@@ -74,6 +81,8 @@ package org.as3commons.logging.integration {
 		}
 	}
 }
+import com.asfusion.mate.utils.debug.IMateLogger;
+import com.asfusion.mate.utils.debug.ILoggerProvider;
 import mx.logging.LogEvent;
 import mx.logging.ILogger;
 import mx.logging.ILoggingTarget;
@@ -113,5 +122,23 @@ class Storage implements ILoggingTarget {
 
 	public function get statements() : Array {
 		return _statements;
+	}
+}
+
+class TempLoggingProvider implements ILoggerProvider {
+	public function errorString() : String {
+		return "";
+	}
+	
+	public function getCurrentTarget() : Object {
+		return null;
+	}
+	
+	public function getDocument() : Object {
+		return null;
+	}
+	
+	public function getLogger() : IMateLogger {
+		return null;
 	}
 }
