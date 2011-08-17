@@ -39,7 +39,7 @@ package org.as3commons.logging.setup.target {
 	 * 
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 * @since 2.5.2
-	 * @see　http://sourceforge.net/apps/mediawiki/osmf.adobe/index.php?title=Logging
+	 * @see http://sourceforge.net/apps/mediawiki/osmf.adobe/index.php?title=Logging
 	 * @see http://osmf.org/dev/osmf/specpdfs/LoggingFrameworkSpecification.pdf
 	 * @see org.as3commons.logging.integration.OSMFIntegration
 	 */
