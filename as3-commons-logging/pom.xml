@@ -218,7 +218,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-			<templateFile>../src/site/vm/as3commons.vm</templateFile>
+                    <templateFile>../src/site/vm/as3commons.vm</templateFile>
                     <reportPlugins>
 
                         <plugin>
@@ -330,13 +330,22 @@
             <type>swc</type>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>com.adobe.flexunit</groupId>
+            <artifactId>flexunit</artifactId>
+            <version>4.1.0-RC1.61</version>
+            <type>swc</type>
+            <scope>external</scope>
+        </dependency>
+        
 
         <dependency>
             <groupId>org.osmf</groupId>
             <artifactId>OSMF</artifactId>
             <version>1.5</version>
             <type>swc</type>
-            <scope>test</scope>
+            <scope>external</scope>
         </dependency>
 
         <dependency>
@@ -344,7 +353,7 @@
             <artifactId>yalog</artifactId>
             <version>3.0.1</version>
             <type>swc</type>
-            <scope>test</scope>
+            <scope>external</scope>
         </dependency>
 
         <dependency>
@@ -352,7 +361,7 @@
             <artifactId>LogMeister</artifactId>
             <version>1.8.2</version>
             <type>swc</type>
-            <scope>test</scope>
+            <scope>external</scope>
         </dependency>
 
         <dependency>
@@ -360,7 +369,7 @@
             <artifactId>TrazzleCore</artifactId>
             <version>1.5</version>
             <type>swc</type>
-            <scope>test</scope>
+            <scope>external</scope>
         </dependency>
         
         <dependency>

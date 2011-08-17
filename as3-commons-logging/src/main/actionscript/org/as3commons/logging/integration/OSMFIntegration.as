@@ -39,13 +39,18 @@ package org.as3commons.logging.integration {
 	 * @author Martin Heidegger
 	 * @since 2.5.2
 	 * @see org.as3commons.logging.setup.target.OSMFTarget
-	 * @see　http://sourceforge.net/apps/mediawiki/osmf.adobe/index.php?title=Logging
+	 * @see http://sourceforge.net/apps/mediawiki/osmf.adobe/index.php?title=Logging
 	 * @see http://osmf.org/dev/osmf/specpdfs/LoggingFrameworkSpecification.pdf
 	 */
 	public final class OSMFIntegration extends LoggerFactory {
 		
 		/** Loggers stored for different logger names*/
-		private const _loggers: Object = {};
+		private const _loggers : Object = {};
+		
+		/**
+		 * Creates a new integration
+		 */
+		public function OSMFIntegration(){}
 		
 		/**
 		 * @inheritDoc
