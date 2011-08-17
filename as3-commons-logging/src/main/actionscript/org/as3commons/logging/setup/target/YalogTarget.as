@@ -38,7 +38,7 @@ package org.as3commons.logging.setup.target {
 	 * 
 	 * @author Martin Heidegger mh@leichtgewicht.at
 	 * @since 2.5.2
-	 * @see https://code.google.com/p/yalog/
+	 * @see http://code.google.com/p/yalog/
 	 */
 	public final class YalogTarget implements IFormattingLogTarget {
 		

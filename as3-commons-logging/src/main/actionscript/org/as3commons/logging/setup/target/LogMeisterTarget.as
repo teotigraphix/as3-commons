@@ -40,7 +40,7 @@ package org.as3commons.logging.setup.target {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.5.2
-	 * @see https://github.com/base42/LogMeister
+	 * @see http://github.com/base42/LogMeister
 	 * @see org.as3commons.logging.integration.LogMeisterIntegration
 	 */
 	public class LogMeisterTarget implements ILogTarget {
