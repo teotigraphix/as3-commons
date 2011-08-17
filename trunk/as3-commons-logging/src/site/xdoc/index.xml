@@ -13,9 +13,9 @@
         </section>
         
         <section name="Download">
-             <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-logging/2.5.1/as3commons-logging-2.5.1.swc">
+             <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-logging/2.5.2/as3commons-logging-2.5.2.swc">
                      <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
-                 Download latest stable (2.5.1)
+                 Download latest stable (2.5.2)
              </a> (please visit the <a href="changes.html">Important Changes</a> page if you used logging before)
              <br/>
              <a href="downloads/as3commons-logging-latest-snapshot-bin.zip">
