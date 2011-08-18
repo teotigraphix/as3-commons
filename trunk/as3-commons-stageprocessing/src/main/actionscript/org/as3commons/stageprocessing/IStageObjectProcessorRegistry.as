@@ -61,7 +61,7 @@ package org.as3commons.stageprocessing {
 
 		/**
 		 * Retrieves a list of all the <code>IObjectSelectors</code> that have been registered with the current <code>IStageProcessorRegistry</code>.
-		 * @return An <code>Array</code> of <code>IObjectSelectors</code>.
+		 * @return A <code>Vector.&lt;IObjectSelector&gt;</code>.
 		 * @see org.as3commons.stageprocessing.IObjectSelector IObjectSelector
 		 */
 		function getAllObjectSelectors():Vector.<IObjectSelector>;
@@ -74,7 +74,7 @@ package org.as3commons.stageprocessing {
 
 		/**
 		 * Retrieves a list of all the <code>IStageProcessors</code> that have been registered with the current <code>IStageProcessorRegistry</code>.
-		 * @return An <code>Array</code> of <code>IStageProcessors</code>.
+		 * @return A <code>Vector.&lt;IStageProcessor&gt;</code>.
 		 * @see org.as3commons.stageprocessing.IStageProcessor IStageProcessor
 		 */
 		function getAllStageObjectProcessors():Vector.<IStageObjectProcessor>;
@@ -89,7 +89,7 @@ package org.as3commons.stageprocessing {
 		/**
 		 * Retrieves a list of all the <code>IStageProcessors</code> of the specified <code>Class</code>.
 		 * @param type the specified <code>Class</code>.
-		 * @return An <code>Array</code> of <code>IStageProcessors</code>.
+		 * @return An <code>Vector.&lt;IStageProcessor&gt;</code>.
 		 */
 		function getStageObjectProcessorsByType(type:Class):Vector.<IStageObjectProcessor>;
 
@@ -114,14 +114,14 @@ package org.as3commons.stageprocessing {
 		 * Recursively loops through the stage displaylist and processes every object therein.
 		 * @param startComponent Optionally a start component can be specified that will be used as the root for recursion.
 		 */
-		function processStage(startComponent:DisplayObject = null):void;
+		function processStage(startComponent:DisplayObject=null):void;
 
 		/**
 		 * Adds the specified <code>IStageProcessor</code> instance to the collection.
 		 * @param stageProcessor The specified <code>IStageProcessor</code> instance.
 		 * @param objectSelector The specified <code>IObjectSelector</code> instance.
 		 */
-		function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector = null, rootView:DisplayObject = null):void;
+		function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector=null, rootView:DisplayObject=null):void;
 
 		/**
 		 * A reference to the Flash stage that is used to add the event listeners to. This property is requried to be s et to a valid reference, otherwise
@@ -133,7 +133,7 @@ package org.as3commons.stageprocessing {
 		 * Removes the specified <code>IStageProcessor</code> that is associated with the specified <code>IObjectSelector</code>.
 		 * @param name The name of the <code>IStageProcessor</code> that will be removed
 		 */
-		function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector = null, rootView:DisplayObject = null):void;
+		function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector=null, rootView:DisplayObject=null):void;
 
 		/**
 		 * Determines whether the current <code>IStageObjectProcessorRegistry</code> will listen for the <code>REMOVED_FROM_STAGE</code> event and

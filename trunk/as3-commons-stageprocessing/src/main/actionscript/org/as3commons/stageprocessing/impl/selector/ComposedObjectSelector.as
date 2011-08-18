@@ -37,8 +37,8 @@ package org.as3commons.stageprocessing.impl.selector {
 		/**
 		 * Creates a new ComposedObjectSelector.
 		 *
-		 * @param objectSelectos <code>Array</code> containing all
-		 * <code>IObjectSelector</code> that will be iterated to
+		 * @param objectSelectors <code>Vector.&lt;IObjectSelector&gt;</code> containing all
+		 * <code>IObjectSelectors</code> that will be iterated to
 		 * approve or deny the passed object.
 		 * @param approveOnFirst if <code>true</code> it will approve the object on first
 		 * approval.
@@ -83,8 +83,8 @@ package org.as3commons.stageprocessing.impl.selector {
 		}
 
 		/**
-		 * @param objectSelectors <code>Array</code> containing all
-		 * <code>IObjectSelector</code> that will be iterated to
+		 * @param objectSelectors <code>Vector.&lt;IObjectSelector&gt;</code> containing all
+		 * <code>IObjectSelectors</code> that will be iterated to
 		 * approve or deny the passed object.
 		 */
 		public function set objectSelectors(objectSelectors:Vector.<IObjectSelector>):void {
