@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.async.operation.impl {
-
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
@@ -24,7 +23,6 @@ package org.as3commons.async.operation.impl {
 	import flash.net.URLRequest;
 	import flash.utils.clearTimeout;
 	import flash.utils.setTimeout;
-
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -32,12 +30,6 @@ package org.as3commons.async.operation.impl {
 	 * @author Roland Zwaga
 	 */
 	public class LoadURLOperation extends AbstractProgressOperation {
-
-		/**
-		 * Internal <code>URLLoader</code> instance that is used to do the actual loading of the data.
-		 */
-		protected var urlLoader:URLLoader;
-		protected var timeOutToken:uint;
 
 		/**
 		 * Creates a new <code>LoadURLOperation</code> instance.
@@ -48,6 +40,30 @@ package org.as3commons.async.operation.impl {
 		public function LoadURLOperation(url:String, dataFormat:String=null) {
 			super();
 			init(url, dataFormat);
+		}
+
+		protected var timeOutToken:uint;
+
+		/**
+		 * Internal <code>URLLoader</code> instance that is used to do the actual loading of the data.
+		 */
+		protected var urlLoader:URLLoader;
+
+		private var _url:String;
+
+		public function get url():String {
+			return _url;
+		}
+
+		protected function createLoader(url:String, dataFormat:String):void {
+			clearTimeout(timeOutToken);
+			urlLoader = new URLLoader();
+			urlLoader.dataFormat = dataFormat;
+			urlLoader.addEventListener(Event.COMPLETE, urlLoaderCompleteHandler);
+			urlLoader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+			urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, urlLoaderErrorHandler);
+			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, urlLoaderErrorHandler);
+			urlLoader.load(new URLRequest(url));
 		}
 
 		/**
@@ -63,27 +79,6 @@ package org.as3commons.async.operation.impl {
 			timeOutToken = setTimeout(createLoader, 1, url, dataFormat);
 		}
 
-		protected function createLoader(url:String, dataFormat:String):void {
-			clearTimeout(timeOutToken);
-			urlLoader = new URLLoader();
-			urlLoader.dataFormat = dataFormat;
-			urlLoader.addEventListener(Event.COMPLETE, urlLoaderCompleteHandler);
-			urlLoader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
-			urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, urlLoaderErrorHandler);
-			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, urlLoaderErrorHandler);
-			urlLoader.load(new URLRequest(url));
-		}
-
-		/**
-		 * Handles the <code>Event.COMPLETE</code> event of the internally created <code>URLLoader</code>.
-		 * @param event The specified <code>Event.COMPLETE</code> event.
-		 */
-		protected function urlLoaderCompleteHandler(event:Event):void {
-			result = urlLoader.data;
-			removeEventListeners();
-			dispatchCompleteEvent();
-		}
-
 		/**
 		 * Handles the <code>ProgressEvent.PROGRESS</code> event of the internally created <code>URLLoader</code>.
 		 * @param event The specified <code>ProgressEvent.PROGRESS</code> event.
@@ -92,15 +87,6 @@ package org.as3commons.async.operation.impl {
 			progress = event.bytesLoaded;
 			total = event.bytesTotal;
 			dispatchProgressEvent();
-		}
-
-		/**
-		 * Handles the <code>SecurityErrorEvent.SECURITY_ERROR</code> and <code>IOErrorEvent.IO_ERROR</code> events of the internally created <code>URLLoader</code>.
-		 * @param event The specified <code>ProgressEvent.PROGRESS</code> or <code>IOErrorEvent.IO_ERROR</code> event.
-		 */
-		protected function urlLoaderErrorHandler(event:Event):void {
-			removeEventListeners();
-			dispatchErrorEvent(event['text']);
 		}
 
 		/**
@@ -116,5 +102,31 @@ package org.as3commons.async.operation.impl {
 				urlLoader = null;
 			}
 		}
+
+		/**
+		 * Handles the <code>Event.COMPLETE</code> event of the internally created <code>URLLoader</code>.
+		 * @param event The specified <code>Event.COMPLETE</code> event.
+		 */
+		protected function urlLoaderCompleteHandler(event:Event):void {
+			result = urlLoader.data;
+			removeEventListeners();
+			dispatchCompleteEvent();
+		}
+
+		/**
+		 * Handles the <code>SecurityErrorEvent.SECURITY_ERROR</code> and <code>IOErrorEvent.IO_ERROR</code> events of the internally created <code>URLLoader</code>.
+		 * @param event The specified <code>ProgressEvent.PROGRESS</code> or <code>IOErrorEvent.IO_ERROR</code> event.
+		 */
+		protected function urlLoaderErrorHandler(event:Event):void {
+			removeEventListeners();
+			dispatchErrorEvent(event['text']);
+		}
+
+
+		public override function toString():String {
+			return "LoadURLOperation{_url:\"" + _url + "\"}";
+		}
+
+
 	}
 }
