@@ -9,6 +9,7 @@ Changes in version 1.1 (??.??.2011)
 * Added unit tests for all available IObjectSelector implementations
 * Added support for default object selector, if no selector is defined at all the AllowAll selector is used.
 * Added useStageDestroyers property on FlashStageObjectProcessorRegistry to turn off stage removal behaviour.
+* Replaced arrays with vectors where possible.
 
 Changes in version 1.0 (04.08.2011)
 -----------------------------------
