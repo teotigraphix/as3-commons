@@ -41,7 +41,7 @@ package org.as3commons.stageprocessing.impl.selector {
 		private var _denyOnMatch:Boolean;
 
 		/**
-		 * Create a new NameBasedObjectSelector.
+		 * Creates a new <code>NameBasedObjectSelector</code> instance.
 		 *
 		 * @param regexpArray An array of <code>String</code> or <code>Regexp</code>
 		 * to be used for object name pattern matching.
@@ -51,15 +51,27 @@ package org.as3commons.stageprocessing.impl.selector {
 		 * logic and DENY object whose name match the passed regexp array.
 		 * @default <code>false</code>
 		 */
-		public function NameBasedObjectSelector(regexpArray:Array = null, propertyName:String = DEFAULT_NAME_PROPERTY, denyOnMatch:Boolean = false) {
+		public function NameBasedObjectSelector(regexpArray:Array=null, propertyName:String=DEFAULT_NAME_PROPERTY, denyOnMatch:Boolean=false) {
 			super();
+			initNameBasedObjectSelector(regexpArray, propertyName, denyOnMatch);
+		}
+
+		/**
+		 * Initializes the current <code>NameBasedObjectSelector</code>.
+		 * @param regexpArray An array of <code>String</code> or <code>Regexp</code>
+		 * to be used for object name pattern matching.
+		 * @param propertyName The property name to be used as the object "name"
+		 * to be matched against the regexp array.
+		 * @param value set <code>true</code> to invert selection
+		 * logic and DENY object whose name match the passed regexp array.
+		 */
+		protected function initNameBasedObjectSelector(regexpArray:Array, propertyName:String, denyOnMatch:Boolean):void {
 			this._nameRegexpArray = regexpArray;
 			this._propertyName = propertyName;
 			this._denyOnMatch = denyOnMatch;
 		}
 
 		/**
-		 * <p></p>
 		 * @inheritDoc
 		 */
 		public function approve(object:Object):Boolean {

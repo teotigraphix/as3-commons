@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.stageprocessing.impl.selector {
-
 	import flash.system.ApplicationDomain;
-
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.stageprocessing.IObjectSelector;
@@ -28,52 +26,34 @@ package org.as3commons.stageprocessing.impl.selector {
 	 */
 	public class TypeBasedObjectSelector implements IObjectSelector {
 
-		private var _applicationDomain:ApplicationDomain;
-
 		/**
 		 * Create a new <code>TypeBasedObjectSelector</code> instance.
 		 * @param typeArray
 		 * @param approveOnMatch
 		 */
-		public function TypeBasedObjectSelector(typeArray:Array, approveOnMatch:Boolean = true, appDomain:ApplicationDomain = null) {
+		public function TypeBasedObjectSelector(classNames:Vector.<String>, classes:Vector.<Class>, approveOnMatch:Boolean=true, appDomain:ApplicationDomain=null) {
 			super();
-			initTypeBasedObjectSelector(appDomain, typeArray, approveOnMatch);
+			initTypeBasedObjectSelector(appDomain, classNames, classes, approveOnMatch);
 		}
 
+		private var _applicationDomain:ApplicationDomain;
+		private var _approveOnMatch:Boolean = true;
+		private var _classNames:Vector.<String>;
+		private var _classes:Vector.<Class>;
+
+		/**
+		 *
+		 */
 		public function get applicationDomain():ApplicationDomain {
 			return _applicationDomain;
 		}
 
+		/**
+		 *
+		 * @private
+		 */
 		public function set applicationDomain(value:ApplicationDomain):void {
 			_applicationDomain = value;
-		}
-
-		protected function initTypeBasedObjectSelector(appDomain:ApplicationDomain, typeArray:Array, approveOnMatch:Boolean):void {
-			Assert.notNull(typeArray, "The typeArray argument must not be null");
-			_applicationDomain = (appDomain != null) ? appDomain : ApplicationDomain.currentDomain;
-			validateTypeArray(typeArray);
-			_typeArray = typeArray;
-			_approveOnMatch = approveOnMatch;
-		}
-
-
-		private var _approveOnMatch:Boolean = true;
-
-		private var _typeArray:Array;
-
-		/**
-		 * <p>Returns true if the specified object is of a type in the typeArray and the approveOnMatch property is set to true.</p>
-		 * @inheritDoc
-		 */
-		public function approve(object:Object):Boolean {
-			var result:Boolean = _typeArray.some(function(item:Class, index:int, arr:Array):Boolean {
-				return (object is item);
-			});
-			if (result) {
-				return _approveOnMatch;
-			} else {
-				return !_approveOnMatch;
-			}
 		}
 
 		/**
@@ -92,34 +72,71 @@ package org.as3commons.stageprocessing.impl.selector {
 			_approveOnMatch = value;
 		}
 
+		public function get classes():Vector.<Class> {
+			return _classes;
+		}
+
+		public function set classes(value:Vector.<Class>):void {
+			_classes = value;
+		}
+
 		/**
 		 * An array of <code>Class</code> instance, the specified object will be checked to see if
 		 * it is of any of these types.
 		 */
-		public function get typeArray():Array {
-			return _typeArray;
+		public function get classNames():Vector.<String> {
+			return _classNames;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set typeArray(value:Array):void {
-			if (value !== _typeArray) {
-				validateTypeArray(value);
-				_typeArray = value;
+		public function set classNames(value:Vector.<String>):void {
+			if (value !== _classNames) {
+				validateClassNames(value);
+				_classNames = value;
 			}
 		}
 
-		private function validateTypeArray(typeArray:Array):void {
-			if (typeArray.some(function(item:Object, index:int, arr:Array):Boolean {
-				if (item is String) {
-					arr[index] = ClassUtils.forName(String(item), applicationDomain) as Class;
-					return false;
-				} else {
-					return ((item is Class) == false);
-				}
-			})) {
-				throw new Error("All items in the typeArray argument must be of type Class or able to be converted to type Class");
+		/**
+		 * <p>Returns true if the specified object is of a type in the typeArray and the approveOnMatch property is set to true.</p>
+		 * @inheritDoc
+		 */
+		public function approve(object:Object):Boolean {
+			var result:Boolean = _classNames.some(function(item:Class, index:int, arr:Array):Boolean {
+				return (object is item);
+			});
+			if (result) {
+				return _approveOnMatch;
+			} else {
+				return !_approveOnMatch;
+			}
+		}
+
+		/**
+		 *
+		 * @param appDomain
+		 * @param classNames
+		 * @param classes
+		 * @param approveOnMatch
+		 */
+		protected function initTypeBasedObjectSelector(appDomain:ApplicationDomain, classNames:Vector.<String>, classes:Vector.<Class>, approveOnMatch:Boolean):void {
+			Assert.notNull(classNames, "The typeArray argument must not be null");
+			_applicationDomain ||= ApplicationDomain.currentDomain;
+			_classNames = classNames;
+			_classes = classes;
+			_approveOnMatch = approveOnMatch;
+			validateClassNames(classNames);
+		}
+
+		/**
+		 *
+		 * @param classNames
+		 */
+		protected function validateClassNames(classNames:Vector.<String>):void {
+			_classes ||= new Vector.<Class>();
+			for each (var className:String in classNames) {
+				_classes[_classes.length] = ClassUtils.forName(className, _applicationDomain);
 			}
 		}
 	}

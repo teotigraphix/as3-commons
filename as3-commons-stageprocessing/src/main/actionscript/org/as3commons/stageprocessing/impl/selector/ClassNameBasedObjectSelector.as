@@ -21,7 +21,7 @@ package org.as3commons.stageprocessing.impl.selector {
 
 	/**
 	 * <code>IObjectSelector</code> approving or denying objects based on fully qualified class names
-	 * to be matched against an array of Regexp (default behaviour approves objects whose name do not match
+	 * to be matched against an Vector of Regexp (default behaviour approves objects whose name do not match
 	 * all passed regexp, approves all objects if no regexp is passed, deny the rest).
 	 *
 	 * @author Martino Piccinato
