@@ -52,5 +52,18 @@ package org.as3commons.lang {
 			assertEquals(dict["a"], "a1");
 			assertEquals(dict["b"], "b2");
 		}
+		
+		public function testMerging():void {
+			var objA: Object = {a:"1"};
+			var objB: Object = {b:"2"};
+			assertObjectEquals("Merging has to result in a object with both properties", {a: "1",b: "2"}, ObjectUtils.merge(objA, objB));
+			assertObjectEquals("Merging may not modify A", {a: "1"}, objA);
+			assertObjectEquals("Merging may not modify B", {b: "2"}, objB);
+			objA = {a:"a1",b:"a2"};
+			objB = {b:"b2",c:"b3"};
+			assertObjectEquals("Mergin has to take the master property", {
+				a:"a1", b:"a2", c:"b3"}, ObjectUtils.merge(objA, objB));
+			
+		}
 	}
 }

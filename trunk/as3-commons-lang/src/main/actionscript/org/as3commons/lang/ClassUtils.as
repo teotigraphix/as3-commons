@@ -29,7 +29,7 @@ package org.as3commons.lang {
 	 * @author Erik Westra
 	 */
 	public final class ClassUtils {
-
+		
 		/**
 		 * Returns a <code>Class</code> object that corresponds with the given
 		 * instance. If no correspoding class was found, a
@@ -46,12 +46,11 @@ package org.as3commons.lang {
 			if (instance.hasOwnProperty(CONSTRUCTOR_FIELD_NAME)) {
 				return instance[CONSTRUCTOR_FIELD_NAME] as Class;
 			} else {
-				applicationDomain ||= ApplicationDomain.currentDomain;
 				var className:String = getQualifiedClassName(instance);
 				return forName(className, applicationDomain);
 			}
 		}
-
+		
 		/**
 		 * Returns a <code>Class</code> object that corresponds with the given
 		 * name. If no correspoding class was found in the applicationdomain tree, a
@@ -67,11 +66,11 @@ package org.as3commons.lang {
 		public static function forName(name:String, applicationDomain:ApplicationDomain = null):Class {
 			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Class;
-
+			
 			if (!applicationDomain) {
 				applicationDomain = ApplicationDomain.currentDomain;
 			}
-
+			
 			while (!applicationDomain.hasDefinition(name)) {
 				if (applicationDomain.parentDomain) {
 					applicationDomain = applicationDomain.parentDomain;
@@ -108,15 +107,13 @@ package org.as3commons.lang {
 		 * @return the name of the class or interface
 		 */
 		public static function getNameFromFullyQualifiedName(fullyQualifiedName:String):String {
-			var result:String = "";
 			var startIndex:int = fullyQualifiedName.indexOf(PACKAGE_CLASS_SEPARATOR);
 
 			if (startIndex == -1) {
-				result = fullyQualifiedName;
+				return fullyQualifiedName;
 			} else {
-				result = fullyQualifiedName.substring(startIndex + PACKAGE_CLASS_SEPARATOR.length, fullyQualifiedName.length);
+				return fullyQualifiedName.substring(startIndex + PACKAGE_CLASS_SEPARATOR.length, fullyQualifiedName.length);
 			}
-			return result;
 		}
 
 		/**
@@ -132,9 +129,10 @@ package org.as3commons.lang {
 			var result:String = getQualifiedClassName(clazz);
 
 			if (replaceColons) {
-				result = convertFullyQualifiedName(result);
+				return convertFullyQualifiedName(result);
+			} else {
+				return result;
 			}
-			return result;
 		}
 
 		/**
@@ -144,7 +142,6 @@ package org.as3commons.lang {
 		 * @return the boolean value indicating whether objects of the type clazz2 can be assigned to objects of clazz1
 		 */
 		public static function isAssignableFrom(clazz1:Class, clazz2:Class, applicationDomain:ApplicationDomain = null):Boolean {
-			applicationDomain ||= ApplicationDomain.currentDomain;
 			return (clazz1 === clazz2) || isSubclassOf(clazz2, clazz1, applicationDomain) || isImplementationOf(clazz2, clazz1, applicationDomain);
 		}
 
@@ -173,14 +170,61 @@ package org.as3commons.lang {
 
 			return (ns.indexOf(".as$") > -1);
 		}
-
+		
+		/**
+		 * Returns a list of all properties of a class.
+		 * 
+		 * @param clazz Class of which the properties should be examined,
+		 * @param statik Static properties only, if false non-static only.
+		 * @param readable Only properties that are readable.
+		 * @param writable Only properties that are writable
+		 * @param applicationDomain ApplicationDomain where the class was defined
+		 * @return List of properties that match the criterias.
+		 */
+		public static function getProperties(clazz:*, statik:Boolean = false,
+											 readable:Boolean = true, writable:Boolean = true,
+											 applicationDomain:ApplicationDomain = null): Object {
+			var xml: XML = getFromObject(clazz, applicationDomain);
+			var properties: XMLList;
+			if (!statik) {
+				xml = xml.factory[0];
+			}
+			if (readable && writable) {
+				// Only properties that are both read and writable
+				properties = xml.accessor.(@access == "readwrite") + xml.variable;
+			} else if (!readable && !writable) {
+				properties = new XMLList();
+			} else if (!writable) {
+				// All readable properties
+				properties = xml.constant + xml.accessor.(@access == "readonly");
+			} else {
+				// All writable properties
+				properties = xml.accessor.(@access == "writeonly");
+			}
+			var result: Object = {};
+			var node: XML;
+			for each (node in properties) {
+				var nodeClass: Class;
+				try {
+					nodeClass = ClassUtils.forName(node.@type);
+				} catch( e:Error ) {
+					nodeClass = Object;
+				}
+				if (node.@uri && QName(node.@uri).localName != "") {
+					result[node.@uri + "::" + node.@name] = nodeClass;
+				} else {
+					result[node.@name] = nodeClass;
+				}
+			}
+			return result;
+		}
+		
 		/**
 		 * Returns whether the passed in Class object is a subclass of the
 		 * passed in parent Class. To check if an interface extends another interface, use the isImplementationOf()
 		 * method instead.
 		 */
 		public static function isSubclassOf(clazz:Class, parentClass:Class, applicationDomain:ApplicationDomain = null):Boolean {
-			applicationDomain ||= ApplicationDomain.currentDomain;
 			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var parentName:String = getQualifiedClassName(parentClass);
 			return (classDescription.factory.extendsClass.(@type == parentName).length() != 0);
@@ -195,7 +239,6 @@ package org.as3commons.lang {
 		 * @returns the super class or null if no parent class was found
 		 */
 		public static function getSuperClass(clazz:Class, applicationDomain:ApplicationDomain = null):Class {
-			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Class;
 			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var superClasses:XMLList = classDescription.factory.extendsClass;
@@ -247,7 +290,6 @@ package org.as3commons.lang {
 		 * @return true if the clazz object implements the given interface; false if not
 		 */
 		public static function isImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
-			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Boolean;
 
 			if (clazz == null) {
@@ -269,7 +311,6 @@ package org.as3commons.lang {
 		 * @return true if the clazz object implements the methods of the given interface; false if not
 		 */
 		public static function isInformalImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
-			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Boolean = true;
 
 			if (clazz == null) {
@@ -342,7 +383,6 @@ package org.as3commons.lang {
 		 * given class implements.
 		 */
 		public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean = false, applicationDomain:ApplicationDomain = null):Array {
-			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Array = [];
 			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var interfacesDescription:XMLList = classDescription.factory.implementsInterface;
@@ -480,7 +520,6 @@ package org.as3commons.lang {
 		 * @return
 		 */
 		public static function getClassParameterFromFullyQualifiedName(fullName:String, applicationDomain:ApplicationDomain = null):Class {
-			applicationDomain ||= ApplicationDomain.currentDomain;
 			if (StringUtils.startsWith(fullName, AS3VEC_SUFFIX)) {
 				var startIdx:int = fullName.indexOf(LESS_THAN) + 1;
 				var len:int = (fullName.length - startIdx) - 1;
@@ -548,26 +587,5 @@ package org.as3commons.lang {
 
 			return metadata;
 		}
-
-		/**
-		 * Will retrieve the metadata for the given class. Note that in order to access properties and
-		 * methods you need to grab the 'factory' part of the metadata.
-		 *
-		 * @param className    The name of the class that you want to retrieve metadata from. The className
-		 *             may be in the following forms: package.Class or package::Class
-		 */
-		private static function getFromString(className:String, applicationDomain:ApplicationDomain = null):XML {
-			applicationDomain ||= ApplicationDomain.currentDomain;
-			var classDefinition:Class = forName(className, applicationDomain);
-
-			// Calling getFromObject seems double, as it results in the getObjectMethod getting
-			// the class name using getQualifiedClassName. It however saves us a check on the
-			// given className which might be in two forms.
-
-			// getQualifiedClassName(getDefinitionByName(className)) is faster than converting the
-			// string using conventional methods.
-			return getFromObject(classDefinition, applicationDomain);
-		}
-
 	}
 }

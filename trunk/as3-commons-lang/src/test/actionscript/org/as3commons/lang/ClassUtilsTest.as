@@ -15,12 +15,11 @@
  */
 package org.as3commons.lang {
 
+	import org.as3commons.lang.testclasses.PropertiesClass;
 	import flash.utils.getQualifiedClassName;
-
 	import flexunit.framework.Reflective;
 	import flexunit.framework.Test;
 	import flexunit.framework.TestCase;
-
 	import org.as3commons.lang.testclasses.ComplexClass;
 	import org.as3commons.lang.testclasses.ISubInterface;
 	import org.as3commons.lang.testclasses.IncompleteInterfaceImplementation;
@@ -30,7 +29,10 @@ package org.as3commons.lang {
 	import org.as3commons.lang.testclasses.InterfaceImplementation;
 	import org.as3commons.lang.testclasses.PublicClass;
 	import org.as3commons.lang.testclasses.PublicSubClass;
+	import org.as3commons.lang.testclasses.SampleEnum;
 	import org.as3commons.lang.testclasses.SubInterfaceImplementation;
+
+
 
 	/**
 	 * @author Christophe Herreman
@@ -38,7 +40,7 @@ package org.as3commons.lang {
 	public class ClassUtilsTest extends TestCase {
 
 		public function ClassUtilsTest(methodName:String = null) {
-			super(methodName)
+			super(methodName);
 		}
 
 		public function testForInstance():void {
@@ -95,19 +97,18 @@ package org.as3commons.lang {
 		}
 
 		public function testIsSubclassOf():void {
-			var result:Boolean = ClassUtils.isSubclassOf(ClassUtilsTest, TestCase);
-			assertTrue(result);
-		}
-
-		public function testIsSubclassOf2():void {
-			var result:Boolean = ClassUtils.isSubclassOf(ClassUtilsTest, String);
-			assertFalse(result);
+			assertTrue(ClassUtils.isSubclassOf(ClassUtilsTest, TestCase));
+			assertFalse(ClassUtils.isSubclassOf(ClassUtilsTest, String));
+			assertTrue(ClassUtils.isSubclassOf(String, Object));
+			assertTrue(ClassUtils.isSubclassOf(SampleEnum, Enum));
 		}
 
 		public function testGetSuperClass():void {
 			var clazz:Class = ClassUtilsTest;
 			var parentClass:Class = ClassUtils.getSuperClass(clazz);
 			assertEquals(TestCase, parentClass);
+			
+			assertEquals(Enum, ClassUtils.getSuperClass(SampleEnum));
 		}
 
 		public function testGetSuperClassWithString():void {
@@ -323,7 +324,42 @@ package org.as3commons.lang {
 			assertNotNull(cls);
 			assertStrictlyEquals(ComplexClass, cls);
 		}
-
+		
+		public function testProperties():void {
+			assertObjectEquals( {
+					publicSetter: String,
+					"as3commons::publicSetter": String
+				}, ClassUtils.getProperties( PropertiesClass, false, false, true) );
+			assertObjectEquals( {
+					publicVar: String,
+					publicSetterGetter: String,
+					"as3commons::publicVar": String,
+					"as3commons::publicSetterGetter": String
+				}, ClassUtils.getProperties( PropertiesClass, false, true, true) );
+			assertObjectEquals( {
+					publicConst: String,
+					publicGetter: String,
+					"as3commons::publicConst": String,
+					"as3commons::publicGetter": String
+				}, ClassUtils.getProperties( PropertiesClass, false, true, false) );
+			assertObjectEquals( {
+					staticSetter: Number,
+					"as3commons::staticSetter": Array
+				}, ClassUtils.getProperties( PropertiesClass, true, false, true) );
+			assertObjectEquals( {
+					staticVar: int,
+					staticSetterGetter: String,
+					"as3commons::staticVar": uint,
+					"as3commons::staticSetterGetter": Object
+				}, ClassUtils.getProperties( PropertiesClass, true, true, true) );
+			assertObjectEquals( {
+					staticConst: String,
+					staticGetter: Object,
+					prototype: Object,
+					"as3commons::staticConst": int,
+					"as3commons::staticGetter": Array
+				}, ClassUtils.getProperties( PropertiesClass, true, true, false) );
+		}
 	}
 }
 
