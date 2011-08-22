@@ -53,11 +53,11 @@ package org.as3commons.logging.util {
 			assertEquals( "null", new LogMessageFormatter( "{message}" ).format( null, null, 0, NaN, null, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message}" ).format( null, null, 0, NaN, undefined, null, null ) );
 			assertEquals( "a message", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, "a message", null, null ) );
-			assertEquals( "a mess\\\"age", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, "a mess\"age", null, null ) );
+			assertEquals( "a \\nm\\ness\\\"ag\\\"e", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, "a \nm\ness\"ag\"e", null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, null, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, undefined, null, null ) );
 			assertEquals( "a message", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, "a message", null, null ) );
-			assertEquals( "a mess\\\"age", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, "a mess\"age", null, null ) );
+			assertEquals( "a \\nm\\ness\\\"ag\\\"e", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, "a \nm\ness\"ag\"e", null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, null, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message_dqt}" ).format( null, null, 0, NaN, undefined, null, null ) );
 			assertEquals( "9:1:1.23", new LogMessageFormatter( "{time}" ).format( null, null, 0, time.getTime()-START_TIME, null, null, null ) );

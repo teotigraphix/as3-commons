@@ -31,11 +31,11 @@ package org.as3commons.logging.setup.target {
 	 * condition is met. In that case it will forward all stored statements to
 	 * the defined target.
 	 * 
-	 * <p>As target <code>ILogTarget</code> as well as <code>LoggerFactories</code>
-	 * are an option.</p>
+	 * <p>As target a <code>ILogTarget</code> or a <code>LoggerFactory</code>
+	 * is an option.</p>
 	 * 
-	 * <p>This is a abstract class use implementations like <code>FatalBuffer</code>.
-	 * Override the <code>test</code> method to implement your condition.</p>
+	 * <p>This is a abstract class. Use implementations like <code>FatalBuffer</code>.
+	 * They override the <code>test</code> method to implement conditions.</p>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.5
