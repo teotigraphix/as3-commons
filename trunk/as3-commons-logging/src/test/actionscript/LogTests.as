@@ -1,4 +1,6 @@
 package {
+	import org.as3commons.logging.setup.target.SOSTarget;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
 	import org.as3commons.logging.simple.aTrace;
 	import org.as3commons.logging.integration.LogMeisterIntegrationTest;
 	import org.as3commons.logging.integration.OSMFIntegrationTest;
@@ -30,10 +32,6 @@ package {
 	import org.as3commons.logging.integration.SpiceLibIntegrationTest;
 	import org.as3commons.logging.integration.SwizIntegrationTest;
 	import org.as3commons.logging.level.DEBUG;
-	import org.as3commons.logging.level.ERROR;
-	import org.as3commons.logging.level.FATAL;
-	import org.as3commons.logging.level.INFO;
-	import org.as3commons.logging.level.WARN;
 	import org.as3commons.logging.setup.ComplexSetupTest;
 	import org.as3commons.logging.setup.FlexSetupTest;
 	import org.as3commons.logging.setup.LeveledTargetSetupTest;
@@ -79,32 +77,36 @@ package {
 			debugp;
 			debugs;
 			
+			LOGGER_FACTORY.setup = new SimpleTargetSetup( new SOSTarget() );
+			
 			aTrace();
 			
 			var i: int = 0;
 			var t: Number;
-			const amount: int = 30000;
+			const amount: int = 3000000;
 			
+			var str: String = "";
 			t = getTimer();
 			i = amount;
 			while( --i ) {
 				debugp;
 			}
-			trace( getTimer() - t, "private const" );
+			str += ( getTimer() - t ) + "private const\n";
+			
 			
 			t = getTimer();
 			i = amount;
 			while( --i ) {
 				debugs;
 			}
-			trace( getTimer() - t, "static const" );
+			str += ( getTimer() - t ) + "static const\n";
 			
 			t = getTimer();
 			i = amount;
 			while( --i ) {
 				DEBUG;
 			}
-			trace( getTimer() - t, "ext. const" );
+			str += ( getTimer() - t ) + "ext. const\n";
 			
 			var mxLoggingSize: uint = 0
 					+ getSize(mx.logging.ILogger)
@@ -126,18 +128,14 @@ package {
 					+ getSize(getLogger)
 					+ getSize(toLogName)
 					+ getSize(SimpleTargetSetup)
-					+ getSize(TraceTarget)
 					+ getSize(LogMessageFormatter)
-					+ getSize(SWFInfo)
-					+ getSize(DEBUG)
-					+ getSize(ERROR)
-					+ getSize(INFO)
-					+ getSize(WARN)
-					+ getSize(FATAL);
+					+ getSize(SWFInfo);
 			
-			trace("Size of MX Logging in memory, min: " + mxLoggingSize);
-			trace("Size of as3-commons-logging in memory, min: " + as3commonsSize);
-			trace("Difference: " + (mxLoggingSize-as3commonsSize)  );
+			str += "Size of MX Logging in memory, min: " + mxLoggingSize + "\n";
+			str += "Size of as3-commons-logging in memory, min: " + as3commonsSize + "\n";
+			str += "Difference: " + (mxLoggingSize-as3commonsSize);
+			
+			getLogger("size").info( str );
 			
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );

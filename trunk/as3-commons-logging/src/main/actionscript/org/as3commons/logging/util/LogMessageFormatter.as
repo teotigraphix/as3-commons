@@ -235,7 +235,7 @@ package org.as3commons.logging.util {
 						// 3
 						else { // Message DQT
 							if( message ) {
-								result += message.replace( "\"", "\\\"" ).replace( "\n", "\\n");
+								result += message.split("\"").join("\\\"").split("\n").join("\\n");
 							} else {
 								result += message;
 							}

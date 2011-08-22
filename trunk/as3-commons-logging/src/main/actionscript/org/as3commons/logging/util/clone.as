@@ -74,10 +74,10 @@ package org.as3commons.logging.util {
 					if( object is Array ) {
 						// Arrays are in any way faster copied by iteration
 						var resultArr: Array = [];
-						var arr: Array = object;
-						var l: int = arr.length;
 						if( introspectDepth > 0 ) {
 							nextDepth = introspectDepth-1;
+							var arr: Array = object;
+							var l: int = arr.length;
 							for( var i: int = 0; i<l; ++i ) {
 								resultArr[i] = clone(arr[i], nextDepth,
 									storage || (storage = new Dictionary()),
