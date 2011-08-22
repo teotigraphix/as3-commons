@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-
+	
 	import flash.utils.getQualifiedClassName;
-
-	import org.as3commons.lang.builder.EqualsBuilder;
-
+	
 	/**
 	 * Base class for enumerations.
 	 *
@@ -30,11 +28,24 @@ package org.as3commons.lang {
 	 * have the same name.</p>
 	 *
 	 * <p>Note: for enum mapping with BlazeDS, check the EnumProxy java class at http://bugs.adobe.com/jira/browse/BLZ-17</p>
-	 *
+	 * 
+	 * Example:
+	 * <listing>
+	 * import org.as3commons.lang.Enum;
+	 * 
+	 * class MyEnum extends Enum {
+	 *   public static const A: MyEnum = new MyEnum;
+	 *   public static const B: MyEnum = new MyEnum;
+	 *   public static const C: MyEnum = new MyEnum;
+	 * }
+	 * </listing>
+	 * 
 	 * @author Christophe Herreman
+	 * @author Martin Heidegger
+	 * @version 2.0
 	 */
 	public class Enum implements IEquals {
-
+		
 		/**
 		 * A map with the enum values of all Enum types in memory.
 		 * As its keys, the fully qualified name of the enum class is used.
@@ -42,43 +53,67 @@ package org.as3commons.lang {
 		 * from name to enum instance.
 		 *
 		 * Example:
-		 *
-		 * 	{
-		 * 		"com.domain.Color":
-		 * 			{
-		 * 				"RED": Color.RED,
-		 * 				"GREEN": Color.GREEN,
-		 * 				"BLUE": Color.BLUE
-		 * 			},
-		 * 		"com.domain.Day":
-		 * 			{
-		 * 				"MONDAY": Day.MONDAY,
-		 * 				"TUESDAY": Day.TUESDAY,
-		 * 				"WEDNESDAY": Day.WEDNESDAY
-		 * 			}
-		 *	}
+		 * <listing>
+		 * {
+		 *   "com.domain.Color": {
+		 *     "RED": Color.RED,
+		 *     "GREEN": Color.GREEN,
+		 *     "BLUE": Color.BLUE
+		 *   },
+		 *   "com.domain.Day": {
+		 *      "MONDAY": Day.MONDAY,
+		 *      "TUESDAY": Day.TUESDAY,
+		 *      "WEDNESDAY": Day.WEDNESDAY
+		 *   }
+		 * }
+		 * </listing>
 		 */
-		private static var _values:Object /* <String, Object> */ = {};
-
+		private static var _values:Object /* <String, Enum> */ = {};
+		
 		/**
 		 * A map with the value arrays of the Enum types in memory.
 		 * As its keys, the fully qualified name of the enum class is used.
 		 * As its values, an array with the enum values of a Enum class is used.
 		 *
 		 * Example:
-		 *
-		 * 	{
-		 * 		"com.domain.Color": [Color.RED, Color.GREEN, Color.BLUE]
-		 * 	}
+		 * <listing>
+		 * {
+		 *   "com.domain.Color": [Color.RED, Color.GREEN, Color.BLUE]
+		 * }
+		 * </listing>
 		 */
-		private static var _valueArrays:Object /* <String, Array> */ = {};
-
+		private static var _valueArrays:Object /* <String, Array<Enum> */ = {};
+		
+		/**
+		 * A map of all the Enums that are defined in the class structure.
+		 * 
+		 * Example:
+		 * {
+		 *   "com.domain.Color": {
+		 *     "RED": true,
+		 *     "GREEN": true,
+		 *     "BLUE": true
+		 *   }
+		 * }
+		 */
+		private static var _originalNames: Object /* <String, Object<Boolean>> */ = {};
+		
+		/**
+		 * Infinite loop lock.
+		 */
+		private static var _initializing: Boolean  = false;
+		
 		private var _name:String;
-
+		
 		private var _index:int = -1;
-
+		
+		private var _fixed:Boolean = false;
+		
+		/**
+		 * Stores the class name, faster than retrieving it.
+		 */
 		private var _declaringClassName:String;
-
+		
 		/**
 		 * Creates a new Enum object.
 		 *
@@ -90,9 +125,10 @@ package org.as3commons.lang {
 		 * @param name the name of the enum value
 		 */
 		public function Enum(name:String = "") {
+			_declaringClassName = getQualifiedClassName(this);
 			this.name = name;
 		}
-
+		
 		/**
 		 * Returns the values of the enumeration of the given Class.
 		 *
@@ -100,15 +136,22 @@ package org.as3commons.lang {
 		 * @return an array of Enum objects or Enum subtype objects
 		 */
 		public static function getValues(clazz:Class):Array {
-			Assert.subclassOf(clazz, Enum, "Can not get enum values for class [" + clazz + "] because it is not a subclass of Enum.");
-
+			if (!ClassUtils.isSubclassOf(clazz, Enum)) {
+				throw new IllegalArgumentError("Can not get enum values for class [" + clazz + "] because it is not a subclass of Enum.");
+			}
+			
 			var className:String = getQualifiedClassName(clazz);
-
-			Assert.notNull(_valueArrays[className], "Enum values for the class '" + clazz + "' do not exist");
-
-			return _valueArrays[className];
+			var values: Array = _valueArrays[className];
+			if (!values) {
+				initializeDefinedEnums(className, clazz);
+				values = _valueArrays[className];
+				if (!values) {
+					throw new IllegalArgumentError("Enum values for the class '" + className + "' do not exist" );
+				}
+			}
+			return values;
 		}
-
+		
 		/**
 		 * Returns the enum entry for the given class by its name.
 		 *
@@ -116,15 +159,28 @@ package org.as3commons.lang {
 		 * @param name the name of the enum entry to get
 		 */
 		public static function getEnum(clazz:Class, name:String):Enum {
-			Assert.notNull(clazz, "The class must not be null");
-			Assert.hasText(name, "The name must have text");
-
-			var className:String = ClassUtils.getFullyQualifiedName(clazz);
-
-			Assert.notNull(_values[className], "Enum values for the class '" + clazz + "' do not exist");
-			Assert.notNull(_values[className][name], "An enum for type '" + clazz + "' and name '" + name + "' was not found.");
-
-			return _values[className][name];
+			if (!clazz) {
+				throw new IllegalArgumentError("The class must not be null");
+			}
+			if (StringUtils.isBlank(name)) {
+				throw new IllegalArgumentError("The name must have text");
+			}
+			
+			var className: String = getQualifiedClassName(clazz);
+			var values: Object = _values[className];
+			if (!values ) {
+				initializeDefinedEnums(className);
+				values = _values[className];
+				if (!values) {
+					throw new IllegalArgumentError("Enum values for the class '" + clazz + "' do not exist");
+				}
+			}
+			
+			var enum: Enum = values[name];
+			if (!enum) {
+				throw new IllegalArgumentError("An enum for type '" + clazz + "' and name '" + name + "' was not found.");
+			}
+			return enum;
 		}
 
 		/**
@@ -133,54 +189,124 @@ package org.as3commons.lang {
 		 * @return the index of the enum
 		 */
 		public static function getIndex(enum:Enum):int {
-			Assert.notNull(enum, "The enum must not be null");
-
-			var className:String = getQualifiedClassName(enum);
-			var values:Array = _valueArrays[className];
-
-			Assert.notNull(values, "Enum values for the class name '" + className + "' do not exist");
-
-			for each (var e:Enum in values) {
-				if (e.equals(enum)) {
-					return e.index;
+			if (!enum) {
+				throw new IllegalArgumentError("The enum must not be null");
+			}
+			
+			var values:Object = _values[enum._declaringClassName];
+			
+			if (!values) {
+				initializeDefinedEnums(enum._declaringClassName);
+				values = _values[enum._declaringClassName];
+				if (!values) {
+					throw new IllegalArgumentError( "Enum values for the class name '" + enum._declaringClassName + "' do not exist");
 				}
 			}
-
-			return -1;
+			
+			var other: Enum = values[enum._name];
+			if (other) {
+				return other.index;
+			} else {
+				return -1;
+			}
 		}
-
+		
+		/**
+		 * Initializes the Enums defined in a passed class.
+		 * 
+		 * <p>If enums in a class are defined as static </p>
+		 * 
+		 * @param className Name of the Enum class to be initalized
+		 * @param clazz Class for the classname, if not available, it will be initialized 
+		 */
+		private static function initializeDefinedEnums(className:String, clazz:Class = null):void {
+			if (!clazz) {
+				try {
+					clazz = ClassUtils.forName(className);
+				} catch (e:Error) {}
+			}
+			// The class might not be available on class creation.
+			// This method will then be called on request.
+			if (clazz) {
+				var obj:Object = _originalNames[className];
+				// Just initialize it once
+				if (!obj) {
+					obj = _originalNames[className] = {};
+					// Prevent "value.name" from calling this method again, infinite recursion.
+					_initializing = true;
+					
+					// Collect the static readonly properties
+					var properties:Object = ObjectUtils.merge(
+						ClassUtils.getProperties(clazz, true, true, false),
+						ClassUtils.getProperties(clazz, true, true, true)
+					);
+					for (var property: String in properties) {
+						var propClass: Class = properties[property];
+						if (propClass == clazz || ClassUtils.isSubclassOf(propClass, clazz)) {
+							// Mark the property as one defined in the class
+							obj[QName(property).toString()] = true;
+							
+							// Initialze the value with its name
+							var split: int = property.indexOf("::");
+							var value: Enum;
+							if( split > -1 ) {
+								value = clazz[
+									new QName(
+										property.substr(0,split),
+										property.substr(split+2)
+									)
+								];
+							} else {
+								value = clazz[property];
+							}
+							// Properties can be defined static yet be "null"
+							if (value && !value._fixed) {
+								value.name = property;
+							}
+						}
+					}
+					_initializing = false;
+				}
+			}
+		}
+		
 		/**
 		 * Returns the name of this enum.
 		 */
 		final public function get name():String {
+			if (!_fixed) {
+				initializeDefinedEnums(_declaringClassName);
+				// Set fixed true, even if the name was not defined.
+				_fixed = true;
+			}
 			return _name;
 		}
-
+		
 		/**
 		 * Sets the name for this enum.
+		 * The name will be ignored if its empty.
+		 * 
+		 * @throws IllegalArgumentError if the name has been set before.
 		 */
 		final public function set name(value:String):void {
-			Assert.state(name == null || name.length == 0, "The name of an enum value can only be set once.");
-
+			if (_fixed) {
+				throw new IllegalArgumentError("The name of an enum value can only be set once.");
+			}
 			_name = StringUtils.trim(value);
-
-			initializeEnum(name);
+			initializeEnum(value);
 		}
-
+		
 		/**
-		 *
+		 * Index of the Enums, according to the time when they are properly named.
 		 */
 		final public function get index():int {
 			return _index;
 		}
-
+		
 		/**
 		 * Returns the class name of this enum.
 		 */
 		final public function get declaringClassName():String {
-			if (!_declaringClassName) {
-				_declaringClassName = getQualifiedClassName(this);
-			}
 			return _declaringClassName;
 		}
 
@@ -195,28 +321,19 @@ package org.as3commons.lang {
 		public function equals(other:Object):Boolean {
 			if (this == other) {
 				return true;
-			}
-
-			if (!(other is Enum)) {
+			} else if (other is Enum) {
+				var that:Enum = Enum(other);
+				return that._name == _name && that._declaringClassName == _declaringClassName;
+			} else {
 				return false;
 			}
-
-			// types do not match?
-			/*if (!(other is ClassUtils.forInstance(this))) {
-			   return false;
-			 }*/
-
-			var that:Enum = Enum(other);
-			return new EqualsBuilder().append(declaringClassName, that.declaringClassName).append(name, that.name).equals;
 		}
 
 		/**
 		 * Returns a string representation of this enum.
 		 */
 		public function toString():String {
-			var clazz:Class = ClassUtils.forInstance(this);
-			var className:String = ClassUtils.getName(clazz);
-			return ("[" + className + "(" + name + ")]");
+			return ("[" + _declaringClassName + "(" + _name + ")]");
 		}
 
 		/**
@@ -225,31 +342,47 @@ package org.as3commons.lang {
 		private function initializeEnum(name:String):void {
 			// add the enum value if we have a valid name
 			// this will only happen once for each unique enum value that is not null or empty
-			if (!StringUtils.isEmpty(name)) {
-				// create the lookup maps to store the enum values for this class
-				if (!_values[declaringClassName]) {
-					_values[declaringClassName] = {};
-					_valueArrays[declaringClassName] = [];
+			if (!StringUtils.isEmpty(name) && !_fixed) {
+				_fixed = true;
+				
+				// Initialize the Enums defined in the class
+				if (!_initializing) {
+					initializeDefinedEnums(_declaringClassName);
 				}
-
+				
+				// initializeDefinedEnums might not have worked because the clas
+				// is not readable during instantiation of the class (static properties) 
+				var map: Object = _originalNames[_declaringClassName];
+				if (map && !map[_name] ) {
+					trace("Warning: new Enum '" + _name + "' is not specified in " + _declaringClassName);
+				}
+				
+				// create the lookup maps to store the enum values for this class
+				var values: Object = _values[declaringClassName];
+				var valueArray: Array;
+				if (!values) {
+					_values[declaringClassName] = values = {};
+					_valueArrays[declaringClassName] = valueArray = [];
+				} else {
+					valueArray = _valueArrays[declaringClassName];
+				}
+				
 				var equalityIndex:int = Enum.getIndex(this);
-
+				
 				// if this is a new enum, set its index to the number of same enum types
 				// and add it to the lookup maps
 				if (equalityIndex == -1) {
 					// set the index on the enum
-					_index = _valueArrays[declaringClassName].length;
-
+					_index = valueArray.length;
+					
 					// add the enum to the values array
-					_values[declaringClassName][name] = this;
-					_valueArrays[declaringClassName].push(this);
+					values[name] = this;
+					valueArray.push(this);
 				} else {
 					// this enum is already created, set its index to the one found
 					_index = equalityIndex;
 				}
 			}
 		}
-
-
 	}
 }

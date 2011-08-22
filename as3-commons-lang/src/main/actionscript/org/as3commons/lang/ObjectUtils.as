@@ -237,7 +237,24 @@ package org.as3commons.lang {
 			}
 			return targetInstance[field];
 		}
-
-
+		
+		/**
+		 * Merges two objects to become one.
+		 * 
+		 * @param objectA Master object, overrides properties of <code>objectB</code>
+		 * @param objectB Slave object, just properties that not part of <code>objectA</code> will be taken.
+		 * @return a Object that contains all properties of objectA and objectB
+		 */
+		public static function merge(objectA:Object, objectB:Object):Object {
+			var result:Object = {};
+			var prop:String;
+			for (prop in objectB) {
+				result[prop] = objectB[prop];
+			}
+			for (prop in objectA) {
+				result[prop] = objectA[prop];
+			}
+			return result;
+		}
 	}
 }

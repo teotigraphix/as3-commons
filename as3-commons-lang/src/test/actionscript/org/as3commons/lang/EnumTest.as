@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-	
 	import flexunit.framework.TestCase;
-	
 	import org.as3commons.lang.testclasses.Day;
+	import org.as3commons.lang.testclasses.SampleEnum;
+	
 	
 	/**
 	 * @author Christophe Herreman
@@ -122,5 +122,42 @@ package org.as3commons.lang {
 			} catch(e:IllegalArgumentError) {
 			}
 		}
+		
+		public function testAutoFill():void {
+			assertEquals("A undefined name should be defined immediately.", "A", SampleEnum.A.name);
+			assertEquals("Enums may not override proper names", "X", SampleEnum.B.name);
+			namespace ns = "as3commons";
+			assertEquals("Namespaced constants should work too", "as3commons::G", SampleEnum.ns::G.name);
+			assertEquals("Public vars should work too", "F", SampleEnum.F.name);
+			assertEquals("Even getters should work", "E", SampleEnum.E.name);
+			assertTrue("Indexing has to work from top to bottom", SampleEnum.A.index != -1);
+			var sample1: SampleEnum = new SampleEnum("Sample");
+			assertTrue("A new sample enum must be listed", Enum.getIndex(sample1) != -1);
+			var sample2: SampleEnum = new SampleEnum("Sample");
+			assertEquals("The name should be sure", "Sample", sample2.name);
+			assertEquals("A second enum with same name may not override the first one", Enum.getEnum(SampleEnum, "Sample"), sample1 );
+		}
+	}
+}
+
+import org.as3commons.lang.Enum;
+
+class LocalEnum extends Enum {
+	public static const A: LocalEnum = new LocalEnum;
+	public static const B: LocalEnum = new LocalEnum;
+	public static const C: LocalEnum = new LocalEnum;
+	
+	private static const _E: LocalEnum = new LocalEnum;
+	
+	public static function get E(): LocalEnum {
+		return _E;
+	}
+	
+	public static const X1: Number = 1;
+	public var X2: Number = 2;
+	public var X3: LocalEnum;
+	
+	public function get X4(): LocalEnum {
+		return X3;
 	}
 }
