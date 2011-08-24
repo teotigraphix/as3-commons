@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.eventbus.impl {
-
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 
@@ -117,6 +116,10 @@ package org.as3commons.eventbus.impl {
 		protected var listeners:EventBusCollectionLookup = new EventBusCollectionLookup();
 		private var _isDisposed:Boolean;
 
+		public function get isDisposed():Boolean {
+			return _isDisposed;
+		}
+
 		/**
 		 * @inheritDoc
 		 */
@@ -174,6 +177,7 @@ package org.as3commons.eventbus.impl {
 			}
 			var interceptors:EventBusCollectionLookup = EventBusCollectionLookup(eventInterceptors[type]);
 			interceptors.add(interceptor, false, topic);
+			LOGGER.debug("Added event interceptor {0} for type {1} and topic {2}", [interceptor, type, topic]);
 		}
 
 		/**
@@ -185,7 +189,7 @@ package org.as3commons.eventbus.impl {
 			}
 			var listeners:EventBusCollectionLookup = EventBusCollectionLookup(eventListeners[type]);
 			var result:Boolean = internalAddListener(listeners, listener, useWeakReference, topic, type);
-			LOGGER.debug("Added IEventBusListener listener {0} for type {1}", [listener, type]);
+			LOGGER.debug("Added IEventBusListener listener {0} for type {1} and topic {2}", [listener, type, topic]);
 			return result;
 		}
 
@@ -198,6 +202,7 @@ package org.as3commons.eventbus.impl {
 			}
 			var evtListenerInterceptors:EventBusCollectionLookup = EventBusCollectionLookup(eventListenerInterceptors[type]);
 			evtListenerInterceptors.add(interceptor, false, topic);
+			LOGGER.debug("Added IEventListenerInterceptor {0} for type {1} and topic {2}", [interceptor, type, topic]);
 		}
 
 		/**
@@ -218,6 +223,7 @@ package org.as3commons.eventbus.impl {
 		 */
 		public function addInterceptor(interceptor:IEventInterceptor, topic:Object=null):void {
 			interceptors.add(interceptor, false, topic);
+			LOGGER.debug("Added IEventInterceptor {0} for topic {1}", [interceptor, topic]);
 		}
 
 		/**
@@ -225,7 +231,7 @@ package org.as3commons.eventbus.impl {
 		 */
 		public function addListener(listener:IEventBusListener, useWeakReference:Boolean=false, topic:Object=null):Boolean {
 			var result:Boolean = internalAddListener(listeners, listener, useWeakReference, topic, null);
-			LOGGER.debug("Added IEventBusListener {0}", [listener]);
+			LOGGER.debug("Added IEventBusListener {0} for topic {1}", [listener, topic]);
 			return result;
 		}
 
@@ -234,6 +240,7 @@ package org.as3commons.eventbus.impl {
 		 */
 		public function addListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object=null):void {
 			listenerInterceptors.add(interceptor, false, topic);
+			LOGGER.debug("Added IEventListenerInterceptor {0} for topic {1}", [interceptor, topic]);
 		}
 
 		/**
@@ -271,6 +278,45 @@ package org.as3commons.eventbus.impl {
 			}
 			return false;
 		}
+
+		public function dispose():void {
+			if (!_isDisposed) {
+				var item:*;
+				for (item in eventClassListenerInterceptors) {
+					EventBusCollectionLookup(eventClassListenerInterceptors[item]).dispose();
+				}
+				eventClassListenerInterceptors = null;
+				for (item in eventInterceptors) {
+					EventBusCollectionLookup(eventInterceptors[item]).dispose();
+				}
+				eventInterceptors = null;
+				for (item in eventListenerInterceptors) {
+					EventBusCollectionLookup(eventListenerInterceptors[item]).dispose();
+				}
+				eventListenerInterceptors = null;
+				for (item in eventListenerProxies) {
+					EventBusCollectionLookup(eventListenerProxies[item]).dispose();
+				}
+				eventListenerProxies = null;
+				for (item in eventListeners) {
+					EventBusCollectionLookup(eventListeners[item]).dispose();
+				}
+				eventListeners = null;
+				interceptors.dispose();
+				interceptors = null;
+				listenerInterceptors.dispose();
+				listenerInterceptors = null;
+				listeners.dispose();
+				listeners = null;
+				_isDisposed = true;
+			}
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Public count methods
+		//
+		// --------------------------------------------------------------------
 
 		public function getClassInterceptorCount(clazz:Class, topic:Object=null):uint {
 			if (eventClassInterceptors[clazz] != null) {
@@ -332,12 +378,6 @@ package org.as3commons.eventbus.impl {
 			return interceptors.getCollectionCount(topic);
 		}
 
-		// --------------------------------------------------------------------
-		//
-		// Public count methods
-		//
-		// --------------------------------------------------------------------
-
 		public function getListenerCount(topic:Object=null):uint {
 			return listeners.getCollectionCount(topic);
 		}
@@ -367,6 +407,7 @@ package org.as3commons.eventbus.impl {
 			eventInterceptors = new Dictionary();
 			interceptors = new EventBusCollectionLookup();
 			listenerInterceptors = new EventBusCollectionLookup();
+			LOGGER.debug("All eventbus interceptors were removed");
 		}
 
 		/**
@@ -577,7 +618,6 @@ package org.as3commons.eventbus.impl {
 		 * @param topic
 		 * @param key
 		 * @return
-		 *
 		 */
 		protected function invokeListenerInterceptors(listener:Object, topic:Object, key:Object):Boolean {
 			var interceptorList:WeakLinkedList = listenerInterceptors.getCollection(topic);
@@ -602,7 +642,6 @@ package org.as3commons.eventbus.impl {
 		 * @param eventType
 		 * @param eventClass
 		 * @return
-		 *
 		 */
 		protected function listenerIntercept(interceptors:WeakLinkedList, listener:Object, eventType:String, eventClass:Class):Boolean {
 			if (interceptors != null) {
@@ -760,44 +799,6 @@ package org.as3commons.eventbus.impl {
 				return false;
 			}
 		}
-
-		public function get isDisposed():Boolean {
-			return _isDisposed;
-		}
-
-		public function dispose():void {
-			if (!_isDisposed) {
-				var item:*;
-				for (item in eventClassListenerInterceptors) {
-					EventBusCollectionLookup(eventClassListenerInterceptors[item]).dispose();
-				}
-				eventClassListenerInterceptors = null;
-				for (item in eventInterceptors) {
-					EventBusCollectionLookup(eventInterceptors[item]).dispose();
-				}
-				eventInterceptors = null;
-				for (item in eventListenerInterceptors) {
-					EventBusCollectionLookup(eventListenerInterceptors[item]).dispose();
-				}
-				eventListenerInterceptors = null;
-				for (item in eventListenerProxies) {
-					EventBusCollectionLookup(eventListenerProxies[item]).dispose();
-				}
-				eventListenerProxies = null;
-				for (item in eventListeners) {
-					EventBusCollectionLookup(eventListeners[item]).dispose();
-				}
-				eventListeners = null;
-				interceptors.dispose();
-				interceptors = null;
-				listenerInterceptors.dispose();
-				listenerInterceptors = null;
-				listeners.dispose();
-				listeners = null;
-				_isDisposed = true;
-			}
-		}
-
 	}
 
 }

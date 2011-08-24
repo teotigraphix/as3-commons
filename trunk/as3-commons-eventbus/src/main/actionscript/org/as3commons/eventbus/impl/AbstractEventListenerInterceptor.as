@@ -15,7 +15,6 @@
 */
 package org.as3commons.eventbus.impl {
 	import flash.errors.IllegalOperationError;
-
 	import org.as3commons.eventbus.IEventBus;
 	import org.as3commons.eventbus.IEventListenerInterceptor;
 	import org.as3commons.reflect.MethodInvoker;
@@ -26,14 +25,14 @@ package org.as3commons.eventbus.impl {
 	 */
 	public class AbstractEventListenerInterceptor extends AbstractEventBusAwareObject implements IEventListenerInterceptor {
 
-		private var _blockListener:Boolean;
-
 		/**
 		 * Creates a new <code>AbstractEventListenerInterceptor</code> instance.
 		 */
 		public function AbstractEventListenerInterceptor() {
 			super();
 		}
+
+		private var _blockListener:Boolean;
 
 		/**
 		 * @inheritDoc
@@ -52,16 +51,15 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function interceptListener(listener:Function, eventType:String = null, eventClass:Class = null):void {
+		public function interceptListener(listener:Function, eventType:String=null, eventClass:Class=null):void {
 			throw new IllegalOperationError("interceptListener() not implemented in abstract base class");
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function interceptListenerProxy(proxy:MethodInvoker, eventType:String = null, eventClass:Class = null):void {
+		public function interceptListenerProxy(proxy:MethodInvoker, eventType:String=null, eventClass:Class=null):void {
 			throw new IllegalOperationError("interceptListenerProxy() not implemented in abstract base class");
 		}
-
 	}
 }

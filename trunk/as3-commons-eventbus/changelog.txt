@@ -3,6 +3,11 @@ AS3COMMONS-EVENTBUS CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.1.2 (??.??.2011)
+-----------------------------------
+
+* Moved WeakLinkedList from as3commons-collections to -eventbus
+
 Changes in version 1.1.1 (16.02.2011)
 -----------------------------------
 

@@ -16,7 +16,6 @@
 package org.as3commons.eventbus.impl {
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
-
 	import org.as3commons.eventbus.IEventBus;
 	import org.as3commons.eventbus.IEventInterceptor;
 
@@ -26,14 +25,14 @@ package org.as3commons.eventbus.impl {
 	 */
 	public class AbstractEventInterceptor extends AbstractEventBusAwareObject implements IEventInterceptor {
 
-		private var _blockEvent:Boolean;
-
 		/**
 		 * Creates a new <code>AbstractEventInterceptor</code> instance.
 		 */
 		public function AbstractEventInterceptor() {
 			super();
 		}
+
+		private var _blockEvent:Boolean;
 
 		/**
 		 * @inheritDoc
@@ -55,6 +54,5 @@ package org.as3commons.eventbus.impl {
 		public function intercept(event:Event):void {
 			throw new IllegalOperationError("intercept() not implemented in abstract base class");
 		}
-
 	}
 }
