@@ -23,8 +23,6 @@ package org.as3commons.eventbus.impl {
 	 */
 	public class AbstractEventBusAwareObject implements IEventBusAware {
 
-		private var _eventBus:IEventBus;
-
 		/**
 		 * Creates a new <code>AbstractEventBusAwareObject</code> instance.
 		 *
@@ -32,6 +30,8 @@ package org.as3commons.eventbus.impl {
 		public function AbstractEventBusAwareObject() {
 			super();
 		}
+
+		private var _eventBus:IEventBus;
 
 		/**
 		 * @inheritDoc

@@ -15,32 +15,44 @@
 */
 package org.as3commons.eventbus.impl {
 	import flash.events.Event;
-
 	import org.as3commons.eventbus.IEventInterceptor;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.MethodInvoker;
 
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public class InterceptorProxy extends AbstractEventInterceptor {
-
-		private var _methodInvoker:MethodInvoker;
-		private var _blockEvent:Boolean;
 
 		public function InterceptorProxy(target:Object, methodName:String) {
 			super();
 			initInterceptorProxy(target, methodName);
 		}
 
+		private var _blockEvent:Boolean;
+		private var _methodInvoker:MethodInvoker;
+
+		/**
+		 *
+		 * @param event
+		 */
+		override public function intercept(event:Event):void {
+			_methodInvoker.arguments = [event];
+			_blockEvent = _methodInvoker.invoke();
+		}
+
+		/**
+		 *
+		 * @param target
+		 * @param methodName
+		 */
 		protected function initInterceptorProxy(target:Object, methodName:String):void {
 			Assert.notNull(target, "target argument must not be null");
 			Assert.hasText(methodName, "methodName argument must not be empty or null");
 			_methodInvoker = new MethodInvoker();
 			_methodInvoker.target = target;
 			_methodInvoker.method = methodName;
-		}
-
-		override public function intercept(event:Event):void {
-			_methodInvoker.arguments = [event];
-			_blockEvent = _methodInvoker.invoke();
 		}
 	}
 }
