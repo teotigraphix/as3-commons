@@ -128,7 +128,7 @@ package org.as3commons.lang {
 					source = source.addNamespace(ns);
 				}
 			}
-			var childNodes:XMLList = toMerge.children();
+			var childNodes:XMLList = toMerge.children().copy();
 			source.appendChild(childNodes);
 			return source;
 		}

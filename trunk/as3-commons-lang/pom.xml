@@ -1,10 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<groupId>org.as3commons</groupId>
-		<artifactId>as3commons-project</artifactId>
-		<version>1.0.0</version>
-	</parent>
 	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-lang</artifactId>
 	<packaging>swc</packaging>
 	<version>0.3.5-SNAPSHOT</version>
@@ -15,9 +11,70 @@
 	</description>
 	<inceptionYear>2009</inceptionYear>
 
+	<properties>
+		<flex-mojos.version>4.0-RC1</flex-mojos.version>
+		<flex-sdk.version>4.1.0.16076</flex-sdk.version>
+		<flashplayer.version.major>10</flashplayer.version.major>
+		<flashplayer.version.minor>1</flashplayer.version.minor>
+		<flashplayer.version.revision>0</flashplayer.version.revision>
+		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}</flashplayer.version>
+		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
+		<asmock.version>1.0</asmock.version>
+		<asmockflexunit4.version>1.0</asmockflexunit4.version>
+		<flexunit.version>4.1-RC2</flexunit.version>
+		<maven-site-plugin.version>3.0-beta-3</maven-site-plugin.version>
+	</properties>
+
 	<build>
 
+        <sourceDirectory>src/main/actionscript</sourceDirectory>
+		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
+
 		<plugins>
+
+            <plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flex-mojos.version}</version>
+				<extensions>true</extensions>
+
+                <dependencies>
+			<dependency>
+				<groupId>com.adobe.flex</groupId>
+				<artifactId>compiler</artifactId>
+				<version>${flex-sdk.version}</version>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+
+				<executions> <execution> <id>flex-reports</id> <goals> <goal>asdoc-report</goal>
+					</goals> <phase>site</phase> </execution> </executions>
+				<configuration>
+                    <storepass />
+                    <testTimeout>10000</testTimeout>
+					<configurationReport>true</configurationReport>
+					<targetPlayer>${flashplayer.version.major}</targetPlayer>
+					<locales>
+						<param>en_US</param>
+					</locales>
+					<updateSecuritySandbox>true</updateSecuritySandbox>
+					<includeAsClasses>
+						<source>
+							<directory>src/main/actionscript</directory>
+						</source>
+					</includeAsClasses>
+					<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
+					<description>API documentation</description>
+					<mainTitle>API documentation</mainTitle>
+					<windowTitle>API documentation</windowTitle>
+					<name>As3CommonsDocs</name>
+					<keepXml>true</keepXml>
+					<dumpConfigAttach>true</dumpConfigAttach>
+					<showWarnings>true</showWarnings>
+					<lenient>true</lenient>
+				</configuration>
+
+			</plugin>
 
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -75,6 +132,24 @@
 		</plugins>
 
 	</build>
+                
+	<dependencies>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>playerglobal</artifactId>
+			<version>${flex-sdk.version}</version>
+			<scope>external</scope>
+			<type>swc</type>
+			<classifier>${playerglobal.version}</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex</groupId>
+			<artifactId>compiler</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>pom</type>
+		</dependency>
+	</dependencies>
 
 	<scm>
 		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-lang</developerConnection>
@@ -87,6 +162,16 @@
 			<id>yoolab.org-as3commons</id>
 			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-lang</url>
 		</site>
+		<repository>
+			<id>yoolab.org-releases</id>
+			<name>Yoolab.org releases repository</name>
+			<url>https://dev.yoolab.org/maven/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>yoolab.org-snapshots</id>
+			<name>Yoolab.org snapshots repository</name>
+			<url>https://dev.yoolab.org/maven/content/repositories/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 </project>
