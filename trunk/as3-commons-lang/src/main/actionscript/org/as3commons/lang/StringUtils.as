@@ -17,8 +17,7 @@ package org.as3commons.lang {
 
 	/**
 	 * <p>Methods in this class give sample code to explain their operation.
-	 * The symbol <code>*</code> is used to indicate any input
-	 * including <code>null</code>.</p>
+	 * The symbol * is used to indicate any input including <code>null</code>.</p>
 	 *
 	 * @author Steffen Leistner
 	 * @author Christophe Herreman
@@ -160,7 +159,7 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * <p>Deletes all 'space' characters from a String as defined by
+		 * <p>Deletes all 'space' characters from a String as defined by:</p>
 		 *
 		 * <pre>
 		 * StringUtils.deleteSpaces(null)           = null
@@ -705,7 +704,7 @@ package org.as3commons.lang {
 		/**
 		 * <p>Removes control characters (char &lt;= 32) from both
 		 * ends of this String returning <code>null</code> if the String is
-		 * empty ("") after the trim or if it is <code>null</code>.
+		 * empty ("") after the trim or if it is <code>null</code>.</p>
 		 *
 		 * <p>The String is trimmed using #trim().
 		 * Trim removes start and end characters &lt;= 32.</p>
@@ -730,7 +729,7 @@ package org.as3commons.lang {
 		/**
 		 * <p>Removes control characters (char &lt;= 32) from both
 		 * ends of this String returning an empty String ("") if the String
-		 * is empty ("") after the trim or if it is <code>null</code>.
+		 * is empty ("") after the trim or if it is <code>null</code>.</p>
 		 *
 		 * <p>The String is trimmed using #trim().
 		 * Trim removes start and end characters &lt;= 32.
@@ -755,7 +754,7 @@ package org.as3commons.lang {
 		 * <p>Capitalizes a String changing the first letter to title case.
 		 * No other letters are changed.</p>
 		 *
-		 * A <code>null</code> input String returns <code>null</code>.</p>
+		 * <p>A <code>null</code> input String returns <code>null</code>.</p>
 		 *
 		 * <pre>
 		 * StringUtils.capitalize(null)  = null
@@ -1122,7 +1121,7 @@ package org.as3commons.lang {
 		 * <p>Works like <code>abbreviate(String, int)</code>, but allows you to specify
 		 * a "left edge" offset.  Note that this left edge is not necessarily going to
 		 * be the leftmost character in the result, or the first character following the
-		 * ellipses, but it will appear somewhere in the result.
+		 * ellipses, but it will appear somewhere in the result.</p>
 		 *
 		 * <p>In no case will it return a String of length greater than
 		 * <code>maxWidth</code>.</p>
@@ -1259,7 +1258,7 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * <p>Checks if String contains a search String, handling <code>null</code>.
+		 * <p>Checks if String contains a search String, handling <code>null</code>.</p>
 		 *
 		 * <p>A <code>null</code> String will return <code>false</code>.</p>
 		 *
@@ -1285,7 +1284,7 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * <p>Checks if String contains a search String, ignoring the case and handling <code>null</code>.
+		 * <p>Checks if String contains a search String, ignoring the case and handling <code>null</code>.</p>
 		 *
 		 * <p>A <code>null</code> String will return <code>false</code>.</p>
 		 *
@@ -1887,7 +1886,7 @@ package org.as3commons.lang {
 		/**
 		 * <p>Checks if the String end characters match the given end string.</p>
 		 *
-		 * <p><code>null</code> will return <code>false</code>.
+		 * <p><code>null</code> will return <code>false</code>.</p>
 		 *
 		 * <pre>
 		 * StringUtils.endsWith(null, *)	 				= false
@@ -1911,7 +1910,7 @@ package org.as3commons.lang {
 		/**
 		 * <p>Checks if the String end characters match the given end string, ignoring case.</p>
 		 *
-		 * <p><code>null</code> will return <code>false</code>.
+		 * <p><code>null</code> will return <code>false</code>.</p>
 		 *
 		 * <pre>
 		 * StringUtils.endsWith(null, *)	 				= false
@@ -1935,7 +1934,7 @@ package org.as3commons.lang {
 		/**
 		 * <p>Checks if the String start characters match the given start string.</p>
 		 *
-		 * <p><code>null</code> will return <code>false</code>.
+		 * <p><code>null</code> will return <code>false</code>.</p>
 		 *
 		 * <pre>
 		 * StringUtils.startsWith(null, *)	 				= false
@@ -1959,7 +1958,7 @@ package org.as3commons.lang {
 		/**
 		 * <p>Checks if the String start characters match the given start string.</p>
 		 *
-		 * <p><code>null</code> will return <code>false</code>.
+		 * <p><code>null</code> will return <code>false</code>.</p>
 		 *
 		 * <pre>
 		 * StringUtils.startsWith(null, *)	 				= false
@@ -1987,7 +1986,6 @@ package org.as3commons.lang {
 		 * where case differences have been eliminated by calling
 		 * <code>Character.toLowerCase(Character.toUpperCase(character))</code> on
 		 * each character.
-		 * <p>
 		 *
 		 * @param   str1   the <code>String</code> to be compared.
 		 * @param   str2   the <code>String</code> to be compared.
@@ -2019,7 +2017,7 @@ package org.as3commons.lang {
 		 * follows the argument string. The result is zero if the strings
 		 * are equal; <code>compareTo</code> returns <code>0</code> exactly when
 		 * the #equals(Object) method would return <code>true</code>.
-		 * <p>
+		 * <br/>
 		 * This is the definition of lexicographic ordering. If two strings are
 		 * different, then either they have different characters at some index
 		 * that is a valid index for both strings, or their lengths are different,
@@ -2108,8 +2106,8 @@ package org.as3commons.lang {
 		/**
 		 * Removes all empty characters at the beginning of a string.
 		 *
-		 * <p>Characters that are removed: spaces {@code " "}, line forwards {@code "\n"}
-		 * and extended line forwarding {@code "\t\n"}.
+		 * <p>Characters that are removed: spaces <code>" "</code>, line forwards <code>\n</code>
+		 * and extended line forwarding <code>\t\n</code>.</p>
 		 *
 		 * @param string the string to trim
 		 * @return the trimmed string
@@ -2121,8 +2119,8 @@ package org.as3commons.lang {
 		/**
 		 * Removes all empty characters at the end of a string.
 		 *
-		 * <p>Characters that are removed: spaces {@code " "}, line forwards {@code "\n"}
-		 * and extended line forwarding {@code "\t\n"}.
+		 * <p>Characters that are removed: spaces <code>" "</code>, line forwards <code>\n</code>
+		 * and extended line forwarding <code>\t\n</code>.</p>
 		 *
 		 * @param string the string to trim
 		 * @return the trimmed string
@@ -2132,20 +2130,20 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * Removes all characters at the beginning of the {@code string} that match to the
-		 * set of {@code chars}.
+		 * Removes all characters at the beginning of the <code>String</code> that match to the
+		 * set of <code>chars</code>.
 		 *
-		 * <p>This method splits all {@code chars} and removes occurencies at the beginning.
+		 * <p>This method splits all <code>chars</code> and removes occurencies at the beginning.</p>
 		 *
 		 * <p>Example:
 		 * <code>
 		 *   trace(StringUtil.rightTrimForChars("ymoynkeym", "ym")); // oynkeym
 		 *   trace(StringUtil.rightTrimForChars("monkey", "mo")); // nkey
 		 *   trace(StringUtil.rightTrimForChars("monkey", "om")); // nkey
-		 * </code>
+		 * </code></p>
 		 *
 		 * @param string the string to trim
-		 * @param chars the characters to remove from the beginning of the {@code string}
+		 * @param chars the characters to remove from the beginning of the <code>String</code>
 		 * @return the trimmed string
 		 */
 		public static function leftTrimForChars(string:String, chars:String):String {
@@ -2159,20 +2157,20 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * Removes all characters at the end of the {@code string} that match to the set of
-		 * {@code chars}.
+		 * Removes all characters at the end of the <code>String</code> that match to the set of
+		 * <code>chars</code>.
 		 *
-		 * <p>This method splits all {@code chars} and removes occurencies at the end.
+		 * <p>This method splits all <code>chars</code> and removes occurencies at the end.</p>
 		 *
 		 * <p>Example:
 		 * <code>
 		 *   trace(StringUtil.rightTrimForChars("ymoynkeym", "ym")); // ymoynke
 		 *   trace(StringUtil.rightTrimForChars("monkey***", "*y")); // monke
 		 *   trace(StringUtil.rightTrimForChars("monke*y**", "*y")); // monke
-		 * </code>
+		 * </code></p>
 		 *
 		 * @param string the string to trim
-		 * @param chars the characters to remove from the end of the {@code string}
+		 * @param chars the characters to remove from the end of the <code>String</code>
 		 * @return the trimmed string
 		 */
 		public static function rightTrimForChars(string:String, chars:String):String {
@@ -2186,13 +2184,13 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * Removes all characters at the beginning of the {@code string} that matches the
-		 * {@code char}.
+		 * Removes all characters at the beginning of the <code>String</code> that matches the
+		 * <code>chars</code>.
 		 *
 		 * <p>Example:
 		 * <code>
 		 *   trace(StringUtil.leftTrimForChar("yyyymonkeyyyy", "y"); // monkeyyyy
-		 * </code>
+		 * </code></p>
 		 *
 		 * @param string the string to trim
 		 * @param char the character to remove
@@ -2207,13 +2205,13 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * Removes all characters at the end of the {@code string} that matches the passed-in
-		 * {@code char}.
+		 * Removes all characters at the end of the <code>String</code> that matches the passed-in
+		 * <code>chars</code>.
 		 *
 		 * <p>Example:
 		 * <code>
 		 *   trace(StringUtil.rightTrimForChar("yyyymonkeyyyy", "y"); // yyyymonke
-		 * </code>
+		 * </code></p>
 		 *
 		 * @param string the string to trim
 		 * @param char the character to remove
@@ -2492,12 +2490,12 @@ package org.as3commons.lang {
 		 * Replaces keys defined in a keymap.
 		 *
 		 * <p>This method helps if you need to escape characters in a string. But it
-		 * can be basically used for any kind of keys to be replaced.
+		 * can be basically used for any kind of keys to be replaced.</p>
 		 *
 		 * <p>To be expected as keymap is a map like:
 		 * <code>
 		 *   ["keyToReplace1", "replacedTo1", "keyToReplace2", "replacedTo2", ... ]
-		 * </code>
+		 * </code></p>
 		 *
 		 * @param string String that contains content to be removed.
 		 * @param keyMap Map that contains all keys. (DEFAULT_ESCAPE_MAP will be used
