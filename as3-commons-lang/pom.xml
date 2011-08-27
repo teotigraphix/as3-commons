@@ -19,8 +19,6 @@
 		<flashplayer.version.revision>0</flashplayer.version.revision>
 		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}</flashplayer.version>
 		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
-		<asmock.version>1.0</asmock.version>
-		<asmockflexunit4.version>1.0</asmockflexunit4.version>
 		<flexunit.version>4.1-RC2</flexunit.version>
 		<maven-site-plugin.version>3.0-beta-3</maven-site-plugin.version>
 	</properties>
@@ -215,6 +213,14 @@
 		      <type>rb.swc</type>
 		      <scope>external</scope>
 		    </dependency>
+		    <dependency>
+		      <groupId>com.adobe.flex.framework</groupId>
+		      <artifactId>airframework</artifactId>
+		      <version>${flex-sdk.version}</version>
+		      <type>rb.swc</type>
+		      <scope>test</scope>
+		    </dependency>
+
 	</dependencies>
 
 	<scm>
@@ -242,16 +248,6 @@
 	
     	<repositories>
 		<repository>
-    			<id>cairngorm3-repository</id>
-    			<url>http://opensource.adobe.com/svn/opensource/cairngorm3/maven-repository</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-    		</repository>
-		<repository>
 			<id>flex-mojos-repository</id>
 			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
 			<releases>
@@ -261,6 +257,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+    			<id>cairngorm3-repository</id>
+    			<url>http://opensource.adobe.com/svn/opensource/cairngorm3/maven-repository</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+    		</repository>
 		<repository>
 			<id>yoolab.org-releases</id>
 			<url>http://projects.yoolab.org/maven/content/repositories/releases</url>
