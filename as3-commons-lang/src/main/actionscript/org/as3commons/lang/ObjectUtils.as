@@ -117,7 +117,7 @@ package org.as3commons.lang {
 
 		/**
 		 * Converts a plain vanilla object to be an instance of the class
-		 * passed as the second variable.  This is not a recursive funtion
+		 * passed as the second variable.  This is not a recursive function
 		 * and will only work for the first level of nesting.  When you have
 		 * deeply nested objects, you first need to convert the nested
 		 * objects to class instances, and then convert the top level object.
@@ -128,9 +128,9 @@ package org.as3commons.lang {
 		 * be registerClassAlias'd using getDefinititonByName to get a reference,
 		 * and then objectToInstance would be called on those properties to complete
 		 * the recursive algorithm.
-		 *
-		 * @author Darron Schall (darron@darronschall.com)
 		 * http://www.darronschall.com/weblog/archives/000247.cfm
+		 *
+		 * @author Darron Schall
 		 *
 		 * @param object The plain object that should be converted
 		 * @param clazz The type to convert the object to
@@ -201,7 +201,7 @@ package org.as3commons.lang {
 		/**
 		 * Returns the fully qualified class name of the given object.
 		 */
-		public static function getFullyQualifiedClassName(object:Object, replaceColons:Boolean = false):String {
+		public static function getFullyQualifiedClassName(object:Object, replaceColons:Boolean=false):String {
 			return ClassUtils.getFullyQualifiedName(ClassUtils.forInstance(object), replaceColons);
 		}
 
@@ -237,10 +237,10 @@ package org.as3commons.lang {
 			}
 			return targetInstance[field];
 		}
-		
+
 		/**
 		 * Merges two objects to become one.
-		 * 
+		 *
 		 * @param objectA Master object, overrides properties of <code>objectB</code>
 		 * @param objectB Slave object, just properties that not part of <code>objectA</code> will be taken.
 		 * @return a Object that contains all properties of objectA and objectB

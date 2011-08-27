@@ -69,10 +69,10 @@
 						</source>
 					</includeAsClasses>
 					<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
-					<description>API documentation</description>
-					<mainTitle>API documentation</mainTitle>
-					<windowTitle>API documentation</windowTitle>
-					<name>As3CommonsDocs</name>
+					<description>AS3Commons Lang v${project.version} API documentation</description>
+					<mainTitle>AS3Commons Lang v${project.version} API documentation</mainTitle>
+					<windowTitle>AS3Commons Lang v${project.version} API documentation</windowTitle>
+					<name>As3CommonsLangDocs</name>
 					<keepXml>true</keepXml>
 					<dumpConfigAttach>true</dumpConfigAttach>
 					<showWarnings>true</showWarnings>
