@@ -20,10 +20,10 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
-	
+
 	import flash.utils.Proxy;
 	import flash.utils.flash_proxy;
-	
+
 	/**
 	 * A MethodInvoker is a representation of a method call or invocation. Use this to dynamically invoke methods
 	 * on an object.
@@ -37,29 +37,28 @@ package org.as3commons.reflect {
 	 * @author Christophe Herreman
 	 */
 	public class MethodInvoker implements INamespaceOwner {
-		
+		private static const CONSTRUCTOR_FIELD_NAME:String = "constructor";
+
 		private var _target:*;
-		
 		private var _method:String = "";
-		
 		private var _arguments:Array;
-		
 		private var _namespaceURI:String;
-		
+
 		/**
 		 * Creates a new MethodInvoker object.
 		 */
 		public function MethodInvoker() {
+			super();
 			_arguments = [];
 		}
-		
+
 		/**
 		 * Returns the target of this MethodInvoker.
 		 */
 		public function get target():* {
 			return _target;
 		}
-		
+
 		/**
 		 * Sets the target of this MethodInvoker.
 		 *
@@ -68,70 +67,85 @@ package org.as3commons.reflect {
 		public function set target(value:*):void {
 			_target = value;
 		}
-		
+
 		/**
 		 * Returns the method this MethodInvoker is dealing with.
 		 */
 		public function get method():String {
 			return _method;
 		}
-		
+
 		/**
 		 * Sets the method this MethodInvoker is dealing with.
 		 */
 		public function set method(value:String):void {
 			_method = value;
 		}
-		
+
 		/**
 		 * Returns the arguments used by this MethodInvoker.
 		 */
 		public function get arguments():Array {
 			return _arguments;
 		}
-		
+
 		/**
 		 * Sets the arguments used by this MethodInvoker.
 		 */
 		public function set arguments(value:Array):void {
 			_arguments = value;
 		}
-		
+
 		// ----------------------------
 		// namespaceURI
 		// ----------------------------
-		
+
 		public function get namespaceURI():String {
 			return _namespaceURI;
 		}
+
 		public function set namespaceURI(value:String):void {
 			_namespaceURI = value;
 		}
-		
+
 		/**
 		 * Executes this MethodInvoker.
 		 */
 		public function invoke():* {
 			var result:*;
 			var f:Function;
-			if ((_namespaceURI != null)&&(_namespaceURI.length > 0)) {
-				var qn:QName = new QName(_namespaceURI, method);
+			var qn:QName;
+			if ((_namespaceURI != null) && (_namespaceURI.length > 0)) {
+				qn = new QName(_namespaceURI, method);
 				f = target[qn];
 			} else {
 				f = target[method];
 			}
-			
+
 			if (f != null) {
 				result = f.apply(target, this.arguments);
-			} else {
+			} else if (target is Proxy) {
 				// we don't have a valid function, this might be a proxied method call
-				if (target is Proxy) {
-					var args:Array = [method].concat(this.arguments);
-					result = Proxy(target).flash_proxy::callProperty.apply(target, args);
+				var args:Array = [method].concat(this.arguments);
+				result = Proxy(target).flash_proxy::callProperty.apply(target, args);
+			} else {
+				// Perhaps this is a static method call:
+				if (Object(target).hasOwnProperty(CONSTRUCTOR_FIELD_NAME)) {
+					var cls:Class = Object(target).constructor as Class;
+					if (cls != null) {
+						if ((_namespaceURI != null) && (_namespaceURI.length > 0)) {
+							qn = new QName(_namespaceURI, method);
+							f = cls[qn];
+						} else {
+							f = cls[method];
+						}
+						result = f.apply(cls, this.arguments);
+					}
 				}
 			}
-			
+
 			return result;
 		}
+
 	}
 }

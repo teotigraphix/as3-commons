@@ -109,7 +109,7 @@ package org.as3commons.reflect {
 		 *
 		 * @param instance the instance from which to get a type description
 		 */
-		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):Type {
+		public static function forInstance(instance:*, applicationDomain:ApplicationDomain=null):Type {
 			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Type;
 			var clazz:Class = org.as3commons.lang.ClassUtils.forInstance(instance, applicationDomain);
@@ -125,7 +125,7 @@ package org.as3commons.reflect {
 		 *
 		 * @param name the classname from which to get a type description
 		 */
-		public static function forName(name:String, applicationDomain:ApplicationDomain = null):Type {
+		public static function forName(name:String, applicationDomain:ApplicationDomain=null):Type {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Type;
 
@@ -160,7 +160,7 @@ package org.as3commons.reflect {
 		 *
 		 * @param clazz the class from which to get a type description
 		 */
-		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain = null):Type {
+		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain=null):Type {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var result:Type;
 			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(clazz);
@@ -665,7 +665,7 @@ package org.as3commons.reflect {
 		 *
 		 * @param name the name of the method
 		 */
-		public function getMethod(name:String, ns:String = null):Method {
+		public function getMethod(name:String, ns:String=null):Method {
 			if (ns == null) {
 				return _methods.get(name);
 			} else {
@@ -685,7 +685,7 @@ package org.as3commons.reflect {
 		 *
 		 * @param name the name of the field
 		 */
-		public function getField(name:String, ns:String = null):Field {
+		public function getField(name:String, ns:String=null):Field {
 			//force _fields HashArray to be created
 			if (_fields == null) {
 				createFieldsHashArray();
