@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.stageprocessing.impl {
-
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;
@@ -23,6 +22,7 @@ package org.as3commons.stageprocessing.impl {
 
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
+	import org.as3commons.lang.IDisposable;
 	import org.as3commons.lang.IOrdered;
 	import org.as3commons.logging.api.ILogger;
 	import org.as3commons.logging.api.getLogger;
@@ -36,29 +36,29 @@ package org.as3commons.stageprocessing.impl {
 	 * Pure actionscript implementation of the <code>IStageObjectProcessorRegistry</code> interface.
 	 * @author Roland Zwaga
 	 */
-	public class FlashStageObjectProcessorRegistry implements IStageObjectProcessorRegistry {
+	public class FlashStageObjectProcessorRegistry implements IStageObjectProcessorRegistry, IDisposable {
+		protected static const APPLICATION:String = "application";
+		protected static const APPLICATION_FIELD_NAME:String = "Application";
+		protected static const CANNOT_INSTANTIATE_ERROR:String = "Cannot instantiate FlashStageProcessorRegistry directly, invoke getInstance() instead";
+		protected static const CREATING_CONTENT_PANE_FIELD_NAME:String = "creatingContentPane";
+		protected static const CURRENT_VERSION_FIELD_NAME:String = "CURRENT_VERSION";
+		protected static const FLASH_STAGE_PROCESSOR_REGISTRY_INITIALIZED:String = "FlashStageProcessorRegistry was initialized";
+		protected static const LOGGER:ILogger = getLogger(FlashStageObjectProcessorRegistry);
+		protected static const MXCORE_APPLICATION_CLASS_NAME:String = "mx.core.Application";
+		protected static const MXCORE_CONTAINER_CLASSNAME:String = "mx.core.Container";
+		protected static const MXCORE_FLEX_GLOBALS:String = "mx.core.FlexGlobals";
+		protected static const MXCORE_FLEX_VERSION_CLASS_NAME:String = "mx.core.FlexVersion";
+		protected static const NEW_STAGE_PROCESSOR_AND_SELECTOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and new {2}";
+		protected static const NEW_STAGE_PROCESSOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and existing {2}";
+		protected static const ORDERED_PROPERTYNAME:String = "order";
+		protected static const STAGE_FIELD_NAME:String = "stage";
 
 		protected static const STAGE_PROCESSING_COMPLETED:String = "Stage processing completed";
 		protected static const STAGE_PROCESSING_STARTED:String = "Stage processing starting with component '{0}'";
 		protected static const STAGE_PROCESSOR_REGISTRY_CLEARED:String = "StageProcessorRegistry was cleared";
-		protected static const CANNOT_INSTANTIATE_ERROR:String = "Cannot instantiate FlashStageProcessorRegistry directly, invoke getInstance() instead";
-		protected static const FLASH_STAGE_PROCESSOR_REGISTRY_INITIALIZED:String = "FlashStageProcessorRegistry was initialized";
-		protected static const LOGGER:ILogger = getLogger(FlashStageObjectProcessorRegistry);
-		protected static const NEW_STAGE_PROCESSOR_AND_SELECTOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and new {2}";
-		protected static const NEW_STAGE_PROCESSOR_REGISTERED:String = "New stage processor '{0}' was registered with name '{1}' and existing {2}";
-		protected static const ORDERED_PROPERTYNAME:String = "order";
 		protected static const STAGE_PROCESSOR_UNREGISTERED:String = "Stage processor with name '{0}' and document '{1}' was unregistered";
-		protected static const MXCORE_FLEX_GLOBALS:String = "mx.core.FlexGlobals";
-		protected static const TOP_LEVEL_APPLICATION:String = "topLevelApplication";
-		protected static const APPLICATION:String = "application";
 		protected static const SYSTEM_MANAGER_FIELD_NAME:String = "systemManager";
-		protected static const STAGE_FIELD_NAME:String = "stage";
-		protected static const MXCORE_FLEX_VERSION_CLASS_NAME:String = "mx.core.FlexVersion";
-		protected static const CURRENT_VERSION_FIELD_NAME:String = "CURRENT_VERSION";
-		protected static const MXCORE_APPLICATION_CLASS_NAME:String = "mx.core.Application";
-		protected static const APPLICATION_FIELD_NAME:String = "Application";
-		protected static const MXCORE_CONTAINER_CLASSNAME:String = "mx.core.Container";
-		protected static const CREATING_CONTENT_PANE_FIELD_NAME:String = "creatingContentPane";
+		protected static const TOP_LEVEL_APPLICATION:String = "topLevelApplication";
 
 		/**
 		 * Sorts a vector of <code>IStageObjectProcessor</code> that may or may not contain <code>IOrdered</code> implementations.
@@ -95,22 +95,33 @@ package org.as3commons.stageprocessing.impl {
 			init();
 		}
 
-		private var _enabled:Boolean;
-		private var _initialized:Boolean;
-		private var _rootViews:Dictionary;
-		private var _stage:Stage;
-		private var _useStageDestroyers:Boolean = true;
-		private var _flexVersion:uint;
 		private var _defaultSelector:IObjectSelector;
 		private var _defaultSelectorClass:Class;
 
-		/**
-		 * @inheritDoc
-		 */
-		public function clear():void {
-			_initialized = false;
-			removeEventListeners(_stage);
-			LOGGER.debug(STAGE_PROCESSOR_REGISTRY_CLEARED);
+		private var _enabled:Boolean;
+		private var _flexVersion:uint;
+		private var _initialized:Boolean;
+		private var _isDisposed:Boolean;
+		private var _rootViews:Dictionary;
+		private var _stage:Stage;
+		private var _useStageDestroyers:Boolean = true;
+
+		public function get defaultSelector():IObjectSelector {
+			return _defaultSelector;
+		}
+
+		public function set defaultSelector(value:IObjectSelector):void {
+			_defaultSelector = value;
+		}
+
+		public function get defaultSelectorClass():Class {
+			return _defaultSelectorClass;
+		}
+
+		public function set defaultSelectorClass(value:Class):void {
+			Assert.notNull(value, "defaultSelectorClass cannot be set to null");
+			Assert.isTrue(ClassUtils.isImplementationOf(value, IObjectSelector), "defaultSelectorClass must implement IObjectSelector interface");
+			_defaultSelectorClass = value;
 		}
 
 		/**
@@ -130,193 +141,12 @@ package org.as3commons.stageprocessing.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function getAllObjectSelectors():Vector.<IObjectSelector> {
-			var result:Vector.<IObjectSelector> = new Vector.<IObjectSelector>();
-			for (var rootView:* in _rootViews) {
-				var selectors:Dictionary = _rootViews[rootView];
-				for (var selector:* in selectors) {
-					result[result.length] = IObjectSelector(selector);
-				}
-			}
-			return result;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function getAllRootViews():Vector.<DisplayObject> {
-			var result:Vector.<DisplayObject> = new Vector.<DisplayObject>();
-			for (var rootView:* in _rootViews) {
-				result[result.length] = DisplayObject(rootView);
-			}
-			return result;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function getAllStageObjectProcessors():Vector.<IStageObjectProcessor> {
-			var result:Vector.<IStageObjectProcessor> = new Vector.<IStageObjectProcessor>();
-			for (var rootView:* in _rootViews) {
-				var selectors:Dictionary = _rootViews[rootView];
-				for (var selector:* in selectors) {
-					var processors:Vector.<IStageObjectProcessor> = selectors[selector];
-					for each (var proc:IStageObjectProcessor in processors) {
-						if (result.indexOf(proc) < 0) {
-							result[result.length] = proc;
-						}
-					}
-				}
-			}
-			return result;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function getObjectSelectorsForStageProcessor(stageProcessor:IStageObjectProcessor):Vector.<IObjectSelector> {
-			var result:Vector.<IObjectSelector> = new Vector.<IObjectSelector>();
-			for (var view:* in _rootViews) {
-				var selectors:Dictionary = _rootViews[view];
-				for (var selector:* in selectors) {
-					var processors:Vector.<IStageObjectProcessor> = selectors[selector];
-					if (processors.indexOf(stageProcessor) > -1) {
-						if (result.indexOf(selector) < 0) {
-							result[result.length] = IObjectSelector(selector);
-						}
-					}
-				}
-			}
-			return result;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function getProcessorVector(rootView:DisplayObject, objectSelector:IObjectSelector, create:Boolean = true):Vector.<IStageObjectProcessor> {
-			if ((_rootViews[rootView] == null) && (create)) {
-				_rootViews[rootView] = new Dictionary();
-			}
-			var objectSelectors:Dictionary = _rootViews[rootView];
-			if (objectSelectors == null) {
-				return null;
-			}
-			if ((objectSelectors[objectSelector] == null) && (create)) {
-				objectSelectors[objectSelector] = new Vector.<IStageObjectProcessor>();
-			}
-			return objectSelectors[objectSelector] as Vector.<IStageObjectProcessor>;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function getStageObjectProcessorsByType(type:Class):Vector.<IStageObjectProcessor> {
-			var result:Vector.<IStageObjectProcessor> = new Vector.<IStageObjectProcessor>();
-			var processors:Vector.<IStageObjectProcessor> = getAllStageObjectProcessors();
-			for each (var proc:IStageObjectProcessor in processors) {
-				if (proc is type) {
-					result[result.length] = proc;
-				}
-			}
-			return result;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function getStageProcessorsByRootView(rootView:Object):Vector.<IStageObjectProcessor> {
-			var result:Vector.<IStageObjectProcessor> = new Vector.<IStageObjectProcessor>();
-			var selectors:Dictionary = _rootViews[rootView];
-			if (selectors != null) {
-				for (var selector:* in selectors) {
-					result = result.concat(selectors[selector]);
-				}
-			}
-			return result;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function initialize():void {
-			_stage ||= findFlexStage();
-			if ((!_initialized) && (_stage != null)) {
-				setInitialized();
-				processStage();
-				addEventListeners(_stage);
-				LOGGER.debug(FLASH_STAGE_PROCESSOR_REGISTRY_INITIALIZED);
-			}
-		}
-
-		protected function findFlexStage():Stage {
-			var fxVersion:uint = getFlexVersion();
-			if (fxVersion > 0) {
-				if (_flexVersion < 0x04000000) {
-					var applicationClass:Class = ClassUtils.forName(MXCORE_APPLICATION_CLASS_NAME);
-					return applicationClass[APPLICATION_FIELD_NAME][SYSTEM_MANAGER_FIELD_NAME][STAGE_FIELD_NAME];
-				} else {
-					var flexGlobalsClass:Class = ClassUtils.forName(MXCORE_FLEX_GLOBALS);
-					return flexGlobalsClass[TOP_LEVEL_APPLICATION][SYSTEM_MANAGER_FIELD_NAME][STAGE_FIELD_NAME];
-				}
-			}
-			return null;
-		}
-
-		protected function getFlexVersion():uint {
-			if (_flexVersion == uint.MAX_VALUE) {
-				try {
-					var cls:Class = ClassUtils.forName(MXCORE_FLEX_VERSION_CLASS_NAME);
-					_flexVersion = cls[CURRENT_VERSION_FIELD_NAME];
-				} catch (e:Error) {
-					_flexVersion = 0;
-				}
-			}
-			return _flexVersion;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
 		public function get initialized():Boolean {
 			return _initialized;
 		}
 
-		/**
-		 * @inheritDoc
-		 */
-		public function processStage(startComponent:DisplayObject = null):void {
-			if (_stage == null) {
-				return;
-			}
-
-			startComponent ||= _stage.root;
-
-			LOGGER.debug(STAGE_PROCESSING_STARTED, [startComponent]);
-			processDisplayObjectRecursively(startComponent);
-			LOGGER.debug(STAGE_PROCESSING_COMPLETED);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector = null, rootView:DisplayObject = null):void {
-			objectSelector ||= getDefaultSelector();
-			if ((rootView is Stage) && (_stage == null)) {
-				_stage = Stage(rootView);
-			}
-			rootView ||= _stage ||= findFlexStage();
-			var processors:Vector.<IStageObjectProcessor> = getProcessorVector(rootView, objectSelector);
-			if (processors.indexOf(stageProcessor) < 0) {
-				processors[processors.length] = stageProcessor;
-				sortOrderedVector(processors);
-			}
-		}
-
-		protected function getDefaultSelector():IObjectSelector {
-			if (_defaultSelector == null) {
-				_defaultSelector = new defaultSelectorClass();
-			}
-			return _defaultSelector;
+		public function get isDisposed():Boolean {
+			return _isDisposed;
 		}
 
 		/**
@@ -338,7 +168,201 @@ package org.as3commons.stageprocessing.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector = null, rootView:DisplayObject = null):void {
+		public function get useStageDestroyers():Boolean {
+			return _useStageDestroyers;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set useStageDestroyers(value:Boolean):void {
+			_useStageDestroyers = value;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function clear():void {
+			_initialized = false;
+			removeEventListeners(_stage);
+			LOGGER.debug(STAGE_PROCESSOR_REGISTRY_CLEARED);
+		}
+
+		public function dispose():void {
+			if (!_isDisposed) {
+				_rootViews = null;
+				removeEventListeners(_stage);
+				_stage = null;
+				if (_defaultSelector is IDisposable) {
+					IDisposable(_defaultSelector).dispose();
+				}
+				_defaultSelector = null;
+				_defaultSelectorClass = null;
+				_isDisposed = true;
+			}
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getAllObjectSelectors():Vector.<IObjectSelector> {
+			var result:Vector.<IObjectSelector> = new Vector.<IObjectSelector>();
+			for (var rootView:* in _rootViews) {
+				var selectors:Dictionary = _rootViews[rootView];
+				for (var selector:* in selectors) {
+					result[result.length] = IObjectSelector(selector);
+				}
+			}
+			return result;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getAllRootViews():Vector.<DisplayObject> {
+			var result:Vector.<DisplayObject>;
+			for (var rootView:* in _rootViews) {
+				result ||= new Vector.<DisplayObject>();
+				result[result.length] = DisplayObject(rootView);
+			}
+			return result;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getAllStageObjectProcessors():Vector.<IStageObjectProcessor> {
+			var result:Vector.<IStageObjectProcessor>;
+			for (var rootView:* in _rootViews) {
+				var selectors:Dictionary = _rootViews[rootView];
+				result ||= new Vector.<IStageObjectProcessor>();
+				for (var selector:* in selectors) {
+					var processors:Vector.<IStageObjectProcessor> = selectors[selector];
+					for each (var proc:IStageObjectProcessor in processors) {
+						if (result.indexOf(proc) < 0) {
+							result[result.length] = proc;
+						}
+					}
+				}
+			}
+			return result;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getObjectSelectorsForStageProcessor(stageProcessor:IStageObjectProcessor):Vector.<IObjectSelector> {
+			var result:Vector.<IObjectSelector>;
+			for (var view:* in _rootViews) {
+				result ||= new Vector.<IObjectSelector>();
+				var selectors:Dictionary = _rootViews[view];
+				for (var selector:* in selectors) {
+					var processors:Vector.<IStageObjectProcessor> = selectors[selector];
+					if (processors.indexOf(stageProcessor) > -1) {
+						if (result.indexOf(selector) < 0) {
+							result[result.length] = IObjectSelector(selector);
+						}
+					}
+				}
+			}
+			return result;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getProcessorVector(rootView:DisplayObject, objectSelector:IObjectSelector, create:Boolean=true):Vector.<IStageObjectProcessor> {
+			if ((_rootViews[rootView] == null) && (create)) {
+				_rootViews[rootView] = new Dictionary();
+			}
+			var objectSelectors:Dictionary = _rootViews[rootView];
+			if (objectSelectors == null) {
+				return null;
+			}
+			if ((objectSelectors[objectSelector] == null) && (create)) {
+				objectSelectors[objectSelector] = new Vector.<IStageObjectProcessor>();
+			}
+			return objectSelectors[objectSelector] as Vector.<IStageObjectProcessor>;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getStageObjectProcessorsByType(type:Class):Vector.<IStageObjectProcessor> {
+			var result:Vector.<IStageObjectProcessor>;
+			var processors:Vector.<IStageObjectProcessor> = getAllStageObjectProcessors();
+			for each (var proc:IStageObjectProcessor in processors) {
+				if (proc is type) {
+					result ||= new Vector.<IStageObjectProcessor>();
+					result[result.length] = proc;
+				}
+			}
+			return result;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function getStageProcessorsByRootView(rootView:Object):Vector.<IStageObjectProcessor> {
+			var result:Vector.<IStageObjectProcessor>;
+			var selectors:Dictionary = _rootViews[rootView];
+			if (selectors != null) {
+				for (var selector:* in selectors) {
+					result ||= new Vector.<IStageObjectProcessor>();
+					result = result.concat(selectors[selector]);
+				}
+			}
+			return result;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function initialize():void {
+			_stage ||= findFlexStage();
+			if ((!_initialized) && (_stage != null)) {
+				setInitialized();
+				processStage();
+				addEventListeners(_stage);
+				LOGGER.debug(FLASH_STAGE_PROCESSOR_REGISTRY_INITIALIZED);
+			}
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function processStage(startComponent:DisplayObject=null):void {
+			if (_stage == null) {
+				return;
+			}
+
+			startComponent ||= _stage.root;
+
+			LOGGER.debug(STAGE_PROCESSING_STARTED, [startComponent]);
+			processDisplayObjectRecursively(startComponent);
+			LOGGER.debug(STAGE_PROCESSING_COMPLETED);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector=null, rootView:DisplayObject=null):void {
+			objectSelector ||= getDefaultSelector();
+			if ((rootView is Stage) && (_stage == null)) {
+				_stage = Stage(rootView);
+			}
+			rootView ||= _stage ||= findFlexStage();
+			var processors:Vector.<IStageObjectProcessor> = getProcessorVector(rootView, objectSelector);
+			if (processors.indexOf(stageProcessor) < 0) {
+				processors[processors.length] = stageProcessor;
+				sortOrderedVector(processors);
+			}
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector=null, rootView:DisplayObject=null):void {
 			objectSelector ||= getDefaultSelector();
 			rootView ||= _stage;
 			var processors:Vector.<IStageObjectProcessor> = getProcessorVector(rootView, objectSelector);
@@ -352,20 +376,6 @@ package org.as3commons.stageprocessing.impl {
 					delete objectSelectors[objectSelector];
 				}
 			}
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function get useStageDestroyers():Boolean {
-			return _useStageDestroyers;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set useStageDestroyers(value:Boolean):void {
-			_useStageDestroyers = value;
 		}
 
 		protected function addEventListeners(root:DisplayObject):void {
@@ -411,6 +421,20 @@ package org.as3commons.stageprocessing.impl {
 			}
 		}
 
+		protected function findFlexStage():Stage {
+			var fxVersion:uint = getFlexVersion();
+			if (fxVersion > 0) {
+				if (_flexVersion < 0x04000000) {
+					var applicationClass:Class = ClassUtils.forName(MXCORE_APPLICATION_CLASS_NAME);
+					return applicationClass[APPLICATION_FIELD_NAME][SYSTEM_MANAGER_FIELD_NAME][STAGE_FIELD_NAME];
+				} else {
+					var flexGlobalsClass:Class = ClassUtils.forName(MXCORE_FLEX_GLOBALS);
+					return flexGlobalsClass[TOP_LEVEL_APPLICATION][SYSTEM_MANAGER_FIELD_NAME][STAGE_FIELD_NAME];
+				}
+			}
+			return null;
+		}
+
 		protected function getAssociatedObjectSelectors(displayObject:DisplayObject):Dictionary {
 			var selectors:Dictionary = _rootViews[displayObject];
 			if (selectors != null) {
@@ -422,12 +446,47 @@ package org.as3commons.stageprocessing.impl {
 			}
 		}
 
+		protected function getDefaultSelector():IObjectSelector {
+			if (_defaultSelector == null) {
+				_defaultSelector = new defaultSelectorClass();
+			}
+			return _defaultSelector;
+		}
+
+		protected function getFlexVersion():uint {
+			if (_flexVersion == uint.MAX_VALUE) {
+				try {
+					var cls:Class = ClassUtils.forName(MXCORE_FLEX_VERSION_CLASS_NAME);
+					_flexVersion = cls[CURRENT_VERSION_FIELD_NAME];
+				} catch (e:Error) {
+					_flexVersion = 0;
+				}
+			}
+			return _flexVersion;
+		}
+
 		protected function init():void {
 			_flexVersion = uint.MAX_VALUE;
 			_enabled = false;
 			_initialized = false;
 			_rootViews = new Dictionary(true);
 			_defaultSelectorClass = AllowAllObjectSelector;
+		}
+
+		protected function isBeingReparented(target:DisplayObject):Boolean {
+			if (_flexVersion == 0) {
+				return false;
+			}
+			var parent:DisplayObjectContainer = target.parent;
+			while (parent) {
+				if (parent.hasOwnProperty(CREATING_CONTENT_PANE_FIELD_NAME)) {
+					if (parent[CREATING_CONTENT_PANE_FIELD_NAME] == true) {
+						return true;
+					}
+				}
+				parent = parent.parent;
+			}
+			return false;
 		}
 
 		/**
@@ -494,40 +553,5 @@ package org.as3commons.stageprocessing.impl {
 			_initialized = true;
 			_enabled = true;
 		}
-
-		protected function isBeingReparented(target:DisplayObject):Boolean {
-			if (_flexVersion == 0) {
-				return false;
-			}
-			var parent:DisplayObjectContainer = target.parent;
-			while (parent) {
-				if (parent.hasOwnProperty(CREATING_CONTENT_PANE_FIELD_NAME)) {
-					if (parent[CREATING_CONTENT_PANE_FIELD_NAME] == true) {
-						return true;
-					}
-				}
-				parent = parent.parent;
-			}
-			return false;
-		}
-
-		public function get defaultSelector():IObjectSelector {
-			return _defaultSelector;
-		}
-
-		public function set defaultSelector(value:IObjectSelector):void {
-			_defaultSelector = value;
-		}
-
-		public function get defaultSelectorClass():Class {
-			return _defaultSelectorClass;
-		}
-
-		public function set defaultSelectorClass(value:Class):void {
-			Assert.notNull(value, "defaultSelectorClass cannot be set to null");
-			Assert.isTrue(ClassUtils.isImplementationOf(value, IObjectSelector), "defaultSelectorClass must implement IObjectSelector interface");
-			_defaultSelectorClass = value;
-		}
-
 	}
 }
