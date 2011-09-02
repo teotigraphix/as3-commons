@@ -14,9 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy.impl {
-
 	import flash.errors.IllegalOperationError;
-
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptorFactory;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
 	import org.as3commons.bytecode.proxy.ProxyScope;
@@ -28,31 +26,46 @@ package org.as3commons.bytecode.proxy.impl {
 	 */
 	public final class ClassProxyInfo implements IClassProxyInfo {
 
-		private var _proxiedClass:Class;
+		/**
+		 * Creates a new <code>ClassProxyInfo</code> instance.
+		 */
+		public function ClassProxyInfo(proxiedClass:Class, methodInvocationInterceptorClass:Class=null) {
+			super();
+			initClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
+		}
+
+		private var _accessors:Array;
+		private var _interceptorFactory:IMethodInvocationInterceptorFactory;
+		private var _introducedInterfaces:Array;
+		private var _introductions:Array;
+		private var _makeDynamic:Boolean = false;
 		private var _methodInvocationInterceptorClass:Class;
 		private var _methods:Array;
-		private var _accessors:Array;
-		private var _introductions:Array;
 		private var _onlyProxyConstructor:Boolean = false;
-		private var _makeDynamic:Boolean = false;
-		private var _interceptorFactory:IMethodInvocationInterceptorFactory;
+
+		private var _proxiedClass:Class;
 		private var _proxyAccessorNamespaces:Array;
 		private var _proxyAccessorScopes:ProxyScope;
 		private var _proxyMethodNamespaces:Array;
 		private var _proxyMethodScopes:ProxyScope;
 
 		/**
-		 * Creates a new <code>ClassProxyInfo</code> instance.
+		 * @inheritDoc
 		 */
-		public function ClassProxyInfo(proxiedClass:Class, methodInvocationInterceptorClass:Class = null) {
-			super();
-			initClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
+		public function get accessors():Array {
+			return _accessors;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get interceptorFactory():IMethodInvocationInterceptorFactory {
 			return _interceptorFactory;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set interceptorFactory(value:IMethodInvocationInterceptorFactory):void {
 			_interceptorFactory = value;
 		}
@@ -60,31 +73,15 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get proxiedClass():Class {
-			return _proxiedClass;
+		public function get introducedInterfaces():Array {
+			return _introducedInterfaces;
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function get methodInvocationInterceptorClass():Class {
-			return _methodInvocationInterceptorClass;
-		}
-
-		/**
-		 * Initializes the current <code>ClassProxyInfo</code>.
-		 * @param proxiedClass
-		 * @param methodInvocationInterceptorClass
-		 */
-		protected function initClassProxyInfo(proxiedClass:Class, methodInvocationInterceptorClass:Class):void {
-			Assert.notNull(proxiedClass, "proxiedClass argument must not be null");
-			_proxiedClass = proxiedClass;
-			_methodInvocationInterceptorClass = methodInvocationInterceptorClass;
-			_methods = [];
-			_accessors = [];
-			_introductions = [];
-			_proxyAccessorScopes = ProxyScope.ALL;
-			_proxyMethodScopes = ProxyScope.ALL;
+		public function get introductions():Array {
+			return _introductions;
 		}
 
 		/**
@@ -99,6 +96,27 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		public function set makeDynamic(value:Boolean):void {
 			_makeDynamic = value;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get methodInvocationInterceptorClass():Class {
+			return _methodInvocationInterceptorClass;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get methods():Array {
+			return _methods;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get proxiedClass():Class {
+			return _proxiedClass;
 		}
 
 		/**
@@ -166,20 +184,6 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function proxyMethod(methodName:String, namespace:String = null):void {
-			_methods[_methods.length] = new MemberInfo(methodName, namespace);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function proxyAccessor(accessorName:String, namespace:String = null):void {
-			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
 		public function introduce(clazz:Class):void {
 			_introductions[_introductions.length] = ClassUtils.getFullyQualifiedName(clazz, true);
 		}
@@ -187,22 +191,41 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get methods():Array {
-			return _methods;
+		public function introduceInterface(interfaze:Class):void {
+			if (_introducedInterfaces.indexOf(interfaze) < 0) {
+				_introducedInterfaces[_introducedInterfaces.length] = interfaze;
+			}
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function get accessors():Array {
-			return _accessors;
+		public function proxyAccessor(accessorName:String, namespace:String=null):void {
+			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace);
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function get introductions():Array {
-			return _introductions;
+		public function proxyMethod(methodName:String, namespace:String=null):void {
+			_methods[_methods.length] = new MemberInfo(methodName, namespace);
+		}
+
+		/**
+		 * Initializes the current <code>ClassProxyInfo</code>.
+		 * @param proxiedClass
+		 * @param methodInvocationInterceptorClass
+		 */
+		protected function initClassProxyInfo(proxiedClass:Class, methodInvocationInterceptorClass:Class):void {
+			Assert.notNull(proxiedClass, "proxiedClass argument must not be null");
+			_proxiedClass = proxiedClass;
+			_methodInvocationInterceptorClass = methodInvocationInterceptorClass;
+			_methods = [];
+			_accessors = [];
+			_introductions = [];
+			_introducedInterfaces = [];
+			_proxyAccessorScopes = ProxyScope.ALL;
+			_proxyMethodScopes = ProxyScope.ALL;
 		}
 	}
 }

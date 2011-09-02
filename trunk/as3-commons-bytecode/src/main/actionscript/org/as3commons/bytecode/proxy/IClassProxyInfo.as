@@ -24,6 +24,12 @@ package org.as3commons.bytecode.proxy {
 	public interface IClassProxyInfo {
 
 		/**
+		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the accessors
+		 * that will be proxied for the specified class.
+		 */
+		function get accessors():Array;
+
+		/**
 		 * An <code>IMethodInvocationInterceptorFactory</code> instance capable of creating an <code>IMethodInvocationInterceptor</code>
 		 * that will be injected into the created proxy instance.
 		 */
@@ -35,16 +41,14 @@ package org.as3commons.bytecode.proxy {
 		function set interceptorFactory(value:IMethodInvocationInterceptorFactory):void;
 
 		/**
-		 * The <code>Class</code> for which a dynamic proxy class will be generated.
+		 * An <code>Array</code> of interfaces that need to be dynamically added to the proxy.
 		 */
-		function get proxiedClass():Class;
+		function get introducedInterfaces():Array;
 
 		/**
-		 * Optionally an <code>IMethodInvocationInterceptor</code> implementing <code>Class</code> which will be
-		 * instantiated and injected into the proxy instance when the <code>interceptorFactory</code> property is null
-		 * and no interceptor has been injected using the <code>ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR</code> event.
+		 * An <code>Array</code> of <code>Classes</code> that will be merged with the generated proxy.
 		 */
-		function get methodInvocationInterceptorClass():Class;
+		function get introductions():Array;
 
 		/**
 		 * Determines if the generated proxy class will be marked as <code>dynamic</code>.
@@ -57,14 +61,33 @@ package org.as3commons.bytecode.proxy {
 		function set makeDynamic(value:Boolean):void;
 
 		/**
-		 * Determines the scope of all the methods that will be automatically proxied.
+		 * Optionally an <code>IMethodInvocationInterceptor</code> implementing <code>Class</code> which will be
+		 * instantiated and injected into the proxy instance when the <code>interceptorFactory</code> property is null
+		 * and no interceptor has been injected using the <code>ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR</code> event.
 		 */
-		function get proxyMethodScopes():ProxyScope;
+		function get methodInvocationInterceptorClass():Class;
+
+		/**
+		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the methods
+		 * that will be proxied for the specified class.
+		 */
+		function get methods():Array;
+
+		/**
+		 * The <code>Class</code> for which a dynamic proxy class will be generated.
+		 */
+		function get proxiedClass():Class;
+
+		/**
+		 * An <code>Array</code> of namespaces for accessors that need to be proxied.<br/>
+		 * i.e. <code>["http://www.mydomain.com/mynamespace", "http://www.mydomain.com/myothernamespace"]</code>.
+		 */
+		function get proxyAccessorNamespaces():Array;
 
 		/**
 		 * @private
 		 */
-		function set proxyMethodScopes(value:ProxyScope):void;
+		function set proxyAccessorNamespaces(value:Array):void;
 
 		/**
 		 * Determines the scope of all the accessors that will be automatically proxied.
@@ -88,36 +111,14 @@ package org.as3commons.bytecode.proxy {
 		function set proxyMethodNamespaces(value:Array):void;
 
 		/**
-		 * An <code>Array</code> of namespaces for accessors that need to be proxied.<br/>
-		 * i.e. <code>["http://www.mydomain.com/mynamespace", "http://www.mydomain.com/myothernamespace"]</code>.
+		 * Determines the scope of all the methods that will be automatically proxied.
 		 */
-		function get proxyAccessorNamespaces():Array;
+		function get proxyMethodScopes():ProxyScope;
 
 		/**
 		 * @private
 		 */
-		function set proxyAccessorNamespaces(value:Array):void;
-
-		/**
-		 * Marks the specified method and optional namespace for proxying.
-		 * @param methodName The specified method name.
-		 * @param namespace Optionally the custom namespace of the specified method.
-		 */
-		function proxyMethod(methodName:String, namespace:String = null):void;
-
-		/**
-		 * Marks the specified accessor and optional namespace for proxying.
-		 * @param accessorName The specified accessor name.
-		 * @param namespace Optionally the custom namespace of the specified accessor.
-		 */
-		function proxyAccessor(accessorName:String, namespace:String = null):void;
-
-		/**
-		 * Adds the specified interface to the proxy, this automatically adds all the interface's members to
-		 * the proxy instance.
-		 * @param interfaze The specified interface.
-		 */
-		//function introduceInterface(interfaze:Class):void;
+		function set proxyMethodScopes(value:ProxyScope):void;
 
 		/**
 		 * The specified <code>Class</code> will be merged with the generated proxy.
@@ -126,21 +127,24 @@ package org.as3commons.bytecode.proxy {
 		function introduce(clazz:Class):void;
 
 		/**
-		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the methods
-		 * that will be proxied for the specified class.
+		 * Adds the specified interface to the proxy, this automatically adds all the interface's members to
+		 * the proxy instance.
+		 * @param interfaze The specified interface.
 		 */
-		function get methods():Array;
+		function introduceInterface(interfaze:Class):void;
 
 		/**
-		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the accessors
-		 * that will be proxied for the specified class.
+		 * Marks the specified accessor and optional namespace for proxying.
+		 * @param accessorName The specified accessor name.
+		 * @param namespace Optionally the custom namespace of the specified accessor.
 		 */
-		function get accessors():Array;
+		function proxyAccessor(accessorName:String, namespace:String=null):void;
 
 		/**
-		 * An <code>Array</code> of <code>Classes</code> that will be merged with the generated proxy.
+		 * Marks the specified method and optional namespace for proxying.
+		 * @param methodName The specified method name.
+		 * @param namespace Optionally the custom namespace of the specified method.
 		 */
-		function get introductions():Array;
-
+		function proxyMethod(methodName:String, namespace:String=null):void;
 	}
 }
