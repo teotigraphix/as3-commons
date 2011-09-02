@@ -141,6 +141,18 @@ package org.as3commons.bytecode.proxy {
 		function proxyAccessor(accessorName:String, namespace:String=null):void;
 
 		/**
+		 *
+		 * @param accessorName
+		 */
+		function proxyInterfaceAccessor(accessorName:String):void;
+
+		/**
+		 *
+		 * @param methodName
+		 */
+		function proxyInterfaceMethod(methodName:String):void;
+
+		/**
 		 * Marks the specified method and optional namespace for proxying.
 		 * @param methodName The specified method name.
 		 * @param namespace Optionally the custom namespace of the specified method.

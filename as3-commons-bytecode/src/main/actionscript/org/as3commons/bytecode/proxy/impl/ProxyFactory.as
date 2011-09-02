@@ -606,7 +606,7 @@ package org.as3commons.bytecode.proxy.impl {
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
 			for each (var byteCodeAccessor:ByteCodeAccessor in type.accessors) {
-				classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI);
+				classProxyInfo.proxyInterfaceAccessor(byteCodeAccessor.name);
 			}
 			LOGGER.debug("ClassInfoProxy for class {0}, added interface accessors of interface {1}", [classProxyInfo.proxiedClass, type.fullName]);
 		}
@@ -661,7 +661,7 @@ package org.as3commons.bytecode.proxy.impl {
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
 			for each (var byteCodeMethod:ByteCodeMethod in type.methods) {
-				classProxyInfo.proxyMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI);
+				classProxyInfo.proxyInterfaceMethod(byteCodeMethod.name);
 			}
 			LOGGER.debug("ClassInfoProxy for class {0}, added interface methods of interface {1}", [classProxyInfo.proxiedClass, type.fullName]);
 		}
