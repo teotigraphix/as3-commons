@@ -35,14 +35,15 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		private var _accessors:Array;
+		private var _interfaceAccessors:Array;
 		private var _interceptorFactory:IMethodInvocationInterceptorFactory;
 		private var _introducedInterfaces:Array;
 		private var _introductions:Array;
 		private var _makeDynamic:Boolean = false;
 		private var _methodInvocationInterceptorClass:Class;
 		private var _methods:Array;
+		private var _interfaceMethods:Array;
 		private var _onlyProxyConstructor:Boolean = false;
-
 		private var _proxiedClass:Class;
 		private var _proxyAccessorNamespaces:Array;
 		private var _proxyAccessorScopes:ProxyScope;
@@ -221,11 +222,21 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxiedClass = proxiedClass;
 			_methodInvocationInterceptorClass = methodInvocationInterceptorClass;
 			_methods = [];
+			_interfaceMethods = [];
 			_accessors = [];
+			_interfaceAccessors = [];
 			_introductions = [];
 			_introducedInterfaces = [];
 			_proxyAccessorScopes = ProxyScope.ALL;
 			_proxyMethodScopes = ProxyScope.ALL;
+		}
+
+		public function proxyInterfaceAccessor(accessorName:String):void {
+			_interfaceAccessors[_interfaceAccessors.length] = accessorName;
+		}
+
+		public function proxyInterfaceMethod(methodName:String):void {
+			_interfaceMethods[_interfaceMethods.length] = methodName;
 		}
 	}
 }
