@@ -20,6 +20,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
+
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.NamespaceSet;
@@ -59,6 +60,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.MetadataContainer;
+	import org.as3commons.reflect.Type;
 
 	/**
 	 * @inheritDoc
@@ -131,6 +133,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private static const INTERCEPTOR_PROPERTYNAME:String = "methodInvocationInterceptor";
 		private static const IS_FINAL_FIELD_NAME:String = 'isFinal';
 		private static const IS_STATIC_FIELD_NAME:String = 'isStatic';
+		private static const LOGGER:ILogger = getLogger(ProxyFactory);
 		private static const MULTINAME_NAME:String = "intercept";
 		private static const NAMESPACE_URI_FIELD_NAME:String = 'namespaceURI';
 		private static const NS_FILENAME_SUFFIX:String = '.as$666';
@@ -138,7 +141,6 @@ package org.as3commons.bytecode.proxy.impl {
 		private static const ORGAS3COMMONSBYTECODE:String = "org.as3commons.bytecode";
 		private static const PROXY_PACKAGE_NAME_PREFIX:String = "as3commons_bytecode_generated_";
 		private static const VISIBILITY_FIELD_NAME:String = 'visibility';
-		private static const LOGGER:ILogger = getLogger(ProxyFactory);
 
 		/**
 		 * Translates the specified <code>member.visibility</code> value to a valid <code>MemberVisibility</code> enum instance.
@@ -180,8 +182,6 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _constructorProxyFactory:IConstructorProxyFactory;
 		private var _domains:Dictionary;
 		private var _generatedMultinames:Dictionary;
-
-		//private variables
 		private var _isGenerating:Boolean = false;
 		private var _methodProxyFactory:IMethodProxyFactory;
 		private var _proxyClassLookup:Dictionary;
@@ -408,6 +408,13 @@ package org.as3commons.bytecode.proxy.impl {
 				reflectMethods(classProxyInfo, type, applicationDomain);
 			}
 
+			for each (var interfaze:Class in classProxyInfo.introducedInterfaces) {
+				var interfaceType:ByteCodeType = ByteCodeType.forClass(interfaze, applicationDomain);
+				classBuilder.implementInterface(interfaceType.fullName);
+				reflectInterfaceAccessors(classProxyInfo, interfaceType, applicationDomain);
+				reflectInterfaceMethods(classProxyInfo, interfaceType, applicationDomain);
+			}
+
 			var memberInfo:MemberInfo;
 			var event:ProxyFactoryBuildEvent;
 			for each (memberInfo in classProxyInfo.methods) {
@@ -594,6 +601,16 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
+		protected function reflectInterfaceAccessors(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
+			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			for each (var byteCodeAccessor:ByteCodeAccessor in type.accessors) {
+				classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI);
+			}
+			LOGGER.debug("ClassInfoProxy for class {0}, added interface accessors of interface {1}", [classProxyInfo.proxiedClass, type.fullName]);
+		}
+
 		/**
 		 * Uses the specified <code>ByteCodeType</code> to populate the specified <code>ClassProxyInfo</code> instance with all the public members
 		 * of the class specified by the <code>ClassProxyInfo.proxiedClass</code> property.
@@ -610,6 +627,12 @@ package org.as3commons.bytecode.proxy.impl {
 			LOGGER.debug("ClassInfoProxy for class {0} populated based on reflection", [classProxyInfo.proxiedClass]);
 		}
 
+		/**
+		 *
+		 * @param classProxyInfo
+		 * @param type
+		 * @param applicationDomain
+		 */
 		protected function reflectMethods(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
 			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
@@ -627,6 +650,26 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
+		/**
+		 *
+		 * @param classProxyInfo
+		 * @param type
+		 * @param applicationDomain
+		 */
+		protected function reflectInterfaceMethods(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
+			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+			Assert.notNull(type, "type argument must not be null");
+			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			for each (var byteCodeMethod:ByteCodeMethod in type.methods) {
+				classProxyInfo.proxyMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI);
+			}
+			LOGGER.debug("ClassInfoProxy for class {0}, added interface methods of interface {1}", [classProxyInfo.proxiedClass, type.fullName]);
+		}
+
+		/**
+		 *
+		 * @param accessorProxyFactory
+		 */
 		protected function removeAccessorProxyFactoryListeners(accessorProxyFactory:IAccessorProxyFactory):void {
 			if (accessorProxyFactory != null) {
 				accessorProxyFactory.removeEventListener(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, redispatchBuilderEvent);
@@ -636,6 +679,10 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
+		/**
+		 *
+		 * @param constructorProxyFactory
+		 */
 		protected function removeConstructorProxyFactoryListeners(constructorProxyFactory:IConstructorProxyFactory):void {
 			if (constructorProxyFactory != null) {
 				constructorProxyFactory.removeEventListener(ProxyFactoryBuildEvent.BEFORE_CONSTRUCTOR_BODY_BUILD, redispatchBuilderEvent);
@@ -643,6 +690,10 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
+		/**
+		 *
+		 * @param methodProxyFactory
+		 */
 		protected function removeMethodProxyFactoryListeners(methodProxyFactory:IMethodProxyFactory):void {
 			if (methodProxyFactory != null) {
 				methodProxyFactory.removeEventListener(ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD, redispatchBuilderEvent);
