@@ -317,19 +317,18 @@ package org.as3commons.bytecode.abc.enum {
 			}
 		}
 
-		public static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean = false):void {
-			var targetPos:int = (positions[jumpOpcode]) + int(jumpOpcode.parameters[0]);
-			var targetOpPos:int = positions[targetOpcode];
-			if (targetPos != targetOpPos) {
-				var operandPos:int = (positions[jumpOpcode]);
-				var baseLocation:int = 0;
-				baseLocation = (isLookupSwitch) ? jumpOpcode.baseLocation : jumpOpcode.endLocation;
-				var newJump:int = (targetOpcode.opcode !== Opcode.lookupswitch) ? (targetOpcode.baseLocation - baseLocation) : (targetOpcode.endLocation - baseLocation);
+		public static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean=false):void {
+			var baseLocation:int = (isLookupSwitch) ? jumpOpcode.baseLocation : jumpOpcode.endLocation;
+			var targetPos:int = baseLocation + int(jumpOpcode.parameters[0]);
+			//var targetOpPos:int = positions[targetOpcode];
+			//if (targetPos != targetOpPos) {
+			if (targetPos != targetOpcode.baseLocation) {
+				var operandPos:int = jumpOpcode.baseLocation;
+				var newJump:int = (targetOpcode.baseLocation - baseLocation);
 				serializedOpcodes.position = operandPos + 1;
 				AbcSpec.writeS24(newJump, serializedOpcodes);
 			}
 		}
-
 
 		public static function serializeOpcodeArguments(op:Op, abcFile:AbcFile, methodBody:MethodBody, serializedOpcodes:ByteArray):void {
 			var serializedArgumentCount:int = 0;
@@ -624,7 +623,7 @@ package org.as3commons.bytecode.abc.enum {
 			return StringUtils.substitute("[Opcode(value={0},name={1})]", _value, _opcodeName);
 		}
 
-		public function op(opArguments:Array = null):Op {
+		public function op(opArguments:Array=null):Op {
 			if ((this._argumentTypes != null) && (this._argumentTypes.length > 0)) {
 				return new Op(this, opArguments);
 			} else {
