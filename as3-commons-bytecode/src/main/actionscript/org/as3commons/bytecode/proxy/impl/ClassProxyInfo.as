@@ -40,7 +40,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _interceptorFactory:IMethodInvocationInterceptorFactory;
 		private var _interfaceAccessors:Array;
 		private var _interfaceMethods:Array;
-		private var _introducedInterfaces:Array;
+		private var _implementedInterfaces:Array;
 		private var _introductions:Array;
 		private var _makeDynamic:Boolean = false;
 		private var _methodInvocationInterceptorClass:Class;
@@ -91,7 +91,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @inheritDoc
 		 */
 		public function get implementedInterfaces():Array {
-			return _introducedInterfaces;
+			return _implementedInterfaces;
 		}
 
 		/**
@@ -209,8 +209,11 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @inheritDoc
 		 */
 		public function implementInterface(interfaze:Class):void {
-			if (_introducedInterfaces.indexOf(interfaze) < 0) {
-				_introducedInterfaces[_introducedInterfaces.length] = interfaze;
+			if (!ClassUtils.isInterface(interfaze)) {
+				throw new IllegalOperationError("The specified class is not an interface");
+			}
+			if (_implementedInterfaces.indexOf(interfaze) < 0) {
+				_implementedInterfaces[_implementedInterfaces.length] = interfaze;
 			}
 		}
 
@@ -250,7 +253,7 @@ package org.as3commons.bytecode.proxy.impl {
 			_accessors = [];
 			_interfaceAccessors = [];
 			_introductions = [];
-			_introducedInterfaces = [];
+			_implementedInterfaces = [];
 			_proxyAccessorScopes = ProxyScope.ALL;
 			_proxyMethodScopes = ProxyScope.ALL;
 		}
