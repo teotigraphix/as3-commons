@@ -32,7 +32,7 @@ package org.as3commons.bytecode.abc {
 		private var _parameters:Array;
 		private var _opcode:Opcode;
 
-		public function Op(opcode:Opcode, parameters:Array = null) {
+		public function Op(opcode:Opcode, parameters:Array=null) {
 			super();
 			initOp(opcode, parameters);
 		}
@@ -105,7 +105,7 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function toString():String {
-			return baseLocation + ":" + _opcode.opcodeName + "\t\t" + ((_parameters.length != 0) ? "[" + _parameters.join(", ") + "]:" : ":") + endLocation;
+			return baseLocation + ":" + _opcode.opcodeName + "\t\t" + ((_parameters.length > 0) ? "[" + _parameters.join(", ") + "]:" : ":") + endLocation;
 		}
 	}
 }
