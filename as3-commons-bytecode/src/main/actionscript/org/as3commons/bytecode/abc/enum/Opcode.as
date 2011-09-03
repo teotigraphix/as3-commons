@@ -234,7 +234,10 @@ package org.as3commons.bytecode.abc.enum {
 		public static const sxi8:Opcode = new Opcode(0x51, "sxi8");
 		public static const sxi16:Opcode = new Opcode(0x52, "sxi16");
 
+		public static const END_OF_BODY:Opcode = new Opcode(int.MIN_VALUE, "endOfBody");
+
 		private static const UNKNOWN_OPCODE_ARGUMENTTYPE:String = "Unknown Opcode argument type. {0}";
+
 
 		private static var _jumpLookup:Dictionary;
 		public static const jumpOpcodes:Dictionary = new Dictionary();
@@ -469,12 +472,12 @@ package org.as3commons.bytecode.abc.enum {
 				throw e;
 			}
 
-			resolveJumpTargets(methodBody, opcodePositions, opcodeEndPositions);
+			resolveJumpTargets(methodBody, opcodePositions, opcodeEndPositions, opcodeByteCodeLength);
 			methodBody.opcodeBaseLocations = opcodePositions;
 			return ops;
 		}
 
-		public static function resolveJumpTargets(methodBody:MethodBody, opcodeStartPositions:Dictionary, opcodeEndPositions:Dictionary):void {
+		public static function resolveJumpTargets(methodBody:MethodBody, opcodeStartPositions:Dictionary, opcodeEndPositions:Dictionary, positionAtEndOfMethodBody:int):void {
 			var pos:int;
 			var targetPos:int;
 			var target:Op;
@@ -483,6 +486,10 @@ package org.as3commons.bytecode.abc.enum {
 					pos = int(jmpTarget.jumpOpcode.parameters[0]);
 					targetPos = jmpTarget.jumpOpcode.endLocation + pos;
 					target = opcodeStartPositions[targetPos];
+					if (target == null) {
+						target = Opcode.END_OF_BODY.op();
+						target.baseLocation = positionAtEndOfMethodBody;
+					}
 					jmpTarget.targetOpcode = target;
 				} else {
 					var arr:Array = jmpTarget.jumpOpcode.parameters[2] as Array;
