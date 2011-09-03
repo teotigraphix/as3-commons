@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy.impl {
+	import org.as3commons.bytecode.reflect.ByteCodeType;
 
 	/**
 	 *
@@ -23,13 +24,24 @@ package org.as3commons.bytecode.proxy.impl {
 
 		private var _qName:QName;
 
+		private var _declaringType:ByteCodeType;
+
+		public function get declaringType():ByteCodeType {
+			return _declaringType;
+		}
+
+		public function set declaringType(value:ByteCodeType):void {
+			_declaringType = value;
+		}
+
 		/**
 		 * Creates a new <code>MemberInfo</code> instance.
 		 * @param name
 		 * @param namespace
 		 */
-		public function MemberInfo(name:String, namespace:String = "") {
+		public function MemberInfo(name:String, namespace:String=null, type:ByteCodeType=null) {
 			super();
+			_declaringType = type;
 			_qName = new QName(namespace, name);
 		}
 

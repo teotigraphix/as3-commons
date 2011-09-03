@@ -38,11 +38,11 @@ package org.as3commons.bytecode.proxy.impl {
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name = "beforeGetterBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name="beforeGetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	/**
 	 * @inheritDoc
 	 */
-	[Event(name = "beforeSetterBodyBuild", type = "org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
+	[Event(name="beforeSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	public class AccessorProxyFactory extends AbstractMethodBodyFactory implements IAccessorProxyFactory {
 
 		public function AccessorProxyFactory() {
@@ -60,7 +60,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @return The <code>IAccessorBuilder</code> representing the generated accessor.
 		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied accessor is marked as final.
 		 */
-		public function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName, failOnFinal:Boolean = true):void {
+		public function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName, failOnFinal:Boolean=true):void {
 			Assert.notNull(classBuilder, "classBuilder argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(memberInfo, "memberInfo argument must not be null");

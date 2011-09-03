@@ -15,9 +15,11 @@
 */
 package org.as3commons.bytecode.proxy.impl {
 	import flash.errors.IllegalOperationError;
+
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptorFactory;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
 	import org.as3commons.bytecode.proxy.ProxyScope;
+	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 
@@ -35,14 +37,14 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		private var _accessors:Array;
-		private var _interfaceAccessors:Array;
 		private var _interceptorFactory:IMethodInvocationInterceptorFactory;
+		private var _interfaceAccessors:Array;
+		private var _interfaceMethods:Array;
 		private var _introducedInterfaces:Array;
 		private var _introductions:Array;
 		private var _makeDynamic:Boolean = false;
 		private var _methodInvocationInterceptorClass:Class;
 		private var _methods:Array;
-		private var _interfaceMethods:Array;
 		private var _onlyProxyConstructor:Boolean = false;
 		private var _proxiedClass:Class;
 		private var _proxyAccessorNamespaces:Array;
@@ -74,7 +76,21 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get introducedInterfaces():Array {
+		public function get interfaceAccessors():Array {
+			return _interfaceAccessors;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get interfaceMethods():Array {
+			return _interfaceMethods;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get implementedInterfaces():Array {
 			return _introducedInterfaces;
 		}
 
@@ -192,7 +208,7 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function introduceInterface(interfaze:Class):void {
+		public function implementInterface(interfaze:Class):void {
 			if (_introducedInterfaces.indexOf(interfaze) < 0) {
 				_introducedInterfaces[_introducedInterfaces.length] = interfaze;
 			}
@@ -203,6 +219,14 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		public function proxyAccessor(accessorName:String, namespace:String=null):void {
 			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace);
+		}
+
+		public function proxyInterfaceAccessor(accessorName:String, declaringType:ByteCodeType):void {
+			_interfaceAccessors[_interfaceAccessors.length] = new MemberInfo(accessorName, null, declaringType);
+		}
+
+		public function proxyInterfaceMethod(methodName:String, declaringType:ByteCodeType):void {
+			_interfaceMethods[_interfaceMethods.length] = new MemberInfo(methodName, null, declaringType);
 		}
 
 		/**
@@ -229,14 +253,6 @@ package org.as3commons.bytecode.proxy.impl {
 			_introducedInterfaces = [];
 			_proxyAccessorScopes = ProxyScope.ALL;
 			_proxyMethodScopes = ProxyScope.ALL;
-		}
-
-		public function proxyInterfaceAccessor(accessorName:String):void {
-			_interfaceAccessors[_interfaceAccessors.length] = accessorName;
-		}
-
-		public function proxyInterfaceMethod(methodName:String):void {
-			_interfaceMethods[_interfaceMethods.length] = methodName;
 		}
 	}
 }

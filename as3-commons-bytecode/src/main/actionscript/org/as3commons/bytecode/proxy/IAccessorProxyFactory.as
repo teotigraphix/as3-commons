@@ -37,8 +37,9 @@ package org.as3commons.bytecode.proxy {
 		 * @param multiName
 		 * @param bytecodeQname
 		 * @param failOnFinal Determines whether the <code>proxyAccessor()</code> needs to throw an error when an accessor marked as final is being proxied.
+		 * @param isInterfaceAccessor Determines whether the specified accessor belongs to an introduced interface.
 		 */
-		function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName, failOnFinal:Boolean = true):void;
+		function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName, failOnFinal:Boolean=true):void;
 
 	}
 }
