@@ -6,7 +6,7 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-bytecode</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0-RC5-SNAPSHOT</version>
+	<version>1.0-RC5T</version>
 	<name>AS3Commons Bytecode</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>Bytecode parsing and publishing formerly known as Loom. Capable of generating classes at runtime, bytecode based reflection and more.</description>
