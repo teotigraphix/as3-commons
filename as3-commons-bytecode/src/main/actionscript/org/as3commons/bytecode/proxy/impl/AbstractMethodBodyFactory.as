@@ -71,7 +71,9 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		protected function removeProxyPackage(packageName:String):String {
-			Assert.hasText(packageName, "packageName argument must not be empty or null");
+			CONFIG::debug {
+				Assert.hasText(packageName, "packageName argument must not be empty or null");
+			}
 			var parts:Array = packageName.split(MultinameUtil.PERIOD);
 			parts.splice(parts.length - 2, 1)
 			var newPackage:String = parts.join(MultinameUtil.PERIOD);

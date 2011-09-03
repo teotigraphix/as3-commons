@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.proxy.impl {
+	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
@@ -248,7 +249,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		public function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class=null, applicationDomain:ApplicationDomain=null):IClassProxyInfo {
 			methodInvocationInterceptorClass ||= BasicMethodInvocationInterceptor;
-			Assert.state(ClassUtils.isImplementationOf(methodInvocationInterceptorClass, IMethodInvocationInterceptor, applicationDomain) == true, "methodInvocationInterceptorClass argument must be a class that implements IMethodInvocationInterceptor");
+			if (ClassUtils.isImplementationOf(methodInvocationInterceptorClass, IMethodInvocationInterceptor, applicationDomain) == false) {
+				throw new IllegalOperationError("methodInvocationInterceptorClass argument must be a class that implements IMethodInvocationInterceptor");
+			}
 			applicationDomain ||= ApplicationDomain.currentDomain;
 			var infos:Array = _domains[applicationDomain] ||= [];
 			var info:IClassProxyInfo = new ClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
@@ -331,7 +334,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @return The specified <code>QualifiedName</code>.
 		 */
 		protected function addInterceptorProperty(classBuilder:IClassBuilder):QualifiedName {
-			Assert.notNull(classBuilder, "classBuilder argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(classBuilder, "classBuilder argument must not be null");
+			}
 			var className:String = ClassUtils.getFullyQualifiedName(IMethodInvocationInterceptor);
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty(INTERCEPTOR_PROPERTYNAME, className);
 			propertyBuilder.namespaceURI = as3commons_bytecode_proxy;
@@ -507,7 +512,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @return <code>True</code> if the specified <code>NamespaceKind</code> can be proxied.
 		 */
 		protected function isEligibleForProxy(member:MetadataContainer, scope:ProxyScope, namespaces:Array):Boolean {
-			Assert.notNull(member, "member argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(member, "member argument must not be null");
+			}
 			if ((member[IS_STATIC_FIELD_NAME] == true) || (member[IS_FINAL_FIELD_NAME] == true)) {
 				return false;
 			}
@@ -582,9 +589,11 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		protected function reflectAccessors(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
-			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
-			Assert.notNull(type, "type argument must not be null");
-			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+				Assert.notNull(type, "type argument must not be null");
+				Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			}
 			for each (var accessor:Accessor in type.accessors) {
 				var byteCodeAccessor:ByteCodeAccessor = accessor as ByteCodeAccessor;
 				if (byteCodeAccessor != null) {
@@ -600,9 +609,11 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		protected function reflectInterfaceAccessors(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
-			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
-			Assert.notNull(type, "type argument must not be null");
-			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+				Assert.notNull(type, "type argument must not be null");
+				Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			}
 			for each (var byteCodeAccessor:ByteCodeAccessor in type.accessors) {
 				if ((byteCodeAccessor.declaringType.name != null) && (byteCodeAccessor.declaringType.name != OBJECT_DECLARINGTYPE_NAME)) {
 					classProxyInfo.proxyInterfaceAccessor(byteCodeAccessor.name, type);
@@ -619,9 +630,11 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param applicationDomain The <code>ApplicationDOmain</code> that the <code>ClassProxyInfo.proxiedClass</code> belongs to.
 		 */
 		protected function reflectMembers(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
-			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
-			Assert.notNull(type, "type argument must not be null");
-			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+				Assert.notNull(type, "type argument must not be null");
+				Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			}
 			reflectMethods(classProxyInfo, type, applicationDomain);
 			reflectAccessors(classProxyInfo, type, applicationDomain);
 			LOGGER.debug("ClassInfoProxy for class {0} populated based on reflection", [classProxyInfo.proxiedClass]);
@@ -634,9 +647,11 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param applicationDomain
 		 */
 		protected function reflectMethods(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
-			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
-			Assert.notNull(type, "type argument must not be null");
-			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+				Assert.notNull(type, "type argument must not be null");
+				Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			}
 			for each (var byteCodeMethod:ByteCodeMethod in type.methods) {
 				if ((byteCodeMethod.declaringType.name == null) || (byteCodeMethod.declaringType.name == OBJECT_DECLARINGTYPE_NAME)) {
 					continue;
@@ -657,9 +672,11 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param applicationDomain
 		 */
 		protected function reflectInterfaceMethods(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
-			Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
-			Assert.notNull(type, "type argument must not be null");
-			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+				Assert.notNull(type, "type argument must not be null");
+				Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			}
 			for each (var byteCodeMethod:ByteCodeMethod in type.methods) {
 				if ((byteCodeMethod.declaringType.name != null) && (byteCodeMethod.declaringType.name != OBJECT_DECLARINGTYPE_NAME)) {
 					classProxyInfo.proxyInterfaceMethod(byteCodeMethod.name, type);

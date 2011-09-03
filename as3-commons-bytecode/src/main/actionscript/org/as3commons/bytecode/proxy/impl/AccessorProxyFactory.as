@@ -61,9 +61,11 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied accessor is marked as final.
 		 */
 		public function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName, failOnFinal:Boolean=true):void {
-			Assert.notNull(classBuilder, "classBuilder argument must not be null");
-			Assert.notNull(type, "type argument must not be null");
-			Assert.notNull(memberInfo, "memberInfo argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(classBuilder, "classBuilder argument must not be null");
+				Assert.notNull(type, "type argument must not be null");
+				Assert.notNull(memberInfo, "memberInfo argument must not be null");
+			}
 			var accessor:ByteCodeAccessor = type.getField(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeAccessor;
 			if (accessor == null) {
 				throw new ProxyBuildError(ProxyBuildError.ACCESSOR_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
@@ -99,7 +101,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @return The new <code>IMethodBuilder</code> instance.
 		 */
 		protected function createMethod(accessorBuilder:IAccessorBuilder):IMethodBuilder {
-			Assert.notNull(accessorBuilder, "accessorBuilder argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(accessorBuilder, "accessorBuilder argument must not be null");
+			}
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.name = accessorBuilder.name;
 			mb.namespaceURI = accessorBuilder.namespaceURI;
@@ -157,7 +161,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 */
 		protected function addGetterBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName, classBuilder:IClassBuilder, isInterface:Boolean):void {
-			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			}
 			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, methodBuilder, classBuilder);
 			dispatchEvent(event);
 			methodBuilder = event.methodBuilder;
@@ -221,7 +227,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 */
 		protected function addSetterBody(methodBuilder:IMethodBuilder, accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName, classBuilder:IClassBuilder, isInterface:Boolean):void {
-			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			}
 			var event:ProxyFactoryBuildEvent = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_SETTER_BODY_BUILD, methodBuilder, classBuilder);
 			dispatchEvent(event);
 			methodBuilder = event.methodBuilder;
@@ -231,8 +239,10 @@ package org.as3commons.bytecode.proxy.impl {
 			if (methodBuilder.opcodes.length > 0) {
 				return;
 			}
-			Assert.notNull(multiName, "multiName argument must not be null");
-			Assert.notNull(bytecodeQname, "bytecodeQname argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(multiName, "multiName argument must not be null");
+				Assert.notNull(bytecodeQname, "bytecodeQname argument must not be null");
+			}
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
 			var argLen:int = 1;
 			var superSetter:QualifiedName = (!isInterface) ? createMethodQName(methodBuilder) : null;

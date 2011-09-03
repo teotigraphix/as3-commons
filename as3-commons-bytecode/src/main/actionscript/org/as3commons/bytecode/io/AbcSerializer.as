@@ -489,64 +489,28 @@ package org.as3commons.bytecode.io {
 			// are present
 
 			// Integers
-			var integers:Array = pool.integerPool.slice(1, pool.integerPool.length);
-			if (integers.length != 0) {
-				AbcSpec.writeU30(integers.length + 1, outputStream);
-				for each (var integer:int in integers) {
-					AbcSpec.writeU32(integer, outputStream);
-				}
-			} else {
-				AbcSpec.writeU30(0, outputStream);
-			}
+			serializeIntegers(pool, outputStream);
 
 			// uints
-			var uints:Array = pool.uintPool.slice(1, pool.uintPool.length);
-			if (uints.length != 0) {
-				AbcSpec.writeU30(uints.length + 1, outputStream);
-				for each (var uinteger:int in uints) {
-					AbcSpec.writeU32(uinteger, outputStream);
-				}
-			} else {
-				AbcSpec.writeU30(0, outputStream);
-			}
+			serializeUIntegers(pool, outputStream);
 
 			// doubles
-			var doubles:Array = pool.doublePool.slice(1, pool.doublePool.length);
-			if (doubles.length != 0) {
-				AbcSpec.writeU30(doubles.length + 1, outputStream);
-				for each (var double:Number in doubles) {
-					AbcSpec.writeD64(double, outputStream);
-				}
-			} else {
-				AbcSpec.writeU30(0, outputStream);
-			}
+			serializeDoubles(pool, outputStream);
 
 			// strings
-			var strings:Array = pool.stringPool.slice(1, pool.stringPool.length);
-			AbcSpec.writeU30((strings.length + 1), outputStream);
-			for each (var string:String in strings) {
-				AbcSpec.writeStringInfo(string, outputStream);
-			}
+			serializeStrings(pool, outputStream);
 
 			// namespaces
-			var namespaces:Array = pool.namespacePool.slice(1, pool.namespacePool.length);
-			AbcSpec.writeU30((namespaces.length + 1), outputStream);
-			for each (var namespaceInstance:LNamespace in namespaces) {
-				AbcSpec.writeU8(namespaceInstance.kind.byteValue, outputStream);
-				AbcSpec.writeU30(pool.addString(namespaceInstance.name), outputStream);
-			}
+			serializeNamespaces(pool, outputStream);
 
 			// namespace sets
-			var namespaceSets:Array = pool.namespaceSetPool.slice(1, pool.namespaceSetPool.length);
-			AbcSpec.writeU30((namespaceSets.length + 1), outputStream);
-			for each (var namespaceSet:NamespaceSet in namespaceSets) { // ns_set_info
-				AbcSpec.writeU30(namespaceSet.namespaces.length, outputStream); // u30 count
-				for each (var nameSpace:LNamespace in namespaceSet.namespaces) {
-					AbcSpec.writeU30(pool.addNamespace(nameSpace), outputStream); // u30 ns[count]
-				}
-			}
+			serializeNamespaceSets(pool, outputStream);
 
 			// multinames
+			serializeMultinames(pool, outputStream);
+		}
+
+		public function serializeMultinames(pool:IConstantPool, outputStream:ByteArray):void {
 			// multiname_kind_QName 
 			// { 
 			//  u30 ns - namespace pool
@@ -638,6 +602,73 @@ package org.as3commons.bytecode.io {
 				}
 			}
 		}
+
+
+		public function serializeNamespaceSets(pool:IConstantPool, outputStream:ByteArray):void {
+			var namespaceSets:Array = pool.namespaceSetPool.slice(1, pool.namespaceSetPool.length);
+			AbcSpec.writeU30((namespaceSets.length + 1), outputStream);
+			for each (var namespaceSet:NamespaceSet in namespaceSets) { // ns_set_info
+				AbcSpec.writeU30(namespaceSet.namespaces.length, outputStream); // u30 count
+				for each (var nameSpace:LNamespace in namespaceSet.namespaces) {
+					AbcSpec.writeU30(pool.addNamespace(nameSpace), outputStream); // u30 ns[count]
+				}
+			}
+		}
+
+		public function serializeNamespaces(pool:IConstantPool, outputStream:ByteArray):void {
+			var namespaces:Array = pool.namespacePool.slice(1, pool.namespacePool.length);
+			AbcSpec.writeU30((namespaces.length + 1), outputStream);
+			for each (var namespaceInstance:LNamespace in namespaces) {
+				AbcSpec.writeU8(namespaceInstance.kind.byteValue, outputStream);
+				AbcSpec.writeU30(pool.addString(namespaceInstance.name), outputStream);
+			}
+		}
+
+		public function serializeStrings(pool:IConstantPool, outputStream:ByteArray):void {
+			var strings:Array = pool.stringPool.slice(1, pool.stringPool.length);
+			AbcSpec.writeU30((strings.length + 1), outputStream);
+			for each (var string:String in strings) {
+				AbcSpec.writeStringInfo(string, outputStream);
+			}
+		}
+
+		public function serializeDoubles(pool:IConstantPool, outputStream:ByteArray):void {
+			var doubles:Array = pool.doublePool.slice(1, pool.doublePool.length);
+			if (doubles.length != 0) {
+				AbcSpec.writeU30(doubles.length + 1, outputStream);
+				for each (var double:Number in doubles) {
+					AbcSpec.writeD64(double, outputStream);
+				}
+			} else {
+				AbcSpec.writeU30(0, outputStream);
+			}
+		}
+
+		public function serializeUIntegers(pool:IConstantPool, outputStream:ByteArray):void {
+			var uints:Array = pool.uintPool.slice(1, pool.uintPool.length);
+			if (uints.length != 0) {
+				AbcSpec.writeU30(uints.length + 1, outputStream);
+				for each (var uinteger:int in uints) {
+					AbcSpec.writeU32(uinteger, outputStream);
+				}
+			} else {
+				AbcSpec.writeU30(0, outputStream);
+			}
+		}
+
+
+		public function serializeIntegers(pool:IConstantPool, outputStream:ByteArray):void {
+			var integers:Array = pool.integerPool.slice(1, pool.integerPool.length);
+			if (integers.length != 0) {
+				AbcSpec.writeU30(integers.length + 1, outputStream);
+				for each (var integer:int in integers) {
+					AbcSpec.writeU32(integer, outputStream);
+				}
+			} else {
+				AbcSpec.writeU30(0, outputStream);
+			}
+		}
+
 
 		private function createBuffer():ByteArray {
 			return AbcSpec.newByteArray();
