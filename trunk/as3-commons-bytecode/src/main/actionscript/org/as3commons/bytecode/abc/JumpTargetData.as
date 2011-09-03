@@ -46,18 +46,18 @@ package org.as3commons.bytecode.abc {
 			_targetOpcode = op;
 		}
 
-		public function JumpTargetData(jumpOp:Op = null, targetOp:Op = null) {
+		public function JumpTargetData(jumpOp:Op=null, targetOp:Op=null) {
 			super();
 			_jumpOpcode = jumpOp;
 			_targetOpcode = targetOp;
 		}
 
 		public function addTarget(targetOp:Op):void {
-			if (_extraOpcodes == null) {
-				_extraOpcodes = [];
-			}
 			if (_targetOpcode != null) {
+				_extraOpcodes ||= [];
 				_extraOpcodes[_extraOpcodes.length] = targetOp;
+			} else {
+				_targetOpcode = targetOp;
 			}
 		}
 

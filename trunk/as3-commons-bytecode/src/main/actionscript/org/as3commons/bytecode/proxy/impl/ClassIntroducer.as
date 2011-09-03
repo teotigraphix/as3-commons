@@ -65,8 +65,10 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		protected function initClassIntroducer(constructorProxyFactory:IConstructorProxyFactory, methodProxyFactory:IMethodProxyFactory, accessorProxyFactory:IAccessorProxyFactory):void {
-			Assert.notNull(methodProxyFactory, "methodProxyFactory argument must not be null");
-			Assert.notNull(accessorProxyFactory, "accessorProxyFactory argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(methodProxyFactory, "methodProxyFactory argument must not be null");
+				Assert.notNull(accessorProxyFactory, "accessorProxyFactory argument must not be null");
+			}
 			_methodProxyFactory = methodProxyFactory;
 			_accessorProxyFactory = accessorProxyFactory;
 			_accessorProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, beforeGetterBodyBuildHandler, false, 0, true);

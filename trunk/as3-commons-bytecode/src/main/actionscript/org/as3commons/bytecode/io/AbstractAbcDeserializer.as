@@ -53,7 +53,7 @@ package org.as3commons.bytecode.io {
 		protected var _byteStream:ByteArray;
 		protected var extractionMethods:Dictionary;
 
-		public function AbstractAbcDeserializer(byteStream:ByteArray = null) {
+		public function AbstractAbcDeserializer(byteStream:ByteArray=null) {
 			super();
 			initAbstractAbcDeserializer(byteStream);
 		}
@@ -84,7 +84,7 @@ package org.as3commons.bytecode.io {
 			_constantPoolEndPosition = value;
 		}
 
-		public function deserialize(positionInByteArrayToReadFrom:int = 0):AbcFile {
+		public function deserialize(positionInByteArrayToReadFrom:int=0):AbcFile {
 			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
 		}
 
@@ -112,7 +112,7 @@ package org.as3commons.bytecode.io {
 			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
 		}
 
-		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false, className:String = ""):Array {
+		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
 			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
 		}
 
@@ -263,10 +263,14 @@ package org.as3commons.bytecode.io {
 		public function extract(byteStream:ByteArray, pool:Array, extractionMethod:Function):void {
 			var itemCount:int = readU30();
 			for (var itemIndex:uint = 1; itemIndex < itemCount; ++itemIndex) {
-				var result:* = extractionMethod.apply(this);
-				pool[pool.length] = result;
-				CONFIG::debug {
-					Assert.notNull(pool[pool.length - 1]);
+				try {
+					var result:* = extractionMethod.apply(this);
+					pool[pool.length] = result;
+					CONFIG::debug {
+						Assert.notNull(pool[pool.length - 1]);
+					}
+				} catch (e:Error) {
+					throw new Error("I choked at position: " + itemIndex);
 				}
 			}
 			assertExtraction(itemCount, pool, "");

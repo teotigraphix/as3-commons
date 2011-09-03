@@ -147,7 +147,12 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function readStringInfo(bytes:ByteArray):String {
-			return bytes.readUTFBytes(readU32(bytes));
+			var len:uint = readU32(bytes);
+			var result:String = bytes.readUTFBytes(len);
+			if (len != result.length) {
+				result = "";
+			}
+			return result;
 		}
 
 		public static function skipStringInfo(bytes:ByteArray):void {

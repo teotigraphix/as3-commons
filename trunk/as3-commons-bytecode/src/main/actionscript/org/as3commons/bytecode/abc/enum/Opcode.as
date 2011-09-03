@@ -306,18 +306,31 @@ package org.as3commons.bytecode.abc.enum {
 
 		public static function resolveBackPatches(serializedOpcodes:ByteArray, backPatches:Array, positions:Dictionary):void {
 			for each (var jumpData:JumpTargetData in backPatches) {
+				var changed:Boolean = false;
 				if (jumpData.targetOpcode != null) {
-					resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes, (jumpData.extraOpcodes != null));
+					if (resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes, (jumpData.extraOpcodes != null)) == true) {
+						changed = true;
+					}
 				}
 				if (jumpData.extraOpcodes != null) {
 					for each (var targetOpcode:Op in jumpData.extraOpcodes) {
-						resolveBackpatch(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes, true);
+						if (resolveBackpatch(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes, true)) {
+							changed = true;
+						}
+					}
+				}
+				if ((changed) && (jumpData.jumpOpcode.opcode === Opcode.lookupswitch)) {
+					var params:Array = jumpData.jumpOpcode.parameters[2] as Array;
+					var targets:Array = [jumpData.targetOpcode].concat(jumpData.extraOpcodes);
+					for (var i:int = 0; i < params.length; ++i) {
+						var newTargetLocation:int = Op(targets[i]).baseLocation - jumpData.jumpOpcode.baseLocation;
+						params[i] = newTargetLocation;
 					}
 				}
 			}
 		}
 
-		public static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean=false):void {
+		public static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean=false):Boolean {
 			var baseLocation:int = (isLookupSwitch) ? jumpOpcode.baseLocation : jumpOpcode.endLocation;
 			var targetPos:int = baseLocation + int(jumpOpcode.parameters[0]);
 			//var targetOpPos:int = positions[targetOpcode];
@@ -327,7 +340,9 @@ package org.as3commons.bytecode.abc.enum {
 				var newJump:int = (targetOpcode.baseLocation - baseLocation);
 				serializedOpcodes.position = operandPos + 1;
 				AbcSpec.writeS24(newJump, serializedOpcodes);
+				return true;
 			}
+			return false;
 		}
 
 		public static function serializeOpcodeArguments(op:Op, abcFile:AbcFile, methodBody:MethodBody, serializedOpcodes:ByteArray):void {

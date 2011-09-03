@@ -245,7 +245,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param methodInvocationInterceptorClass
 		 */
 		protected function initClassProxyInfo(proxiedClass:Class, methodInvocationInterceptorClass:Class):void {
-			Assert.notNull(proxiedClass, "proxiedClass argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(proxiedClass, "proxiedClass argument must not be null");
+			}
 			_proxiedClass = proxiedClass;
 			_methodInvocationInterceptorClass = methodInvocationInterceptorClass;
 			_methods = [];

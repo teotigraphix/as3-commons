@@ -46,9 +46,11 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied method is marked as final.
 		 */
 		public function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, failOnFinal:Boolean=true):IMethodBuilder {
-			Assert.notNull(classBuilder, "classBuilder argument must not be null");
-			Assert.notNull(type, "type argument must not be null");
-			Assert.notNull(memberInfo, "memberInfo argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(classBuilder, "classBuilder argument must not be null");
+				Assert.notNull(type, "type argument must not be null");
+				Assert.notNull(memberInfo, "memberInfo argument must not be null");
+			}
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(memberInfo.qName.localName, memberInfo.qName.uri);
 			methodBuilder.isOverride = !type.isInterface;
 			var method:ByteCodeMethod = type.getMethod(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeMethod;
@@ -96,7 +98,9 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 */
 		public function addMethodBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):void {
-			Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			CONFIG::debug {
+				Assert.notNull(methodBuilder, "methodBuilder argument must not be null");
+			}
 			var len:int = methodBuilder.arguments.length;
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
 			methodBuilder.addOpcode(Opcode.getlocal_0) //

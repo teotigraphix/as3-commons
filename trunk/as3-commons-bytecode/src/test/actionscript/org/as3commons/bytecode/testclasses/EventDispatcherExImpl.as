@@ -40,11 +40,15 @@ package org.as3commons.bytecode.testclasses {
 		}
 
 		public function removeAll():void {
-			for each (var type:String in this.as3commons_bytecode::listenersLookup) {
-				var listeners:Array = this.as3commons_bytecode::listenersLookup[type] as Array;
-				for each (var func:Function in listeners) {
-					this['removeEventListener'](type, func);
+			try {
+				for each (var type:String in this.as3commons_bytecode::listenersLookup) {
+					var listeners:Array = this.as3commons_bytecode::listenersLookup[type] as Array;
+					for each (var func:Function in listeners) {
+						this['removeEventListener'](type, func);
+					}
 				}
+			} catch (e:Error) {
+
 			}
 		}
 
@@ -57,24 +61,28 @@ package org.as3commons.bytecode.testclasses {
 			}
 		}
 
-		public function getCountListeners(eventType:String = null):uint {
-			var result:uint = 0;
-			var listeners:Array;
-			if (eventType == null) {
-				for each (var type:String in this.as3commons_bytecode::listenersLookup) {
-					listeners = this.as3commons_bytecode::listenersLookup[type] as Array;
-					result += listeners.length;
+		public function getCountListeners(eventType:String=null):uint {
+			try {
+				var result:uint = 0;
+				var listeners:Array;
+				if (eventType == null) {
+					for each (var type:String in this.as3commons_bytecode::listenersLookup) {
+						listeners = this.as3commons_bytecode::listenersLookup[type] as Array;
+						result += listeners.length;
+					}
+				} else {
+					listeners = this.as3commons_bytecode::listenersLookup[eventType] as Array;
+					if (listeners != null) {
+						result += listeners.length;
+					}
 				}
-			} else {
-				listeners = this.as3commons_bytecode::listenersLookup[eventType] as Array;
-				if (listeners != null) {
-					result += listeners.length;
-				}
+				return result;
+			} catch (e:Error) {
 			}
-			return result;
+			return 0;
 		}
 
-		public function getListeners(eventType:String = null):Array {
+		public function getListeners(eventType:String=null):Array {
 			return this.as3commons_bytecode::listenersLookup[eventType] as Array;
 		}
 	}

@@ -69,7 +69,7 @@ package org.as3commons.bytecode.io {
 
 		private var _methodBodyExtractionMethod:MethodBodyExtractionKind;
 
-		public function AbcDeserializer(byteStream:ByteArray = null) {
+		public function AbcDeserializer(byteStream:ByteArray=null) {
 			super(byteStream);
 			methodBodyExtractionMethod = MethodBodyExtractionKind.PARSE;
 		}
@@ -104,7 +104,7 @@ package org.as3commons.bytecode.io {
 		 *
 		 * @return  The <code>AbcFile</code> represented by the bytecode block given to the constructor.
 		 */
-		override public function deserialize(positionInByteArrayToReadFrom:int = 0):AbcFile {
+		override public function deserialize(positionInByteArrayToReadFrom:int=0):AbcFile {
 			byteStream.position = positionInByteArrayToReadFrom;
 			var abcFile:AbcFile = new AbcFile();
 			var pool:IConstantPool = abcFile.constantPool;
@@ -603,7 +603,7 @@ package org.as3commons.bytecode.io {
 			return -1;
 		}
 
-		public override function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false, className:String = ""):Array {
+		public override function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
 			var traits:Array = [];
 			var pool:IConstantPool = abcFile.constantPool;
 			var methodInfos:Array = abcFile.methodInfo;
@@ -628,7 +628,7 @@ package org.as3commons.bytecode.io {
 				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
-				if (traitMultiname.nameSpace.name == MultinameUtil.ASTERISK) {
+				/*if (traitMultiname.nameSpace.name == MultinameUtil.ASTERISK) {
 					var newNs:LNamespace = traitMultiname.nameSpace.clone() as LNamespace;
 					var lastIdx:int = className.lastIndexOf(MultinameUtil.PERIOD);
 					if (lastIdx > -1) {
@@ -640,7 +640,7 @@ package org.as3commons.bytecode.io {
 						newNs.name = className;
 						traitMultiname.nameSpace = newNs;
 					}
-				}
+				}*/
 				switch (traitKind) {
 					case TraitKind.SLOT:
 					case TraitKind.CONST:
