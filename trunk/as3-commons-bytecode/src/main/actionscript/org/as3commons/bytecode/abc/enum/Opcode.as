@@ -308,38 +308,36 @@ package org.as3commons.bytecode.abc.enum {
 			for each (var jumpData:JumpTargetData in backPatches) {
 				var changed:Boolean = false;
 				if (jumpData.targetOpcode != null) {
-					if (resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes, (jumpData.extraOpcodes != null)) == true) {
+					if (resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes, (jumpData.jumpOpcode.opcode === Opcode.lookupswitch)) == true) {
 						changed = true;
 					}
 				}
 				if (jumpData.extraOpcodes != null) {
+					var idx:int = 0;
 					for each (var targetOpcode:Op in jumpData.extraOpcodes) {
-						if (resolveBackpatch(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes, true)) {
+						if (resolveBackpatch(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes, true, idx++)) {
 							changed = true;
 						}
 					}
 				}
 
-				if ((changed) && (jumpData.jumpOpcode.opcode === Opcode.lookupswitch)) {
-					var params:Array = jumpData.jumpOpcode.parameters[2] as Array;
-					var targets:Array = [jumpData.targetOpcode].concat((jumpData.extraOpcodes != null) ? jumpData.extraOpcodes : []);
-					for (var i:int = 0; i < params.length; ++i) {
-						var newTargetLocation:int = Op(targets[i]).baseLocation - jumpData.jumpOpcode.baseLocation;
-						params[i] = newTargetLocation;
-					}
-				}
 			}
 		}
 
-		public static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean=false):Boolean {
+		public static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean=false, index:int=-1):Boolean {
+			var jumpParam:int = (index < 0) ? int(jumpOpcode.parameters[0]) : jumpOpcode.parameters[2][index];
 			var baseLocation:int = (isLookupSwitch) ? jumpOpcode.baseLocation : jumpOpcode.endLocation;
-			var targetPos:int = baseLocation + int(jumpOpcode.parameters[0]);
-			//var targetOpPos:int = positions[targetOpcode];
-			//if (targetPos != targetOpPos) {
+			var targetPos:int = baseLocation + jumpParam;
 			if (targetPos != targetOpcode.baseLocation) {
 				var operandPos:int = jumpOpcode.baseLocation;
 				var newJump:int = (targetOpcode.baseLocation - baseLocation);
 				serializedOpcodes.position = operandPos + 1;
+				if (index > -1) {
+					AbcSpec.readU30(serializedOpcodes);
+				}
+				while (index-- > 0) {
+					AbcSpec.readS24(serializedOpcodes);
+				}
 				AbcSpec.writeS24(newJump, serializedOpcodes);
 				return true;
 			}
@@ -488,10 +486,16 @@ package org.as3commons.bytecode.abc.enum {
 					jmpTarget.targetOpcode = target;
 				} else {
 					var arr:Array = jmpTarget.jumpOpcode.parameters[2] as Array;
-					for each (pos in arr) {
+					var len:int = arr.length;
+					for (var i:int = 0; i < len; ++i) {
+						pos = arr[i];
 						targetPos = jmpTarget.jumpOpcode.baseLocation + pos;
 						target = opcodeStartPositions[targetPos];
-						jmpTarget.addTarget(target);
+						if (i < (len - 1)) {
+							jmpTarget.addTarget(target);
+						} else {
+							jmpTarget.targetOpcode = target;
+						}
 					}
 				}
 			}
@@ -591,13 +595,11 @@ package org.as3commons.bytecode.abc.enum {
 					// the second argument to the op, which is the case_count
 					//new Opcode(0x1b, "lookupswitch", [int, AbcSpec.S24], [int, AbcSpec.U30], [Array, AbcSpec.S24_ARRAY]);
 					var caseOffsets:Array = [];
-					caseOffsets.length = argumentValues[1];
-					caseOffsets[0] = byteCodeValue;
 					var caseCount:int = argumentValues[1];
 					for (var i:int = 0; i < caseCount; ++i) {
-						caseOffsets[i + 1] = readWritePair.read(byteArray);
-							//AbcSpec.readS24(byteArray);
+						caseOffsets[caseOffsets.length] = readWritePair.read(byteArray);
 					}
+					caseOffsets[caseOffsets.length] = byteCodeValue;
 					argumentValues[argumentValues.length] = caseOffsets;
 					break;
 

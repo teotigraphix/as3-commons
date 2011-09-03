@@ -56,12 +56,7 @@ package org.as3commons.bytecode.abc {
 			if (targetOp == null) {
 				return;
 			}
-			if (_targetOpcode != null) {
-				_extraOpcodes ||= [];
-				_extraOpcodes[_extraOpcodes.length] = targetOp;
-			} else {
-				_targetOpcode = targetOp;
-			}
+			(_extraOpcodes ||= [])[_extraOpcodes.length] = targetOp;
 		}
 
 		/**
