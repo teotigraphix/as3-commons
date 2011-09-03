@@ -15,6 +15,7 @@
 */
 package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptorFactory;
+	import org.as3commons.bytecode.reflect.ByteCodeType;
 
 	/**
 	 * Contains all the necessary information for an <code>IProxyFactory</code> to generate
@@ -22,6 +23,18 @@ package org.as3commons.bytecode.proxy {
 	 * @author Roland Zwaga
 	 */
 	public interface IClassProxyInfo {
+
+		/**
+		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the accessors belonging to the interfaces
+		 * that were implemented by the specified class.
+		 */
+		function get interfaceAccessors():Array;
+
+		/**
+		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the methods belonging to the interfaces
+		 * that were implemented by the specified class.
+		 */
+		function get interfaceMethods():Array;
 
 		/**
 		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the accessors
@@ -43,7 +56,7 @@ package org.as3commons.bytecode.proxy {
 		/**
 		 * An <code>Array</code> of interfaces that need to be dynamically added to the proxy.
 		 */
-		function get introducedInterfaces():Array;
+		function get implementedInterfaces():Array;
 
 		/**
 		 * An <code>Array</code> of <code>Classes</code> that will be merged with the generated proxy.
@@ -131,7 +144,7 @@ package org.as3commons.bytecode.proxy {
 		 * the proxy instance.
 		 * @param interfaze The specified interface.
 		 */
-		function introduceInterface(interfaze:Class):void;
+		function implementInterface(interfaze:Class):void;
 
 		/**
 		 * Marks the specified accessor and optional namespace for proxying.
@@ -144,13 +157,13 @@ package org.as3commons.bytecode.proxy {
 		 *
 		 * @param accessorName
 		 */
-		function proxyInterfaceAccessor(accessorName:String):void;
+		function proxyInterfaceAccessor(accessorName:String, declaringType:ByteCodeType):void;
 
 		/**
 		 *
 		 * @param methodName
 		 */
-		function proxyInterfaceMethod(methodName:String):void;
+		function proxyInterfaceMethod(methodName:String, declaringType:ByteCodeType):void;
 
 		/**
 		 * Marks the specified method and optional namespace for proxying.

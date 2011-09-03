@@ -19,6 +19,7 @@ package org.as3commons.bytecode.testclasses.interceptors {
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
 	import org.as3commons.bytecode.interception.impl.InvocationKind;
+	import org.as3commons.bytecode.testclasses.IEventDispatcherEx;
 
 	public class EventDispatcherExInterceptor extends AssertingInterceptor {
 
@@ -36,6 +37,14 @@ package org.as3commons.bytecode.testclasses.interceptors {
 						interceptRemoveEventListener(invocation);
 						break;
 					default:
+						if (invocation.targetInstance is IEventDispatcherEx) {
+							switch (invocation.targetMember.localName) {
+								case 'getCountListeners':
+									invocation.returnValue = 10;
+									invocation.proceed = true;
+									break;
+							}
+						}
 						break;
 				}
 			}

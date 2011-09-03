@@ -37,8 +37,24 @@ package org.as3commons.bytecode.proxy {
 	 */
 	public interface IMethodProxyFactory extends IEventDispatcher {
 
-		function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, failOnFinal:Boolean = true):IMethodBuilder;
+		/**
+		 *
+		 * @param classBuilder
+		 * @param type
+		 * @param memberInfo
+		 * @param failOnFinal
+		 * @param isInterfaceMethod
+		 * @return
+		 */
+		function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, failOnFinal:Boolean=true):IMethodBuilder;
 
+		/**
+		 *
+		 * @param methodBuilder
+		 * @param multiName
+		 * @param bytecodeQname
+		 * @param isInterface
+		 */
 		function addMethodBody(methodBuilder:IMethodBuilder, multiName:Multiname, bytecodeQname:QualifiedName, isInterface:Boolean):void;
 
 	}

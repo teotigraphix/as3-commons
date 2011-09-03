@@ -21,13 +21,13 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.proxy.IMethodProxyFactory;
 	import org.as3commons.bytecode.proxy.error.ProxyBuildError;
 	import org.as3commons.bytecode.reflect.ByteCodeMethod;
 	import org.as3commons.bytecode.reflect.ByteCodeParameter;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
-	import org.as3commons.bytecode.proxy.IMethodProxyFactory;
 
 	public class MethodProxyFactory extends AbstractMethodBodyFactory implements IMethodProxyFactory {
 
@@ -45,12 +45,12 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @return The <code>IMethodBuilder</code> representing the generated method.
 		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied method is marked as final.
 		 */
-		public function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, failOnFinal:Boolean = true):IMethodBuilder {
+		public function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, failOnFinal:Boolean=true):IMethodBuilder {
 			Assert.notNull(classBuilder, "classBuilder argument must not be null");
 			Assert.notNull(type, "type argument must not be null");
 			Assert.notNull(memberInfo, "memberInfo argument must not be null");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(memberInfo.qName.localName, memberInfo.qName.uri);
-			methodBuilder.isOverride = (!type.isInterface);
+			methodBuilder.isOverride = !type.isInterface;
 			var method:ByteCodeMethod = type.getMethod(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeMethod;
 			if (method == null) {
 				throw new ProxyBuildError(ProxyBuildError.METHOD_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);

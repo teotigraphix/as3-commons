@@ -89,7 +89,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _proxyFactory:ProxyFactory;
 		private var _embeddedName:String;
 
-		public function ProxyFactoryTest(methodName:String = null) {
+		public function ProxyFactoryTest(methodName:String=null) {
 			super(methodName);
 			ByteCodeType.getTypeProvider().clearCache();
 			ProxySubClass;
@@ -413,6 +413,21 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.loadProxyClasses();
 		}
 
+		public function testEventDispatcherImplementInterface():void {
+			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(EventDispatcher, null, applicationDomain);
+			classProxyInfo.implementInterface(IEventDispatcherEx);
+			classProxyInfo.proxyMethod("addEventListener");
+			classProxyInfo.proxyMethod("removeEventListener");
+			var abcBuilder:IAbcBuilder = _proxyFactory.generateProxyClasses();
+			//var abcFile:AbcFile = abcBuilder.build();
+			//var ba:ByteArray = new AbcSerializer().serializeAbcFile(abcFile);
+			//abcFile = new AbcDeserializer(ba).deserialize();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createEventDispatcherIntroductionInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, addAsync(handleEventDispatcherImplementInterfaceTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
 		public function testMultipleIntroductions():void {
 			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(TestEventDispatcher, null, applicationDomain);
@@ -450,6 +465,14 @@ package org.as3commons.bytecode.proxy.impl {
 			};
 			instance.addEventListener(Event.ACTIVATE, func1, false, 0, true);
 			assertEquals(1, testInterface.getCountListeners(Event.ACTIVATE));
+		}
+
+		protected function handleEventDispatcherImplementInterfaceTestComplete(event:Event):void {
+			var instance:EventDispatcher = _proxyFactory.createProxy(EventDispatcher) as EventDispatcher;
+			assertNotNull(instance);
+			var testInterface:IEventDispatcherEx = instance as IEventDispatcherEx;
+			assertNotNull(testInterface);
+			assertEquals(10, testInterface.getCountListeners(Event.ACTIVATE));
 		}
 
 		protected function handleMultipleIntroductionTestComplete(event:Event):void {
