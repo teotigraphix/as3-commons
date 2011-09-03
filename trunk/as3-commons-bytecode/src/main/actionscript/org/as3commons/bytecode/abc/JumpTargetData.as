@@ -53,6 +53,9 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function addTarget(targetOp:Op):void {
+			if (targetOp == null) {
+				return;
+			}
 			if (_targetOpcode != null) {
 				_extraOpcodes ||= [];
 				_extraOpcodes[_extraOpcodes.length] = targetOp;

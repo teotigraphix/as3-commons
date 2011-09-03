@@ -319,9 +319,10 @@ package org.as3commons.bytecode.abc.enum {
 						}
 					}
 				}
+
 				if ((changed) && (jumpData.jumpOpcode.opcode === Opcode.lookupswitch)) {
 					var params:Array = jumpData.jumpOpcode.parameters[2] as Array;
-					var targets:Array = [jumpData.targetOpcode].concat(jumpData.extraOpcodes);
+					var targets:Array = [jumpData.targetOpcode].concat((jumpData.extraOpcodes != null) ? jumpData.extraOpcodes : []);
 					for (var i:int = 0; i < params.length; ++i) {
 						var newTargetLocation:int = Op(targets[i]).baseLocation - jumpData.jumpOpcode.baseLocation;
 						params[i] = newTargetLocation;
@@ -484,19 +485,12 @@ package org.as3commons.bytecode.abc.enum {
 					pos = int(jmpTarget.jumpOpcode.parameters[0]);
 					targetPos = jmpTarget.jumpOpcode.endLocation + pos;
 					target = opcodeStartPositions[targetPos];
-					//jumps can point to the end location of an opcode, like the default jump in a switch statement:
-					if (target == null) {
-						target = opcodeEndPositions[targetPos];
-					}
 					jmpTarget.targetOpcode = target;
 				} else {
 					var arr:Array = jmpTarget.jumpOpcode.parameters[2] as Array;
 					for each (pos in arr) {
 						targetPos = jmpTarget.jumpOpcode.baseLocation + pos;
 						target = opcodeStartPositions[targetPos];
-						if (target == null) {
-							target = opcodeEndPositions[targetPos];
-						}
 						jmpTarget.addTarget(target);
 					}
 				}

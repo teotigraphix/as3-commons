@@ -78,6 +78,7 @@ package org.as3commons.bytecode.util {
 		private static const TWENTY_ONE:Number = 21;
 		private static const TWENTY_EIGHT:Number = 28;
 		private static const MAX_S24:Number = 8388607;
+		private static var _illegalCount:int = 0;
 
 		public static function readUnsigned(bytes:ByteArray):uint {
 			return bytes.readUnsignedByte();
@@ -150,7 +151,7 @@ package org.as3commons.bytecode.util {
 			var len:uint = readU32(bytes);
 			var result:String = bytes.readUTFBytes(len);
 			if (len != result.length) {
-				result = "";
+				result = "UTF8_BAD" + (_illegalCount++).toString();
 			}
 			return result;
 		}
