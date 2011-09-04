@@ -502,12 +502,16 @@ package org.as3commons.bytecode.abc.enum {
 							target = Opcode.END_OF_BODY.op();
 							target.baseLocation = positionAtEndOfMethodBody;
 						}
-						if (i < (len - 1)) {
-							jmpTarget.addTarget(target);
-						} else {
-							jmpTarget.targetOpcode = target;
-						}
+						jmpTarget.addTarget(target);
 					}
+					pos = jmpTarget.jumpOpcode.parameters[0];
+					targetPos = jmpTarget.jumpOpcode.baseLocation + pos;
+					target = opcodeStartPositions[targetPos];
+					if (target == null) {
+						target = Opcode.END_OF_BODY.op();
+						target.baseLocation = positionAtEndOfMethodBody;
+					}
+					jmpTarget.targetOpcode = target;
 				}
 			}
 		}
