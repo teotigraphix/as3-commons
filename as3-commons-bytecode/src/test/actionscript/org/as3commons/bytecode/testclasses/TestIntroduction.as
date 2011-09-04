@@ -41,7 +41,7 @@ package org.as3commons.bytecode.testclasses {
 		}
 
 		public function testSwitch(idx:int):String {
-			/*switch (idx) {
+			switch (idx) {
 				case 1:
 					return "1";
 					break;
@@ -63,8 +63,7 @@ package org.as3commons.bytecode.testclasses {
 					break;
 				default:
 					return "0";
-			}*/
-			return "";
+			}
 		}
 
 		public function get testString():String {
