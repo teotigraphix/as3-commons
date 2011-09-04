@@ -180,7 +180,7 @@
 		    </dependency>
 		    <dependency>
 		      <groupId>com.adobe.flex.framework</groupId>
-		      <artifactId>textlayout</artifactId>
+		      <artifactId>textLayout</artifactId>
 		      <version>${flex-sdk.version}</version>
 		      <type>swc</type>
 		      <scope>test</scope>
