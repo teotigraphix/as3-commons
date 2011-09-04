@@ -606,11 +606,11 @@ package org.as3commons.bytecode.abc.enum {
 					// the second argument to the op, which is the case_count
 					//new Opcode(0x1b, "lookupswitch", [int, AbcSpec.S24], [int, AbcSpec.U30], [Array, AbcSpec.S24_ARRAY]);
 					var caseOffsets:Array = [];
-					var caseCount:int = argumentValues[1];
+					var caseCount:int = int(argumentValues[1]);
+					caseOffsets[caseOffsets.length] = byteCodeValue;
 					for (var i:int = 0; i < caseCount; ++i) {
 						caseOffsets[caseOffsets.length] = readWritePair.read(byteArray);
 					}
-					caseOffsets[caseOffsets.length] = byteCodeValue;
 					argumentValues[argumentValues.length] = caseOffsets;
 					break;
 

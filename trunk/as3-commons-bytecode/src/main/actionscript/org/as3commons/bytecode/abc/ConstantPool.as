@@ -52,6 +52,7 @@ package org.as3commons.bytecode.abc {
 		private static const NAME_PROPERTYNAME:String = "name";
 		private static const LOCKED_CONSTANTPOOL_ERROR:String = "Constantpool is locked";
 		private static const ZERO_VALUE:String = "zero";
+		private static const EMPTY_STRING:String = "EMPTY_STRING";
 
 		private var _dupeCheck:Boolean = true;
 		private var _integerPool:Array;

@@ -129,10 +129,12 @@ package org.as3commons.bytecode.io {
 				if (body.rawOpcodes == null) {
 					var opcodesAsByteArray:ByteArray = Opcode.serialize(body.opcodes, body, abcFile);
 					writeU30(opcodesAsByteArray.length);
-					var len:uint = opcodesAsByteArray.length;
+
+					_outputStream.writeBytes(opcodesAsByteArray, 0, opcodesAsByteArray.length);
+					/*var len:uint = opcodesAsByteArray.length;
 					for (var opcodeBytePosition:int = 0; opcodeBytePosition < len; ++opcodeBytePosition) {
 						writeU8(opcodesAsByteArray[opcodeBytePosition]);
-					}
+					}*/
 				} else {
 					writeU30(body.rawOpcodes.length);
 					_outputStream.writeBytes(body.rawOpcodes);
