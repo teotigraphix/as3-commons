@@ -156,7 +156,10 @@ class LocalEnum extends Enum {
 	public static const X1: Number = 1;
 	public var X2: Number = 2;
 	public var X3: LocalEnum;
-	
+
+	public function LocalEnum() {
+	}
+
 	public function get X4(): LocalEnum {
 		return X3;
 	}
