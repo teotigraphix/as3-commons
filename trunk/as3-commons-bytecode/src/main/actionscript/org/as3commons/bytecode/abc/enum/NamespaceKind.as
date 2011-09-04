@@ -30,6 +30,7 @@ package org.as3commons.bytecode.abc.enum {
 		private var _byteValue:uint;
 		private var _description:String;
 
+		public static const UNKNOWN:NamespaceKind = new NamespaceKind(0x0, "unknown");
 		public static const NAMESPACE:NamespaceKind = new NamespaceKind(0x08, "namespace");
 		public static const PACKAGE_NAMESPACE:NamespaceKind = new NamespaceKind(0x16, "public");
 		public static const PACKAGE_INTERNAL_NAMESPACE:NamespaceKind = new NamespaceKind(0x17, "packageInternalNamespace");

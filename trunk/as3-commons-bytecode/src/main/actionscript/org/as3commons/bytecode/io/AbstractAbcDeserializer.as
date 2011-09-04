@@ -266,9 +266,10 @@ package org.as3commons.bytecode.io {
 				try {
 					var result:* = extractionMethod.apply(this);
 					pool[pool.length] = result;
-					CONFIG::debug {
-						Assert.notNull(pool[pool.length - 1], "null was extracted at position " + itemIndex);
-					}
+						//CONFIG::debug {
+						//	var val:* = (pool[pool.length - 1]);
+						//	Assert.notNull(val, "null was extracted at position " + itemIndex);
+						//}
 				} catch (e:Error) {
 					throw new Error("I choked at position: " + itemIndex);
 				}
