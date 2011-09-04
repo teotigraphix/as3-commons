@@ -498,6 +498,10 @@ package org.as3commons.bytecode.abc.enum {
 						pos = arr[i];
 						targetPos = jmpTarget.jumpOpcode.baseLocation + pos;
 						target = opcodeStartPositions[targetPos];
+						if (target == null) {
+							target = Opcode.END_OF_BODY.op();
+							target.baseLocation = positionAtEndOfMethodBody;
+						}
 						if (i < (len - 1)) {
 							jmpTarget.addTarget(target);
 						} else {

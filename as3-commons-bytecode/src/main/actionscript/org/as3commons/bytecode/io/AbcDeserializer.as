@@ -626,9 +626,12 @@ package org.as3commons.bytecode.io {
 					Assert.notNull(traitName);
 				}
 				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
+				/*if (traitMultiname.name == "deferredNextFrame") {
+					var km:int = 0;
+				}
 				var traitKindValue:int = readU8();
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
-				/*if (traitMultiname.nameSpace.name == MultinameUtil.ASTERISK) {
+				if (traitMultiname.nameSpace.name == MultinameUtil.ASTERISK) {
 					var newNs:LNamespace = traitMultiname.nameSpace.clone() as LNamespace;
 					var lastIdx:int = className.lastIndexOf(MultinameUtil.PERIOD);
 					if (lastIdx > -1) {
