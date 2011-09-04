@@ -15,36 +15,42 @@
  */
 package org.as3commons.lang {
 
-	import flexunit.framework.TestCase;
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertTrue;
+	import org.flexunit.asserts.fail;
 
 	/**
 	 * @author Christophe Herreman
 	 */
-	public class XMLUtilsTest extends TestCase {
+	public class XMLUtilsTest {
 
 		private var xml:XML;
 
-		public function XMLUtilsTest(methodName:String=null) {
-			super(methodName);
+		public function XMLUtilsTest() {
 		}
 
-		override public function setUp():void {
+		[Before]
+		public function setUp():void {
 			super.setUp();
 			XML.ignoreComments = false;
 			XML.ignoreProcessingInstructions = false;
 			xml = <example id="10">
-					<!-- this is a comment -->
-					<?test this is a pi ?>
-					and some text
-				</example>;
+				<!-- this is a comment -->
+			<?test this is a pi ?>
+			and some text
+			</example>;
 		}
 
-		override public function tearDown():void {
+		[After]
+		public function tearDown():void {
 			super.tearDown();
 			XML.ignoreComments = true;
 			XML.ignoreProcessingInstructions = true;
 		}
 
+		[Ignore]
+		[Test]
 		public function testIsElementNode():void {
 			assertTrue(XMLUtils.isElementNode(xml));
 			assertFalse(XMLUtils.isElementNode(xml.children()[0]));
@@ -54,6 +60,8 @@ package org.as3commons.lang {
 			assertThrowsIllegalArgumentError(XMLUtils.isElementNode, [null]);
 		}
 
+		[Ignore]
+		[Test]
 		public function testIsCommentNode():void {
 			assertFalse(XMLUtils.isCommentNode(xml));
 			assertTrue(XMLUtils.isCommentNode(xml.children()[0]));
@@ -63,6 +71,8 @@ package org.as3commons.lang {
 			assertThrowsIllegalArgumentError(XMLUtils.isCommentNode, [null]);
 		}
 
+		[Ignore]
+		[Test]
 		public function testIsProcessingInstructionNode():void {
 			assertFalse(XMLUtils.isProcessingInstructionNode(xml));
 			assertFalse(XMLUtils.isProcessingInstructionNode(xml.children()[0]));
@@ -72,6 +82,8 @@ package org.as3commons.lang {
 			assertThrowsIllegalArgumentError(XMLUtils.isProcessingInstructionNode, [null]);
 		}
 
+		[Ignore]
+		[Test]
 		public function testIsTextNode():void {
 			assertFalse(XMLUtils.isTextNode(xml));
 			assertFalse(XMLUtils.isTextNode(xml.children()[0]));
@@ -81,6 +93,8 @@ package org.as3commons.lang {
 			assertThrowsIllegalArgumentError(XMLUtils.isTextNode, [null]);
 		}
 
+		[Ignore]
+		[Test]
 		public function testIsAttributeNode():void {
 			assertFalse(XMLUtils.isAttributeNode(xml));
 			assertFalse(XMLUtils.isAttributeNode(xml.children()[0]));
@@ -90,6 +104,8 @@ package org.as3commons.lang {
 			assertThrowsIllegalArgumentError(XMLUtils.isAttributeNode, [null]);
 		}
 
+		[Ignore]
+		[Test]
 		public function testMergeXML():void {
 			var source:XML = new XML("<root><element/></root>");
 			var merged:XML = new XML("<root><element/></root>");
@@ -97,6 +113,8 @@ package org.as3commons.lang {
 			assertEquals(2, source.children().length());
 		}
 
+		[Ignore]
+		[Test]
 		public function testMergeXMLWithMergedExtraNamespace():void {
 			var source:XML = new XML("<root><element/></root>");
 			var merged:XML = new XML('<root xmlns:pre="http://www.springactionscript.org/schema/objects"><pre:element/></root>');

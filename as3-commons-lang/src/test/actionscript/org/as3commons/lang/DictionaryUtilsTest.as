@@ -18,16 +18,19 @@ package org.as3commons.lang {
 	import flash.utils.Dictionary;
 	
 	import flexunit.framework.TestCase;
-	
+
+	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertTrue;
+
 	/**
 	 * @author Christophe Herreman
 	 */
-	public class DictionaryUtilsTest extends TestCase {
+	public class DictionaryUtilsTest {
 		
-		public function DictionaryUtilsTest(methodName:String = null) {
-			super(methodName);
+		public function DictionaryUtilsTest() {
 		}
-		
+
+		[Test]
 		public function testContainsKey():void {
 			var d:Dictionary = new Dictionary();
 			var key:Object = new Object();
@@ -39,7 +42,8 @@ package org.as3commons.lang {
 			delete d[key];
 			assertFalse(DictionaryUtils.containsKey(d, key));
 		}
-		
+
+		[Test]
 		public function testContainsValue():void {
 			var d:Dictionary = new Dictionary();
 			var key:Object = new Object();

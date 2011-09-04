@@ -49,5 +49,8 @@ package org.as3commons.lang.testclasses {
 			return null;
 		}
 		ns function set publicSetterGetter(value:String):void {}
+
+		public function PropertiesClass() {
+		}
 	}
 }

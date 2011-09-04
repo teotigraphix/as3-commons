@@ -22,28 +22,35 @@
 package org.as3commons.lang.builder {
 	
 	import flexunit.framework.TestCase;
-	
+
+	import org.flexunit.asserts.assertFalse;
+
+	import org.flexunit.asserts.assertTrue;
+
 	/**
 	 * @author Christophe Herreman
 	 */
-	public class EqualsBuilderTest extends TestCase {
+	public class EqualsBuilderTest {
 		
-		public function EqualsBuilderTest(methodName:String = null) {
-			super(methodName);
+		public function EqualsBuilderTest() {
 		}
-		
+
+		[Test]
 		public function testEquals_shouldBeTrueForNewEqualsBuilder():void {
 			assertTrue(new EqualsBuilder().equals);
 		}
-		
+
+		[Test]
 		public function testEquals_null():void {
 			assertTrue(new EqualsBuilder().append(null, null).equals);
 		}
-		
+
+		[Test]
 		public function testEquals_nan():void {
 			assertTrue(new EqualsBuilder().append(NaN, NaN).equals);
 		}
-		
+
+		[Test]
 		public function testEquals_boolean():void {
 			var o1:Boolean = true;
 			var o2:Boolean = false;
@@ -61,7 +68,8 @@ package org.as3commons.lang.builder {
 			assertFalse(new EqualsBuilder().append(true, 1).equals);
 			assertFalse(new EqualsBuilder().append(true, 1).equals);
 		}
-		
+
+		[Test]
 		public function testEquals_string():void {
 			assertTrue(new EqualsBuilder().append("myString", "myString").equals);
 			assertFalse(new EqualsBuilder().append("myString", "myString ").equals);
@@ -72,7 +80,8 @@ package org.as3commons.lang.builder {
 			assertFalse(new EqualsBuilder().append("a", "b").equals);
 			assertFalse(new EqualsBuilder().append("a", "A").equals);
 		}
-		
+
+		[Test]
 		public function testEquals_number():void {
 			assertTrue(new EqualsBuilder().append(0, 0).equals);
 			assertTrue(new EqualsBuilder().append(1, 1).equals);
@@ -80,33 +89,38 @@ package org.as3commons.lang.builder {
 			assertTrue(new EqualsBuilder().append(1.23456789, 1.23456789).equals);
 			assertFalse(new EqualsBuilder().append(1, 2).equals);
 		}
-		
+
+		[Test]
 		public function testEquals_date():void {
 			assertTrue(new EqualsBuilder().append(new Date(), new Date()).equals);
 			var date:Date = new Date();
 			assertTrue(new EqualsBuilder().append(date, date).equals);
 			assertTrue(new EqualsBuilder().append(new Date(2009, 6, 12, 7, 8, 9, 1234), new Date(2009, 6, 12, 7, 8, 9, 1234)).equals);
 		}
-		
+
+		[Test]
 		public function testEquals_array():void {
 			assertTrue(new EqualsBuilder().append(["a"], ["a"]).equals);
 			assertTrue(new EqualsBuilder().append(["a", "b", "c"], ["a", "b", "c"]).equals);
 			assertTrue(new EqualsBuilder().append([1, 2, 3], [1, 2, 3]).equals);
 			assertTrue(new EqualsBuilder().append([1, true, "text", new Date()], [1, true, "text", new Date()]).equals);
 		}
-		
+
+		[Test]
 		public function testEquals_object():void {
 			assertTrue(new EqualsBuilder().append({}, {}).equals);
 			assertTrue(new EqualsBuilder().append({"a": 1}, {"a": 1}).equals);
 			assertTrue(new EqualsBuilder().append({"a": 1, "b": 2}, {"a": 1, "b": 2}).equals);
 			assertTrue(new EqualsBuilder().append({"a": 1, "b": 2, 1: [1, "a", true]}, {"a": 1, "b": 2, 1: [1, "a", true]}).equals);
 		}
-		
+
+		[Test]
 		public function testEquals_xml():void {
 			assertTrue(new EqualsBuilder().append(<a><b/></a>,                     <a><b/></a>).equals);
 			assertTrue(new EqualsBuilder().append(<a><b/></a>,                     <a><b></b></a>).equals);
 		}
-		
+
+		[Test]
 		public function testEquals_xmlList():void {
 			var listA:XMLList = new XMLList(<a><b/><c><d/></c></a>);
 			var listB:XMLList = new XMLList(<a><b/><c><d/></c></a>);
@@ -118,7 +132,8 @@ package org.as3commons.lang.builder {
 			
 			assertTrue(new EqualsBuilder().append(listA.descendants(), listB.descendants()).equals);
 		}
-		
+
+		[Test]
 		public function testEquals_person():void {
 			var personA:Person = new Person("John", "Doe", 33);
 			var personB:Person = new Person("John", "Doe", 33);
@@ -130,7 +145,8 @@ package org.as3commons.lang.builder {
 			
 			assertTrue(new EqualsBuilder().append(personA, personB).equals);
 		}
-		
+
+		[Test]
 		public function testEquals_personEquals():void {
 			var personA:PersonEquals = new PersonEquals("John", "Doe", 33);
 			var personB:PersonEquals = new PersonEquals("John", "Doe", 33);

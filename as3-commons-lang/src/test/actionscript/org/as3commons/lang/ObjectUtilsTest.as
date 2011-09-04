@@ -14,56 +14,65 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-	
+
 	import flash.utils.Dictionary;
-	
+
+	import flexunit.framework.Assert;
 	import flexunit.framework.TestCase;
-	
+
 	import org.as3commons.lang.testclasses.PublicClass;
-	
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertNotNull;
+	import org.flexunit.asserts.assertTrue;
+
 	/**
 	 * @author Christophe Herreman
 	 * @author James Ghandour
 	 */
-	public class ObjectUtilsTest extends TestCase {
-		
-		public function ObjectUtilsTest(methodName:String = null) {
-			super(methodName);
+	public class ObjectUtilsTest {
+
+		public function ObjectUtilsTest() {
 		}
-		
+
+		[Test]
 		public function testIsExplicitInstanceOf():void {
 			assertTrue(ObjectUtils.isExplicitInstanceOf(this, ObjectUtilsTest));
 			assertFalse(ObjectUtils.isExplicitInstanceOf(this, TestCase));
 		}
-		
+
+		[Test]
 		public function testIsExplicitInstanceOf_withString():void {
 			assertTrue(ObjectUtils.isExplicitInstanceOf("test", String));
 		}
-		
+
+		[Test]
 		public function testGetIterator():void {
 			var iterator:IIterator = ObjectUtils.getIterator(new PublicClass());
 			assertNotNull(iterator);
 			assertNotNull(iterator.next());
 		}
-		
+
+		[Test]
 		public function testToDictionary():void {
-			var obj : Object = {a:"a1", b:"b2"};
-			var dict : Dictionary = ObjectUtils.toDictionary(obj);
+			var obj:Object = {a:"a1", b:"b2"};
+			var dict:Dictionary = ObjectUtils.toDictionary(obj);
 			assertEquals(dict["a"], "a1");
 			assertEquals(dict["b"], "b2");
 		}
-		
+
+		[Test]
 		public function testMerging():void {
-			var objA: Object = {a:"1"};
-			var objB: Object = {b:"2"};
-			assertObjectEquals("Merging has to result in a object with both properties", {a: "1",b: "2"}, ObjectUtils.merge(objA, objB));
-			assertObjectEquals("Merging may not modify A", {a: "1"}, objA);
-			assertObjectEquals("Merging may not modify B", {b: "2"}, objB);
+			var objA:Object = {a:"1"};
+			var objB:Object = {b:"2"};
+			flexunit.framework.Assert.assertObjectEquals("Merging has to result in a object with both properties", {a: "1",b: "2"}, ObjectUtils.merge(objA, objB));
+			flexunit.framework.Assert.assertObjectEquals("Merging may not modify A", {a: "1"}, objA);
+			flexunit.framework.Assert.assertObjectEquals("Merging may not modify B", {b: "2"}, objB);
 			objA = {a:"a1",b:"a2"};
 			objB = {b:"b2",c:"b3"};
-			assertObjectEquals("Mergin has to take the master property", {
+			flexunit.framework.Assert.assertObjectEquals("Merging has to take the master property", {
 				a:"a1", b:"a2", c:"b3"}, ObjectUtils.merge(objA, objB));
-			
+
 		}
 	}
 }
