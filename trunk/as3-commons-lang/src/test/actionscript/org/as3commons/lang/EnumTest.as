@@ -17,17 +17,21 @@ package org.as3commons.lang {
 	import flexunit.framework.TestCase;
 	import org.as3commons.lang.testclasses.Day;
 	import org.as3commons.lang.testclasses.SampleEnum;
-	
-	
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertNotNull;
+	import org.flexunit.asserts.assertTrue;
+	import org.flexunit.asserts.fail;
+
+
 	/**
 	 * @author Christophe Herreman
 	 */
-	public class EnumTest extends TestCase {
+	public class EnumTest {
 		
-		public function EnumTest(methodName:String = null) {
-			super(methodName);
+		public function EnumTest() {
 		}
-		
+
+		[Test]
 		public function testNew():void {
 			var enum:Enum = new Enum("myEnum");
 			assertEquals("myEnum", enum.name);
@@ -41,12 +45,14 @@ package org.as3commons.lang {
 			var enum4:Enum = new Enum("   ");
 			assertEquals("", enum4.name);
 		}
-		
+
+		[Test]
 		public function testGetEnum():void {
 			assertEquals("MONDAY", Enum.getEnum(Day, "MONDAY").name);
 			assertTrue(Enum.getEnum(Day, "MONDAY").equals(Day.MONDAY));
 		}
-		
+
+		[Test]
 		public function testGetEnum_shouldFailForNullClass():void {
 			try {
 				Enum.getEnum(null, "test");
@@ -54,7 +60,8 @@ package org.as3commons.lang {
 			} catch (e:IllegalArgumentError) {
 			}
 		}
-		
+
+		[Test]
 		public function testGetEnum_shouldFailForNullString():void {
 			try {
 				Enum.getEnum(TestCase, null);
@@ -62,7 +69,8 @@ package org.as3commons.lang {
 			} catch (e:IllegalArgumentError) {
 			}
 		}
-		
+
+		[Test]
 		public function testGetEnum_shouldFailForEmptyString():void {
 			try {
 				Enum.getEnum(TestCase, "");
@@ -70,7 +78,8 @@ package org.as3commons.lang {
 			} catch (e:IllegalArgumentError) {
 			}
 		}
-		
+
+		[Test]
 		public function testGetEnum_shouldFailForBlankString():void {
 			try {
 				Enum.getEnum(TestCase, "   ");
@@ -78,7 +87,8 @@ package org.as3commons.lang {
 			} catch (e:IllegalArgumentError) {
 			}
 		}
-		
+
+		[Test]
 		public function testGetEnum_shouldFailForNonEnum():void {
 			try {
 				Enum.getEnum(TestCase, "test");
@@ -86,7 +96,8 @@ package org.as3commons.lang {
 			} catch (e:IllegalArgumentError) {
 			}
 		}
-		
+
+		[Test]
 		public function testGetEnum_shouldFailForNonEnumValue():void {
 			try {
 				Enum.getEnum(Day, "test");
@@ -94,7 +105,8 @@ package org.as3commons.lang {
 			} catch (e:IllegalArgumentError) {
 			}
 		}
-		
+
+		[Test]
 		public function testGetValues():void {
 			var values:Array = Enum.getValues(Day);
 			assertNotNull(values);
@@ -104,7 +116,8 @@ package org.as3commons.lang {
 			assertNotNull(values2);
 			assertEquals(7, values2.length);
 		}
-		
+
+		[Test]
 		public function testGetValues_shouldNotContainDuplicateValues():void {
 			new Day("MONDAY");
 			
@@ -114,7 +127,8 @@ package org.as3commons.lang {
 			
 			assertEquals(numValues, Enum.getValues(Day).length);
 		}
-		
+
+		[Test]
 		public function testGetValues_shouldFailForNonEnumClass():void {
 			try {
 				Enum.getValues(TestCase);
@@ -122,7 +136,8 @@ package org.as3commons.lang {
 			} catch(e:IllegalArgumentError) {
 			}
 		}
-		
+
+		[Test]
 		public function testAutoFill():void {
 			assertEquals("A undefined name should be defined immediately.", "A", SampleEnum.A.name);
 			assertEquals("Enums may not override proper names", "X", SampleEnum.B.name);

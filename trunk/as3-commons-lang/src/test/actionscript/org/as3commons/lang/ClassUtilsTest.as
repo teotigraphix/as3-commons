@@ -15,6 +15,8 @@
  */
 package org.as3commons.lang {
 
+	import flexunit.framework.Assert;
+
 	import org.as3commons.lang.testclasses.PropertiesClass;
 	import flash.utils.getQualifiedClassName;
 	import flexunit.framework.Reflective;
@@ -31,32 +33,41 @@ package org.as3commons.lang {
 	import org.as3commons.lang.testclasses.PublicSubClass;
 	import org.as3commons.lang.testclasses.SampleEnum;
 	import org.as3commons.lang.testclasses.SubInterfaceImplementation;
-
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertNotNull;
+	import org.flexunit.asserts.assertNull;
+	import org.flexunit.asserts.assertStrictlyEquals;
+	import org.flexunit.asserts.assertTrue;
+	import org.flexunit.asserts.fail;
 
 
 	/**
 	 * @author Christophe Herreman
 	 */
-	public class ClassUtilsTest extends TestCase {
+	public class ClassUtilsTest {
 
-		public function ClassUtilsTest(methodName:String = null) {
-			super(methodName);
+		public function ClassUtilsTest() {
 		}
 
+		[Test]
 		public function testForInstance():void {
 			assertEquals(ClassUtilsTest, ClassUtils.forInstance(this));
 			assertEquals(String, ClassUtils.forInstance(new String("a")));
 			assertEquals(String, ClassUtils.forInstance("b"));
 		}
 
+		[Test]
 		public function testForName_shouldReturnString():void {
 			assertEquals(String, ClassUtils.forName("String"));
 		}
 
+		[Test]
 		public function testForName_shouldReturnNumber():void {
 			assertEquals(Number, ClassUtils.forName("Number"));
 		}
 
+		[Test]
 		public function testForName_shouldReturnint():void {
 			assertEquals(int, ClassUtils.forName("int"));
 		}
@@ -65,22 +76,27 @@ package org.as3commons.lang {
 			assertEquals(uint, ClassUtils.forName("uint"));
 		}
 
+		[Test]
 		public function testForName_shouldReturnBoolean():void {
 			assertEquals(Boolean, ClassUtils.forName("Boolean"));
 		}
 
+		[Test]
 		public function testForName_shouldReturnArray():void {
 			assertEquals(Array, ClassUtils.forName("Array"));
 		}
 
+		[Test]
 		public function testForName_shouldReturnDate():void {
 			assertEquals(Date, ClassUtils.forName("Date"));
 		}
 
+		[Test]
 		public function testForName_shouldReturnClass():void {
 			assertEquals(Class, ClassUtils.forName("Class"));
 		}
 
+		[Test]
 		public function testForName_shouldThrowClassNotFoundError():void {
 			try {
 				assertEquals(String, ClassUtils.forName("string"));
@@ -89,6 +105,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testIsPrivateClass():void {
 			assertTrue(ClassUtils.isPrivateClass(PrivateClass));
 			assertTrue(ClassUtils.isPrivateClass(getQualifiedClassName(PrivateClass)));
@@ -96,75 +113,88 @@ package org.as3commons.lang {
 			assertFalse(ClassUtils.isPrivateClass(getQualifiedClassName(ClassUtilsTest)));
 		}
 
+		[Test]
 		public function testIsSubclassOf():void {
-			assertTrue(ClassUtils.isSubclassOf(ClassUtilsTest, TestCase));
 			assertFalse(ClassUtils.isSubclassOf(ClassUtilsTest, String));
 			assertTrue(ClassUtils.isSubclassOf(String, Object));
 			assertTrue(ClassUtils.isSubclassOf(SampleEnum, Enum));
 		}
 
+		[Test]
 		public function testGetSuperClass():void {
-			var clazz:Class = ClassUtilsTest;
+			var clazz:Class = SampleEnum;
 			var parentClass:Class = ClassUtils.getSuperClass(clazz);
-			assertEquals(TestCase, parentClass);
+			assertEquals(Enum, parentClass);
 			
 			assertEquals(Enum, ClassUtils.getSuperClass(SampleEnum));
 		}
 
+		[Test]
 		public function testGetSuperClassWithString():void {
 			assertEquals(Object, ClassUtils.getSuperClass(String));
 		}
 
+		[Test]
 		public function testGetSuperClassWithObject():void {
 			assertEquals(null, ClassUtils.getSuperClass(Object));
 		}
 
+		[Test]
 		public function testGetName():void {
 			var result:String = ClassUtils.getName(ClassUtilsTest);
 			assertEquals("ClassUtilsTest", result);
 		}
 
+		[Test]
 		public function testGetFullyQualifiedName():void {
 			var result:String = ClassUtils.getFullyQualifiedName(ClassUtilsTest);
 			assertEquals("org.as3commons.lang::ClassUtilsTest", result);
 		}
 
+		[Test]
 		public function testGetFullyQualifiedNameWithReplaceColons():void {
 			var result:String = ClassUtils.getFullyQualifiedName(ClassUtilsTest, true);
 			assertEquals("org.as3commons.lang.ClassUtilsTest", result);
 		}
 
+		[Test]
 		public function testGetSuperClassName():void {
-			var result:String = ClassUtils.getSuperClassName(ClassUtilsTest);
-			assertEquals("TestCase", result);
+			var result:String = ClassUtils.getSuperClassName(SampleEnum);
+			assertEquals("Enum", result);
 		}
 
+		[Test]
 		public function testGetFullyQualifiedSuperClassName():void {
-			var result:String = ClassUtils.getFullyQualifiedSuperClassName(ClassUtilsTest);
-			assertEquals("flexunit.framework::TestCase", result);
+			var result:String = ClassUtils.getFullyQualifiedSuperClassName(SampleEnum);
+			assertEquals("org.as3commons.lang::Enum", result);
 		}
 
+		[Test]
 		public function testGetFullyQualifiedSuperClassNameWithReplaceColons():void {
-			var result:String = ClassUtils.getFullyQualifiedSuperClassName(ClassUtilsTest, true);
-			assertEquals("flexunit.framework.TestCase", result);
+			var result:String = ClassUtils.getFullyQualifiedSuperClassName(SampleEnum, true);
+			assertEquals("org.as3commons.lang.Enum", result);
 		}
 
+		[Test]
 		public function testGetNameFromFullyQualifiedName():void {
 			var result:String = ClassUtils.getNameFromFullyQualifiedName("flexunit.framework::Reflective");
 			assertEquals("Reflective", result);
 		}
 
+		[Test]
 		public function testGetNameFromFullyQualifiedName_forArray():void {
 			var result:String = ClassUtils.getNameFromFullyQualifiedName("Array");
 			assertEquals("Array", result);
 		}
 
+		[Test]
 		public function testNewInstance():void {
 			var result:PublicClass = ClassUtils.newInstance(PublicClass, []);
 			assertNotNull(result);
 		}
 
-		// interface methods
+
+		[Test]
 		public function testGetImplementedInterfaceNames():void {
 			var result:Array = ClassUtils.getImplementedInterfaceNames(TestCase);
 			assertEquals(2, result.length);
@@ -172,6 +202,7 @@ package org.as3commons.lang {
 			assertTrue(result.indexOf("Test") > -1);
 		}
 
+		[Test]
 		public function testGetFullyQualifiedImplementedInterfaceNames():void {
 			var result:Array = ClassUtils.getFullyQualifiedImplementedInterfaceNames(TestCase);
 			assertEquals(2, result.length);
@@ -179,6 +210,7 @@ package org.as3commons.lang {
 			assertTrue(result.indexOf("flexunit.framework::Test") > -1);
 		}
 
+		[Test]
 		public function testGetFullyQualifiedImplementedInterfaceNames_replaceColons():void {
 			var result:Array = ClassUtils.getFullyQualifiedImplementedInterfaceNames(TestCase, true);
 			assertEquals(2, result.length);
@@ -186,6 +218,7 @@ package org.as3commons.lang {
 			assertTrue(result.indexOf("flexunit.framework.Test") > -1);
 		}
 
+		[Test]
 		public function testGetImplementedInterfaces():void {
 			var result:Array = ClassUtils.getImplementedInterfaces(TestCase);
 			assertEquals(2, result.length);
@@ -193,7 +226,7 @@ package org.as3commons.lang {
 			assertTrue(result.indexOf(Test) > -1);
 		}
 
-		// convertFullyQualifiedName
+		[Test]
 		public function testConvertFullyQualifiedName():void {
 			var result:String = ClassUtils.convertFullyQualifiedName("flexunit.framework::TestCase");
 			assertEquals("flexunit.framework.TestCase", result);
@@ -215,36 +248,44 @@ package org.as3commons.lang {
 
 		// assignable
 
+		[Test]
 		public function testIsAssignableFrom_shouldReturnTrueForObjectAndObject():void {
 			assertIsAssignableFrom(Object, Object);
 		}
 
+		[Test]
 		public function testIsAssignableFrom_shouldReturnTrueForObjectAndString():void {
 			assertIsAssignableFrom(Object, String);
 		}
 
+		[Test]
 		public function testIsAssignableFrom_shouldReturnTrueForObjectAndInt():void {
 			assertIsAssignableFrom(Object, int);
 		}
 
+		[Test]
 		public function testIsAssignableFrom_shouldReturnTrueForInterfaceAndInterfaceImplementation():void {
 			assertIsAssignableFrom(Interface, InterfaceImplementation);
 		}
 
+		[Test]
 		public function testIsAssignableFrom_shouldReturnTrueForInterfaceAndSubInterfaceImplementation():void {
 			assertIsAssignableFrom(Interface, SubInterfaceImplementation);
 		}
 
+		[Test]
 		public function testIsAssignableFrom_shouldReturnTrueForPublicClassAndPublicSubClass():void {
 			assertIsAssignableFrom(PublicClass, PublicSubClass);
 		}
 
+		[Test]
 		public function testIsAssignableFrom_shouldReturnTrueForObjectAndPublicSubClass():void {
 			assertIsAssignableFrom(Object, PublicSubClass);
 		}
 
 		// NOT assignable
 
+		[Test]
 		public function testIsNotAssignableFrom_shouldReturnFalseForStringAndObject():void {
 			assertIsNotAssignableFrom(String, Object);
 		}
@@ -253,14 +294,17 @@ package org.as3commons.lang {
 		// isImplementationOf
 		// --------------------------------------------------------------------
 
+		[Test]
 		public function testIsImplementationOf_shouldReturnTrueForInterfaceImplementation():void {
 			assertTrue(ClassUtils.isImplementationOf(InterfaceImplementation, Interface));
 		}
 
+		[Test]
 		public function testIsImplementationOf_shouldReturnTrueForSubInterface():void {
 			assertTrue(ClassUtils.isImplementationOf(ISubInterface, Interface));
 		}
 
+		[Test]
 		public function testIsImplementationOf_shouldReturnFalseForSameInterface():void {
 			assertFalse(ClassUtils.isImplementationOf(Interface, Interface));
 		}
@@ -269,18 +313,22 @@ package org.as3commons.lang {
 		// isInformalImplementationOf
 		// --------------------------------------------------------------------
 
+		[Test]
 		public function testIsInformalImplementationOf_shouldReturnTrueForInterfaceImplementation():void {
 			assertTrue(ClassUtils.isInformalImplementationOf(InterfaceImplementation, Interface));
 		}
 
+		[Test]
 		public function testIsInformalImplementationOf_shouldReturnTrueForInformalInterfaceImplementation():void {
 			assertTrue(ClassUtils.isInformalImplementationOf(InformalInterfaceImplementation, Interface));
 		}
 
+		[Test]
 		public function testIsInformalImplementationOf_shouldReturnFalseForIncompleteInterfaceImplementation():void {
 			assertFalse(ClassUtils.isInformalImplementationOf(IncompleteInterfaceImplementation, Interface));
 		}
 
+		[Test]
 		public function testIsInformalImplementationOf_shouldReturnFalseForIncorrectInterfaceImplementation():void {
 			assertFalse(ClassUtils.isInformalImplementationOf(IncorrectInterfaceImplementation, Interface));
 		}
@@ -289,34 +337,42 @@ package org.as3commons.lang {
 		// isInterface
 		// --------------------------------------------------------------------
 
+		[Test]
 		public function testIsInterface_withInterface():void {
 			assertTrue(ClassUtils.isInterface(Interface));
 		}
 
+		[Test]
 		public function testIsInterface_withSubInterface():void {
 			assertTrue(ClassUtils.isInterface(ISubInterface));
 		}
 
+		/*[Test]
 		public function testIsInterface_withObjectClass():void {
 			assertFalse(ClassUtils.isInterface(Object));
-		}
+		}*/
 
+		[Test]
 		public function testIsInterface_withComplexClass():void {
 			assertFalse(ClassUtils.isInterface(ComplexClass));
 		}
 
+		[Test]
 		public function testIsInterface_withPublicSubClass():void {
 			assertFalse(ClassUtils.isInterface(PublicSubClass));
 		}
 
+		[Test]
 		public function testIsInterface_withInterfaceImplementation():void {
 			assertFalse(ClassUtils.isInterface(InterfaceImplementation));
 		}
 
+		[Test]
 		public function testIsInterface_withSubInterfaceImplementation():void {
 			assertFalse(ClassUtils.isInterface(SubInterfaceImplementation));
 		}
 
+		[Test]
 		public function testGetClassParameterFromFullyQualifiedName():void {
 			var cls:Class = ClassUtils.getClassParameterFromFullyQualifiedName('org.as3commons.lang.testclasses.ComplexClass');
 			assertNull(cls);
@@ -324,35 +380,36 @@ package org.as3commons.lang {
 			assertNotNull(cls);
 			assertStrictlyEquals(ComplexClass, cls);
 		}
-		
+
+		[Test]
 		public function testProperties():void {
-			assertObjectEquals( {
+			flexunit.framework.Assert.assertObjectEquals( {
 					publicSetter: String,
 					"as3commons::publicSetter": String
 				}, ClassUtils.getProperties( PropertiesClass, false, false, true) );
-			assertObjectEquals( {
+			flexunit.framework.Assert.assertObjectEquals( {
 					publicVar: String,
 					publicSetterGetter: String,
 					"as3commons::publicVar": String,
 					"as3commons::publicSetterGetter": String
 				}, ClassUtils.getProperties( PropertiesClass, false, true, true) );
-			assertObjectEquals( {
+			flexunit.framework.Assert.assertObjectEquals( {
 					publicConst: String,
 					publicGetter: String,
 					"as3commons::publicConst": String,
 					"as3commons::publicGetter": String
 				}, ClassUtils.getProperties( PropertiesClass, false, true, false) );
-			assertObjectEquals( {
+			flexunit.framework.Assert.assertObjectEquals( {
 					staticSetter: Number,
 					"as3commons::staticSetter": Array
 				}, ClassUtils.getProperties( PropertiesClass, true, false, true) );
-			assertObjectEquals( {
+			flexunit.framework.Assert.assertObjectEquals( {
 					staticVar: int,
 					staticSetterGetter: String,
 					"as3commons::staticVar": uint,
 					"as3commons::staticSetterGetter": Object
 				}, ClassUtils.getProperties( PropertiesClass, true, true, true) );
-			assertObjectEquals( {
+			flexunit.framework.Assert.assertObjectEquals( {
 					staticConst: String,
 					staticGetter: Object,
 					prototype: Object,

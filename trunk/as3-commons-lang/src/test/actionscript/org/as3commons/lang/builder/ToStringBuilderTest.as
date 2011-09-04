@@ -16,33 +16,37 @@
 package org.as3commons.lang.builder {
 	
 	import flexunit.framework.TestCase;
-	
+
+	import org.flexunit.asserts.assertEquals;
+
 	/**
 	 * @author Christophe Herreman
 	 */
-	public class ToStringBuilderTest extends TestCase {
+	public class ToStringBuilderTest {
 		// please note that all test methods should start with 'test' and should be public
 		
 		private var baseStr:String = "Object";
 		
 		private var base:Object = {};
 		
-		public function ToStringBuilderTest(methodName:String = null) {
-			super(methodName);
+		public function ToStringBuilderTest() {
 		}
-		
+
+		[Test]
 		public function testBoolean():void {
 			assertEquals(baseStr + "[true]", new ToStringBuilder(base).append(true).toString());
 			assertEquals(baseStr + "[a=true]", new ToStringBuilder(base).append(true, "a").toString());
 			assertEquals(baseStr + "[a=true,b=false]", new ToStringBuilder(base).append(true, "a").append(false, "b").toString());
 		}
-		
+
+		[Test]
 		public function testInt():void {
 			assertEquals(baseStr + "[3]", new ToStringBuilder(base).append(3).toString());
 			assertEquals(baseStr + "[a=3]", new ToStringBuilder(base).append(3, "a").toString());
 			assertEquals(baseStr + "[a=3,b=4]", new ToStringBuilder(base).append(3, "a").append(4, "b").toString());
 		}
-		
+
+		[Test]
 		public function testNumber():void {
 			assertEquals(baseStr + "[3.2]", new ToStringBuilder(base).append(3.2).toString());
 			assertEquals(baseStr + "[a=3.2]", new ToStringBuilder(base).append(3.2, "a").toString());

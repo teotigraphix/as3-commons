@@ -16,10 +16,17 @@
 package org.as3commons.lang {
 	import flexunit.framework.TestCase;
 
+	import org.flexunit.asserts.assertEquals;
+
+	import org.flexunit.asserts.assertFalse;
+
+	import org.flexunit.asserts.assertTrue;
+	import org.flexunit.asserts.fail;
+
 	/**
 	 * @author James Ghandour
 	 */
-	public class DateUtilsTest extends TestCase {
+	public class DateUtilsTest {
 
 		private static const YEAR:int=2005;
 		private static const MONTH:int=2;
@@ -30,13 +37,13 @@ package org.as3commons.lang {
 		private static const MILLIS:int=500;
 		private static const CONTROL_DATE:Date=new Date(YEAR, MONTH, DAY_OF_MONTH, HOUR, MINUTE, SECOND, MILLIS);
 
-		public function DateUtilsTest(methodName:String=null) {
-			super(methodName);
+		public function DateUtilsTest() {
 		}
 
 		/*
 		 *  Comparison Functions
 		 */
+		[Test]
 		public function testIsSameDay():void {
 			assertTrue(DateUtils.isSameDay(new Date(), new Date()));
 			assertTrue(DateUtils.isSameDay(CONTROL_DATE, CONTROL_DATE));
@@ -91,6 +98,7 @@ package org.as3commons.lang {
 
 		}
 
+		[Test]
 		public function testIsSameInstant():void {
 			var date:Date=new Date();
 			assertTrue(DateUtils.isSameInstant(CONTROL_DATE, CONTROL_DATE));
@@ -104,6 +112,8 @@ package org.as3commons.lang {
 		/*
 		 *  Add Functions
 		 */
+
+		[Test]
 		public function testAddYears():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.setFullYear(expectedDate.fullYear + 1, expectedDate.month, expectedDate.date);
@@ -135,6 +145,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testAddMonths():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.setMonth(expectedDate.month + 1, expectedDate.date);
@@ -172,6 +183,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testAddWeeks():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.date+=7;
@@ -186,6 +198,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testAddDays():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.date++;
@@ -207,6 +220,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testAddHours():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.hours++;
@@ -227,6 +241,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testAddMinutes():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.minutes++;
@@ -247,6 +262,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testAddSeconds():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.seconds++;
@@ -267,6 +283,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testAddMilliseconds():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.milliseconds++;
@@ -292,6 +309,8 @@ package org.as3commons.lang {
 		/*
 		 * Set Functions
 		 */
+
+		[Test]
 		public function testSetYear():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.setFullYear(YEAR + 1, MONTH, DAY_OF_MONTH);
@@ -318,6 +337,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testSetMonth():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.setMonth(MONTH + 1, DAY_OF_MONTH);
@@ -350,6 +370,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testSetDay():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.setDate(DAY_OF_MONTH + 1);
@@ -364,6 +385,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testSetHour():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.setHours(HOUR + 1, MINUTE, SECOND);
@@ -378,6 +400,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testSetMinute():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.setMinutes(MINUTE + 1, SECOND, MILLIS);
@@ -392,6 +415,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testSetSeconds():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.setSeconds(SECOND + 1, MILLIS);
@@ -406,6 +430,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testSetMillseconds():void {
 			var expectedDate:Date=cloneDate(CONTROL_DATE);
 			expectedDate.setMilliseconds(MILLIS + 1);
@@ -423,6 +448,8 @@ package org.as3commons.lang {
 		/*
 		 * Conversion Functions
 		 */
+
+		[Test]
 		public function testGetUTCDate():void {
 			var actualDate:Date=DateUtils.getUTCDate(CONTROL_DATE);
 			var expectedDate:Date=new Date(CONTROL_DATE.fullYearUTC, CONTROL_DATE.monthUTC, CONTROL_DATE.dateUTC, CONTROL_DATE.hoursUTC, CONTROL_DATE.minutesUTC, CONTROL_DATE.secondsUTC, CONTROL_DATE.millisecondsUTC);
@@ -432,6 +459,8 @@ package org.as3commons.lang {
 		/*
 		 * Period Functions
 		 */
+
+		[Test]
 		public function testGetStartOfYear():void {
 			var expectedDate:Date=new Date(YEAR, 0, 1, 0, 0, 0, 0);
 			var actualDate:Date=DateUtils.getStartOfYear(CONTROL_DATE);
@@ -445,6 +474,8 @@ package org.as3commons.lang {
 			}
 		}
 
+
+		[Test]
 		public function testGetStartOfMonth():void {
 			var expectedDate:Date=new Date(YEAR, MONTH, 1, 0, 0, 0, 0);
 			var actualDate:Date=DateUtils.getStartOfMonth(CONTROL_DATE);
@@ -458,6 +489,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testGetStartOfWeek():void {
 			var expectedDate:Date=new Date(YEAR, MONTH, DAY_OF_MONTH - CONTROL_DATE.day, 0, 0, 0, 0);
 			var actualDate:Date=DateUtils.getStartOfWeek(CONTROL_DATE);
@@ -472,6 +504,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testGetStartOfDay():void {
 			var expectedDate:Date=new Date(YEAR, MONTH, DAY_OF_MONTH, 0, 0, 0, 0);
 			var actualDate:Date=DateUtils.getStartOfDay(CONTROL_DATE);
@@ -486,6 +519,7 @@ package org.as3commons.lang {
 		}
 
 
+		[Test]
 		public function testGetEndOfYear():void {
 			var expectedDate:Date=new Date(YEAR, 11, 31, 23, 59, 59, 999);
 			var actualDate:Date=DateUtils.getEndOfYear(CONTROL_DATE);
@@ -499,6 +533,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testGetEndOfMonth():void {
 			var expectedDate:Date=new Date(YEAR, MONTH, 31, 23, 59, 59, 999);
 			var actualDate:Date=DateUtils.getEndOfMonth(CONTROL_DATE);
@@ -517,6 +552,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testGetEndOfWeek():void {
 			var expectedDate:Date=new Date(YEAR, MONTH, 5, 23, 59, 59, 999);
 			var actualDate:Date=DateUtils.getEndOfWeek(CONTROL_DATE);
@@ -531,6 +567,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testGetEndOfDay():void {
 			var expectedDate:Date=new Date(YEAR, MONTH, DAY_OF_MONTH, 23, 59, 59, 999);
 			var actualDate:Date=DateUtils.getEndOfDay(CONTROL_DATE);
@@ -548,6 +585,8 @@ package org.as3commons.lang {
 		/*
 		 * Diff functions
 		 */
+
+		[Test]
 		public function testGetDaysDiff():void {
 			var endDate:Date=DateUtils.addDays(CONTROL_DATE, 1);
 			assertEquals(1, DateUtils.getDaysDiff(CONTROL_DATE, endDate));
@@ -581,6 +620,7 @@ package org.as3commons.lang {
 			
 		}
 
+		[Test]
 		public function testGetHoursDiff():void {
 			var endDate:Date=DateUtils.addDays(CONTROL_DATE, 1);
 			assertEquals(24, DateUtils.getHoursDiff(CONTROL_DATE, endDate));
@@ -611,6 +651,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testGetMinutesDiff():void {
 			var endDate:Date=DateUtils.addDays(CONTROL_DATE, 1);
 			assertEquals(24 * DateUtils.MINUTES_PER_HOUR, DateUtils.getMinutesDiff(CONTROL_DATE, endDate));
@@ -651,6 +692,8 @@ package org.as3commons.lang {
 		/*
 		 * Misc Functions
 		 */
+
+		[Test]
 		public function testIsLeapYear():void {
 			assertTrue(DateUtils.isLeapYear(new Date(2004, 1, 1)));
 			assertTrue(DateUtils.isLeapYear(new Date(2000, 1, 1)));
@@ -666,6 +709,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function isWeekDay():void {
 			assertTrue(DateUtils.isWeekDay(new Date(2010, 0, 1))); // Friday
 			assertFalse(DateUtils.isWeekDay(new Date(2010, 0, 2)));
@@ -683,6 +727,7 @@ package org.as3commons.lang {
 			}
 		}
 
+		[Test]
 		public function testIsWeekEnd():void {
 			assertFalse(DateUtils.isWeekEnd(new Date(2010, 0, 1))); // Friday
 			assertTrue(DateUtils.isWeekEnd(new Date(2010, 0, 2)));

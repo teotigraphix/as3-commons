@@ -16,12 +16,17 @@
 package org.as3commons.lang {
 	import flexunit.framework.TestCase;
 
-	public class HashArrayTest extends TestCase {
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertNotNull;
+	import org.flexunit.asserts.assertNull;
+	import org.flexunit.asserts.assertStrictlyEquals;
 
-		public function HashArrayTest(methodName:String = null) {
-			super(methodName);
+	public class HashArrayTest {
+
+		public function HashArrayTest() {
 		}
 
+		[Test]
 		public function testInstantiation():void {
 			var h:HashArray = new HashArray('testProperty');
 			assertEquals(0, h.length);
@@ -29,12 +34,14 @@ package org.as3commons.lang {
 			assertEquals(1, h.length);
 		}
 
+		[Test]
 		public function testGet():void {
 			var h:HashArray = new HashArray('testProperty', false, [{testProperty: 'test'}]);
 			assertNotNull(h.get('test'));
 			assertNull(h.get('test2'));
 		}
 
+		[Test]
 		public function testPop():void {
 			var origObj:Object = {testProperty: 'test'};
 			var h:HashArray = new HashArray('testProperty', false, [origObj]);
@@ -45,6 +52,7 @@ package org.as3commons.lang {
 			assertNull(h.get('test'));
 		}
 
+		[Test]
 		public function testShift():void {
 			var origObj:Object = {testProperty: 'test'};
 			var h:HashArray = new HashArray('testProperty', false, [origObj]);
@@ -55,6 +63,7 @@ package org.as3commons.lang {
 			assertNull(h.get('test'));
 		}
 
+		[Test]
 		public function testPush():void {
 			var origObj:Object = {testProperty: 'test'};
 			var h:HashArray = new HashArray('testProperty');
@@ -63,6 +72,7 @@ package org.as3commons.lang {
 			assertNotNull(h.get('test'));
 		}
 
+		[Test]
 		public function testDisallowDuplicates():void {
 			var origObj:Object = {testProperty: 'test'};
 			var origObj2:Object = {testProperty: 'test'};
@@ -74,6 +84,7 @@ package org.as3commons.lang {
 			assertStrictlyEquals(origObj2, h.get('test'));
 		}
 
+		[Test]
 		public function testAllowDuplicates():void {
 			var origObj:Object = {testProperty: 'test'};
 			var origObj2:Object = {testProperty: 'test'};
