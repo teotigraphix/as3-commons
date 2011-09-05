@@ -21,36 +21,22 @@
  */
 package org.as3commons.logging.setup {
 	
-	import org.as3commons.logging.api.ILogSetup;
 	import org.as3commons.logging.api.Logger;
+	import org.as3commons.logging.api.ILogSetup;
 	
 	/**
-	 * <code>SimpleRegExpSetup</code> allows to apply targets just in certain caes. 
-	 * 
-	 * <listing>
-	 *    // Only trace statements by martin or christophe
-	 *    LOGGER_FACTORY.setup = new SimpleRegExpSetup(TRACE_TARGET,null,/^(Martin|Christophe)$/);
-	 *    
-	 *    // Only trace statements that start with org.as3commons.
-	 *    LOGGER_FACTORY.setup = new SimpleRegExpSetup(TRACE_TARGET,/^org\.as3commons\./);
-	 * </listing>
-	 * 
-	 * @author Martin Heidegger
-	 * @since 2.5
+	 * @author mh
 	 */
-	public final class SimpleRegExpSetup implements ILogSetup {
+	public final class WrapperRegExpSetup implements ILogSetup {
 		
 		/** Target applied to the loggers. */
-		private var _target:ILogTarget;
+		private var _target:ILogSetup;
 		
 		/** Rule to which the name has to match. */
 		private var _nameRule:RegExp;
 		
 		/** Rule to which the person name has to match. */
 		private var _personRule:RegExp;
-		
-		/** Level to which the setup will be passed */
-		private var _level:LogSetupLevel;
 		
 		/**
 		 * Constructs a new <code>SimpleRegExpSetup</code> that passes a level
@@ -59,18 +45,16 @@ package org.as3commons.logging.setup {
 		 * <p>You have to pass in eighter a rule for the person to match or the
 		 * name to match.</p>
 		 * 
-		 * @param target Target to be used.
+		 * @param setup Target to be used.
 		 * @param nameRule Rule to which the name has to match for the target to be applied
 		 * @param personRule Rule to which the person has to match for the target to be applied
-		 * @param level Level to which the target should be applied (default=ALL levels);
 		 * @throws Error if neighter a rule for name nor one for person will be passed in.
 		 */
-		public function SimpleRegExpSetup(target:ILogTarget, nameRule:RegExp=null,
-										  personRule:RegExp=null, level:LogSetupLevel=null) {
+		public function WrapperRegExpSetup(target:ILogSetup, nameRule:RegExp=null,
+										  personRule:RegExp=null) {
 			_target = target;
 			_nameRule = nameRule;
 			_personRule = personRule;
-			_level = level||LogSetupLevel.ALL;
 			if(!_nameRule && !_personRule) {
 				throw new Error("Eighter a class rule or a person rule has to be given");
 			}
@@ -82,7 +66,7 @@ package org.as3commons.logging.setup {
 		public function applyTo(logger:Logger): void {
 			if(    (!_nameRule  || _nameRule.test(logger.name))
 				&& (!_personRule || _personRule.test(logger.person)) ) {
-				_level.applyTo(logger, _target);
+				_target.applyTo(logger);
 			}
 		}
 	}
