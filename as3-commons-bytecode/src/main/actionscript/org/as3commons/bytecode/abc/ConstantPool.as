@@ -125,6 +125,7 @@ package org.as3commons.bytecode.abc {
 
 			_namespaceSetPool = [];
 			addNamespaceSet(new NamespaceSet([LNamespace.ASTERISK]));
+			//addNamespaceSet(new NamespaceSet());
 
 			_multinamePool = [];
 			addMultiname(new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK));
