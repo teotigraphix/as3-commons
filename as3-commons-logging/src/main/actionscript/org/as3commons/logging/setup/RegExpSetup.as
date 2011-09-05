@@ -66,11 +66,8 @@ package org.as3commons.logging.setup {
 		/** Setup to be used for addNoLogRule */
 		private static const NO_LOG_SETUP: ILogSetup = new SimpleTargetSetup(null);
 		
-		/** First rule of the setup. */
-		private var _firstRule: RegExpRule;
-		
-		/** Last rule of the setup. */
-		private var _lastRule: RegExpRule;
+		/** Setups*/
+		private var _setup:ILogSetup;
 		
 		/**
 		 * Constructs a new <code>RegExpSetup</code>.
@@ -87,13 +84,7 @@ package org.as3commons.logging.setup {
 		 * @return This setup instance.
 		 */
 		public function addRule( classRule:RegExp, setup:ILogSetup, personRule:RegExp=null ): RegExpSetup {
-			var newRule: RegExpRule = new RegExpRule(classRule, setup, personRule);
-			if( _lastRule ) {
-				_lastRule.next = newRule;
-			} else {
-				_firstRule = newRule;
-			}
-			_lastRule = newRule;
+			_setup = mergeSetups( _setup, new WrapperRegExpSetup(setup, classRule, personRule) );
 			return this;
 		}
 		
@@ -111,11 +102,8 @@ package org.as3commons.logging.setup {
 		 * @return This setup instance.
 		 */
 		public function addTargetRule(rule:RegExp, target:ILogTarget, level:LogSetupLevel=null, personRule:RegExp=null): RegExpSetup {
-			return addRule(
-				rule,
-				level ? new LevelTargetSetup(target, level) : new SimpleTargetSetup(target),
-				personRule
-			);
+			_setup = mergeSetups( _setup, new SimpleRegExpSetup(target, rule, personRule, level) );
+			return this;
 		}
 		
 		/**
@@ -136,53 +124,13 @@ package org.as3commons.logging.setup {
 		 * @inheritDoc
 		 */
 		public function applyTo(logger:Logger):void {
-			logger.allTargets = null;
-			var current: RegExpRule = _firstRule;
-			var name: String = logger.name;
-			var person: String = logger.person;
-			while( current ) {
-				// Apply the setups just to matching targets
-				if( current.classRule.test(name)
-					&& (!current.personRule || current.personRule.test(person)) ) {
-					current.setup.applyTo(logger);
-				}
-				current = current.next;
-			}
+			_setup.applyTo(logger);
 		}
 		
 		/**
-		 * @inheritDoc
+		 * @deprecated
+		 * @since 2.5.3
 		 */
-		public function dispose():void {
-			var current: RegExpRule = _firstRule;
-			while( current ) {
-				current = current.dispose();
-			}
-			_firstRule = null;
-		}
-	}
-}
-
-import org.as3commons.logging.api.ILogSetup;
-
-internal class RegExpRule {
-	public var classRule: RegExp;
-	public var personRule: RegExp;
-	public var setup: ILogSetup;
-	public var next: RegExpRule;
-	
-	public function RegExpRule(classRule:RegExp, setup:ILogSetup, personRule:RegExp) {
-		this.classRule = classRule;
-		this.setup = setup;
-		this.personRule = personRule;
-	}
-	
-	public function dispose():RegExpRule {
-		var result: RegExpRule = next;
-		classRule = null;
-		personRule = null;
-		setup = null;
-		next = null;
-		return result;
+		public function dispose():void {}
 	}
 }

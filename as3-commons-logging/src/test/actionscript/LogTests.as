@@ -1,15 +1,22 @@
 package {
-	import org.as3commons.logging.setup.target.SOSTarget;
+	
+	import org.as3commons.logging.api.ILogSetup;
 	import org.as3commons.logging.api.LOGGER_FACTORY;
+	import org.as3commons.logging.api.Logger;
+	import org.as3commons.logging.api.LoggerFactory;
+	import org.as3commons.logging.api.getLogger;
+	import org.as3commons.logging.level.DEBUG;
+	import org.as3commons.logging.setup.SimpleTargetSetup;
+	import org.as3commons.logging.setup.XMLSetupTest;
+	import org.as3commons.logging.setup.target.MergedTest;
+	import org.as3commons.logging.setup.target.SOSTarget;
 	import org.as3commons.logging.simple.aTrace;
-	import org.as3commons.logging.integration.LogMeisterIntegrationTest;
-	import org.as3commons.logging.integration.OSMFIntegrationTest;
-	import org.as3commons.logging.integration.SLF4ASIntegrationTest;
-	import org.as3commons.logging.integration.YUIIntegrationTest;
-	import flash.display.Sprite;
-	import flash.display.Stage;
-	import flash.sampler.getSize;
-	import flash.utils.getTimer;
+	import org.as3commons.logging.util.LogMessageFormatter;
+	import org.as3commons.logging.util.SWFInfo;
+	import org.as3commons.logging.util.toLogName;
+	import org.flexunit.internals.TraceListener;
+	import org.flexunit.runner.FlexUnitCore;
+	
 	import mx.logging.AbstractTarget;
 	import mx.logging.ILoggingTarget;
 	import mx.logging.Log;
@@ -19,41 +26,12 @@ package {
 	import mx.logging.errors.InvalidCategoryError;
 	import mx.logging.errors.InvalidFilterError;
 	import mx.logging.targets.TraceTarget;
-	import org.as3commons.logging.LogLevelTest;
-	import org.as3commons.logging.api.ILogSetup;
-	import org.as3commons.logging.api.Logger;
-	import org.as3commons.logging.api.LoggerFactory;
-	import org.as3commons.logging.api.getLogger;
-	import org.as3commons.logging.integration.ASAPIntegrationTest;
-	import org.as3commons.logging.integration.FlexIntegrationTest;
-	import org.as3commons.logging.integration.MateIntegrationTest;
-	import org.as3commons.logging.integration.Progression4IntegrationTest;
-	import org.as3commons.logging.integration.PushButtonIntegrationTest;
-	import org.as3commons.logging.integration.SpiceLibIntegrationTest;
-	import org.as3commons.logging.integration.SwizIntegrationTest;
-	import org.as3commons.logging.level.DEBUG;
-	import org.as3commons.logging.setup.ComplexSetupTest;
-	import org.as3commons.logging.setup.FlexSetupTest;
-	import org.as3commons.logging.setup.LeveledTargetSetupTest;
-	import org.as3commons.logging.setup.LogSetupTest;
-	import org.as3commons.logging.setup.LogTargetLevelTest;
-	import org.as3commons.logging.setup.SimpleTargetSetup;
-	import org.as3commons.logging.setup.SimpleTargetSetupTest;
-	import org.as3commons.logging.setup.target.AirTargetTest;
-	import org.as3commons.logging.setup.target.BufferTest;
-	import org.as3commons.logging.setup.target.FrameBufferTest;
-	import org.as3commons.logging.setup.target.MergedTest;
-	import org.as3commons.logging.setup.target.SWFInfoTest;
-	import org.as3commons.logging.setup.target.TextFieldTest;
-	import org.as3commons.logging.util.ByteArrayCopyTest;
-	import org.as3commons.logging.util.HereTest;
-	import org.as3commons.logging.util.JsonXifyTest;
-	import org.as3commons.logging.util.LogMessageFormatter;
-	import org.as3commons.logging.util.LogMessageFormatterTest;
-	import org.as3commons.logging.util.SWFInfo;
-	import org.as3commons.logging.util.toLogName;
-	import org.flexunit.internals.TraceListener;
-	import org.flexunit.runner.FlexUnitCore;
+
+	import flash.display.Sprite;
+	import flash.display.Stage;
+	import flash.sampler.getSize;
+	import flash.utils.getTimer;
+	import flash.utils.setTimeout;
 
 
 
@@ -136,11 +114,15 @@ package {
 			str += "Difference: " + (mxLoggingSize-as3commonsSize);
 			
 			getLogger("size").info( str );
-			
+			setTimeout( run, 80 );
+		}
+		private function run(): void {
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
 			core.run( [
-				new JsonXifyTest(),
+				new XMLSetupTest(),
+				new MergedTest(),
+				/*new JsonXifyTest(),
 				new HereTest(),
 				new ByteArrayCopyTest(),
 				new YUIIntegrationTest(),
@@ -163,11 +145,10 @@ package {
 				new FlexSetupTest(),
 				new FrameBufferTest(),
 				new BufferTest(),
-				new MergedTest(),
 				new TextFieldTest(),
 				new AirTargetTest(),
 				new OSMFIntegrationTest(),
-				new LogMeisterIntegrationTest()
+				new LogMeisterIntegrationTest()*/
 			]);
 		}
 	}

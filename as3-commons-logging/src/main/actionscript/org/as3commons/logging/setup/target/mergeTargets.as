@@ -47,11 +47,15 @@ package org.as3commons.logging.setup.target {
 	public function mergeTargets( ...targets ):ILogTarget {
 		var contains: Dictionary = new Dictionary();
 		var target: ILogTarget = null;
-		while( targets.length > 0 ) {
-			var current: ILogTarget = targets.shift() as ILogTarget;
-			if( current && !contains[current] ) {
+		while (targets.length > 0) {
+			var currentRaw: * = targets.shift();
+			if (currentRaw is Array) {
+				currentRaw = mergeTargets.apply(null, currentRaw);
+			}
+			var current: ILogTarget = currentRaw as ILogTarget;
+			if (current && !contains[current]) {
 				contains[current] = true;
-				if( target ) {
+				if (target) {
 					target = new MergedTarget( target, current );
 				} else {
 					target = current;

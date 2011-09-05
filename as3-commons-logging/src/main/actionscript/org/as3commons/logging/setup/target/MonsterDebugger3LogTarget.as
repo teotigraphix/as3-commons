@@ -36,7 +36,7 @@ package org.as3commons.logging.setup.target {
 	 * @see org.as3commons.logging.setup.target.MonsterDebugger3TraceTarget
 	 * @see http://demonsterdebugger.com/asdoc/com/demonsters/debugger/MonsterDebugger.html#log()
 	 */
-	public class MonsterDebugger3LogTarget implements ILogTarget {
+	public final class MonsterDebugger3LogTarget implements ILogTarget {
 		
 		/** Formatter that renders the log statements via MonsterDebugger.log(). */
 		private const _formatter : LogMessageFormatter = new LogMessageFormatter("{logLevel} {shortName}{atPerson} - {message}");

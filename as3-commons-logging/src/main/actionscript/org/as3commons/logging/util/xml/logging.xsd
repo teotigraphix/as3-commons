@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://as3commons.org/logging/1" xmlns:tns="http://as3commons.org/logging/1" elementFormDefault="qualified">
+
+
+    <complexType name="Setup">
+    	<sequence maxOccurs="unbounded" minOccurs="0">
+    		<choice>
+    			<element name="rule" type="tns:Rule"></element>
+    			<element name="target" type="tns:TargetDefinition"></element>
+    		</choice>
+    	</sequence>
+    </complexType>
+
+    <complexType name="Rule">
+    	<choice maxOccurs="1" minOccurs="1">
+    		<element name="ignore" type="tns:Ignore"></element>
+    		<sequence maxOccurs="unbounded" minOccurs="1">
+    			<choice><element name="target" type="tns:Target"></element><element name="target-ref" type="tns:TargetReference"></element></choice>
+    		</sequence>
+    	</choice>
+    	<attribute name="name" type="string" use="optional"></attribute>
+    	<attribute name="person" type="string" use="optional"></attribute>
+        <attribute name="level" type="string" use="optional"></attribute>
+    </complexType>
+
+    <complexType name="Target">
+    	<sequence maxOccurs="unbounded" minOccurs="0">
+    		<element name="arg" type="tns:Argument"></element>
+    	</sequence>
+    	<attribute name="name" type="string" use="optional"></attribute>
+    	<attribute name="type" type="string" use="required"></attribute>
+    </complexType>
+
+
+
+    <element name="setup" type="tns:Setup"></element>
+
+    <element name="rule:" type="tns:Rule"></element>
+
+    <complexType name="Ignore"></complexType>
+
+    <complexType name="Argument">
+    	<simpleContent>
+    		<extension base="string">
+    			<attribute name="value" type="string"></attribute>
+    		</extension>
+    	</simpleContent>
+    </complexType>
+
+    <complexType name="TargetReference">
+    	<attribute name="ref" type="string"></attribute>
+    </complexType>
+
+    <complexType name="TargetDefinition">
+    	<sequence maxOccurs="unbounded" minOccurs="0">
+    		<element name="arg" type="tns:Argument"></element>
+    	</sequence>
+    	<attribute name="name" type="string" use="required"></attribute>
+    	<attribute name="type" type="string" use="required"></attribute>
+    </complexType>
+</schema>
