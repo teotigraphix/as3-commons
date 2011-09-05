@@ -1,0 +1,153 @@
+AS3COMMONS-BYTECODE CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+Changes in version 1.0-RC6 (03.09.2011)
+-----------------------------------
+
+* Added implementInterface() method to IClassProxyInfo (http://code.google.com/p/as3-commons/issues/detail?id=57) (Thanks for the suggestion Marty!)
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=68
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=69
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=70
+* Fixed issue where eventlisteners were removed instead of added to the MethodProxyBuilder (stupid, stupid mistake...)
+
+Changes in version 1.0-RC5 (08.08.2011)
+-----------------------------------
+
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=67
+* defineMetadata() on CtorBuilder now throws an exception
+
+Changes in version 1.0-RC4 (04.08.2011)
+-----------------------------------
+
+* Fixed some issues concerning parsing of opcodes that involve lookupswitches
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=45
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=62
+* Added opcode properties to ExceptionInfo
+* Before serializing exceptioninfo locations are updated to correct opcode base location
+* Upgraded dependency to as3commons-logging v2.5.1
+* Upgraded dependency to as3commons-reflect v1.4.2
+
+Changes in version 1.0-RC3 (14.03.2011)
+-----------------------------------
+
+* Fixed backpatch resolving issues plus some optimizations
+
+Changes in version 1.0-RC2 (04.03.2011)
+-----------------------------------
+
+* Fixed several critical bugs related to differences between debug and release builds
+* Added getImplementationNames(intf:Class) method to ByteCodeCache and ByteCodeType for retrieving a list of classnames that implement a specified interface
+
+Changes in version 1.0-RC1 (22.02.2011)
+-----------------------------------
+
+* Added support for proxies for native classes
+* Various minor bugfixes in bytecode serialization/deserialization
+
+Changes in version 1.9.7 (30.01.2011)
+-----------------------------------
+
+* Made changes to IMethodInvocationInterceptor injection so that a generated class can be serialized and deserialized (for AMF purposes et al).
+* Renamed all instances of MetaData to Metadata.
+* Added support for complex property initializations in the emit.* API
+* Fixed issue where an RTE was thrown after introducing a class with accessors to multiple proxies.
+* Added proxyMethodScopes, proxyAccessorScopes, proxyMethodNamespaces and proxyAccessorNamespaces convenience properties to IClassInfoProxy interface and added usage of these properties to the ProxyFactory implementation.
+
+Changes in version 0.9.6 (19.01.2011)
+-----------------------------------
+
+* Enhanced and fixed bugs in class introductions
+* Multiple bug fixes in ABC serialization/deserialization
+
+
+Changes in version 0.9.5 (14.01.2011)
+-----------------------------------
+
+* Added support for class introductions
+
+
+Changes in version 0.9.4 (11.01.2011)
+-----------------------------------
+
+* Added support for proxying method that have rest arguments. (I.e. function(...rest):void)
+* Fixed bugs in maxStack and localCount calculation for method bodies
+* IMethodInvocationInterceptor instances are no longer injected as constructor arguments, enabling parameterless constructors for proxies. (Good for generating serialization objects)
+* Added ByteCodeType.definitonNames, ByteCodeType.metaDataLookup, ByteCodeType.getCache() and ByteCodeType.getClassesWithMetaData() shortcut methods.
+
+Changes in version 0.9.3 (05.01.2011)
+-----------------------------------
+
+* Added support for proxying interfaces (will create a class that implements the interface)
+* Several speed optimizations in classmetadatadeserializer
+* Fix: constructor argument is now typed to IMethodInvocationInterceptor instead of the concrete class
+
+Changes in version 0.9.2 (29.12.2010)
+-----------------------------------
+
+General
+* Fixed setting of method flags and subsequently serializing methods with optional arguments
+* Added getProxyInfoForClass() method to IProxyFactory
+* Added interceptorFactory method to ClassProxyInfo
+* Fixed merging of member colections in ByteCodeType (no more duplicates)
+* Fixed proxying of custom namespace scoped members
+* Fixed properly setting namespaceURI and scopeName on BytecodeAccessor
+
+Changes in version 0.9.1 (28.12.2010)
+-----------------------------------
+
+General
+* Fixed proxying of protected members.
+* Added ProxyFactoryBuildEvent to easily enable custom ctor/method/accessor body creation.
+
+Changes in version 0.9 (26.12.2010)
+-----------------------------------
+
+General
+* Added a check in ByteCodeTypeProvider that prevents a bytearray from being deserialized twice.
+* Fixed generation of class level metadata on generated classes
+* Fixed protected and custom namespace serialization for class members
+* Fixed maximum stack calculation for method bodies
+* Added proxy.* and interception.* packages for generating runtime dynamic proxy classes
+* Added defineClass and defineInterface methods to IAbcBuilder to build classes and interfaces with fully qualified names
+* Added support for manipulating existing classes in an Abc file
+* Added alchemy specific opcodes
+* Added buildAndExport() method to IAbcBuilder and implementation in AbcBuilder
+
+
+Changes in version 0.8.5 (14.11.2010)
+-----------------------------------
+
+General
+* Further maturation of the emit API, implemented backpatching (resolving of opcode jumps)
+and added an asm parser/converter to enable importing of method bodies defined by string.
+
+Changes in version 0.8.1 (02.11.2010)
+-----------------------------------
+
+General
+* First iteration of the emit API, simple class generation implemented
+
+
+Changes in version 0.7 (28.10.2010)
+-----------------------------------
+
+General
+* Bunch of tweaks and bugfixes in the bytecode serialization and parsing
+* Debugged support for all available opcodes
+* Start of the emit API
+
+Changes in version 0.6 (06.09.2010)
+-----------------------------------
+
+General
+* Serialization and parsing of Abc bytecode fully functional
+* Added some functionality to load and parse SWF files
+* Implemented some of the more basic SWF tags
+
+Changes in version 0.5 (27.06.2010)
+-----------------------------------
+
+General
+* initial commit, only bytecode based reflection functional
