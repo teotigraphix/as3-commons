@@ -78,6 +78,12 @@
 					<dumpConfigAttach>true</dumpConfigAttach>
 					<showWarnings>true</showWarnings>
 					<lenient>true</lenient>
+					<testRunner>
+						<launcher>
+							<allowHeadlessMode>false</allowHeadlessMode>
+							<flashplayerCommand>${flashPlayer.command}</flashplayerCommand>
+						</launcher>
+					</testRunner>
 				</configuration>
 
 			</plugin>
