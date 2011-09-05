@@ -78,6 +78,7 @@
 					<dumpConfigAttach>true</dumpConfigAttach>
 					<showWarnings>true</showWarnings>
 					<lenient>true</lenient>
+					<headlessServer>false</headlessServer>
 					<testRunner>
 						<launcher>
 							<allowHeadlessMode>false</allowHeadlessMode>
