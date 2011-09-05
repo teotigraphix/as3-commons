@@ -55,6 +55,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<allowHeadlessMode>false</allowHeadlessMode>
 					<storepass/>
 					<testTimeout>10000</testTimeout>
 					<configurationReport>true</configurationReport>
