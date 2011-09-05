@@ -380,7 +380,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>sparkSkins</artifactId>
+			<artifactId>sparkskins</artifactId>
 			<version>${flex-sdk.version}</version>
 			<type>swc</type>
 			<scope>test</scope>
