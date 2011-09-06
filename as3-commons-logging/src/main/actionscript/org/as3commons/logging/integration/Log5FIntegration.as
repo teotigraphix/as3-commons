@@ -54,7 +54,7 @@ package org.as3commons.logging.integration {
 	 * Be sure to define the layout seperately for Log5F strings.</p>
 	 * 
 	 * @author Martin Heidegger mh@leichtgewicht.at
-	 * @since 2.5.3
+	 * @since 2.6
 	 * @see http://log5f.org
 	 */
 	public final class Log5FIntegration extends Appender implements IAppender {

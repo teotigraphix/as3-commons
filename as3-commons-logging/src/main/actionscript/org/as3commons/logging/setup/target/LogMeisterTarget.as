@@ -43,7 +43,7 @@ package org.as3commons.logging.setup.target {
 	 * @see http://github.com/base42/LogMeister
 	 * @see org.as3commons.logging.integration.LogMeisterIntegration
 	 */
-	public class LogMeisterTarget implements ILogTarget {
+	public final class LogMeisterTarget implements ILogTarget {
 		
 		/** Default format used to stringify the log statements. */
 		public static const DEFAULT_FORMAT:String = "{time} {logLevel} - {shortName}{atPerson} - {message}\n";

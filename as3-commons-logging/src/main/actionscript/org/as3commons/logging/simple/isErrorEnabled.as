@@ -20,6 +20,10 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
+	import org.as3commons.logging.util.IS_DEBUGGER;
+	import org.as3commons.logging.util.here;
 	
 	/**
 	 * <code>true</code> if <code>error</code> actually does something.
@@ -29,6 +33,12 @@ package org.as3commons.logging.simple {
 	 * @see org.as3commons.logging.simple#error()
 	 */
 	public function isErrorEnabled(): Boolean {
-		return DIRECT_LOGGER.errorEnabled;
+		var logger: ILogger;
+		if( IS_DEBUGGER && USE_STACKTRACE ) {
+			logger = getLogger( here(1), "direct" );
+		} else {
+			logger = DIRECT_LOGGER;
+		}
+		return logger.errorEnabled;
 	}
 }

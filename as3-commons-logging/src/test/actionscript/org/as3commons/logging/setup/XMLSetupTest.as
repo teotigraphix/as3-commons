@@ -33,8 +33,6 @@ package org.as3commons.logging.setup {
 			);
 			
 			LOGGER_FACTORY.setup = setup;
-			
-			
 		}
 	}
 }

@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.util {
-	import flash.system.Capabilities;
 	
 	/**
 	 * Extracts the current method name/linenumber from the calling position if
@@ -35,20 +34,26 @@ package org.as3commons.logging.util {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.5
+	 * @version 2.0
 	 * @see https://bugs.adobe.com/jira/browse/FP-644
+	 * 
+	 * @param linesChopped Amount of lines in the stacktrace that should be cut.
 	 */
-	public function here(): String {
-		if( Capabilities.isDebugger ) {
+	public function here(linesChopped:int=0): String {
+		if( IS_DEBUGGER ) {
 			var error: Error = new Error();
 			var stackTrace: String = error.getStackTrace();
 			if( stackTrace ) {
 				// just in debug player
 				var nextLine: int = stackTrace.indexOf("\n");
-				// chop first two lines
-				stackTrace = stackTrace.substr(nextLine+1);
-				nextLine = stackTrace.indexOf("\n");
-				stackTrace = stackTrace.substr(nextLine+1);
-				nextLine = stackTrace.indexOf("\n");
+				// Two lines should at least be chopped
+				linesChopped += 2;
+				// Chop all lines
+				while( linesChopped > 0 ) {
+					stackTrace = stackTrace.substr(nextLine+1);
+					nextLine = stackTrace.indexOf("\n");
+					--linesChopped;
+				}
 				if( nextLine != -1 ) {
 					stackTrace = stackTrace.substring(0, nextLine);
 				} 

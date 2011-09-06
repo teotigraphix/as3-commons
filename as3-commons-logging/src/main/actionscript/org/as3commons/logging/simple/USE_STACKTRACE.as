@@ -20,25 +20,20 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
-	import org.as3commons.logging.api.ILogger;
-	import org.as3commons.logging.api.LOGGER_FACTORY;
-	import org.as3commons.logging.util.IS_DEBUGGER;
-	import org.as3commons.logging.util.here;
 	
 	/**
-	 * <code>true</code> if <code>fatal</code> actually does something.
+	 * If set to <code>true</code>, the simple api will try to evaluate the logger using
+	 * the stacktrace.
+	 * 
+	 * <p>This is a very performance intense property. If you use it your application
+	 * might slow down a lot!</p>
+	 * 
+	 * <p>The stacktrace is just available if you run the resulting .swf in a
+	 * Flash Debug Player.</p>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.5
-	 * @see org.as3commons.logging.simple#fatal()
+	 * @since 2.6
+	 * @see org.as3commons.logging.util#here()
 	 */
-	public function isFatalEnabled(): Boolean {
-		var logger: ILogger;
-		if( IS_DEBUGGER && USE_STACKTRACE ) {
-			logger = LOGGER_FACTORY.getNamedLogger( here(1), "direct" );
-		} else {
-			logger = DIRECT_LOGGER;
-		}
-		return logger.fatalEnabled;
-	}
+	public var USE_STACKTRACE: Boolean = false;
 }

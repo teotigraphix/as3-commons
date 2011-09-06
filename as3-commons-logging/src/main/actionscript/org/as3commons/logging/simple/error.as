@@ -20,6 +20,10 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
+	import org.as3commons.logging.util.IS_DEBUGGER;
+	import org.as3commons.logging.util.here;
 	
 	/**
 	 * Logs a message to notify about an error that was dodged by the application
@@ -45,6 +49,12 @@ package org.as3commons.logging.simple {
 	 * @since 2.5
 	 */
 	public function error( message: *, parameters:Array = null ): void {
-		DIRECT_LOGGER.error( message, parameters );
+		var logger: ILogger;
+		if( IS_DEBUGGER && USE_STACKTRACE ) {
+			logger = LOGGER_FACTORY.getNamedLogger( here(1), "direct" );
+		} else {
+			logger = DIRECT_LOGGER;
+		}
+		logger.error( message, parameters );
 	}
 }

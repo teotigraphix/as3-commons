@@ -30,5 +30,5 @@ package org.as3commons.logging.simple {
 	 * @author Martin Heidegger
 	 * @since 2.5
 	 */
-	public const DIRECT_LOGGER: ILogger = getNamedLogger("direct",null);
+	public const DIRECT_LOGGER: ILogger = getNamedLogger("direct","direct");
 }

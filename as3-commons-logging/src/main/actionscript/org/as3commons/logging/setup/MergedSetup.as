@@ -25,7 +25,7 @@ package org.as3commons.logging.setup {
 
 	/**
 	 * @author Martin Heidegger
-	 * @since 2.5.3
+	 * @since 2.6
 	 * @see org.as3commons.logging.setup#mergeSetups()
 	 */
 	public class MergedSetup implements ILogSetup {
@@ -45,7 +45,7 @@ package org.as3commons.logging.setup {
 		public function MergedSetup(logSetupA:ILogSetup, logSetupB:ILogSetup) {
 			if(!logSetupA || !logSetupB) throw new Error("Both setups need to be defined");
 			_logSetupA = logSetupA;
-			_mergedSetup = logSetupA as MergedSetup;
+			_mergedSetup = logSetupB as MergedSetup;
 			_logSetupB = logSetupB;
 		}
 		
@@ -60,6 +60,20 @@ package org.as3commons.logging.setup {
 				target._logSetupA.applyTo(logger);
 			};
 			target._logSetupB.applyTo(logger);
+		}
+		
+		/**
+		 * Inserts all targets of this MergedSetup into a position of an array
+		 * (performance *yey*)
+		 */
+		internal function insertSetups(array:Array, pos:int):void {
+			array.splice(pos,0,_logSetupA,_logSetupB);
+			var target:MergedSetup = this;
+			while (target._mergedSetup) {
+				++pos;
+				target = target._mergedSetup;
+				array.splice(pos,0,_logSetupA);
+			}
 		}
 	}
 }

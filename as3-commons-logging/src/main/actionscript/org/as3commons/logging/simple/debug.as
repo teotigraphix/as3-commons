@@ -20,6 +20,10 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
+	import org.as3commons.logging.util.IS_DEBUGGER;
+	import org.as3commons.logging.util.here;
 	
 	/**
      * Logs a message for debug purposes to the <code>DIRECT_LOGGER</code>
@@ -43,6 +47,12 @@ package org.as3commons.logging.simple {
 	 * @since 2.5
 	 */
 	public function debug( message: *, parameters:Array = null ): void {
-		DIRECT_LOGGER.debug( message, parameters );
+		var logger: ILogger;
+		if( IS_DEBUGGER && USE_STACKTRACE ) {
+			logger = LOGGER_FACTORY.getNamedLogger( here(1), "direct" );
+		} else {
+			logger = DIRECT_LOGGER;
+		}
+		logger.debug( message, parameters );
 	}
 }

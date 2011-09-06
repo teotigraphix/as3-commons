@@ -20,10 +20,10 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.target {
-	
-	import flash.utils.Dictionary;
-	
 	import org.as3commons.logging.setup.ILogTarget;
+	import org.as3commons.logging.util.flatten;
+	import org.as3commons.logging.util.removeDuplicates;
+	
 	
 	/**
 	 * Merges a list of <code>ILogTarget</code> instances to one instance.
@@ -45,23 +45,27 @@ package org.as3commons.logging.setup.target {
 	 * @since 2
 	 */
 	public function mergeTargets( ...targets ):ILogTarget {
-		var contains: Dictionary = new Dictionary();
-		var target: ILogTarget = null;
-		while (targets.length > 0) {
-			var currentRaw: * = targets.shift();
-			if (currentRaw is Array) {
-				currentRaw = mergeTargets.apply(null, currentRaw);
+		var result: ILogTarget;
+		flatten(targets);
+		var i:int;
+		for ( i = targets.length-1; i>=0; --i) {
+			var mergedTarget: MergedTarget = targets[i] as MergedTarget;
+			if( mergedTarget ) {
+				targets.splice(i,1);
+				mergedTarget.insertTargets(targets, i);
 			}
-			var current: ILogTarget = currentRaw as ILogTarget;
-			if (current && !contains[current]) {
-				contains[current] = true;
-				if (target) {
-					target = new MergedTarget( target, current );
+		}
+		removeDuplicates(targets);
+		for ( i = targets.length-1; i>=0; --i) {
+			var target: ILogTarget = targets[i] as ILogTarget;
+			if( target ) {
+				if( result ) {
+					result = new MergedTarget(target, result);
 				} else {
-					target = current;
+					result = target;
 				}
 			}
 		}
-		return target;
+		return result;
 	}
 }
