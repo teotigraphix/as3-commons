@@ -157,21 +157,5 @@ package org.as3commons.logging.setup {
 			assertNull(loggerA.infoTarget);
 			assertNull(loggerA.warnTarget);
 		}
-		
-		public function testDispose(): void {
-			var dummy: ILogTarget = mock( ILogTarget );
-			var setup: RegExpSetup = new RegExpSetup();
-			var logger: Logger = new Logger("");
-			
-			setup.addNoLogRule( /.*/ );
-			setup.addTargetRule( /.*/, dummy );
-			
-			setup.dispose();
-			
-			setup.applyTo(logger);
-			
-			assertStrictlyEquals( logger.debugTarget, null);
-			assertStrictlyEquals( logger.debugTarget, null);
-		}
 	}
 }

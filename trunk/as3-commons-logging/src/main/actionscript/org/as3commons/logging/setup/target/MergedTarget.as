@@ -73,5 +73,19 @@ package org.as3commons.logging.setup.target {
 			};
 			target._logTargetB.log(name, shortName, level, timeStamp, message, parameters, person);
 		}
+		
+		/**
+		 * Inserts all targets of this MergedTarget into a position of an array
+		 * (performance *yey*)
+		 */
+		internal function insertTargets(array:Array, pos:int):void {
+			array.splice(pos,0,_logTargetA,_logTargetB);
+			var target:MergedTarget = this;
+			while (target._mergedTarget) {
+				++pos;
+				target = target._mergedTarget;
+				array.splice(pos,0,_logTargetA);
+			}
+		}
 	}
 }

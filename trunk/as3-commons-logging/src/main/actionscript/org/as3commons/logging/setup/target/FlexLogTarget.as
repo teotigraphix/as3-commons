@@ -38,7 +38,7 @@ package org.as3commons.logging.setup.target {
 	 * @author Martin Heidegger
 	 * @since 2.0
 	 */
-	public class FlexLogTarget implements ILogTarget {
+	public final class FlexLogTarget implements ILogTarget {
 		
 		/** All the Flex loggers requested for that logger */
 		private const _loggers:Object = {};

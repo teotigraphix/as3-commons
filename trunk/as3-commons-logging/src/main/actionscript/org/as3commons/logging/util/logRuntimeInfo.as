@@ -37,17 +37,19 @@ package org.as3commons.logging.util {
 import org.as3commons.logging.api.ILogger;
 import org.as3commons.logging.api.getLogger;
 import org.as3commons.logging.util.GMT;
+import org.as3commons.logging.util.IS_DEBUGGER;
 import org.as3commons.logging.util.SWF_URL;
+
+import flash.display.DisplayObject;
 import flash.display.Stage;
 import flash.system.Capabilities;
-import flash.display.DisplayObject;
 
 const logger: ILogger = getLogger("org.as3commons.logging.util/logRuntimeInfo");
 
 function log(stage:Stage, root:DisplayObject):void {
 	if( logger.infoEnabled ) {
 		logger.info(
-			 "\n\tPlayer Version: " + Capabilities.version + " - " + Capabilities.playerType + ( Capabilities.isDebugger ? "(debug)" : "" )
+			 "\n\tPlayer Version: " + Capabilities.version + " - " + Capabilities.playerType + ( IS_DEBUGGER ? "(debug)" : "" )
 			+ "\n\t" + Capabilities.cpuArchitecture + " CPU architecture on OS: " + Capabilities.os
 			+ "\n\tSWF path: " + SWF_URL + " (" + root.loaderInfo.bytesTotal  + " bytes, swf-version: " + root.loaderInfo.swfVersion + ", as" + root.loaderInfo.actionScriptVersion + ")"
 			+ "\n\tContent Type: " + root.loaderInfo.contentType

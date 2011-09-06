@@ -38,7 +38,7 @@ package org.as3commons.logging.setup.target {
 	 * formatted string to Log5F.</p>
 	 * 
 	 * @author Martin Heidegger
-	 * @since 2.5.3
+	 * @since 2.6
 	 * @see http://log5f.org
 	 */
 	public final class Log5FTarget implements ILogTarget {

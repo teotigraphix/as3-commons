@@ -56,15 +56,10 @@ package org.as3commons.logging.setup {
 	 *         .addNoLogRule(/^org\.as3commons\.logging\./ );
 	 * </listing>
 	 * 
-	 * <p></p>
-	 * 
 	 * @author Martin Heidegger
 	 * @since 2
 	 */
 	public class RegExpSetup implements ILogSetup {
-		
-		/** Setup to be used for addNoLogRule */
-		private static const NO_LOG_SETUP: ILogSetup = new SimpleTargetSetup(null);
 		
 		/** Setups*/
 		private var _setup:ILogSetup;
@@ -117,19 +112,20 @@ package org.as3commons.logging.setup {
 		 * @return This setup instance.
 		 */
 		public function addNoLogRule(rule:RegExp): RegExpSetup {
-			return addRule(rule,NO_LOG_SETUP);
+			return addTargetRule(rule,null);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function applyTo(logger:Logger):void {
-			_setup.applyTo(logger);
+			logger.allTargets = null;
+			_setup && _setup.applyTo(logger);
 		}
 		
 		/**
 		 * @deprecated
-		 * @since 2.5.3
+		 * @since 2.6
 		 */
 		public function dispose():void {}
 	}

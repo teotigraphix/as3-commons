@@ -32,6 +32,94 @@ package org.as3commons.logging.setup.target {
 			verifyNothingCalled( targetB );
 		}
 		
+		public function testMergingFunction(): void {
+			var a: ILogTarget = new SampleTarget("a");
+			var b: ILogTarget = new SampleTarget("b");
+			var c: ILogTarget = new SampleTarget("c");
+			var d: ILogTarget = new SampleTarget("d");
+			
+			var merged: ILogTarget;
+			merged = mergeTargets();
+			assertNull("Merging nothing should not change anything", merged);
+			
+			merged = mergeTargets(null);
+			assertNull("Merging nothing should not change anything", merged);
+			
+			merged = mergeTargets(null, null, null);
+			assertNull("Merging nothing should not change anything", merged);
+			
+			merged = mergeTargets(a);
+			assertEquals("Merging with nothing should result the merged setup", a, merged);
+			
+			merged = mergeTargets(a, null);
+			assertEquals("Merging with nothing should result the merged setup", a, merged);
+			
+			merged = mergeTargets(null, a, null);
+			assertEquals("Merging with nothing should result the merged setup", a, merged);
+			
+			merged = mergeTargets(a, a);
+			assertEquals("Merging something with itself should not do anything", a, merged);
+			
+			merged = mergeTargets(a,[null]);
+			assertEquals("Merging with a null array shouldn't do anything eigther", a, merged);
+			
+			merged = mergeTargets([null],a);
+			assertEquals("Merging with a null array shouldn't do anything eigther", a, merged);
+			
+			merged = mergeTargets(mergeTargets(a),a);
+			assertEquals("Merging with a null array shouldn't do anything eigther", a, merged);
+			
+			merged = mergeTargets(a,b);
+			merged.log(null,null,1,1,null, null, null);
+			assertObjectEquals("Merging with one other setup should work", ["a","b"], stack);
+			stack = [];
+			
+			merged = mergeTargets(a,b,b);
+			merged.log(null,null,1,1,null, null, null);
+			assertObjectEquals("Merging with duplicates should work just once", ["a","b"], stack);
+			stack = [];
+			
+			merged = mergeTargets(a,a,b);
+			merged.log(null,null,1,1,null, null, null);
+			assertObjectEquals("Merging with duplicates should work just once", ["a","b"], stack);
+			stack = [];
+			
+			merged = mergeTargets(a,b,a);
+			merged.log(null,null,1,1,null, null, null);
+			assertObjectEquals("The order is important", ["a","b"], stack);
+			stack = [];
+			
+			merged = mergeTargets(a,b,c);
+			merged.log(null,null,1,1,null, null, null);
+			assertObjectEquals("Merging has to work deeper", ["a","b","c"], stack);
+			stack = [];
+			
+			merged = mergeTargets(a,b,c,d);
+			merged.log(null,null,1,1,null, null, null);
+			assertObjectEquals("Merging has to work even deeper", ["a","b","c","d"], stack);
+			stack = [];
+			
+			merged = mergeTargets(a,[b,c],d);
+			merged.log(null,null,1,1,null, null, null);
+			assertObjectEquals("Merging has to work even deeper with arrays", ["a","b","c","d"], stack);
+			stack = [];
+			
+			merged = mergeTargets(a,[b,[null,c]],d);
+			merged.log(null,null,1,1,null, null, null);
+			assertObjectEquals("Merging has to work even deeper with arrays", ["a","b","c","d"], stack);
+			stack = [];
+			
+			merged = mergeTargets(a,mergeTargets(mergeTargets(b,c),d));
+			merged.log(null,null,1,1,null, null, null);
+			assertObjectEquals("Order may not be disturbed by deeper hierarchies", ["a","b","c","d"], stack);
+			stack = [];
+			
+			merged = mergeTargets(a,mergeTargets(b,a));
+			merged.log(null,null,1,1,null, null, null);
+			assertObjectEquals("Order may not be disturbed by deeper hierarchies", ["a","b"], stack);
+			stack = [];
+		}
+		
 		public function testSpecialCases(): void {
 			var target: ILogTarget = mock( ILogTarget );
 			var merged: MergedTarget = new MergedTarget( null, null );
@@ -55,47 +143,21 @@ package org.as3commons.logging.setup.target {
 				fail( "If first target is missing it should throw an error");
 			} catch( e: Error ) {}
 		}
-		
-		public function testMergingFunction(): void {
-			
-			var targetA: ILogTarget = mock( ILogTarget );
-			var targetB: ILogTarget = mock( ILogTarget );
-			var targetC: ILogTarget = mock( ILogTarget );
-			
-			assertNull( mergeTargets() );
-			assertEquals( mergeTargets(targetA), targetA );
-			assertEquals( mergeTargets(targetA,null), targetA );
-			assertEquals( mergeTargets(null,targetA,null), targetA );
-			
-			var test: ILogTarget;
-			
-			test = mergeTargets(null,targetA,targetB);
-			
-			test.log( "a", "a", DEBUG, 1, "Hello World", [], null );
-			inOrder().verify().that( targetA.log( eq("a"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
-			inOrder().verify().that( targetB.log( eq("a"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
-			verifyNothingCalled( targetA );
-			verifyNothingCalled( targetB );
-			
-			test = mergeTargets(targetA,targetA);
-			test.log( "b", "a", DEBUG, 1, "Hello World", [], null );
-			inOrder().verify().that( targetA.log( eq("b"), eq("a"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
-			verifyNothingCalled( targetA );
-			
-			test = mergeTargets(targetA,mergeTargets(targetA));
-			test.log( "C", "B", DEBUG, 1, "Hello World", [], null );
-			inOrder().verify().that( targetA.log( eq("C"), eq("B"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
-			verifyNothingCalled( targetA );
-			
-			test = mergeTargets(targetA,mergeTargets(null),null,mergeTargets(targetB,targetA,targetC));
-			test.log( "D", "E", DEBUG, 1, "Hello World", [], null );
-			inOrder().verify().that( targetA.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
-			inOrder().verify().that( targetB.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
-			inOrder().verify().that( targetA.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
-			inOrder().verify().that( targetC.log( eq("D"), eq("E"), eq(DEBUG), eq(1), eq("Hello World"), alike([]), eq(null) ) );
-			verifyNothingCalled( targetA );
-			verifyNothingCalled( targetB );
-			verifyNothingCalled( targetC );
-		}
+	}
+}
+import org.as3commons.logging.setup.ILogTarget;
+
+var stack: Array = [];
+
+class SampleTarget implements ILogTarget {
+	
+	private var _name:String;
+	
+	public function SampleTarget(name:String) {
+		_name=name;
+	}
+	
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : *, parameters : Array, person : String) : void {
+		stack.push(_name);
 	}
 }

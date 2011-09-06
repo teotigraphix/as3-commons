@@ -123,6 +123,9 @@ package org.as3commons.logging.util {
 		/** First no in the generated set */
 		private var _firstNode: FormatNode;
 		
+		private var _hasMessageNode: Boolean = false;
+		private var _hasTimeNode: Boolean = false;
+		
 		/**
 		 * Constructs a new <code>LogMessageFormatter</code> instance.
 		 * 
@@ -157,6 +160,13 @@ package org.as3commons.logging.util {
 					
 					var contentNode: FormatNode = new FormatNode();
 					contentNode.type = type;
+					if( type == MESSAGE_TYPE || type == MESSAGE_DQT_TYPE ) {
+						_hasMessageNode = true;
+					} else if( type == TIME_TYPE || type == TIME_UTC_TYPE ||
+							   type == DATE_TYPE || type == DATE_UTC_TYPE ||
+							   type == LOG_TIME_TYPE ) {
+						_hasTimeNode = true;
+					}
 					
 					pos = parseResult["index"] + parseResult[0]["length"];
 					
@@ -202,7 +212,7 @@ package org.as3commons.logging.util {
 			var result: String = "";
 			var node: FormatNode = _firstNode;
 			
-			if( message ) {
+			if( _hasMessageNode && message && params ) {
 				// It would be theoretically possible to preparse this
 				// in order to have a faster statement, but if you would change
 				// it to the a preparsed approach you might run into user problems.
@@ -211,13 +221,16 @@ package org.as3commons.logging.util {
 				// Sure: that might not be a reasonable case. But users don't read
 				// documentation and in order to prevent a huge performance problem
 				// for them I didnt implement it the high performing way ...
-				const numParams:int = params ? params.length: 0;
+				const numParams:int = params.length;
 				for (var i:int = 0; i < numParams; ++i) {
 					var param: * = params[i];
 					message = message.split( "{"+i+"}" ).join( param );
 				}
 			}
-			_now.time = isNaN( timeMs ) ? 0.0 : START_TIME+timeMs;
+			
+			if( _hasTimeNode ) {
+				_now.time = isNaN( timeMs ) ? 0.0 : START_TIME+timeMs;
+			}
 			
 			while( node ) {
 				

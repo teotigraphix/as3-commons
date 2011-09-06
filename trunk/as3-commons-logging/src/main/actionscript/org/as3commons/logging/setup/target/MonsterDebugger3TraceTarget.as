@@ -43,7 +43,9 @@ package org.as3commons.logging.setup.target {
 												  implements IColorableLogTarget {
 		/** Default output format used to stringify log statements via MonsterDebugger.trace(). */
 		public static const DEFAULT_FORMAT:String = "{message}";
-
+		
+		public static const DEFAULT_LABEL_FORMAT:String = "{logLevel}";
+		
 		/** Default colors used to color the output statements. */
 		public static const DEFAULT_COLORS:Object = {};
 		{
@@ -59,6 +61,9 @@ package org.as3commons.logging.setup.target {
 		
 		/** Formatter that renders the log statements via MonsterDebugger.trace(). */
 		private var _formatter:LogMessageFormatter;
+		
+		/** Formatter for the label property of logstatements */
+		private var _label:LogMessageFormatter;
 		
 		/** Depth  */
 		private var _depth: int; 
@@ -92,6 +97,10 @@ package org.as3commons.logging.setup.target {
 			_formatter = new LogMessageFormatter(format||DEFAULT_FORMAT);
 		}
 		
+		public function set label(format:String):void {
+			_label = new LogMessageFormatter(format||DEFAULT_LABEL_FORMAT);
+		}
+		
 		/**
 		 * Depth used to introspect objects.
 		 */
@@ -110,7 +119,8 @@ package org.as3commons.logging.setup.target {
 											 message, parameters, person );
 			}
 			
-			MonsterDebugger.trace( name, message, person, ""/* Label is not supported */,
+			MonsterDebugger.trace( name, message, person,
+								   _label.format( name, shortName, level, timeStamp, message, parameters, person ),
 								   _colors[level], _depth );
 		}
 	}
