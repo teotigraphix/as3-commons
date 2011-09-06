@@ -114,6 +114,25 @@ package org.as3commons.lang.builder {
 			return this;
 		}
 
+		/**
+		 * Append the result of the equals of the superclass to this EqualsBuilder
+		 *
+		 * @param equalsFromSuper result of the call to <code>super.equals( other )</code>
+		 * @return EqualsBuilder - used to chain calls.
+		 */
+		public function appendSuper( equalsFromSuper:Boolean ):EqualsBuilder {
+			if (equals == false) {
+				return this;
+			}
+
+			if( equalsFromSuper == false ) {
+				_equals = false;
+				return this;
+			}
+
+			return this;
+		}
+
 		private function appendObject(a:Object, b:Object):EqualsBuilder {
 			if (!_equals) {
 				return this;

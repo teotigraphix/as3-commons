@@ -21,7 +21,6 @@
  */
 package org.as3commons.lang.builder {
 	
-	import flexunit.framework.TestCase;
 
 	import org.flexunit.asserts.assertFalse;
 
@@ -164,6 +163,25 @@ package org.as3commons.lang.builder {
 			assertTrue(new EqualsBuilder().append(personA, personB).equals);
 		}
 	
+		[Test]
+		public function testAppendSuper():void {
+			var subClassA:SubClass = new SubClass();
+			subClassA.superField = 1;
+			subClassA.subField = 2;
+
+			var subClassACopy:SubClass = new SubClass();
+			subClassACopy.superField = 1;
+			subClassACopy.subField = 2;
+
+			var subClassB:SubClass = new SubClass();
+			subClassB.superField = 2;
+			subClassB.subField = 3;
+
+			assertTrue( subClassA.equals(subClassA) );
+			assertTrue( subClassA.equals(subClassACopy) );
+			assertFalse( subClassA.equals(subClassB) );
+			assertFalse( subClassB.equals(subClassA) );
+		}
 	}
 }
 
@@ -184,6 +202,65 @@ class Person {
 		this.lastName = lastName;
 		this.age = age;
 		this.children = (children == null ? [] : children);
+	}
+}
+
+class SuperClass implements IEquals {
+	public var superField:int;
+
+	public function SuperClass() {
+
+	}
+
+	public function equals(other:Object):Boolean {
+		if (!other) {
+			return false;
+		}
+
+		if (this == other) {
+			return true;
+		}
+
+		if (!(other is SuperClass)) {
+			return false;
+		}
+
+		var that:SuperClass = SuperClass(other);
+
+		return new EqualsBuilder()
+				.append(superField, that.superField)
+				.equals;
+	}
+
+
+}
+
+class SubClass extends SuperClass {
+	public var subField:int;
+
+	public function SubClass() {
+		
+	}
+
+	override public function equals(other:Object):Boolean {
+		if (!other) {
+			return false;
+		}
+
+		if (this == other) {
+			return true;
+		}
+
+		if (!(other is SubClass)) {
+			return false;
+		}
+
+		var that:SubClass = SubClass(other);
+
+		return new EqualsBuilder()
+				.appendSuper( super.equals( other ))
+				.append(subField, that.subField)
+				.equals;
 	}
 }
 
