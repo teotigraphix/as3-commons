@@ -1,118 +1,106 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.as3commons</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>1-SNAPSHOT</version>
+	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-    <groupId>org.as3commons</groupId>
+	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-reflect</artifactId>
 	<packaging>swc</packaging>
 	<version>1.5-SNAPSHOT</version>
 	<name>AS3Commons Reflect</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
-			Library providing a reflection API for ActionScript 3.0
+		Library providing a reflection API for ActionScript 3.0
 	</description>
 	<inceptionYear>2007</inceptionYear>
 
 	<properties>
-		<flex-mojos.version>4.0-RC1</flex-mojos.version>
-		<flex-sdk.version>4.5.1.21328</flex-sdk.version>
-		<flashplayer.version.major>10</flashplayer.version.major>
-		<flashplayer.version.minor>2</flashplayer.version.minor>
-		<flashplayer.version.revision>0</flashplayer.version.revision>
-		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}</flashplayer.version>
-		<flexunit.version><!--4.0-rc-1-->0.90</flexunit.version>
-		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
+		<flexunit.version>0.90</flexunit.version>
 	</properties>
 
-    <licenses>
-             <license>
-                     <name>Apache Software License 2.0</name>
-                     <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-                     <distribution>repo</distribution>
-             </license>
-     </licenses>
-
-     <issueManagement>
-             <system>Google Code</system>
-             <url>http://code.google.com/p/as3-commons/issues/list</url>
-     </issueManagement>
-
-     <developers>
-             <developer>
-                     <id>cherreman</id>
-                     <name>Christophe Herreman</name>
-                     <email>christophe.herreman [at] stackandheap.com</email>
-                     <url>http://www.herrodius.com</url>
-                     <organization>Stack &amp; Heap</organization>
-                     <organizationUrl>http://www.stackandheap.com</organizationUrl>
-                     <timezone>+1</timezone>
-             </developer>
-             <developer>
-                     <id>martino.piccinato</id>
-                     <name>Martino Piccinato</name>
-                     <email>mp [at] yoolab.com</email>
-                     <organization>Yoolab</organization>
-                     <organizationUrl>http://www.yoolab.com/</organizationUrl>
-                     <timezone>+1</timezone>
-             </developer>
-             <developer>
-                     <id>rzwaga</id>
-                     <name>Roland Zwaga</name>
-                     <email>roland.zwaga [at] stackandheap.com</email>
-                     <url>http://zwaga.blogspot.com/</url>
-                     <organization>Stack &amp; Heap</organization>
-                     <organizationUrl>http://www.stackandheap.com</organizationUrl>
-                     <timezone>+1</timezone>
-             </developer>
-             <developer>
-                     <id>jes</id>
-                     <name>Jens Struwe</name>
-                     <email>jens [at] struwe.net</email>
-                     <organization>Russischer B�r Software</organization>
-                     <organizationUrl>http://sibirjak.com/</organizationUrl>
-                     <timezone>+1</timezone>
-             </developer>
-             <developer>
-                     <id>alewisohn</id>
-                     <name>Andrew Lewisohn</name>
-                     <email>alewisohn [at] gmail.com</email>
-                     <organization>Arc90, Inc.</organization>
-                     <organizationUrl>http://www.arc90.com/</organizationUrl>
-                     <timezone>-5</timezone>
-             </developer>
-             <developer>
-                     <id>jghandour</id>
-                     <name>James Ghandour</name>
-                     <email>jamesghandour [at] jagsits.com</email>
-                     <organization>JAG's ITS Inc.</organization>
-                     <organizationUrl>http://www.jagsits.com/</organizationUrl>
-                     <timezone>-5</timezone>
-             </developer>
-     </developers>
+	<developers>
+		<developer>
+			<id>cherreman</id>
+			<name>Christophe Herreman</name>
+			<email>christophe.herreman [at] stackandheap.com</email>
+			<url>http://www.herrodius.com</url>
+			<organization>Stack &amp; Heap</organization>
+			<organizationUrl>http://www.stackandheap.com</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>martino.piccinato</id>
+			<name>Martino Piccinato</name>
+			<email>mp [at] yoolab.com</email>
+			<organization>Yoolab</organization>
+			<organizationUrl>http://www.yoolab.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>rzwaga</id>
+			<name>Roland Zwaga</name>
+			<email>roland.zwaga [at] stackandheap.com</email>
+			<url>http://zwaga.blogspot.com/</url>
+			<organization>Stack &amp; Heap</organization>
+			<organizationUrl>http://www.stackandheap.com</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>jes</id>
+			<name>Jens Struwe</name>
+			<email>jens [at] struwe.net</email>
+			<organization>Russischer B�r Software</organization>
+			<organizationUrl>http://sibirjak.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>alewisohn</id>
+			<name>Andrew Lewisohn</name>
+			<email>alewisohn [at] gmail.com</email>
+			<organization>Arc90, Inc.</organization>
+			<organizationUrl>http://www.arc90.com/</organizationUrl>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<id>jghandour</id>
+			<name>James Ghandour</name>
+			<email>jamesghandour [at] jagsits.com</email>
+			<organization>JAG's ITS Inc.</organization>
+			<organizationUrl>http://www.jagsits.com/</organizationUrl>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
 
 
-    	<build>
+	<build>
 
-        <sourceDirectory>src/main/actionscript</sourceDirectory>
+		<sourceDirectory>src/main/actionscript</sourceDirectory>
 		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
 
 		<plugins>
 
-            <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <configuration>
-                            <encoding>UTF-8</encoding>
-                    </configuration>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
 
 
-            <plugin>
+			<plugin>
 				<groupId>org.sonatype.flexmojos</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<version>${flex-mojos.version}</version>
 				<extensions>true</extensions>
 
-                <dependencies>
+				<dependencies>
 					<dependency>
 						<groupId>com.adobe.flex</groupId>
 						<artifactId>compiler</artifactId>
@@ -121,11 +109,18 @@
 					</dependency>
 				</dependencies>
 
-				<executions> <execution> <id>flex-reports</id> <goals> <goal>asdoc-report</goal>
-					</goals> <phase>site</phase> </execution> </executions>
+				<executions>
+					<execution>
+						<id>flex-reports</id>
+						<goals>
+							<goal>asdoc-report</goal>
+						</goals>
+						<phase>site</phase>
+					</execution>
+				</executions>
 				<configuration>
-                    <storepass />
-                    <testTimeout>10000</testTimeout>
+					<storepass/>
+					<testTimeout>10000</testTimeout>
 					<configurationReport>true</configurationReport>
 					<targetPlayer>${flashplayer.version.major}</targetPlayer>
 					<locales>
@@ -245,41 +240,41 @@
 			<classifier>${playerglobal.version}</classifier>
 		</dependency>
 
-		    <dependency>
-		      <groupId>com.adobe.flex.framework</groupId>
-		      <artifactId>framework</artifactId>
-		      <version>${flex-sdk.version}</version>
-		      <type>swc</type>
-		      <scope>external</scope>
-		    </dependency>
-		    <dependency>
-		      <groupId>com.adobe.flex.framework</groupId>
-		      <artifactId>mx</artifactId>
-		      <version>${flex-sdk.version}</version>
-		      <type>swc</type>
-		      <scope>external</scope>
-		    </dependency>
-		    <dependency>
-		      <groupId>com.adobe.flex.framework</groupId>
-		      <artifactId>textLayout</artifactId>
-		      <version>${flex-sdk.version}</version>
-		      <type>swc</type>
-		      <scope>test</scope>
-		    </dependency>
-		    <dependency>
-		      <groupId>com.adobe.flex.framework</groupId>
-		      <artifactId>framework</artifactId>
-		      <version>${flex-sdk.version}</version>
-		      <type>rb.swc</type>
-		      <scope>test</scope>
-		    </dependency>
-		    <dependency>
-		      <groupId>com.adobe.flex.framework</groupId>
-		      <artifactId>mx</artifactId>
-		      <version>${flex-sdk.version}</version>
-		      <type>rb.swc</type>
-		      <scope>external</scope>
-		    </dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>framework</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>mx</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>textLayout</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>framework</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>rb.swc</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>mx</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>rb.swc</type>
+			<scope>external</scope>
+		</dependency>
 
 		<!-- AS3Commons -->
 
@@ -322,7 +317,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 			</plugin>
-            <!--
+			<!--
 			<plugin>
 				<groupId>org.sonatype.flexmojos</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>
@@ -352,10 +347,11 @@
 
 
 	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.4.2</developerConnection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.4.2
+		</developerConnection>
 		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.4.2</url>
-	  <connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.4.2</connection>
-  </scm>
+		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.4.2</connection>
+	</scm>
 
 	<distributionManagement>
 		<site>
@@ -373,44 +369,5 @@
 			<url>https://dev.yoolab.org/maven/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-
-    <repositories>
-		<repository>
-			<id>flex-mojos-repository</id>
-			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>yoolab.org-releases</id>
-			<url>http://projects.yoolab.org/maven/content/repositories/releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>yoolab.org-snapshots</id>
-			<url>http://projects.yoolab.org/maven/content/repositories/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>flexmojos-plugin</id>
-			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 </project>
