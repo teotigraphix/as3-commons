@@ -150,20 +150,7 @@
 			<type>swc</type>
 			<classifier>${playerglobal.version}</classifier>
 		</dependency>
-		<dependency>
-			<groupId>com.adobe.flexunit</groupId>
-			<artifactId>flexunit</artifactId>
-			<version>${flexunit.version}</version>
-			<type>swc</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-		      <groupId>org.sonatype.flexmojos</groupId>
-		      <artifactId>flexmojos-unittest-support</artifactId>
-		      <version>${flex-mojos.version}</version>
-		      <type>swc</type>
-		      <scope>external</scope>
-		</dependency>
+		
 		    <dependency>
 		      <groupId>com.adobe.flex.framework</groupId>
 		      <artifactId>framework</artifactId>
@@ -199,6 +186,14 @@
 		      <type>rb.swc</type>
 		      <scope>external</scope>
 		    </dependency>
+
+		<dependency>
+			<groupId>com.adobe.flexunit</groupId>
+			<artifactId>flexunit</artifactId>
+			<version>${flexunit.version}</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
