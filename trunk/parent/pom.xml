@@ -66,6 +66,13 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>cairngorm3-repository</id>
+			<url>http://opensource.adobe.com/svn/opensource/cairngorm3/maven-repository</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
