@@ -55,7 +55,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<allowHeadlessMode>false</allowHeadlessMode>
 					<storepass/>
 					<testTimeout>10000</testTimeout>
 					<configurationReport>true</configurationReport>
@@ -78,13 +77,6 @@
 					<dumpConfigAttach>true</dumpConfigAttach>
 					<showWarnings>true</showWarnings>
 					<lenient>true</lenient>
-					<headlessServer>false</headlessServer>
-					<testRunner>
-						<launcher>
-							<allowHeadlessMode>false</allowHeadlessMode>
-							<flashplayerCommand>${flashPlayer.command}</flashplayerCommand>
-						</launcher>
-					</testRunner>
 				</configuration>
 
 			</plugin>
