@@ -58,7 +58,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 * @return The <code>IAccessorBuilder</code> representing the generated accessor.
-		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied accessor is marked as final.
+		 * @throws org.as3commons.bytecode.proxy.error.ProxyBuildError When the proxied accessor is marked as final.
 		 */
 		public function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName, failOnFinal:Boolean=true):void {
 			CONFIG::debug {
@@ -191,10 +191,10 @@ package org.as3commons.bytecode.proxy.impl {
 				.addOpcode(Opcode.findpropstrict, [qnameQname]) //
 				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespaceURI) ? methodBuilder.namespaceURI : ""]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
-				.addOpcode(Opcode.constructprop, [qnameQname, 2]) //
+				.addOpcode(Opcode.constructprop, [qnameQname, 2]);
 			if (!isInterface) {
 				methodBuilder.addOpcode(Opcode.getlocal_0) //
-					.addOpcode(Opcode.getsuper, [createMethodQName(methodBuilder)]) //
+					.addOpcode(Opcode.getsuper, [createMethodQName(methodBuilder)]);
 			} else {
 				methodBuilder.addOpcode(Opcode.pushnull);
 			}
