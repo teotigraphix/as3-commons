@@ -19,29 +19,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.util {
-	
-	import flash.utils.Dictionary;
+package org.as3commons.logging.simple {
 	
 	/**
-	 * Removes duplicates in an array.
+	 * If set to true <code>true</code> it will show the line numbers for the 
+	 * log statements.
+	 * 
+	 * <p>This switch is available for the case one has too many logging calls
+	 * and the flash player gets unbearable slow. In that particular case 
+	 * <code>USE_LINE_NUMBERS</code> will reduce at least the amount of loggers
+	 * instantiated. (not one per line but one per method. This setting is
+	 * only effective if the swf is compiled for debugging and it runs in a debug
+	 * player.</p>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.6
-	 * @param arr Array to remove the duplicates from.
 	 */
-	public function removeDuplicates(arr:Array):void {
-		var contains: Dictionary = new Dictionary();
-		var l: int = arr.length;
-		for( var i: int = 0; i < l; ++i) {
-			var entry: * = arr[i];
-			if( contains[entry] ) {
-				arr.splice(i,1);
-				--i;
-				--l;
-			} else {
-				contains[entry] = true;
-			}
-		}
-	}
+	public var USE_LINE_NUMBERS: Boolean = true;
 }

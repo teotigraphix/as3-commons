@@ -43,7 +43,7 @@ import org.as3commons.logging.api.ILogger;
 import org.as3commons.logging.api.getLogger;
 
 
-const logger: ILogger = getLogger( "org.as3commons.logging.util#captureUncaughtErrors" );
+const logger: ILogger = getLogger( "org.as3commons.logging.util/captureUncaughtErrors" );
 
 /**
  * Logs the statements

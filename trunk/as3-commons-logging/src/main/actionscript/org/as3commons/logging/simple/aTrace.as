@@ -20,9 +20,13 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.simple {
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
+	import org.as3commons.logging.util.IS_DEBUGGER;
+	import org.as3commons.logging.util.here;
 	
 	/**
-	 * Subsitute for the native trace framework.
+	 * Subsitute for the native trace function.
 	 * 
 	 * <p>In many applications the classic <code>trace</code> is used to trace
 	 * statements. To refactor this code one can use this function in a search&amp;replace
@@ -31,8 +35,26 @@ package org.as3commons.logging.simple {
 	 * @param args
 	 */
 	public function aTrace( ...args:Array ): void {
-		if( isInfoEnabled() ) {
-			org.as3commons.logging.simple.info( args.join(" ") );
+		var logger: ILogger;
+		if( IS_DEBUGGER && USE_STACKTRACE ) {
+			logger = LOGGER_FACTORY.getNamedLogger( here(1, USE_LINE_NUMBERS), "direct" );
+		} else {
+			logger = DIRECT_LOGGER;
+		}
+		if( logger.infoEnabled ) {
+			// Using the message formatter, other systems like the Firebug
+			// debugger can show the arguments as objects. 
+			var message: String = MESSAGES[args.length];
+			if( !message ) {
+				message = "";
+				for(var i: int = 0, l: int = args.length; i<l; ++i ) {
+					message += ((i!=0) ? " {" : "{") + i + "}";
+				}
+				MESSAGES[args.length] = message;
+			}
+			logger.info( message, args );
 		}
 	}
 }
+
+const MESSAGES: Object = {};

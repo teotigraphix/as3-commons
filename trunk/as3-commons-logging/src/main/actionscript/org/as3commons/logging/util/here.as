@@ -30,41 +30,26 @@ package org.as3commons.logging.util {
 	 * <p>Note: It is just with the debug player possible to get the current target,
 	 * see: Bug FP-644 in the adobe bug base.</p> 
 	 * 
-	 * <p>Warning: Performance intense task, use with care!</p> 
+	 * <p>Warning: Performance intense task, use with care!</p>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.5
 	 * @version 2.0
 	 * @see https://bugs.adobe.com/jira/browse/FP-644
+	 * @see org.as3commons.logging.util#locationFromStackTrace()
 	 * 
 	 * @param linesChopped Amount of lines in the stacktrace that should be cut.
+	 * @param useLineNumbers If true the line numbers will not be cropped
+	 * @return The current location (if evaluatable)
 	 */
-	public function here(linesChopped:int=0): String {
+	public function here(linesChopped:int=0,useLineNumbers:Boolean=true): String {
 		if( IS_DEBUGGER ) {
-			var error: Error = new Error();
-			var stackTrace: String = error.getStackTrace();
-			if( stackTrace ) {
-				// just in debug player
-				var nextLine: int = stackTrace.indexOf("\n");
-				// Two lines should at least be chopped
-				linesChopped += 2;
-				// Chop all lines
-				while( linesChopped > 0 ) {
-					stackTrace = stackTrace.substr(nextLine+1);
-					nextLine = stackTrace.indexOf("\n");
-					--linesChopped;
-				}
-				if( nextLine != -1 ) {
-					stackTrace = stackTrace.substring(0, nextLine);
-				} 
-				var braces: int = stackTrace.indexOf("(");
-				var name: String = stackTrace.substring(4,braces);
-				if( braces != stackTrace.length-2 ) {
-					 name += stackTrace.substring( stackTrace.lastIndexOf(":"), stackTrace.length-1 );
-				}
-				return name;
-			}
+			// just in debug player
+			return locationFromStackTrace(
+				(new Error).getStackTrace(), linesChopped+2, useLineNumbers
+			) || "";
+		} else {
+			return "";
 		}
-		return "";
 	}
 }
