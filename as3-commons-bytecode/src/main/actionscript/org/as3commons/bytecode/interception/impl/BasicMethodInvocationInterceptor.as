@@ -30,7 +30,6 @@ package org.as3commons.bytecode.interception.impl {
 
 		/**
 		 * Creates a new <code>BasicMethodInvocationInterceptor</code> instance.
-		 * @param target
 		 */
 		public function BasicMethodInvocationInterceptor() {
 			super();
