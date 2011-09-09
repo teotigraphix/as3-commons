@@ -38,7 +38,6 @@ package org.as3commons.logging.setup.target {
 	 * @author Martin Heidegger
 	 * @see http://demonsterdebugger.com/asdoc/com/demonsters/debugger/MonsterDebugger.html#trace()
 	 * @since 2.5
-	 * @deprecated
 	 */
 	public final class MonsterDebugger3TraceTarget extends Object
 												  implements IColorableLogTarget {
