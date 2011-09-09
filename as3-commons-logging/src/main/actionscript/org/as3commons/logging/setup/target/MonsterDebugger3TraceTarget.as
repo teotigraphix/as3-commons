@@ -38,12 +38,14 @@ package org.as3commons.logging.setup.target {
 	 * @author Martin Heidegger
 	 * @see http://demonsterdebugger.com/asdoc/com/demonsters/debugger/MonsterDebugger.html#trace()
 	 * @since 2.5
+	 * @deprecated
 	 */
 	public final class MonsterDebugger3TraceTarget extends Object
 												  implements IColorableLogTarget {
 		/** Default output format used to stringify log statements via MonsterDebugger.trace(). */
 		public static const DEFAULT_FORMAT:String = "{message}";
 		
+		/** Default label format used to fill the label field of the target */
 		public static const DEFAULT_LABEL_FORMAT:String = "{logLevel}";
 		
 		/** Default colors used to color the output statements. */
@@ -65,22 +67,25 @@ package org.as3commons.logging.setup.target {
 		/** Formatter for the label property of logstatements */
 		private var _label:LogMessageFormatter;
 		
-		/** Depth  */
+		/** Depth used to evaluate objects */
 		private var _depth: int; 
 		
 		/**
 		 * Constructs a new <code>MonsterDebugger3Target</code>
 		 * 
-		 * @param format Default format used to render log statements.
-		 * @param colors Default colors used to color log statements.
-		 * @param depth Depth used to 
+		 * @param format Format used to render log statements
+		 * @param colors Colors used to color log statements
+		 * @param depth Depth used to evaluate the object (MonsterDebugger option)
+		 * @param label Format used to render the label property of log statements
 		 */
 		public function MonsterDebugger3TraceTarget(format:String=null,
 													colors:Object=null,
-													depth:int=5) {
+													depth:int=5,
+													label:String=null) {
 			this.format = format;
 			this.colors = colors;
 			this.depth = depth;
+			this.label = label;
 		}
 		
 		/**
