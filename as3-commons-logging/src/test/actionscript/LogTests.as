@@ -163,7 +163,6 @@ package {
 				new SimpleLoggingTest(),
 				new MergedSetupTest(),
 				new MergedTest(),
-				new SimpleLoggingTest(),
 				new ComplexSetupTest(),
 				new XMLSetupTest(),
 				new JsonXifyTest(),

@@ -14,11 +14,49 @@ package org.as3commons.logging.simple {
 	 * @author mh
 	 */
 	public class SimpleLoggingTest extends TestCase {
-		public function SimpleLoggingTest() {}
 		
+		public function SimpleLoggingTest() {}
 		
 		override public function setUp() : void {
 			stack = [];
+		}
+		
+		public function testTrace(): void {
+			LOGGER_FACTORY.setup = new SimpleTargetSetup( new FullSampleTarget() );
+			
+			var obj: Object = { me:"me" };
+			
+			aTrace("hi");
+			aTrace(obj);
+			aTrace("hi",obj);
+			aTrace("hi",obj,"hello", "world");
+			
+			USE_STACKTRACE = true;
+			
+			aTrace("hi");
+			aTrace(obj);
+			aTrace("hi",obj);
+			aTrace("hi",obj,"hello", "world");
+			
+			USE_STACKTRACE = false;
+			
+			aTrace("hi");
+			aTrace(obj);
+			aTrace("hi",obj);
+			aTrace("hi",obj,"hello", "world");
+			
+			assertObjectEquals([INFO, "org.as3commons.logging.simple", "{0}", ["hi"], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple", "{0}", [obj], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple", "{0} {1}", ["hi", obj], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple", "{0} {1} {2} {3}", ["hi", obj, "hello", "world"], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple.SimpleLoggingTest/testTrace:36", "{0}", ["hi"], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple.SimpleLoggingTest/testTrace:37", "{0}", [obj], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple.SimpleLoggingTest/testTrace:38", "{0} {1}", ["hi", obj], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple.SimpleLoggingTest/testTrace:39", "{0} {1} {2} {3}", ["hi", obj, "hello", "world"], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple", "{0}", ["hi"], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple", "{0}", [obj], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple", "{0} {1}", ["hi", obj], "direct"], stack.shift());
+			assertObjectEquals([INFO, "org.as3commons.logging.simple", "{0} {1} {2} {3}", ["hi", obj, "hello", "world"], "direct"], stack.shift());
 		}
 		
 		public function testActivationStackTrace():void {
@@ -46,29 +84,29 @@ package org.as3commons.logging.simple {
 			org.as3commons.logging.simple.error(null);
 			org.as3commons.logging.simple.fatal(null);
 			
-			assertEquals(DEBUG+"direct",stack.shift());
-			assertEquals(INFO+"direct",stack.shift());;
-			assertEquals(WARN+"direct",stack.shift());
-			assertEquals(ERROR+"direct",stack.shift());
-			assertEquals(FATAL+"direct",stack.shift());
+			assertEquals(DEBUG+"org.as3commons.logging.simple",stack.shift());
+			assertEquals(INFO+"org.as3commons.logging.simple",stack.shift());;
+			assertEquals(WARN+"org.as3commons.logging.simple",stack.shift());
+			assertEquals(ERROR+"org.as3commons.logging.simple",stack.shift());
+			assertEquals(FATAL+"org.as3commons.logging.simple",stack.shift());
 			
-			assertEquals(DEBUG+"org.as3commons.logging.simple::SimpleLoggingTest/testActivationStackTrace:35",stack.shift());
-			assertEquals(INFO+"org.as3commons.logging.simple::SimpleLoggingTest/testActivationStackTrace:36",stack.shift());
-			assertEquals(WARN+"org.as3commons.logging.simple::SimpleLoggingTest/testActivationStackTrace:37",stack.shift());
-			assertEquals(ERROR+"org.as3commons.logging.simple::SimpleLoggingTest/testActivationStackTrace:38",stack.shift());
-			assertEquals(FATAL+"org.as3commons.logging.simple::SimpleLoggingTest/testActivationStackTrace:39",stack.shift());
+			assertEquals(DEBUG+"org.as3commons.logging.simple.SimpleLoggingTest/testActivationStackTrace:73",stack.shift());
+			assertEquals(INFO+"org.as3commons.logging.simple.SimpleLoggingTest/testActivationStackTrace:74",stack.shift());
+			assertEquals(WARN+"org.as3commons.logging.simple.SimpleLoggingTest/testActivationStackTrace:75",stack.shift());
+			assertEquals(ERROR+"org.as3commons.logging.simple.SimpleLoggingTest/testActivationStackTrace:76",stack.shift());
+			assertEquals(FATAL+"org.as3commons.logging.simple.SimpleLoggingTest/testActivationStackTrace:77",stack.shift());
 			
-			assertEquals(DEBUG+"direct",stack.shift());
-			assertEquals(INFO+"direct",stack.shift());;
-			assertEquals(WARN+"direct",stack.shift());
-			assertEquals(ERROR+"direct",stack.shift());
-			assertEquals(FATAL+"direct",stack.shift());
+			assertEquals(DEBUG+"org.as3commons.logging.simple",stack.shift());
+			assertEquals(INFO+"org.as3commons.logging.simple",stack.shift());;
+			assertEquals(WARN+"org.as3commons.logging.simple",stack.shift());
+			assertEquals(ERROR+"org.as3commons.logging.simple",stack.shift());
+			assertEquals(FATAL+"org.as3commons.logging.simple",stack.shift());
 			
 			assertEquals(stack.length, 0);
 		}
 		
 		public function testEnabling():void {
-			LOGGER_FACTORY.setup = rule( new SampleTarget, /^org/ );
+			LOGGER_FACTORY.setup = rule( new SampleTarget, /^org\.as3commons\.logging\.simple\.SimpleLoggingTest/ );
 			
 			org.as3commons.logging.simple.debug(null);
 			org.as3commons.logging.simple.info(null);
@@ -118,11 +156,11 @@ package org.as3commons.logging.simple {
 			assertFalse(isFatalEnabled());
 			assertFalse(isDebugEnabled());
 			
-			assertEquals(DEBUG+"org.as3commons.logging.simple::SimpleLoggingTest/testEnabling:87",stack.shift());
-			assertEquals(INFO+"org.as3commons.logging.simple::SimpleLoggingTest/testEnabling:88",stack.shift());
-			assertEquals(WARN+"org.as3commons.logging.simple::SimpleLoggingTest/testEnabling:89",stack.shift());
-			assertEquals(ERROR+"org.as3commons.logging.simple::SimpleLoggingTest/testEnabling:90",stack.shift());
-			assertEquals(FATAL+"org.as3commons.logging.simple::SimpleLoggingTest/testEnabling:91",stack.shift());
+			assertEquals(DEBUG+"org.as3commons.logging.simple.SimpleLoggingTest/testEnabling:125",stack.shift());
+			assertEquals(INFO+"org.as3commons.logging.simple.SimpleLoggingTest/testEnabling:126",stack.shift());
+			assertEquals(WARN+"org.as3commons.logging.simple.SimpleLoggingTest/testEnabling:127",stack.shift());
+			assertEquals(ERROR+"org.as3commons.logging.simple.SimpleLoggingTest/testEnabling:128",stack.shift());
+			assertEquals(FATAL+"org.as3commons.logging.simple.SimpleLoggingTest/testEnabling:129",stack.shift());
 			
 			assertEquals(stack.length, 0);
 		}
@@ -143,5 +181,12 @@ class SampleTarget implements ILogTarget {
 	
 	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : *, parameters : Array, person : String) : void {
 		stack.push(level+name);
+	}
+}
+
+class FullSampleTarget implements ILogTarget {
+	
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : *, parameters : Array, person : String) : void {
+		stack.push([level,name,message, parameters,person]);
 	}
 }

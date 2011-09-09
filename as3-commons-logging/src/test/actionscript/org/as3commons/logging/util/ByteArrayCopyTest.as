@@ -46,6 +46,8 @@ package org.as3commons.logging.util {
 			assertCopy( clone(simpleObject), simpleObject );
 			assertCopy( clone(arrayWithObject), arrayWithObject );
 			assertCopy( clone(custom), custom );
+			assertEquals( clone(new CustomClone()), "hi");
+			assertEquals( clone(new CustomCopy()), "ho");
 			
 			
 			registerClassAlias( getQualifiedClassName(CustomClass), CustomClass);
@@ -76,11 +78,24 @@ class CustomClass {
 	public var test: String;
 	public var child: CustomClass;
 	public var nu : Number;
+	public var clone: String;
+	public var copy: Function;
 	public function CustomClass( test: String=null, nu: Number=0 ) {
 		this.test = test;
 		this.nu = nu;
 	}
+}
 
+class CustomClone {
+	public function clone(): String {
+		return "hi";
+	}
+}
+
+class CustomCopy {
+	public function copy(): String {
+		return "ho";
+	}
 }
 
 

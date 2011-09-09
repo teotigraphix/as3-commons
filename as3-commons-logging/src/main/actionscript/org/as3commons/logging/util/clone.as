@@ -60,58 +60,62 @@ package org.as3commons.logging.util {
 			theClone = storage[ object ];
 		}
 		if( !theClone ) {
-			try {
-				// First we try "clone" method, since some classes are not
-				// really copyable and this allows a flexible implementation
-				// any Interface might interfere with existing interfaces. 
-				theClone = object["clone"]();
-			} catch( e: Error ) {
+			if( object.hasOwnProperty("clone") && object["clone"] is Function ) {
+				try {
+					// First we try "clone" method, since some classes are not
+					// really copyable and this allows a flexible implementation
+					// any Interface might interfere with existing interfaces. 
+					theClone = object["clone"]();
+				} catch( e: Error ) {}
+			}
+			if( !theClone && object.hasOwnProperty("copy") && object["copy"] is Function ) {
 				try {
 					// Some frameworks think the "copy" naming is more fun.
 					theClone = object["copy"]();
-				} catch( e1: Error ) {
-					var nextDepth: uint;
-					if( object is Array ) {
-						// Arrays are in any way faster copied by iteration
-						var resultArr: Array = [];
-						if( introspectDepth > 0 ) {
-							nextDepth = introspectDepth-1;
-							var arr: Array = object;
-							var l: int = arr.length;
-							for( var i: int = 0; i<l; ++i ) {
-								resultArr[i] = clone(arr[i], nextDepth,
-									storage || (storage = new Dictionary()),
-									useByteArray);
-							}
+				} catch( e1: Error ) {}
+			}
+			if( !theClone ) {
+				var nextDepth: uint;
+				if( object is Array ) {
+					// Arrays are in any way faster copied by iteration
+					var resultArr: Array = [];
+					if( introspectDepth > 0 ) {
+						nextDepth = introspectDepth-1;
+						var arr: Array = object;
+						var l: int = arr.length;
+						for( var i: int = 0; i<l; ++i ) {
+							resultArr[i] = clone(arr[i], nextDepth,
+								storage || (storage = new Dictionary()),
+								useByteArray);
 						}
-						theClone = resultArr;
-					} else if( useByteArray ) {
-						try {
-							// Try to copy it to a bytearray, its a very safe,
-							// iteration-free way but does take some time.
-							BYTE_ARRAY.position = 0;
-							BYTE_ARRAY.writeObject(object);
-							BYTE_ARRAY.position = 0;
-							theClone = BYTE_ARRAY.readObject();
-						} catch( e2: Error ) {}
 					}
-					if( !theClone ) {
-						// In case it didn't work out fetch the properties by hand and
-						// copy them into generic objects.
-						var resultObj: Object = {};
-						var props: Array = allProperties( object );
-						if( introspectDepth > 0 ) {
-							nextDepth = introspectDepth-1;
-							for( var prop: String in object ) {
-								resultObj[prop] = clone(
-									object[prop], nextDepth,
-									storage || (storage = new Dictionary()),
-									useByteArray);
-							}
-						}
-						theClone = resultObj;
+					theClone = resultArr;
+				} else if( useByteArray ) {
+					try {
+						// Try to copy it to a bytearray, its a very safe,
+						// iteration-free way but does take some time.
+						BYTE_ARRAY.position = 0;
+						BYTE_ARRAY.writeObject(object);
+						BYTE_ARRAY.position = 0;
+						theClone = BYTE_ARRAY.readObject();
+					} catch( e2: Error ) {}
+				}
+			}
+			if( !theClone ) {
+				// In case it didn't work out fetch the properties by hand and
+				// copy them into generic objects.
+				var resultObj: Object = {};
+				var props: Array = allProperties( object );
+				if( introspectDepth > 0 ) {
+					nextDepth = introspectDepth-1;
+					for( var prop: String in object ) {
+						resultObj[prop] = clone(
+							object[prop], nextDepth,
+							storage || (storage = new Dictionary()),
+							useByteArray);
 					}
 				}
+				theClone = resultObj;
 			}
 			if( storage ) {
 				// Store the clone so we dont need to evaluate this instance

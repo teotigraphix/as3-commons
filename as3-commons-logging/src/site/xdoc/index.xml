@@ -68,6 +68,7 @@
 					<area shape="rect" coords="135,157,266,176" href="asdoc/index.html?org/as3commons/logging/integration/SpiceLibIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Spicelib integration" />
 					<area shape="rect" coords="47,77,223,104" href="asdoc/index.html?org/as3commons/logging/setup/target/MonsterDebugger3TraceTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="MonsterDebugger integration" />
 					<area shape="rect" coords="115,19,246,68" href="asdoc/index.html?org/as3commons/logging/setup/target/FlashConsoleTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Flash Console integration" />
+					<area shape="rect" coords="467,25,512,69" href="asdoc/index.html?org/as3commons/logging/integration/Log5FIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Log5f integration" />
 				</map>
         </section>
 

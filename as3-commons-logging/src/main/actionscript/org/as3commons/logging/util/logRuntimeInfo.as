@@ -17,7 +17,7 @@ package org.as3commons.logging.util {
 	 * @version 2.0
 	 */
 	public function logRuntimeInfo(stage:Stage,base:DisplayObject=null): void {
-		if( logger.infoEnabled ) {
+		if( LOGGER.infoEnabled ) {
 			SWFInfo.init(stage);
 			if(!base) {
 				base = stage.getChildAt(0);
@@ -44,11 +44,11 @@ import flash.display.DisplayObject;
 import flash.display.Stage;
 import flash.system.Capabilities;
 
-const logger: ILogger = getLogger("org.as3commons.logging.util/logRuntimeInfo");
+const LOGGER: ILogger = getLogger("org.as3commons.logging.util/logRuntimeInfo");
 
 function log(stage:Stage, root:DisplayObject):void {
-	if( logger.infoEnabled ) {
-		logger.info(
+	if( LOGGER.infoEnabled ) {
+		LOGGER.info(
 			 "\n\tPlayer Version: " + Capabilities.version + " - " + Capabilities.playerType + ( IS_DEBUGGER ? "(debug)" : "" )
 			+ "\n\t" + Capabilities.cpuArchitecture + " CPU architecture on OS: " + Capabilities.os
 			+ "\n\tSWF path: " + SWF_URL + " (" + root.loaderInfo.bytesTotal  + " bytes, swf-version: " + root.loaderInfo.swfVersion + ", as" + root.loaderInfo.actionScriptVersion + ")"

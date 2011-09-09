@@ -1,5 +1,7 @@
 package org.as3commons.logging.util {
 	import flexunit.framework.TestCase;
+
+	import flash.utils.getQualifiedClassName;
 	/**
 	 * @author mh
 	 */
@@ -10,18 +12,22 @@ package org.as3commons.logging.util {
 		namespace test;
 		
 		public function HereTest() {
-			assertEquals( "org.as3commons.logging.util::HereTest:13", here() );
+			assertEquals( "org.as3commons.logging.util.HereTest:15", here() );
 		}
 		
 		public function testHere(): void {
-			assertEquals( "org.as3commons.logging.util::HereTest/testHere:17", here() );
-			assertRegExp( /Function\/HereTest\.as\$.*\:local\:48/, local() );
-			assertEquals( "org.as3commons.logging.util::HereTest/get getta:41", getta );
+			assertEquals( "org.as3commons.logging.util.HereTest/testHere:19", here() );
+			assertRegExp( /HereTest\$.*\/local\:53/, local() );
+			assertEquals( "org.as3commons.logging.util.HereTest/testHere:21", here() );
+			assertEquals( "org.as3commons.logging.util.HereTest/get getta:47", getta );
 			setta=0;
-			assertEquals( "org.as3commons.logging.util::HereTest/set setta:37", _setta );
-			assertEquals( "org.as3commons.logging.util::HereTest$/stadic:32", stadic() );
-			assertEquals( "org.as3commons.logging.util::HereTest/namespashe:28", test::namespashe() );
-			assertEquals( "global/org.as3commons.logging.util::hereTestFunction:6", hereTestFunction() );
+			assertEquals( "org.as3commons.logging.util.HereTest/set setta:43", _setta );
+			var localCls: LocalClass = new LocalClass();
+			assertEquals( "LocalClass:61", localCls.inConst );
+			assertEquals( "LocalClass/local:65", localCls.local() );
+			assertEquals( "org.as3commons.logging.util.HereTest$/stadic:38", stadic() );
+			assertEquals( "org.as3commons.logging.util.HereTest/namespashe:34", test::namespashe() );
+			assertEquals( "org.as3commons.logging.util/hereTestFunction:6", hereTestFunction() );
 		}
 		
 		test function namespashe(): String {
@@ -42,8 +48,20 @@ package org.as3commons.logging.util {
 		}
 	}
 }
-
 import org.as3commons.logging.util.here;
 function local():String {
 	return here();
+}
+
+class LocalClass {
+	
+	public var inConst: String;
+	
+	public function LocalClass() {
+		inConst = here();
+	}
+	
+	function local(): String {
+		return here();
+	}
 }
