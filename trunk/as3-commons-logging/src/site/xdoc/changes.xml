@@ -21,7 +21,7 @@
                      <br/>
                      If you dont want to change your code, feel free to use
                      additionally this swc that contains a wrapper for the old api:
-                     <a href="downloads/as3commons-logging-2.legacy.swc">as3commons-logging-2.legacy.swc</a><br/>
+                     <a href="http://as3-commons.googlecode.com/files/as3commons-logging-2.legacy.swc">as3commons-logging-2.legacy.swc</a><br/>
                      <br/>
                      For details about the performance issue: <a href="https://bugs.adobe.com/jira/browse/ASL-224" target="_blank">Adobe Bug #224</a>
                  </li>

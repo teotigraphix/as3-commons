@@ -1,4 +1,22 @@
 package {
+	import org.as3commons.logging.util.xml.XMLRuleTest;
+	import org.as3commons.logging.util.xml.XMLTargetTest;
+	import flash.display.Sprite;
+	import flash.display.Stage;
+	import flash.sampler.getSize;
+	import flash.system.Capabilities;
+	import flash.utils.getTimer;
+	import flash.utils.setTimeout;
+	import mx.logging.AbstractTarget;
+	import mx.logging.ILogger;
+	import mx.logging.ILoggingTarget;
+	import mx.logging.Log;
+	import mx.logging.LogEvent;
+	import mx.logging.LogEventLevel;
+	import mx.logging.LogLogger;
+	import mx.logging.errors.InvalidCategoryError;
+	import mx.logging.errors.InvalidFilterError;
+	import mx.logging.targets.TraceTarget;
 	import org.as3commons.logging.LogLevelTest;
 	import org.as3commons.logging.api.ILogSetup;
 	import org.as3commons.logging.api.ILogger;
@@ -8,6 +26,7 @@ package {
 	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.logging.integration.ASAPIntegrationTest;
 	import org.as3commons.logging.integration.FlexIntegrationTest;
+	import org.as3commons.logging.integration.Log5FIntegrationTest;
 	import org.as3commons.logging.integration.LogMeisterIntegrationTest;
 	import org.as3commons.logging.integration.MateIntegrationTest;
 	import org.as3commons.logging.integration.OSMFIntegrationTest;
@@ -26,7 +45,6 @@ package {
 	import org.as3commons.logging.setup.MergedSetupTest;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
 	import org.as3commons.logging.setup.SimpleTargetSetupTest;
-	import org.as3commons.logging.setup.XMLSetupTest;
 	import org.as3commons.logging.setup.target.AirTargetTest;
 	import org.as3commons.logging.setup.target.BufferTest;
 	import org.as3commons.logging.setup.target.FrameBufferTest;
@@ -43,26 +61,11 @@ package {
 	import org.as3commons.logging.util.LogMessageFormatterTest;
 	import org.as3commons.logging.util.SWFInfo;
 	import org.as3commons.logging.util.toLogName;
+	import org.as3commons.logging.util.xml.XMLSetupTest;
 	import org.flexunit.internals.TraceListener;
 	import org.flexunit.runner.FlexUnitCore;
 
-	import mx.logging.AbstractTarget;
-	import mx.logging.ILogger;
-	import mx.logging.ILoggingTarget;
-	import mx.logging.Log;
-	import mx.logging.LogEvent;
-	import mx.logging.LogEventLevel;
-	import mx.logging.LogLogger;
-	import mx.logging.errors.InvalidCategoryError;
-	import mx.logging.errors.InvalidFilterError;
-	import mx.logging.targets.TraceTarget;
 
-	import flash.display.Sprite;
-	import flash.display.Stage;
-	import flash.sampler.getSize;
-	import flash.system.Capabilities;
-	import flash.utils.getTimer;
-	import flash.utils.setTimeout;
 	
 
 
@@ -160,11 +163,14 @@ package {
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
 			core.run( [
+				new XMLSetupTest(),
+				new XMLTargetTest(),
+				new XMLRuleTest(),
+				new Log5FIntegrationTest(),
 				new SimpleLoggingTest(),
 				new MergedSetupTest(),
 				new MergedTest(),
 				new ComplexSetupTest(),
-				new XMLSetupTest(),
 				new JsonXifyTest(),
 				new HereTest(),
 				new ByteArrayCopyTest(),

@@ -40,6 +40,7 @@ package org.as3commons.logging.setup.target {
 	 * @author Martin Heidegger
 	 * @since 2.6
 	 * @see http://log5f.org
+	 * @see org.as3commons.logging.integration.Log5FIntegration
 	 */
 	public final class Log5FTarget implements ILogTarget {
 		
@@ -78,18 +79,20 @@ package org.as3commons.logging.setup.target {
 		public function log(name:String, shortName:String, level:int,
 							 timeStamp:Number, message:*, parameters:Array,
 							 person:String): void {
-			var logger: ILogger = _loggers[name] || (_loggers[name] = LoggerManager.getLogger(name));
-			message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
-			if( level == INFO ) {
-				logger.info( message );
-			} else if( level == DEBUG ) {
-				logger.debug( message );
-			} else if( level == ERROR ) {
-				logger.error( message );
-			} else if( level == WARN ) {
-				logger.warn( message );
-			} else if( level == FATAL ) {
-				logger.fatal( message );
+			if( person != "log5f") {
+				var logger: ILogger = _loggers[name] || (_loggers[name] = LoggerManager.getLogger(name));
+				message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
+				if( level == INFO ) {
+					logger.info( message );
+				} else if( level == DEBUG ) {
+					logger.debug( message );
+				} else if( level == ERROR ) {
+					logger.error( message );
+				} else if( level == WARN ) {
+					logger.warn( message );
+				} else if( level == FATAL ) {
+					logger.fatal( message );
+				}
 			}
 		}
 	}

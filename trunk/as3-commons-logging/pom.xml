@@ -349,6 +349,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org</groupId>
+            <artifactId>log5f</artifactId>
+            <version>1.0.55</version>
+            <type>swc</type>
+            <scope>external</scope>
+        </dependency>
+
+        <dependency>
             <groupId>nl.acidcats</groupId>
             <artifactId>yalog</artifactId>
             <version>3.0.1</version>
