@@ -20,25 +20,29 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.util {
-	import org.as3commons.logging.level.DEBUG;
-	import org.as3commons.logging.level.ERROR;
-	import org.as3commons.logging.level.FATAL;
-	import org.as3commons.logging.level.INFO;
-	import org.as3commons.logging.level.WARN;
 	
 	/**
-	 * High speed access to the common names for levels (also used by levelToName)
+	 * Transforms a string that contains regular regexp syntax to a working <code>RegExp</code> instance.
 	 * 
+	 * <listing>
+	 * var a: RegExp = regExpFromString("/test/i");
+	 * a.ignoreCase; // true
+	 * a.source; // "test"
+	 * </listing>
+	 * 
+	 * @param string <code>String</code> to be transformed to Regular Expression
+	 * @return <code>RegExp</code> instance if its a valid expression, else "null"
 	 * @author Martin Heidegger
-	 * @since 2.5.2
-	 * @see org.as3commons.logging.util#levelToName()
+	 * @since 2.6
 	 */
-	public const LEVEL_NAMES: Object = {};
-	{
-		LEVEL_NAMES[DEBUG] = "DEBUG";
-		LEVEL_NAMES[FATAL] = "FATAL";
-		LEVEL_NAMES[ERROR] = "ERROR";
-		LEVEL_NAMES[INFO] = "INFO";
-		LEVEL_NAMES[WARN] = "WARN";
+	public function regExpFromString(string:String): RegExp {
+		var parts: Object = REG_EXP.exec(string);
+		if( parts && parts[1] ) {
+			return new RegExp(parts[1], parts[2]);
+		} else {
+			return null;
+		}
 	}
 }
+
+const REG_EXP: RegExp = /^\/(.*)\/(.*)$/;

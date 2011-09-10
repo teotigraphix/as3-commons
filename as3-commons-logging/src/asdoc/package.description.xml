@@ -45,5 +45,9 @@
 			<shortDescription><![CDATA[Utils for more specific logging systems.]]></shortDescription>
 			<description><![CDATA[]]></description>
 		</package>
+		<package name="org.as3commons.logging.util.xml" >
+			<shortDescription><![CDATA[Utils to work with xml based setups.]]></shortDescription>
+			<description><![CDATA[]]></description>
+		</package>
 	</packages>
 </overviews>

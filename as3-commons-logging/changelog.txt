@@ -4,13 +4,14 @@ AS3COMMONS LOGGING CHANGELOG
 Note: dates are in DD.MM.YYYY format
 Changes in version 2.6
 -----------------------------------
-* Improved: mergeTarget is now faster and it allowes arrays and MergedTargets as parameters
+* Improved: mergeTarget is now faster and it allows arrays and MergedTargets as parameters
 * Improved: here allows additional parameter for cropping
 * Improved: logRuntimeInfo now shows more data and can be called at all times
-* Improved: MonsterDebuggerTraceTarget now allows to set the label seperately
+* Improved: MonsterDebuggerTraceTarget now allows to set the label separately
+* Improved: FirebugTarget is now faster and tells you why it doesn't work if it doesn't work.
 * Added: Log5F support
-* Added: Support for XML log configurations
-* Added: org.as3commons.logging.simple now supports USE_STACKTRACE
+* Added: Support for XML log configurations with org.as3commons.logging.util.xml#xmlToSetup()
+* Added: org.as3commons.logging.simple now supports USE_STACKTRACE & USE_LINE_NUMBERS
 * Added: mergeSetups to allow merging of setups just like merging of targets.
 * Added: WrapperRegExpSetup and rule method for more comfortable setups
 * Fixed: LogMessageFormatter might have caused problems with SOS

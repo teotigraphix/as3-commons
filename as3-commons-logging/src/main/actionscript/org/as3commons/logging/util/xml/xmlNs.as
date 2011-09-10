@@ -27,5 +27,5 @@ package org.as3commons.logging.util.xml {
 	 * @author Martin Heidegger
 	 * @since 2.6
 	 */
-	public namespace xmlNs = "as3commons.org/logging/1";
+	public namespace xmlNs = "http://as3commons.org/logging/1";
 }

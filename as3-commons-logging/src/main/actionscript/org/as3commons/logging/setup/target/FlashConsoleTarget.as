@@ -39,7 +39,7 @@ package org.as3commons.logging.setup.target {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.5
-	 * @see https://code.google.com/p/flash-console/
+	 * @see http://code.google.com/p/flash-console/
 	 */
 	public final class FlashConsoleTarget implements IFormattingLogTarget {
 		

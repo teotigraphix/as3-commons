@@ -28,8 +28,8 @@ package org.as3commons.logging.util {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2
-	 * @see SWF_URL
-	 * @see SWF_SHORT_URL
+	 * @see org.as3commons.logging.util#SWF_URL
+	 * @see org.as3commons.logging.util#SWF_SHORT_URL
 	 */
 	public class SWFInfo {
 		
