@@ -47,7 +47,7 @@ package org.as3commons.bytecode.emit {
 		 * @param params An array of parameters requried by the specified <code>Opcode</code>.
 		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining of <code>addOpcode()</code> and <code>addOp</code>  invocations.
 		 */
-		function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder;
+		function addOpcode(opcode:Opcode, params:Array=null):IMethodBodyBuilder;
 		/**
 		 * Adds the specified <code>Op</code> instance.
 		 * @param opcode The specified <code>Op</code>.
@@ -91,7 +91,7 @@ package org.as3commons.bytecode.emit {
 		 * <p>The <code>triggerOpcode</code> and/or <code>targetOpcode</code> will be added to the opcodes list if it hasn't been already.</p>
 		 * @return The current <code>IMethodBodyBuilder</code> to enable chaining.
 		 */
-		function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean = false):IMethodBodyBuilder;
+		function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean=false):IMethodBodyBuilder;
 		/**
 		 * Adds an <code>Array</code> of <code>Op</code> instances.
 		 * @param newOpcodes The specified <code>Array</code> of <code>Op</code> instances.
@@ -115,13 +115,15 @@ package org.as3commons.bytecode.emit {
 		 * @param applicationDomain
 		 * @return
 		 */
-		function buildBody(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody;
+		function buildBody(initScopeDepth:uint=1, extraLocalCount:uint=0):MethodBody;
 
 		function get setDXNS():Boolean;
 
 		function get needActivation():Boolean;
 
 		function get needArguments():Boolean;
+
+		function set needArguments(value:Boolean):void;
 
 		function get constantPool():IConstantPool;
 

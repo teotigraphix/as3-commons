@@ -206,7 +206,7 @@ package org.as3commons.bytecode.emit.impl {
 			return eib;
 		}
 
-		public function buildBody(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody {
+		public function buildBody(initScopeDepth:uint=1, extraLocalCount:uint=0):MethodBody {
 			if ((_methodBody != null) && (_methodBody.rawOpcodes != null)) {
 				if (initScopeDepth != _methodBody.initScopeDepth) {
 					var diff:int = (_methodBody.maxScopeDepth - _methodBody.initScopeDepth);
@@ -357,7 +357,7 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder {
+		public function addOpcode(opcode:Opcode, params:Array=null):IMethodBodyBuilder {
 			return addOp(opcode.op(params));
 		}
 
@@ -386,7 +386,7 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean = false):IMethodBodyBuilder {
+		public function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean=false):IMethodBodyBuilder {
 			if (Opcode.jumpOpcodes[triggerOpcode.opcode] == null) {
 				throw new IllegalOperationError(StringUtils.substitute(ILLEGAL_JUMP_OPCODE_ERROR, triggerOpcode.opcode));
 			}
@@ -429,6 +429,10 @@ package org.as3commons.bytecode.emit.impl {
 			if (_currentScope > _maxScope) {
 				_maxScope = _currentScope;
 			}
+		}
+
+		public function set needArguments(value:Boolean):void {
+			_needArguments = value;
 		}
 
 	}
