@@ -21,7 +21,7 @@
  */
 package org.as3commons.logging.simple {
 	import org.as3commons.logging.api.ILogger;
-	import org.as3commons.logging.api.getLogger;
+	import org.as3commons.logging.api.LOGGER_FACTORY;
 	import org.as3commons.logging.util.IS_DEBUGGER;
 	import org.as3commons.logging.util.here;
 	
@@ -35,7 +35,7 @@ package org.as3commons.logging.simple {
 	public function isErrorEnabled(): Boolean {
 		var logger: ILogger;
 		if( IS_DEBUGGER && USE_STACKTRACE ) {
-			logger = getLogger( here(1), "direct" );
+			logger = LOGGER_FACTORY.getNamedLogger( here(1, USE_LINE_NUMBERS), "direct" );
 		} else {
 			logger = DIRECT_LOGGER;
 		}
