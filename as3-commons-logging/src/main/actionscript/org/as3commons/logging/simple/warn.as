@@ -50,7 +50,7 @@ package org.as3commons.logging.simple {
 	public function warn( message: *, parameters:Array=null ): void {
 		var logger: ILogger;
 		if( IS_DEBUGGER && USE_STACKTRACE ) {
-			logger = LOGGER_FACTORY.getNamedLogger( here(1), "direct" );
+			logger = LOGGER_FACTORY.getNamedLogger( here(1, USE_LINE_NUMBERS), "direct" );
 		} else {
 			logger = DIRECT_LOGGER;
 		}
