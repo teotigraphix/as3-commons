@@ -70,7 +70,7 @@ package org.as3commons.logging.setup.target {
 						_available = false;
 					}
 				} catch( e:Error ) {
-					LOGGER.warn("Could not setup FirebugTarget");
+					LOGGER.warn("Could not setup FirebugTarget, exception while setup {0}", [e]);
 					_available = false;
 				}
 			} else {

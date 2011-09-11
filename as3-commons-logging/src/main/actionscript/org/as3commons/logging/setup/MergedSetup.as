@@ -70,9 +70,8 @@ package org.as3commons.logging.setup {
 			array.splice(pos,0,_logSetupA,_logSetupB);
 			var target:MergedSetup = this;
 			while (target._mergedSetup) {
-				++pos;
 				target = target._mergedSetup;
-				array.splice(pos,0,_logSetupA);
+				array.splice(++pos,0,_logSetupA);
 			}
 		}
 	}
