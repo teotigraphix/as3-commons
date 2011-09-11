@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>as3commons-logging</artifactId>
     <packaging>swc</packaging>
-    <version>2.5.2</version>
+    <version>2.6</version>
     <name>AS3Commons Logging</name>
     <url>http://code.google.com/p/as3-commons</url>
     <description>
@@ -539,6 +539,13 @@
 
     <repositories>
         <repository>
+            <id>yoolab.org-releases</id>
+            <url>http://projects.yoolab.org/maven/content/repositories/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
             <id>flex-mojos-repository</id>
             <url>http://repository.sonatype.org/content/groups/flexgroup</url>
             <releases>
@@ -547,13 +554,6 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>
-        <repository>
-            <id>yoolab.org-releases</id>
-            <url>http://projects.yoolab.org/maven/content/repositories/releases</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
         </repository>
         <repository>
             <id>yoolab.org-snapshots</id>
