@@ -26,6 +26,11 @@
       <item name="Project reports" href="project-reports.html"/>
       <item name="Related projects" href="related_projects.html"/>
     </menu>
+    
+    <menu name="Documentation">
+      <item name="User guide" href="userguide.html" />
+      <item name="API" href="asdoc/index.html"/>
+    </menu>
 
   </body>
 </project>
