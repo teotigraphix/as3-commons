@@ -25,7 +25,12 @@ package org.as3commons.logging.setup {
 	import org.as3commons.logging.api.ILogSetup;
 	
 	/**
-	 * @author mh
+	 * <code>WrapperRegExpSetup</code> allows regular <code>ILogSetup</code> implementations
+	 * to be just executed if a the name and/or the person of the logger that should be "set-up"
+	 * to match a regular expression.
+	 * 
+	 * @author Martin Heidegger
+	 * @since 2.6
 	 */
 	public final class WrapperRegExpSetup implements ILogSetup {
 		
@@ -39,13 +44,12 @@ package org.as3commons.logging.setup {
 		private var _personRule:RegExp;
 		
 		/**
-		 * Constructs a new <code>SimpleRegExpSetup</code> that passes a level
+		 * Constructs a new <code>WrapperRegExpSetup</code> that applies a setup
 		 * just if it matches to the passed-in rules.
 		 * 
-		 * <p>You have to pass in eighter a rule for the person to match or the
-		 * name to match.</p>
+		 * <p>You have to pass in either a rule for the person.</p>
 		 * 
-		 * @param setup Target to be used.
+		 * @param setup Setup that will be used given the rules match
 		 * @param nameRule Rule to which the name has to match for the target to be applied
 		 * @param personRule Rule to which the person has to match for the target to be applied
 		 * @throws Error if neighter a rule for name nor one for person will be passed in.
