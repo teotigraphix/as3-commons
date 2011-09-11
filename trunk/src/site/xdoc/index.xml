@@ -42,8 +42,8 @@
 			<tr>
 				<td><strong>Bytecode</strong></td>
 				<td>Bytecode parsing and publishing formerly known as Loom. Capable of generating classes at runtime, bytecode based reflection and more.</td>
-				<td>1.0-RC4</td>
-				<td>04 Aug 2011</td>
+				<td>1.0-RC5</td>
+				<td>03 Sep 2011</td>
 			</tr>
 			<tr>
 				<td><strong>EventBus</strong></td>
@@ -72,8 +72,8 @@
 			<tr>
 				<td><strong>Logging</strong></td>
 				<td>An abstraction over logging framework implementations. Being a pure actionscript library it can be used for any Flash/Flex/AIR project. Its use is recommended for use with other libraries/framework trying to be logging framework agnostic.</td>
-				<td>2.5.2</td>
-				<td>17 Aug 2011</td>
+				<td>2.6</td>
+				<td>11 Sep 2011</td>
 			</tr>
 			<tr>
 				<td><strong>Reflect</strong></td>
