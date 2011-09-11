@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>Welcome to AS3commons logging</title>
+        <author email="mh@leichtgewicht.at">Martin Heidegger</author>
+        <author email="mp@yoolab.com">Martino Piccinato</author>
+    </properties>
+    <body>
+        <section name="Welcome to AS3commons logging">
+             AS3commons-logging is an open-source library providing an abstraction over 
+             logging framework implementations. Being a pure actionscript library it can 
+             be used for any Flash/Flex/AIR project.
+        </section>
+        
+        <section name="Download">
+             <a href="http://as3-commons.googlecode.com/files/as3commons-logging-2.6.swc">
+                     <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                 Download latest stable (2.6)
+             </a> (please visit the <a href="changes.html">Important Changes</a> page if you used logging before)
+        </section>	
+        
+        <section name="Features">
+                We worked hard to provide many useful features that you can use
+                on demand. From useful small util's that help ease your day in
+                daily production to full blown configuration monsters. And even if
+                a feature is missing, the whole system can be plugged together
+                in a lot of ways.
+        </section>
+        
+        <section name="Performance &amp; Size">
+                Albeit the extended feature list, AS3commons-logging offers a high-performing
+                logging solution with up to 1000000 calls in <strong>4ms</strong> in a
+                deactivated state. It also has a minimum (non-configured) size
+                of <strong>2.1kB</strong> putting minimum overhead to your 
+                productive application.
+        </section>
+        
+        <section name="Support">
+                By default AS3commons-logging offers a large range of frameworks and
+                logging UI's that can be immediately integrated. This should
+                ease the transition from a former framework to as3commons.
+                
+                <img src="images/integration-support.png" usemap="#m_loggingfuturesupport"/>
+                <map name="m_loggingfuturesupport" id="m_loggingfuturesupport">
+                    <area shape="rect" coords="264,7,374,30" href="asdoc/index.html?org/as3commons/logging/integration/LogMeisterIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="LogMeister integration" />
+                    <area shape="rect" coords="10,101,81,260" href="asdoc/index.html?org/as3commons/logging/integration/FlexUnitListener.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="FlexUnit integration" />
+                    <area shape="rect" coords="100,230,217,276" href="asdoc/index.html?org/as3commons/logging/setup/target/TrazzleTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Trazzle integration" />
+                    <area shape="rect" coords="252,242,352,278" href="asdoc/index.html?org/as3commons/logging/setup/target/YalogTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Yalog integration" />
+                    <area shape="rect" coords="370,225,527,260" href="asdoc/index.html?org/as3commons/logging/integration/OSMFIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="OSMF integration" />
+                    <area shape="rect" coords="14,13,96,64" href="asdoc/index.html?org/as3commons/logging/setup/target/DConsoleTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Doomsday Console integration" />
+                    <area shape="rect" coords="459,85,508,132" href="asdoc/index.html?org/as3commons/logging/setup/target/AlconTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Alcon Console integration" />
+                    <area shape="rect" coords="370,6,462,64" href="asdoc/index.html?org/as3commons/logging/integration/YUILoggerFactory.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="YUI Framework integration" />
+                    <area shape="rect" coords="386,67,440,119" href="asdoc/index.html?org/as3commons/logging/integration/FlexLogger.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Flex logging integration" />
+					<area shape="rect" coords="252,42,359,75" href="asdoc/index.html?org/as3commons/logging/setup/target/FirebugTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Firebug logging integration" />
+					<area shape="rect" coords="245,83,369,106" href="asdoc/index.html?org/as3commons/logging/setup/target/Progression4Target.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Progression framework integration" />
+					<area shape="rect" coords="191,109,366,133" href="asdoc/index.html?org/as3commons/logging/integration/SwizIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Swiz framework integration" />
+					<area shape="rect" coords="292,138,339,198" href="asdoc/index.html?org/as3commons/logging/setup/target/SOSTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="SOS Console integration" />
+					<area shape="rect" coords="340,136,527,166" href="asdoc/index.html?org/as3commons/logging/setup/target/ThunderBoltTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="ThunderBolt integration" />
+					<area shape="rect" coords="354,177,482,215" href="asdoc/index.html?org/as3commons/logging/integration/MateIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Mate integration" />
+					<area shape="rect" coords="211,201,357,244" href="asdoc/index.html?org/as3commons/logging/setup/target/ASAPTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="ASAP integration" />
+					<area shape="rect" coords="25,114,180,156" href="asdoc/index.html?org/as3commons/logging/setup/target/ArthropodTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Arthropod integration" />
+					<area shape="rect" coords="44,189,207,235" href="asdoc/index.html?org/as3commons/logging/integration/PushButtonIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Push Button Engine integration" />
+					<area shape="rect" coords="135,157,266,176" href="asdoc/index.html?org/as3commons/logging/integration/SpiceLibIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Spicelib integration" />
+					<area shape="rect" coords="47,77,223,104" href="asdoc/index.html?org/as3commons/logging/setup/target/MonsterDebugger3TraceTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="MonsterDebugger integration" />
+					<area shape="rect" coords="115,19,246,68" href="asdoc/index.html?org/as3commons/logging/setup/target/FlashConsoleTarget.html&amp;org/as3commons/logging/setup/target/class-list.html" target="api" alt="Flash Console integration" />
+					<area shape="rect" coords="467,25,512,69" href="asdoc/index.html?org/as3commons/logging/integration/Log5FIntegration.html&amp;org/as3commons/logging/integration/class-list.html" target="api" alt="Log5f integration" />
+				</map>
+        </section>
+
+    </body>
+</document>
+
