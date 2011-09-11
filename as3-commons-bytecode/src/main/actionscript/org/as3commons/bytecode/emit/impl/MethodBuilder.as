@@ -24,7 +24,6 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
 	import org.as3commons.bytecode.abc.enum.MethodFlag;
-	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.as3commons_bytecode;
@@ -42,47 +41,16 @@ package org.as3commons.bytecode.emit.impl {
 
 		public static const METHOD_NAME:String = "{0}/{1}{2}";
 
-		private var _returnType:String = BuiltIns.VOID.fullName;
-		private var _arguments:Array = [];
-		private var _methodBodyBuilder:IMethodBodyBuilder;
-		private var _hasRestArguments:Boolean;
-		protected var methodInfo:MethodInfo;
-
-		public function MethodBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
+		public function MethodBuilder(name:String=null, visibility:MemberVisibility=null, nameSpace:String=null) {
 			super(name, visibility, nameSpace);
 		}
 
-		as3commons_bytecode function setMethodInfo(methodInfo:MethodInfo):void {
-			Assert.notNull(methodInfo, "methodInfo argument must not be null");
-			this.methodInfo = methodInfo;
-			var parts:Array = this.methodInfo.methodName.split('/');
-			name = parts[1];
-			packageName = parts[0];
-			if (methodInfo.returnType != null) {
-				_returnType = QualifiedName(methodInfo.returnType).fullName;
-			}
-			_hasRestArguments = MethodFlag.flagPresent(methodInfo.flags, MethodFlag.NEED_REST);
-			if (methodInfo.methodBody != null) {
-				methodBodyBuilder.as3commons_bytecode::setMethodBody(methodInfo.methodBody);
-			}
-			visibility = EmitUtil.getMemberVisibilityFromQualifiedName(methodInfo.as3commonsByteCodeAssignedMethodTrait.traitMultiname);
-			for each (var arg:Argument in methodInfo.argumentCollection) {
-				var ma:MethodArgument = new MethodArgument();
-				ma.as3commons_bytecode::setArgument(arg);
-				_arguments[_arguments.length] = ma;
-			}
-		}
+		protected var methodInfo:MethodInfo;
+		private var _arguments:Array = [];
+		private var _hasRestArguments:Boolean;
+		private var _methodBodyBuilder:IMethodBodyBuilder;
 
-		as3commons_bytecode function setMethodBody(methodBody:MethodBody):void {
-			methodBodyBuilder.as3commons_bytecode::setMethodBody(methodBody);
-		}
-
-		protected function get methodBodyBuilder():IMethodBodyBuilder {
-			if (_methodBodyBuilder == null) {
-				_methodBodyBuilder = new MethodBodyBuilder();
-			}
-			return _methodBodyBuilder;
-		}
+		private var _returnType:String = BuiltIns.VOID.fullName;
 
 		public function get arguments():Array {
 			return _arguments;
@@ -90,43 +58,6 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set arguments(value:Array):void {
 			_arguments = value;
-		}
-
-		public function get returnType():String {
-			return _returnType;
-		}
-
-		public function set returnType(value:String):void {
-			_returnType = value;
-		}
-
-		public function get hasRestArguments():Boolean {
-			return _hasRestArguments;
-		}
-
-		public function set hasRestArguments(value:Boolean):void {
-			_hasRestArguments = value;
-		}
-
-		public function get hasOptionalArguments():Boolean {
-			for each (var arg:MethodArgument in _arguments) {
-				if (arg.isOptional) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public function get setDXNS():Boolean {
-			return (_methodBodyBuilder) ? _methodBodyBuilder.setDXNS : false;
-		}
-
-		public function get needActivation():Boolean {
-			return (_methodBodyBuilder) ? _methodBodyBuilder.needActivation : false;
-		}
-
-		public function get needArguments():Boolean {
-			return (_methodBodyBuilder) ? _methodBodyBuilder.needArguments : false;
 		}
 
 		public function get constantPool():IConstantPool {
@@ -139,16 +70,119 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
-		public function defineArgument(type:String = "", isOptional:Boolean = false, defaultValue:Object = null):MethodArgument {
-			var arg:MethodArgument = new MethodArgument();
-			arg.type = type;
-			arg.isOptional = isOptional;
-			arg.defaultValue = defaultValue;
-			_arguments[_arguments.length] = arg;
-			return arg;
+		/**
+		 * @inheritDoc
+		 */
+		public function get exceptionInfos():Array {
+			return methodBodyBuilder.exceptionInfos;
 		}
 
-		public function build(initScopeDepth:uint = 1):MethodInfo {
+		/**
+		 * @inheritDoc
+		 */
+		public function set exceptionInfos(value:Array):void {
+			methodBodyBuilder.exceptionInfos = value;
+		}
+
+		public function get hasOptionalArguments():Boolean {
+			for each (var arg:MethodArgument in _arguments) {
+				if (arg.isOptional) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public function get hasRestArguments():Boolean {
+			return _hasRestArguments;
+		}
+
+		public function set hasRestArguments(value:Boolean):void {
+			_hasRestArguments = value;
+			needArguments = !_hasRestArguments;
+		}
+
+		protected function get methodBodyBuilder():IMethodBodyBuilder {
+			if (_methodBodyBuilder == null) {
+				_methodBodyBuilder = new MethodBodyBuilder();
+			}
+			return _methodBodyBuilder;
+		}
+
+		public function get needActivation():Boolean {
+			return (_methodBodyBuilder) ? _methodBodyBuilder.needActivation : false;
+		}
+
+		public function get needArguments():Boolean {
+			return (_methodBodyBuilder) ? _methodBodyBuilder.needArguments : false;
+		}
+
+		public function set needArguments(value:Boolean):void {
+			methodBodyBuilder.needArguments = value;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function get opcodes():Array {
+			return methodBodyBuilder.opcodes;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function set opcodes(value:Array):void {
+			methodBodyBuilder.opcodes = value;
+		}
+
+		public function get returnType():String {
+			return _returnType;
+		}
+
+		public function set returnType(value:String):void {
+			_returnType = value;
+		}
+
+		public function get setDXNS():Boolean {
+			return (_methodBodyBuilder) ? _methodBodyBuilder.setDXNS : false;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function addAsmSource(source:String):IMethodBodyBuilder {
+			return methodBodyBuilder.addAsmSource(source);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function addBackPatches(newBackpatches:Array):IMethodBodyBuilder {
+			return methodBodyBuilder.addBackPatches(newBackpatches);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function addOp(opcode:Op):IMethodBodyBuilder {
+			return methodBodyBuilder.addOp(opcode);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function addOpcode(opcode:Opcode, params:Array=null):IMethodBodyBuilder {
+			return methodBodyBuilder.addOpcode(opcode, params);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function addOpcodes(newOpcodes:Array):IMethodBodyBuilder {
+			return methodBodyBuilder.addOpcodes(newOpcodes);
+		}
+
+		public function build(initScopeDepth:uint=1):MethodInfo {
 			var mi:MethodInfo = (methodInfo != null) ? methodInfo : new MethodInfo();
 			for each (var methodArg:MethodArgument in _arguments) {
 				var arg:Argument = methodArg.build();
@@ -168,6 +202,78 @@ package org.as3commons.bytecode.emit.impl {
 			mi.as3commonsBytecodeName = name;
 			setMethodFlags(mi);
 			return mi;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function buildBody(initScopeDepth:uint=1, extraLocalCount:uint=0):MethodBody {
+			return methodBodyBuilder.buildBody(initScopeDepth, extraLocalCount);
+		}
+
+		public function defineArgument(type:String="", isOptional:Boolean=false, defaultValue:Object=null):MethodArgument {
+			var arg:MethodArgument = new MethodArgument();
+			arg.type = type;
+			arg.isOptional = isOptional;
+			arg.defaultValue = defaultValue;
+			_arguments[_arguments.length] = arg;
+			return arg;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function defineExceptionInfo():IExceptionInfoBuilder {
+			return methodBodyBuilder.defineExceptionInfo();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean=false):IMethodBodyBuilder {
+			return methodBodyBuilder.defineJump(triggerOpcode, targetOpcode);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		override protected function buildTrait():TraitInfo {
+			Assert.hasText(name, "name property must not be null or empty");
+			Assert.notNull(visibility, "visibility property must not be null");
+			var trait:MethodTrait = (methodInfo != null) ? MethodTrait(methodInfo.as3commonsByteCodeAssignedMethodTrait) : new MethodTrait();
+			trait.traitKind = TraitKind.METHOD;
+			trait.isFinal = isFinal;
+			trait.isOverride = isOverride;
+			var ns:LNamespace = createTraitNamespace();
+			var traitMultiname:QualifiedName = createTraitMultiname(name, ns);
+			if (traitMultiname.equals(trait.traitMultiname) == false) {
+				trait.traitMultiname = traitMultiname;
+			}
+			return trait;
+		}
+
+		protected function createMethodName(methodInfo:MethodInfo):String {
+			var scope:String;
+			switch (visibility) {
+				case MemberVisibility.PROTECTED:
+					scope = MultinameUtil.PROTECTED_SCOPE_NAME;
+					break;
+				case MemberVisibility.PRIVATE:
+					scope = MultinameUtil.PRIVATE_SCOPE_NAME;
+					break;
+				case MemberVisibility.NAMESPACE:
+					scope = scopeName + MultinameUtil.SINGLE_COLON;
+					break;
+				case MemberVisibility.INTERNAL:
+					scope = packageName.split(MultinameUtil.SINGLE_COLON)[0] + MultinameUtil.SINGLE_COLON;
+					break;
+			}
+			scope ||= "";
+			return StringUtils.substitute(METHOD_NAME, packageName, scope, name);
+		}
+
+		protected function createTraitMultiname(name:String, nameSpace:LNamespace):QualifiedName {
+			return new QualifiedName(name, nameSpace);
 		}
 
 		protected function setMethodFlags(methodInfo:MethodInfo):void {
@@ -204,131 +310,29 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
-		protected function createMethodName(methodInfo:MethodInfo):String {
-			var scope:String;
-			switch (visibility) {
-				case MemberVisibility.PROTECTED:
-					scope = MultinameUtil.PROTECTED_SCOPE_NAME;
-					break;
-				case MemberVisibility.PRIVATE:
-					scope = MultinameUtil.PRIVATE_SCOPE_NAME;
-					break;
-				case MemberVisibility.NAMESPACE:
-					scope = scopeName + MultinameUtil.SINGLE_COLON;
-					break;
-				case MemberVisibility.INTERNAL:
-					scope = packageName.split(MultinameUtil.SINGLE_COLON)[0] + MultinameUtil.SINGLE_COLON;
-					break;
+		as3commons_bytecode function setMethodBody(methodBody:MethodBody):void {
+			methodBodyBuilder.as3commons_bytecode::setMethodBody(methodBody);
+		}
+
+		as3commons_bytecode function setMethodInfo(methodInfo:MethodInfo):void {
+			Assert.notNull(methodInfo, "methodInfo argument must not be null");
+			this.methodInfo = methodInfo;
+			var parts:Array = this.methodInfo.methodName.split('/');
+			name = parts[1];
+			packageName = parts[0];
+			if (methodInfo.returnType != null) {
+				_returnType = QualifiedName(methodInfo.returnType).fullName;
 			}
-			scope ||= "";
-			return StringUtils.substitute(METHOD_NAME, packageName, scope, name);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		override protected function buildTrait():TraitInfo {
-			Assert.hasText(name, "name property must not be null or empty");
-			Assert.notNull(visibility, "visibility property must not be null");
-			var trait:MethodTrait = (methodInfo != null) ? MethodTrait(methodInfo.as3commonsByteCodeAssignedMethodTrait) : new MethodTrait();
-			trait.traitKind = TraitKind.METHOD;
-			trait.isFinal = isFinal;
-			trait.isOverride = isOverride;
-			var ns:LNamespace = createTraitNamespace();
-			var traitMultiname:QualifiedName = createTraitMultiname(name, ns);
-			if (traitMultiname.equals(trait.traitMultiname) == false) {
-				trait.traitMultiname = traitMultiname;
+			_hasRestArguments = MethodFlag.flagPresent(methodInfo.flags, MethodFlag.NEED_REST);
+			if (methodInfo.methodBody != null) {
+				methodBodyBuilder.as3commons_bytecode::setMethodBody(methodInfo.methodBody);
 			}
-			return trait;
+			visibility = EmitUtil.getMemberVisibilityFromQualifiedName(methodInfo.as3commonsByteCodeAssignedMethodTrait.traitMultiname);
+			for each (var arg:Argument in methodInfo.argumentCollection) {
+				var ma:MethodArgument = new MethodArgument();
+				ma.as3commons_bytecode::setArgument(arg);
+				_arguments[_arguments.length] = ma;
+			}
 		}
-
-		protected function createTraitMultiname(name:String, nameSpace:LNamespace):QualifiedName {
-			return new QualifiedName(name, nameSpace);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function get opcodes():Array {
-			return methodBodyBuilder.opcodes;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function set opcodes(value:Array):void {
-			methodBodyBuilder.opcodes = value;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function get exceptionInfos():Array {
-			return methodBodyBuilder.exceptionInfos;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function set exceptionInfos(value:Array):void {
-			methodBodyBuilder.exceptionInfos = value;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder {
-			return methodBodyBuilder.addOpcode(opcode, params);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function addOpcodes(newOpcodes:Array):IMethodBodyBuilder {
-			return methodBodyBuilder.addOpcodes(newOpcodes);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function addAsmSource(source:String):IMethodBodyBuilder {
-			return methodBodyBuilder.addAsmSource(source);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function addBackPatches(newBackpatches:Array):IMethodBodyBuilder {
-			return methodBodyBuilder.addBackPatches(newBackpatches);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function addOp(opcode:Op):IMethodBodyBuilder {
-			return methodBodyBuilder.addOp(opcode);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean = false):IMethodBodyBuilder {
-			return methodBodyBuilder.defineJump(triggerOpcode, targetOpcode);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function defineExceptionInfo():IExceptionInfoBuilder {
-			return methodBodyBuilder.defineExceptionInfo();
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function buildBody(initScopeDepth:uint = 1, extraLocalCount:uint = 0):MethodBody {
-			return methodBodyBuilder.buildBody(initScopeDepth, extraLocalCount);
-		}
-
 	}
 }
