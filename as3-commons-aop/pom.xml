@@ -1,0 +1,286 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.as3commons</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>1-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.as3commons</groupId>
+	<artifactId>as3commons-aop</artifactId>
+	<packaging>swc</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>AS3Commons AOP</name>
+	<url>http://code.google.com/p/as3-commons</url>
+	<description>Aspect Oriented Programming library for ActionScript 3.0</description>
+	<inceptionYear>2009</inceptionYear>
+
+	<build>
+
+		<sourceDirectory>src/main/actionscript</sourceDirectory>
+		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flex-mojos.version}</version>
+				<extensions>true</extensions>
+
+				<dependencies>
+					<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex-sdk.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+
+				<executions>
+					<execution>
+						<id>flex-reports</id>
+						<goals>
+							<goal>asdoc-report</goal>
+						</goals>
+						<phase>site</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<storepass/>
+					<testTimeout>10000</testTimeout>
+					<configurationReport>true</configurationReport>
+					<targetPlayer>${flashplayer.version.major}</targetPlayer>
+					<locales>
+						<param>en_US</param>
+					</locales>
+					<updateSecuritySandbox>true</updateSecuritySandbox>
+					<includeAsClasses>
+						<source>
+							<directory>src/main/actionscript</directory>
+						</source>
+					</includeAsClasses>
+					<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
+					<description>AS3Commons AOP v${project.version} API documentation</description>
+					<mainTitle>AS3Commons AOP v${project.version} API documentation</mainTitle>
+					<windowTitle>AS3Commons AOP v${project.version} API documentation</windowTitle>
+					<name>As3CommonsAOPDocs</name>
+					<keepXml>true</keepXml>
+					<dumpConfigAttach>true</dumpConfigAttach>
+					<showWarnings>true</showWarnings>
+					<lenient>true</lenient>
+				</configuration>
+
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>
+						src/main/assembly/package.xml
+					</descriptor>
+					<finalName>as3commons-aop-latest-snapshot</finalName>
+					<outputDirectory>target/site/downloads</outputDirectory>
+					<workDirectory>target/assembly/work</workDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<!-- this is used for inheritance merges -->
+						<phase>site</phase>
+						<!-- append to the packaging phase. -->
+						<goals>
+							<goal>single</goal>
+							<!-- goals == mojos -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagBase>
+						https://as3-commons.googlecode.com/svn/tags/as3-commons-aop
+					</tagBase>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>src/main/actionscript</directory>
+							<includes>
+								<include>FlexUnitApplication.mxml</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<templateFile>../src/site/vm/as3commons.vm</templateFile>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>playerglobal</artifactId>
+			<version>${flex-sdk.version}</version>
+			<scope>external</scope>
+			<type>swc</type>
+			<classifier>${playerglobal.version}</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.adobe.flexunit</groupId>
+			<artifactId>flexunit</artifactId>
+			<version>${flexunit.version}</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>framework</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>mx</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>swc</type>
+			<scope>external</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>textlayout</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>framework</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>rb.swc</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>mx</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>rb.swc</type>
+			<scope>external</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-async</artifactId>
+			<version>1.0-RC2-SNAPSHOT</version>
+			<type>swc</type>
+			<scope>external</scope>
+			<!--<exclusions>
+							<exclusion>
+								<groupId>com.adobe.flex.framework</groupId>
+								<artifactId>playerglobal</artifactId>
+							</exclusion>
+						</exclusions>-->
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-bytecode</artifactId>
+			<version>1.0-RC5-SNAPSHOT</version>
+			<type>swc</type>
+			<scope>external</scope>
+			<!--<exclusions>
+							<exclusion>
+								<groupId>com.adobe.flex.framework</groupId>
+								<artifactId>playerglobal</artifactId>
+							</exclusion>
+						</exclusions>-->
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-lang</artifactId>
+			<version>0.3.5-SNAPSHOT</version>
+			<type>swc</type>
+			<scope>external</scope>
+			<!--<exclusions>
+							<exclusion>
+								<groupId>com.adobe.flex.framework</groupId>
+								<artifactId>playerglobal</artifactId>
+							</exclusion>
+						</exclusions>-->
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-logging</artifactId>
+			<version>2.5.2</version>
+			<type>swc</type>
+			<scope>external</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>air-framework</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-reflect</artifactId>
+			<version>1.5-SNAPSHOT</version>
+			<type>swc</type>
+			<scope>external</scope>
+			<!--<exclusions>
+							<exclusion>
+								<groupId>com.adobe.flex.framework</groupId>
+								<artifactId>playerglobal</artifactId>
+							</exclusion>
+						</exclusions>-->
+		</dependency>
+
+	</dependencies>
+
+	<scm>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-aop</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-aop</url>
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-aop</connection>
+	</scm>
+
+	<distributionManagement>
+		<site>
+			<id>yoolab.org-as3commons</id>
+			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-aop</url>
+		</site>
+		<repository>
+			<id>yoolab.org-releases</id>
+			<name>Yoolab.org releases repository</name>
+			<url>https://dev.yoolab.org/maven/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>yoolab.org-snapshots</id>
+			<name>Yoolab.org snapshots repository</name>
+			<url>https://dev.yoolab.org/maven/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>
