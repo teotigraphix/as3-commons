@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.abc {
 	import flash.errors.IllegalOperationError;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
@@ -73,6 +74,7 @@ package org.as3commons.bytecode.abc {
 		private var _lookup:Dictionary;
 
 		private var _locked:Boolean = false;
+		private var _rawConstantPool:ByteArray;
 
 		/**
 		 * Constructs and initializes a fresh <code>ConstantPool</code> instance. All the pools
@@ -604,6 +606,14 @@ package org.as3commons.bytecode.abc {
 		 */
 		public function toString():String {
 			return StringUtils.substitute("Integer Pool: {0}\n" + "Uint Pool: {1}\n" + "Double Pool: {2}\n" + "String Pool:\n\t{3}" + "\nNamespace Pool:\n\t{4}" + "\nNamespace Set Pool:\n\t{5}" + "\nMultiname Pool:\n\t{6}", _integerPool.join(), _uintPool.join(), _doublePool.join(), _stringPool.join("\n\t"), _namespacePool.join("\n\t"), _namespaceSetPool.join("\n\t"), _multinamePool.join("\n\t"));
+		}
+
+		public function get rawConstantPool():ByteArray {
+			return _rawConstantPool;
+		}
+
+		public function set rawConstantPool(value:ByteArray):void {
+			_rawConstantPool = value;
 		}
 	}
 }

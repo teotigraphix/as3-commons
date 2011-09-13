@@ -14,12 +14,10 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.io {
-	import flash.errors.IllegalOperationError;
+
 	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.AbcFile;
-	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
@@ -32,96 +30,24 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.util.AbcSpec;
-	import org.as3commons.lang.Assert;
-	import org.as3commons.lang.StringUtils;
 
 	/**
-	 * Takes an ABC bytecode block as a stream of bytes and converts it in to a as3commons-bytecode representation of the ABC file format. This
-	 * class is the symmetric opposite of <code>AbcSerializer</code>.
 	 *
-	 * <p>
-	 * Bytecode can be loaded either from the file system or a SWF file and handed to this object for deserialization.
-	 * </p>
-	 *
-	 * @see    AbcSerializer
+	 * @author Roland Zwaga
 	 */
-	//TODO: Capture ranges for bytecode blocks so they can be checked in unit tests
 	public class AbstractAbcDeserializer implements IAbcDeserializer {
+		private static const UTF8_BAD_PREFIX:String = "UTF8_BAD";
 
-		private static const ASSERT_EXTRACTION_ERROR:String = "Expected {0} elements in {1}, actual count is {2}";
-		private static const METHOD_NOT_IMPLEMENTED_ERROR:String = "method not implemented in abstract base class";
-		protected var _byteStream:ByteArray;
-		protected var extractionMethods:Dictionary;
-
-		public function AbstractAbcDeserializer(byteStream:ByteArray=null) {
-			super();
-			initAbstractAbcDeserializer(byteStream);
-		}
-
-		private function initAbstractAbcDeserializer(byteStream:ByteArray):void {
-			_byteStream = byteStream;
-			extractionMethods = new Dictionary();
-			extractionMethods[MultinameKind.QNAME] = extractQName;
-			extractionMethods[MultinameKind.QNAME_A] = extractQName;
-			extractionMethods[MultinameKind.MULTINAME] = extractMultiname;
-			extractionMethods[MultinameKind.MULTINAME_A] = extractMultiname;
-			extractionMethods[MultinameKind.MULTINAME_L] = extractMultinameL;
-			extractionMethods[MultinameKind.MULTINAME_LA] = extractMultinameL;
-			extractionMethods[MultinameKind.RTQNAME] = extractRuntimeQualifiedName;
-			extractionMethods[MultinameKind.RTQNAME_A] = extractRuntimeQualifiedName;
-			extractionMethods[MultinameKind.RTQNAME_L] = extractRuntimeQualifiedNameL;
-			extractionMethods[MultinameKind.RTQNAME_LA] = extractRuntimeQualifiedNameL;
-			extractionMethods[MultinameKind.GENERIC] = extractMultinameG;
-		}
-
+		private var _byteStream:ByteArray;
 		private var _constantPoolEndPosition:uint = 0;
+		private var _illegalCount:uint = 0;
 
-		public function get constantPoolEndPosition():uint {
-			return _constantPoolEndPosition;
-		}
-
-		protected function setSonstantPoolEndPosition(value:uint):void {
-			_constantPoolEndPosition = value;
-		}
-
-		public function deserialize(positionInByteArrayToReadFrom:int=0):AbcFile {
-			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
-		}
-
-		public function deserializeClassInfos(abcFile:AbcFile, pool:IConstantPool, classCount:int):void {
-			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
-		}
-
-		public function deserializeInstanceInfo(abcFile:AbcFile, pool:IConstantPool):int {
-			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
-		}
-
-		public function deserializeMetadata(abcFile:AbcFile, pool:IConstantPool):void {
-			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
-		}
-
-		public function deserializeMethodBodies(abcFile:AbcFile, pool:IConstantPool):void {
-			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
-		}
-
-		public function deserializeMethodInfos(abcFile:AbcFile, pool:IConstantPool):void {
-			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
-		}
-
-		public function deserializeScriptInfos(abcFile:AbcFile):void {
-			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
-		}
-
-		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
-			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
-		}
-
-		public function get methodBodyExtractionMethod():MethodBodyExtractionKind {
-			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
-		}
-
-		public function set methodBodyExtractionMethod(value:MethodBodyExtractionKind):void {
-			throw new IllegalOperationError(METHOD_NOT_IMPLEMENTED_ERROR);
+		/**
+		 * Creates a new <code>AbstractAbcDeserializer2</code> instance.
+		 */
+		public function AbstractAbcDeserializer(byteArray:ByteArray=null) {
+			super();
+			_byteStream = byteArray;
 		}
 
 		public function get byteStream():ByteArray {
@@ -132,205 +58,430 @@ package org.as3commons.bytecode.io {
 			_byteStream = value;
 		}
 
-		/**
-		 * Acts as a guard to make sure that the expected number of items was extracted from the
-		 * ABC file.
-		 */
-		private function assertExtraction(expectedCount:int, elementCollection:Array, collectionName:String):void {
-			if (expectedCount == 0) {
-				// the spec says: "Each of the count entries (for example, int_count) must be one more than
-				// the number of entries in the corresponding array, and the first entry in the array is element “1”."
-				// this is a lie. If the count is 0, then there are no entries in the pool in this ABC file.
-			} else {
-				var collectionLength:int = elementCollection.length;
-				if (expectedCount != collectionLength) {
-					throw new Error(StringUtils.substitute(ASSERT_EXTRACTION_ERROR, expectedCount, collectionName, collectionLength));
-				}
-			}
+		public function get methodBodyExtractionMethod():MethodBodyExtractionKind {
+			return null;
+		}
+
+		public function set methodBodyExtractionMethod(value:MethodBodyExtractionKind):void {
+		}
+
+		public function get constantPoolEndPosition():uint {
+			return _constantPoolEndPosition;
 		}
 
 		public function deserializeConstantPool(pool:IConstantPool):IConstantPool {
-			extract(_byteStream, pool.integerPool, readS32);
-			extract(_byteStream, pool.uintPool, readU32);
-			extract(_byteStream, pool.doublePool, readD64);
-			extract(_byteStream, pool.stringPool, readStringInfo);
+			/* READ integerpool */
+			var itemCount:int;
 
-			extractNamespaces(pool);
+			var result:int = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				pool.integerPool[pool.integerPool.length] = result;
+			}
+			/* END:READ integerpool */
 
-			extractNamespaceSets(pool);
+			/* READ uintpool */
+			result = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
+				var uresult:uint = _byteStream.readUnsignedByte();
+				if ((uresult & 0x00000080)) {
+					uresult = uresult & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((uresult & 0x00004000)) {
+						uresult = uresult & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((uresult & 0x00200000)) {
+							uresult = uresult & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((uresult & 0x10000000)) {
+								uresult = uresult & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				pool.uintPool[pool.uintPool.length] = uresult;
+			}
+			/* END:READ uintpool */
 
-			extractMultinames(pool);
+			/* READ doublepool */
+			result = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
+				pool.doublePool[pool.doublePool.length] = _byteStream.readDouble();
+			}
+			/* END:READ doublepool */
 
-			pool.initializeLookups();
+			/* READ stringpool */
+			result = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var str:String = _byteStream.readUTFBytes(result);
+				if (result != str.length) {
+					str = UTF8_BAD_PREFIX + (_illegalCount++).toString();
+				}
+				pool.stringPool[pool.stringPool.length] = str;
+			}
+			/* END:READ stringpool */
+
+			/* READ namespacepool */
+			result = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
+				var kind:uint = 255 & _byteStream[_byteStream.position++];
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				pool.namespacePool[pool.namespacePool.length] = new LNamespace(NamespaceKind.determineKind(kind), pool.stringPool[result]);
+			}
+			/* END:READ namespacepool */
+
+			/* READ namespacesetpool */
+			result = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var namespaceIndexRefCount:int = result;
+				var namespaceArray:Array = [];
+				while (--namespaceIndexRefCount - (-1)) {
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					namespaceArray[namespaceArray.length] = pool.namespacePool[result];
+				}
+				pool.namespaceSetPool[pool.namespaceSetPool.length] = new NamespaceSet(namespaceArray);
+			}
+			/* END:READ namespacesetpool */
+
+			/* READ multinamepool */
+			result = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
+				kind = 255 & _byteStream[_byteStream.position++];
+				//QNAME or QNAME_A
+				if ((kind == 0x07) || (kind == 0x0D)) {
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					var ns:LNamespace = pool.namespacePool[result];
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+
+					}
+					var name:String = pool.stringPool[result];
+					pool.multinamePool[pool.multinamePool.length] = new QualifiedName(name, ns, (kind == 0x07) ? MultinameKind.QNAME : MultinameKind.QNAME_A);
+						//RTQName or RTQName_A
+				} else if ((kind == 0x0f) || (kind == 0x10)) {
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					str = pool.stringPool[result];
+					pool.multinamePool[pool.multinamePool.length] = new RuntimeQualifiedName(str, (kind == 0x0f) ? MultinameKind.RTQNAME : MultinameKind.RTQNAME_A);
+				} else if ((kind == 0x11) || (kind == 0x12)) {
+					//RTQNAME_L or RTQNAME_LA
+					pool.multinamePool[pool.multinamePool.length] = new RuntimeQualifiedNameL((kind == 0x11) ? MultinameKind.RTQNAME_L : MultinameKind.RTQNAME_LA);
+				} else if ((kind == 0x09) || (kind == 0x0E)) {
+					//MULTINAME or MULTINAME_A
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					str = pool.stringPool[result];
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+
+					}
+					var nss:NamespaceSet = pool.namespaceSetPool[result];
+					pool.multinamePool[pool.multinamePool.length] = new Multiname(str, nss, (kind == 0x09) ? MultinameKind.MULTINAME : MultinameKind.MULTINAME_A);
+				} else if ((kind == 0x1B) || (kind == 0x1C)) {
+					//MULTINAME_L or MULTINAME_LA
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+
+					}
+					pool.multinamePool[pool.multinamePool.length] = new MultinameL(pool.namespaceSetPool[result], (kind == 0x1B) ? MultinameKind.MULTINAME_L : MultinameKind.MULTINAME_LA);
+				} else if (kind == 0x1D) {
+					//GENERIC
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					var qualifiedName:QualifiedName = pool.multinamePool[result];
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					var paramCount:uint = result;
+					var params:Array = [];
+					while (paramCount--) {
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+
+						}
+						params[params.length] = pool.multinamePool[result];
+					}
+					pool.multinamePool[pool.multinamePool.length] = new MultinameG(qualifiedName, paramCount, params, MultinameKind.GENERIC)
+				}
+			}
+			/* END:READ multinamepool */
 
 			_constantPoolEndPosition = _byteStream.position;
 
 			return pool;
 		}
 
-		protected function extractMultinames(pool:IConstantPool):void {
-			extract(_byteStream, pool.multinamePool, function():BaseMultiname {
-				var kind:MultinameKind = MultinameKind.determineKind(readU8());
-				return extractionMethods[kind](pool, kind);
-			});
+		public function deserialize(positionInByteArrayToReadFrom:int=0):AbcFile {
+			return null;
 		}
 
-		protected function extractMultinameG(pool:IConstantPool, kind:MultinameKind):MultinameG {
-			var qualifiedName:QualifiedName = pool.multinamePool[readU30()];
-			var paramCount:uint = readU30();
-			var params:Array = [];
-			for (var idx:uint = 0; idx < paramCount; ++idx) {
-				params[params.length] = pool.multinamePool[readU30()];
-				CONFIG::debug {
-					Assert.notNull(params[params.length - 1]);
-				}
-			}
-			return new MultinameG(qualifiedName, paramCount, params, kind);
+		public function deserializeClassInfos(abcFile:AbcFile, pool:IConstantPool, classCount:int):void {
 		}
 
-		protected function extractRuntimeQualifiedNameL(pool:IConstantPool, kind:MultinameKind):RuntimeQualifiedNameL {
-			// multiname_kind_RTQNameL 
-			// { 
-			// }
-			return new RuntimeQualifiedNameL(kind);
+		public function deserializeMethodBodies(abcFile:AbcFile, pool:IConstantPool):void {
 		}
 
-		protected function extractRuntimeQualifiedName(pool:IConstantPool, kind:MultinameKind):RuntimeQualifiedName {
-			// multiname_kind_RTQName 
-			// { 
-			//  u30 name 
-			// }
-			return new RuntimeQualifiedName(pool.stringPool[readU30()], kind);
+		public function deserializeScriptInfos(abcFile:AbcFile):void {
 		}
 
-		protected function extractMultinameL(pool:IConstantPool, kind:MultinameKind):MultinameL {
-			// multiname_kind_MultinameL 
-			// { 
-			//  u30 ns_set 
-			// }
-			return new MultinameL(pool.namespaceSetPool[readU30()], kind);
+		public function deserializeInstanceInfo(abcFile:AbcFile, pool:IConstantPool):int {
+			return 0;
 		}
 
-		protected function extractMultiname(pool:IConstantPool, kind:MultinameKind):Multiname {
-			// multiname_kind_Multiname 
-			// { 
-			//  u30 name 
-			//  u30 ns_set 
-			// }
-			return new Multiname(pool.stringPool[readU30()], pool.namespaceSetPool[readU30()], kind);
+		public function deserializeMetadata(abcFile:AbcFile, pool:IConstantPool):void {
 		}
 
-		protected function extractQName(pool:IConstantPool, kind:MultinameKind):QualifiedName {
-			// multiname_kind_QName 
-			// { 
-			//  u30 ns 
-			//  u30 name 
-			// }
-			var idx:uint = readU30();
-			var ns:LNamespace = pool.namespacePool[idx];
-			CONFIG::debug {
-				Assert.notNull(ns);
-			}
-			var name:String = pool.stringPool[readU30()];
-			CONFIG::debug {
-				Assert.notNull(name);
-			}
-			return new QualifiedName(name, ns, kind);
+		public function deserializeMethodInfos(abcFile:AbcFile, pool:IConstantPool):void {
 		}
 
-		protected function extractNamespaces(pool:IConstantPool):void {
-			// extract namespaces
-			extract(_byteStream, pool.namespacePool, function():LNamespace {
-				return new LNamespace(NamespaceKind.determineKind(readU8()), pool.stringPool[readU30()]);
-			});
+		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
+			return null;
 		}
 
-		protected function extractNamespaceSets(pool:IConstantPool):void {
-			// extract namespace sets
-			extract(_byteStream, pool.namespaceSetPool, function():NamespaceSet {
-				var namespaceIndexRefCount:int = readU30();
-				var namespaceArray:Array = [];
-				for (var nssetNamespaceIndex:int = 0; nssetNamespaceIndex < namespaceIndexRefCount; ++nssetNamespaceIndex) {
-					namespaceArray[namespaceArray.length] = pool.namespacePool[readU30()];
-					CONFIG::debug {
-						Assert.notNull(namespaceArray[namespaceArray.length - 1]);
-					}
-				}
-				return new NamespaceSet(namespaceArray);
-			});
-		}
-
-		public function extract(byteStream:ByteArray, pool:Array, extractionMethod:Function):void {
-			var itemCount:int = readU30();
-			for (var itemIndex:uint = 1; itemIndex < itemCount; ++itemIndex) {
-				try {
-					var result:* = extractionMethod.apply(this);
-					pool[pool.length] = result;
-						//CONFIG::debug {
-						//	var val:* = (pool[pool.length - 1]);
-						//	Assert.notNull(val, "null was extracted at position " + itemIndex);
-						//}
-				} catch (e:Error) {
-					throw new Error("I choked at position: " + itemIndex);
-				}
-			}
-			assertExtraction(itemCount, pool, "");
-		}
-
-		public function skipU16():void {
-			AbcSpec.skipU16(_byteStream);
-		}
-
-		public function readU16():uint {
-			return AbcSpec.readU16(_byteStream);
-		}
-
-		public function skipU30():void {
-			AbcSpec.skipU30(_byteStream);
-		}
-
-		public function readU30():uint {
-			return AbcSpec.readU30(_byteStream);
-		}
-
-		public function skipU32():void {
-			AbcSpec.skipU32(_byteStream);
-		}
-
-		public function readU32():uint {
-			return AbcSpec.readU32(_byteStream);
-		}
-
-		public function skipD64():void {
-			AbcSpec.skipD64(_byteStream);
-		}
-
-		public function readD64():Number {
-			return AbcSpec.readD64(_byteStream);
-		}
-
-		public function skipS32():void {
-			AbcSpec.skipS32(_byteStream);
-		}
-
-		public function readS32():int {
-			return AbcSpec.readS32(_byteStream);
-		}
-
-		public function skipU8():void {
-			AbcSpec.skipU8(_byteStream);
-		}
-
-		public function readU8():uint {
-			return AbcSpec.readU8(_byteStream);
-		}
-
-		public function skipStringInfo():void {
-			AbcSpec.skipStringInfo(_byteStream);
-		}
-
-		public function readStringInfo():String {
-			return AbcSpec.readStringInfo(_byteStream);
-		}
 	}
 }
