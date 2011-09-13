@@ -60,21 +60,12 @@ package org.as3commons.bytecode.reflect {
 		private var _recordHeaderSerializer:RecordHeaderSerializer;
 
 		private var _applicationDomain:ApplicationDomain;
-		private var _simple:Boolean;
 
 		public function ReflectionDeserializer() {
 			super();
 			_recordHeaderSerializer = new RecordHeaderSerializer();
 		}
 
-
-		public function get simple():Boolean {
-			return _simple;
-		}
-
-		public function set simple(value:Boolean):void {
-			_simple = value;
-		}
 
 		public function read(typeCache:ByteCodeTypeCache, input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
 			_applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
@@ -142,7 +133,7 @@ package org.as3commons.bytecode.reflect {
 		public function readABCTag(typeCache:ByteCodeTypeCache, input:ByteArray):void {
 			skipU16();
 			skipU16();
-			var constantPool:IConstantPool = (_simple) ? new SimpleConstantPool() : new ConstantPool();
+			var constantPool:IConstantPool = new ConstantPool();
 			constantPool.dupeCheck = false;
 			deserializeConstantPool(constantPool);
 			var methods:Array = readMethods(input, constantPool, _applicationDomain);
