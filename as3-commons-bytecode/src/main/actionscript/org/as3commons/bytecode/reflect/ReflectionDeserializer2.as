@@ -150,7 +150,6 @@ package org.as3commons.bytecode.reflect {
 
 		public function readMethods(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain):Array {
 			var methods:Array = [];
-			var itemCount:int;
 			var result:int = _byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
 				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
@@ -164,7 +163,7 @@ package org.as3commons.bytecode.reflect {
 					}
 				}
 			}
-			itemCount = result;
+			var itemCount:int = result;
 			while (itemCount--) {
 				// method_info 
 				// { 
@@ -299,7 +298,8 @@ package org.as3commons.bytecode.reflect {
 				}
 
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_PARAM_NAMES) == true) {
-					for (var nameIndex:uint = 0; nameIndex < nameCount; ++nameIndex) {
+					var nameIndex:int = 0;
+					while (nameCount--) {
 						result = _byteStream.readUnsignedByte();
 						if ((result & 0x00000080)) {
 							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
@@ -313,7 +313,7 @@ package org.as3commons.bytecode.reflect {
 								}
 							}
 						}
-						ByteCodeParameter(params[nameIndex]).as3commons_reflect::setName(constantPool.stringPool[result]);
+						ByteCodeParameter(params[nameIndex++]).as3commons_reflect::setName(constantPool.stringPool[result]);
 					}
 				}
 
