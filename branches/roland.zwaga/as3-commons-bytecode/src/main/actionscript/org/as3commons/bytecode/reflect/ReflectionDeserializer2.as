@@ -1329,17 +1329,5 @@ package org.as3commons.bytecode.reflect {
 			return methods;
 		}
 
-		private function makeMethodName(rawMethodName:String):String {
-			if (rawMethodName.indexOf(FORWARD_SLASH) > -1) {
-				var parts:Array = rawMethodName.split(FORWARD_SLASH);
-				parts.splice(0, 1);
-				rawMethodName = parts.join(FORWARD_SLASH);
-			}
-			if (rawMethodName.indexOf(DOUBLE_COLON) > -1) {
-				parts = rawMethodName.split(DOUBLE_COLON);
-				rawMethodName = parts[parts.length - 1];
-			}
-			return rawMethodName;
-		}
 	}
 }

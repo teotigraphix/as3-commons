@@ -488,7 +488,7 @@ package org.as3commons.bytecode.abc.enum {
 					target = opcodeStartPositions[targetPos];
 					if (target == null) {
 						target = Opcode.END_OF_BODY.op();
-						target.baseLocation = targetPos; //positionAtEndOfMethodBody;
+						target.baseLocation = positionAtEndOfMethodBody;
 					}
 					jmpTarget.targetOpcode = target;
 				} else {
@@ -500,7 +500,7 @@ package org.as3commons.bytecode.abc.enum {
 						target = opcodeStartPositions[targetPos];
 						if (target == null) {
 							target = Opcode.END_OF_BODY.op();
-							target.baseLocation = targetPos; //positionAtEndOfMethodBody;
+							target.baseLocation = positionAtEndOfMethodBody;
 						}
 						jmpTarget.addTarget(target);
 					}
@@ -509,7 +509,7 @@ package org.as3commons.bytecode.abc.enum {
 					target = opcodeStartPositions[targetPos];
 					if (target == null) {
 						target = Opcode.END_OF_BODY.op();
-						target.baseLocation = targetPos; //positionAtEndOfMethodBody;
+						target.baseLocation = positionAtEndOfMethodBody;
 					}
 					jmpTarget.targetOpcode = target;
 				}
