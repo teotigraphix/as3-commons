@@ -75,6 +75,7 @@ package org.as3commons.bytecode.io {
 		}
 
 		private var _constantPoolEndPosition:uint = 0;
+		private var _constantPoolStartPosition:uint;
 
 		public function get constantPoolEndPosition():uint {
 			return _constantPoolEndPosition;
@@ -150,6 +151,9 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function deserializeConstantPool(pool:IConstantPool):IConstantPool {
+
+			_constantPoolStartPosition = _byteStream.position;
+
 			extract(_byteStream, pool.integerPool, readS32);
 			extract(_byteStream, pool.uintPool, readU32);
 			extract(_byteStream, pool.doublePool, readD64);
@@ -165,6 +169,10 @@ package org.as3commons.bytecode.io {
 
 			_constantPoolEndPosition = _byteStream.position;
 
+			pool.rawConstantPool = AbcSpec.newByteArray();
+			pool.rawConstantPool.writeBytes(_byteStream, _constantPoolStartPosition, _constantPoolEndPosition);
+
+			_byteStream.position = _constantPoolEndPosition;
 			return pool;
 		}
 

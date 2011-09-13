@@ -14,11 +14,14 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.abc {
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 
 	public interface IConstantPool {
+		function get rawConstantPool():ByteArray;
+		function set rawConstantPool(value:ByteArray):void;
 		function reset():void;
 		function initializeLookups():void;
 		function getConstantPoolItem(constantKindValue:uint, poolIndex:uint):*;
