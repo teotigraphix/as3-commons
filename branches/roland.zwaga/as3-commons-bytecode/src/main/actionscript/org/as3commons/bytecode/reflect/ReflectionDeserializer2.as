@@ -33,6 +33,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
 	import org.as3commons.bytecode.io.AbstractAbcDeserializer;
+	import org.as3commons.bytecode.io.AbstractAbcDeserializer2;
 	import org.as3commons.bytecode.swf.SWFWeaverFileIO;
 	import org.as3commons.bytecode.tags.serialization.RecordHeaderSerializer;
 	import org.as3commons.bytecode.tags.struct.RecordHeader;
@@ -49,7 +50,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
 
-	public class ReflectionDeserializer extends AbstractAbcDeserializer {
+	public class ReflectionDeserializer2 extends AbstractAbcDeserializer {
 
 		private static const GETTER_SIGNATURE:String = "get";
 		private static const SETTER_SIGNATURE:String = "set";
@@ -62,7 +63,7 @@ package org.as3commons.bytecode.reflect {
 		private var _applicationDomain:ApplicationDomain;
 		private var _simple:Boolean;
 
-		public function ReflectionDeserializer() {
+		public function ReflectionDeserializer2() {
 			super();
 			_recordHeaderSerializer = new RecordHeaderSerializer();
 		}
