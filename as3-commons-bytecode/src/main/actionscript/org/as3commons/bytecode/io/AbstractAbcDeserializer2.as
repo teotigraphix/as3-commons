@@ -63,20 +63,16 @@ package org.as3commons.bytecode.io {
 		public function deserializeConstantPool(pool:IConstantPool):IConstantPool {
 			/* READ integerpool */
 			var itemCount:int;
-			var nextByte:int;
+
 			var result:int = _byteArray.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				nextByte = _byteArray.readUnsignedByte() << 7;
-				result = result & 0x0000007f | nextByte;
+				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					nextByte = _byteArray.readUnsignedByte() << 14;
-					result = result & 0x00003fff | nextByte;
+					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						nextByte = _byteArray.readUnsignedByte() << 21;
-						result = result & 0x001fffff | nextByte;
+						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							nextByte = _byteArray.readUnsignedByte() << 28;
-							result = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 						}
 					}
 				}
@@ -85,17 +81,13 @@ package org.as3commons.bytecode.io {
 			while (itemCount--) {
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					nextByte = _byteArray.readUnsignedByte() << 7;
-					result = result & 0x0000007f | nextByte;
+					result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						nextByte = _byteArray.readUnsignedByte() << 14;
-						result = result & 0x00003fff | nextByte;
+						result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							nextByte = _byteArray.readUnsignedByte() << 21;
-							result = result & 0x001fffff | nextByte;
+							result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								nextByte = _byteArray.readUnsignedByte() << 28;
-								result = result & 0x0fffffff | nextByte;
+								result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -107,58 +99,46 @@ package org.as3commons.bytecode.io {
 			/* READ uintpool */
 			result = _byteArray.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				nextByte = _byteArray.readUnsignedByte() << 7;
-				result = result & 0x0000007f | nextByte;
+				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					nextByte = _byteArray.readUnsignedByte() << 14;
-					result = result & 0x00003fff | nextByte;
+					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						nextByte = _byteArray.readUnsignedByte() << 21;
-						result = result & 0x001fffff | nextByte;
+						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							nextByte = _byteArray.readUnsignedByte() << 28;
-							result = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 						}
 					}
 				}
 			}
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				result = _byteArray.readUnsignedByte();
-				if ((result & 0x00000080)) {
-					nextByte = _byteArray.readUnsignedByte() << 7;
-					result = result & 0x0000007f | nextByte;
-					if ((result & 0x00004000)) {
-						nextByte = _byteArray.readUnsignedByte() << 14;
-						result = result & 0x00003fff | nextByte;
-						if ((result & 0x00200000)) {
-							nextByte = _byteArray.readUnsignedByte() << 21;
-							result = result & 0x001fffff | nextByte;
-							if ((result & 0x10000000)) {
-								nextByte = _byteArray.readUnsignedByte() << 28;
-								result = result & 0x0fffffff | nextByte;
+				var uresult:uint = _byteArray.readUnsignedByte();
+				if ((uresult & 0x00000080)) {
+					uresult = uresult & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+					if ((uresult & 0x00004000)) {
+						uresult = uresult & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+						if ((uresult & 0x00200000)) {
+							uresult = uresult & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+							if ((uresult & 0x10000000)) {
+								uresult = uresult & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 							}
 						}
 					}
 				}
-				pool.uintPool[pool.uintPool.length] = result;
+				pool.uintPool[pool.uintPool.length] = uresult;
 			}
 			/* END:READ uintpool */
 
 			/* READ doublepool */
 			result = _byteArray.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				nextByte = _byteArray.readUnsignedByte() << 7;
-				result = result & 0x0000007f | nextByte;
+				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					nextByte = _byteArray.readUnsignedByte() << 14;
-					result = result & 0x00003fff | nextByte;
+					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						nextByte = _byteArray.readUnsignedByte() << 21;
-						result = result & 0x001fffff | nextByte;
+						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							nextByte = _byteArray.readUnsignedByte() << 28;
-							result = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 						}
 					}
 				}
@@ -172,17 +152,13 @@ package org.as3commons.bytecode.io {
 			/* READ stringpool */
 			result = _byteArray.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				nextByte = _byteArray.readUnsignedByte() << 7;
-				result = result & 0x0000007f | nextByte;
+				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					nextByte = _byteArray.readUnsignedByte() << 14;
-					result = result & 0x00003fff | nextByte;
+					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						nextByte = _byteArray.readUnsignedByte() << 21;
-						result = result & 0x001fffff | nextByte;
+						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							nextByte = _byteArray.readUnsignedByte() << 28;
-							itemCount = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 						}
 					}
 				}
@@ -191,17 +167,13 @@ package org.as3commons.bytecode.io {
 			while (itemCount--) {
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					nextByte = _byteArray.readUnsignedByte() << 7;
-					result = result & 0x0000007f | nextByte;
+					result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						nextByte = _byteArray.readUnsignedByte() << 14;
-						result = result & 0x00003fff | nextByte;
+						result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							nextByte = _byteArray.readUnsignedByte() << 21;
-							result = result & 0x001fffff | nextByte;
+							result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								nextByte = _byteArray.readUnsignedByte() << 28;
-								result = result & 0x0fffffff | nextByte;
+								result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -217,17 +189,13 @@ package org.as3commons.bytecode.io {
 			/* READ namespacepool */
 			result = _byteArray.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				nextByte = _byteArray.readUnsignedByte() << 7;
-				result = result & 0x0000007f | nextByte;
+				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					nextByte = _byteArray.readUnsignedByte() << 14;
-					result = result & 0x00003fff | nextByte;
+					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						nextByte = _byteArray.readUnsignedByte() << 21;
-						result = result & 0x001fffff | nextByte;
+						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							nextByte = _byteArray.readUnsignedByte() << 28;
-							result = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 						}
 					}
 				}
@@ -237,17 +205,13 @@ package org.as3commons.bytecode.io {
 				var kind:uint = 255 & _byteArray[_byteArray.position++];
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					nextByte = _byteArray.readUnsignedByte() << 7;
-					result = result & 0x0000007f | nextByte;
+					result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						nextByte = _byteArray.readUnsignedByte() << 14;
-						result = result & 0x00003fff | nextByte;
+						result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							nextByte = _byteArray.readUnsignedByte() << 21;
-							result = result & 0x001fffff | nextByte;
+							result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								nextByte = _byteArray.readUnsignedByte() << 28;
-								result = result & 0x0fffffff | nextByte;
+								result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -259,17 +223,13 @@ package org.as3commons.bytecode.io {
 			/* READ namespacesetpool */
 			result = _byteArray.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				nextByte = _byteArray.readUnsignedByte() << 7;
-				result = result & 0x0000007f | nextByte;
+				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					nextByte = _byteArray.readUnsignedByte() << 14;
-					result = result & 0x00003fff | nextByte;
+					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						nextByte = _byteArray.readUnsignedByte() << 21;
-						result = result & 0x001fffff | nextByte;
+						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							nextByte = _byteArray.readUnsignedByte() << 28;
-							result = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 						}
 					}
 				}
@@ -278,17 +238,13 @@ package org.as3commons.bytecode.io {
 			while (itemCount--) {
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					nextByte = _byteArray.readUnsignedByte() << 7;
-					result = result & 0x0000007f | nextByte;
+					result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						nextByte = _byteArray.readUnsignedByte() << 14;
-						result = result & 0x00003fff | nextByte;
+						result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							nextByte = _byteArray.readUnsignedByte() << 21;
-							result = result & 0x001fffff | nextByte;
+							result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								nextByte = _byteArray.readUnsignedByte() << 28;
-								result = result & 0x0fffffff | nextByte;
+								result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -298,17 +254,13 @@ package org.as3commons.bytecode.io {
 				while (--namespaceIndexRefCount - (-1)) {
 					result = _byteArray.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						nextByte = _byteArray.readUnsignedByte() << 7;
-						result = result & 0x0000007f | nextByte;
+						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							nextByte = _byteArray.readUnsignedByte() << 14;
-							result = result & 0x00003fff | nextByte;
+							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								nextByte = _byteArray.readUnsignedByte() << 21;
-								result = result & 0x001fffff | nextByte;
+								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									nextByte = _byteArray.readUnsignedByte() << 28;
-									result = result & 0x0fffffff | nextByte;
+									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -322,17 +274,13 @@ package org.as3commons.bytecode.io {
 			/* READ multinamepool */
 			result = _byteArray.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				nextByte = _byteArray.readUnsignedByte() << 7;
-				result = result & 0x0000007f | nextByte;
+				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					nextByte = _byteArray.readUnsignedByte() << 14;
-					result = result & 0x00003fff | nextByte;
+					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						nextByte = _byteArray.readUnsignedByte() << 21;
-						result = result & 0x001fffff | nextByte;
+						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							nextByte = _byteArray.readUnsignedByte() << 28;
-							result = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 						}
 					}
 				}
@@ -344,17 +292,13 @@ package org.as3commons.bytecode.io {
 				if ((kind == 0x07) || (kind == 0x0D)) {
 					result = _byteArray.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						nextByte = _byteArray.readUnsignedByte() << 7;
-						result = result & 0x0000007f | nextByte;
+						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							nextByte = _byteArray.readUnsignedByte() << 14;
-							result = result & 0x00003fff | nextByte;
+							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								nextByte = _byteArray.readUnsignedByte() << 21;
-								result = result & 0x001fffff | nextByte;
+								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									nextByte = _byteArray.readUnsignedByte() << 28;
-									result = result & 0x0fffffff | nextByte;
+									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -362,20 +306,17 @@ package org.as3commons.bytecode.io {
 					var ns:LNamespace = pool.namespacePool[result];
 					result = _byteArray.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						nextByte = _byteArray.readUnsignedByte() << 7;
-						result = result & 0x0000007f | nextByte;
+						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							nextByte = _byteArray.readUnsignedByte() << 14;
-							result = result & 0x00003fff | nextByte;
+							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								nextByte = _byteArray.readUnsignedByte() << 21;
-								result = result & 0x001fffff | nextByte;
+								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									nextByte = _byteArray.readUnsignedByte() << 28;
-									result = result & 0x0fffffff | nextByte;
+									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 								}
 							}
 						}
+
 					}
 					var name:String = pool.stringPool[result];
 					pool.multinamePool[pool.multinamePool.length] = new QualifiedName(name, ns, (kind == 0x07) ? MultinameKind.QNAME : MultinameKind.QNAME_A);
@@ -383,17 +324,13 @@ package org.as3commons.bytecode.io {
 				} else if ((kind == 0x0f) || (kind == 0x10)) {
 					result = _byteArray.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						nextByte = _byteArray.readUnsignedByte() << 7;
-						result = result & 0x0000007f | nextByte;
+						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							nextByte = _byteArray.readUnsignedByte() << 14;
-							result = result & 0x00003fff | nextByte;
+							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								nextByte = _byteArray.readUnsignedByte() << 21;
-								result = result & 0x001fffff | nextByte;
+								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									nextByte = _byteArray.readUnsignedByte() << 28;
-									result = result & 0x0fffffff | nextByte;
+									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -407,17 +344,13 @@ package org.as3commons.bytecode.io {
 					//MULTINAME or MULTINAME_A
 					result = _byteArray.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						nextByte = _byteArray.readUnsignedByte() << 7;
-						result = result & 0x0000007f | nextByte;
+						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							nextByte = _byteArray.readUnsignedByte() << 14;
-							result = result & 0x00003fff | nextByte;
+							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								nextByte = _byteArray.readUnsignedByte() << 21;
-								result = result & 0x001fffff | nextByte;
+								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									nextByte = _byteArray.readUnsignedByte() << 28;
-									result = result & 0x0fffffff | nextByte;
+									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -425,20 +358,17 @@ package org.as3commons.bytecode.io {
 					str = pool.stringPool[result];
 					result = _byteArray.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						nextByte = _byteArray.readUnsignedByte() << 7;
-						result = result & 0x0000007f | nextByte;
+						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							nextByte = _byteArray.readUnsignedByte() << 14;
-							result = result & 0x00003fff | nextByte;
+							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								nextByte = _byteArray.readUnsignedByte() << 21;
-								result = result & 0x001fffff | nextByte;
+								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									nextByte = _byteArray.readUnsignedByte() << 28;
-									result = result & 0x0fffffff | nextByte;
+									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 								}
 							}
 						}
+
 					}
 					var nss:NamespaceSet = pool.namespaceSetPool[result];
 					pool.multinamePool[pool.multinamePool.length] = new Multiname(str, nss, (kind == 0x09) ? MultinameKind.MULTINAME : MultinameKind.MULTINAME_A);
@@ -446,37 +376,30 @@ package org.as3commons.bytecode.io {
 					//MULTINAME_L or MULTINAME_LA
 					result = _byteArray.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						nextByte = _byteArray.readUnsignedByte() << 7;
-						result = result & 0x0000007f | nextByte;
+						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							nextByte = _byteArray.readUnsignedByte() << 14;
-							result = result & 0x00003fff | nextByte;
+							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								nextByte = _byteArray.readUnsignedByte() << 21;
-								result = result & 0x001fffff | nextByte;
+								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									nextByte = _byteArray.readUnsignedByte() << 28;
-									result = result & 0x0fffffff | nextByte;
+									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 								}
 							}
 						}
+
 					}
 					pool.multinamePool[pool.multinamePool.length] = new MultinameL(pool.namespaceSetPool[result], (kind == 0x1B) ? MultinameKind.MULTINAME_L : MultinameKind.MULTINAME_LA);
 				} else if (kind == 0x1D) {
 					//GENERIC
 					result = _byteArray.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						nextByte = _byteArray.readUnsignedByte() << 7;
-						result = result & 0x0000007f | nextByte;
+						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							nextByte = _byteArray.readUnsignedByte() << 14;
-							result = result & 0x00003fff | nextByte;
+							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								nextByte = _byteArray.readUnsignedByte() << 21;
-								result = result & 0x001fffff | nextByte;
+								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									nextByte = _byteArray.readUnsignedByte() << 28;
-									result = result & 0x0fffffff | nextByte;
+									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -484,17 +407,13 @@ package org.as3commons.bytecode.io {
 					var qualifiedName:QualifiedName = pool.multinamePool[result];
 					result = _byteArray.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						nextByte = _byteArray.readUnsignedByte() << 7;
-						result = result & 0x0000007f | nextByte;
+						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							nextByte = _byteArray.readUnsignedByte() << 14;
-							result = result & 0x00003fff | nextByte;
+							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								nextByte = _byteArray.readUnsignedByte() << 21;
-								result = result & 0x001fffff | nextByte;
+								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									nextByte = _byteArray.readUnsignedByte() << 28;
-									result = result & 0x0fffffff | nextByte;
+									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -504,20 +423,17 @@ package org.as3commons.bytecode.io {
 					while (paramCount--) {
 						result = _byteArray.readUnsignedByte();
 						if ((result & 0x00000080)) {
-							nextByte = _byteArray.readUnsignedByte() << 7;
-							result = result & 0x0000007f | nextByte;
+							result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
 							if ((result & 0x00004000)) {
-								nextByte = _byteArray.readUnsignedByte() << 14;
-								result = result & 0x00003fff | nextByte;
+								result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
 								if ((result & 0x00200000)) {
-									nextByte = _byteArray.readUnsignedByte() << 21;
-									result = result & 0x001fffff | nextByte;
+									result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
 									if ((result & 0x10000000)) {
-										nextByte = _byteArray.readUnsignedByte() << 28;
-										result = result & 0x0fffffff | nextByte;
+										result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
 									}
 								}
 							}
+
 						}
 						params[params.length] = pool.multinamePool[result];
 					}
@@ -526,12 +442,11 @@ package org.as3commons.bytecode.io {
 			}
 			/* END:READ multinamepool */
 
-			pool.initializeLookups();
+			//pool.initializeLookups();
 
 			_constantPoolEndPosition = _byteArray.position;
 
 			return pool;
-
 		}
 
 		public function deserialize(positionInByteArrayToReadFrom:int=0):AbcFile {

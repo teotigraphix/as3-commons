@@ -138,7 +138,7 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function readU30(bytes:ByteArray):uint {
-			var value:uint = readU32(bytes);
+			var value:uint = (readU32(bytes) & 0x3fffffff);
 			assertWithinRange(value < MAX_U30, MAX_U30, value);
 			return value;
 		}

@@ -36,7 +36,7 @@ package org.as3commons.bytecode.reflect {
 			super();
 		}
 
-		override public function readMethods(input:ByteArray, constantPool:ConstantPool, applicationDomain:ApplicationDomain):Array {
+		override public function readMethods(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain):Array {
 			var methodCount:int = readU30();
 
 			for (var methodIndex:int = 0; methodIndex < methodCount; ++methodIndex) {
