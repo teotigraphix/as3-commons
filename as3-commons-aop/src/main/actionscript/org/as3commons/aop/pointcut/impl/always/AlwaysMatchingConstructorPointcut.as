@@ -13,20 +13,16 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.pointcut.impl {
-	import org.as3commons.aop.pointcut.IAccessorPointcut;
+package org.as3commons.aop.pointcut.impl.always {
 	import org.as3commons.aop.pointcut.IConstructorPointcut;
-	import org.as3commons.aop.pointcut.IMethodPointcut;
-	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.Constructor;
-	import org.as3commons.reflect.Method;
 
 	/**
-	 * Pointcut that always matches a constructor, method or accessor.
+	 * Constructor pointcut that always matches.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class AlwaysMatchingPointcut implements IConstructorPointcut, IMethodPointcut, IAccessorPointcut {
+	public class AlwaysMatchingConstructorPointcut implements IConstructorPointcut {
 
 		// --------------------------------------------------------------------
 		//
@@ -34,7 +30,7 @@ package org.as3commons.aop.pointcut.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function AlwaysMatchingPointcut() {
+		public function AlwaysMatchingConstructorPointcut() {
 		}
 
 		// --------------------------------------------------------------------
@@ -44,14 +40,6 @@ package org.as3commons.aop.pointcut.impl {
 		// --------------------------------------------------------------------
 
 		public function matchesConstructor(constructor:Constructor):Boolean {
-			return true;
-		}
-
-		public function matchesMethod(method:Method):Boolean {
-			return true;
-		}
-
-		public function matchesAccessor(accessor:Accessor):Boolean {
 			return true;
 		}
 	}

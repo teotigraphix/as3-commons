@@ -13,7 +13,8 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.factory {
+package org.as3commons.aop.factory.impl {
+	import org.as3commons.aop.factory.*;
 	import org.as3commons.aop.*;
 	import org.as3commons.aop.advice.IAdvice;
 	import org.as3commons.aop.advisor.IAdvisor;

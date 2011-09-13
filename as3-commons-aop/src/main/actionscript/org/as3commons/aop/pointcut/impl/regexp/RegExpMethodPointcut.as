@@ -13,16 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.pointcut.impl {
+package org.as3commons.aop.pointcut.impl.regexp {
 	import org.as3commons.aop.pointcut.IMethodPointcut;
+	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.reflect.Method;
 
 	/**
-	 * Method pointcut that always matches.
+	 * Regular expression pointcut to match methods.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class AlwaysMatchingMethodPointcut implements IMethodPointcut {
+	public class RegExpMethodPointcut extends AbstractRegExpPointcut implements IMethodPointcut {
 
 		// --------------------------------------------------------------------
 		//
@@ -30,7 +31,7 @@ package org.as3commons.aop.pointcut.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function AlwaysMatchingMethodPointcut() {
+		public function RegExpMethodPointcut() {
 		}
 
 		// --------------------------------------------------------------------
@@ -40,7 +41,10 @@ package org.as3commons.aop.pointcut.impl {
 		// --------------------------------------------------------------------
 
 		public function matchesMethod(method:Method):Boolean {
-			return true;
+			var className:String = ClassUtils.getFullyQualifiedName(method.declaringType.clazz, true);
+			var fullName:String = className + "." + method.name;
+			return match(fullName);
 		}
+
 	}
 }

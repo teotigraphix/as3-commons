@@ -13,17 +13,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.pointcut.impl {
-	import org.as3commons.aop.pointcut.IMethodPointcut;
-	import org.as3commons.lang.Assert;
-	import org.as3commons.reflect.Method;
+package org.as3commons.aop.pointcut.impl.name {
+	import org.as3commons.aop.pointcut.INameMatcher;
 
 	/**
-	 * Name matcher pointcut used for method names.
+	 * Name matcher that is also a registry for names.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class MethodNameMatchPointcut extends AbstractNameMatchPointcut implements IMethodPointcut {
+	public class NameMatcher extends NameRegistry implements INameMatcher {
 
 		// --------------------------------------------------------------------
 		//
@@ -31,7 +29,7 @@ package org.as3commons.aop.pointcut.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function MethodNameMatchPointcut(nameOrNames:*) {
+		public function NameMatcher(nameOrNames:* = null) {
 			super(nameOrNames);
 		}
 
@@ -41,9 +39,8 @@ package org.as3commons.aop.pointcut.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function matchesMethod(method:Method):Boolean {
-			Assert.notNull(method);
-			return nameMatcher.match(method.name);
+		public function match(name:String):Boolean {
+			return containsName(name);
 		}
 	}
 }

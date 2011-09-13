@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.aop.pointcut.impl {
+package org.as3commons.aop.pointcut.impl.always {
 	import org.as3commons.aop.pointcut.IAccessorPointcut;
 	import org.as3commons.reflect.Accessor;
 

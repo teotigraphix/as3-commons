@@ -13,17 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.pointcut.impl {
-	import org.as3commons.aop.pointcut.*;
-	import org.as3commons.lang.Assert;
+package org.as3commons.aop.pointcut.impl.regexp {
+	import org.as3commons.aop.pointcut.IAccessorPointcut;
+	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.reflect.Accessor;
 
 	/**
-	 * Name matcher pointcut used for setters.
+	 * Regular expression pointcut to match accessors.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class SetterNameMatchPointcut extends AbstractNameMatchPointcut implements IAccessorPointcut, INameRegistry {
+	public class RegExpAccessorPointcut extends AbstractRegExpPointcut implements IAccessorPointcut {
 
 		// --------------------------------------------------------------------
 		//
@@ -31,8 +31,7 @@ package org.as3commons.aop.pointcut.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function SetterNameMatchPointcut(nameOrNames:* = null) {
-			super(nameOrNames);
+		public function RegExpAccessorPointcut() {
 		}
 
 		// --------------------------------------------------------------------
@@ -42,8 +41,9 @@ package org.as3commons.aop.pointcut.impl {
 		// --------------------------------------------------------------------
 
 		public function matchesAccessor(accessor:Accessor):Boolean {
-			Assert.notNull(accessor);
-			return (accessor.writeable && nameMatcher.match(accessor.name));
+			var className:String = ClassUtils.getFullyQualifiedName(accessor.declaringType.clazz, true);
+			var fullName:String = className + "." + accessor.name;
+			return match(fullName);
 		}
 
 	}

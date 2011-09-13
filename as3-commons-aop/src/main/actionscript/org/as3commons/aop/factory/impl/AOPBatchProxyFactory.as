@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.factory {
+package org.as3commons.aop.factory.impl {
 	import flash.utils.Dictionary;
 	
 	import mx.core.FlexGlobals;
@@ -22,6 +22,7 @@ package org.as3commons.aop.factory {
 	import org.as3commons.aop.advisor.IAdvisor;
 	import org.as3commons.aop.advisor.impl.AlwaysMatchingPointcutAdvisor;
 	import org.as3commons.aop.as3commons_aop;
+	import org.as3commons.aop.factory.util.LoadProxyFactoryOperation;
 	import org.as3commons.aop.intercept.AdvisorInterceptor;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.bytecode.interception.impl.BasicMethodInvocationInterceptor;

@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.factory {
+package org.as3commons.aop.factory.util {
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
