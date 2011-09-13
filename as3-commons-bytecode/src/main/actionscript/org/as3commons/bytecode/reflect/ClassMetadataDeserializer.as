@@ -37,15 +37,15 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		override public function readMethods(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain):Array {
-			var result:int = _byteStream.readUnsignedByte();
+			var result:int = byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
@@ -53,15 +53,15 @@ package org.as3commons.bytecode.reflect {
 			var methodCount:int = result;
 
 			while (methodCount--) {
-				result = _byteStream.readUnsignedByte();
+				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -69,75 +69,75 @@ package org.as3commons.bytecode.reflect {
 				var paramCount:uint = result; //paramcount;
 				var paramCount2:uint = paramCount; //paramcount;
 
-				result = _byteStream.readUnsignedByte();
+				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
 				} //returnTypeQName
 
 				while (paramCount--) {
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
 				}
 
-				result = _byteStream.readUnsignedByte();
+				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
 				} //methodNameIndex
-				var flags:uint = 255 & _byteStream[_byteStream.position++];
+				var flags:uint = 255 & byteStream[byteStream.position++];
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_OPTIONAL) == true) {
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
 					var optionInfoCount:int = result;
 					while (optionInfoCount--) {
-						result = _byteStream.readUnsignedByte();
+						result = byteStream.readUnsignedByte();
 						if ((result & 0x00000080)) {
-							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 							if ((result & 0x00004000)) {
-								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 								if ((result & 0x00200000)) {
-									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 									if ((result & 0x10000000)) {
-										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+										result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 									}
 								}
 							}
@@ -148,15 +148,15 @@ package org.as3commons.bytecode.reflect {
 
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_PARAM_NAMES) == true) {
 					while (paramCount2--) {
-						result = _byteStream.readUnsignedByte();
+						result = byteStream.readUnsignedByte();
 						if ((result & 0x00000080)) {
-							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 							if ((result & 0x00004000)) {
-								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 								if ((result & 0x00200000)) {
-									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 									if ((result & 0x10000000)) {
-										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+										result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 									}
 								}
 							}
@@ -168,15 +168,15 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		override public function readTypes(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain, methods:Array, metadatas:Array, typeCache:ByteCodeTypeCache):void {
-			var result:int = _byteStream.readUnsignedByte();
+			var result:int = byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
@@ -185,15 +185,15 @@ package org.as3commons.bytecode.reflect {
 			var classCount2:int = classCount;
 			var classNames:Array = [];
 			while (classCount--) {
-				result = _byteStream.readUnsignedByte();
+				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -203,59 +203,59 @@ package org.as3commons.bytecode.reflect {
 				classNames[classNames.length] = qualifiedName.fullName;
 				typeCache.as3commons_reflect::addDefinitionName(qualifiedName.fullName);
 
-				result = _byteStream.readUnsignedByte();
+				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
 				}
-				var instanceInfoFlags:uint = 255 & _byteStream[_byteStream.position++]; //instanceInfoFlags
+				var instanceInfoFlags:uint = 255 & byteStream[byteStream.position++]; //instanceInfoFlags
 				if (ClassConstant.PROTECTED_NAMESPACE.present(instanceInfoFlags)) {
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
 				}
-				result = _byteStream.readUnsignedByte();
+				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
 				}
 				var interfaceCount:int = result;
 				while (interfaceCount--) {
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -271,15 +271,15 @@ package org.as3commons.bytecode.reflect {
 					}
 					impls[impls.length] = AbcFileUtil.normalizeFullName(qualifiedName.fullName);
 				}
-				result = _byteStream.readUnsignedByte();
+				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -296,15 +296,15 @@ package org.as3commons.bytecode.reflect {
 				//  traits_info traits[trait_count] 
 				// }
 				var className:String = classNames[classIndex++];
-				result = _byteStream.readUnsignedByte();
+				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -312,30 +312,30 @@ package org.as3commons.bytecode.reflect {
 				gatherMetaData(classNames, constantPool, methods, metadatas, true, typeCache);
 			}
 
-			result = _byteStream.readUnsignedByte();
+			result = byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
 			}
 			var scriptCount:int = result;
 			while (scriptCount--) {
-				result = _byteStream.readUnsignedByte();
+				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -346,15 +346,15 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		public function gatherMetaData(classNames:Array, pool:IConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache):void {
-			var result:int = _byteStream.readUnsignedByte();
+			var result:int = byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
@@ -370,87 +370,87 @@ package org.as3commons.bytecode.reflect {
 				//  u30 metadata_count 
 				//  u30 metadata[metadata_count] 
 				// }
-				result = _byteStream.readUnsignedByte();
+				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
 				}
-				var traitKindValue:int = 255 & _byteStream[_byteStream.position++];
+				var traitKindValue:int = 255 & byteStream[byteStream.position++];
 				var kindMasked:uint = traitKindValue & 0xF;
 				if ((kindMasked == 0) || (kindMasked == 6)) {
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
 					if (result != 0) {
-						_byteStream.position++;
+						byteStream.position++;
 					}
 				} else if ((kindMasked == 1) || (kindMasked == 2) || (kindMasked == 3) || (kindMasked == 5)) {
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -461,28 +461,28 @@ package org.as3commons.bytecode.reflect {
 					//  u30 slot_id 
 					//  u30 classi 
 					// }
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -502,30 +502,30 @@ package org.as3commons.bytecode.reflect {
 				// The value of the metadata_count field is the number of entries in the metadata array. That array 
 				// contains indices into the metadata array of the abcFile." 
 				if (traitKindValue & (TraitAttributes.METADATA.bitMask << 4)) {
-					result = _byteStream.readUnsignedByte();
+					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
 					var numberOfTraitMetadataItems:int = result;
 					while (numberOfTraitMetadataItems--) {
-						result = _byteStream.readUnsignedByte();
+						result = byteStream.readUnsignedByte();
 						if ((result & 0x00000080)) {
-							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
 							if ((result & 0x00004000)) {
-								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								result = result & 0x00003fff | byteStream.readUnsignedByte() << 14;
 								if ((result & 0x00200000)) {
-									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									result = result & 0x001fffff | byteStream.readUnsignedByte() << 21;
 									if ((result & 0x10000000)) {
-										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+										result = result & 0x0fffffff | byteStream.readUnsignedByte() << 28;
 									}
 								}
 							}
