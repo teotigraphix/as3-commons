@@ -9,7 +9,7 @@ package org.as3commons.aop.advice {
 
 		public function beforeConstructor(constructor:Constructor, args:Array):void {
 			trace("*** before constructor in around advice");
-			//args[0] = "I ownz da constructor argument";
+			//args[0] = "Constructor argument was replaced by the advice";
 		}
 
 		public function afterConstructor(constructor:Constructor, args:Array, target:*):void {
