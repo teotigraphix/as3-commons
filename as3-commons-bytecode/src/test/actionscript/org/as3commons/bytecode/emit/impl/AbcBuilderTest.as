@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import avmplus.getQualifiedClassName;
+
 	import flash.events.Event;
 	import flash.system.ApplicationDomain;
+	import flash.utils.describeType;
 
 	import flexunit.framework.TestCase;
 
@@ -358,6 +361,36 @@ package org.as3commons.bytecode.emit.impl {
 			assertEquals("test", instance.testAccessor);
 			instance.testAccessor = "test1";
 			assertEquals("test1", instance.testAccessor);
+		}
+
+		public function testBuildClassWithMethodThatUsesUint():void {
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyClassWithMethodThatUsesUintTest");
+			var methodBuilder:IMethodBuilder = classBuilder.defineMethod("testUintMethod");
+			methodBuilder.returnType = "uint";
+			var arg:MethodArgument = new MethodArgument();
+			arg.type = "uint";
+			methodBuilder.arguments.push(arg);
+			methodBuilder.addOpcode(Opcode.getlocal_0).addOpcode(Opcode.pushscope);
+			methodBuilder.addOpcode(Opcode.pushuint, [4294967295]);
+			methodBuilder.addOpcode(Opcode.setlocal_2);
+			methodBuilder.addOpcode(Opcode.getlocal_2);
+			methodBuilder.addOpcode(Opcode.getlocal_1);
+			methodBuilder.addOpcode(Opcode.subtract);
+			methodBuilder.addOpcode(Opcode.convert_u);
+			methodBuilder.addOpcode(Opcode.returnvalue);
+			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(classWithMethodThatUsesUintSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+		}
+
+		private function classWithMethodThatUsesUintSuccessHandler(event:Event):void {
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyClassWithMethodThatUsesUintTest") as Class;
+			assertNotNull(cls);
+			var instance:Object = new cls();
+			assertNotNull(instance);
+			var nr:uint = 4294967295;
+			var result:uint = instance.testUintMethod(nr);
+			assertEquals(0, result);
+			assertEquals("uint", getQualifiedClassName(result));
 		}
 
 	}
