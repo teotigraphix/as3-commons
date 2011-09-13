@@ -29,6 +29,7 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.RuntimeQualifiedNameL;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.util.AbcSpec;
 
 	/**
 	 *
@@ -37,16 +38,16 @@ package org.as3commons.bytecode.io {
 	public class AbstractAbcDeserializer2 implements IAbcDeserializer {
 		private static const UTF8_BAD_PREFIX:String = "UTF8_BAD";
 
-		var _byteArray:ByteArray;
+		protected var _byteStream:ByteArray;
 		private var _constantPoolEndPosition:uint = 0;
 		private var _illegalCount:uint = 0;
 
 		/**
 		 * Creates a new <code>AbstractAbcDeserializer2</code> instance.
 		 */
-		public function AbstractAbcDeserializer2(byteArray:ByteArray) {
+		public function AbstractAbcDeserializer2(byteArray:ByteArray=null) {
 			super();
-			_byteArray = byteArray;
+			_byteStream = byteArray;
 		}
 
 		public function get methodBodyExtractionMethod():MethodBodyExtractionKind {
@@ -64,30 +65,30 @@ package org.as3commons.bytecode.io {
 			/* READ integerpool */
 			var itemCount:int;
 
-			var result:int = _byteArray.readUnsignedByte();
+			var result:int = _byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
 			}
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				result = _byteArray.readUnsignedByte();
+				result = _byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -97,30 +98,30 @@ package org.as3commons.bytecode.io {
 			/* END:READ integerpool */
 
 			/* READ uintpool */
-			result = _byteArray.readUnsignedByte();
+			result = _byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
 			}
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				var uresult:uint = _byteArray.readUnsignedByte();
+				var uresult:uint = _byteStream.readUnsignedByte();
 				if ((uresult & 0x00000080)) {
-					uresult = uresult & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+					uresult = uresult & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 					if ((uresult & 0x00004000)) {
-						uresult = uresult & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+						uresult = uresult & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 						if ((uresult & 0x00200000)) {
-							uresult = uresult & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+							uresult = uresult & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 							if ((uresult & 0x10000000)) {
-								uresult = uresult & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+								uresult = uresult & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -130,55 +131,55 @@ package org.as3commons.bytecode.io {
 			/* END:READ uintpool */
 
 			/* READ doublepool */
-			result = _byteArray.readUnsignedByte();
+			result = _byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
 			}
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				pool.doublePool[pool.doublePool.length] = _byteArray.readDouble();
+				pool.doublePool[pool.doublePool.length] = _byteStream.readDouble();
 			}
 			/* END:READ doublepool */
 
 			/* READ stringpool */
-			result = _byteArray.readUnsignedByte();
+			result = _byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
 			}
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				result = _byteArray.readUnsignedByte();
+				result = _byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
 				}
-				var str:String = _byteArray.readUTFBytes(result);
+				var str:String = _byteStream.readUTFBytes(result);
 				if (result != str.length) {
 					str = UTF8_BAD_PREFIX + (_illegalCount++).toString();
 				}
@@ -187,31 +188,31 @@ package org.as3commons.bytecode.io {
 			/* END:READ stringpool */
 
 			/* READ namespacepool */
-			result = _byteArray.readUnsignedByte();
+			result = _byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
 			}
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				var kind:uint = 255 & _byteArray[_byteArray.position++];
-				result = _byteArray.readUnsignedByte();
+				var kind:uint = 255 & _byteStream[_byteStream.position++];
+				result = _byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -221,30 +222,30 @@ package org.as3commons.bytecode.io {
 			/* END:READ namespacepool */
 
 			/* READ namespacesetpool */
-			result = _byteArray.readUnsignedByte();
+			result = _byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
 			}
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				result = _byteArray.readUnsignedByte();
+				result = _byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 							}
 						}
 					}
@@ -252,15 +253,15 @@ package org.as3commons.bytecode.io {
 				var namespaceIndexRefCount:int = result;
 				var namespaceArray:Array = [];
 				while (--namespaceIndexRefCount - (-1)) {
-					result = _byteArray.readUnsignedByte();
+					result = _byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -272,47 +273,47 @@ package org.as3commons.bytecode.io {
 			/* END:READ namespacesetpool */
 
 			/* READ multinamepool */
-			result = _byteArray.readUnsignedByte();
+			result = _byteStream.readUnsignedByte();
 			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 						}
 					}
 				}
 			}
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				kind = 255 & _byteArray[_byteArray.position++];
+				kind = 255 & _byteStream[_byteStream.position++];
 				//QNAME or QNAME_A
 				if ((kind == 0x07) || (kind == 0x0D)) {
-					result = _byteArray.readUnsignedByte();
+					result = _byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
 					var ns:LNamespace = pool.namespacePool[result];
-					result = _byteArray.readUnsignedByte();
+					result = _byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -322,15 +323,15 @@ package org.as3commons.bytecode.io {
 					pool.multinamePool[pool.multinamePool.length] = new QualifiedName(name, ns, (kind == 0x07) ? MultinameKind.QNAME : MultinameKind.QNAME_A);
 						//RTQName or RTQName_A
 				} else if ((kind == 0x0f) || (kind == 0x10)) {
-					result = _byteArray.readUnsignedByte();
+					result = _byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -342,29 +343,29 @@ package org.as3commons.bytecode.io {
 					pool.multinamePool[pool.multinamePool.length] = new RuntimeQualifiedNameL((kind == 0x11) ? MultinameKind.RTQNAME_L : MultinameKind.RTQNAME_LA);
 				} else if ((kind == 0x09) || (kind == 0x0E)) {
 					//MULTINAME or MULTINAME_A
-					result = _byteArray.readUnsignedByte();
+					result = _byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
 					str = pool.stringPool[result];
-					result = _byteArray.readUnsignedByte();
+					result = _byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -372,17 +373,17 @@ package org.as3commons.bytecode.io {
 					}
 					var nss:NamespaceSet = pool.namespaceSetPool[result];
 					pool.multinamePool[pool.multinamePool.length] = new Multiname(str, nss, (kind == 0x09) ? MultinameKind.MULTINAME : MultinameKind.MULTINAME_A);
-				} else if ((kind == 0x1B) && (kind == 0x1C)) {
+				} else if ((kind == 0x1B) || (kind == 0x1C)) {
 					//MULTINAME_L or MULTINAME_LA
-					result = _byteArray.readUnsignedByte();
+					result = _byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -391,29 +392,29 @@ package org.as3commons.bytecode.io {
 					pool.multinamePool[pool.multinamePool.length] = new MultinameL(pool.namespaceSetPool[result], (kind == 0x1B) ? MultinameKind.MULTINAME_L : MultinameKind.MULTINAME_LA);
 				} else if (kind == 0x1D) {
 					//GENERIC
-					result = _byteArray.readUnsignedByte();
+					result = _byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
 					}
 					var qualifiedName:QualifiedName = pool.multinamePool[result];
-					result = _byteArray.readUnsignedByte();
+					result = _byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 								}
 							}
 						}
@@ -421,15 +422,15 @@ package org.as3commons.bytecode.io {
 					var paramCount:uint = result;
 					var params:Array = [];
 					while (paramCount--) {
-						result = _byteArray.readUnsignedByte();
+						result = _byteStream.readUnsignedByte();
 						if ((result & 0x00000080)) {
-							result = result & 0x0000007f | _byteArray.readUnsignedByte() << 7;
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
 							if ((result & 0x00004000)) {
-								result = result & 0x00003fff | _byteArray.readUnsignedByte() << 14;
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
 								if ((result & 0x00200000)) {
-									result = result & 0x001fffff | _byteArray.readUnsignedByte() << 21;
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
 									if ((result & 0x10000000)) {
-										result = result & 0x0fffffff | _byteArray.readUnsignedByte() << 28;
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
 									}
 								}
 							}
@@ -438,13 +439,15 @@ package org.as3commons.bytecode.io {
 						params[params.length] = pool.multinamePool[result];
 					}
 					pool.multinamePool[pool.multinamePool.length] = new MultinameG(qualifiedName, paramCount, params, MultinameKind.GENERIC)
+				} else {
+					var k:int = 0;
 				}
 			}
 			/* END:READ multinamepool */
 
 			//pool.initializeLookups();
 
-			_constantPoolEndPosition = _byteArray.position;
+			_constantPoolEndPosition = _byteStream.position;
 
 			return pool;
 		}
@@ -475,5 +478,62 @@ package org.as3commons.bytecode.io {
 		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
 			return null;
 		}
+
+		public function skipU16():void {
+			AbcSpec.skipU16(_byteStream);
+		}
+
+		public function readU16():uint {
+			return AbcSpec.readU16(_byteStream);
+		}
+
+		public function skipU30():void {
+			AbcSpec.skipU30(_byteStream);
+		}
+
+		public function readU30():uint {
+			return AbcSpec.readU30(_byteStream);
+		}
+
+		public function skipU32():void {
+			AbcSpec.skipU32(_byteStream);
+		}
+
+		public function readU32():uint {
+			return AbcSpec.readU32(_byteStream);
+		}
+
+		public function skipD64():void {
+			AbcSpec.skipD64(_byteStream);
+		}
+
+		public function readD64():Number {
+			return AbcSpec.readD64(_byteStream);
+		}
+
+		public function skipS32():void {
+			AbcSpec.skipS32(_byteStream);
+		}
+
+		public function readS32():int {
+			return AbcSpec.readS32(_byteStream);
+		}
+
+		public function skipU8():void {
+			AbcSpec.skipU8(_byteStream);
+		}
+
+		public function readU8():uint {
+			return AbcSpec.readU8(_byteStream);
+		}
+
+		public function skipStringInfo():void {
+			AbcSpec.skipStringInfo(_byteStream);
+		}
+
+		public function readStringInfo():String {
+			return AbcSpec.readStringInfo(_byteStream);
+		}
+
 	}
 }

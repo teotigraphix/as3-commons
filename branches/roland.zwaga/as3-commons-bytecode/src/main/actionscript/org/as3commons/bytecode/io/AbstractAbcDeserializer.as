@@ -169,10 +169,10 @@ package org.as3commons.bytecode.io {
 
 			_constantPoolEndPosition = _byteStream.position;
 
-//			pool.rawConstantPool = AbcSpec.newByteArray();
-//			pool.rawConstantPool.writeBytes(_byteStream, _constantPoolStartPosition, _constantPoolEndPosition);
+			//pool.rawConstantPool = AbcSpec.newByteArray();
+			//pool.rawConstantPool.writeBytes(_byteStream, _constantPoolStartPosition, _constantPoolEndPosition);
 
-//			_byteStream.position = _constantPoolEndPosition;
+			//_byteStream.position = _constantPoolEndPosition;
 			return pool;
 		}
 

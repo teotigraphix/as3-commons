@@ -1,22 +1,21 @@
 /*
- * Copyright 2007-2011 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright 2007-2011 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.as3commons.bytecode.reflect {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
 	import flash.utils.Endian;
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
@@ -32,7 +31,6 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
 	import org.as3commons.bytecode.abc.enum.TraitKind;
-	import org.as3commons.bytecode.io.AbstractAbcDeserializer;
 	import org.as3commons.bytecode.io.AbstractAbcDeserializer2;
 	import org.as3commons.bytecode.swf.SWFWeaverFileIO;
 	import org.as3commons.bytecode.tags.serialization.RecordHeaderSerializer;
@@ -50,7 +48,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
 
-	public class ReflectionDeserializer2 extends AbstractAbcDeserializer {
+	public class ReflectionDeserializer2 extends AbstractAbcDeserializer2 {
 
 		private static const GETTER_SIGNATURE:String = "get";
 		private static const SETTER_SIGNATURE:String = "set";
@@ -61,21 +59,12 @@ package org.as3commons.bytecode.reflect {
 		private var _recordHeaderSerializer:RecordHeaderSerializer;
 
 		private var _applicationDomain:ApplicationDomain;
-		private var _simple:Boolean;
 
 		public function ReflectionDeserializer2() {
 			super();
 			_recordHeaderSerializer = new RecordHeaderSerializer();
 		}
 
-
-		public function get simple():Boolean {
-			return _simple;
-		}
-
-		public function set simple(value:Boolean):void {
-			_simple = value;
-		}
 
 		public function read(typeCache:ByteCodeTypeCache, input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
 			_applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
@@ -141,9 +130,9 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		public function readABCTag(typeCache:ByteCodeTypeCache, input:ByteArray):void {
-			skipU16();
-			skipU16();
-			var constantPool:IConstantPool = (_simple) ? new SimpleConstantPool() : new ConstantPool();
+			AbcSpec.skipU16(_byteStream);
+			AbcSpec.skipU16(_byteStream);
+			var constantPool:IConstantPool = new SimpleConstantPool();
 			constantPool.dupeCheck = false;
 			deserializeConstantPool(constantPool);
 			var methods:Array = readMethods(input, constantPool, _applicationDomain);
@@ -161,9 +150,22 @@ package org.as3commons.bytecode.reflect {
 
 		public function readMethods(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain):Array {
 			var methods:Array = [];
-			var methodCount:int = readU30();
-
-			for (var methodIndex:int = 0; methodIndex < methodCount; ++methodIndex) {
+			var itemCount:int;
+			var result:int = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			itemCount = result;
+			while (itemCount--) {
 				// method_info 
 				// { 
 				//  u30 param_count 
@@ -177,21 +179,74 @@ package org.as3commons.bytecode.reflect {
 				var methodInfo:ByteCodeMethod = new ByteCodeMethod(null, "", false, [], null, applicationDomain);
 				methods[methods.length] = methodInfo;
 
-				var paramCount:int = readU30();
-
-				var returnTypeQName:QualifiedName = MultinameUtil.convertToQualifiedName(constantPool.multinamePool[readU30()]);
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var paramCount:int = result;
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var returnTypeQName:QualifiedName = MultinameUtil.convertToQualifiedName(constantPool.multinamePool[result]);
+				if (returnTypeQName == null) {
+					var k:int = 0;
+				}
 				methodInfo.as3commons_reflect::setReturnType(returnTypeQName.fullName);
 
 				var params:Array = [];
 				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
-					var paramQName:QualifiedName = MultinameUtil.convertToQualifiedName(constantPool.multinamePool[readU30()]);
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					var paramQName:QualifiedName = MultinameUtil.convertToQualifiedName(constantPool.multinamePool[result]);
 					var newParam:ByteCodeParameter = new ByteCodeParameter(paramQName.fullName, applicationDomain);
 					newParam.as3commons_reflect::setName("argument " + argumentIndex.toString());
 					params[params.length] = newParam;
 				}
 				var nameCount:uint = params.length;
 
-				skipU30();
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
 				//var methodNameIndex:int = readU30();
 				//var methodName:String = (methodNameIndex > 0) ? constantPool.stringPool[methodNameIndex] : "";
 				//methodInfo.as3commons_reflect::setScopeName(MultinameUtil.extractNamespaceNameFromFullName(methodName));
@@ -199,7 +254,7 @@ package org.as3commons.bytecode.reflect {
 				//	methodName = makeMethodName(methodName);
 				//}
 				//methodInfo.as3commons_reflect::setName(methodName);
-				var flags:uint = readU8();
+				var flags:uint = (255 & _byteStream[_byteStream.position++]);
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_OPTIONAL) == true) {
 					// option_info  
 					// { 
@@ -211,11 +266,35 @@ package org.as3commons.bytecode.reflect {
 					//  u30 val 
 					//  u8  kind 
 					// }
-					var optionInfoCount:int = readU30();
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					var optionInfoCount:int = result;
 					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
-						var valueIndexInConstantconstantPool:int = readU30();
-						var optionalValueKind:int = readU8();
-						var defaultValue:Object = constantPool.getConstantPoolItem(optionalValueKind, valueIndexInConstantconstantPool);
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						var defaultValue:* = constantPool.getConstantPoolItem((255 & _byteStream[_byteStream.position++]), result);
 						var param:ByteCodeParameter = params[params.length - (optionInfoCount - optionInfoIndex)];
 						param.as3commons_reflect::setIsOptional(true);
 						param.as3commons_reflect::setDefaultValue(defaultValue);
@@ -224,8 +303,20 @@ package org.as3commons.bytecode.reflect {
 
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_PARAM_NAMES) == true) {
 					for (var nameIndex:uint = 0; nameIndex < nameCount; ++nameIndex) {
-						var paramName:String = constantPool.stringPool[readU30()];
-						ByteCodeParameter(params[nameIndex]).as3commons_reflect::setName(paramName);
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						ByteCodeParameter(params[nameIndex]).as3commons_reflect::setName(constantPool.stringPool[result]);
 					}
 				}
 
@@ -237,9 +328,22 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		public function readMetadata(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain):Array {
-			var metadataCount:int = readU30();
+			var result:int = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			var metadataCount:int = result;
 			var metadatas:Array = [];
-			for (var metadataIndex:int = 0; metadataIndex < metadataCount; ++metadataIndex) {
+			while (metadataCount--) {
 				// metadata_info  
 				// { 
 				//  u30 name 
@@ -258,30 +362,95 @@ package org.as3commons.bytecode.reflect {
 				var metadataInstance:Metadata = new Metadata("");
 				metadatas[metadatas.length] = metadataInstance;
 
-				metadataInstance.as3commons_reflect::setName(constantPool.stringPool[readU30()]);
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				metadataInstance.as3commons_reflect::setName(constantPool.stringPool[result]);
 
-				var keyValuePairCount:int = readU30();
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var keyValuePairCount:int = result;
 				var keys:Array = [];
 
 				// Suck out the keys first
-				for (var keyIndex:int = 0; keyIndex < keyValuePairCount; ++keyIndex) {
-					var key:String = constantPool.stringPool[readU30()];
+				while (keyValuePairCount--) {
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					var key:String = constantPool.stringPool[result];
 					keys[keys.length] = key;
 				}
 
 				// Map keys to values in another loop
 				for each (key in keys) {
-					var value:String = constantPool.stringPool[readU30()];
-					metadataInstance.arguments[metadataInstance.arguments.length] = new MetadataArgument(key, value);
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					metadataInstance.arguments[metadataInstance.arguments.length] = new MetadataArgument(key, constantPool.stringPool[result]);
 				}
 			}
 			return metadatas;
 		}
 
 		public function readTypes(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain, methods:Array, metadatas:Array, typeCache:ByteCodeTypeCache):void {
-			var classCount:int = readU30();
+			var result:int = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			var classCount:int = result;
+			var classCount2:int = result;
 			var instances:Array = [];
-			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
+			while (classCount--) {
 				// instance_info  
 				// { 
 				//  u30 name 
@@ -314,8 +483,21 @@ package org.as3commons.bytecode.reflect {
 				// From the spec (Section 4.7 "Instance", page 28):
 				//  name 
 				//      The name field is an index into the multiname array of the constant pool; it provides a name for the 
-				//      class. The entry specified must be a QName. 
-				var classMultiname:BaseMultiname = constantPool.multinamePool[readU30()];
+				//      class. The entry specified must be a QName.
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var classMultiname:BaseMultiname = constantPool.multinamePool[result];
 
 				var qualifiedName:QualifiedName = MultinameUtil.convertToQualifiedName(classMultiname);
 				instanceInfo.fullName = qualifiedName.fullName;
@@ -324,19 +506,71 @@ package org.as3commons.bytecode.reflect {
 				typeCache.put(instanceInfo.fullName, instanceInfo);
 				instances[instances.length] = instanceInfo;
 
-				var superName:QualifiedName = constantPool.multinamePool[readU30()];
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var superName:QualifiedName = constantPool.multinamePool[result];
 				instanceInfo.extendsClasses[instanceInfo.extendsClasses.length] = QualifiedName(superName).fullName;
-				var instanceInfoFlags:int = readU8();
+				var instanceInfoFlags:uint = (255 & _byteStream[_byteStream.position++]);
 				instanceInfo.isFinal = ClassConstant.FINAL.present(instanceInfoFlags);
 				instanceInfo.isInterface = ClassConstant.INTERFACE.present(instanceInfoFlags);
 				instanceInfo.as3commons_reflect::setIsProtected(ClassConstant.PROTECTED_NAMESPACE.present(instanceInfoFlags));
 				instanceInfo.as3commons_reflect::setIsSealed(ClassConstant.SEALED.present(instanceInfoFlags));
 				if (instanceInfo.isProtected) {
-					instanceInfo.as3commons_reflect::setProtectedNamespace(LNamespace(constantPool.namespacePool[readU30()]).name);
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					instanceInfo.as3commons_reflect::setProtectedNamespace(LNamespace(constantPool.namespacePool[result]).name);
 				}
-				var interfaceCount:int = readU30();
-				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
-					var mn:BaseMultiname = constantPool.multinamePool[readU30()];
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var interfaceCount:int = result;
+				while (interfaceCount--) {
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					var mn:BaseMultiname = constantPool.multinamePool[result];
 					var qName:QualifiedName = MultinameUtil.convertToQualifiedName(mn);
 					if (qName != null) {
 						instanceInfo.interfaces[instanceInfo.interfaces.length] = qName.fullName;
@@ -350,60 +584,287 @@ package org.as3commons.bytecode.reflect {
 						classNames[classNames.length] = AbcFileUtil.normalizeFullName(instanceInfo.fullName);
 					}
 				}
-				var constructorIndex:uint = readU30();
-				var method:ByteCodeMethod = methods[constructorIndex];
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var method:ByteCodeMethod = methods[result];
 				var constr:Constructor = new Constructor(instanceInfo.fullName, applicationDomain, method.parameters);
 				instanceInfo.as3commons_reflect::setInstanceConstructor(method);
 				instanceInfo.constructor = constr;
 				instanceInfo.methods = readTraitsInfo(instances, instanceInfo, constantPool, methods, metadatas, false, typeCache, applicationDomain);
 			}
 
-			for (var classIndex:int = 0; classIndex < classCount; ++classIndex) {
+			var classIndex:int = 0;
+			while (classCount2--) {
 				// class_info  
 				// { 
 				//  u30 cinit 
 				//  u30 trait_count 
 				//  traits_info traits[trait_count] 
 				// }
-				var classInfo:ByteCodeType = instances[classIndex];
-				classInfo.as3commons_reflect::setStaticConstructor(methods[readU30()]);
+				var classInfo:ByteCodeType = instances[classIndex++];
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				classInfo.as3commons_reflect::setStaticConstructor(methods[result]);
 				classInfo.methods = classInfo.methods.concat(readTraitsInfo(instances, classInfo, constantPool, methods, metadatas, true, typeCache, applicationDomain));
 			}
 
-			var scriptCount:int = readU30();
-			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
-				skipU30();
+			result = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			var scriptCount:int = result;
+			while (scriptCount--) {
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
 				readTraitsInfo(instances, null, constantPool, methods, metadatas, true, typeCache, applicationDomain);
-					//skipTraitsInfo();
 			}
 
-			var methodBodyCount:int = readU30();
-			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; ++bodyIndex) {
-				method = methods[readU30()];
-				method.as3commons_reflect::setMaxStack(readU30());
-				method.as3commons_reflect::setLocalCount(readU30());
-				method.as3commons_reflect::setInitScopeDepth(readU30());
-				method.as3commons_reflect::setMaxScopeDepth(readU30());
-				method.as3commons_reflect::setBodyLength(readU30());
+			result = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			var methodBodyCount:int = result;
+			while (methodBodyCount--) {
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				method = methods[result];
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				method.as3commons_reflect::setMaxStack(result);
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				method.as3commons_reflect::setLocalCount(result);
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				method.as3commons_reflect::setInitScopeDepth(result);
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				method.as3commons_reflect::setMaxScopeDepth(result);
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				method.as3commons_reflect::setBodyLength(result);
 				method.as3commons_reflect::setBodyStartPosition(_byteStream.position);
 				_byteStream.position += method.bodyLength;
 
-				var exceptionCount:int = readU30();
-				for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
-					skipU30();
-					skipU30();
-					skipU30();
-					skipU30();
-					skipU30();
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var exceptionCount:int = result;
+				while (exceptionCount--) {
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
 				}
 				skipTraitsInfo();
 			}
 		}
 
 		public function readTraitsInfo(instanceInfos:Array, instanceInfo:ByteCodeType, pool:IConstantPool, methodInfos:Array, metadata:Array, isStatic:Boolean, typeCache:ByteCodeTypeCache, applicationDomain:ApplicationDomain):Array {
-			var traitCount:int = readU30();
+			var result:int = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			var traitCount:int = result;
 			var methods:Array = [];
-			for (var traitIndex:int = 0; traitIndex < traitCount; ++traitIndex) {
+			while (traitCount--) {
 				var trait:TraitInfo;
 				// traits_info  
 				// { 
@@ -413,15 +874,25 @@ package org.as3commons.bytecode.reflect {
 				//  u30 metadata_count 
 				//  u30 metadata[metadata_count] 
 				// }
-				var multiNameIndex:uint = readU30();
-				var traitName:BaseMultiname = pool.multinamePool[multiNameIndex];
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var traitName:BaseMultiname = pool.multinamePool[result];
 				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
-				var traitKindValue:int = readU8();
+				var traitKindValue:int = (255 & _byteStream[_byteStream.position++]);
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
 				var namedMultiname:BaseMultiname = null;
-				var vindex:uint = 0;
-				var vkind:uint = 0;
-				var metaDataContainer:MetadataContainer;
+				var metaDataContainer:MetadataContainer = null;
 				var qualifiedName:QualifiedName;
 				var fullName:String = ((instanceInfo != null)) ? instanceInfo.fullName : "";
 				if (traitMultiname.nameSpace.name == "*") {
@@ -433,8 +904,33 @@ package org.as3commons.bytecode.reflect {
 				var getterSetterSignature:String = "";
 				switch (traitKind) {
 					case TraitKind.SLOT:
-						readU30();
-						namedMultiname = pool.multinamePool[readU30()];
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						namedMultiname = pool.multinamePool[result];
 						qualifiedName = MultinameUtil.convertToQualifiedName(namedMultiname);
 						var variable:ByteCodeVariable = new ByteCodeVariable(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
 						variable.as3commons_reflect::setIsStatic(isStatic);
@@ -443,10 +939,21 @@ package org.as3commons.bytecode.reflect {
 						if (instanceInfo != null) {
 							instanceInfo.variables[instanceInfo.variables.length] = variable;
 						}
-						vindex = readU30();
-						if (vindex != 0) {
-							vkind = ConstantKind.determineKind(readU8()).value;
-							variable.as3commons_reflect::setInitializedValue(pool.getConstantPoolItem(vkind, vindex));
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						if (result != 0) {
+							variable.as3commons_reflect::setInitializedValue(pool.getConstantPoolItem((255 & _byteStream[_byteStream.position++]), result));
 						}
 						break;
 					case TraitKind.CONST:
@@ -457,8 +964,33 @@ package org.as3commons.bytecode.reflect {
 						//  u30 vindex 
 						//  u8  vkind  
 						// }
-						readU30();
-						namedMultiname = pool.multinamePool[readU30()];
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						namedMultiname = pool.multinamePool[result];
 						qualifiedName = MultinameUtil.convertToQualifiedName(namedMultiname);
 						var constant:ByteCodeConstant = new ByteCodeConstant(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
 						constant.as3commons_reflect::setIsStatic(isStatic);
@@ -466,17 +998,53 @@ package org.as3commons.bytecode.reflect {
 						if (instanceInfo != null) {
 							instanceInfo.constants[instanceInfo.constants.length] = constant;
 						}
-						vindex = readU30();
-						if (vindex != 0) {
-							vkind = ConstantKind.determineKind(readU8()).value;
-							constant.as3commons_reflect::setInitializedValue(pool.getConstantPoolItem(vkind, vindex));
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						if (result != 0) {
+							constant.as3commons_reflect::setInitializedValue(pool.getConstantPoolItem((255 & _byteStream[_byteStream.position++]), result));
 						}
 						break;
 
 					case TraitKind.METHOD:
 					case TraitKind.FUNCTION:
-						readU30(); //skip disp_id
-						var method:ByteCodeMethod = methodInfos[readU30()];
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						var method:ByteCodeMethod = methodInfos[result];
 						method.as3commons_reflect::setIsStatic(isStatic);
 						methods[methods.length] = method;
 						method.as3commons_reflect::setName(traitMultiname.name);
@@ -501,10 +1069,68 @@ package org.as3commons.bytecode.reflect {
 						if (getterSetterSignature.length == 0) {
 							getterSetterSignature = SETTER_SIGNATURE;
 						}
-						skipU30(); //skip disp_id
-						var accessorMethod:ByteCodeMethod = methodInfos[readU30()];
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						var accessorMethod:ByteCodeMethod = methodInfos[result];
 						if (instanceInfo != null) {
-							metaDataContainer = addAccessor(instanceInfo, accessorMethod, isStatic, getterSetterSignature, traitMultiname.name);
+							for each (var acc:ByteCodeAccessor in instanceInfo.accessors) {
+								if (acc.name == traitMultiname.name) {
+									acc.as3commons_reflect::setAccess(AccessorAccess.READ_WRITE);
+									if (getterSetterSignature == GETTER_SIGNATURE) {
+										acc.as3commons_reflect::setGetterMethod(method);
+									} else {
+										acc.as3commons_reflect::setSetterMethod(method);
+									}
+									metaDataContainer = acc;
+								}
+							}
+							if (metaDataContainer == null) {
+								var accAccess:AccessorAccess = (getterSetterSignature == GETTER_SIGNATURE) ? AccessorAccess.READ_ONLY : AccessorAccess.WRITE_ONLY;
+								var accessorType:String = '';
+								if (accAccess === AccessorAccess.READ_ONLY) {
+									accessorType = accessorMethod.as3commons_reflect::returnTypeName;
+								} else {
+									if (accessorMethod.parameters.length > 0) {
+										accessorType = ByteCodeParameter(accessorMethod.parameters[0]).as3commons_reflect::typeName;
+									}
+								}
+								var accessor:ByteCodeAccessor = new ByteCodeAccessor(traitMultiname.name, accAccess, accessorType, instanceInfo.fullName, false, instanceInfo.applicationDomain);
+								if (getterSetterSignature == GETTER_SIGNATURE) {
+									accessor.as3commons_reflect::setGetterMethod(method);
+								} else {
+									accessor.as3commons_reflect::setSetterMethod(method);
+								}
+								accessor.as3commons_reflect::setScopeName(accessorMethod.scopeName);
+								accessor.as3commons_reflect::setNamespaceURI(accessorMethod.namespaceURI);
+								accessor.as3commons_reflect::setIsStatic(isStatic);
+								accessor.as3commons_reflect::setDeclaringType(instanceInfo.fullName);
+								instanceInfo.accessors[instanceInfo.accessors.length] = accessor;
+								metaDataContainer = accessor;
+							}
 						}
 						break;
 
@@ -514,8 +1140,33 @@ package org.as3commons.bytecode.reflect {
 						//  u30 slot_id 
 						//  u30 classi 
 						// }
-						skipU30();
-						metaDataContainer = instanceInfos[readU30()];
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						metaDataContainer = instanceInfos[result];
 						break;
 				}
 
@@ -531,10 +1182,51 @@ package org.as3commons.bytecode.reflect {
 				// The value of the metadata_count field is the number of entries in the metadata array. That array 
 				// contains indices into the metadata array of the abcFile." 
 				if (traitKindValue & (TraitAttributes.METADATA.bitMask << 4)) {
-					addMetadata(metadata, metaDataContainer, typeCache);
+					result = _byteStream.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+						if ((result & 0x00004000)) {
+							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+							if ((result & 0x00200000)) {
+								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+								if ((result & 0x10000000)) {
+									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+								}
+							}
+						}
+					}
+					var numberOfTraitMetadataItems:int = result;
+					while (numberOfTraitMetadataItems--) {
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						var md:Metadata = metadata[result];
+						metaDataContainer.addMetadata(md);
+						if (metaDataContainer is ByteCodeType) {
+							typeCache.as3commons_reflect::addToMetadataCache(md.name, ByteCodeType(metaDataContainer).fullName);
+						}
+					}
 				}
 
-				setNameSpaceAndVisibility(metaDataContainer as IVisibleMember, traitMultiname);
+				var visibleMember:IVisibleMember = (metaDataContainer as IVisibleMember);
+				if (metaDataContainer is IVisibleMember) {
+					visibleMember.as3commons_reflect::setVisibility(traitMultiname.nameSpace.kind);
+					if (traitMultiname.nameSpace.kind === NamespaceKind.NAMESPACE) {
+						if (traitMultiname.nameSpace.name.substr(0, 5) == HTTP_PREFIX) {
+							visibleMember.as3commons_reflect::setNamespaceURI(traitMultiname.nameSpace.name);
+						}
+					}
+				}
 
 				if ((metaDataContainer is ByteCodeMethod) || (metaDataContainer is ByteCodeAccessor) || (metaDataContainer is ByteCodeConstant) || (metaDataContainer is ByteCodeVariable)) {
 					var member:Object = Object(metaDataContainer);
@@ -546,22 +1238,83 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		public function skipTraitsInfo():void {
-			var traitCount:int = readU30();
-			for (var traitIndex:int = 0; traitIndex < traitCount; ++traitIndex) {
+			var result:int = _byteStream.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+				if ((result & 0x00004000)) {
+					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+					if ((result & 0x00200000)) {
+						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+						if ((result & 0x10000000)) {
+							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+						}
+					}
+				}
+			}
+			var traitCount:int = result;
+			while (traitCount--) {
 				var trait:TraitInfo;
-				skipU30();
-				var traitKindValue:int = readU8();
+				result = _byteStream.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+					if ((result & 0x00004000)) {
+						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+						if ((result & 0x00200000)) {
+							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+							if ((result & 0x10000000)) {
+								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+							}
+						}
+					}
+				}
+				var traitKindValue:uint = (255 & _byteStream[_byteStream.position++]);
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
 				var vindex:uint = 0;
 				var vkind:uint = 0;
 				switch (traitKind) {
 					case TraitKind.SLOT:
 					case TraitKind.CONST:
-						skipU30();
-						skipU30();
-						vindex = readU30();
-						if (vindex != 0) {
-							skipU8();
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						if (result != 0) {
+							_byteStream.position++;
 						}
 						break;
 					case TraitKind.METHOD:
@@ -569,69 +1322,35 @@ package org.as3commons.bytecode.reflect {
 					case TraitKind.GETTER:
 					case TraitKind.SETTER:
 					case TraitKind.CLASS:
-						skipU30();
-						skipU30();
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
+						result = _byteStream.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+							if ((result & 0x00004000)) {
+								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+								if ((result & 0x00200000)) {
+									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+									if ((result & 0x10000000)) {
+										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+									}
+								}
+							}
+						}
 						break;
 				}
 			}
-		}
-
-		private function addMetadata(metadata:Array, container:MetadataContainer, typeCache:ByteCodeTypeCache):void {
-			var numberOfTraitMetadataItems:int = readU30();
-			for (var traitMetadataIndex:int = 0; traitMetadataIndex < numberOfTraitMetadataItems; ++traitMetadataIndex) {
-				var md:Metadata = metadata[readU30()];
-				container.addMetadata(md);
-				if (container is ByteCodeType) {
-					typeCache.as3commons_reflect::addToMetadataCache(md.name, ByteCodeType(container).fullName);
-				}
-			}
-		}
-
-		private function setNameSpaceAndVisibility(visibleMember:IVisibleMember, qualifiedName:QualifiedName):void {
-			if (visibleMember == null) {
-				return;
-			}
-			visibleMember.as3commons_reflect::setVisibility(qualifiedName.nameSpace.kind);
-			if (qualifiedName.nameSpace.kind === NamespaceKind.NAMESPACE) {
-				if (qualifiedName.nameSpace.name.substr(0, 5) == HTTP_PREFIX) {
-					visibleMember.as3commons_reflect::setNamespaceURI(qualifiedName.nameSpace.name);
-				}
-			}
-		}
-
-		private function addAccessor(instanceInfo:Type, method:ByteCodeMethod, isStatic:Boolean, getset:String, accessorName:String):ByteCodeAccessor {
-			for each (var acc:ByteCodeAccessor in instanceInfo.accessors) {
-				if (acc.name == accessorName) {
-					acc.as3commons_reflect::setAccess(AccessorAccess.READ_WRITE);
-					if (getset == GETTER_SIGNATURE) {
-						acc.as3commons_reflect::setGetterMethod(method);
-					} else {
-						acc.as3commons_reflect::setSetterMethod(method);
-					}
-					return acc;
-				}
-			}
-			var accAccess:AccessorAccess = (getset == GETTER_SIGNATURE) ? AccessorAccess.READ_ONLY : AccessorAccess.WRITE_ONLY;
-			var accessorType:String = '';
-			if (accAccess === AccessorAccess.READ_ONLY) {
-				accessorType = method.as3commons_reflect::returnTypeName;
-			} else {
-				if (method.parameters.length > 0) {
-					accessorType = ByteCodeParameter(method.parameters[0]).as3commons_reflect::typeName;
-				}
-			}
-			var result:ByteCodeAccessor = new ByteCodeAccessor(accessorName, accAccess, accessorType, instanceInfo.fullName, false, instanceInfo.applicationDomain);
-			if (getset == GETTER_SIGNATURE) {
-				result.as3commons_reflect::setGetterMethod(method);
-			} else {
-				result.as3commons_reflect::setSetterMethod(method);
-			}
-			result.as3commons_reflect::setScopeName(method.scopeName);
-			result.as3commons_reflect::setNamespaceURI(method.namespaceURI);
-			result.as3commons_reflect::setIsStatic(isStatic);
-			result.as3commons_reflect::setDeclaringType(instanceInfo.fullName);
-			instanceInfo.accessors[instanceInfo.accessors.length] = result;
-			return result;
 		}
 
 		private function makeMethodName(rawMethodName:String):String {

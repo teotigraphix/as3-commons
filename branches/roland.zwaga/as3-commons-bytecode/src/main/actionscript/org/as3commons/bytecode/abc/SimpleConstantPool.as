@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.abc {
 
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 
@@ -36,6 +37,7 @@ package org.as3commons.bytecode.abc {
 		private var _namespacePool:Array;
 		private var _namespaceSetPool:Array;
 		private var _multinamePool:Array;
+		private var _lookup:Object;
 
 		/**
 		 * Creates a new <code>SimpleConstantPool</code> instance.
@@ -67,13 +69,32 @@ package org.as3commons.bytecode.abc {
 
 			_multinamePool = [];
 			addMultiname(new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK));
+
+			_lookup = new Dictionary();
+			_lookup[ConstantKind.INT] = [_integerPool, null];
+			_lookup[ConstantKind.UINT] = [_uintPool, null];
+			_lookup[ConstantKind.DOUBLE] = [_doublePool, null];
+			_lookup[ConstantKind.UTF8] = [_stringPool, null];
+			_lookup[ConstantKind.NAMESPACE] = [_namespacePool, null];
+			_lookup[ConstantKind.PACKAGE_NAMESPACE] = [_namespacePool, null];
+			_lookup[ConstantKind.PACKAGE_INTERNAL_NAMESPACE] = [_namespacePool, null];
+			_lookup[ConstantKind.PROTECTED_NAMESPACE] = [_namespacePool, null];
+			_lookup[ConstantKind.EXPLICIT_NAMESPACE] = [_namespacePool, null];
+			_lookup[ConstantKind.STATIC_PROTECTED_NAMESPACE] = [_namespacePool, null];
+			_lookup[ConstantKind.PRIVATE_NAMESPACE] = [_namespacePool, null];
+			_lookup[ConstantKind.TRUE] = true;
+			_lookup[ConstantKind.FALSE] = false;
+			_lookup[ConstantKind.NULL] = null;
+			_lookup[ConstantKind.UNDEFINED] = undefined;
 		}
 
 		public function initializeLookups():void {
 		}
 
 		public function getConstantPoolItem(constantKindValue:uint, poolIndex:uint):* {
-			return null;
+			var constantKind:ConstantKind = ConstantKind.determineKind(constantKindValue);
+			var retVal:* = _lookup[constantKind];
+			return (retVal is Array) ? retVal[0][poolIndex] : retVal;
 		}
 
 		public function getConstantPoolItemIndex(constantKindValue:ConstantKind, item:*):int {
