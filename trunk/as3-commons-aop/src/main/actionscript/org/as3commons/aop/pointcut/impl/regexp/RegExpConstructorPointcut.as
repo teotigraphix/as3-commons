@@ -13,15 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.pointcut.impl {
-	import org.as3commons.aop.pointcut.INameMatcher;
+package org.as3commons.aop.pointcut.impl.regexp {
+	import org.as3commons.aop.pointcut.IConstructorPointcut;
+	import org.as3commons.lang.ClassUtils;
+	import org.as3commons.reflect.Constructor;
 
 	/**
-	 * Name matcher that is also a registry for names.
+	 * Regular expression pointcut to match constructors.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class NameMatcher extends NameRegistry implements INameMatcher {
+	public class RegExpConstructorPointcut extends AbstractRegExpPointcut implements IConstructorPointcut {
 
 		// --------------------------------------------------------------------
 		//
@@ -29,8 +31,7 @@ package org.as3commons.aop.pointcut.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function NameMatcher(nameOrNames:* = null) {
-			super(nameOrNames);
+		public function RegExpConstructorPointcut() {
 		}
 
 		// --------------------------------------------------------------------
@@ -39,8 +40,10 @@ package org.as3commons.aop.pointcut.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function match(name:String):Boolean {
-			return containsName(name);
+		public function matchesConstructor(constructor:Constructor):Boolean {
+			var className:String = ClassUtils.getFullyQualifiedName(constructor.declaringType.clazz, true);
+			return match(className);
 		}
+
 	}
 }

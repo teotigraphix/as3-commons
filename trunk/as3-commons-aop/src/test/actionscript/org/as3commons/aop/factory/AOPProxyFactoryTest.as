@@ -4,7 +4,7 @@ package org.as3commons.aop.factory {
 
 	import flexunit.framework.TestCase;
 
-	import org.as3commons.aop.factory.AOPProxyFactory;
+	import org.as3commons.aop.factory.impl.AOPProxyFactory;
 
 	import org.as3commons.async.operation.IOperation;
 	import org.flexunit.asserts.assertTrue;

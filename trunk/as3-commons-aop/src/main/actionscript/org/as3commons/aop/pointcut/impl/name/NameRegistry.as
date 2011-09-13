@@ -13,17 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.pointcut.impl {
+package org.as3commons.aop.pointcut.impl.name {
 	import org.as3commons.aop.pointcut.INameRegistry;
 
 	/**
-	 * Abstract base class for name match pointcuts.
+	 * Default implementation of INameRegistry.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class AbstractNameMatchPointcut implements INameRegistry {
+	public class NameRegistry implements INameRegistry {
 
-		protected var nameMatcher:NameMatcher;
+		private var _names:Vector.<String> = new Vector.<String>();
 
 		// --------------------------------------------------------------------
 		//
@@ -31,8 +31,14 @@ package org.as3commons.aop.pointcut.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function AbstractNameMatchPointcut(nameOrNames:* = null) {
-			nameMatcher = new NameMatcher(nameOrNames);
+		public function NameRegistry(nameOrNames:* = null) {
+			if (nameOrNames is String) {
+				addName(nameOrNames);
+			} else if (nameOrNames is Vector.<String>) {
+				addNames(nameOrNames);
+			} else if (nameOrNames is Array) {
+				addNamesFromArray(nameOrNames as Array);
+			}
 		}
 
 		// --------------------------------------------------------------------
@@ -42,11 +48,11 @@ package org.as3commons.aop.pointcut.impl {
 		// --------------------------------------------------------------------
 
 		public function get numNames():uint {
-			return nameMatcher.numNames;
+			return _names.length;
 		}
 
 		public function get names():Vector.<String> {
-			return nameMatcher.names;
+			return _names.concat();
 		}
 
 		// --------------------------------------------------------------------
@@ -56,19 +62,34 @@ package org.as3commons.aop.pointcut.impl {
 		// --------------------------------------------------------------------
 
 		public function addName(name:String):void {
-			nameMatcher.addName(name);
+			_names.push(name);
 		}
 
 		public function addNames(names:Vector.<String>):void {
-			nameMatcher.addNames(names);
+			for each (var name:String in names) {
+				addName(name);
+			}
 		}
 
 		public function removeName(name:String):void {
-			nameMatcher.removeName(name);
+			//TODO
 		}
 
 		public function containsName(name:String):Boolean {
-			return nameMatcher.containsName(name);
+			return (_names.indexOf(name) > -1);
 		}
+		
+		// --------------------------------------------------------------------
+		//
+		// Private Methods
+		//
+		// --------------------------------------------------------------------
+		
+		private function addNamesFromArray(names:Array):void {
+			for each (var name:String in names) {
+				addName(name);
+			}
+		}
+		
 	}
 }

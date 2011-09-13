@@ -1,5 +1,6 @@
-package org.as3commons.aop.pointcut.impl {
+package org.as3commons.aop.pointcut.impl.always {
 	import org.as3commons.aop.pointcut.IMethodPointcut;
+	import org.as3commons.aop.pointcut.impl.always.AlwaysMatchingMethodPointcut;
 	import org.as3commons.reflect.Method;
 	import org.as3commons.reflect.Type;
 	import org.flexunit.asserts.assertTrue;

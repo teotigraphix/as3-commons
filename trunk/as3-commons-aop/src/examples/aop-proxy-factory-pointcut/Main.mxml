@@ -12,9 +12,9 @@
 		import org.as3commons.aop.MessageDecorator;
 		import org.as3commons.aop.advice.IAdvice;
 		import org.as3commons.aop.advisor.impl.PointcutAdvisor;
-		import org.as3commons.aop.factory.AOPProxyFactory;
+		import org.as3commons.aop.factory.impl.AOPProxyFactory;
 		import org.as3commons.aop.pointcut.IMethodPointcut;
-		import org.as3commons.aop.pointcut.impl.MethodNameMatchPointcut;
+		import org.as3commons.aop.pointcut.impl.name.MethodNameMatchPointcut;
 		import org.as3commons.async.operation.IOperation;
 		import org.as3commons.async.operation.event.OperationEvent;
 		import org.as3commons.bytecode.interception.impl.BasicMethodInvocationInterceptor;

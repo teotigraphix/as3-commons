@@ -205,7 +205,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-bytecode</artifactId>
-			<version>1.0-RC5-SNAPSHOT</version>
+			<version>1.0-RC6</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<!--<exclusions>
@@ -233,7 +233,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-logging</artifactId>
-			<version>2.5.2</version>
+			<version>2.6</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
