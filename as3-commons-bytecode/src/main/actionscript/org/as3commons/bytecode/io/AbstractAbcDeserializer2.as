@@ -439,13 +439,9 @@ package org.as3commons.bytecode.io {
 						params[params.length] = pool.multinamePool[result];
 					}
 					pool.multinamePool[pool.multinamePool.length] = new MultinameG(qualifiedName, paramCount, params, MultinameKind.GENERIC)
-				} else {
-					var k:int = 0;
 				}
 			}
 			/* END:READ multinamepool */
-
-			//pool.initializeLookups();
 
 			_constantPoolEndPosition = _byteStream.position;
 
@@ -477,62 +473,6 @@ package org.as3commons.bytecode.io {
 
 		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
 			return null;
-		}
-
-		public function skipU16():void {
-			AbcSpec.skipU16(_byteStream);
-		}
-
-		public function readU16():uint {
-			return AbcSpec.readU16(_byteStream);
-		}
-
-		public function skipU30():void {
-			AbcSpec.skipU30(_byteStream);
-		}
-
-		public function readU30():uint {
-			return AbcSpec.readU30(_byteStream);
-		}
-
-		public function skipU32():void {
-			AbcSpec.skipU32(_byteStream);
-		}
-
-		public function readU32():uint {
-			return AbcSpec.readU32(_byteStream);
-		}
-
-		public function skipD64():void {
-			AbcSpec.skipD64(_byteStream);
-		}
-
-		public function readD64():Number {
-			return AbcSpec.readD64(_byteStream);
-		}
-
-		public function skipS32():void {
-			AbcSpec.skipS32(_byteStream);
-		}
-
-		public function readS32():int {
-			return AbcSpec.readS32(_byteStream);
-		}
-
-		public function skipU8():void {
-			AbcSpec.skipU8(_byteStream);
-		}
-
-		public function readU8():uint {
-			return AbcSpec.readU8(_byteStream);
-		}
-
-		public function skipStringInfo():void {
-			AbcSpec.skipStringInfo(_byteStream);
-		}
-
-		public function readStringInfo():String {
-			return AbcSpec.readStringInfo(_byteStream);
 		}
 
 	}
