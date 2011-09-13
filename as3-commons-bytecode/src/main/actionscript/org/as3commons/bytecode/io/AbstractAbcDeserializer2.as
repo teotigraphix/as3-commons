@@ -20,6 +20,14 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.Multiname;
+	import org.as3commons.bytecode.abc.MultinameG;
+	import org.as3commons.bytecode.abc.MultinameL;
+	import org.as3commons.bytecode.abc.NamespaceSet;
+	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.RuntimeQualifiedName;
+	import org.as3commons.bytecode.abc.RuntimeQualifiedNameL;
+	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 
 	/**
@@ -54,7 +62,7 @@ package org.as3commons.bytecode.io {
 
 		public function deserializeConstantPool(pool:IConstantPool):IConstantPool {
 			/* READ integerpool */
-			var itemIndex:uint;
+			var itemCount:int;
 			var nextByte:int;
 			var result:int = _byteArray.readUnsignedByte();
 			if ((result & 0x00000080)) {
@@ -68,13 +76,13 @@ package org.as3commons.bytecode.io {
 						result = result & 0x001fffff | nextByte;
 						if ((result & 0x10000000)) {
 							nextByte = _byteArray.readUnsignedByte() << 28;
-							itemIndex = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | nextByte;
 						}
 					}
 				}
 			}
-			itemIndex = result;
-			while (--itemIndex(-1)) {
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
 					nextByte = _byteArray.readUnsignedByte() << 7;
@@ -109,13 +117,13 @@ package org.as3commons.bytecode.io {
 						result = result & 0x001fffff | nextByte;
 						if ((result & 0x10000000)) {
 							nextByte = _byteArray.readUnsignedByte() << 28;
-							itemIndex = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | nextByte;
 						}
 					}
 				}
 			}
-			itemIndex = result;
-			while (--itemIndex(-1)) {
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
 					nextByte = _byteArray.readUnsignedByte() << 7;
@@ -150,13 +158,13 @@ package org.as3commons.bytecode.io {
 						result = result & 0x001fffff | nextByte;
 						if ((result & 0x10000000)) {
 							nextByte = _byteArray.readUnsignedByte() << 28;
-							itemIndex = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | nextByte;
 						}
 					}
 				}
 			}
-			itemIndex = result;
-			while (--itemIndex(-1)) {
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
 				pool.doublePool[pool.doublePool.length] = _byteArray.readDouble();
 			}
 			/* END:READ doublepool */
@@ -174,13 +182,13 @@ package org.as3commons.bytecode.io {
 						result = result & 0x001fffff | nextByte;
 						if ((result & 0x10000000)) {
 							nextByte = _byteArray.readUnsignedByte() << 28;
-							itemIndex = result & 0x0fffffff | nextByte;
+							itemCount = result & 0x0fffffff | nextByte;
 						}
 					}
 				}
 			}
-			itemIndex = result;
-			while (--itemIndex(-1)) {
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
 					nextByte = _byteArray.readUnsignedByte() << 7;
@@ -193,7 +201,7 @@ package org.as3commons.bytecode.io {
 							result = result & 0x001fffff | nextByte;
 							if ((result & 0x10000000)) {
 								nextByte = _byteArray.readUnsignedByte() << 28;
-								itemIndex = result & 0x0fffffff | nextByte;
+								result = result & 0x0fffffff | nextByte;
 							}
 						}
 					}
@@ -219,13 +227,13 @@ package org.as3commons.bytecode.io {
 						result = result & 0x001fffff | nextByte;
 						if ((result & 0x10000000)) {
 							nextByte = _byteArray.readUnsignedByte() << 28;
-							itemIndex = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | nextByte;
 						}
 					}
 				}
 			}
-			itemIndex = result;
-			while (--itemIndex(-1)) {
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
 				var kind:uint = 255 & _byteArray[_byteArray.position++];
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
@@ -239,7 +247,7 @@ package org.as3commons.bytecode.io {
 							result = result & 0x001fffff | nextByte;
 							if ((result & 0x10000000)) {
 								nextByte = _byteArray.readUnsignedByte() << 28;
-								itemIndex = result & 0x0fffffff | nextByte;
+								result = result & 0x0fffffff | nextByte;
 							}
 						}
 					}
@@ -261,17 +269,262 @@ package org.as3commons.bytecode.io {
 						result = result & 0x001fffff | nextByte;
 						if ((result & 0x10000000)) {
 							nextByte = _byteArray.readUnsignedByte() << 28;
-							itemIndex = result & 0x0fffffff | nextByte;
+							result = result & 0x0fffffff | nextByte;
 						}
 					}
 				}
 			}
-			itemIndex = result;
-			while (--itemIndex(-1)) {
-				extractNamespaceSets(pool);
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
+				result = _byteArray.readUnsignedByte();
+				if ((result & 0x00000080)) {
+					nextByte = _byteArray.readUnsignedByte() << 7;
+					result = result & 0x0000007f | nextByte;
+					if ((result & 0x00004000)) {
+						nextByte = _byteArray.readUnsignedByte() << 14;
+						result = result & 0x00003fff | nextByte;
+						if ((result & 0x00200000)) {
+							nextByte = _byteArray.readUnsignedByte() << 21;
+							result = result & 0x001fffff | nextByte;
+							if ((result & 0x10000000)) {
+								nextByte = _byteArray.readUnsignedByte() << 28;
+								result = result & 0x0fffffff | nextByte;
+							}
+						}
+					}
+				}
+				var namespaceIndexRefCount:int = result;
+				var namespaceArray:Array = [];
+				while (--namespaceIndexRefCount - (-1)) {
+					result = _byteArray.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						nextByte = _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | nextByte;
+						if ((result & 0x00004000)) {
+							nextByte = _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | nextByte;
+							if ((result & 0x00200000)) {
+								nextByte = _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | nextByte;
+								if ((result & 0x10000000)) {
+									nextByte = _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | nextByte;
+								}
+							}
+						}
+					}
+					namespaceArray[namespaceArray.length] = pool.namespacePool[result];
+				}
+				pool.namespaceSetPool[pool.namespaceSetPool.length] = new NamespaceSet(namespaceArray);
 			}
+			/* END:READ namespacesetpool */
 
-			extractMultinames(pool);
+			/* READ multinamepool */
+			result = _byteArray.readUnsignedByte();
+			if ((result & 0x00000080)) {
+				nextByte = _byteArray.readUnsignedByte() << 7;
+				result = result & 0x0000007f | nextByte;
+				if ((result & 0x00004000)) {
+					nextByte = _byteArray.readUnsignedByte() << 14;
+					result = result & 0x00003fff | nextByte;
+					if ((result & 0x00200000)) {
+						nextByte = _byteArray.readUnsignedByte() << 21;
+						result = result & 0x001fffff | nextByte;
+						if ((result & 0x10000000)) {
+							nextByte = _byteArray.readUnsignedByte() << 28;
+							result = result & 0x0fffffff | nextByte;
+						}
+					}
+				}
+			}
+			itemCount = (result > 0) ? --result : 0;
+			while (itemCount--) {
+				kind = 255 & _byteArray[_byteArray.position++];
+				//QNAME or QNAME_A
+				if ((kind == 0x07) || (kind == 0x0D)) {
+					result = _byteArray.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						nextByte = _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | nextByte;
+						if ((result & 0x00004000)) {
+							nextByte = _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | nextByte;
+							if ((result & 0x00200000)) {
+								nextByte = _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | nextByte;
+								if ((result & 0x10000000)) {
+									nextByte = _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | nextByte;
+								}
+							}
+						}
+					}
+					var ns:LNamespace = pool.namespacePool[result];
+					result = _byteArray.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						nextByte = _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | nextByte;
+						if ((result & 0x00004000)) {
+							nextByte = _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | nextByte;
+							if ((result & 0x00200000)) {
+								nextByte = _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | nextByte;
+								if ((result & 0x10000000)) {
+									nextByte = _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | nextByte;
+								}
+							}
+						}
+					}
+					var name:String = pool.stringPool[result];
+					pool.multinamePool[pool.multinamePool.length] = new QualifiedName(name, ns, (kind == 0x07) ? MultinameKind.QNAME : MultinameKind.QNAME_A);
+						//RTQName or RTQName_A
+				} else if ((kind == 0x0f) || (kind == 0x10)) {
+					result = _byteArray.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						nextByte = _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | nextByte;
+						if ((result & 0x00004000)) {
+							nextByte = _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | nextByte;
+							if ((result & 0x00200000)) {
+								nextByte = _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | nextByte;
+								if ((result & 0x10000000)) {
+									nextByte = _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | nextByte;
+								}
+							}
+						}
+					}
+					str = pool.stringPool[result];
+					pool.multinamePool[pool.multinamePool.length] = new RuntimeQualifiedName(str, (kind == 0x0f) ? MultinameKind.RTQNAME : MultinameKind.RTQNAME_A);
+				} else if ((kind == 0x11) || (kind == 0x12)) {
+					//RTQNAME_L or RTQNAME_LA
+					pool.multinamePool[pool.multinamePool.length] = new RuntimeQualifiedNameL((kind == 0x11) ? MultinameKind.RTQNAME_L : MultinameKind.RTQNAME_LA);
+				} else if ((kind == 0x09) || (kind == 0x0E)) {
+					//MULTINAME or MULTINAME_A
+					result = _byteArray.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						nextByte = _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | nextByte;
+						if ((result & 0x00004000)) {
+							nextByte = _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | nextByte;
+							if ((result & 0x00200000)) {
+								nextByte = _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | nextByte;
+								if ((result & 0x10000000)) {
+									nextByte = _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | nextByte;
+								}
+							}
+						}
+					}
+					str = pool.stringPool[result];
+					result = _byteArray.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						nextByte = _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | nextByte;
+						if ((result & 0x00004000)) {
+							nextByte = _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | nextByte;
+							if ((result & 0x00200000)) {
+								nextByte = _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | nextByte;
+								if ((result & 0x10000000)) {
+									nextByte = _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | nextByte;
+								}
+							}
+						}
+					}
+					var nss:NamespaceSet = pool.namespaceSetPool[result];
+					pool.multinamePool[pool.multinamePool.length] = new Multiname(str, nss, (kind == 0x09) ? MultinameKind.MULTINAME : MultinameKind.MULTINAME_A);
+				} else if ((kind == 0x1B) && (kind == 0x1C)) {
+					//MULTINAME_L or MULTINAME_LA
+					result = _byteArray.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						nextByte = _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | nextByte;
+						if ((result & 0x00004000)) {
+							nextByte = _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | nextByte;
+							if ((result & 0x00200000)) {
+								nextByte = _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | nextByte;
+								if ((result & 0x10000000)) {
+									nextByte = _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | nextByte;
+								}
+							}
+						}
+					}
+					pool.multinamePool[pool.multinamePool.length] = new MultinameL(pool.namespaceSetPool[result], (kind == 0x1B) ? MultinameKind.MULTINAME_L : MultinameKind.MULTINAME_LA);
+				} else if (kind == 0x1D) {
+					//GENERIC
+					result = _byteArray.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						nextByte = _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | nextByte;
+						if ((result & 0x00004000)) {
+							nextByte = _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | nextByte;
+							if ((result & 0x00200000)) {
+								nextByte = _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | nextByte;
+								if ((result & 0x10000000)) {
+									nextByte = _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | nextByte;
+								}
+							}
+						}
+					}
+					var qualifiedName:QualifiedName = pool.multinamePool[result];
+					result = _byteArray.readUnsignedByte();
+					if ((result & 0x00000080)) {
+						nextByte = _byteArray.readUnsignedByte() << 7;
+						result = result & 0x0000007f | nextByte;
+						if ((result & 0x00004000)) {
+							nextByte = _byteArray.readUnsignedByte() << 14;
+							result = result & 0x00003fff | nextByte;
+							if ((result & 0x00200000)) {
+								nextByte = _byteArray.readUnsignedByte() << 21;
+								result = result & 0x001fffff | nextByte;
+								if ((result & 0x10000000)) {
+									nextByte = _byteArray.readUnsignedByte() << 28;
+									result = result & 0x0fffffff | nextByte;
+								}
+							}
+						}
+					}
+					var paramCount:uint = result;
+					var params:Array = [];
+					while (paramCount--) {
+						result = _byteArray.readUnsignedByte();
+						if ((result & 0x00000080)) {
+							nextByte = _byteArray.readUnsignedByte() << 7;
+							result = result & 0x0000007f | nextByte;
+							if ((result & 0x00004000)) {
+								nextByte = _byteArray.readUnsignedByte() << 14;
+								result = result & 0x00003fff | nextByte;
+								if ((result & 0x00200000)) {
+									nextByte = _byteArray.readUnsignedByte() << 21;
+									result = result & 0x001fffff | nextByte;
+									if ((result & 0x10000000)) {
+										nextByte = _byteArray.readUnsignedByte() << 28;
+										result = result & 0x0fffffff | nextByte;
+									}
+								}
+							}
+						}
+						params[params.length] = pool.multinamePool[result];
+					}
+					pool.multinamePool[pool.multinamePool.length] = new MultinameG(qualifiedName, paramCount, params, MultinameKind.GENERIC)
+				}
+			}
+			/* END:READ multinamepool */
 
 			pool.initializeLookups();
 
