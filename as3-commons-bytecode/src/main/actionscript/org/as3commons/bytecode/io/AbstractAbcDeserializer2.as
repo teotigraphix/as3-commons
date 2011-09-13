@@ -74,7 +74,7 @@ package org.as3commons.bytecode.io {
 				}
 			}
 			itemIndex = result;
-			while (--itemIndex(-1)) {
+			while (--itemIndex) {
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
 					nextByte = _byteArray.readUnsignedByte() << 7;
@@ -115,7 +115,7 @@ package org.as3commons.bytecode.io {
 				}
 			}
 			itemIndex = result;
-			while (--itemIndex(-1)) {
+			while (--itemIndex) {
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
 					nextByte = _byteArray.readUnsignedByte() << 7;
@@ -156,7 +156,7 @@ package org.as3commons.bytecode.io {
 				}
 			}
 			itemIndex = result;
-			while (--itemIndex(-1)) {
+			while (--itemIndex) {
 				pool.doublePool[pool.doublePool.length] = _byteArray.readDouble();
 			}
 			/* END:READ doublepool */
@@ -180,7 +180,7 @@ package org.as3commons.bytecode.io {
 				}
 			}
 			itemIndex = result;
-			while (--itemIndex(-1)) {
+			while (--itemIndex) {
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
 					nextByte = _byteArray.readUnsignedByte() << 7;
@@ -225,7 +225,7 @@ package org.as3commons.bytecode.io {
 				}
 			}
 			itemIndex = result;
-			while (--itemIndex(-1)) {
+			while (--itemIndex) {
 				var kind:uint = 255 & _byteArray[_byteArray.position++];
 				result = _byteArray.readUnsignedByte();
 				if ((result & 0x00000080)) {
@@ -267,11 +267,11 @@ package org.as3commons.bytecode.io {
 				}
 			}
 			itemIndex = result;
-			while (--itemIndex(-1)) {
-				extractNamespaceSets(pool);
+			while (--itemIndex) {
+				//extractNamespaceSets(pool);
 			}
 
-			extractMultinames(pool);
+			//extractMultinames(pool);
 
 			pool.initializeLookups();
 

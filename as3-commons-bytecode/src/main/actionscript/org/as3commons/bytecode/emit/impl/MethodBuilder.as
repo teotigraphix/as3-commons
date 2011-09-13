@@ -99,7 +99,6 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function set hasRestArguments(value:Boolean):void {
 			_hasRestArguments = value;
-			needArguments = !_hasRestArguments;
 		}
 
 		protected function get methodBodyBuilder():IMethodBodyBuilder {
