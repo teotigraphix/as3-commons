@@ -291,7 +291,7 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 			<li>They can only inherit from the <code>Object</code> class.</li>
 		</ul>
 		<blockquote>
-			<strong>ATTENTION: Currently there are still some issues introducing methods, it is therefore adviced *not* too use try/catch blocks or switch statements in introduced
+			<strong>ATTENTION: Currently there are still some issues introducing methods, it is therefore adviced *not* too use try/catch blocks in introduced
 			classes. Failing to do so results in verification errors in release builds of the code. The AS3Commons team hopes to have these issues resolved as soon as possible.</strong>
 		</blockquote>
 		<p>Let's take an actual example to illustrate just how this could work in the real world:</p>
