@@ -28,9 +28,13 @@
             </div>
             
             <p>
-                AS3Commons-bytecode is an open-source library providing a ABC bytecode parsing and publishing and bytecode based reflection API for ActionScript 3.0.<br/>
-                It offers an emit API for generating classes at runtime, and a proxy API to generate dynamic runtime proxies along with an intercepting mechanism.<br/>
-                Either of these can be used as a foundation for mocking or AOP libraries, or any other kind of project that required runtime class generation.<br/>
+                AS3Commons-bytecode is an open-source library providing a ABC bytecode parsing and publishing and bytecode based reflection API for ActionScript 3.0.
+            </p>
+            <p>
+            	It offers an <em>emit API</em> for generating classes at runtime, and a <em>proxy API</em> to generate dynamic runtime proxies along with an intercepting mechanism.<br/>
+                Either of these can be used as a foundation for mocking or AOP libraries, or any other kind of project that required runtime class generation.
+            </p>
+            <p>
                 Being a pure actionscript library it can be used for any Flash/Flex/AIR project.
             </p>
             
@@ -47,7 +51,7 @@
             	Parsing results are cached so that a SWF only needs to be parsed once.
             </p>
             
-            <p> This lbrary depenends on these other as3commons libraries:
+            <p> This library depends on these other as3commons libraries:
             	<ul>
             		<li><a href="http://www.as3commons.org/as3-commons-reflect/index.html" target="_blank">AS3Commons-reflect</a></li>
             		<li><a href="http://www.as3commons.org/as3-commons-lang/index.html" target="_blank">AS3Commons-lang</a></li>
