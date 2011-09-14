@@ -28,8 +28,14 @@ package org.as3commons.aop.pointcut {
 		//
 		// --------------------------------------------------------------------
 
+		/**
+		 * The number of names in this registry.
+		 */
 		function get numNames():uint;
 
+		/**
+		 * Returns a copy of the names in this registry.
+		 */
 		function get names():Vector.<String>;
 
 		// --------------------------------------------------------------------
@@ -38,12 +44,25 @@ package org.as3commons.aop.pointcut {
 		//
 		// --------------------------------------------------------------------
 
+		/**
+		 * Adds the given name to this registry.
+		 * @param name
+		 * @throws org.as3commons.lang.IllegalArgumentError if the name is null or empty (after trimming)
+		 */
 		function addName(name:String):void;
 
+		/**
+		 * Adds the given names to this registry.
+		 * @param names
+		 * @throws org.as3commons.lang.IllegalArgumentError if one fo the names is null or empty (after trimming)
+		 */
 		function addNames(names:Vector.<String>):void;
-		
-		function removeName(name:String):void;
 
+		/**
+		 * Returns whether or not this registry contains the given name.
+		 * @param name
+		 * @return true if the registry contains the name; false if not
+		 */
 		function containsName(name:String):Boolean;
 
 	}
