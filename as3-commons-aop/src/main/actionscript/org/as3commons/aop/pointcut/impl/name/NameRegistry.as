@@ -15,6 +15,9 @@
 */
 package org.as3commons.aop.pointcut.impl.name {
 	import org.as3commons.aop.pointcut.INameRegistry;
+	import org.as3commons.lang.Assert;
+	import org.as3commons.lang.IllegalArgumentError;
+	import org.as3commons.lang.StringUtils;
 
 	/**
 	 * Default implementation of INameRegistry.
@@ -38,6 +41,8 @@ package org.as3commons.aop.pointcut.impl.name {
 				addNames(nameOrNames);
 			} else if (nameOrNames is Array) {
 				addNamesFromArray(nameOrNames as Array);
+			} else if (nameOrNames) {
+				throw new IllegalArgumentError("The constructor argument for NameRegistry must either be a String, Vector or Array.");
 			}
 		}
 
@@ -62,7 +67,10 @@ package org.as3commons.aop.pointcut.impl.name {
 		// --------------------------------------------------------------------
 
 		public function addName(name:String):void {
-			_names.push(name);
+			name = validateAndTrimName(name);
+			if (!containsName(name)) {
+				_names.push(name);
+			}
 		}
 
 		public function addNames(names:Vector.<String>):void {
@@ -71,11 +79,8 @@ package org.as3commons.aop.pointcut.impl.name {
 			}
 		}
 
-		public function removeName(name:String):void {
-			//TODO
-		}
-
 		public function containsName(name:String):Boolean {
+			name = validateAndTrimName(name);
 			return (_names.indexOf(name) > -1);
 		}
 		
@@ -89,6 +94,13 @@ package org.as3commons.aop.pointcut.impl.name {
 			for each (var name:String in names) {
 				addName(name);
 			}
+		}
+
+		private function validateAndTrimName(name:String):String {
+			Assert.notNull(name, "The name should not be null.");
+			name = StringUtils.trim(name);
+			Assert.hasText(name, "The name should not be empty");
+			return name;
 		}
 		
 	}
