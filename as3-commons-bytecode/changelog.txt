@@ -7,6 +7,7 @@ Changes in version 1.0-RC7 (??.??.2011)
 -----------------------------------
 
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=55
+* Lots of speed optimizations in ReflectionDeserializer (a 1.7MB SWF now takes 2.7 seconds)
 
 Changes in version 1.0-RC6 (03.09.2011)
 -----------------------------------
