@@ -230,8 +230,6 @@ package org.as3commons.bytecode.util {
 				var classMultinameAsMultiname:Multiname = classMultiname as Multiname;
 				if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
 					qualifiedName = new QualifiedName(classMultinameAsMultiname.name, classMultinameAsMultiname.namespaceSet.namespaces[0]);
-				} else {
-					trace("Multiname " + classMultiname + " has more than 1 namespace in its namespace set - unable to convert to QualifiedName.");
 				}
 			} else if (classMultiname is MultinameG) {
 				qualifiedName = (classMultiname as MultinameG).qualifiedName;

@@ -21,6 +21,8 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
+	import org.as3commons.bytecode.abc.Multiname;
+	import org.as3commons.bytecode.abc.MultinameG;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SimpleConstantPool;
 	import org.as3commons.bytecode.abc.TraitInfo;
@@ -37,6 +39,9 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.bytecode.util.SWFSpec;
 	import org.as3commons.lang.Assert;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getClassLogger;
+	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Constructor;
 	import org.as3commons.reflect.Metadata;
@@ -104,7 +109,6 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		private function readHeader(input:ByteArray):void {
-			Assert.notNull(input, "input argument must not be null");
 			skipRectangle(input);
 			input.readUnsignedByte();
 			input.readUnsignedByte();
@@ -112,7 +116,6 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		private function skipRectangle(input:ByteArray):void {
-			Assert.notNull(input, "input argument must not be null");
 			var current:uint = input.readUnsignedByte();
 			var size:uint = current >> 3;
 			var off:int = 3;
@@ -201,11 +204,34 @@ package org.as3commons.bytecode.reflect {
 						}
 					}
 				}
-				var returnTypeQName:QualifiedName = MultinameUtil.convertToQualifiedName(constantPool.multinamePool[result]);
-				methodInfo.as3commons_reflect::setReturnType(returnTypeQName.fullName);
+				//MultinameUtil.convertToQualifiedName():
+				var classMultiname:BaseMultiname = constantPool.multinamePool[result];
+				var fullName:String;
+				if (!classMultiname is QualifiedName) {
+					if (classMultiname is Multiname) {
+						var classMultinameAsMultiname:Multiname = classMultiname as Multiname;
+						var ns:LNamespace = classMultinameAsMultiname.namespaceSet.namespaces[0];
+						if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
+							if (classMultinameAsMultiname.name != '*') {
+								if ((ns.name != null) && (ns.name.length > 0)) {
+									fullName = ns.name + '.' + classMultinameAsMultiname.name;
+								} else {
+									fullName = classMultinameAsMultiname.name;
+								}
+							} else {
+								fullName = '*';
+							}
+						}
+					}
+				} else if (classMultiname is MultinameG) {
+					fullName = (classMultiname as MultinameG).qualifiedName.fullName;
+				} else if (classMultiname is QualifiedName) {
+					fullName = (classMultiname as QualifiedName).fullName;
+				}
+				methodInfo.as3commons_reflect::setReturnType(fullName);
 
 				var params:Array = [];
-				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
+				while (paramCount--) {
 					result = byteStream.readUnsignedByte();
 					if ((result & 0x00000080)) {
 						result = result & 0x0000007f | byteStream.readUnsignedByte() << 7;
@@ -219,12 +245,33 @@ package org.as3commons.bytecode.reflect {
 							}
 						}
 					}
-					var paramQName:QualifiedName = MultinameUtil.convertToQualifiedName(constantPool.multinamePool[result]);
-					var newParam:ByteCodeParameter = new ByteCodeParameter(paramQName.fullName, applicationDomain);
-					newParam.as3commons_reflect::setName("argument " + argumentIndex.toString());
+					//MultinameUtil.convertToQualifiedName():
+					classMultiname = constantPool.multinamePool[result];
+					fullName;
+					if (!classMultiname is QualifiedName) {
+						if (classMultiname is Multiname) {
+							classMultinameAsMultiname = classMultiname as Multiname;
+							ns = classMultinameAsMultiname.namespaceSet.namespaces[0];
+							if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
+								if (classMultinameAsMultiname.name != '*') {
+									if ((ns.name != null) && (ns.name.length > 0)) {
+										fullName = ns.name + '.' + classMultinameAsMultiname.name;
+									} else {
+										fullName = classMultinameAsMultiname.name;
+									}
+								} else {
+									fullName = '*';
+								}
+							}
+						}
+					} else if (classMultiname is MultinameG) {
+						fullName = (classMultiname as MultinameG).qualifiedName.fullName;
+					} else if (classMultiname is QualifiedName) {
+						fullName = (classMultiname as QualifiedName).fullName;
+					}
+					var newParam:ByteCodeParameter = new ByteCodeParameter(fullName, applicationDomain);
 					params[params.length] = newParam;
 				}
-				var nameCount:uint = params.length;
 
 				result = byteStream.readUnsignedByte();
 				if ((result & 0x00000080)) {
@@ -295,6 +342,7 @@ package org.as3commons.bytecode.reflect {
 
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_PARAM_NAMES) == true) {
 					var nameIndex:int = 0;
+					var nameCount:uint = params.length;
 					while (nameCount--) {
 						result = byteStream.readUnsignedByte();
 						if ((result & 0x00000080)) {
@@ -490,12 +538,39 @@ package org.as3commons.bytecode.reflect {
 						}
 					}
 				}
+				//MultinameUtil.convertToQualifiedName():
 				var classMultiname:BaseMultiname = constantPool.multinamePool[result];
+				var fullName:String;
+				var instanceName:String;
+				if (!classMultiname is QualifiedName) {
+					if (classMultiname is Multiname) {
+						var classMultinameAsMultiname:Multiname = classMultiname as Multiname;
+						var ns:LNamespace = classMultinameAsMultiname.namespaceSet.namespaces[0];
+						if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
+							if (classMultinameAsMultiname.name != '*') {
+								if ((ns.name != null) && (ns.name.length > 0)) {
+									fullName = ns.name + '.' + classMultinameAsMultiname.name;
+								} else {
+									fullName = classMultinameAsMultiname.name;
+								}
+								instanceName = classMultinameAsMultiname.name;
+							} else {
+								fullName = '*';
+								instanceName = fullName;
+							}
+						}
+					}
+				} else if (classMultiname is MultinameG) {
+					fullName = (classMultiname as MultinameG).qualifiedName.fullName;
+					instanceName = (classMultiname as MultinameG).qualifiedName.name;
+				} else if (classMultiname is QualifiedName) {
+					fullName = (classMultiname as QualifiedName).fullName;
+					instanceName = (classMultiname as QualifiedName).name;
+				}
 
-				var qualifiedName:QualifiedName = MultinameUtil.convertToQualifiedName(classMultiname);
-				instanceInfo.fullName = qualifiedName.fullName;
+				instanceInfo.fullName = fullName;
 				typeCache.as3commons_reflect::addDefinitionName(instanceInfo.fullName);
-				instanceInfo.name = qualifiedName.name;
+				instanceInfo.name = instanceName;
 				typeCache.put(instanceInfo.fullName, instanceInfo);
 				instances[instances.length] = instanceInfo;
 
@@ -563,16 +638,35 @@ package org.as3commons.bytecode.reflect {
 							}
 						}
 					}
-					var mn:BaseMultiname = constantPool.multinamePool[result];
-					var qName:QualifiedName = MultinameUtil.convertToQualifiedName(mn);
-					if (qName != null) {
-						instanceInfo.interfaces[instanceInfo.interfaces.length] = qName.fullName;
+					classMultiname = constantPool.multinamePool[result];
+					fullName = null;
+					if (!classMultiname is QualifiedName) {
+						if (classMultiname is Multiname) {
+							classMultinameAsMultiname = classMultiname as Multiname;
+							ns = classMultinameAsMultiname.namespaceSet.namespaces[0];
+							if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
+								if (classMultinameAsMultiname.name != '*') {
+									if ((ns.name != null) && (ns.name.length > 0)) {
+										fullName = ns.name + '.' + classMultinameAsMultiname.name;
+									} else {
+										fullName = classMultinameAsMultiname.name;
+									}
+								}
+							}
+						}
+					} else if (classMultiname is MultinameG) {
+						fullName = (classMultiname as MultinameG).qualifiedName.fullName;
+					} else if (classMultiname is QualifiedName) {
+						fullName = (classMultiname as QualifiedName).fullName;
+					}
+					if (fullName != null) {
+						instanceInfo.interfaces[instanceInfo.interfaces.length] = fullName;
 						var classNames:Array;
-						if (!typeCache.interfaceLookup.hasOwnProperty(qName.fullName)) {
+						if (!typeCache.interfaceLookup.hasOwnProperty(fullName)) {
 							classNames = [];
-							typeCache.interfaceLookup[qName.fullName] = classNames;
+							typeCache.interfaceLookup[fullName] = classNames;
 						} else {
-							classNames = typeCache.interfaceLookup[qName.fullName] as Array;
+							classNames = typeCache.interfaceLookup[fullName] as Array;
 						}
 						classNames[classNames.length] = AbcFileUtil.normalizeFullName(instanceInfo.fullName);
 					}
@@ -1025,9 +1119,32 @@ package org.as3commons.bytecode.reflect {
 							}
 						}
 					}
-					namedMultiname = pool.multinamePool[result];
-					qualifiedName = MultinameUtil.convertToQualifiedName(namedMultiname);
-					var variable:ByteCodeVariable = new ByteCodeVariable(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
+
+					var classMultiname:BaseMultiname = pool.multinamePool[result];
+					var typeFullName:String;
+					if (!classMultiname is QualifiedName) {
+						if (classMultiname is Multiname) {
+							var classMultinameAsMultiname:Multiname = classMultiname as Multiname;
+							var ns:LNamespace = classMultinameAsMultiname.namespaceSet.namespaces[0];
+							if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
+								if (classMultinameAsMultiname.name != '*') {
+									if ((ns.name != null) && (ns.name.length > 0)) {
+										typeFullName = ns.name + '.' + classMultinameAsMultiname.name;
+									} else {
+										typeFullName = classMultinameAsMultiname.name;
+									}
+								} else {
+									typeFullName = '*';
+								}
+							}
+						}
+					} else if (classMultiname is MultinameG) {
+						typeFullName = (classMultiname as MultinameG).qualifiedName.fullName;
+					} else if (classMultiname is QualifiedName) {
+						typeFullName = (classMultiname as QualifiedName).fullName;
+					}
+
+					var variable:ByteCodeVariable = new ByteCodeVariable(traitMultiname.name, typeFullName, fullName, false, applicationDomain);
 					variable.as3commons_reflect::setIsStatic(isStatic);
 					variable.as3commons_reflect::setScopeName(MultinameUtil.extractInterfaceScopeFromFullName(traitMultiname.name));
 					metaDataContainer = variable;
