@@ -14,7 +14,6 @@
 * limitations under the License.
 */
 package org.as3commons.aop.pointcut.impl.name {
-	import org.as3commons.aop.pointcut.impl.*;
 	import org.as3commons.aop.pointcut.IMethodPointcut;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.reflect.Method;
