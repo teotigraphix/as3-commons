@@ -63,10 +63,6 @@ package org.as3commons.aop.pointcut.impl.name {
 			nameMatcher.addNames(names);
 		}
 
-		public function removeName(name:String):void {
-			nameMatcher.removeName(name);
-		}
-
 		public function containsName(name:String):Boolean {
 			return nameMatcher.containsName(name);
 		}
