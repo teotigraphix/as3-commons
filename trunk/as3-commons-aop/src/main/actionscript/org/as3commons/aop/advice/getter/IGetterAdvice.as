@@ -14,15 +14,13 @@
 * limitations under the License.
 */
 package org.as3commons.aop.advice.getter {
-	import org.as3commons.aop.advice.*;
-	import org.as3commons.reflect.Accessor;
+	import org.as3commons.aop.advice.IAdvice;
 
 	/**
+	 * Marker interface for getter advice.
+	 *
 	 * @author Christophe Herreman
 	 */
-	public interface IGetterBeforeAdvice extends IBeforeAdvice, IGetterAdvice {
-
-		function beforeGetter(getter:Accessor, target:*):void;
-
+	public interface IGetterAdvice extends IAdvice {
 	}
 }

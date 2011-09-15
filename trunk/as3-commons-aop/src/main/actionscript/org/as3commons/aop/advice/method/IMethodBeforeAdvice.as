@@ -22,7 +22,7 @@ package org.as3commons.aop.advice.method {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public interface IMethodBeforeAdvice extends IBeforeAdvice {
+	public interface IMethodBeforeAdvice extends IBeforeAdvice, IMethodAdvice {
 
 		function beforeMethod(method:Method, args:Array, target:*):void;
 

@@ -23,7 +23,7 @@ package org.as3commons.aop.advice.method {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public interface IMethodAfterAdvice extends IAfterAdvice {
+	public interface IMethodAfterAdvice extends IAfterAdvice, IMethodAdvice {
 
 		function afterMethod(returnValue:*, method:Method, args:Array, target:*):void;
 

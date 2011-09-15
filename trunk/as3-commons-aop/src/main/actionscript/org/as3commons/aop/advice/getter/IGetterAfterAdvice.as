@@ -17,9 +17,12 @@ package org.as3commons.aop.advice.getter {
 	import org.as3commons.aop.advice.*;
 	import org.as3commons.reflect.Accessor;
 
-	public interface IGetterAfterAdvice extends IAfterAdvice {
+	/**
+	 * @author Christophe Herreman
+	 */
+	public interface IGetterAfterAdvice extends IAfterAdvice, IGetterAdvice {
 
-		function afterGetter(getter:Accessor):void;
+		function afterGetter(result:*, getter:Accessor, target:*):void;
 
 	}
 }

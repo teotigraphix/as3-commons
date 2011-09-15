@@ -19,7 +19,7 @@ package org.as3commons.aop.advice.setter {
 
 	public interface ISetterBeforeAdvice extends IBeforeAdvice {
 
-		function beforeSetter(setter:Accessor):void;
+		function beforeSetter(setter:Accessor, target:*, value:*):void;
 
 	}
 }

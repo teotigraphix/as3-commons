@@ -14,16 +14,16 @@
 * limitations under the License.
 */
 package org.as3commons.aop.factory.impl {
+	import flash.display.LoaderInfo;
 	import flash.utils.Dictionary;
-	
-	import mx.core.FlexGlobals;
-	
+
 	import org.as3commons.aop.advice.IAdvice;
 	import org.as3commons.aop.advisor.IAdvisor;
 	import org.as3commons.aop.advisor.impl.AlwaysMatchingPointcutAdvisor;
 	import org.as3commons.aop.as3commons_aop;
 	import org.as3commons.aop.factory.util.LoadProxyFactoryOperation;
-	import org.as3commons.aop.intercept.AdvisorInterceptor;
+	import org.as3commons.aop.factory.util.ProxyFactoryUtil;
+	import org.as3commons.aop.intercept.impl.AdvisorInterceptor;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.bytecode.interception.impl.BasicMethodInvocationInterceptor;
 	import org.as3commons.bytecode.proxy.IProxyFactory;
@@ -34,6 +34,13 @@ package org.as3commons.aop.factory.impl {
 
 	use namespace as3commons_aop;
 
+	/**
+	 * Proxy factory that is able to create proxies for multiple targets. It is recommended to use
+	 * this factory if you need to proxy more than one target. If only a single target needs
+	 * to be proxied, use the simpler AOPProxyFactory.
+	 *
+	 * @author Christophe Herreman
+	 */
 	public class AOPBatchProxyFactory {
 
 		private var _proxyFactory:IProxyFactory;
@@ -46,10 +53,15 @@ package org.as3commons.aop.factory.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function AOPBatchProxyFactory() {
-			// TODO externalize this
-			ByteCodeType.fromLoader(FlexGlobals.topLevelApplication.loaderInfo);
-
+		/**
+		 * Creates a new AOPBatchProxyFactory.
+		 *
+		 * @param loaderInfo an optional loaderInfo on which bytecode reflection will
+		 * be done. In case this is not provided, the loader info will be determined.
+		 * For Flex applications, this is generally not needed.
+		 */
+		public function AOPBatchProxyFactory(loaderInfo:LoaderInfo = null) {
+			doBytecodeReflection(loaderInfo);
 			_proxyFactory = new ProxyFactory();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, proxyFactory_getMethodInvocationInterceptorHandler);
 		}
@@ -84,7 +96,7 @@ package org.as3commons.aop.factory.impl {
 			}
 		}
 
-		public function createProxies():IOperation {
+		public function load():IOperation {
 			_proxyFactory.generateProxyClasses();
 			return new LoadProxyFactoryOperation(_proxyFactory);
 		}
@@ -109,6 +121,11 @@ package org.as3commons.aop.factory.impl {
 		// Private Methods
 		//
 		// --------------------------------------------------------------------
+
+		private function doBytecodeReflection(loaderInfo:LoaderInfo):void {
+			loaderInfo ||= ProxyFactoryUtil.getLoaderInfo();
+			ByteCodeType.fromLoader(loaderInfo);
+		}
 
 		private function addAdvisorForTarget(advisor:IAdvisor, target:*):void {
 			getAdvisorsForTarget(target).push(advisor);
@@ -149,6 +166,7 @@ package org.as3commons.aop.factory.impl {
 		private function applyConstructorAfterAdvice(clazz:Class, proxy:*, args:Array = null):void {
 			_adviceInterceptor.as3commons_aop::applyConstructorAfterAdvice(clazz, proxy, args);
 		}
+
 
 	}
 }

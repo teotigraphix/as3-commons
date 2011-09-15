@@ -13,16 +13,18 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.advice.getter {
-	import org.as3commons.aop.advice.*;
-	import org.as3commons.reflect.Accessor;
+package org.as3commons.aop.intercept {
+	import org.as3commons.aop.intercept.invocation.IConstructorInvocation;
 
 	/**
+	 * Interceptor for constructors.
+	 *
 	 * @author Christophe Herreman
+	 * @author Bert Vandamme
 	 */
-	public interface IGetterBeforeAdvice extends IBeforeAdvice, IGetterAdvice {
+	public interface IConstructorInterceptor extends IInterceptor {
 
-		function beforeGetter(getter:Accessor, target:*):void;
+		function interceptConstructor(invocation:IConstructorInvocation):*;
 
 	}
 }
