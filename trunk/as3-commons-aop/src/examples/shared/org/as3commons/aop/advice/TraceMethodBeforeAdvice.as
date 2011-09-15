@@ -8,7 +8,7 @@ package org.as3commons.aop.advice {
 		}
 
 		public function beforeMethod(method:Method, args:Array, target:*):void {
-			trace("*** before '" + method.name + "'");
+			trace("* TraceMethodBeforeAdvice before '" + method.name + "'");
 		}
 	}
 }

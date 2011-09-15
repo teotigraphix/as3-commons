@@ -1,61 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
-		xmlns:mx="library://ns.adobe.com/flex/mx"
 		minWidth="955"
 		minHeight="600"
-		applicationComplete="applicationCompleteHandler(event)">
+		creationComplete="creationCompleteHandler(event)">
 
 	<fx:Script>
 		<![CDATA[
 		import mx.events.FlexEvent;
 
 		import org.as3commons.aop.MessageWriter;
-		import org.as3commons.aop.advice.TraceConstructorAroundAdvice;
-		import org.as3commons.aop.advice.TraceGetterAroundAdvice;
+		import org.as3commons.aop.advice.TraceMethodAfterAdvice;
 		import org.as3commons.aop.advice.TraceMethodAroundAdvice;
-		import org.as3commons.aop.advice.TraceMethodThrowingAdvice;
-		import org.as3commons.aop.advice.TraceSetterAroundAdvice;
+		import org.as3commons.aop.advice.TraceMethodBeforeAdvice;
 		import org.as3commons.aop.factory.impl.AOPProxyFactory;
+		import org.as3commons.aop.intercept.TraceMethodInterceptor;
 		import org.as3commons.async.operation.IOperation;
 		import org.as3commons.async.operation.event.OperationEvent;
 
-		protected function applicationCompleteHandler(event:FlexEvent):void {
+		protected function creationCompleteHandler(event:FlexEvent):void {
 			var factory:AOPProxyFactory = new AOPProxyFactory();
-			factory.addAdvice(new TraceConstructorAroundAdvice());
-			factory.addAdvice(new TraceMethodAroundAdvice());
-			factory.addAdvice(new TraceGetterAroundAdvice());
-			factory.addAdvice(new TraceSetterAroundAdvice());
-			factory.addAdvice(new TraceMethodThrowingAdvice());
+			
 			factory.target = MessageWriter;
 
+			factory.addAdvice(new TraceMethodBeforeAdvice());
+			factory.addAdvice(new TraceMethodAroundAdvice());
+			factory.addAdvice(new TraceMethodInterceptor());
+			factory.addAdvice(new TraceMethodAfterAdvice());
+
+			//factory.addAdvice(new TraceConstructorAroundAdvice());
+			//factory.addAdvice(new StringToUpperCaseConstructorInterceptor());
+
+			//factory.addAdvice(new TraceSetterAroundAdvice());
+
+			//factory.addAdvice(new TraceGetterAroundAdvice());
+			//factory.addAdvice(new StringToUppercaseGetterInterceptor());
+
+			//factory.addAdvice(new StringToUppercaseSetterInterceptor());
+			//factory.addAdvice(new AppendUnderscoreToStringSetterInterceptor());
+
 			var handler:Function = function(event:OperationEvent):void {
-				var writer:MessageWriter = factory.getProxy(["Default message"]);
-				writer.writeMessage();
-
-				//writer.message = "Another message";
-				writer.writeMessage();
-				writer.writeAnotherMessage();
-
-				try {
-					writer.writeMessageThrowError();
-				} catch (e:Error) {
-					trace("Caught error: " + e);
-				}
-
-				writer.writeYetAnotherMessage();
-
-				try {
-					// new proxy instance without constructor args -> should throw assert error
-					var writerB:MessageWriter = factory.getProxy([null]);
-					writerB.writeMessage();
-				} catch (e:Error) {
-					trace("Caught error: " + e);
-				}
+				exampleA(factory);
+				//exampleB(factory);
 			};
 
-			var operation:IOperation = factory.createProxy();
+			var operation:IOperation = factory.load();
 			operation.addCompleteListener(handler);
+		}
+
+		private function exampleA(factory:AOPProxyFactory):void {
+			trace("=== EXAMPLE A ===");
+
+			var writer:MessageWriter = factory.getProxy(["Default message"]);
+			//writer.message = "Konnichiwa";
+
+			trace("Writer.message = '" + writer.message + "'");
+
+			/*trace("--- writeMessage begin ---");
+			 writer.writeMessage();
+			 trace("--- writeMessage end ---");*/
+
+			//writer.writeAnotherMessage();
+
+			/*trace("--- writeMessageThrowError begin ---");
+			 try {
+			 writer.writeMessageThrowError();
+			 } catch (e:Error) {
+			 trace("Caught error: " + e);
+			 }
+			 trace("--- writeMessageThrowError end ---");*/
+
+			//writer.writeYetAnotherMessage();
+		}
+
+		private function exampleB(factory:AOPProxyFactory):void {
+			trace("=== EXAMPLE B ===");
+
+			try {
+				// new proxy instance without constructor args -> should throw assert error
+				var writer:MessageWriter = factory.getProxy([null]);
+				writer.writeMessage();
+			} catch (e:Error) {
+				trace("Caught error: " + e);
+			}
 		}
 		]]>
 	</fx:Script>

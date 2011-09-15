@@ -16,18 +16,32 @@ package org.as3commons.aop {
 			_message = message;
 		}
 
+		// --------------------------------------------------------------------
+		//
+		// Properties
+		//
+		// --------------------------------------------------------------------
+
 		private var _message:String;
 
 		public function get message():String {
+			trace("MessageWriter.get message");
 			return _message;
 		}
 
 		public function set message(value:String):void {
+			trace("MessageWriter.set message '" + value + "'");
 			_message = value;
 		}
 
+		// --------------------------------------------------------------------
+		//
+		// Public Methods
+		//
+		// --------------------------------------------------------------------
+
 		public function writeMessage():Boolean {
-			trace("MessageWriter.writeMessage()");
+			trace("MessageWriter.writeMessage(): " + _message);
 			return true;
 		}
 		

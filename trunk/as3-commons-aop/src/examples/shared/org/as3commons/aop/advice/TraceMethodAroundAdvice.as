@@ -8,19 +8,19 @@ package org.as3commons.aop.advice {
 		}
 
 		public function beforeMethod(method:Method, args:Array, target:*):void {
-			trace("*** before method '" + method.name + "' in around advice");
+			trace("* TraceMethodAroundAdvice before method '" + method.name + "' in around advice");
 		}
 
 		public function afterMethod(returnValue:*, method:Method, args:Array, target:*):void {
-			trace("*** after method '" + method.name + "' in around advice");
+			trace("* TraceMethodAroundAdvice after method '" + method.name + "' in around advice");
 		}
 
 		public function afterMethodReturning(returnValue:*, method:Method, args:Array, target:*):void {
-			trace("*** after method returning '" + method.name + "' in around advice");
+			trace("* TraceMethodAroundAdvice after method returning '" + method.name + "' in around advice");
 		}
 
 		public function afterMethodThrowing(method:Method, args:Array, target:*, error:Error):void {
-			trace("*** after method throwing '" + method.name + "' in around advice.");
+			trace("* TraceMethodAroundAdvice after method throwing '" + method.name + "' in around advice.");
 		}
 	}
 }
