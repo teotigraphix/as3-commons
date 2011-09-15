@@ -7,8 +7,8 @@ package org.as3commons.aop.advice {
 		public function TraceGetterAfterAdvice() {
 		}
 
-		public function afterGetter(getter:Accessor):void {
-			trace("*** after getter");
+		public function afterGetter(result:*, getter:Accessor, target:*):void {
+			trace("* TraceGetterAfterAdvice after getter");
 		}
 	}
 }

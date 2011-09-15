@@ -7,12 +7,12 @@ package org.as3commons.aop.advice {
 		public function TraceSetterAroundAdvice() {
 		}
 
-		public function beforeSetter(setter:Accessor):void {
-			trace("*** before setter");
+		public function beforeSetter(setter:Accessor, target:*, value:*):void {
+			trace("* TraceSetterAroundAdvice before setter '" + setter.name + "' with value '" + value + "'");
 		}
 
 		public function afterSetter(setter:Accessor):void {
-			trace("*** after setter");
+			trace("* TraceSetterAroundAdvice after setter '" + setter.name + "'");
 		}
 	}
 }

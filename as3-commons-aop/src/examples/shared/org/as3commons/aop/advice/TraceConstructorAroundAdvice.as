@@ -8,16 +8,16 @@ package org.as3commons.aop.advice {
 		}
 
 		public function beforeConstructor(constructor:Constructor, args:Array):void {
-			trace("*** before constructor in around advice");
+			trace("* TraceConstructorAroundAdvice before constructor in around advice with args " + args);
 			//args[0] = "Constructor argument was replaced by the advice";
 		}
 
 		public function afterConstructor(constructor:Constructor, args:Array, target:*):void {
-			trace("*** after constructor in around advice");
+			trace("* TraceConstructorAroundAdvice after constructor in around advice with args " + args);
 		}
 
 		public function afterConstructorThrowing(constructor:Constructor, args:Array, error:Error):void {
-			trace("*** after constructor throwing in around advice. Error '" + error + "'");
+			trace("* TraceConstructorAroundAdvice after constructor throwing in around advice. Error '" + error + "'");
 		}
 	}
 }

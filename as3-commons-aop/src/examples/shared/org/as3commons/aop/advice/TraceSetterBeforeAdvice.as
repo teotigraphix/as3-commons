@@ -6,7 +6,7 @@ package org.as3commons.aop.advice {
 		public function TraceSetterBeforeAdvice() {
 		}
 
-		public function beforeSetter(setter:Accessor):void {
+		public function beforeSetter(setter:Accessor, target:*, value:*):void {
 			trace("*** before setter");
 		}
 	}

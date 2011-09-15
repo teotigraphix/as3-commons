@@ -6,7 +6,7 @@ package org.as3commons.aop.advice {
 		public function TraceGetterBeforeAdvice() {
 		}
 
-		public function beforeGetter(getter:Accessor):void {
+		public function beforeGetter(getter:Accessor, target:*):void {
 			trace("*** before getter");
 		}
 	}

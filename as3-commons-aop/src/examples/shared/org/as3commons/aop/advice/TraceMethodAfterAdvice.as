@@ -8,7 +8,7 @@ package org.as3commons.aop.advice {
 		}
 
 		public function afterMethod(returnValue:*, method:Method, args:Array, target:*):void {
-			trace("*** after method");
+			trace("* TraceMethodAfterAdvice after method '" + method.name + "'");
 		}
 	}
 }
