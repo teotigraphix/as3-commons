@@ -13,16 +13,19 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.advice.getter {
-	import org.as3commons.aop.advice.*;
-	import org.as3commons.reflect.Accessor;
+package org.as3commons.aop.advice.method {
+	import org.as3commons.aop.advice.IThrowsAdvice;
+	import org.as3commons.bytecode.interception.IMethodInvocation;
+	import org.as3commons.reflect.Method;
 
 	/**
+	 * Method "throws" advice is invoked after a method throws an error.
+	 *
 	 * @author Christophe Herreman
 	 */
-	public interface IGetterBeforeAdvice extends IBeforeAdvice, IGetterAdvice {
+	public interface IMethodThrowsAdvice extends IThrowsAdvice, IMethodAdvice {
 
-		function beforeGetter(getter:Accessor, target:*):void;
+		function afterMethodThrowing(method:Method, args:Array, target:*, error:Error):void;
 
 	}
 }

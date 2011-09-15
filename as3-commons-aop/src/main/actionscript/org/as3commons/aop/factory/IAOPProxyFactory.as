@@ -52,7 +52,7 @@ package org.as3commons.aop.factory {
 		 * Start the asynchronous creation of the proxy.
 		 * @return an operation that can be listened to in order to know when the proxy is created
 		 */
-		function createProxy():IOperation;
+		function load():IOperation;
 
 		/**
 		 * Returns a new proxy.

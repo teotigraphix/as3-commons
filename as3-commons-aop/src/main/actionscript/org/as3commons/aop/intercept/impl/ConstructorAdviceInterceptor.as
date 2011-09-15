@@ -13,27 +13,21 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.advisor.impl {
-	import org.as3commons.aop.advice.IAdvice;
-	import org.as3commons.aop.advisor.IPointcutAdvisor;
-	import org.as3commons.aop.pointcut.IPointcut;
-	import org.as3commons.lang.Assert;
+package org.as3commons.aop.intercept.impl {
+	import org.as3commons.aop.advice.constructor.IConstructorAdvice;
+	import org.as3commons.aop.advice.constructor.IConstructorBeforeAdvice;
+	import org.as3commons.aop.intercept.IConstructorInterceptor;
+	import org.as3commons.aop.intercept.invocation.IConstructorInvocation;
 
 	/**
-	 * Default and immutable implementation of IPointcutAdvisor.
+	 * Interceptor that applies constructor advice.
 	 *
 	 * @author Christophe Herreman
+	 * @author Bert Vandamme
 	 */
-	public class PointcutAdvisor implements IPointcutAdvisor {
+	public class ConstructorAdviceInterceptor implements IConstructorInterceptor {
 
-		// --------------------------------------------------------------------
-		//
-		// Private Variables
-		//
-		// --------------------------------------------------------------------
-
-		private var _pointcut:IPointcut;
-		private var _advice:IAdvice;
+		private var _advice:IConstructorAdvice;
 
 		// --------------------------------------------------------------------
 		//
@@ -41,25 +35,33 @@ package org.as3commons.aop.advisor.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function PointcutAdvisor(pointcut:IPointcut, advice:IAdvice) {
-			Assert.notNull(pointcut, "The pointcut must not be null");
-			Assert.notNull(advice, "The advice must not be null");
-			_pointcut = pointcut;
+		public function ConstructorAdviceInterceptor(advice:IConstructorAdvice) {
 			_advice = advice;
 		}
 
 		// --------------------------------------------------------------------
 		//
-		// Properties
+		// Public Methods
 		//
 		// --------------------------------------------------------------------
 
-		public function get pointcut():IPointcut {
-			return _pointcut;
+		public function interceptConstructor(invocation:IConstructorInvocation):* {
+			invokeBeforeAdvice(invocation);
+			return invocation.proceed();
 		}
 
-		public function get advice():IAdvice {
-			return _advice;
+		// --------------------------------------------------------------------
+		//
+		// Private Methods
+		//
+		// --------------------------------------------------------------------
+
+
+		private function invokeBeforeAdvice(invocation:IConstructorInvocation):void {
+			if (_advice is IConstructorBeforeAdvice) {
+				IConstructorBeforeAdvice(_advice).beforeConstructor(invocation.constructor, invocation.args);
+			}
 		}
+
 	}
 }

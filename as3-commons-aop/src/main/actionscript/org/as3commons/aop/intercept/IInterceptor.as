@@ -13,16 +13,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.advice.getter {
-	import org.as3commons.aop.advice.*;
-	import org.as3commons.reflect.Accessor;
+package org.as3commons.aop.intercept {
+	import org.as3commons.aop.advice.IAdvice;
 
 	/**
+	 * Marker interface for interceptors.
+	 *
 	 * @author Christophe Herreman
+	 * @author Bert Vandamme
 	 */
-	public interface IGetterBeforeAdvice extends IBeforeAdvice, IGetterAdvice {
-
-		function beforeGetter(getter:Accessor, target:*):void;
-
+	public interface IInterceptor extends IAdvice {
 	}
 }

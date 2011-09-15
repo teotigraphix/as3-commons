@@ -14,10 +14,13 @@
 * limitations under the License.
 */
 package org.as3commons.aop.factory.impl {
+	import flash.display.LoaderInfo;
+
 	import org.as3commons.aop.factory.*;
 	import org.as3commons.aop.*;
 	import org.as3commons.aop.advice.IAdvice;
 	import org.as3commons.aop.advisor.IAdvisor;
+	import org.as3commons.aop.intercept.IInterceptor;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.lang.Assert;
 
@@ -47,8 +50,15 @@ package org.as3commons.aop.factory.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function AOPProxyFactory() {
-			_proxyFactory = new AOPBatchProxyFactory();
+		/**
+		 * Creates a new AOPProxyFactory.
+		 *
+		 * @param loaderInfo an optional loaderInfo on which bytecode reflection will
+		 * be done. In case this is not provided, the loader info will be determined.
+		 * For Flex applications, this is generally not needed.
+		 */
+		public function AOPProxyFactory(loaderInfo:LoaderInfo = null) {
+			_proxyFactory = new AOPBatchProxyFactory(loaderInfo);
 			_adviceAndAdvisors = [];
 		}
 
@@ -58,6 +68,10 @@ package org.as3commons.aop.factory.impl {
 		//
 		// --------------------------------------------------------------------
 
+		/**
+		 * The target to proxy. This can either be a class or an instance.
+		 * @param value
+		 */
 		public function set target(value:*):void {
 			Assert.notNull(value);
 			Assert.state(_target == null, "The target has already been set.");
@@ -88,8 +102,16 @@ package org.as3commons.aop.factory.impl {
 			}
 		}
 
-		public function createProxy():IOperation {
-			return _proxyFactory.createProxies();
+		/*public function addInterceptor(interceptor:IInterceptor):void {
+			if (_target) {
+				_proxyFactory.addInterceptor(interceptor, _target);
+			} else {
+				_adviceAndAdvisors.push(interceptor);
+			}
+		}*/
+
+		public function load():IOperation {
+			return _proxyFactory.load();
 		}
 
 		public function getProxy(constructorArgs:Array = null):* {
@@ -109,7 +131,9 @@ package org.as3commons.aop.factory.impl {
 					_proxyFactory.addAdvice(adviceOrAdvisor, _target);
 				} else if (adviceOrAdvisor is IAdvisor) {
 					_proxyFactory.addAdvisor(adviceOrAdvisor, _target);
-				}
+				}/* else if (adviceOrAdvisor is IInterceptor) {
+					addInterceptor(adviceOrAdvisor)
+				}*/
 			}
 			_adviceAndAdvisors = null;
 		}

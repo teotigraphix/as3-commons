@@ -21,7 +21,7 @@ package org.as3commons.aop.advice.method {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public interface IMethodAroundAdvice extends IAroundAdvice, IMethodBeforeAdvice, IMethodAfterReturningAdvice, IMethodAfterAdvice, IMethodThrowingAdvice {
+	public interface IMethodAroundAdvice extends IAroundAdvice, IMethodBeforeAdvice, IMethodAfterReturningAdvice, IMethodAfterAdvice, IMethodThrowsAdvice {
 		
 	}
 }

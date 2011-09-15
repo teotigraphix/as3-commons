@@ -13,19 +13,19 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.advice.method {
-	import org.as3commons.aop.advice.IThrowsAdvice;
-	import org.as3commons.bytecode.interception.IMethodInvocation;
-	import org.as3commons.reflect.Method;
+package org.as3commons.aop.intercept {
 
 	/**
-	 * Method "throwing" advice is invoked after a method throws an error.
+	 * Generic joinpoint interface.
 	 *
 	 * @author Christophe Herreman
+	 * @author Bert Vandamme
 	 */
-	public interface IMethodThrowingAdvice extends IThrowsAdvice {
+	public interface IJoinpoint {
 
-		function afterMethodThrowing(method:Method, args:Array, target:*, error:Error):void;
+		function get target():*;
+
+		function proceed():*;
 
 	}
 }

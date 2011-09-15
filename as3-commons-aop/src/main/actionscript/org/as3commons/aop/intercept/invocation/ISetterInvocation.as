@@ -13,16 +13,17 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.advice.getter {
-	import org.as3commons.aop.advice.*;
-	import org.as3commons.reflect.Accessor;
+package org.as3commons.aop.intercept.invocation {
 
 	/**
+	 * Defines a setter invocation.
+	 *
 	 * @author Christophe Herreman
 	 */
-	public interface IGetterBeforeAdvice extends IBeforeAdvice, IGetterAdvice {
+	public interface ISetterInvocation extends IInvocation {
 
-		function beforeGetter(getter:Accessor, target:*):void;
+		function get value():*;
+		function set value(v:*):void;
 
 	}
 }
