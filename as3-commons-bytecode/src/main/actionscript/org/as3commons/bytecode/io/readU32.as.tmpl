@@ -1,0 +1,13 @@
+result = _byteStream.readUnsignedByte();
+if ((result & 0x00000080)) {
+	result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
+	if ((result & 0x00004000)) {
+		result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
+		if ((result & 0x00200000)) {
+			result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
+			if ((result & 0x10000000)) {
+				result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
+			}
+		}
+	}
+}
