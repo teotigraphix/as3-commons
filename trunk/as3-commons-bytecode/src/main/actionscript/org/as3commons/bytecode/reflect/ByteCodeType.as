@@ -61,7 +61,6 @@ package org.as3commons.bytecode.reflect {
 
 		/**
 		 * Returns a <code>ByteCodeType</code> object that describes the given class.
-		 *
 		 * @param clazz the class from which to get a type description
 		 */
 		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain=null):ByteCodeType {

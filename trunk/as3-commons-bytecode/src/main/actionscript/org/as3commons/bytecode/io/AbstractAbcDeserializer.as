@@ -38,7 +38,7 @@ package org.as3commons.bytecode.io {
 	public class AbstractAbcDeserializer implements IAbcDeserializer {
 		private static const UTF8_BAD_PREFIX:String = "UTF8_BAD";
 
-		private var _byteStream:ByteArray;
+		protected var _byteStream:ByteArray;
 		private var _constantPoolEndPosition:uint = 0;
 		private var _illegalCount:uint = 0;
 
@@ -73,52 +73,17 @@ package org.as3commons.bytecode.io {
 			/* READ integerpool */
 			var itemCount:int;
 
-			var result:int = _byteStream.readUnsignedByte();
-			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-						}
-					}
-				}
-			}
+			var result:int;
+			include "readU32.as.tmpl";
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				result = _byteStream.readUnsignedByte();
-				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-							}
-						}
-					}
-				}
+				include "readU32.as.tmpl";
 				pool.integerPool[pool.integerPool.length] = result;
 			}
 			/* END:READ integerpool */
 
 			/* READ uintpool */
-			result = _byteStream.readUnsignedByte();
-			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-						}
-					}
-				}
-			}
+			include "readU32.as.tmpl";
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
 				var uresult:uint = _byteStream.readUnsignedByte();
@@ -139,19 +104,7 @@ package org.as3commons.bytecode.io {
 			/* END:READ uintpool */
 
 			/* READ doublepool */
-			result = _byteStream.readUnsignedByte();
-			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-						}
-					}
-				}
-			}
+			include "readU32.as.tmpl";
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
 				pool.doublePool[pool.doublePool.length] = _byteStream.readDouble();
@@ -159,34 +112,10 @@ package org.as3commons.bytecode.io {
 			/* END:READ doublepool */
 
 			/* READ stringpool */
-			result = _byteStream.readUnsignedByte();
-			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-						}
-					}
-				}
-			}
+			include "readU32.as.tmpl";
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				result = _byteStream.readUnsignedByte();
-				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-							}
-						}
-					}
-				}
+				include "readU32.as.tmpl";
 				var str:String = _byteStream.readUTFBytes(result);
 				if (result != str.length) {
 					str = UTF8_BAD_PREFIX + (_illegalCount++).toString();
@@ -196,84 +125,24 @@ package org.as3commons.bytecode.io {
 			/* END:READ stringpool */
 
 			/* READ namespacepool */
-			result = _byteStream.readUnsignedByte();
-			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-						}
-					}
-				}
-			}
+			include "readU32.as.tmpl";
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
 				var kind:uint = 255 & _byteStream[_byteStream.position++];
-				result = _byteStream.readUnsignedByte();
-				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-							}
-						}
-					}
-				}
+				include "readU32.as.tmpl";
 				pool.namespacePool[pool.namespacePool.length] = new LNamespace(NamespaceKind.determineKind(kind), pool.stringPool[result]);
 			}
 			/* END:READ namespacepool */
 
 			/* READ namespacesetpool */
-			result = _byteStream.readUnsignedByte();
-			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-						}
-					}
-				}
-			}
+			include "readU32.as.tmpl";
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
-				result = _byteStream.readUnsignedByte();
-				if ((result & 0x00000080)) {
-					result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-					if ((result & 0x00004000)) {
-						result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-						if ((result & 0x00200000)) {
-							result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-							if ((result & 0x10000000)) {
-								result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-							}
-						}
-					}
-				}
+				include "readU32.as.tmpl";
 				var namespaceIndexRefCount:int = result;
 				var namespaceArray:Array = [];
 				while (--namespaceIndexRefCount - (-1)) {
-					result = _byteStream.readUnsignedByte();
-					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-								}
-							}
-						}
-					}
+					include "readU32.as.tmpl";
 					namespaceArray[namespaceArray.length] = pool.namespacePool[result];
 				}
 				pool.namespaceSetPool[pool.namespaceSetPool.length] = new NamespaceSet(namespaceArray);
@@ -281,169 +150,45 @@ package org.as3commons.bytecode.io {
 			/* END:READ namespacesetpool */
 
 			/* READ multinamepool */
-			result = _byteStream.readUnsignedByte();
-			if ((result & 0x00000080)) {
-				result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-				if ((result & 0x00004000)) {
-					result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-					if ((result & 0x00200000)) {
-						result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-						if ((result & 0x10000000)) {
-							result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-						}
-					}
-				}
-			}
+			include "readU32.as.tmpl";
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
 				kind = 255 & _byteStream[_byteStream.position++];
 				//QNAME or QNAME_A
 				if ((kind == 0x07) || (kind == 0x0D)) {
-					result = _byteStream.readUnsignedByte();
-					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-								}
-							}
-						}
-					}
-					var ns:LNamespace = pool.namespacePool[result];
-					result = _byteStream.readUnsignedByte();
-					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-								}
-							}
-						}
-
-					}
-					var name:String = pool.stringPool[result];
+					include "readU32.as.tmpl";
+					var ns:LNamespace = pool.namespacePool[result] as LNamespace;
+					include "readU32.as.tmpl";
+					var name:String = pool.stringPool[result] as String;
 					pool.multinamePool[pool.multinamePool.length] = new QualifiedName(name, ns, (kind == 0x07) ? MultinameKind.QNAME : MultinameKind.QNAME_A);
 						//RTQName or RTQName_A
 				} else if ((kind == 0x0f) || (kind == 0x10)) {
-					result = _byteStream.readUnsignedByte();
-					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-								}
-							}
-						}
-					}
-					str = pool.stringPool[result];
+					include "readU32.as.tmpl";
+					str = pool.stringPool[result] as String;
 					pool.multinamePool[pool.multinamePool.length] = new RuntimeQualifiedName(str, (kind == 0x0f) ? MultinameKind.RTQNAME : MultinameKind.RTQNAME_A);
 				} else if ((kind == 0x11) || (kind == 0x12)) {
 					//RTQNAME_L or RTQNAME_LA
 					pool.multinamePool[pool.multinamePool.length] = new RuntimeQualifiedNameL((kind == 0x11) ? MultinameKind.RTQNAME_L : MultinameKind.RTQNAME_LA);
 				} else if ((kind == 0x09) || (kind == 0x0E)) {
 					//MULTINAME or MULTINAME_A
-					result = _byteStream.readUnsignedByte();
-					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-								}
-							}
-						}
-					}
-					str = pool.stringPool[result];
-					result = _byteStream.readUnsignedByte();
-					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-								}
-							}
-						}
-
-					}
-					var nss:NamespaceSet = pool.namespaceSetPool[result];
+					include "readU32.as.tmpl";
+					str = pool.stringPool[result] as String;
+					include "readU32.as.tmpl";
+					var nss:NamespaceSet = pool.namespaceSetPool[result] as NamespaceSet;
 					pool.multinamePool[pool.multinamePool.length] = new Multiname(str, nss, (kind == 0x09) ? MultinameKind.MULTINAME : MultinameKind.MULTINAME_A);
 				} else if ((kind == 0x1B) || (kind == 0x1C)) {
 					//MULTINAME_L or MULTINAME_LA
-					result = _byteStream.readUnsignedByte();
-					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-								}
-							}
-						}
-
-					}
+					include "readU32.as.tmpl";
 					pool.multinamePool[pool.multinamePool.length] = new MultinameL(pool.namespaceSetPool[result], (kind == 0x1B) ? MultinameKind.MULTINAME_L : MultinameKind.MULTINAME_LA);
 				} else if (kind == 0x1D) {
 					//GENERIC
-					result = _byteStream.readUnsignedByte();
-					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-								}
-							}
-						}
-					}
-					var qualifiedName:QualifiedName = pool.multinamePool[result];
-					result = _byteStream.readUnsignedByte();
-					if ((result & 0x00000080)) {
-						result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-						if ((result & 0x00004000)) {
-							result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-							if ((result & 0x00200000)) {
-								result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-								if ((result & 0x10000000)) {
-									result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-								}
-							}
-						}
-					}
+					include "readU32.as.tmpl";
+					var qualifiedName:QualifiedName = pool.multinamePool[result] as QualifiedName;
+					include "readU32.as.tmpl";
 					var paramCount:uint = result;
 					var params:Array = [];
 					while (paramCount--) {
-						result = _byteStream.readUnsignedByte();
-						if ((result & 0x00000080)) {
-							result = result & 0x0000007f | _byteStream.readUnsignedByte() << 7;
-							if ((result & 0x00004000)) {
-								result = result & 0x00003fff | _byteStream.readUnsignedByte() << 14;
-								if ((result & 0x00200000)) {
-									result = result & 0x001fffff | _byteStream.readUnsignedByte() << 21;
-									if ((result & 0x10000000)) {
-										result = result & 0x0fffffff | _byteStream.readUnsignedByte() << 28;
-									}
-								}
-							}
-
-						}
+						include "readU32.as.tmpl";
 						params[params.length] = pool.multinamePool[result];
 					}
 					pool.multinamePool[pool.multinamePool.length] = new MultinameG(qualifiedName, paramCount, params, MultinameKind.GENERIC)
