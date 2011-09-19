@@ -391,13 +391,13 @@ package org.as3commons.collections.framework.core {
 					p = q;
 				}
 				
-				_first.left = tail;
 				tail.right = null;
 				if (nmerges <= 1) {
 					break;
 				}
 				insize <<= 1;
 			}
+
 			_first = h;
 			_last = tail;
 		}

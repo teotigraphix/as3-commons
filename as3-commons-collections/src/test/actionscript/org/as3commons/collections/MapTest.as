@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package org.as3commons.collections {
+
 	import org.as3commons.collections.framework.ICollection;
+	import org.as3commons.collections.framework.IMap;
 	import org.as3commons.collections.mocks.MapMock;
 	import org.as3commons.collections.testhelpers.AbstractCollectionTestCase;
 	import org.as3commons.collections.testhelpers.UniqueMapKey;
@@ -36,7 +38,7 @@ package org.as3commons.collections {
 		override public function fillCollection(items : Array) : void {
 			collection.clear();
 			for each (var item : * in items) {
-				Map(collection).add(UniqueMapKey.key, item);
+				IMap(collection).add(UniqueMapKey.key, item);
 			}
 		}
 

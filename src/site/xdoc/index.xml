@@ -54,8 +54,8 @@
 			<tr>
 				<td><strong>Collections</strong></td>
 				<td>Collections framework including several lists, sets and maps, many of them in an additional bindable version.</td>
-				<td>1.3.1</td>
-				<td>29 Jun 2011</td>
+				<td>1.3.2</td>
+				<td>19 Sep 2011</td>
 			</tr>
 			<tr>
 				<td><strong>Concurrency</strong></td>
@@ -96,8 +96,8 @@
 			<tr>
 				<td><strong>UI</strong></td>
 				<td>Algorithms and managers to serve common UI releated tasks such as layouting, focus and keyboard management, popup handling, drag and drop control and so on. All packages support native Flash display objects. Usage of UI does not require interface implementations. The first version (0.1) includes the sole layout package. Version 0.2 adds the Invalidation and LifeCycle package. Version 0.3 comes with popup and tooltip management.</td>
-				<td>0.3.2</td>
-				<td>29 Jun 2011</td>
+				<td>0.3.4</td>
+				<td>19 Sep 2011</td>
 			</tr>
 			<tr>
 				<td><strong>ASync</strong></td>
