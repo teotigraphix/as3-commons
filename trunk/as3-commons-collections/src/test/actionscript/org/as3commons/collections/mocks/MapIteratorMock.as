@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package org.as3commons.collections.mocks {
-	import org.as3commons.collections.Map;
+
+	import org.as3commons.collections.framework.IMap;
 	import org.as3commons.collections.framework.core.MapIterator;
 	import org.as3commons.collections.units.iterators.ITestIteratorNextPreviousLookup;
 
@@ -24,7 +25,7 @@ package org.as3commons.collections.mocks {
 	public class MapIteratorMock extends MapIterator implements
 		ITestIteratorNextPreviousLookup
 	{
-		public function MapIteratorMock(map : Map) {
+		public function MapIteratorMock(map : IMap) {
 			super(map);
 		}
 

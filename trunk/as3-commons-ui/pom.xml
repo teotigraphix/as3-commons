@@ -5,7 +5,7 @@
     <groupId>org.as3commons</groupId>
     <artifactId>as3commons-ui</artifactId>
     <packaging>swc</packaging>
-    <version>0.3.2</version>
+    <version>0.3.4</version>
     <name>AS3Commons UI</name>
     <url>http://code.google.com/p/as3-commons</url>
     <description>ActionScript UI Development Tools</description>
@@ -218,10 +218,10 @@
     </reporting>
 
     <scm>
-        <developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.3.2
+        <developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.3.4
         </developerConnection>
-        <url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.3.2</url>
-        <connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.3.2</connection>
+        <url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.3.4</url>
+        <connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-ui/0.3.4</connection>
     </scm>
 
     <distributionManagement>
