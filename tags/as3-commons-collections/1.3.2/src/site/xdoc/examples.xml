@@ -1,0 +1,2051 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>As3commons-collections examples</title>
+        <author email="scab@dds.nl">Roland Zwaga</author>
+    </properties>
+    <body>
+        <section name="Introduction">
+		<p>Here is a sub list of examples that showcase the classes found in as3commons-collections. This list is not longer maintained an may be outdated some time. There are more and more recent examples in the ZIP download package or in the example directory of the source repository. See also the <a href="http://sibirjak.com/osflash/projects/as3commons-collections/examples/">developer page</a> which provides comfortable navigation through format all examples.</p>                       
+        </section>
+        
+        <section name="Examples">
+		<ul>
+			<li><a href="#ArrayList">ArrayList</a></li>
+			<li><a href="#ArrayList_Fx">ArrayList Fx</a></li>
+			<li><a href="#ArrayList_iterator">ArrayList iterator</a></li>
+			<li><a href="#Collection_event_down_cast">Collection event down cast</a></li>
+			<li><a href="#Collection_event_iterator_down_cast">Collection event iterator down cast</a></li>
+			<li><a href="#Collection_event_iterator">Collection event_iterator</a></li>
+			<li><a href="#Collection_filter_iterator">Collection filter iterator</a></li>
+			<li><a href="#Collection_iterator">Collection iterator</a></li>
+			<li><a href="#Comparator_implementation">Comparator implementation</a></li>
+			<li><a href="#Dump_as_string">Dump as string</a></li>
+			<li><a href="#Filter_iterator">Filter iterator</a></li>
+			<li><a href="#Iterator_down_cast">Iterator down cast</a></li>
+			<li><a href="#LinkedList">LinkedList</a></li>
+			<li><a href="#LinkedMap">LinkedMap</a></li>
+			<li><a href="#LinkedMap_Fx">LinkedMap Fx</a></li>
+			<li><a href="#LinkedSet">LinkedSet</a></li>
+			<li><a href="#LinkedSet Fx">LinkedSet Fx</a></li>
+			<li><a href="#Map">Map</a></li>
+			<li><a href="#Map_Fx">Map Fx</a></li>
+			<li><a href="#Recursive_filter_iterator">Recursive filter iterator</a></li>
+			<li><a href="#Recursive_iterator">Recursive iterator</a></li>
+			<li><a href="#Set">Set</a></li>
+			<li><a href="#Set_Fx">Set Fx</a></li>
+			<li><a href="#Sorted_list">Sorted list</a></li>
+			<li><a href="#Sorted_list Fx">Sorted list Fx</a></li>
+			<li><a href="#Sorted_map">Sorted map</a></li>
+			<li><a href="#Sorted_map_Fx">Sorted map Fx</a></li>
+			<li><a href="#Sorted_set">Sorted_set</a></li>
+			<li><a href="#Sorted_set_Fx">Sorted set Fx</a></li>
+			<li><a href="#Treap">Treap</a></li>
+		</ul>
+
+        	<subsection name="ArrayList">
+        		<div class="source"><pre>var list : ArrayList = new ArrayList();
+
+// Add
+
+list.add("a");
+list.add("b");
+list.addAllAt(1, ["c", "d"]);
+trace (list.toArray()); // a,c,d,b
+
+list.addFirst("e");
+list.addLast("a");
+list.addAt(3, "a");
+trace (list.toArray()); // e,a,c,a,d,b,a
+
+// Replace
+
+list.replaceAt(2, "a");
+list.replaceAt(3, "f");
+trace (list.toArray()); // e,a,a,f,d,b,a
+
+// Inspection
+
+trace (list.size); // 7
+trace (list.has("b")); // true
+trace (list.itemAt(3)); // f
+trace (list.firstIndexOf("a")); // 1
+trace (list.lastIndexOf("a")); // 6
+trace (list.count("a")); // 3
+
+// Reorder
+
+list.reverse();
+trace (list.toArray()); // a,b,d,f,a,a,e
+
+list.sort(new StringComparator());
+trace (list.toArray()); // a,a,a,b,d,e,f
+
+// Iterator
+
+var iterator : IIterator = list.iterator();
+trace (iterator is IIterator); // true
+trace (iterator is ICollectionIterator); // true
+trace (iterator is IListIterator); // true
+trace (iterator is IOrderedListIterator); // true
+
+while (iterator.hasNext()) {
+	trace (iterator.next()); // a,a,a,b,d,e,f
+}
+
+// List iterator
+
+var listIterator : IListIterator = list.iterator() as IListIterator;
+while (listIterator.hasNext()) {
+	listIterator.next();
+	trace (listIterator.index + "=" + listIterator.current);
+}
+
+// 0=a
+// 1=a
+// 2=a
+// 3=b
+// 4=d
+// 5=e
+// 6=f
+
+// Remove
+
+list.remove("a");
+trace (list.toArray()); // a,a,b,d,e,f
+
+list.removeAll("a");
+trace (list.toArray()); // b,d,e,f
+
+list.removeAt(1);
+list.removeFirst();
+list.removeLast();
+trace (list.toArray()); // e
+
+list.clear();
+trace (list.toArray()); // []</pre></div>
+        	</subsection>
+        	
+        	<subsection name="ArrayList Fx">
+        		<div class="source"><pre>var list : ArrayListFx = new ArrayListFx();
+list.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+
+list.add(1);
+list.addAllAt(1, [2, 2, 4, 4, 5, 5, 6, 6, 8, 8]);
+list.addFirst(10);
+list.addLast(12);
+
+list.replaceAt(3, 2); // no event (item at 3 is already 2)
+list.replaceAt(6, 2);
+list.replaceAt(7, 2);
+
+list.removeFirst();
+list.removeLast();
+list.removeAt(2);
+list.removeAt(12); // no event (index  > gt; list.size)
+list.removeAllAt(2, 2);
+
+list.remove(6);
+list.removeAll(2);
+list.removeAll(10); // no event (10 not contained)
+
+list.reverse();
+list.sort(new NumericComparator());
+list.array = [1, 2, 3, 4, 5];
+
+list.clear();
+
+// [1] added at 0                        [1]
+// [2,2,4,4,5,5,6,6,8,8] added at 1      [1 2 2 4 4 5 5 6 6 8 8]
+// [10] added at 0                       [10 1 2 2 4 4 5 5 6 6 8 8]
+// [12] added at 12                      [10 1 2 2 4 4 5 5 6 6 8 8 12]
+// [2] replaced at 6                     [10 1 2 2 4 4 2 5 6 6 8 8 12]
+// [2] replaced at 7                     [10 1 2 2 4 4 2 2 6 6 8 8 12]
+// [10] removed at 0                     [1 2 2 4 4 2 2 6 6 8 8 12]
+// [12] removed at 11                    [1 2 2 4 4 2 2 6 6 8 8]
+// [2] removed at 2                      [1 2 4 4 2 2 6 6 8 8]
+// [4,4] removed at 2                    [1 2 2 2 6 6 8 8]
+// [6] removed at 4                      [1 2 2 2 6 8 8]
+// [2] removed at 1                      [1 2 2 6 8 8]
+// [2] removed at 1                      [1 2 6 8 8]
+// [2] removed at 1                      [1 6 8 8]
+// Reset                                 [8 8 6 1]
+// Reset                                 [1 6 8 8]
+// Reset                                 [1 2 3 4 5]
+// Reset                                 []
+
+private function changedHandler(e : ListEvent) : void {
+	var info : String = "";
+	var items : *;
+
+	switch (e.kind) {
+		case CollectionEvent.ITEM_ADDED:
+			items = e.numItems == 1 ? e.item : e.items;
+			info += "[" + items + "] added at " + e.index;
+			break;
+
+		case CollectionEvent.ITEM_REMOVED:
+			items = e.numItems == 1 ? e.item : e.items;
+			info += "[" + items + "] removed at " + e.index;
+			break;
+
+		case CollectionEvent.ITEM_REPLACED:
+			info += "[" + e.item + "] replaced at " + e.index;
+			break;
+
+		case CollectionEvent.RESET:
+			info += ("Reset");
+			break;
+	}
+
+	for (var i : uint = info.length; i  &lt; 38; i++) info += " ";
+	info += "[" + e.list.toArray().join(" ") + "]";
+	trace (info);
+}</pre></div>
+		</subsection>
+		
+        	<subsection name="ArrayList iterator">
+        		<div class="source"><pre>var list : ArrayList = new ArrayList();
+var iterator : IOrderedListIterator;
+var item : *;
+
+// ^ = cursor, [n] = current
+
+// Navigation
+
+list.array = [1, 2, 3];
+iterator = list.iterator() as IOrderedListIterator;
+
+			  //  ^  1  2  3
+iterator.next();          // [1] ^  2  3
+iterator.next();          //  1 [2] ^  3
+iterator.next();          //  1  2 [3] ^
+iterator.next();          //  1  2  3  ^
+iterator.previous();      //  1  2  ^ [3]
+iterator.previous();      //  1  ^ [2] 3
+iterator.previous();      //  ^ [1] 2  3
+iterator.previous();      //  ^  1  2  3
+
+iterator.next();          // [1] ^  2  3
+iterator.next();          //  1 [2] ^  3
+iterator.start();         //  ^  1  2  3
+
+iterator.next();          // [1] ^  2  3
+iterator.next();          //  1 [2] ^  3
+iterator.end();           //  1  2  3  ^
+
+// Current and index
+
+iterator = list.iterator() as IOrderedListIterator;
+
+with (iterator) {
+	trace (index, current, previousIndex, nextIndex);
+	// -1 undefined -1 0
+
+	next();
+	trace (index, current, previousIndex, nextIndex);
+	// 0 1 0 1
+
+	next();
+	trace (index, current, previousIndex, nextIndex);
+	// 1 2 1 2
+
+	next();
+	trace (index, current, previousIndex, nextIndex);
+	// 2 3 2 -1
+
+	next();
+	trace (index, current, previousIndex, nextIndex);
+	// -1 undefined 2 -1
+}
+
+// Start position
+
+iterator = list.iterator() as IOrderedListIterator;   //  ^  1  2  3
+iterator = list.iterator(1) as IOrderedListIterator;  //  1  ^  2  3
+iterator = list.iterator(2) as IOrderedListIterator;  //  1  2  ^  3
+iterator = list.iterator(10) as IOrderedListIterator; //  1  2  3  ^
+
+// Replace
+
+iterator = list.iterator() as IOrderedListIterator;
+
+			  //  ^  1  2  3
+iterator.next();          // [1] ^  2  3
+iterator.next();          //  1 [2] ^  3
+iterator.replace(4);      //  1 [4] ^  3
+iterator.next();          //  1  4 [3] ^
+iterator.replace(5);      //  1  4 [5] ^
+iterator.next();          //  1  4  5  ^
+iterator.replace(6);      //  1  4  5  ^
+
+// Remove
+
+list.array = [1, 2, 3];
+iterator = list.iterator() as IOrderedListIterator;
+
+			  //  ^  1  2  3
+iterator.next();          // [1] ^  2  3
+iterator.next();          //  1 [2] ^  3
+iterator.remove();        //  1  ^  3
+iterator.next();          //  1 [3] ^
+iterator.remove();        //  1  ^
+iterator.remove();        //  1  ^
+
+// Add
+
+list.array = [1, 2, 3];
+iterator = list.iterator() as IOrderedListIterator;
+
+			  //  ^  1  2  3
+iterator.addAfter(4);     //  ^  4  1  2  3
+iterator.addBefore(5);    //  5  ^  4  1  2  3
+
+iterator.next();          //  5 [4] ^  1  2  3
+iterator.next();          //  5  4 [1] ^  2  3
+iterator.addBefore(6);    //  5  4  1  6  ^  2  3
+iterator.addAfter(7);     //  5  4  1  6  ^  7  2  3
+
+iterator.next();          //  5  4  1  6 [7] ^  2  3
+iterator.next();          //  5  4  1  6  7 [2] ^  3
+iterator.next();          //  5  4  1  6  7  2 [3] ^
+iterator.addBefore(8);    //  5  4  1  6  7  2  3  8  ^
+iterator.addAfter(9);     //  5  4  1  6  7  2  3  8  ^  9
+
+// Add during iteration
+
+list.array = [1, 2, 3];
+iterator = list.iterator() as IOrderedListIterator;
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (item); // 1,2,5,3,7
+
+	if (item == 1) iterator.addBefore(4);   //  1  4  ^  2  3
+	if (item == 2) iterator.addAfter(5);    //  1  4  2  ^  5  3
+	if (item == 5) iterator.addBefore(6);   //  1  4  2  5  6  ^  3
+	if (item == 3) iterator.addAfter(7);    //  1  4  2  5  6  3  ^  7
+}
+trace (list.toArray()); // 1,4,2,5,6,3,7
+
+// Replace during iteration
+
+list.array = [1, 2, 3];
+iterator = list.iterator() as IOrderedListIterator;
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (item); // 1,2,3
+
+	if (item == 1) iterator.replace(4);   // [4] ^  2  3
+	if (item == 2) iterator.replace(5);   //  4 [5] ^  3
+	if (item == 3) iterator.replace(6);   //  4  5 [6] ^
+}
+trace (list.toArray()); // 4,5,6
+
+// Remove during iteration
+
+list.array = [1, 2, 3, 4, 5];
+iterator = list.iterator() as IOrderedListIterator;
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (item); // 1,2,3,4,5
+
+	if (item == 1) iterator.remove();   //  ^  2  3  4  5
+	if (item == 3) iterator.remove();   //  2  ^  4  5
+	if (item == 5) iterator.remove();   //  2  4  ^
+}
+trace (list.toArray()); // 2,4
+
+// Reverse iteration
+
+list.array = [1, 2, 3, 4, 5];
+iterator = list.iterator() as IOrderedListIterator;
+iterator.end();
+while (iterator.hasPrevious()) {
+	trace (iterator.previous()); // 5,4,3,2,1
+}</pre></div>
+        </subsection>
+
+        <subsection name="Collection event down cast">
+        	<div class="source"><pre>var list : ArrayListFx = new ArrayListFx();
+list.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+list.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler2);
+list.add(1);
+
+// possibility 1
+private function changedHandler(e : CollectionEvent) : void {
+	var listEvent : ListEvent = e as ListEvent;
+	trace (listEvent.index, listEvent.item); // 0 1
+}
+
+// possibility 2
+private function changedHandler2(e : ListEvent) : void {
+	trace (e.index, e.item); // 0 1
+}</pre></div>
+	</subsection>
+	
+	<subsection name="Collection event iterator down cast">
+		<div class="source"><pre>var list : ArrayListFx = new ArrayListFx();
+list.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+list.add(1);
+
+private function changedHandler(event : CollectionEvent) : void {
+	var i : IIterator = event.iterator() as IIterator;
+
+	trace ("i", i is IIterator); // true
+	trace ("ci", i is ICollectionIterator); // true
+	trace ("li", i is IListIterator); // true
+	trace ("ali", i is IOrderedListIterator); // true
+
+	var ci : ICollectionIterator = event.iterator() as ICollectionIterator;
+
+	trace ("i", ci is IIterator); // true
+	trace ("ci", ci is ICollectionIterator); // true
+	trace ("li", ci is IListIterator); // true
+	trace ("ali", ci is IOrderedListIterator); // true
+
+	var li : IListIterator = event.iterator() as IListIterator;
+
+	trace ("i", li is IIterator); // true
+	trace ("ci", li is ICollectionIterator); // true
+	trace ("li", li is IListIterator); // true
+	trace ("ali", li is IOrderedListIterator); // true
+
+	var ali : IOrderedListIterator = event.iterator() as IOrderedListIterator;
+
+	trace ("i", ali is IIterator); // true
+	trace ("ci", ali is ICollectionIterator); // true
+	trace ("li", ali is IListIterator); // true
+	trace ("ali", ali is IOrderedListIterator); // true
+}</pre></div>
+	</subsection>
+
+	<subsection name="Collection event iterator">
+		<div class="source"><pre>var list : ArrayListFx = new ArrayListFx();
+list.array = [1, 2, 4, 5];
+list.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+
+list.addAt(2, 3); // 1, 2, 3, 4, 5
+list.replaceAt(3, 6); // 1, 2, 3, 6, 5
+list.removeAt(4); // 1, 2, 3, 6
+list.reverse(); // 6, 3, 2, 1
+
+private function changedHandler(event : CollectionEvent) : void {
+	var iterator : IListIterator = event.iterator() as IListIterator;
+
+	switch (event.kind) {
+		case CollectionEvent.ITEM_ADDED: // 1 2 ^ 3 4 5
+			trace (iterator.previousIndex); // 1
+			trace (iterator.nextIndex); // 2
+			trace (iterator.next()); // 3
+			break;
+
+		case CollectionEvent.ITEM_REPLACED: // 1 2 3 ^ 6 5
+			trace (iterator.previousIndex); // 2
+			trace (iterator.nextIndex); // 3
+			trace (iterator.next()); // 6
+			break;
+
+		case CollectionEvent.ITEM_REMOVED: // 1 2 3 6 ^
+			trace (iterator.previousIndex); // 3
+			trace (iterator.nextIndex); // -1
+			trace (iterator.next()); // undefined
+			break;
+
+		case CollectionEvent.RESET:
+			trace (iterator); // null
+			break;
+	}
+}</pre></div>
+
+	</subsection>
+
+	<subsection name="Collection filter iterator">
+		<div class="source"><pre>var list : ArrayList = new ArrayList();
+var iterator : ICollectionIterator;
+
+// ^ = cursor, [n] = current
+
+// Navigation
+
+list.array = [1, 2, 3, 4, 5, 6];
+iterator = new CollectionFilterIterator(list, evenFilter);
+
+		       //  ^  1  2  3  4  5  6
+iterator.next();       //  1 [2] ^  3  4  5  6
+iterator.next();       //  1  2  3 [4] ^  5  6
+iterator.next();       //  1  2  3  4  5 [6] ^
+iterator.next();       //  1  2  3  4  5  6  ^
+iterator.previous();   //  1  2  3  4  5  ^ [6]
+iterator.previous();   //  1  2  3  ^ [4] 5  6
+iterator.start();      //  ^  1  2  3  4  5  6
+iterator.end();        //  1  2  3  4  5  6  ^
+
+// Remove
+
+iterator = new CollectionFilterIterator(list, evenFilter);
+
+		       //  ^  1  2  3  4  5  6
+iterator.next();       //  1 [2] ^  3  4  5  6
+iterator.next();       //  1  2  3 [4] ^  5  6
+iterator.remove();     //  1  2  3  ^  5  6
+iterator.next();       //  1  2  3  5 [6] ^
+iterator.remove();     //  1  2  3  5  ^
+iterator.previous();   //  1  ^ [2] 3  5
+iterator.remove();     //  1  ^  3  5
+iterator.previous();   //  ^  1  3  5
+iterator.next();       //  1  3  5  ^
+
+// Remove during iteration
+
+list.array = [1, 2, 3, 4, 5, 6];
+iterator = new CollectionFilterIterator(list, evenFilter);
+var item : *;
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (item); // 2, 4, 6
+	if (item == 2) iterator.remove();
+	if (item == 6) iterator.remove();
+}
+trace (list.toArray()); // 1,3,4,5
+
+// Reverse iteration
+
+list.array = [1, 2, 3, 4, 5, 6];
+iterator = new CollectionFilterIterator(list, evenFilter);
+iterator.end();
+while (iterator.hasPrevious()) {
+	trace (iterator.previous()); // 6, 4, 2
+}
+
+private function evenFilter(item : *) : Boolean {
+	// lets pass only even numbers
+	return item % 2 == 0;
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="Collection iterator">
+		<div class="source"><pre>var list : ArrayList = new ArrayList();
+var iterator : ICollectionIterator;
+var item : *;
+
+// ^ = cursor, [n] = current
+
+// Navigation
+
+list.array = [1, 2, 3];
+iterator = list.iterator() as ICollectionIterator;
+
+			  //  ^  1  2  3
+iterator.next();          // [1] ^  2  3
+iterator.next();          //  1 [2] ^  3
+iterator.next();          //  1  2 [3] ^
+iterator.next();          //  1  2  3  ^
+iterator.previous();      //  1  2  ^ [3]
+iterator.previous();      //  1  ^ [2] 3
+iterator.previous();      //  ^ [1] 2  3
+iterator.previous();      //  ^  1  2  3
+
+iterator.next();          // [1] ^  2  3
+iterator.next();          //  1 [2] ^  3
+iterator.start();         //  ^  1  2  3
+
+iterator.next();          // [1] ^  2  3
+iterator.next();          //  1 [2] ^  3
+iterator.end();           //  1  2  3  ^
+
+// Current item
+
+iterator = list.iterator() as ICollectionIterator;
+
+trace (iterator.current);   // undefined
+iterator.next();
+trace (iterator.current);   // 1
+iterator.next();
+trace (iterator.current);   // 2
+iterator.next();
+trace (iterator.current);   // 3
+iterator.next();
+trace (iterator.current);   // undefined
+
+// Remove
+
+list.array = [1, 2, 3];
+iterator = list.iterator() as ICollectionIterator;
+
+			  //  ^  1  2  3
+iterator.next();          // [1] ^  2  3
+iterator.next();          //  1 [2] ^  3
+iterator.remove();        //  1  ^  3
+iterator.next();          //  1 [3] ^
+iterator.remove();        //  1  ^
+iterator.remove();        //  1  ^
+
+// Remove during iteration
+
+list.array = [1, 2, 3, 4, 5];
+iterator = list.iterator() as ICollectionIterator;
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (item); // 1,2,3,4,5
+
+	if (item == 1) iterator.remove();   //  ^  2  3  4  5
+	if (item == 3) iterator.remove();   //  2  ^  4  5
+	if (item == 5) iterator.remove();   //  2  4  ^
+}
+trace (list.toArray()); // 2,4
+
+// Reverse iteration
+
+list.array = [1, 2, 3, 4, 5];
+iterator = list.iterator() as ICollectionIterator;
+iterator.end();
+while (iterator.hasPrevious()) {
+	trace (iterator.previous()); // 5,4,3,2,1
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="Comparator implementation">
+		<div class="source"><pre>var list : ArrayList = new ArrayList();
+list.array = [3, 2, 5, 9, 4, 1, 3, 4, 6, 8];
+list.sort(new OddEvenComparator());
+trace (list.toArray()); // 1,3,3,5,9,2,4,4,6,8
+
+internal class OddEvenComparator implements IComparator {
+
+	public function compare(item1 : *, item2 : *) : int {
+		if (isNaN(item1)) throw new UncomparableType(Number, item1);
+		if (isNaN(item2)) throw new UncomparableType(Number, item2);
+		
+		// sort numeric if both items odd or even
+		if ((item1 + item2) % 2 == 0) {
+			if (item1  &lt; item2) return -1;
+			if (item1  > gt; item2) return 1;
+			return 0;
+		}
+		
+		// sort odd numbers before even numbers
+		if (item1 % 2) return -1; // item1 odd, item2 even
+		return 1; // item1 even, item2 odd
+	}
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="Dump as string">
+		<div class="source"><pre>var root : Node = new Node(0);
+var child1 : Node = new Node(1);
+child1.children = [new Node(2), new Node(3)];
+var child2 : Node = new Node(4);
+child2.children = [new Node(5), new Node(6)];
+var child3 : Node = new Node(7);
+var child4 : Node = new Node(8);
+child4.children = [new Node(9), new Node(10)];
+child3.children = [child4, new Node(11)];
+root.children = [child1, child2, child3];
+
+trace (CollectionUtils.dumpAsString(root));
+
+// Node 0
+// .......Node 1
+// ..............Node 2
+// ..............Node 3
+// .......Node 4
+// ..............Node 5
+// ..............Node 6
+// .......Node 7
+// ..............Node 8
+// .....................Node 9
+// .....................Node 10
+// ..............Node 11
+
+import org.as3commons.collections.framework.IIterable;
+import org.as3commons.collections.framework.IIterator;
+import org.as3commons.collections.iterators.ArrayIterator;
+
+internal class Node implements IIterable {
+	public var number : uint;
+	public var children : Array;
+	public function Node(theNumber : uint) {
+		number = theNumber;
+		children = new Array();
+	}
+	public function iterator(cursor : * = undefined) : IIterator {
+		return new ArrayIterator(children);
+	}
+	public function toString() : String {
+		return "Node " + number.toString();
+	}
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="FilterIterator">
+		<div class="source"><pre>var list : ArrayList = new ArrayList();
+var iterator : IIterator;
+
+list.array = [1, 2, 3, 4, 5, 6];
+iterator = new FilterIterator(list, evenFilter);
+while (iterator.hasNext()) {
+	trace (iterator.next()); // 2, 4, 6
+}
+
+private function evenFilter(item : *) : Boolean {
+	// lets pass only even numbers
+	return item % 2 == 0;
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="Iterator down cast"><div class="source"><pre>var list : IOrderedList = new ArrayList();
+var i : IIterator = list.iterator();
+
+trace ("i", i is IIterator); // true
+trace ("ci", i is ICollectionIterator); // true
+trace ("li", i is IListIterator); // true
+trace ("ali", i is IOrderedListIterator); // true
+
+var ci : ICollectionIterator = list.iterator() as ICollectionIterator;
+
+trace ("i", ci is IIterator); // true
+trace ("ci", ci is ICollectionIterator); // true
+trace ("li", ci is IListIterator); // true
+trace ("ali", ci is IOrderedListIterator); // true
+
+var li : IListIterator = list.iterator() as IListIterator;
+
+trace ("i", li is IIterator); // true
+trace ("ci", li is ICollectionIterator); // true
+trace ("li", li is IListIterator); // true
+trace ("ali", li is IOrderedListIterator); // true
+
+var ali : IOrderedListIterator = list.iterator() as IOrderedListIterator;
+
+trace ("i", ali is IIterator); // true
+trace ("ci", ali is ICollectionIterator); // true
+trace ("li", ali is IListIterator); // true
+trace ("ali", ali is IOrderedListIterator); // true
+</pre></div>
+	</subsection>
+
+	<subsection name="LinkedList">
+		<div class="source"><pre>var list : ILinkedList = new LinkedList();
+
+// Add
+
+list.add(4);
+list.add(1);
+list.add(3);
+list.add(5);
+list.add(2);
+trace (list.toArray()); // 4,1,3,5,2
+
+list.addFirst(6);
+list.addLast(7);
+trace (list.toArray()); // 6,4,1,3,5,2,7
+
+// Inspection
+
+trace (list.first); // 6
+trace (list.last); // 7
+
+// Iterator
+
+var iterator : IIterator = list.iterator();
+trace (iterator is IIterator); // true
+trace (iterator is ICollectionIterator); // true
+trace (iterator is ILinkedListIterator); // true
+
+while (iterator.hasNext()) {
+	trace (iterator.next()); // 6,4,1,3,5,2,7
+}
+
+// Linked list iterator
+
+var lli : ILinkedListIterator = list.iterator() as ILinkedListIterator;
+trace (lli.previousItem + " [" + lli.current + "] " + lli.nextItem);
+while (lli.hasNext()) {
+	lli.next();
+	trace (lli.previousItem + " [" + lli.current + "] " + lli.nextItem);
+}
+
+// undefined [undefined] 6
+// 6 [6] 4
+// 4 [4] 1
+// 1 [1] 3
+// 3 [3] 5
+// 5 [5] 2
+// 2 [2] 7
+// 7 [7] undefined
+
+// Remove
+
+list.removeFirst();
+list.removeFirst();
+list.removeLast();
+list.removeLast();
+trace (list.toArray()); // 1,3,5
+</pre></div>
+	</subsection>
+
+
+	<subsection name="LinkedMap">
+		<div class="source"><pre>var map : LinkedMap = new LinkedMap();
+
+// Add
+
+map.add(4, "four");
+map.add(1, "one");
+map.add(3, "three");
+map.add(5, "five");
+map.add(2, "two");
+trace (map.keysToArray()); // 4,1,3,5,2
+trace (map.toArray()); // four,one,three,five,two
+
+map.addBefore(3, 6, "six");
+map.addAfter(5, 7, "seven");
+trace (map.keysToArray()); // 4,1,6,3,5,7,2
+trace (map.toArray()); // four,one,six,three,five,seven,two
+
+map.addFirst(8, "eight");
+map.addLast(9, "nine");
+trace (map.keysToArray()); // 8,4,1,6,3,5,7,2,9
+trace (map.toArray()); // eight,four,one,six,three,five,seven,two,nine
+
+// Inspection
+
+trace (map.first); // eight
+trace (map.last); // nine
+
+// Iterator
+
+var iterator : IIterator = map.iterator();
+trace (iterator is IIterator); // true
+trace (iterator is ICollectionIterator); // true
+trace (iterator is IMapIterator); // true
+trace (iterator is IOrderedMapIterator); // true
+
+while (iterator.hasNext()) {
+	trace (iterator.next()); // eight,four,one,six,three,five,seven,two,nine
+}
+
+// Remove
+
+map.removeFirst();
+map.removeFirst();
+map.removeLast();
+map.removeLast();
+trace (map.keysToArray()); // 1,6,3,5,7
+trace (map.toArray()); // one,six,three,five,seven
+</pre></div>
+	</subsection>
+
+
+	<subsection name="LinkedMap Fx">
+		<div class="source"><pre>var map : LinkedMapFx = new LinkedMapFx();
+map.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+
+map.add("fourA", 4);
+map.add("one", 1);
+map.add("threeA", 3);
+map.add("two", 2);
+map.add("two", 2); // no event (two already contained)
+
+map.addFirst("threeD", 3);
+map.addLast("fourB", 4);
+
+map.addBefore("two", "threeB", 3);
+map.addAfter("two", "threeC", 3);
+
+map.replaceFor("two", 22);
+map.replaceFor("one", 11);
+map.replaceFor("one", 11); // no event (11 == 11)
+
+map.removeFirst();
+map.removeLast();
+map.remove(6); // no event (6 not contained)
+map.removeAll(3);
+
+map.reverse();
+map.sort(new NumericComparator());
+
+map.clear();
+
+// [4] added                         [4]
+// [1] added after 4                 [4 1]
+// [3] added after 1                 [4 1 3]
+// [2] added after 3                 [4 1 3 2]
+// [3] added before 4                [3 4 1 3 2]
+// [4] added after 2                 [3 4 1 3 2 4]
+// [3] added after 3 before 2        [3 4 1 3 3 2 4]
+// [3] added after 2 before 4        [3 4 1 3 3 2 3 4]
+// [22] replaced after 3 before 3    [3 4 1 3 3 22 3 4]
+// [11] replaced after 4 before 3    [3 4 11 3 3 22 3 4]
+// [3] removed before 4              [4 11 3 3 22 3 4]
+// [4] removed after 3               [4 11 3 3 22 3]
+// [3] removed after 11 before 3     [4 11 3 22 3]
+// [3] removed after 11 before 22    [4 11 22 3]
+// [3] removed after 22              [4 11 22]
+// Reset                             [22 11 4]
+// Reset                             [4 11 22]
+// Reset                             []
+
+private function changedHandler(e : MapEvent) : void {
+	var info : String = "";
+	var iterator : IMapIterator;
+
+	switch (e.kind) {
+		case CollectionEvent.ITEM_ADDED:
+			info += "[" + e.item + "] added";
+
+			iterator = e.iterator() as IMapIterator;
+			if (iterator.previousKey !== undefined) info += " after " + e.map.itemFor(iterator.previousKey);
+			iterator.next();
+			if (iterator.nextKey !== undefined) info += " before " + e.map.itemFor(iterator.nextKey);
+			break;
+
+		case CollectionEvent.ITEM_REMOVED:
+			info += "[" + e.item + "] removed";
+
+			iterator = e.iterator() as IMapIterator;
+			if (iterator.previousKey !== undefined) info += " after " + e.map.itemFor(iterator.previousKey);
+			if (iterator.nextKey !== undefined) info += " before " + e.map.itemFor(iterator.nextKey);
+			break;
+
+		case CollectionEvent.ITEM_REPLACED:
+			info += "[" + e.item + "] replaced";
+
+			iterator = e.iterator() as IMapIterator;
+			if (iterator.previousKey !== undefined) info += " after " + e.map.itemFor(iterator.previousKey);
+			iterator.next();
+			if (iterator.nextKey !== undefined) info += " before " + e.map.itemFor(iterator.nextKey);
+			break;
+
+		case CollectionEvent.RESET:
+			info += ("Reset");
+			break;
+	}
+
+	for (var i : uint = info.length; i  &lt; 34; i++) info += " ";
+	info += "[" + e.map.toArray().join(" ") + "]";
+	trace (info);
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="LinkedSet">
+		<div class="source"><pre>var theSet : LinkedSet = new LinkedSet();
+
+// Add
+
+theSet.add(4);
+theSet.add(1);
+theSet.add(3);
+theSet.add(5);
+theSet.add(2);
+trace (theSet.toArray()); // 4,1,3,5,2
+
+theSet.addBefore(3, 6);
+theSet.addAfter(5, 7);
+trace (theSet.toArray()); // 4,1,6,3,5,7,2
+
+theSet.addFirst(8);
+theSet.addLast(9);
+trace (theSet.toArray()); // 8,4,1,6,3,5,7,2,9
+
+// Inspection
+
+trace (theSet.first); // 8
+trace (theSet.last); // 9
+
+// Iterator
+
+var iterator : IIterator = theSet.iterator();
+trace (iterator is IIterator); // true
+trace (iterator is ICollectionIterator); // true
+trace (iterator is IMapIterator); // true
+trace (iterator is IOrderedMapIterator); // true
+
+while (iterator.hasNext()) {
+	trace (iterator.next()); // 8,4,1,6,3,5,7,2,9
+}
+
+// Remove
+
+theSet.removeFirst();
+theSet.removeFirst();
+theSet.removeLast();
+theSet.removeLast();
+trace (theSet.toArray()); // 1,6,3,5,7
+</pre></div>
+	</subsection>
+
+
+	<subsection name="LinkedSet Fx">
+		<div class="source"><pre>var theSet : LinkedSetFx = new LinkedSetFx();
+theSet.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+
+theSet.add(1);
+theSet.add(3);
+theSet.add(2);
+theSet.add(2); // no event (two already contained)
+
+theSet.addFirst(4);
+theSet.addLast(5);
+
+theSet.addBefore(2, 6);
+theSet.addAfter(2, 7);
+
+theSet.replace(3, 8);
+theSet.replace(1, 9);
+
+theSet.removeFirst();
+theSet.removeLast();
+theSet.remove(8);
+theSet.remove(6);
+theSet.remove(10); // no event (5 not contained)
+
+theSet.reverse();
+theSet.sort(new NumericComparator());
+
+theSet.clear();
+
+// [1] added                         [1]
+// [3] added after 1                 [1 3]
+// [2] added after 3                 [1 3 2]
+// [4] added before 1                [4 1 3 2]
+// [5] added after 2                 [4 1 3 2 5]
+// [6] added after 3 before 2        [4 1 3 6 2 5]
+// [7] added after 2 before 5        [4 1 3 6 2 7 5]
+// [8] replaced after 1 before 6     [4 1 8 6 2 7 5]
+// [9] replaced after 4 before 8     [4 9 8 6 2 7 5]
+// [4] removed before 9              [9 8 6 2 7 5]
+// [5] removed after 7               [9 8 6 2 7]
+// [8] removed after 9 before 6      [9 6 2 7]
+// [6] removed after 9 before 2      [9 2 7]
+// Reset                             [7 2 9]
+// Reset                             [2 7 9]
+// Reset                             []
+
+
+private function changedHandler(e : SetEvent) : void {
+	var info : String = "";
+	var iterator : ISetIterator;
+
+	switch (e.kind) {
+		case CollectionEvent.ITEM_ADDED:
+			info += "[" + e.item + "] added";
+
+			iterator = e.iterator() as ISetIterator;
+			if (iterator.previousItem !== undefined) info += " after " + iterator.previousItem;
+			iterator.next();
+			if (iterator.nextItem !== undefined) info += " before " + iterator.nextItem;
+			break;
+
+		case CollectionEvent.ITEM_REMOVED:
+			info += "[" + e.item + "] removed";
+
+			iterator = e.iterator() as ISetIterator;
+			if (iterator.previousItem !== undefined) info += " after " + iterator.previousItem;
+			if (iterator.nextItem !== undefined) info += " before " + iterator.nextItem;
+			break;
+
+		case CollectionEvent.ITEM_REPLACED:
+			info += "[" + e.item + "] replaced";
+
+			iterator = e.iterator() as ISetIterator;
+			if (iterator.previousItem !== undefined) info += " after " + iterator.previousItem;
+			iterator.next();
+			if (iterator.nextItem !== undefined) info += " before " + iterator.nextItem;
+			break;
+
+		case CollectionEvent.RESET:
+			info += ("Reset");
+			break;
+	}
+
+	for (var i : uint = info.length; i  &lt; 34; i++) info += " ";
+	info += "[" + e.set.toArray().join(" ") + "]";
+	trace (info);
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="Map">
+		<div class="source"><pre>var map : Map = new Map();
+
+// Add
+
+map.add(1, "one");
+map.add(2, "two");
+map.add(3, "three");
+map.add("4a", "four");
+map.add("4b", "four");
+map.add("4c", "four");
+
+map.add("4c", "fourC"); // no effect (key already contained)
+
+trace (map.toArray()); // four,four,four,one,two,three
+
+// Replace
+
+map.replaceFor(3, "three3");
+map.replaceFor("4a", "fourA");
+
+map.replaceFor(1, "one"); // no effect ("one" === "one")
+map.replaceFor(4, "four"); // no effect (key not contained)
+
+trace (map.toArray()); // fourA,four,four,one,two,three3
+
+// Inspection
+
+trace (map.size); // 6
+trace (map.hasKey(3)); // true
+trace (map.hasKey(4)); // false
+trace (map.itemFor(3)); // three3
+trace (map.itemFor(4)); // undefined
+trace (map.keysToArray()); // 4a,4b,4c,1,2,3
+
+// Iterator
+
+var iterator : IIterator = map.iterator();
+trace (iterator is IIterator); // true
+trace (iterator is ICollectionIterator); // true
+trace (iterator is IMapIterator); // true
+
+while (iterator.hasNext()) {
+	trace (iterator.next()); // fourA,four,four,one,two,three3
+}
+
+// Map iterator
+
+var mi : IMapIterator = map.iterator() as IMapIterator;
+trace (mi.previousKey + " [" + mi.key + "=" + mi.current + "] " + mi.nextKey);
+while (mi.hasNext()) {
+	mi.next();
+	trace (mi.previousKey + " [" + mi.key + "=" + mi.current + "] " + mi.nextKey);
+}
+
+// undefined [undefined=undefined] 4a
+// 4a [4a=fourA] 4b
+// 4b [4b=four] 4c
+// 4c [4c=four] 1
+// 1 [1=one] 2
+// 2 [2=two] 3
+// 3 [3=three3] undefined
+
+// Remove
+
+map.removeKey(2);
+map.removeKey("4a");			
+map.removeKey(4); // no effect (key not contained)
+
+trace (map.toArray()); // four,four,one,three3
+
+map.remove("one");			
+map.remove("fourC"); // no effect (item not contained)
+
+trace (map.toArray()); // four,four,three3
+
+map.removeAll("four");			
+trace (map.toArray()); // three3
+</pre></div>
+	</subsection>
+
+
+	<subsection name="Map Fx">
+		<div class="source"><pre>var map : MapFx = new MapFx();
+map.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+
+map.add("five", 5);
+map.add("two", 2);
+map.add("threeA", "three");
+map.add("two", 2); // no event (two already contained)
+map.add("four", 4);
+map.add("threeB", "three");
+map.add("one", 1);
+map.add("threeC", "three");
+
+map.replaceFor("four", -4);
+map.replaceFor("one", 1); // no event (1 === 1)
+
+map.removeKey("one");
+map.remove(6); // no event (6 not contained)
+map.removeAll("three");
+
+map.clear();
+
+// [five=5] added                    [5]
+// [two=2] added                     [2 5]
+// [threeA=three] added              [2 5 three]
+// [four=4] added                    [2 4 5 three]
+// [threeB=three] added              [2 4 5 three three]
+// [one=1] added                     [2 4 1 5 three three]
+// [threeC=three] added              [2 three 5 three 4 1 three]
+// [four=-4] replaced                [2 three 5 three -4 1 three]
+// [one=1] removed                   [2 three 5 three -4 three]
+// [threeC=three] removed            [2 5 three -4 three]
+// [threeA=three] removed            [2 5 -4 three]
+// [threeB=three] removed            [2 5 -4]
+// Reset                             []
+
+private function changedHandler(e : MapEvent) : void {
+	var info : String = "";
+
+	switch (e.kind) {
+		case CollectionEvent.ITEM_ADDED:
+			info += "[" + e.key + "=" + e.item + "] added";
+			break;
+
+		case CollectionEvent.ITEM_REMOVED:
+			info += "[" + e.key + "=" + e.item + "] removed";
+			break;
+
+		case CollectionEvent.ITEM_REPLACED:
+			info += "[" + e.key + "=" + e.item + "] replaced";
+			break;
+
+		case CollectionEvent.RESET:
+			info += ("Reset");
+			break;
+	}
+
+	for (var i : uint = info.length; i  &lt; 34; i++) info += " ";
+	info += "[" + e.map.toArray().join(" ") + "]";
+	trace (info);
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="Recursive filter iterator">
+		<div class="source"><pre>var root : Node = new Node(0);
+var child1 : Node = new Node(1);
+child1.children = [new Node(2), new Node(3)];
+var child2 : Node = new Node(4);
+child2.children = [new Node(5), new Node(6)];
+var child3 : Node = new Node(7);
+var child4 : Node = new Node(8);
+child4.children = [new Node(9), new Node(10)];
+child3.children = [child4, new Node(11)];
+root.children = [child1, child2, child3];
+
+var iterator : IRecursiveIterator;
+var item : Node;
+
+// All items
+
+iterator = new RecursiveFilterIterator(root, null, null);
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (prefix(iterator.depth) + item);
+}
+
+// Node 1
+// .......Node 2
+// .......Node 3
+// Node 4
+// .......Node 5
+// .......Node 6
+// Node 7
+// .......Node 8
+// ..............Node 9
+// ..............Node 10
+// .......Node 11
+
+// Only odd items
+
+iterator = new RecursiveFilterIterator(
+	root, oddFilter, null
+);
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (prefix(iterator.depth) + item);
+}
+
+// Node 1
+// .......Node 3
+// Node 7
+// .......Node 11
+
+// Only even items
+
+iterator = new RecursiveFilterIterator(
+	root, evenFilter, null
+);
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (prefix(iterator.depth) + item);
+}
+
+// Node 4
+// .......Node 6
+
+// All items + only children of odd items
+
+iterator = new RecursiveFilterIterator(
+	root, null, oddFilter
+);
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (prefix(iterator.depth) + item);
+}
+
+// Node 1
+// .......Node 2
+// .......Node 3
+// Node 4
+// Node 7
+// .......Node 8
+// .......Node 11
+
+// All items + only children of even items
+
+iterator = new RecursiveFilterIterator(
+	root, null, evenFilter
+);
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (prefix(iterator.depth) + item);
+}
+
+// Node 1
+// Node 4
+// .......Node 5
+// .......Node 6
+// Node 7
+
+// Only items  > gt; 5
+
+iterator = new RecursiveFilterIterator(
+	root, greater5Filter, null
+);
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (prefix(iterator.depth) + item);
+}
+
+// Node 7
+// .......Node 8
+// ..............Node 9
+// ..............Node 10
+// .......Node 11
+
+// All items + only children of items  > gt; 5
+
+iterator = new RecursiveFilterIterator(
+	root, null, greater5Filter
+);
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (prefix(iterator.depth) + item);
+}
+
+// Node 1
+// Node 4
+// Node 7
+// .......Node 8
+// ..............Node 9
+// ..............Node 10
+// .......Node 11
+
+private function oddFilter(item : *) : Boolean {
+	// lets pass only odd numbers
+	return Node(item).number % 2 == 1;
+}
+
+private function evenFilter(item : *) : Boolean {
+	// lets pass only even numbers
+	return Node(item).number % 2 == 0;
+}
+
+private function greater5Filter(item : *) : Boolean {
+	// lets pass only items  > gt; 5
+	return Node(item).number  > gt; 5;
+}
+
+private function prefix(depth : uint) : String {
+	var prefix : String = "";
+	for (var i : uint = 0; i  &lt; depth; i++) prefix += ".......";
+	return prefix;
+}
+
+import org.as3commons.collections.framework.IIterable;
+import org.as3commons.collections.framework.IIterator;
+import org.as3commons.collections.iterators.ArrayIterator;
+
+internal class Node implements IIterable {
+	public var number : uint;
+	public var children : Array;
+	public function Node(theNumber : uint) {
+		number = theNumber;
+		children = new Array();
+	}
+	public function iterator(cursor : * = undefined) : IIterator {
+		return new ArrayIterator(children);
+	}
+	public function toString() : String {
+		return "Node " + number.toString();
+	}
+}</pre></div>
+	</subsection>
+
+	<subsection name="Recursive iterator">
+		<div class="source"><pre>var root : Node = new Node(0);
+var child1 : Node = new Node(1);
+child1.children = [new Node(2), new Node(3)];
+var child2 : Node = new Node(4);
+child2.children = [new Node(5), new Node(6)];
+var child3 : Node = new Node(7);
+var child4 : Node = new Node(8);
+child4.children = [new Node(9), new Node(10)];
+child3.children = [child4, new Node(11)];
+root.children = [child1, child2, child3];
+
+var iterator : IRecursiveIterator = new RecursiveIterator(root);
+var item : Node;
+while (iterator.hasNext()) {
+	item = iterator.next();
+	trace (prefix(iterator.depth) + item);
+}
+
+// Node 1
+// .......Node 2
+// .......Node 3
+// Node 4
+// .......Node 5
+// .......Node 6
+// Node 7
+// .......Node 8
+// ..............Node 9
+// ..............Node 10
+// .......Node 11
+
+private function prefix(depth : uint) : String {
+	var prefix : String = "";
+	for (var i : uint = 0; i  &lt; depth; i++) prefix += ".......";
+	return prefix;
+}
+
+import org.as3commons.collections.framework.IIterable;
+import org.as3commons.collections.framework.IIterator;
+import org.as3commons.collections.iterators.ArrayIterator;
+
+internal class Node implements IIterable {
+	public var number : uint;
+	public var children : Array;
+	public function Node(theNumber : uint) {
+		number = theNumber;
+		children = new Array();
+	}
+	public function iterator(cursor : * = undefined) : IIterator {
+		return new ArrayIterator(children);
+	}
+	public function toString() : String {
+		return "Node " + number.toString();
+	}
+}</pre></div>
+	</subsection>
+
+	<subsection name="Set">
+		<div class="source"><pre>var theSet : Set = new Set();
+
+// Add
+
+theSet.add(1);
+theSet.add(2);
+theSet.add(3);
+theSet.add("4a");
+theSet.add("4b");
+theSet.add("4b"); // no effect (item already contained)
+
+trace (theSet.toArray()); // 4a,4b,1,2,3
+
+// Inspection
+
+trace (theSet.has(1)); // true;
+trace (theSet.has(4)); // false;
+
+// Iterator
+
+var iterator : IIterator = theSet.iterator();
+trace (iterator is IIterator); // true
+trace (iterator is ICollectionIterator); // true
+trace (iterator is ISetIterator); // true
+
+while (iterator.hasNext()) {
+	trace (iterator.next()); // 4a,4b,1,2,3
+}
+
+// Set iterator
+
+var si : ISetIterator = theSet.iterator() as ISetIterator;
+trace (si.previousItem + " [" + si.current + "] " + si.nextItem);
+while (si.hasNext()) {
+	si.next();
+	trace (si.previousItem + " [" + si.current + "] " + si.nextItem);
+}
+
+// undefined [undefined] 4b
+// 4b [4b] 4a
+// 4a [4a] 1
+// 1 [1] 2
+// 2 [2] 3
+// 3 [3] undefined
+
+// Remove
+
+theSet.remove(2);
+theSet.remove("4b");
+theSet.remove("4"); // no effect (item not contained)
+
+trace (theSet.toArray()); // 4a,1,3
+</pre></div>
+	</subsection>
+
+
+	<subsection name="Set Fx">
+		<div class="source"><pre>var theSet : SetFx = new SetFx();
+theSet.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+
+theSet.add(5);
+theSet.add(2);
+theSet.add(2); // no event (2 already contained)
+theSet.add("one");
+theSet.add("four");
+theSet.add(5); // no event (5 already contained)
+theSet.add(true); // no event (5 already contained)
+
+theSet.remove(5);
+theSet.remove(6); // no event (6 not contained)
+theSet.remove(true);
+
+theSet.clear();
+
+// [5] added                     [5]
+// [2] added                     [2 5]
+// [one] added                   [one 2 5]
+// [four] added                  [four one 2 5]
+// [true] added                  [four one 2 true 5]
+// [5] removed                   [four one 2 true]
+// [true] removed                [four one 2]
+// Reset                         []
+
+private function changedHandler(e : SetEvent) : void {
+	var info : String = "";
+
+	switch (e.kind) {
+		case CollectionEvent.ITEM_ADDED:
+			info += "[" + e.item + "] added";
+			break;
+
+		case CollectionEvent.ITEM_REMOVED:
+			info += "[" + e.item + "] removed";
+			break;
+
+		case CollectionEvent.RESET:
+			info += ("Reset");
+			break;
+	}
+
+	for (var i : uint = info.length; i  &lt; 30; i++) info += " ";
+	info += "[" + e.set.toArray().join(" ") + "]";
+	trace (info);
+}</pre></div>
+	</subsection>
+
+	<subsection name="Sorted list">
+		<div class="source"><pre>var list : SortedList = new SortedList(new StringComparator());
+
+// Add
+
+list.add("d");
+list.add("a");
+list.add("a");
+list.add("f");
+list.add("c");
+list.add("b");
+list.add("a");
+list.add("c");
+trace (list.toArray()); // a,a,a,b,c,c,d,f
+
+list.array = ["d", "a", "a", "f", "c", "b", "a", "c"];
+trace (list.toArray()); // a,a,a,b,c,c,d,f
+
+// Inspection
+
+trace (list.first); // a
+trace (list.last); // f
+
+trace (list.hasEqual("a")); // true
+trace (list.hasEqual("e")); // false
+trace (list.equalIndices("a")); // 0,1,2
+
+trace (list.lesserIndex("a")); // -1
+trace (list.lesserIndex("c")); // 3
+
+trace (list.higherIndex("c")); // 6
+trace (list.higherIndex("f")); // -1
+trace (list.higherIndex("x")); // -1
+
+// Iterator
+
+var iterator : IIterator = list.iterator();
+trace (iterator is IIterator); // true
+trace (iterator is ICollectionIterator); // true
+trace (iterator is IListIterator); // true
+
+while (iterator.hasNext()) {
+	trace (iterator.next()); // a,a,a,b,c,c,d,f
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="Sorted list Fx">
+		<div class="source"><pre>var list : SortedListFx = new SortedListFx(new NumericComparator());
+list.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+
+list.array = [4, 2, 3, 1, 2, 6, 8, 4];
+list.add(5);
+list.add(2);
+list.add(2);
+list.add(1);
+
+list.removeFirst();
+list.removeLast();
+list.removeAt(5);
+list.removeAt(12); // no event (index  > gt; list.size)
+list.removeAllAt(4, 2);
+
+list.remove(6);
+list.removeAll(2);
+list.removeAll(10); // no event (10 not contained)
+
+list.clear();
+
+// Reset                   [1 2 2 3 4 4 6 8]
+// [5] added at 6          [1 2 2 3 4 4 5 6 8]
+// [2] added at 3          [1 2 2 2 3 4 4 5 6 8]
+// [2] added at 4          [1 2 2 2 2 3 4 4 5 6 8]
+// [1] added at 1          [1 1 2 2 2 2 3 4 4 5 6 8]
+// [1] removed at 0        [1 2 2 2 2 3 4 4 5 6 8]
+// [8] removed at 10       [1 2 2 2 2 3 4 4 5 6]
+// [3] removed at 5        [1 2 2 2 2 4 4 5 6]
+// [2,4] removed at 4      [1 2 2 2 4 5 6]
+// [6] removed at 6        [1 2 2 2 4 5]
+// [2] removed at 1        [1 2 2 4 5]
+// [2] removed at 1        [1 2 4 5]
+// [2] removed at 1        [1 4 5]
+// Reset                   []
+
+private function changedHandler(e : ListEvent) : void {
+	var info : String = "";
+	var items : *;
+
+	switch (e.kind) {
+		case CollectionEvent.ITEM_ADDED:
+			items = e.numItems == 1 ? e.item : e.items;
+			info += "[" + items + "] added at " + e.index;
+			break;
+
+		case CollectionEvent.ITEM_REMOVED:
+			items = e.numItems == 1 ? e.item : e.items;
+			info += "[" + items + "] removed at " + e.index;
+			break;
+
+		case CollectionEvent.ITEM_REPLACED:
+			info += "[" + e.item + "] replaced at " + e.index;
+			break;
+
+		case CollectionEvent.RESET:
+			info += ("Reset");
+			break;
+	}
+
+	for (var i : uint = info.length; i  &lt; 24; i++) info += " ";
+	info += "[" + e.list.toArray().join(" ") + "]";
+	trace (info);
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="Sorted map">
+		<div class="source"><pre>var map : SortedMap = new SortedMap(new NumericComparator());
+
+// Add
+
+map.add("threeA", 3);
+map.add("four", 4);
+map.add("one", 1);
+map.add("threeB", 3);
+map.add("five", 5);
+map.add("two", 2);
+map.add("threeC", 3);
+trace (map.keysToArray()); // one,two,threeA,threeB,threeC,four,five
+trace (map.toArray()); // 1,2,3,3,3,4,5
+
+// Replace
+
+map.replaceFor("one", 4);
+map.replaceFor("threeB", -3);
+trace (map.keysToArray()); // threeB,two,threeA,threeC,four,one,five
+trace (map.toArray()); // -3,2,3,3,4,4,5
+
+// Inspection
+
+trace (map.first); // -3
+trace (map.last); // 5
+
+trace (map.hasEqual(3)); // true
+trace (map.hasEqual(6)); // false
+trace (map.equalKeys(3)); // threeA,threeC
+
+trace (map.lesserKey(-4)); // undefined
+trace (map.lesserKey(-3)); // undefined
+trace (map.lesserKey(-2)); // threeB
+trace (map.lesserKey(4)); // threeC
+
+trace (map.higherKey(2)); // threeA
+trace (map.higherKey(3)); // four
+trace (map.higherKey(5)); // undefined
+trace (map.higherKey(6)); // undefined
+
+// Iterator
+
+var iterator : IIterator = map.iterator();
+trace (iterator is IIterator); // true
+trace (iterator is ICollectionIterator); // true
+trace (iterator is IMapIterator); // true
+
+while (iterator.hasNext()) {
+	trace (iterator.next()); // -3,2,3,3,4,4,5
+}
+
+// Remove
+
+map.removeFirst();
+map.removeFirst();
+map.removeLast();
+map.removeLast();
+trace (map.keysToArray()); // threeA,threeC,four
+trace (map.toArray()); // 3,3,4
+</pre></div>
+	</subsection>
+
+	<subsection name="Sorted map Fx"><div class="source">
+		<pre>var map : SortedMapFx = new SortedMapFx(new NumericComparator());
+map.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+
+map.add("five", 5);
+map.add("two", 2);
+map.add("threeA", 3);
+map.add("two", 2); // no event (two already contained)
+map.add("four", 4);
+map.add("threeB", 3);
+map.add("one", 1);
+map.add("threeC", 3);
+
+map.replaceFor("four", -4);
+map.replaceFor("one", 1); // no event (1 === 1)
+
+map.removeKey("one");
+map.removeFirst();
+map.removeLast();
+map.remove(6); // no event (6 not contained)
+map.removeAll(3);
+
+map.clear();
+
+// [5] added                         [5]
+// [2] added before 5                [2 5]
+// [3] added after 2 before 5        [2 3 5]
+// [4] added after 3 before 5        [2 3 4 5]
+// [3] added after 3 before 4        [2 3 3 4 5]
+// [1] added before 2                [1 2 3 3 4 5]
+// [3] added after 3 before 4        [1 2 3 3 3 4 5]
+// [4] removed after 3 before 5      [1 2 3 3 3 5]
+// [-4] added before 1               [-4 1 2 3 3 3 5]
+// [1] removed after -4 before 2     [-4 2 3 3 3 5]
+// [-4] removed before 2             [2 3 3 3 5]
+// [5] removed after 3               [2 3 3 3]
+// [3] removed after 2 before 3      [2 3 3]
+// [3] removed after 2 before 3      [2 3]
+// [3] removed after 2               [2]
+// Reset                             []
+
+private function changedHandler(e : MapEvent) : void {
+	var info : String = "";
+	var iterator : IMapIterator;
+
+	switch (e.kind) {
+		case CollectionEvent.ITEM_ADDED:
+			info += "[" + e.item + "] added";
+
+			iterator = e.iterator() as IMapIterator;
+			if (iterator.previousKey !== undefined) info += " after " + e.map.itemFor(iterator.previousKey);
+			iterator.next();
+			if (iterator.nextKey !== undefined) info += " before " + e.map.itemFor(iterator.nextKey);
+			break;
+
+		case CollectionEvent.ITEM_REMOVED:
+			info += "[" + e.item + "] removed";
+
+			iterator = e.iterator() as IMapIterator;
+			if (iterator.previousKey !== undefined) info += " after " + e.map.itemFor(iterator.previousKey);
+			if (iterator.nextKey !== undefined) info += " before " + e.map.itemFor(iterator.nextKey);
+			break;
+
+		case CollectionEvent.RESET:
+			info += ("Reset");
+			break;
+	}
+
+	for (var i : uint = info.length; i  &lt; 34; i++) info += " ";
+	info += "[" + e.map.toArray().join(" ") + "]";
+	trace (info);
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="Sorted set">
+		<div class="source"><pre>var theSet : SortedSet = new SortedSet(new PersonComparator());
+var erikaMeier : Person = new Person("Erika", "Meier");
+
+// Add
+
+theSet.add(new Person("Hans", "Meier"));
+theSet.add(new Person("Erika", "Meier"));
+theSet.add(new Person("Ernst", "Schmitt"));
+theSet.add(new Person("Anton", "Fischer"));
+theSet.add(new Person("Erika", "Becker"));
+theSet.add(erikaMeier);
+theSet.add(erikaMeier); // no effect (item already contained)
+
+trace (theSet.toArray());
+
+// Erika Becker
+// Anton Fischer
+// Erika Meier
+// Erika Meier
+// Hans Meier
+// Ernst Schmitt
+
+// Inspect
+
+trace (theSet.has(new Person("Erika", "Meier"))); // false (item not contained)
+trace (theSet.has(erikaMeier)); // true
+
+trace (theSet.first); // Erika Becker
+trace (theSet.last); // Ernst Schmitt
+
+trace (theSet.hasEqual(new Person("Ernst", "Schmitt"))); // true
+trace (theSet.hasEqual(new Person("Erika", "Schmitt"))); // false
+trace (theSet.equalItems(new Person("Erika", "Meier"))); // Erika Meier, Erika Meier
+
+trace (theSet.lesser(new Person("Erika", "Becker"))); // undefined
+trace (theSet.lesser(new Person("Karla", "Dieling"))); // Erika Becker
+trace (theSet.lesser(new Person("Erika", "Meier"))); // Anton Fischer
+
+trace (theSet.higher(new Person("Erika", "Meier"))); // Hans Meier
+trace (theSet.higher(new Person("Anna", "Pauli"))); // Ernst Schmitt
+trace (theSet.higher(new Person("Ernst", "Schmitt"))); // undefined
+trace (theSet.higher(new Person("Wolfgang", "Teske"))); // undefined
+
+// Iterator
+
+var iterator : IIterator = theSet.iterator();
+trace (iterator is IIterator); // true
+trace (iterator is ICollectionIterator); // true
+trace (iterator is ISetIterator); // true
+
+while (iterator.hasNext()) {
+	trace (iterator.next());
+}
+
+// Erika Becker
+// Anton Fischer
+// Erika Meier
+// Erika Meier
+// Hans Meier
+// Ernst Schmitt
+
+// Remove
+
+theSet.remove(erikaMeier);
+theSet.remove(erikaMeier); // no effect (item not contained)
+
+var ernstFischer : Person = theSet.lesser(new Person("Erika", "Meier"));
+theSet.remove(ernstFischer);
+
+trace (theSet.toArray());
+
+// Erika Becker
+// Erika Meier
+// Hans Meier
+// Ernst Schmitt
+
+theSet.removeFirst();
+theSet.removeLast();
+
+trace (theSet.toArray());
+
+// Erika Meier
+// Hans Meier
+
+import org.as3commons.collections.utils.StringComparator;
+
+internal class Person {
+	public var firstName : String;
+	public var lastName : String;
+	public function Person(first : String, last : String) {
+		firstName = first;
+		lastName = last;
+	}
+	public function toString() : String {
+		return firstName + " " + lastName;
+	}
+}
+
+internal class PersonComparator extends StringComparator {
+	override public function compare(item1 : *, item2 : *) : int {
+		var compare : int = super.compare(
+			Person(item1).lastName, Person(item2).lastName
+		);
+		if (compare) return compare;
+		return super.compare(
+			Person(item1).firstName, Person(item2).firstName
+		);
+	}
+}</pre></div>
+	</subsection>
+
+
+	<subsection name="Sorted set Fx">
+		<div class="source"><pre>var theSet : SortedSetFx = new SortedSetFx(new NumericComparator());
+theSet.addEventListener(CollectionEvent.COLLECTION_CHANGED, changedHandler);
+
+theSet.add(5);
+theSet.add(2);
+theSet.add(2); // no event (2 already contained)
+theSet.add(1);
+theSet.add(4);
+theSet.add(5); // no event (5 already contained)
+
+theSet.removeFirst();
+theSet.removeLast();
+theSet.remove(6); // no event (6 not contained)
+
+theSet.clear();
+
+// [5] added                     [5]
+// [2] added before 5            [2 5]
+// [1] added before 2            [1 2 5]
+// [4] added after 2 before 5    [1 2 4 5]
+// [1] removed before 2          [2 4 5]
+// [5] removed after 4           [2 4]
+// Reset                         []
+
+private function changedHandler(e : SetEvent) : void {
+	var info : String = "";
+	var iterator : ISetIterator;
+
+	switch (e.kind) {
+		case CollectionEvent.ITEM_ADDED:
+			info += "[" + e.item + "] added";
+
+			iterator = e.iterator() as ISetIterator;
+			if (iterator.previousItem !== undefined) info += " after " + iterator.previousItem;
+			iterator.next();
+			if (iterator.nextItem !== undefined) info += " before " + iterator.nextItem;
+			break;
+
+		case CollectionEvent.ITEM_REMOVED:
+			info += "[" + e.item + "] removed";
+
+			iterator = e.iterator() as ISetIterator;
+			if (iterator.previousItem !== undefined) info += " after " + iterator.previousItem;
+			if (iterator.nextItem !== undefined) info += " before " + iterator.nextItem;
+			break;
+
+		case CollectionEvent.RESET:
+			info += ("Reset");
+			break;
+	}
+
+	for (var i : uint = info.length; i  &lt; 30; i++) info += " ";
+	info += "[" + e.set.toArray().join(" ") + "]";
+	trace (info);
+}</pre></div>
+	</subsection>
+
+	<subsection name="Treap">
+		<div class="source"><pre>var treap : Treap = new Treap(new NumericComparator());
+
+// Add
+
+treap.add(3);
+treap.add(4);
+treap.add(1);
+treap.add(5);
+treap.add(2);
+treap.add(3); // no effect (equal item already contained)
+trace (treap.toArray()); // 1,2,3,4,5
+
+// Inspection
+
+trace (treap.first); // 1
+trace (treap.last); // 5
+
+trace (treap.hasEqual(3)); // true
+trace (treap.hasEqual(6)); // false
+trace (treap.equalItem(3)); // 3
+
+trace (treap.lesser(0)); // undefined
+trace (treap.lesser(1)); // undefined
+trace (treap.lesser(2)); // 1
+trace (treap.lesser(8)); // 5
+
+trace (treap.higher(-5)); // 1
+trace (treap.higher(2)); // 3
+trace (treap.higher(5)); // undefined
+trace (treap.higher(8)); // undefined
+
+// Iterator
+
+var iterator : IIterator = treap.iterator();
+trace (iterator is IIterator); // true
+trace (iterator is ICollectionIterator); // true
+trace (iterator is IBinarySearchTreeIterator); // true
+
+while (iterator.hasNext()) {
+	trace (iterator.next()); // 1,2,3,4,5
+}
+
+// Binary search tree iterator
+
+var bsti : IBinarySearchTreeIterator = treap.iterator() as IBinarySearchTreeIterator;
+trace (bsti.previousItem + " [" + bsti.current + "] " + bsti.nextItem);
+while (bsti.hasNext()) {
+	bsti.next();
+	trace (bsti.previousItem + " [" + bsti.current + "] " + bsti.nextItem);
+}
+
+// undefined [undefined] 1
+// 1 [1] 2
+// 2 [2] 3
+// 3 [3] 4
+// 4 [4] 5
+// 5 [5] undefined
+
+// Remove
+
+treap.removeFirst();
+treap.removeLast();
+trace (treap.toArray()); // 2,3,4
+</pre></div>
+	</subsection>
+
+        </section>
+
+    </body>
+</document>
