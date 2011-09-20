@@ -6,7 +6,7 @@ package org.as3commons.lang.testclasses {
 		
 		namespace ns = "as3commons";
 		
-		public static const staticConst: String;
+		public static const staticConst: String = "";
 		public static var staticVar: int;
 		public static function get staticGetter(): Object {
 			return null;
@@ -17,7 +17,7 @@ package org.as3commons.lang.testclasses {
 		}
 		public static function set staticSetterGetter(value:String):void {}
 		
-		ns static const staticConst: int;
+		ns static const staticConst: int = 0;
 		ns static var staticVar:uint;
 		ns static function get staticGetter():Array {
 			return null;
@@ -28,7 +28,7 @@ package org.as3commons.lang.testclasses {
 		}
 		ns static function set staticSetterGetter(value:Object):void {}
 		
-		public const publicConst: String;
+		public const publicConst: String = "";
 		public var publicVar: String;
 		public function get publicGetter(): String {
 			return null;
@@ -39,7 +39,7 @@ package org.as3commons.lang.testclasses {
 		}
 		public function set publicSetterGetter(value:String):void {}
 		
-		ns const publicConst: String;
+		ns const publicConst: String = "";
 		ns var publicVar:String;
 		ns function get publicGetter(): String {
 			return null;
