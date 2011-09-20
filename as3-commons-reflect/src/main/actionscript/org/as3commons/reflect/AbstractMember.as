@@ -26,6 +26,7 @@ package org.as3commons.reflect {
 	import org.as3commons.lang.HashArray;
 	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.reflect.util.CacheUtil;
 
 	/**
 	 * Abstract base class for members of a <code>Class</code>.
@@ -34,6 +35,34 @@ package org.as3commons.reflect {
 	 * @author Andrew Lewisohn
 	 */
 	public class AbstractMember extends MetadataContainer implements IEquals, IMember, INamespaceOwner {
+
+		// --------------------------------------------------------------------
+		//
+		// Class constants
+		//
+		// --------------------------------------------------------------------
+
+		private static const _cache:Object = {};
+
+		// --------------------------------------------------------------------
+		//
+		// Class methods
+		//
+		// --------------------------------------------------------------------
+
+		public static function newInstance(clazz:Class, name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):AbstractMember {
+			var cacheKey:String = getCacheKey(clazz, name, type, declaringType, isStatic, applicationDomain, metadata);
+			if (!_cache[cacheKey]) {
+				_cache[cacheKey] = new clazz(name, type, declaringType, isStatic, applicationDomain, metadata);
+			}
+			return _cache[cacheKey];
+		}
+
+		public static function getCacheKey(clazz:Class, name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):String {
+			var appDomainIndex:int = CacheUtil.getApplicationDomainIndex(applicationDomain);
+			var metadataString:String = CacheUtil.getMetadataString(metadata);
+			return [clazz, name, type, declaringType, isStatic, appDomainIndex, metadataString].join(":");
+		}
 
 		// -------------------------------------------------------------------------
 		//
@@ -85,7 +114,6 @@ package org.as3commons.reflect {
 			declaringTypeName = declaringType;
 			this.applicationDomain = applicationDomain;
 		}
-
 
 		// -------------------------------------------------------------------------
 		//
@@ -151,6 +179,12 @@ package org.as3commons.reflect {
 		public function get type():Type {
 			return Type.forName(typeName, applicationDomain);
 		}
+
+		// --------------------------------------------------------------------
+		//
+		// Methods
+		//
+		// --------------------------------------------------------------------
 
 		public function equals(other:Object):Boolean {
 			var otherField:AbstractMember = other as AbstractMember;

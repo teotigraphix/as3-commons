@@ -61,6 +61,7 @@ package org.as3commons.reflect {
 			var pm3:Parameter = Parameter.newInstance("MyClass", appDomain, false);
 			assertStrictlyEquals(pm1, pm2);
 			assertStrictlyEquals(pm1, pm3);
+			assertStrictlyEquals(pm2, pm3);
 		}
 
 		public function testNewInstanceWithDifferentIsOptional():void {
@@ -76,6 +77,14 @@ package org.as3commons.reflect {
 			var pm2:Parameter = Parameter.newInstance("MyClass2", appDomain, false);
 			assertFalse(pm1 === pm2);
 		}
+
+		/*public function testNewInstance_speed():void {
+			for (var i:int = 0; i<1000; i++) {
+				testNewInstance();
+				testNewInstanceWithDifferentIsOptional();
+				testNewInstanceWithDifferentType();
+			}
+		}*/
 
 	}
 }

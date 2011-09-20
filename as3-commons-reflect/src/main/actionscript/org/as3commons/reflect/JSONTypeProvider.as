@@ -10,6 +10,7 @@ package org.as3commons.reflect {
 		public static const ALIAS_NOT_AVAILABLE:String = "Alias not available when using JSONTypeProvider";
 
 		private var _describeTypeJSON:Function;
+		private var _ignoredMetadata:Array = ["__go_to_definition_help", "__go_to_ctor_definition_help"];
 
 		/**
 		 * describeTypeJSON JSON parser
@@ -54,10 +55,10 @@ package org.as3commons.reflect {
 			type.constructor = parseConstructor(type, instanceInfo.traits.constructor, applicationDomain);
 			type.accessors = parseAccessors(type, instanceInfo.traits.accessors, applicationDomain, false).concat(parseAccessors(type, classInfo.traits.accessors, applicationDomain, true));
 			type.methods = parseMethods(type, instanceInfo.traits.methods, applicationDomain, false).concat(parseMethods(type, classInfo.traits.methods, applicationDomain, true));
-			type.staticConstants = parseMembers(type, Constant, Constant.doCacheCheck, classInfo.traits.variables, fullyQualifiedClassName, true, true, applicationDomain);
-			type.constants = parseMembers(type, Constant, Constant.doCacheCheck, instanceInfo.traits.variables, fullyQualifiedClassName, false, true, applicationDomain);
-			type.staticVariables = parseMembers(type, Variable, Variable.doCacheCheck, classInfo.traits.variables, fullyQualifiedClassName, true, false, applicationDomain);
-			type.variables = parseMembers(type, Variable, Variable.doCacheCheck, instanceInfo.traits.variables, fullyQualifiedClassName, false, false, applicationDomain);
+			type.staticConstants = parseMembers(type, Constant, classInfo.traits.variables, fullyQualifiedClassName, true, true, applicationDomain);
+			type.constants = parseMembers(type, Constant, instanceInfo.traits.variables, fullyQualifiedClassName, false, true, applicationDomain);
+			type.staticVariables = parseMembers(type, Variable, classInfo.traits.variables, fullyQualifiedClassName, true, false, applicationDomain);
+			type.variables = parseMembers(type, Variable, instanceInfo.traits.variables, fullyQualifiedClassName, false, false, applicationDomain);
 			type.extendsClasses = instanceInfo.traits.bases.concat();
 			parseMetadata(instanceInfo.traits.metadata, type);
 			type.interfaces = parseImplementedInterfaces(instanceInfo.traits.interfaces);
@@ -138,7 +139,6 @@ package org.as3commons.reflect {
 
 		private function parseParameters(params:Array, applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
-			var idx:int = 1;
 			for each (var paramObj:Object in params) {
 				var param:Parameter = Parameter.newInstance(paramObj.type, applicationDomain, paramObj.optional);
 				result[result.length] = param;
@@ -148,12 +148,10 @@ package org.as3commons.reflect {
 
 		private function parseAccessors(type:Type, accessors:Array, applicationDomain:ApplicationDomain, isStatic:Boolean):Array {
 			var result:Array = [];
-
 			for each (var acc:Object in accessors) {
-				var accessor:Accessor = new Accessor(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
+				var accessor:Accessor = Accessor.newInstance(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
 				accessor.as3commons_reflect::setNamespaceURI(acc.uri);
 				parseMetadata(acc.metadata, accessor);
-				accessor = Accessor.doCacheCheck(accessor);
 				result[result.length] = accessor;
 			}
 			return result;
@@ -161,16 +159,23 @@ package org.as3commons.reflect {
 
 		private function parseMetadata(metadataNodes:Array, metadata:IMetadataContainer):void {
 			for each (var metadataObj:Object in metadataNodes) {
-				var metadataArgs:Array = [];
+				var metadataName:String = metadataObj.name;
 
-				for each (var metadataArgNode:Object in metadataObj.value) {
-					metadataArgs[metadataArgs.length] = MetadataArgument.newInstance(metadataArgNode.key, metadataArgNode.value);
+				if (!isIgnoredMetadata(metadataName)) {
+					var metadataArgs:Array = [];
+					for each (var metadataArgNode:Object in metadataObj.value) {
+						metadataArgs[metadataArgs.length] = MetadataArgument.newInstance(metadataArgNode.key, metadataArgNode.value);
+					}
+					metadata.addMetadata(Metadata.newInstance(metadataName, metadataArgs));
 				}
-				metadata.addMetadata(Metadata.newInstance(metadataObj.name, metadataArgs));
 			}
 		}
 
-		private function parseMembers(type:Type, memberClass:Class, cacheMethod:Function, members:Array, declaringType:String, isStatic:Boolean, isConstant:Boolean, applicationDomain:ApplicationDomain):Array {
+		private function isIgnoredMetadata(metadataName:String):Boolean {
+			return (_ignoredMetadata.indexOf(metadataName) > -1);
+		}
+
+		private function parseMembers(type:Type, memberClass:Class, members:Array, declaringType:String, isStatic:Boolean, isConstant:Boolean, applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
 
 			for each (var m:Object in members) {
@@ -179,12 +184,11 @@ package org.as3commons.reflect {
 				} else if ((!isConstant) && (m.access == AccessorAccess.READ_ONLY.name)) {
 					continue;
 				}
-				var member:IMember = new memberClass(m.name, m.type, declaringType, isStatic, applicationDomain);
+				var member:IMember = memberClass["newInstance"](m.name, m.type, declaringType, isStatic, applicationDomain);
 				if (member is INamespaceOwner) {
 					INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.uri);
 				}
 				parseMetadata(m.metadata, member);
-				member = cacheMethod(member);
 				result[result.length] = member;
 			}
 			return result;

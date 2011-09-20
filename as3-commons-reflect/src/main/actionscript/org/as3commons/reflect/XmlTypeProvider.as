@@ -80,10 +80,10 @@ package org.as3commons.reflect {
 			type.constructor = parseConstructor(type, description.factory.constructor, applicationDomain);
 			type.accessors = parseAccessors(type, description, applicationDomain);
 			type.methods = parseMethods(type, description, applicationDomain);
-			type.staticConstants = parseMembers(Constant, Constant.doCacheCheck, description.constant, fullyQualifiedClassName, true, applicationDomain);
-			type.constants = parseMembers(Constant, Constant.doCacheCheck, description.factory.constant, fullyQualifiedClassName, false, applicationDomain);
-			type.staticVariables = parseMembers(Variable, Variable.doCacheCheck, description.variable, fullyQualifiedClassName, true, applicationDomain);
-			type.variables = parseMembers(Variable, Variable.doCacheCheck, description.factory.variable, fullyQualifiedClassName, false, applicationDomain);
+			type.staticConstants = parseMembers(Constant, description.constant, fullyQualifiedClassName, true, applicationDomain);
+			type.constants = parseMembers(Constant, description.factory.constant, fullyQualifiedClassName, false, applicationDomain);
+			type.staticVariables = parseMembers(Variable, description.variable, fullyQualifiedClassName, true, applicationDomain);
+			type.variables = parseMembers(Variable, description.factory.variable, fullyQualifiedClassName, false, applicationDomain);
 			type.extendsClasses = parseExtendsClasses(description.factory.extendsClass, type.applicationDomain);
 			parseMetadata(description.factory[0].metadata, type);
 			type.interfaces = parseImplementedInterfaces(description.factory.implementsInterface);
@@ -142,16 +142,15 @@ package org.as3commons.reflect {
 		/**
 		 *
 		 */
-		private function parseMembers(memberClass:Class, cacheMethod:Function, members:XMLList, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain):Array {
+		private function parseMembers(memberClass:Class, members:XMLList, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
 
 			for each (var m:XML in members) {
-				var member:IMember = new memberClass(m.@name, m.@type.toString(), declaringType, isStatic, applicationDomain);
+				var member:IMember = memberClass["newInstance"](m.@name, m.@type.toString(), declaringType, isStatic, applicationDomain);
 				if (member is INamespaceOwner) {
 					INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.@uri.toString());
 				}
 				parseMetadata(m.metadata, member);
-				member = cacheMethod(member);
 				result[result.length] = member;
 			}
 			return result;
@@ -169,7 +168,6 @@ package org.as3commons.reflect {
 				}
 			}
 			return result;
-
 		}
 
 		/**
@@ -211,12 +209,11 @@ package org.as3commons.reflect {
 			var result:Array = [];
 
 			for each (var accessorXML:XML in accessorsXML) {
-				var accessor:Accessor = new Accessor(accessorXML.@name, AccessorAccess.fromString(accessorXML.@access), accessorXML.@type.toString(), accessorXML.@declaredBy.toString(), isStatic, applicationDomain);
+				var accessor:Accessor = Accessor.newInstance(accessorXML.@name, AccessorAccess.fromString(accessorXML.@access), accessorXML.@type.toString(), accessorXML.@declaredBy.toString(), isStatic, applicationDomain);
 				if (StringUtils.hasText(accessorXML.@uri)) {
 					accessor.as3commons_reflect::setNamespaceURI(accessorXML.@uri.toString());
 				}
 				parseMetadata(accessorXML.metadata, accessor);
-				accessor = Accessor.doCacheCheck(accessor);
 				result[result.length] = accessor;
 			}
 			return result;
