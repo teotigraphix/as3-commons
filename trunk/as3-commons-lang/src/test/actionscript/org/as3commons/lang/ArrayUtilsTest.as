@@ -64,7 +64,7 @@ package org.as3commons.lang {
             assertEquals(1, ArrayUtils.indexOfEquals([new EqualsImplementation("a"), new EqualsImplementation("b")], new EqualsImplementation("b")));
         }
 
-		[Test]
+		/*[Test]
         public function testIndexOfComparable():void {
             assertEquals(-1, ArrayUtils.indexOfComparable(null, null));
             assertEquals(-1, ArrayUtils.indexOfComparable(null, 1234));
@@ -73,7 +73,7 @@ package org.as3commons.lang {
             assertEquals(0, ArrayUtils.indexOfComparable(["1"], "1"));
             assertEquals(-1, ArrayUtils.indexOfComparable(["1"], 1));
             assertEquals(1, ArrayUtils.indexOfComparable(["a", "b"], "b"));
-        }
+        }  */
 
 		[Test]
         public function testGetLength():void {

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-    import mx.utils.ObjectUtil;
 
     /**
      * Contains utility methods for working with Array objects.
@@ -210,14 +209,14 @@ package org.as3commons.lang {
         /**
          *  Returns <code>true</code> if the array contains an item which ObjectUtil.compare == 0, for the given item and depth
          */
-        public static function containsComparable(array:Array, item:*, depth:int = -1):Boolean {
+        /*public static function containsComparable(array:Array, item:*, depth:int = -1):Boolean {
             return indexOfComparable(array, item) > -1;
-        }
+        }*/
 
         /**
          * Returns the index of the first item in the array which returns ObjectUtil.compare == 0, for the given item and depth
          */
-        public static function indexOfComparable(array:Array, item:*, depth:int = -1):int {
+        /*public static function indexOfComparable(array:Array, item:*, depth:int = -1):int {
             var numItems:int = getLength(array);
             if (numItems > 0 && item) {
                 for (var i:int = 0; i < numItems; i++) {
@@ -227,7 +226,7 @@ package org.as3commons.lang {
                 }
             }
             return -1;
-        }
+        }*/
 
         /**
          * Returns <code>true</code> if the array contains the item based on equality via the equals
