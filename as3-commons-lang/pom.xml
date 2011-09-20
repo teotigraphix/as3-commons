@@ -6,6 +6,7 @@
 		<groupId>org.as3commons</groupId>
 		<artifactId>parent-pom</artifactId>
 		<version>1-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -19,9 +20,6 @@
 	<inceptionYear>2009</inceptionYear>
 
 	<build>
-
-		<sourceDirectory>src/main/actionscript</sourceDirectory>
-		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
 
 		<plugins>
 
@@ -52,18 +50,8 @@
 				<configuration>
 					<storepass/>
 					<testTimeout>10000</testTimeout>
-					<configurationReport>true</configurationReport>
 					<targetPlayer>${flashplayer.version.major}</targetPlayer>
-					<locales>
-						<param>en_US</param>
-					</locales>
 					<updateSecuritySandbox>true</updateSecuritySandbox>
-					<includeAsClasses>
-						<source>
-							<directory>src/main/actionscript</directory>
-						</source>
-					</includeAsClasses>
-					<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
 					<description>AS3Commons Lang v${project.version} API documentation</description>
 					<mainTitle>AS3Commons Lang v${project.version} API documentation</mainTitle>
 					<windowTitle>AS3Commons Lang v${project.version} API documentation</windowTitle>
@@ -109,88 +97,9 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>src/main/actionscript</directory>
-							<includes>
-								<include>FlexUnitApplication.mxml</include>
-							</includes>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>2.1.1</version>
-				<configuration>
-					<templateFile>../src/site/vm/as3commons.vm</templateFile>
-				</configuration>
-			</plugin>
-
 		</plugins>
 
 	</build>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>playerglobal</artifactId>
-			<version>${flex-sdk.version}</version>
-			<scope>external</scope>
-			<type>swc</type>
-			<classifier>${playerglobal.version}</classifier>
-		</dependency>
-
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>framework</artifactId>
-			<version>${flex-sdk.version}</version>
-			<type>swc</type>
-			<scope>external</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>mx</artifactId>
-			<version>${flex-sdk.version}</version>
-			<type>swc</type>
-			<scope>external</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>textLayout</artifactId>
-			<version>${flex-sdk.version}</version>
-			<type>swc</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>framework</artifactId>
-			<version>${flex-sdk.version}</version>
-			<type>rb.swc</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.adobe.flex.framework</groupId>
-			<artifactId>mx</artifactId>
-			<version>${flex-sdk.version}</version>
-			<type>rb.swc</type>
-			<scope>external</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.adobe.flexunit</groupId>
-			<artifactId>flexunit</artifactId>
-			<version>${flexunit.version}</version>
-			<type>swc</type>
-			<scope>test</scope>
-		</dependency>
-
-	</dependencies>
 
 	<scm>
 		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-lang</developerConnection>
