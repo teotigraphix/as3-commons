@@ -20,9 +20,6 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
-	import flash.utils.Dictionary;
-
-	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IEquals;
 
 	/**
@@ -35,10 +32,45 @@ package org.as3commons.reflect {
 		public static const TRANSIENT:String = "Transient";
 		public static const BINDABLE:String = "Bindable";
 
-		private static const _cache:Dictionary = new Dictionary();
+		private static const _cache:Object = {};
 
-		private var _name:String;
-		private var _arguments:Array;
+		// --------------------------------------------------------------------
+		//
+		// Class Methods
+		//
+		// --------------------------------------------------------------------
+
+		public static function newInstance(name:String, arguments:Array = null):Metadata {
+			var cacheKey:String = getCacheKeyByNameAndArgs(name, arguments);
+			if (!_cache[cacheKey]) {
+				_cache[cacheKey] = new Metadata(name, arguments);
+			}
+			return _cache[cacheKey];
+		}
+
+		public static function getCacheKey(metadata:Metadata):String {
+			return getCacheKeyByNameAndArgs(metadata.name, metadata.arguments);
+		}
+
+		private static function getCacheKeyByNameAndArgs(key:String, metadataArgs:Array):String {
+			var result:String = key + ";";
+
+			if (metadataArgs) {
+				var numArgs:int = metadataArgs.length;
+				for (var i:int = 0; i < numArgs; i++) {
+					result += MetadataArgument.getCacheKey(metadataArgs[i]);
+					result += ";";
+				}
+			}
+
+			return result;
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
 
 		/**
 		 * Creates a new Metadata object.
@@ -56,6 +88,16 @@ package org.as3commons.reflect {
 			_arguments = (arguments == null) ? [] : arguments;
 		}
 
+		// --------------------------------------------------------------------
+		//
+		// Properties
+		//
+		// --------------------------------------------------------------------
+
+		// ----------------------------
+
+		private var _name:String;
+
 		/**
 		 * Returns the name of this metadata.
 		 */
@@ -63,12 +105,22 @@ package org.as3commons.reflect {
 			return _name;
 		}
 
+		// ----------------------------
+
+		private var _arguments:Array;
+
 		/**
 		 * Returns the MetadataArgument objects that describe this metadata.
 		 */
 		public function get arguments():Array {
 			return _arguments;
 		}
+
+		// --------------------------------------------------------------------
+		//
+		// Instance Methods
+		//
+		// --------------------------------------------------------------------
 
 		/**
 		 * Returns whether this metadata contains a MetadataArgument with the given key as its name.
@@ -83,87 +135,48 @@ package org.as3commons.reflect {
 		 * Returns the MetadataArgument for the given key. If none was found, null is returned.
 		 */
 		public function getArgument(key:String):MetadataArgument {
-			var result:MetadataArgument;
-
-			for (var i:int = 0; i < _arguments.length; i++) {
-				if (_arguments[i].key == key) {
-					result = _arguments[i];
-					break;
+			for each (var arg:MetadataArgument in _arguments) {
+				if (arg.key === key) {
+					return arg;
 				}
 			}
-
-			return result;
+			return null;
 		}
 
 		public function equals(other:Object):Boolean {
-			Assert.state(other is Metadata, "other argument must be of type Metadata");
-			var otherMetadata:Metadata = Metadata(other);
-			if (otherMetadata.name == this.name) {
-				if (otherMetadata.arguments.length != this.arguments.length) {
-					return false;
-				}
-				if (this.arguments.length > 0) {
-					for each (var arg:MetadataArgument in this.arguments) {
-						var otherArg:MetadataArgument = otherMetadata.getArgument(arg.key);
-						if (otherArg != null) {
-							if (!arg.equals(otherArg)) {
-								return false;
-							}
-						} else {
-							return false;
-						}
-					}
-					return true;
-				} else {
-					return true;
-				}
+			if (this === other) {
+				return true;
 			}
-			return false;
+
+			if (!(other is Metadata)) {
+				return false;
+			}
+
+			var that:Metadata = Metadata(other);
+			return ((that._name === _name) && argumentsAreEqual(that._arguments));
 		}
 
 		public function toString():String {
-			return "[Metadata(" + name + ", " + arguments + ")]";
+			return "[Metadata(" + name + ", " + _arguments + ")]";
+		}
+
+		private function argumentsAreEqual(metadataArgs:Array):Boolean {
+			if (metadataArgs.length !== _arguments.length) {
+				return false;
+			}
+
+			for each (var otherArg:MetadataArgument in metadataArgs) {
+				var arg:MetadataArgument = getArgument(otherArg.key);
+				if (!otherArg.equals(arg)) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		as3commons_reflect function setName(value:String):void {
 			_name = value;
-		}
-
-		public static function newInstance(name:String, arguments:Array = null):Metadata {
-			return getFromCache(name, arguments);
-		}
-
-		private static function addToCache(metadata:Metadata):void {
-			var cacheKey:String = metadata.name.toUpperCase();
-			var instances:Array = _cache[cacheKey];
-			if (instances == null) {
-				instances = [];
-				instances[0] = metadata;
-				_cache[cacheKey] = instances;
-			} else {
-				instances[instances.length] = metadata;
-			}
-		}
-
-		private static function getFromCache(name:String, arguments:Array):Metadata {
-			var metadata:Metadata = new Metadata(name, arguments);
-			var instances:Array = _cache[name.toUpperCase()];
-			if (instances == null) {
-				addToCache(metadata);
-			} else {
-				var found:Boolean = false;
-				for each (var md:Metadata in instances) {
-					if (md.equals(metadata)) {
-						metadata = md;
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					addToCache(metadata);
-				}
-			}
-			return metadata;
 		}
 
 	}

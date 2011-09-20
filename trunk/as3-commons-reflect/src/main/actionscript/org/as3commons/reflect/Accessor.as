@@ -36,7 +36,32 @@ package org.as3commons.reflect {
 	 */
 	public class Accessor extends Field implements IEquals {
 
+		// --------------------------------------------------------------------
+		//
+		// Class variables
+		//
+		// --------------------------------------------------------------------
+
 		private static const _cache:Dictionary = new Dictionary();
+
+		// --------------------------------------------------------------------
+		//
+		// Class methods
+		//
+		// --------------------------------------------------------------------
+
+		public static function newInstance(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Accessor {
+			var cacheKey:String = getCacheKey(name, access, type, declaringType, isStatic, applicationDomain, metadata);
+			if (!_cache[cacheKey]) {
+				_cache[cacheKey] = new Accessor(name, access, type, declaringType, isStatic, applicationDomain, metadata);
+			}
+			return _cache[cacheKey];
+		}
+
+		private static function getCacheKey(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray):String {
+			var cacheKey:String = AbstractMember.getCacheKey(Accessor, name, type, declaringType, isStatic, applicationDomain, metadata);
+			return [cacheKey, access.name].join(":");
+		}
 
 		// -------------------------------------------------------------------------
 		//
@@ -120,16 +145,6 @@ package org.as3commons.reflect {
 			return (_access == AccessorAccess.WRITE_ONLY || _access == AccessorAccess.READ_WRITE);
 		}
 
-		// -------------------------------------------------------------------------
-		//
-		//  Methods: AS3Commons Reflect Internal Use
-		//
-		// -------------------------------------------------------------------------
-
-		as3commons_reflect function setAccess(value:AccessorAccess):void {
-			_access = value;
-		}
-
 		override public function equals(other:Object):Boolean {
 			var otherAccessor:Accessor = other as Accessor;
 			var result:Boolean = false;
@@ -145,41 +160,14 @@ package org.as3commons.reflect {
 			return result;
 		}
 
-		public static function newInstance(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Accessor {
-			var accessor:Accessor = new Accessor(name, access, type, declaringType, isStatic, applicationDomain, metadata);
-			return doCacheCheck(accessor);
-		}
+		// -------------------------------------------------------------------------
+		//
+		//  Methods: AS3Commons Reflect Internal Use
+		//
+		// -------------------------------------------------------------------------
 
-		public static function addToCache(accessor:Accessor):void {
-			var cacheKey:String = accessor.name.toUpperCase();
-			var instances:Array = _cache[cacheKey];
-			if (instances == null) {
-				instances = [];
-				instances[0] = accessor;
-				_cache[cacheKey] = instances;
-			} else {
-				instances[instances.length] = accessor;
-			}
-		}
-
-		public static function doCacheCheck(accessor:Accessor):Accessor {
-			var instances:Array = _cache[accessor.name.toUpperCase()];
-			if (instances == null) {
-				addToCache(accessor);
-			} else {
-				var found:Boolean = false;
-				for each (var acc:Accessor in instances) {
-					if (acc.equals(accessor)) {
-						accessor = acc;
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					addToCache(accessor);
-				}
-			}
-			return accessor;
+		as3commons_reflect function setAccess(value:AccessorAccess):void {
+			_access = value;
 		}
 
 	}

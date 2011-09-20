@@ -23,11 +23,8 @@ package org.as3commons.reflect {
 
 	import flash.events.IEventDispatcher;
 	import flash.net.registerClassAlias;
-	import flash.utils.describeType;
 
 	import flexunit.framework.TestCase;
-
-	import mx.logging.LogEventLevel;
 
 	import org.as3commons.reflect.testclasses.ComplexClass;
 	import org.as3commons.reflect.testclasses.ComplexerClass;
@@ -86,15 +83,6 @@ package org.as3commons.reflect {
 			assertEquals(0, type.methods.length);
 			assertEquals("Array", type.name);
 			assertEquals("Array", type.fullName);
-		}
-
-		public function testForClassWithLogEventLevel():void {
-			var type:Type = Type.forClass(LogEventLevel);
-			var d:XML = describeType(LogEventLevel);
-			assertEquals(7, type.staticConstants.length);
-			assertEquals(8, type.fields.length);
-			var errorConstant:Field = type.getField("ERROR");
-			assertEquals(LogEventLevel.ERROR, errorConstant.getValue());
 		}
 
 		public function testForClass_shouldHaveCorrectDeclaringTypesOnAccessors():void {

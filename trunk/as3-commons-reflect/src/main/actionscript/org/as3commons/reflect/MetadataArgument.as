@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009-2010 the original author or authors
+ * Copyright (c) 2007-2011 the original author or authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,9 +20,6 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
-	import flash.utils.Dictionary;
-
-	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.IEquals;
 
 	/**
@@ -32,10 +29,35 @@ package org.as3commons.reflect {
 	 */
 	public class MetadataArgument implements IEquals {
 
-		public var key:String;
-		public var value:String;
+		private static const _cache:Object = {};
 
-		private static const _cache:Dictionary = new Dictionary();
+		// --------------------------------------------------------------------
+		//
+		// Class Methods
+		//
+		// --------------------------------------------------------------------
+
+		public static function newInstance(name:String, value:String):MetadataArgument {
+			var cacheKey:String = getCacheKeyByNameAndValue(name, value);
+			if (!_cache[cacheKey]) {
+				_cache[cacheKey] = new MetadataArgument(name, value);
+			}
+			return _cache[cacheKey];
+		}
+
+		public static function getCacheKey(arg:MetadataArgument):String {
+			return getCacheKeyByNameAndValue(arg.key, arg.value);
+		}
+
+		public static function getCacheKeyByNameAndValue(key:String, value:String):String {
+			return key + ":" + value;
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
 
 		/**
 		 * Creates a new MetadataArgument
@@ -44,51 +66,49 @@ package org.as3commons.reflect {
 		 * @param value the metadata value
 		 */
 		public function MetadataArgument(key:String, value:String) {
-			this.key = key;
-			this.value = value;
+			_key = key;
+			_value = value;
 		}
+
+		// --------------------------------------------------------------------
+		//
+		// Properties
+		//
+		// --------------------------------------------------------------------
+
+		// ----------------------------
+
+		private var _key:String;
+
+		public function get key():String {
+			return _key;
+		}
+
+		// ----------------------------
+
+		private var _value:String;
+
+		public function get value():String {
+			return _value;
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Methods
+		//
+		// --------------------------------------------------------------------
 
 		public function equals(other:Object):Boolean {
-			Assert.state(other is MetadataArgument, "other argument must be of type MetadataArgument");
-			var otherArgument:MetadataArgument = MetadataArgument(other);
-			return ((otherArgument.key == this.key) && (otherArgument.value == this.value));
-		}
-
-		public static function newInstance(key:String, value:String):MetadataArgument {
-			return getFromCache(key, value);
-		}
-
-		private static function addToCache(metadataArgument:MetadataArgument):void {
-			var cacheKey:String = metadataArgument.key.toUpperCase();
-			var instances:Array = _cache[cacheKey];
-			if (instances == null) {
-				instances = [];
-				instances[0] = metadataArgument;
-				_cache[cacheKey] = instances;
-			} else {
-				instances[instances.length] = metadataArgument;
+			if (this === other) {
+				return true;
 			}
-		}
 
-		private static function getFromCache(key:String, value:String):MetadataArgument {
-			var metadataArgument:MetadataArgument = new MetadataArgument(key, value);
-			var instances:Array = _cache[key.toUpperCase()];
-			if (instances == null) {
-				addToCache(metadataArgument);
-			} else {
-				var found:Boolean = false;
-				for each (var mda:MetadataArgument in instances) {
-					if (mda.equals(metadataArgument)) {
-						metadataArgument = mda;
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					addToCache(metadataArgument);
-				}
+			if (!(other is MetadataArgument)) {
+				return false;
 			}
-			return metadataArgument;
+
+			var that:MetadataArgument = MetadataArgument(other);
+			return ((that.key === key) && (that.value === value));
 		}
 
 	}

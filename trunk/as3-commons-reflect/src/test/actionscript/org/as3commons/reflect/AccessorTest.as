@@ -147,5 +147,14 @@ package org.as3commons.reflect {
 			assertStrictlyEquals(acc1, acc3);
 		}
 
+		/*public function testNewInstance_speed():void {
+			for (var i:int = 0; i<1000; i++) {
+				testNewInstanceWithCacheAndEqualParams();
+				testNewInstanceWithCacheAndDifferentParams();
+				testNewInstanceWithCacheAndEqualParamsAndDifferentMetadata();
+				testNewInstanceWithIllegalName();
+			}
+		}*/
+
 	}
 }

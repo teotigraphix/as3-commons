@@ -21,7 +21,6 @@
  */
 package org.as3commons.reflect {
 	import flash.system.ApplicationDomain;
-	import flash.utils.Dictionary;
 
 	import org.as3commons.lang.HashArray;
 
@@ -32,7 +31,21 @@ package org.as3commons.reflect {
 	 */
 	public class Constant extends Field {
 
-		private static const _cache:Dictionary = new Dictionary();
+		// --------------------------------------------------------------------
+		//
+		// Public Static Methods
+		//
+		// --------------------------------------------------------------------
+
+		public static function newInstance(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Constant {
+			return Constant(AbstractMember.newInstance(Constant, name, type, declaringType, isStatic, applicationDomain, metadata));
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
 
 		/**
 		 * Creates a new <code>Constant</code> object.
@@ -44,43 +57,6 @@ package org.as3commons.reflect {
 		 */
 		public function Constant(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) {
 			super(name, type, declaringType, isStatic, applicationDomain, metadata);
-		}
-
-		public static function newInstance(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Constant {
-			var constant:Constant = new Constant(name, type, declaringType, isStatic, applicationDomain, metadata);
-			return doCacheCheck(constant);
-		}
-
-		public static function addToCache(constant:Constant):void {
-			var cacheKey:String = constant.name.toUpperCase();
-			var instances:Array = _cache[cacheKey];
-			if (instances == null) {
-				instances = [];
-				instances[0] = constant;
-				_cache[cacheKey] = instances;
-			} else {
-				instances[instances.length] = constant;
-			}
-		}
-
-		public static function doCacheCheck(constant:Constant):Constant {
-			var instances:Array = _cache[constant.name.toUpperCase()];
-			if (instances == null) {
-				addToCache(constant);
-			} else {
-				var found:Boolean = false;
-				for each (var cs:Constant in instances) {
-					if (cs.equals(constant)) {
-						constant = cs;
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					addToCache(constant);
-				}
-			}
-			return constant;
 		}
 
 	}

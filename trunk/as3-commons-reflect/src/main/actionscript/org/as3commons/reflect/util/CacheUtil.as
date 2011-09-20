@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2009-2010 the original author or authors
+ * Copyright (c) 2007-2011 the original author or authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,26 +19,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.reflect {
+package org.as3commons.reflect.util {
 	import flash.system.ApplicationDomain;
 
 	import org.as3commons.lang.HashArray;
+	import org.as3commons.reflect.Metadata;
 
-	/**
-	 * A property defined with the <code>var</code> keyword.
-	 *
-	 * @author Christophe Herreman
-	 */
-	public class Variable extends Field {
+	import org.as3commons.reflect.as3commons_reflect;
+
+	public class CacheUtil {
+
+		private static var _appDomains:Array = [];
 
 		// --------------------------------------------------------------------
 		//
-		// Public Static Methods
+		// Class Methods
 		//
 		// --------------------------------------------------------------------
 
-		public static function newInstance(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Variable {
-			return Variable(AbstractMember.newInstance(Variable, name, type, declaringType, isStatic, applicationDomain, metadata));
+		public static function getApplicationDomainIndex(applicationDomain:ApplicationDomain):int {
+			if (_appDomains.indexOf(applicationDomain) == -1) {
+				_appDomains.push(applicationDomain);
+			}
+			return _appDomains.indexOf(applicationDomain);
+		}
+
+		public static function getMetadataString(metadataArray:HashArray):String {
+			var result:String = "";
+
+			if (metadataArray) {
+				var md:Array = metadataArray.getArray();
+				for each (var metadata:Metadata in md) {
+					result += Metadata.getCacheKey(metadata) + ","
+				}
+			}
+
+			return result;
 		}
 
 		// --------------------------------------------------------------------
@@ -47,18 +63,9 @@ package org.as3commons.reflect {
 		//
 		// --------------------------------------------------------------------
 
-
-		/**
-		 * Creates a new <code>Variable</code> object.
-		 *
-		 * @param name the name of the variable
-		 * @param type the data type of the variable
-		 * @param declaringType the type that declares the variable
-		 * @param isStatic whether or not this member is static (class member)
-		 */
-		public function Variable(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) {
-			super(name, type, declaringType, isStatic, applicationDomain, metadata);
+		public function CacheUtil() {
 		}
+
 
 	}
 }

@@ -24,6 +24,7 @@ package org.as3commons.reflect {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.lang.IEquals;
+	import org.as3commons.reflect.util.CacheUtil;
 
 	/**
 	 * Provides information of a parameter passed to a method.
@@ -35,7 +36,20 @@ package org.as3commons.reflect {
 
 		private var _applicationDomain:ApplicationDomain;
 
-		private static const _cache:Dictionary = new Dictionary();
+		private static const _cache:Object = {};
+
+		public static function newInstance(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false):Parameter {
+			var cacheKey:String = getCacheKey(type, applicationDomain, isOptional);
+			if (!_cache[cacheKey]) {
+				_cache[cacheKey] = new Parameter(type, applicationDomain, isOptional);
+			}
+			return _cache[cacheKey];
+		}
+
+		private static function getCacheKey(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean):String {
+			var appDomainIndex:int = CacheUtil.getApplicationDomainIndex(applicationDomain);
+			return [type, appDomainIndex, isOptional].join(":");
+		}
 
 		// -------------------------------------------------------------------------
 		//
@@ -46,7 +60,6 @@ package org.as3commons.reflect {
 		/**
 		 * Creates a new <code>Parameter</code> object.
 		 *
-		 * @param index the index of the parameter
 		 * @param type the class type of the parameter
 		 * @param isOptional whether the parameter is optional or not
 		 */
@@ -97,48 +110,15 @@ package org.as3commons.reflect {
 		}
 
 		public function equals(other:Object):Boolean {
-			var otherParam:Parameter = other as Parameter;
-			if (otherParam != null) {
-				return ((otherParam._applicationDomain === this._applicationDomain) && (otherParam.typeName == this.typeName) && (otherParam.isOptional == this.isOptional));
+			var that:Parameter = other as Parameter;
+			if (that) {
+				return valuesAreEqual(that.typeName, that._applicationDomain, that.isOptional);
 			}
 			return false;
 		}
 
-		public static function newInstance(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false):Parameter {
-			return getFromCache(type, applicationDomain, isOptional);
-		}
-
-		private static function addToCache(param:Parameter):void {
-			var cacheKey:String = param.typeName.toUpperCase();
-			var instances:Array = _cache[cacheKey];
-			if (instances == null) {
-				instances = [];
-				instances[0] = param;
-				_cache[cacheKey] = instances;
-			} else {
-				instances[instances.length] = param;
-			}
-		}
-
-		private static function getFromCache(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean):Parameter {
-			var param:Parameter = new Parameter(type, applicationDomain, isOptional);
-			var instances:Array = _cache[param.typeName.toUpperCase()];
-			if (instances == null) {
-				addToCache(param);
-			} else {
-				var found:Boolean = false;
-				for each (var pm:Parameter in instances) {
-					if (pm.equals(param)) {
-						param = pm;
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					addToCache(param);
-				}
-			}
-			return param;
+		private function valuesAreEqual(typeName:String, appDomain:ApplicationDomain, isOptional:Boolean):Boolean {
+			return ((appDomain === _applicationDomain) && (typeName == this.typeName) && (isOptional == this.isOptional));
 		}
 
 	}
