@@ -39,7 +39,7 @@
 		<maven-site-plugin.version>3.0-beta-3</maven-site-plugin.version>
 
 		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
-	</properties>
+    </properties>
 
 	<repositories>
 		<repository>
@@ -87,5 +87,55 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+
+    <build>
+        <sourceDirectory>src/main/actionscript</sourceDirectory>
+		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>${maven-site-plugin.version}</version>
+				<configuration>
+					<templateFile>../src/site/vm/as3commons.vm</templateFile>
+				</configuration>
+			</plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <!-- Compile -->
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>playerglobal</artifactId>
+            <version>${flex-sdk.version}</version>
+            <scope>external</scope>
+            <type>swc</type>
+            <classifier>${playerglobal.version}</classifier>
+        </dependency>
+
+        <!-- Test -->
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>common-framework</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flexunit</groupId>
+            <artifactId>flexunit</artifactId>
+            <version>${flexunit.version}</version>
+            <type>swc</type>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
 
 </project>
