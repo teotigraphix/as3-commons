@@ -19,7 +19,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.abc.RuntimeQualifiedName;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
-	import org.as3commons.bytecode.emit.IMethodBuilder;
+	import org.as3commons.bytecode.emit.IEmitObject;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
@@ -54,7 +54,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param methodBuilder The specified <code>IMethodBuilder</code>.
 		 * @return The new <code>QualifiedName</code> instance.
 		 */
-		protected function createMethodQName(methodBuilder:IMethodBuilder):QualifiedName {
+		protected function createMethodQName(methodBuilder:IEmitObject):QualifiedName {
 			var ns:LNamespace;
 			switch (methodBuilder.visibility) {
 				case MemberVisibility.PUBLIC:
@@ -75,7 +75,7 @@ package org.as3commons.bytecode.proxy.impl {
 				Assert.hasText(packageName, "packageName argument must not be empty or null");
 			}
 			var parts:Array = packageName.split(MultinameUtil.PERIOD);
-			parts.splice(parts.length - 2, 1)
+			parts.splice(parts.length - 2, 1);
 			var newPackage:String = parts.join(MultinameUtil.PERIOD);
 			return newPackage;
 		}
