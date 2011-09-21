@@ -23,7 +23,7 @@ package org.as3commons.bytecode.interception {
 	 */
 	public interface IMethodInvocationInterceptor {
 		/**
-		 * Intercepts an invocation and potentially delegates it to any <code>IIntercepters</code> instances that have been registred with
+		 * Intercepts an invocation and potentially delegates it to any <code>IInterceptor</code> instances that have been registered with
 		 * the current <code>IMethodInvocationInterceptor</code>.
 		 * @param targetInstance The object instance whose method is being intercepted.
 		 * @param kind The kind of invocation that is being intercepted.
