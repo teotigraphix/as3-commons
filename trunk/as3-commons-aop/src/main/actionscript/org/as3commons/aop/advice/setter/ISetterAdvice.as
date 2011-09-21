@@ -14,12 +14,13 @@
 * limitations under the License.
 */
 package org.as3commons.aop.advice.setter {
-	import org.as3commons.aop.advice.*;
-	import org.as3commons.reflect.Accessor;
+	import org.as3commons.aop.advice.IAdvice;
 
-	public interface ISetterBeforeAdvice extends ISetterAdvice, IBeforeAdvice {
-
-		function beforeSetter(setter:Accessor, target:*, value:*):void;
-
+	/**
+	 * Marker interface for setter advice.
+	 *
+	 * @author Christophe Herreman
+	 */
+	public interface ISetterAdvice extends IAdvice {
 	}
 }

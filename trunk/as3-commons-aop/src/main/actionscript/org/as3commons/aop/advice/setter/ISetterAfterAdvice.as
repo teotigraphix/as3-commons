@@ -17,7 +17,7 @@ package org.as3commons.aop.advice.setter {
 	import org.as3commons.aop.advice.*;
 	import org.as3commons.reflect.Accessor;
 
-	public interface ISetterAfterAdvice extends IAfterAdvice {
+	public interface ISetterAfterAdvice extends ISetterAdvice, IAfterAdvice {
 
 		function afterSetter(setter:Accessor):void;
 
