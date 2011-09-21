@@ -18,8 +18,11 @@ package org.as3commons.bytecode.proxy.impl {
 
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.RuntimeQualifiedName;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
+	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.bytecode.as3commons_bytecode_proxy;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
@@ -33,7 +36,8 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
-	import org.as3commons.reflect.AccessorAccess;
+
+	use namespace as3commons_bytecode_proxy;
 
 	/**
 	 * @inheritDoc
@@ -44,6 +48,9 @@ package org.as3commons.bytecode.proxy.impl {
 	 */
 	[Event(name="beforeSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	public class AccessorProxyFactory extends AbstractMethodBodyFactory implements IAccessorProxyFactory {
+
+		private static const GETTER_WRAPPER_PREFIX:String = "getter_";
+		private static const SETTER_WRAPPER_PREFIX:String = "setter_";
 
 		public function AccessorProxyFactory() {
 			super();
@@ -58,7 +65,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
 		 * @return The <code>IAccessorBuilder</code> representing the generated accessor.
-		 * @throws org.as3commons.bytecode.proxy.error.ProxyBuildError When the proxied accessor is marked as final.
+		 * @throws org.as3commons.bytecode.proxy.error.ProxyBuildError When the proxied accessor does not exist or is marked as final.
 		 */
 		public function proxyAccessor(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, multiName:Multiname, bytecodeQname:QualifiedName, failOnFinal:Boolean=true):void {
 			CONFIG::debug {
@@ -66,6 +73,7 @@ package org.as3commons.bytecode.proxy.impl {
 				Assert.notNull(type, "type argument must not be null");
 				Assert.notNull(memberInfo, "memberInfo argument must not be null");
 			}
+
 			var accessor:ByteCodeAccessor = type.getField(memberInfo.qName.localName, memberInfo.qName.uri) as ByteCodeAccessor;
 			if (accessor == null) {
 				throw new ProxyBuildError(ProxyBuildError.ACCESSOR_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
@@ -91,6 +99,11 @@ package org.as3commons.bytecode.proxy.impl {
 				event.builder = createSetter(event.accessorBuilder, classBuilder, multiName, bytecodeQname, type.isInterface);
 			};
 			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_SETTER, setterFunc);
+
+			if (!type.isInterface) {
+				createGetterWrapper(classBuilder, accessorBuilder, multiName, bytecodeQname);
+				createSetterWrapper(classBuilder, accessorBuilder, multiName, bytecodeQname);
+			}
 		}
 
 		/**
@@ -192,15 +205,23 @@ package org.as3commons.bytecode.proxy.impl {
 				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespaceURI) ? methodBuilder.namespaceURI : ""]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.constructprop, [qnameQname, 2]);
-			if (!isInterface) {
-				methodBuilder.addOpcode(Opcode.getlocal_0) //
-					.addOpcode(Opcode.getsuper, [createMethodQName(methodBuilder)]);
-			} else {
-				methodBuilder.addOpcode(Opcode.pushnull);
-			}
-			methodBuilder.addOpcode(Opcode.newarray, [1]) //
-				.addOpcode(Opcode.callproperty, [multiName, 4]) //
-				.addOpcode(Opcode.returnvalue);
+
+			// TODO pass empty array here or null?
+			methodBuilder.addOpcode(Opcode.newarray, [0]);
+
+			// getter wrapper
+			var wrapperName:RuntimeQualifiedName = new RuntimeQualifiedName(GETTER_WRAPPER_PREFIX + methodBuilder.name, MultinameKind.RTQNAME);
+			methodBuilder.addOpcode(Opcode.findpropstrict, [bytecodeQname]);
+			methodBuilder.addOpcode(Opcode.getproperty, [bytecodeQname]);
+			methodBuilder.addOpcode(Opcode.coerce, [namespaceQualifiedName]);
+			methodBuilder.addOpcode(Opcode.findpropstrict, [wrapperName]);
+			methodBuilder.addOpcode(Opcode.findpropstrict, [bytecodeQname]);
+			methodBuilder.addOpcode(Opcode.getproperty, [bytecodeQname]);
+			methodBuilder.addOpcode(Opcode.coerce, [namespaceQualifiedName]);
+			methodBuilder.addOpcode(Opcode.getproperty, [wrapperName]);
+
+			methodBuilder.addOpcode(Opcode.callproperty, [multiName, 5]) //
+			.addOpcode(Opcode.returnvalue);
 
 			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_GETTER_BODY_BUILD, methodBuilder);
 			dispatchEvent(event);
@@ -245,7 +266,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
 			var argLen:int = 1;
-			var superSetter:QualifiedName = (!isInterface) ? createMethodQName(methodBuilder) : null;
+			//var superSetter:QualifiedName = (!isInterface) ? createMethodQName(methodBuilder) : null;
 			methodBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.getlocal_0) //
@@ -266,19 +287,79 @@ package org.as3commons.bytecode.proxy.impl {
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.constructprop, [qnameQname, 2]) //
 				.addOpcode(Opcode.getlocal_1);
-			if ((accessorBuilder.access === AccessorAccess.READ_WRITE) && (superSetter != null)) {
-				methodBuilder.addOpcode(Opcode.getlocal_0) //
-					.addOpcode(Opcode.getsuper, [superSetter]);
-				argLen = 2;
-			}
-			methodBuilder.addOpcode(Opcode.newarray, [argLen]) //
-				.addOpcode(Opcode.callproperty, [multiName, 4]);
-			if (!isInterface) {
+
+			methodBuilder.addOpcode(Opcode.newarray, [argLen]);
+
+			// setter wrapper
+			var wrapperName:RuntimeQualifiedName = new RuntimeQualifiedName(SETTER_WRAPPER_PREFIX + methodBuilder.name, MultinameKind.RTQNAME);
+			methodBuilder.addOpcode(Opcode.findpropstrict, [bytecodeQname]);
+			methodBuilder.addOpcode(Opcode.getproperty, [bytecodeQname]);
+			methodBuilder.addOpcode(Opcode.coerce, [namespaceQualifiedName]);
+			methodBuilder.addOpcode(Opcode.findpropstrict, [wrapperName]);
+			methodBuilder.addOpcode(Opcode.findpropstrict, [bytecodeQname]);
+			methodBuilder.addOpcode(Opcode.getproperty, [bytecodeQname]);
+			methodBuilder.addOpcode(Opcode.coerce, [namespaceQualifiedName]);
+			methodBuilder.addOpcode(Opcode.getproperty, [wrapperName]);
+			
+			methodBuilder.addOpcode(Opcode.callproperty, [multiName, 5]);
+			/*if (!isInterface) {
 				methodBuilder.addOpcode(Opcode.setsuper, [superSetter]);
-			}
+			}*/
 			methodBuilder.addOpcode(Opcode.returnvoid);
 			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_SETTER_BODY_BUILD, methodBuilder);
 			dispatchEvent(event);
+		}
+
+		/**
+		 * Creates a method that wraps the given getter. This is used to pass a function reference to the getter
+		 * which interceptors can invoke.
+		 *
+		 * @param classBuilder
+		 * @param accessorBuilder
+		 * @param multiName
+		 * @param bytecodeQname
+		 */
+		private function createGetterWrapper(classBuilder:IClassBuilder, accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
+			var methodName:String = GETTER_WRAPPER_PREFIX + accessorBuilder.name;
+			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(methodName);
+			methodBuilder.returnType = accessorBuilder.type;
+			methodBuilder.visibility = MemberVisibility.NAMESPACE;
+			methodBuilder.namespaceURI = as3commons_bytecode_proxy;
+
+			// method body
+			// -> return super.{accessorName};
+			methodBuilder.addOpcode(Opcode.getlocal_0);
+			methodBuilder.addOpcode(Opcode.pushscope);
+			methodBuilder.addOpcode(Opcode.getlocal_0);
+			methodBuilder.addOpcode(Opcode.getsuper, [createMethodQName(accessorBuilder)]);
+			methodBuilder.addOpcode(Opcode.returnvalue);
+		}
+
+		/**
+		 * Creates a method that wraps the given setter. This is used to pass a function reference to the setter
+		 * which interceptors can invoke.
+		 *
+		 * @param classBuilder
+		 * @param accessorBuilder
+		 * @param multiName
+		 * @param bytecodeQname
+		 */
+		private function createSetterWrapper(classBuilder:IClassBuilder, accessorBuilder:IAccessorBuilder, multiName:Multiname, bytecodeQname:QualifiedName):void {
+			var methodName:String = SETTER_WRAPPER_PREFIX + accessorBuilder.name;
+			var methodBuilder:IMethodBuilder = classBuilder.defineMethod(methodName);
+			methodBuilder.defineArgument(accessorBuilder.type);
+			methodBuilder.returnType = BuiltIns.VOID.fullName;
+			methodBuilder.visibility = MemberVisibility.NAMESPACE;
+			methodBuilder.namespaceURI = as3commons_bytecode_proxy;
+
+			// method body
+			// -> super.{accessorName} = value;
+			methodBuilder.addOpcode(Opcode.getlocal_0);
+			methodBuilder.addOpcode(Opcode.pushscope);
+			methodBuilder.addOpcode(Opcode.getlocal_0);
+			methodBuilder.addOpcode(Opcode.getlocal_1);
+			methodBuilder.addOpcode(Opcode.setsuper, [createMethodQName(accessorBuilder)]);
+			methodBuilder.addOpcode(Opcode.returnvoid);
 		}
 
 	}
