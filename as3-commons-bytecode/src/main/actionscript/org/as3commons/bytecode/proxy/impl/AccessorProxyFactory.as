@@ -161,14 +161,17 @@ package org.as3commons.bytecode.proxy.impl {
 
 		/**
 		 * Generates a method body for a getter method in the specified <code>IMethodBuilder</code> instance.
+		 *
 		 * <p>The actionscript for the generated body would look like this:</p>
+		 *
 		 * <listing version="3.0">
 		 * override public function get getter():uint {
-		 *  return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.GETTER, new QName("", "getter"), [super.getter]);
+		 *  return as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.GETTER, new QName("", "getter"), [], getterFunction);
 		 * }
 		 * </listing>
-		 * <p>It will pass the current value of the getter in the arguments <code>Array</code> so that it may be examined by any <code>IInterceptor</code>
-		 * instances.</p>
+		 *
+		 * <p>The getterFunction is a reference to a method that will call the getter.</p>
+		 *
 		 * @param methodBuilder The specified <code>IMethodBuilder</code> instance.
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
@@ -229,20 +232,19 @@ package org.as3commons.bytecode.proxy.impl {
 
 		/**
 		 * Generates a method body for a setter method in the specified <code>IMethodBuilder</code> instance.
+		 *
 		 * <p>The actionscript for the generated body would look like this:</p>
+		 *
 		 * <listing version="3.0">
 		 * override public function set setter(value:uint):void {
-		 *  super.getterSetter = as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.SETTER, new QName("", "setter"), [value, super.setter]);
+		 *  as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.SETTER, new QName("", "setter"), [value], setterFunction);
 		 * }
 		 * </listing>
-		 * <p>If the specified accessor is read and write enabled it will pass the current value of the getter as the second argument, the first argument is the new value.</p>
-		 * <p>In the case of a write only accessor the code will be generated like this:</p>
-		 * <listing version="3.0">
-		 * override public function set setter(value:uint):void {
-		 *  super.getterSetter = as3commons_bytecode_proxy::methodInvocationInterceptor.intercept(this, InvocationKind.SETTER, new QName("", "setter"), [value]);
-		 * }
-		 * </listing>
-		 * <p>In this case the intercepting logic needs to be able to return a valid value for the setter method in the case where the nw value is rejected by some kind of business rule.</p>
+		 *
+		 * <p>The new value for the setter is passed in the arguments array. The setterFunction is a reference
+		 * to a method that will call the setter. Notice that the generated code does not call the setter. This is
+		 * because interceptors might choose to stop setting the new value.</p>
+		 *
 		 * @param methodBuilder The specified <code>IMethodBuilder</code> instance.
 		 * @param multiName The specified <code>Multiname</code> instance.
 		 * @param bytecodeQname The specified <code>QualifiedName</code> instance.
@@ -264,9 +266,10 @@ package org.as3commons.bytecode.proxy.impl {
 				Assert.notNull(multiName, "multiName argument must not be null");
 				Assert.notNull(bytecodeQname, "bytecodeQname argument must not be null");
 			}
+
 			var methodQName:QualifiedName = createMethodQName(methodBuilder);
 			var argLen:int = 1;
-			//var superSetter:QualifiedName = (!isInterface) ? createMethodQName(methodBuilder) : null;
+
 			methodBuilder.addOpcode(Opcode.getlocal_0) //
 				.addOpcode(Opcode.pushscope) //
 				.addOpcode(Opcode.getlocal_0) //
@@ -302,10 +305,8 @@ package org.as3commons.bytecode.proxy.impl {
 			methodBuilder.addOpcode(Opcode.getproperty, [wrapperName]);
 			
 			methodBuilder.addOpcode(Opcode.callproperty, [multiName, 5]);
-			/*if (!isInterface) {
-				methodBuilder.addOpcode(Opcode.setsuper, [superSetter]);
-			}*/
 			methodBuilder.addOpcode(Opcode.returnvoid);
+
 			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_SETTER_BODY_BUILD, methodBuilder);
 			dispatchEvent(event);
 		}
