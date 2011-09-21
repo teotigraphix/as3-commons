@@ -14,5 +14,9 @@ package org.as3commons.aop.advice {
 		public function afterGetter(result:*, getter:Accessor, target:*):void {
 			trace("* TraceGetterAroundAdvice after getter");
 		}
+
+		public function afterGetterThrows(setter:Accessor, target:*, error:Error):void {
+			trace("* TraceGetterAroundAdvice after getter throws");
+		}
 	}
 }

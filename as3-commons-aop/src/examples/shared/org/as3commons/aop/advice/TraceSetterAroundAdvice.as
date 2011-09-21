@@ -14,5 +14,9 @@ package org.as3commons.aop.advice {
 		public function afterSetter(setter:Accessor):void {
 			trace("* TraceSetterAroundAdvice after setter '" + setter.name + "'");
 		}
+
+		public function afterSetterThrows(setter:Accessor, value:*, target:*, error:Error):void {
+			trace("* TraceSetterAroundAdvice after setter '" + setter.name + "' throws");
+		}
 	}
 }

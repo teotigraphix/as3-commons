@@ -7,10 +7,12 @@ package org.as3commons.aop.intercept {
 		}
 
 		public function interceptSetter(invocation:ISetterInvocation):void {
+			trace("* AppendUnderscoreToStringSetterInterceptor before");
 			if (invocation.value is String) {
 				invocation.value = String(invocation.value) + "_";
 			}
 			invocation.proceed();
+			trace("* AppendUnderscoreToStringSetterInterceptor after");
 		}
 	}
 }
