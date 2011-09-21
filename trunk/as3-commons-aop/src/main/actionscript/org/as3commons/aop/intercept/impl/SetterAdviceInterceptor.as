@@ -1,22 +1,23 @@
 /*
-* Copyright 2007-2011 the original author or authors.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2007-2011 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.as3commons.aop.intercept.impl {
 	import org.as3commons.aop.advice.setter.ISetterAdvice;
 	import org.as3commons.aop.advice.setter.ISetterAfterAdvice;
 	import org.as3commons.aop.advice.setter.ISetterBeforeAdvice;
+	import org.as3commons.aop.advice.setter.ISetterThrowsAdvice;
 	import org.as3commons.aop.intercept.ISetterInterceptor;
 	import org.as3commons.aop.intercept.invocation.ISetterInvocation;
 
@@ -52,7 +53,7 @@ package org.as3commons.aop.intercept.impl {
 				invocation.proceed();
 				//invokeAfterReturningAdvice(invocation, result);
 			} catch (e:Error) {
-				//invokeThrowsAdvice(invocation, e);
+				invokeThrowsAdvice(invocation, e);
 				throw e;
 			} finally {
 				invokeAfterAdvice(invocation);
@@ -77,11 +78,11 @@ package org.as3commons.aop.intercept.impl {
 			}
 		}
 
-		/*private function invokeThrowsAdvice(invocation:IGetterInvocation, error:Error):void {
-		 if (_advice is IGetterThrowsAdvice) {
-		 IGetterThrowsAdvice(_advice).afterMethodThrowing(invocation.getter, invocation.args, invocation.target, error);
-		 }
-		 }*/
+		private function invokeThrowsAdvice(invocation:ISetterInvocation, error:Error):void {
+			if (_advice is ISetterThrowsAdvice) {
+				ISetterThrowsAdvice(_advice).afterSetterThrows(invocation.setter, invocation.args[0], invocation.target, error);
+			}
+		}
 
 		private function invokeAfterAdvice(invocation:ISetterInvocation):void {
 			if (_advice is ISetterAfterAdvice) {

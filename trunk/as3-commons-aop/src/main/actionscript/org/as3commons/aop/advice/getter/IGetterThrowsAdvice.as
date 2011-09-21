@@ -13,9 +13,18 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.advice.setter {
-	import org.as3commons.aop.advice.IAroundAdvice;
+package org.as3commons.aop.advice.getter {
+	import org.as3commons.aop.advice.IThrowsAdvice;
+	import org.as3commons.reflect.Accessor;
 
-	public interface ISetterAroundAdvice extends IAroundAdvice, ISetterBeforeAdvice, ISetterAfterAdvice, ISetterThrowsAdvice {
+	/**
+	 * Getter "throws" advice is invoked after a getter throws an error.
+	 *
+	 * @author Christophe Herreman
+	 */
+	public interface IGetterThrowsAdvice extends IThrowsAdvice, IGetterAdvice {
+		
+		function afterGetterThrows(setter:Accessor, target:*, error:Error):void;
+
 	}
 }
