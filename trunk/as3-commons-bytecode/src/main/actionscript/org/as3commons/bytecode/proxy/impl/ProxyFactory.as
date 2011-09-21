@@ -355,7 +355,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param classProxyInfo The specified <code>ClassProxyInfo</code>.
 		 * @param applicationDomain The application domain the proxied <code>Class</code> belongs to.
 		 * @return A <code>ProxyInfo</code> instance.
-		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied class is marked as final.
+		 * @throws org.as3commons.bytecode.proxy.error.ProxyBuildError When the proxied class is marked as final.
 		 */
 		protected function buildProxyClass(classProxyInfo:IClassProxyInfo, applicationDomain:ApplicationDomain):ProxyInfo {
 			var className:String = ClassUtils.getFullyQualifiedName(classProxyInfo.proxiedClass);
