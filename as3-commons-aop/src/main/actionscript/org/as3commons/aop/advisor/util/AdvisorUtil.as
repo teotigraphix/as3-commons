@@ -15,6 +15,9 @@
 */
 package org.as3commons.aop.advisor.util {
 	import org.as3commons.aop.advice.IAdvice;
+	import org.as3commons.aop.advice.constructor.IConstructorAdvice;
+	import org.as3commons.aop.advice.getter.IGetterAdvice;
+	import org.as3commons.aop.advice.setter.ISetterAdvice;
 	import org.as3commons.aop.advisor.IAdvisor;
 	import org.as3commons.aop.advisor.IPointcutAdvisor;
 	import org.as3commons.aop.pointcut.IAccessorPointcut;
@@ -40,7 +43,9 @@ package org.as3commons.aop.advisor.util {
 		public static function getAdvisorsWithMatchingConstructorPointcut(advisors:Vector.<IAdvisor>, constructor:Constructor):Vector.<IAdvisor> {
 			var result:Vector.<IAdvisor> = new Vector.<IAdvisor>();
 			for each (var advisor:IPointcutAdvisor in advisors) {
-				if (advisor.pointcut is IConstructorPointcut) {
+				var isConstructorAdvice:Boolean = (advisor.advice is IConstructorAdvice);
+				var isConstructorPointcut:Boolean = (advisor.pointcut is IConstructorPointcut);
+				if (isConstructorAdvice && isConstructorPointcut) {
 					var pointcut:IConstructorPointcut = IConstructorPointcut(advisor.pointcut);
 					if (pointcut.matchesConstructor(constructor)) {
 						result.push(advisor);
@@ -56,6 +61,36 @@ package org.as3commons.aop.advisor.util {
 				if (advisor.pointcut is IMethodPointcut) {
 					var pointcut:IMethodPointcut = IMethodPointcut(advisor.pointcut);
 					if (pointcut.matchesMethod(method)) {
+						result.push(advisor);
+					}
+				}
+			}
+			return result;
+		}
+
+		public static function getAdvisorsWithMatchingGetterPointcut(advisors:Vector.<IAdvisor>, getter:Accessor):Vector.<IAdvisor> {
+			var result:Vector.<IAdvisor> = new Vector.<IAdvisor>();
+			for each (var advisor:IPointcutAdvisor in advisors) {
+				var isGetterAdvice:Boolean = (advisor.advice is IGetterAdvice);
+				var isAccessorPointcut:Boolean = (advisor.pointcut is IAccessorPointcut);
+				if (isGetterAdvice && isAccessorPointcut) {
+					var pointcut:IAccessorPointcut = IAccessorPointcut(advisor.pointcut);
+					if (pointcut.matchesAccessor(getter)) {
+						result.push(advisor);
+					}
+				}
+			}
+			return result;
+		}
+
+		public static function getAdvisorsWithMatchingSetterPointcut(advisors:Vector.<IAdvisor>, setter:Accessor):Vector.<IAdvisor> {
+			var result:Vector.<IAdvisor> = new Vector.<IAdvisor>();
+			for each (var advisor:IPointcutAdvisor in advisors) {
+				var isSetterAdvice:Boolean = (advisor.advice is ISetterAdvice);
+				var isAccessorPointcut:Boolean = (advisor.pointcut is IAccessorPointcut);
+				if (isSetterAdvice && isAccessorPointcut) {
+					var pointcut:IAccessorPointcut = IAccessorPointcut(advisor.pointcut);
+					if (pointcut.matchesAccessor(setter)) {
 						result.push(advisor);
 					}
 				}

@@ -18,21 +18,23 @@ package org.as3commons.aop.intercept.invocation.impl {
 	import org.as3commons.aop.intercept.IMethodInterceptor;
 	import org.as3commons.aop.intercept.invocation.IGetterInvocation;
 	import org.as3commons.aop.intercept.invocation.IMethodInvocation;
+	import org.as3commons.aop.intercept.invocation.ISetterInvocation;
+	import org.as3commons.aop.intercept.util.InterceptorUtil;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Method;
 
 	/**
-	 * Getter invocation that applies a set of interceptors recursively.
+	 * Setter invocation that applies a set of interceptors recursively.
 	 *
 	 * @author Christophe Herreman
-	 * @author Bert Vandamme
 	 */
-	public class GetterInvocationWithInterceptors implements IGetterInvocation {
+	public class SetterInvocationWithInterceptors implements ISetterInvocation {
 
 		private var _proxy:*;
-		private var _getter:Accessor;
+		private var _setter:Accessor;
 		private var _targetMethod:Function;
+		private var _args:Array;
 		private var _interceptors:Vector.<IInterceptor>;
 		private var _currentInterceptorIndex:int = 0;
 
@@ -42,10 +44,11 @@ package org.as3commons.aop.intercept.invocation.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function GetterInvocationWithInterceptors(proxy:*, getter:Accessor, targetMethod:Function, interceptors:Vector.<IInterceptor>) {
+		public function SetterInvocationWithInterceptors(proxy:*, setter:Accessor, targetMethod:Function, args:Array, interceptors:Vector.<IInterceptor>) {
 			_proxy = proxy;
-			_getter = getter;
+			_setter = setter;
 			_targetMethod = targetMethod;
+			_args = args;
 			_interceptors = interceptors;
 		}
 
@@ -55,16 +58,24 @@ package org.as3commons.aop.intercept.invocation.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function get getter():Accessor {
-			return _getter;
+		public function get setter():Accessor {
+			return _setter;
 		}
 
 		public function get args():Array {
-			return null;
+			return _args;
 		}
 
 		public function get target():* {
 			return _proxy;
+		}
+
+		public function get value():* {
+			return _args[0];
+		}
+
+		public function set value(v:*):void {
+			_args[0] = v;
 		}
 
 		// --------------------------------------------------------------------
@@ -76,13 +87,14 @@ package org.as3commons.aop.intercept.invocation.impl {
 		public function proceed():* {
 			var atEnd:Boolean = (_currentInterceptorIndex == _interceptors.length);
 			if (atEnd) {
-				return invokeJoinpoint();
+				invokeJoinpoint();
+				return;
 			}
 
-			var interceptor:IGetterInterceptor = IGetterInterceptor(_interceptors[_currentInterceptorIndex]);
+			var interceptor:ISetterInterceptor = ISetterInterceptor(_interceptors[_currentInterceptorIndex]);
 			_currentInterceptorIndex++;
 
-			return interceptor.interceptGetter(this);
+			interceptor.interceptSetter(this);
 		}
 
 		// --------------------------------------------------------------------
@@ -92,7 +104,7 @@ package org.as3commons.aop.intercept.invocation.impl {
 		// --------------------------------------------------------------------
 
 		private function invokeJoinpoint():* {
-			return _targetMethod.apply(_proxy);
+			_targetMethod.apply(null, _args);
 		}
 
 	}

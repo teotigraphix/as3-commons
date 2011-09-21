@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.aop.intercept.invocation {
+	import org.as3commons.reflect.Accessor;
 
 	/**
 	 * Defines a setter invocation.
@@ -24,6 +25,8 @@ package org.as3commons.aop.intercept.invocation {
 
 		function get value():*;
 		function set value(v:*):void;
+
+		function get setter():Accessor;
 
 	}
 }

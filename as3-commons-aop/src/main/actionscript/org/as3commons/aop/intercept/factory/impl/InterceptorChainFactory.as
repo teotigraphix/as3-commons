@@ -17,12 +17,14 @@ package org.as3commons.aop.intercept.factory.impl {
 	import org.as3commons.aop.advice.constructor.IConstructorAdvice;
 	import org.as3commons.aop.advice.getter.IGetterAdvice;
 	import org.as3commons.aop.advice.method.IMethodAdvice;
+	import org.as3commons.aop.advice.setter.ISetterAdvice;
 	import org.as3commons.aop.advisor.IAdvisor;
 	import org.as3commons.aop.intercept.IInterceptor;
 	import org.as3commons.aop.intercept.impl.ConstructorAdviceInterceptor;
 	import org.as3commons.aop.intercept.impl.GetterAdviceInterceptor;
 	import org.as3commons.aop.intercept.impl.MethodAdviceInterceptor;
 	import org.as3commons.aop.intercept.factory.IInterceptorChainFactory;
+	import org.as3commons.aop.intercept.impl.SetterAdviceInterceptor;
 
 	/**
 	 * Default implementation of IInterceptorChainFactory.
@@ -65,6 +67,9 @@ package org.as3commons.aop.intercept.factory.impl {
 					}
 					if (advisor.advice is IGetterAdvice) {
 						result.push(new GetterAdviceInterceptor(IGetterAdvice(advisor.advice)));
+					}
+					if (advisor.advice is ISetterAdvice) {
+						result.push(new SetterAdviceInterceptor(ISetterAdvice(advisor.advice)));
 					}
 				}
 			}

@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 package org.as3commons.aop.intercept.impl {
-	import org.as3commons.aop.advice.IAdvice;
 	import org.as3commons.aop.advice.util.AdviceUtil;
 	import org.as3commons.aop.advisor.IAdvisor;
-	import org.as3commons.aop.advisor.IPointcutAdvisor;
 	import org.as3commons.aop.advisor.util.AdvisorUtil;
 	import org.as3commons.aop.as3commons_aop;
+	import org.as3commons.aop.intercept.IGetterInterceptor;
 	import org.as3commons.aop.intercept.ISetterInterceptor;
 	import org.as3commons.aop.intercept.factory.IInterceptorChainFactory;
 	import org.as3commons.aop.intercept.factory.impl.InterceptorChainFactory;
-	import org.as3commons.aop.intercept.invocation.ISetterInvocation;
 	import org.as3commons.aop.intercept.invocation.impl.ConstructorInvocationWithInterceptors;
 	import org.as3commons.aop.intercept.invocation.impl.GetterInvocationWithInterceptors;
 	import org.as3commons.aop.intercept.invocation.impl.MethodInvocationWithInterceptors;
-	import org.as3commons.aop.pointcut.IAccessorPointcut;
+	import org.as3commons.aop.intercept.invocation.impl.SetterInvocationWithInterceptors;
+	import org.as3commons.aop.intercept.util.InterceptorUtil;
 	import org.as3commons.bytecode.interception.IInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
 	import org.as3commons.bytecode.interception.impl.InvocationKind;
@@ -45,7 +44,6 @@ package org.as3commons.aop.intercept.impl {
 	 */
 	public class AdvisorInterceptor implements IInterceptor {
 
-		private var _currentGetterInvocation:IMethodInvocation;
 		private var _currentSetterInvocation:IMethodInvocation;
 		private var _advisors:Vector.<IAdvisor> = new Vector.<IAdvisor>();
 		private var _interceptorChainFactory:IInterceptorChainFactory;
@@ -76,10 +74,10 @@ package org.as3commons.aop.intercept.impl {
 					applyMethodAdvice(invocation);
 					break;
 				case InvocationKind.GETTER:
-					//applyGetterAdvice(invocation);
+					applyGetterAdvice(invocation);
 					break;
 				case InvocationKind.SETTER:
-					//applySetterAdvice(invocation);
+					applySetterAdvice(invocation);
 					break;
 			}
 		}
@@ -121,68 +119,40 @@ package org.as3commons.aop.intercept.impl {
 		}
 
 		private function applyGetterAdvice(invocation:IMethodInvocation):void {
-			if (_currentGetterInvocation) {
-				_currentGetterInvocation = null;
-			} else {
-				var type:Type = Type.forInstance(invocation.targetInstance);
-				var getter:Accessor = Accessor(type.getField(invocation.targetMember.localName));
-				var advisors:Vector.<IAdvisor> = AdvisorUtil.getAccessorAdvisors(_advisors, getter);
+			var type:Type = Type.forInstance(invocation.targetInstance);
+			var getter:Accessor = Accessor(type.getField(invocation.targetMember.localName));
+			var advisors:Vector.<IAdvisor> = AdvisorUtil.getAccessorAdvisors(_advisors, getter);
 
-				if (advisors.length > 0) {
-					invocation.proceed = false;
-					invocation.returnValue = invokeGetter(invocation, getter, advisors);
-				}
+			if (advisors.length > 0) {
+				invocation.proceed = false;
+				invocation.returnValue = invokeGetter(invocation, getter, advisors);
 			}
 		}
 
 		private function invokeGetter(invocation:IMethodInvocation, getter:Accessor, advisors:Vector.<IAdvisor>):* {
-			_currentGetterInvocation = invocation;
 			var interceptors:Vector.<org.as3commons.aop.intercept.IInterceptor> = _interceptorChainFactory.getChain(advisors);
-			var inv:GetterInvocationWithInterceptors = new GetterInvocationWithInterceptors(invocation.targetInstance, getter, invocation.arguments, interceptors);
+			var getterInterceptors:Vector.<org.as3commons.aop.intercept.IInterceptor> = InterceptorUtil.getInterceptorsByType(interceptors, IGetterInterceptor);
+			var inv:GetterInvocationWithInterceptors = new GetterInvocationWithInterceptors(invocation.targetInstance, getter, invocation.targetMethod, getterInterceptors);
 			return inv.proceed();
 		}
 
 		private function applySetterAdvice(invocation:IMethodInvocation):void {
-			if (_currentSetterInvocation) {
-				_currentSetterInvocation = null;
-			} else {
-				var type:Type = Type.forInstance(invocation.targetInstance);
-				var setter:Accessor = Accessor(type.getField(invocation.targetMember.localName));
-				var advisors:Vector.<IAdvisor> = AdvisorUtil.getAccessorAdvisors(_advisors, setter);
+			var type:Type = Type.forInstance(invocation.targetInstance);
+			var setter:Accessor = Accessor(type.getField(invocation.targetMember.localName));
+			var advisors:Vector.<IAdvisor> = AdvisorUtil.getAccessorAdvisors(_advisors, setter);
 
-				if (advisors.length > 0) {
-					var advice:Vector.<IAdvice> = AdvisorUtil.getAdvice(advisors);
-					AdviceUtil.applySetterBeforeAdvice(advice, setter, invocation);
-					invokeSetter(advice, setter, invocation);
-					AdviceUtil.applySetterAfterAdvice(advice, setter, invocation);
-				}
+			if (advisors.length > 0) {
+				invocation.proceed = false;
+				invocation.returnValue = invokeSetter(invocation, setter, advisors);
 			}
 		}
 
-		private var _currentSetterInterceptor:ISetterInterceptor;
-
-		private function interceptSetter(interceptor:ISetterInterceptor, invocation:IMethodInvocation):void {
-			/*if (_currentSetterInterceptor) {
-			 _currentSetterInterceptor = null;
-			 } else {
-			_currentSetterInterceptor = interceptor;
-			var setterInvocation:ISetterInvocation = new SetterInvocation(invocation);
-			interceptor.interceptSetter(setterInvocation);
-			}*/
-		}
-
-		private function invokeSetter(advice:Vector.<IAdvice>, setter:Accessor, invocation:IMethodInvocation):void {
-			_currentSetterInvocation = invocation;
-
-			for each (var a:IAdvice in advice) {
-				if (a is ISetterInterceptor) {
-					interceptSetter(ISetterInterceptor(a), invocation);
-				}
-			}
-
-			invocation.proceed = false;
-			invocation.targetInstance[setter.name] = invocation.arguments[0];
-			invocation.returnValue = invocation.arguments[0];
+		private function invokeSetter(invocation:IMethodInvocation, setter:Accessor, advisors:Vector.<IAdvisor>):* {
+			var interceptors:Vector.<org.as3commons.aop.intercept.IInterceptor> = _interceptorChainFactory.getChain(advisors);
+			var setterInterceptors:Vector.<org.as3commons.aop.intercept.IInterceptor> = InterceptorUtil.getInterceptorsByType(interceptors, ISetterInterceptor);
+			var inv:SetterInvocationWithInterceptors = new SetterInvocationWithInterceptors(invocation.targetInstance, setter, invocation.targetMethod, invocation.arguments, setterInterceptors);
+			inv.proceed();
+			return inv.value;
 		}
 
 		// --------------------------------------------------------------------
