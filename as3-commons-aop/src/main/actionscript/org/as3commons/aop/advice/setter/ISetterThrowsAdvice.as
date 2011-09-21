@@ -14,8 +14,17 @@
 * limitations under the License.
 */
 package org.as3commons.aop.advice.setter {
-	import org.as3commons.aop.advice.IAroundAdvice;
+	import org.as3commons.aop.advice.IThrowsAdvice;
+	import org.as3commons.reflect.Accessor;
 
-	public interface ISetterAroundAdvice extends IAroundAdvice, ISetterBeforeAdvice, ISetterAfterAdvice, ISetterThrowsAdvice {
+	/**
+	 * Setter "throws" advice is invoked after a setter throws an error.
+	 *
+	 * @author Christophe Herreman
+	 */
+	public interface ISetterThrowsAdvice extends IThrowsAdvice, ISetterAdvice {
+		
+		function afterSetterThrows(setter:Accessor, value:*, target:*, error:Error):void;
+
 	}
 }

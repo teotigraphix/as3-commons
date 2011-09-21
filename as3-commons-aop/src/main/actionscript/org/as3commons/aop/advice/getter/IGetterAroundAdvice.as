@@ -19,6 +19,6 @@ package org.as3commons.aop.advice.getter {
 	/**
 	 * @author Christophe Herreman
 	 */
-	public interface IGetterAroundAdvice extends IAroundAdvice, IGetterBeforeAdvice, IGetterAfterAdvice {
+	public interface IGetterAroundAdvice extends IAroundAdvice, IGetterBeforeAdvice, IGetterAfterAdvice, IGetterThrowsAdvice {
 	}
 }
