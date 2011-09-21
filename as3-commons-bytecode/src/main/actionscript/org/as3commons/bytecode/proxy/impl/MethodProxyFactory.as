@@ -43,7 +43,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param memberInfo The specified <code>MemberInfo</code> instance.
 		 * @param failOnFinal When <code>true</code> an error is thrown when the.
 		 * @return The <code>IMethodBuilder</code> representing the generated method.
-		 * @throws org.as3commons.bytecode.proxy.error.ProxyError When the proxied method is marked as final.
+		 * @throws org.as3commons.bytecode.proxy.error.ProxyBuildError When the proxied method does not exist or is marked as final.
 		 */
 		public function proxyMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, failOnFinal:Boolean=true):IMethodBuilder {
 			CONFIG::debug {
@@ -120,7 +120,7 @@ package org.as3commons.bytecode.proxy.impl {
 				.addOpcode(Opcode.findpropstrict, [qnameQname]) //
 				.addOpcode(Opcode.pushstring, [StringUtils.hasText(methodBuilder.namespaceURI) ? methodBuilder.namespaceURI : ""]) //
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
-				.addOpcode(Opcode.constructprop, [qnameQname, 2]) //
+				.addOpcode(Opcode.constructprop, [qnameQname, 2]);
 			if (len > 0) {
 				for (var i:int = 0; i < len; ++i) {
 					var idx:int = i + 1;
