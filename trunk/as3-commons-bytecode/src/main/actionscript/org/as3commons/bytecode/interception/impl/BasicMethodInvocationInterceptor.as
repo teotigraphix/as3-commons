@@ -73,11 +73,14 @@ package org.as3commons.bytecode.interception.impl {
 					}
 					break;
 				case InvocationKind.GETTER:
-				case InvocationKind.SETTER:
 					if (proceed) {
-						return arguments[0];
+						return targetMethod.apply(targetInstance);
 					} else {
 						return invoc.returnValue;
+					}
+				case InvocationKind.SETTER:
+					if (proceed) {
+						targetMethod.apply(targetInstance, arguments);
 					}
 					break;
 				default:
