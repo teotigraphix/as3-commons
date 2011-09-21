@@ -14,21 +14,20 @@
 * limitations under the License.
 */
 package org.as3commons.aop.intercept.impl {
-	import org.as3commons.aop.advice.getter.IGetterAdvice;
-	import org.as3commons.aop.advice.getter.IGetterAfterAdvice;
-	import org.as3commons.aop.advice.getter.IGetterBeforeAdvice;
-	import org.as3commons.aop.intercept.IGetterInterceptor;
-	import org.as3commons.aop.intercept.invocation.IGetterInvocation;
+	import org.as3commons.aop.advice.setter.ISetterAdvice;
+	import org.as3commons.aop.advice.setter.ISetterAfterAdvice;
+	import org.as3commons.aop.advice.setter.ISetterBeforeAdvice;
+	import org.as3commons.aop.intercept.ISetterInterceptor;
+	import org.as3commons.aop.intercept.invocation.ISetterInvocation;
 
 	/**
-	 * Interceptor that applies getter advice.
+	 * Interceptor that applies setter advice.
 	 *
 	 * @author Christophe Herreman
-	 * @author Bert Vandamme
 	 */
-	public class GetterAdviceInterceptor implements IGetterInterceptor {
+	public class SetterAdviceInterceptor implements ISetterInterceptor {
 
-		private var _advice:IGetterAdvice;
+		private var _advice:ISetterAdvice;
 
 		// --------------------------------------------------------------------
 		//
@@ -36,7 +35,7 @@ package org.as3commons.aop.intercept.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function GetterAdviceInterceptor(advice:IGetterAdvice) {
+		public function SetterAdviceInterceptor(advice:ISetterAdvice) {
 			_advice = advice;
 		}
 
@@ -46,20 +45,18 @@ package org.as3commons.aop.intercept.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function interceptGetter(invocation:IGetterInvocation):* {
+		public function interceptSetter(invocation:ISetterInvocation):void {
 			invokeBeforeAdvice(invocation);
 
 			try {
-				var result:* = invocation.proceed();
+				invocation.proceed();
 				//invokeAfterReturningAdvice(invocation, result);
 			} catch (e:Error) {
 				//invokeThrowsAdvice(invocation, e);
 				throw e;
 			} finally {
-				invokeAfterAdvice(invocation, result);
+				invokeAfterAdvice(invocation);
 			}
-
-			return result;
 		}
 
 		// --------------------------------------------------------------------
@@ -74,9 +71,9 @@ package org.as3commons.aop.intercept.impl {
 		 }
 		 }*/
 
-		private function invokeBeforeAdvice(invocation:IGetterInvocation):void {
-			if (_advice is IGetterBeforeAdvice) {
-				IGetterBeforeAdvice(_advice).beforeGetter(invocation.getter, invocation.target);
+		private function invokeBeforeAdvice(invocation:ISetterInvocation):void {
+			if (_advice is ISetterBeforeAdvice) {
+				ISetterBeforeAdvice(_advice).beforeSetter(invocation.setter, invocation.target, invocation.args[0]);
 			}
 		}
 
@@ -86,9 +83,9 @@ package org.as3commons.aop.intercept.impl {
 		 }
 		 }*/
 
-		private function invokeAfterAdvice(invocation:IGetterInvocation, result:*):void {
-			if (_advice is IGetterAfterAdvice) {
-				IGetterAfterAdvice(_advice).afterGetter(result, invocation.getter, invocation.target);
+		private function invokeAfterAdvice(invocation:ISetterInvocation):void {
+			if (_advice is ISetterAfterAdvice) {
+				ISetterAfterAdvice(_advice).afterSetter(invocation.setter);
 			}
 		}
 	}
