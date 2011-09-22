@@ -14,14 +14,14 @@
 		import org.as3commons.aop.advice.TraceMethodAroundAdvice;
 		import org.as3commons.aop.advisor.impl.PointcutAdvisor;
 		import org.as3commons.aop.factory.impl.AOPProxyFactory;
-		import org.as3commons.aop.pointcut.IMethodPointcut;
+		import org.as3commons.aop.pointcut.IPointcut;
 		import org.as3commons.aop.pointcut.impl.name.MethodNameMatchPointcut;
 		import org.as3commons.async.operation.IOperation;
 		import org.as3commons.async.operation.event.OperationEvent;
 
 		protected function applicationCompleteHandler(event:FlexEvent):void {
 			var factory:AOPProxyFactory = new AOPProxyFactory();
-			var pointcut:IMethodPointcut = new MethodNameMatchPointcut(["writeMessage", "writeYetAnotherMessage", "writeMessageThrowError"]);
+			var pointcut:IPointcut = new MethodNameMatchPointcut(["writeMessage", "writeYetAnotherMessage", "writeMessageThrowError"]);
 			var methodAdvice:IAdvice = new TraceMethodAroundAdvice();
 			factory.addAdvisor(new PointcutAdvisor(pointcut, methodAdvice));
 			factory.target = MessageWriter;

@@ -13,6 +13,7 @@
 
 		import org.as3commons.aop.MessageWriter;
 		import org.as3commons.aop.advice.AssertNotNullSetterAdvice;
+		import org.as3commons.aop.advice.TraceConstructorAroundAdvice;
 		import org.as3commons.aop.advice.TraceGetterAroundAdvice;
 		import org.as3commons.aop.advice.TraceMethodAfterAdvice;
 		import org.as3commons.aop.advice.TraceMethodAroundAdvice;
@@ -20,6 +21,7 @@
 		import org.as3commons.aop.advice.TraceSetterAroundAdvice;
 		import org.as3commons.aop.factory.impl.AOPProxyFactory;
 		import org.as3commons.aop.intercept.AppendUnderscoreToStringSetterInterceptor;
+		import org.as3commons.aop.intercept.StringToUpperCaseConstructorInterceptor;
 		import org.as3commons.aop.intercept.StringToUppercaseGetterInterceptor;
 		import org.as3commons.aop.intercept.StringToUppercaseSetterInterceptor;
 		import org.as3commons.aop.intercept.TraceMethodInterceptor;
@@ -42,13 +44,13 @@
 
 			factory.target = MessageWriter;
 
-			/*factory.addAdvice(new TraceMethodBeforeAdvice());
+			factory.addAdvice(new TraceMethodBeforeAdvice());
 			factory.addAdvice(new TraceMethodAroundAdvice());
 			factory.addAdvice(new TraceMethodInterceptor());
-			factory.addAdvice(new TraceMethodAfterAdvice());*/
+			factory.addAdvice(new TraceMethodAfterAdvice());
 
-			//factory.addAdvice(new TraceConstructorAroundAdvice());
-			//factory.addAdvice(new StringToUpperCaseConstructorInterceptor());
+			factory.addAdvice(new TraceConstructorAroundAdvice());
+			factory.addAdvice(new StringToUpperCaseConstructorInterceptor());
 
 			factory.addAdvice(new TraceGetterAroundAdvice());
 			factory.addAdvice(new StringToUppercaseGetterInterceptor());
@@ -72,41 +74,20 @@
 
 			var writer:MessageWriter = factory.getProxy(["Default message"]);
 
-			//writer.message = "Awesome!";
+			writer.message = "Awesome!";
 
-			try {
+			/*try {
 				writer.message = null;
 			} catch (e:IllegalArgumentError) {
 				trace("Error caught when setting null value.");
-			}
-
-
-			//trace("Writer.message = '" + writer.message + "'");
-
-			/*var getter:Function = writer.as3commons_bytecode_proxy::["getter_message"];
-			var setter:Function = writer.as3commons_bytecode_proxy::["setter_message"];
-
-			if (getter != null) {
-				trace("via method: " + getter.apply(writer));
-			} else {
-				trace("no method");
-			}
-
-			if (setter != null) {
-				trace("via method: " + setter.apply(writer, ["something else"]));
-			} else {
-				trace("no method");
-			}
-
-			if (getter != null) {
-				trace("via method: " + getter.apply(writer));
-			} else {
-				trace("no method");
 			}*/
 
-			/*trace("--- writeMessage begin ---");
+
+			trace("Writer.message = '" + writer.message + "'");
+
+			trace("--- writeMessage begin ---");
 			 writer.writeMessage();
-			 trace("--- writeMessage end ---");*/
+			 trace("--- writeMessage end ---");
 
 			//writer.writeAnotherMessage();
 
