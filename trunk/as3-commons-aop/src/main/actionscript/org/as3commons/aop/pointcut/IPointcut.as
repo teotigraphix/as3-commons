@@ -16,12 +16,19 @@
 package org.as3commons.aop.pointcut {
 
 	/**
-	 * Marker interface for pointcuts.
+	 * A pointcut defines a rule against which criteria can be matched. This is generally
+	 * a rule that will match constructor, accessor or method names.
 	 *
 	 * @author Christophe Herreman
 	 */
 	public interface IPointcut {
 
+		/**
+		 * Returns whether or not the given criterion matches this pointcut.
+		 *
+		 * @param criterion an object against which to match the rule
+		 * @return true if the criterion matches the pointcut; false if not
+		 */
 		function matches(criterion:* = null):Boolean;
 
 	}
