@@ -8,12 +8,11 @@
  
         <section name="Important Changes in v2.5">
              <ul>
-                 <li>For performance reasons were changed the access to loggers,
+                 <li>For performance reasons we changed the access to loggers,
                      instead of the former common: <pre class="source">logger.info("{0}*{0}={1}", 3, 9);</pre>
                      we now use the a lot faster syntax (performance-wise) 
                      <pre class="source">logger.info("{0}*{0}={1}", [3, 9]);</pre>
-                     to make sure that you have the fastest logging at your finger
-                     tips.
+                     to make sure that you have the fastest logging at your fingertips.
                      <br/>
                      As this breaks with the existing API we decided to move
                      the API methods from <code>org.as3commons.logging</code>
