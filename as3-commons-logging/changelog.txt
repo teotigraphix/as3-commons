@@ -2,7 +2,11 @@ AS3COMMONS LOGGING CHANGELOG
 ============================
 
 Note: dates are in DD.MM.YYYY format
-Changes in version 2.6
+Changes in version 2.7
+-----------------------------------
+* Added: MaashaackIntegration
+
+Changes in version 2.6 (11.09.2011)
 -----------------------------------
 * Improved: mergeTarget is now faster and it allows arrays and MergedTargets as parameters
 * Improved: here allows additional parameter for cropping
