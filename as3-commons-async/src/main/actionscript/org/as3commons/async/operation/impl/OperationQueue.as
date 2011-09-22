@@ -24,7 +24,7 @@ package org.as3commons.async.operation.impl {
 	 * Dispatched when all the operations in the current <code>OperationQueue</code> have received a result.
 	 * @eventType org.as3commons.async.operation.OperationEvent#COMPLETE OperationEvent.COMPLETE
 	 */
-	[Event(name="operationComplete", type="org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationComplete", type="org.as3commons.async.operation.event.OperationEvent")]
 	/**
 	 * A queue of <code>IOperation</code> objects that dispatches an <code>OperationEvent.COMPLETE</code> event when
 	 * all operations in the queue have completed (and dispatched a corresponding <code>OperationEvent.COMPLETE</code>
