@@ -27,6 +27,7 @@ package org.as3commons.aop.pointcut.impl.regexp {
 
 			assertNotMatch(method, "^com");
 			assertNotMatch(method, "org.as3commons.aop.pointcut.impl.regexp::RegExpMethodPointcutTest.testMatchesMethod");
+			assertNotMatch(null, "");
 		}
 
 		// --------------------------------------------------------------------
@@ -38,13 +39,13 @@ package org.as3commons.aop.pointcut.impl.regexp {
 		private function assertMatch(method:Method, pattern:String):void {
 			var pointcut:RegExpMethodPointcut = new RegExpMethodPointcut();
 			pointcut.pattern = pattern;
-			assertTrue(pointcut.matchesMethod(method));
+			assertTrue(pointcut.matches(method));
 		}
 
 		private function assertNotMatch(method:Method, pattern:String):void {
 			var pointcut:RegExpMethodPointcut = new RegExpMethodPointcut();
 			pointcut.pattern = pattern;
-			assertFalse(pointcut.matchesMethod(method));
+			assertFalse(pointcut.matches(method));
 		}
 	}
 }

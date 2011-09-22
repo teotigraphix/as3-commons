@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.aop.pointcut.impl.regexp {
+package org.as3commons.aop.pointcut.impl.name {
+	import org.as3commons.aop.pointcut.INameRegistry;
 	import org.as3commons.aop.pointcut.IPointcut;
-	import org.as3commons.lang.ClassUtils;
-	import org.as3commons.reflect.Constructor;
+	import org.as3commons.reflect.Accessor;
 
 	/**
-	 * Regular expression pointcut to match constructors.
+	 * Name matcher pointcut used for getters.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class RegExpConstructorPointcut extends AbstractRegExpPointcut implements IPointcut {
+	public class GetterNameMatchPointcut extends AbstractNameMatchPointcut implements IPointcut, INameRegistry {
 
 		// --------------------------------------------------------------------
 		//
@@ -31,7 +31,8 @@ package org.as3commons.aop.pointcut.impl.regexp {
 		//
 		// --------------------------------------------------------------------
 
-		public function RegExpConstructorPointcut() {
+		public function GetterNameMatchPointcut(nameOrNames:* = null) {
+			super(nameOrNames);
 		}
 
 		// --------------------------------------------------------------------
@@ -41,13 +42,11 @@ package org.as3commons.aop.pointcut.impl.regexp {
 		// --------------------------------------------------------------------
 
 		public function matches(criterion:* = null):Boolean {
-			if (criterion is Constructor) {
-				var constructor:Constructor = Constructor(criterion);
-				var className:String = ClassUtils.getFullyQualifiedName(constructor.declaringType.clazz, true);
-				return match(className);
+			if (criterion is Accessor) {
+				var accessor:Accessor = Accessor(criterion);
+				return (accessor.readable && nameMatcher.match(accessor.name));
 			}
 			return false;
 		}
-
 	}
 }

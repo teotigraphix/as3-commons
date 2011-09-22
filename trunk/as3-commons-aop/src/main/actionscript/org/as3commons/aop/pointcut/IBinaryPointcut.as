@@ -14,16 +14,17 @@
 * limitations under the License.
 */
 package org.as3commons.aop.pointcut {
-	import org.as3commons.reflect.Method;
 
 	/**
-	 * Pointcut to match methods.
+	 * A pointcut consisting of 2 pointcuts.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public interface IMethodPointcut extends IPointcut {
+	public interface IBinaryPointcut extends IPointcut {
 
-		function matchesMethod(method:Method):Boolean;
+		function get left():IPointcut;
+
+		function get right():IPointcut;
 
 	}
 }

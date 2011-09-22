@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.aop.pointcut.impl.always {
+package org.as3commons.aop.pointcut.impl {
+	import org.as3commons.aop.pointcut.impl.AlwaysMatchingPointcut;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.Constructor;
 	import org.as3commons.reflect.Method;
@@ -28,22 +29,22 @@ package org.as3commons.aop.pointcut.impl.always {
 		[Test]
 		public function testMatchesConstructor():void {
 			var p:AlwaysMatchingPointcut = new AlwaysMatchingPointcut();
-			var constructor:Constructor = Type.forClass(AlwaysMatchingConstructorPointcutTest).constructor;
-			assertTrue(p.matchesConstructor(constructor));
+			var constructor:Constructor = Type.forClass(AlwaysMatchingPointcutTest).constructor;
+			assertTrue(p.matches(constructor));
 		}
 
 		[Test]
 		public function testMatchesAccessor():void {
 			var p:AlwaysMatchingPointcut = new AlwaysMatchingPointcut();
-			var accessor:Accessor = Type.forClass(AlwaysMatchingAccessorPointcutTest).accessors[0];
-			assertTrue(p.matchesAccessor(accessor));
+			var accessor:Accessor = Type.forClass(AlwaysMatchingPointcutTest).accessors[0];
+			assertTrue(p.matches(accessor));
 		}
 
 		[Test]
 		public function testMatchesMethod():void {
 			var p:AlwaysMatchingPointcut = new AlwaysMatchingPointcut();
-			var method:Method = Type.forClass(AlwaysMatchingMethodPointcutTest).getMethod("testMatchesMethod");
-			assertTrue(p.matchesMethod(method));
+			var method:Method = Type.forClass(AlwaysMatchingPointcutTest).getMethod("testMatchesMethod");
+			assertTrue(p.matches(method));
 		}
 	}
 }

@@ -15,7 +15,7 @@
 */
 package org.as3commons.aop.advisor.impl {
 	import org.as3commons.aop.advice.IAdvice;
-	import org.as3commons.aop.pointcut.impl.always.AlwaysMatchingPointcut;
+	import org.as3commons.aop.pointcut.impl.AlwaysMatchingPointcut;
 
 	/**
 	 * Pointcut advisor for which the pointcut always matches. This is

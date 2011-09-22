@@ -81,6 +81,9 @@ import org.as3commons.aop.pointcut.IPointcut;
 
 class PointcutImpl implements IPointcut {
 
+	public function matches(criterion:* = null):Boolean {
+		return false;
+	}
 }
 
 class AdviceImpl implements IAdvice {

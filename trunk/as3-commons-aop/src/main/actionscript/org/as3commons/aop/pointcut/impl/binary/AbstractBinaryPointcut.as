@@ -13,16 +13,20 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.pointcut.impl.always {
-	import org.as3commons.aop.pointcut.IConstructorPointcut;
-	import org.as3commons.reflect.Constructor;
+package org.as3commons.aop.pointcut.impl.binary {
+	import org.as3commons.aop.pointcut.IBinaryPointcut;
+	import org.as3commons.aop.pointcut.IPointcut;
+	import org.as3commons.lang.Assert;
 
 	/**
-	 * Constructor pointcut that always matches.
+	 * Abstract base class for binary pointcuts.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class AlwaysMatchingConstructorPointcut implements IConstructorPointcut {
+	public class AbstractBinaryPointcut implements IBinaryPointcut {
+
+		private var _left:IPointcut;
+		private var _right:IPointcut;
 
 		// --------------------------------------------------------------------
 		//
@@ -30,7 +34,25 @@ package org.as3commons.aop.pointcut.impl.always {
 		//
 		// --------------------------------------------------------------------
 
-		public function AlwaysMatchingConstructorPointcut() {
+		public function AbstractBinaryPointcut(left:IPointcut, right:IPointcut) {
+			Assert.notNull(left);
+			Assert.notNull(right);
+			_left = left;
+			_right = right;
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Properties
+		//
+		// --------------------------------------------------------------------
+
+		public function get left():IPointcut {
+			return _left;
+		}
+
+		public function get right():IPointcut {
+			return _right;
 		}
 
 		// --------------------------------------------------------------------
@@ -39,8 +61,8 @@ package org.as3commons.aop.pointcut.impl.always {
 		//
 		// --------------------------------------------------------------------
 
-		public function matchesConstructor(constructor:Constructor):Boolean {
-			return true;
+		public function matches(criterion:* = null):Boolean {
+			throw new Error("The 'matches' method is abstract and should be overridden by a subclass.");
 		}
 	}
 }

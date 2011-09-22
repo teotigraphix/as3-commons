@@ -15,7 +15,7 @@
  */
 package org.as3commons.aop.advisor.impl {
 	import org.as3commons.aop.advisor.IPointcutAdvisor;
-	import org.as3commons.aop.pointcut.impl.always.AlwaysMatchingPointcut;
+	import org.as3commons.aop.pointcut.impl.AlwaysMatchingPointcut;
 	import org.flexunit.asserts.assertTrue;
 
 	/**
@@ -31,6 +31,7 @@ package org.as3commons.aop.advisor.impl {
 			var a:IPointcutAdvisor = new AlwaysMatchingPointcutAdvisor(new AdviceImpl());
 			assertTrue(a.pointcut is AlwaysMatchingPointcut);
 		}
+
 	}
 }
 

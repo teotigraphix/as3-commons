@@ -21,5 +21,8 @@ package org.as3commons.aop.pointcut {
 	 * @author Christophe Herreman
 	 */
 	public interface IPointcut {
+
+		function matches(criterion:* = null):Boolean;
+
 	}
 }
