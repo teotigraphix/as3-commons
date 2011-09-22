@@ -111,11 +111,11 @@ package org.as3commons.logging.setup {
 		 * @param target <code>ILogTarget</code> that should be used for the defined targets
 		 */
 		public function applyTo(logger:Logger, target:ILogTarget):void {
-			if((_value & DEBUG_ONLY._value) == DEBUG_ONLY._value) logger.debugTarget = target;
-			if((_value & INFO_ONLY._value)  == INFO_ONLY._value)  logger.infoTarget  = target;
-			if((_value & WARN_ONLY._value)  == WARN_ONLY._value)  logger.warnTarget  = target;
-			if((_value & ERROR_ONLY._value) == ERROR_ONLY._value) logger.errorTarget = target;
-			if((_value & FATAL_ONLY._value) == FATAL_ONLY._value) logger.fatalTarget = target;
+			if(_value & DEBUG_ONLY._value) logger.debugTarget = target;
+			if(_value & INFO_ONLY._value)  logger.infoTarget  = target;
+			if(_value & WARN_ONLY._value)  logger.warnTarget  = target;
+			if(_value & ERROR_ONLY._value) logger.errorTarget = target;
+			if(_value & FATAL_ONLY._value) logger.fatalTarget = target;
 		}
 		
 		/**

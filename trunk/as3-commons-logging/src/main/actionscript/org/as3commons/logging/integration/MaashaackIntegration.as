@@ -43,6 +43,7 @@ package org.as3commons.logging.integration {
 	 * @author Martin Heidegger
 	 * @since 2.7
 	 * @see http://code.google.com/p/maashaack/
+	 * @see org.as3commons.logging.setup.target.MaashaackTarget
 	 */
 	public final class MaashaackIntegration extends LoggerTarget {
 		
@@ -54,7 +55,7 @@ package org.as3commons.logging.integration {
 		 * @inheritDoc
 		 */
 		override public function logEntry( entry: LoggerEntry ):void {
-			var logger: ILogger = _loggers[entry.channel] |= LOGGER_FACTORY.getNamedLogger(entry.channel,"Maashaack");
+			var logger: ILogger = _loggers[entry.channel] ||= LOGGER_FACTORY.getNamedLogger(entry.channel,"Maashaack");
 			var level: LoggerLevel = entry.level;
 			if( level == LoggerLevel.INFO ) {
 				logger.info(entry.message);

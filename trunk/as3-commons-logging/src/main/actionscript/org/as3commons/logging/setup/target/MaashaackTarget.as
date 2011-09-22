@@ -73,7 +73,7 @@ package org.as3commons.logging.setup.target {
 			if( person ) {
 				id += "@" + person;
 			}
-			var logger: Logger = _loggers[id] |= Log.getLogger(id);
+			var logger: Logger = _loggers[id] ||= Log.getLogger(id);
 			
 			_entry.channel = id;
 			_entry.level = _levelMap[level] || LoggerLevel.DEBUG;
