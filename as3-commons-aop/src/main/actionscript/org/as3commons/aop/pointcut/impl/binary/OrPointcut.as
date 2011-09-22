@@ -13,16 +13,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.aop.pointcut.impl.always {
-	import org.as3commons.aop.pointcut.IMethodPointcut;
-	import org.as3commons.reflect.Method;
+package org.as3commons.aop.pointcut.impl.binary {
+	import org.as3commons.aop.pointcut.IPointcut;
 
 	/**
-	 * Method pointcut that always matches.
+	 * Binary OR pointcut.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class AlwaysMatchingMethodPointcut implements IMethodPointcut {
+	public class OrPointcut extends AbstractBinaryPointcut {
 
 		// --------------------------------------------------------------------
 		//
@@ -30,7 +29,8 @@ package org.as3commons.aop.pointcut.impl.always {
 		//
 		// --------------------------------------------------------------------
 
-		public function AlwaysMatchingMethodPointcut() {
+		public function OrPointcut(left:IPointcut, right:IPointcut) {
+			super(left, right);
 		}
 
 		// --------------------------------------------------------------------
@@ -39,8 +39,8 @@ package org.as3commons.aop.pointcut.impl.always {
 		//
 		// --------------------------------------------------------------------
 
-		public function matchesMethod(method:Method):Boolean {
-			return true;
+		override public function matches(criterion:* = null):Boolean {
+			return (left.matches(criterion) || right.matches(criterion));
 		}
 	}
 }

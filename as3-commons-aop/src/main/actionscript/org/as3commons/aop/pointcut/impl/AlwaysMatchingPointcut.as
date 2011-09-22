@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.aop.pointcut.impl.regexp {
+package org.as3commons.aop.pointcut.impl {
 	import org.as3commons.aop.pointcut.IPointcut;
-	import org.as3commons.lang.ClassUtils;
-	import org.as3commons.reflect.Constructor;
 
 	/**
-	 * Regular expression pointcut to match constructors.
+	 * Pointcut that always matches.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class RegExpConstructorPointcut extends AbstractRegExpPointcut implements IPointcut {
+	public class AlwaysMatchingPointcut implements IPointcut {
 
 		// --------------------------------------------------------------------
 		//
@@ -31,7 +29,7 @@ package org.as3commons.aop.pointcut.impl.regexp {
 		//
 		// --------------------------------------------------------------------
 
-		public function RegExpConstructorPointcut() {
+		public function AlwaysMatchingPointcut() {
 		}
 
 		// --------------------------------------------------------------------
@@ -41,12 +39,7 @@ package org.as3commons.aop.pointcut.impl.regexp {
 		// --------------------------------------------------------------------
 
 		public function matches(criterion:* = null):Boolean {
-			if (criterion is Constructor) {
-				var constructor:Constructor = Constructor(criterion);
-				var className:String = ClassUtils.getFullyQualifiedName(constructor.declaringType.clazz, true);
-				return match(className);
-			}
-			return false;
+			return true;
 		}
 
 	}

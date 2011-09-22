@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.as3commons.aop.pointcut.impl.always {
-	import org.as3commons.aop.pointcut.IAccessorPointcut;
-	import org.as3commons.reflect.Accessor;
+package org.as3commons.aop.pointcut.impl.name {
+	import org.as3commons.aop.pointcut.IPointcut;
+	import org.as3commons.reflect.Constructor;
 
 	/**
-	 * Accessor pointcut that always matches.
+	 * Name matcher pointcut used for constructor names.
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class AlwaysMatchingAccessorPointcut implements IAccessorPointcut {
+	public class ConstructorNameMatchPointcut extends AbstractNameMatchPointcut implements IPointcut {
 
 		// --------------------------------------------------------------------
 		//
@@ -30,7 +30,8 @@ package org.as3commons.aop.pointcut.impl.always {
 		//
 		// --------------------------------------------------------------------
 
-		public function AlwaysMatchingAccessorPointcut() {
+		public function ConstructorNameMatchPointcut(nameOrNames:*) {
+			super(nameOrNames);
 		}
 
 		// --------------------------------------------------------------------
@@ -39,8 +40,11 @@ package org.as3commons.aop.pointcut.impl.always {
 		//
 		// --------------------------------------------------------------------
 
-		public function matchesAccessor(accessor:Accessor):Boolean {
-			return true;
+		public function matches(criterion:* = null):Boolean {
+			if (criterion is Constructor) {
+				return nameMatcher.match(Constructor(criterion).declaringType.name);
+			}
+			return false;
 		}
 	}
 }
