@@ -6,7 +6,7 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-bytecode</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0</version>
+	<version>1.1-SNAPSHOT</version>
 	<name>AS3Commons Bytecode</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>Bytecode parsing and publishing formerly known as Loom. Capable of generating classes at runtime, bytecode based reflection and more.</description>
@@ -252,7 +252,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-reflect</artifactId>
-			<version>1.4.2</version>
+			<version>1.5-SNAPSHOT</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
@@ -270,7 +270,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.2</version>
+			<version>0.3.5-SNAPSHOT</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
@@ -289,7 +289,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-logging</artifactId>
-			<version>2.5.2</version>
+			<version>2.6</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
@@ -305,7 +305,7 @@
 		      <artifactId>airglobal</artifactId>
 		      <version>${flex-sdk.version}</version>
 		      <type>swc</type>
-		      <scope>provided</scope>
+		      <scope>test</scope>
 		    </dependency>
 		    <dependency>
 		      <groupId>com.adobe.flex.framework</groupId>
@@ -320,7 +320,7 @@
 		      <artifactId>flexmojos-unittest-support</artifactId>
 		      <version>${flex-mojos.version}</version>
 		      <type>swc</type>
-		      <scope>external</scope>
+		      <scope>test</scope>
 		</dependency>
 
 		<dependency>

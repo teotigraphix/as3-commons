@@ -175,6 +175,8 @@ package org.as3commons.bytecode.reflect {
 				var classMultiname:BaseMultiname = constantPool.multinamePool[result] as BaseMultiname;
 				//convertToQualifiedName:
 				var fullName:String;
+				var classMultinameAsMultiname:Multiname;
+				var ns:LNamespace;
 				include "convertToQualifiedName.as.tmpl";
 				methodInfo.as3commons_reflect::setReturnType(fullName);
 				var params:Array = [];
