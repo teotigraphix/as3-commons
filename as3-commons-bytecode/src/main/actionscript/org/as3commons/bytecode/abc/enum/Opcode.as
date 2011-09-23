@@ -218,17 +218,17 @@ package org.as3commons.bytecode.abc.enum {
 		public static const urshift:Opcode = new Opcode(0xa7, "urshift");
 
 		//Alchemy specific opcodes:
-		public static const si8:Opcode = new Opcode(0x35, "si8");
-		public static const si16:Opcode = new Opcode(0x36, "si16");
-		public static const si32:Opcode = new Opcode(0x37, "si32");
-		public static const sf32:Opcode = new Opcode(0x38, "sf32");
-		public static const sf64:Opcode = new Opcode(0x39, "sf64");
+		public static const si8:Opcode = new Opcode(0x3a, "si8");
+		public static const si16:Opcode = new Opcode(0x3b, "si16");
+		public static const si32:Opcode = new Opcode(0x3c, "si32");
+		public static const sf32:Opcode = new Opcode(0x3d, "sf32");
+		public static const sf64:Opcode = new Opcode(0x3e, "sf64");
 
-		public static const li8:Opcode = new Opcode(0x3a, "li8");
-		public static const li16:Opcode = new Opcode(0x3b, "li16");
-		public static const li32:Opcode = new Opcode(0x3c, "li32");
-		public static const lf32:Opcode = new Opcode(0x3d, "lf32");
-		public static const lf64:Opcode = new Opcode(0x3e, "lf64");
+		public static const li8:Opcode = new Opcode(0x35, "li8");
+		public static const li16:Opcode = new Opcode(0x36, "li16");
+		public static const li32:Opcode = new Opcode(0x37, "li32");
+		public static const lf32:Opcode = new Opcode(0x38, "lf32");
+		public static const lf64:Opcode = new Opcode(0x39, "lf64");
 
 		public static const sxi1:Opcode = new Opcode(0x50, "sxi1");
 		public static const sxi8:Opcode = new Opcode(0x51, "sxi8");

@@ -1,7 +1,7 @@
 if (!(classMultiname is QualifiedName)) {
 	if (classMultiname is Multiname) {
-		var classMultinameAsMultiname:Multiname = classMultiname as Multiname;
-		var ns:LNamespace = classMultinameAsMultiname.namespaceSet.namespaces[0];
+		classMultinameAsMultiname = classMultiname as Multiname;
+		ns = classMultinameAsMultiname.namespaceSet.namespaces[0];
 		if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
 			if (classMultinameAsMultiname.name != '*') {
 				if ((ns.name != null) && (ns.name.length > 0)) {
