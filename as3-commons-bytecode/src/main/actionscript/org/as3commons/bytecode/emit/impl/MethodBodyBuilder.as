@@ -123,6 +123,18 @@ package org.as3commons.bytecode.emit.impl {
 			stackModifiers[Opcode.ifstricteq] = -2;
 			stackModifiers[Opcode.ifstrictne] = -2;
 			stackModifiers[Opcode.setslot] = -2;
+
+			stackModifiers[Opcode.si8] = -1;
+			stackModifiers[Opcode.si16] = -1;
+			stackModifiers[Opcode.si32] = -1;
+			stackModifiers[Opcode.sf32] = -1;
+			stackModifiers[Opcode.sf64] = -1;
+
+			stackModifiers[Opcode.li8] = 1;
+			stackModifiers[Opcode.li16] = 1;
+			stackModifiers[Opcode.li32] = 1;
+			stackModifiers[Opcode.lf32] = 1;
+			stackModifiers[Opcode.lf64] = 1;
 		}
 
 		private var _opcodes:Array = [];
