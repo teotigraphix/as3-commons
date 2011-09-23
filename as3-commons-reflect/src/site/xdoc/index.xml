@@ -26,7 +26,8 @@
                     latest snapshot
                 </p>
             </div>
-
+            
+            <p>AS3Commons-reflect depends on the AS3Commons-lang library, you can <a href="http://www.as3commons.org/as3-commons-lang/index.html" target="_blank">download it here</a>.</p>
 
             <p>
                 AS3Commons-reflect is an open-source library providing a reflection API for 
