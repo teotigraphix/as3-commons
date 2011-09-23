@@ -3,6 +3,12 @@ AS3COMMONS-REFLECT CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.5 (23.09.2011)
+-----------------------------------
+
+* Updated to use as3commons-logging v2.6
+* Added improvements to the internal caching to allow for more speed and memory consumption improvements
+
 Changes in version 1.4.2 (04.08.2011)
 -----------------------------------
 
