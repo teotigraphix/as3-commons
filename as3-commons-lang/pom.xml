@@ -6,105 +6,21 @@
 		<groupId>org.as3commons</groupId>
 		<artifactId>parent-pom</artifactId>
 		<version>1-SNAPSHOT</version>
-        <relativePath>../parent/pom.xml</relativePath>
+        <relativePath>../parent-pom/pom.xml</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-lang</artifactId>
 	<packaging>swc</packaging>
 	<version>0.3.5-SNAPSHOT</version>
 	<name>AS3Commons Lang</name>
-	<url>http://code.google.com/p/as3-commons</url>
 	<description>Utilities and language extensions for ActionScript 3.0</description>
 	<inceptionYear>2009</inceptionYear>
 
-	<build>
-
-		<plugins>
-
-			<plugin>
-				<groupId>org.sonatype.flexmojos</groupId>
-				<artifactId>flexmojos-maven-plugin</artifactId>
-				<version>${flex-mojos.version}</version>
-				<extensions>true</extensions>
-
-				<dependencies>
-					<dependency>
-						<groupId>com.adobe.flex</groupId>
-						<artifactId>compiler</artifactId>
-						<version>${flex-sdk.version}</version>
-						<type>pom</type>
-					</dependency>
-				</dependencies>
-
-				<executions>
-					<execution>
-						<id>flex-reports</id>
-						<goals>
-							<goal>asdoc-report</goal>
-						</goals>
-						<phase>site</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<storepass/>
-					<testTimeout>10000</testTimeout>
-					<targetPlayer>${flashplayer.version.major}</targetPlayer>
-					<updateSecuritySandbox>true</updateSecuritySandbox>
-					<description>AS3Commons Lang v${project.version} API documentation</description>
-					<mainTitle>AS3Commons Lang v${project.version} API documentation</mainTitle>
-					<windowTitle>AS3Commons Lang v${project.version} API documentation</windowTitle>
-					<name>As3CommonsLangDocs</name>
-					<keepXml>true</keepXml>
-					<dumpConfigAttach>true</dumpConfigAttach>
-					<showWarnings>true</showWarnings>
-					<lenient>true</lenient>
-				</configuration>
-
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptor>
-						src/main/assembly/package.xml
-					</descriptor>
-					<finalName>as3commons-lang-latest-snapshot</finalName>
-					<outputDirectory>target/site/downloads</outputDirectory>
-					<workDirectory>target/assembly/work</workDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<!-- this is used for inheritance merges -->
-						<phase>site</phase>
-						<!-- append to the packaging phase. -->
-						<goals>
-							<goal>single</goal>
-							<!-- goals == mojos -->
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>
-						https://as3-commons.googlecode.com/svn/tags/as3-commons-lang
-					</tagBase>
-				</configuration>
-			</plugin>
-
-		</plugins>
-
-	</build>
-
 	<scm>
+        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-lang</connection>
 		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-lang</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-lang</url>
-		<connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-lang</connection>
+        <url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-lang</url>
 	</scm>
 
 	<distributionManagement>
@@ -112,16 +28,6 @@
 			<id>yoolab.org-as3commons</id>
 			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-lang</url>
 		</site>
-		<repository>
-			<id>yoolab.org-releases</id>
-			<name>Yoolab.org releases repository</name>
-			<url>https://dev.yoolab.org/maven/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>yoolab.org-snapshots</id>
-			<name>Yoolab.org snapshots repository</name>
-			<url>https://dev.yoolab.org/maven/content/repositories/snapshots</url>
-		</snapshotRepository>
 	</distributionManagement>
 
 </project>
