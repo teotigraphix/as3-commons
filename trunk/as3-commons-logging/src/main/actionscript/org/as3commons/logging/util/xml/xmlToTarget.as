@@ -245,9 +245,9 @@ function nodeToValue( xml: XML, targetTypes: Object, targetInstances: Object ): 
 			if (isNaN(argValue)) {
 				argValue = parseFloat(argString);
 				if (isNaN(argValue)){
-					argString = argString.toLowerCase();
-					if(argString == "true" || argString == "false") {
-						argValue = argString.toLowerCase() == "true";
+					var argBool: String = argString.toLowerCase();
+					if(argBool == "true" || argBool == "false") {
+						argValue = argBool == "true";
 					} else {
 						argValue = argString;
 					}

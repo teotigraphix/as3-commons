@@ -22,6 +22,7 @@ package org.as3commons.logging.util.xml {
 		}
 		
 		public function testSetup():void {
+			
 			assertNull(
 				xmlToSetup(
 					<setup xmlns="http://as3commons.org/logging/1" />,

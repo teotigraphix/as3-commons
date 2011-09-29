@@ -1,4 +1,6 @@
 package org.as3commons.logging.util.xml {
+	import org.as3commons.logging.setup.ILogTarget;
+	import org.as3commons.logging.setup.target.TraceTarget;
 	import flexunit.framework.TestCase;
 	/**
 	 * @author mh
@@ -300,9 +302,38 @@ package org.as3commons.logging.util.xml {
 			assertStrictlyEquals( target, target.child1 );
 			assertNull( target.child2 );
 		}
+		
+		// http://code.google.com/p/as3-commons/issues/detail?id=95
+		public function testLogFormat(): void {
+			var target: MessageTarget = xmlToTarget(<target xmlns='http://as3commons.org/logging/1' type="trace">
+				<property name="format" value="{time} {logLevel} {shortName}{atPerson} - {message}"/>
+			</target>, {trace: MessageTarget}) as MessageTarget;
+			
+			assertNotNull(target);
+			assertEquals("{time} {logLevel} {shortName}{atPerson} - {message}", target.format);
+			
+			target = xmlToTarget(<target xmlns='http://as3commons.org/logging/1' type="trace">
+				<arg value="{time} {logLevel} {shortName}{atPerson} - {message}" />
+			</target>, {trace: MessageTarget}) as MessageTarget;
+			
+			assertNotNull(target);
+			assertEquals("{time} {logLevel} {shortName}{atPerson} - {message}", target.format);
+		}
 	}
 }
 import org.as3commons.logging.setup.ILogTarget;
+
+class MessageTarget implements ILogTarget {
+	
+	public var format : String;
+
+	public function MessageTarget( format: String = "") {
+		this.format = format;
+	}
+
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : *, parameters : Array, person : String) : void {
+	}
+}
 
 class NoLogTarget {
 }
