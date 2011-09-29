@@ -55,6 +55,10 @@ dynamic class LevelSetup extends Proxy {
 		return _children[nameStr] ||= new LevelSetup( _entry.child(nameStr) );
 	}
 	
+	public function setChild( child:String, level: LogSetupLevel, ...targets: Array ) {
+		
+	}
+	
 	override flash_proxy function setProperty(name: *, value: *) : void {
 		parseValue( _entry.child(name), value );
 	}

@@ -22,6 +22,5 @@ package org.as3commons.logging.setup {
 			getLogger("mycompany").warn("hi");
 			getLogger("org.as3commons.logging").warn("ho");
 		}
-
 	}
 }
