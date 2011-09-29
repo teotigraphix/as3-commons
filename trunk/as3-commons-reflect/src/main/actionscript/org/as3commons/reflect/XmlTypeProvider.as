@@ -63,7 +63,7 @@ package org.as3commons.reflect {
 			// lead to infinite recursion if the constructor uses Type.forName().
 			// Therefore it is important to seed the cache before calling
 			// getTypeDescription (thanks to Jürgen Failenschmid for reporting this)
-			typeCache.put(fullyQualifiedClassName, type);
+			typeCache.put(fullyQualifiedClassName, type, applicationDomain);
 			var description:XML = ReflectionUtils.getTypeDescription(cls);
 			type.fullName = fullyQualifiedClassName;
 			type.name = ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);

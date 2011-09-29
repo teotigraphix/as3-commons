@@ -22,8 +22,6 @@
 package org.as3commons.reflect.errors {
 
 	import org.as3commons.lang.ClassNotFoundError;
-	import org.as3commons.logging.api.ILogger;
-	import org.as3commons.logging.api.getLogger;
 
 	/**
 	 * Thrown when an application tries to retrieve a class by its name and
@@ -33,14 +31,13 @@ package org.as3commons.reflect.errors {
 	 */
 	public class ClassNotFoundError extends org.as3commons.lang.ClassNotFoundError {
 
-		private static var logger:ILogger = getLogger(org.as3commons.lang.ClassNotFoundError);
+		//private static var logger:ILogger = getLogger(org.as3commons.lang.ClassNotFoundError);
 
 		/**
 		 * Creates a new <code>ClassNotFoundError</code> object.
 		 */
-		public function ClassNotFoundError(message:String = "") {
+		public function ClassNotFoundError(message:String="") {
 			super(message);
-			logger.warn("The class ClassNotFoundError is deprecated in as3commons-reflect and is now available in as3commons-lang.");
 		}
 	}
 }
