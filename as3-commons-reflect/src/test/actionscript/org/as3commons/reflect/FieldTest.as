@@ -15,14 +15,14 @@ package org.as3commons.reflect {
 		// --------------------------------------------------------------------
 
 		public function testSetProperties():void {
-			var field:Field = new Field("prop", "*", "Object", false, ApplicationDomain.currentDomain);
+			var field:Field = new Field("prop", "*", "Object", false, Type.currentApplicationDomain);
 			field.as3commons_reflect::setDeclaringType("Number");
 			field.as3commons_reflect::setIsStatic(true);
 			field.as3commons_reflect::setName("property");
 			field.as3commons_reflect::setNamespaceURI("org.as3commons.reflect");
 			field.as3commons_reflect::setType(Type.VOID.fullName);
 
-			var NrType:Type = Type.forClass(Number, ApplicationDomain.currentDomain);
+			var NrType:Type = Type.forClass(Number, Type.currentApplicationDomain);
 			var declType:Type = field.declaringType;
 			assertStrictlyEquals(NrType, declType);
 			assertTrue(field.isStatic);

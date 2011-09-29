@@ -27,8 +27,6 @@ package org.as3commons.reflect {
 	import org.as3commons.lang.ClassNotFoundError;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.HashArray;
-	import org.as3commons.logging.api.ILogger;
-	import org.as3commons.logging.api.getLogger;
 
 	/**
 	 * Provides information about the characteristics of a class or an interface.
@@ -67,19 +65,23 @@ package org.as3commons.reflect {
 			typeProvider = null;
 		}
 
-		public static const UNTYPED:Type = new Type(ApplicationDomain.currentDomain);
+		public static function get currentApplicationDomain():ApplicationDomain {
+			return _currentApplicationDomain ||= ApplicationDomain.currentDomain;
+		}
+
+		public static const UNTYPED:Type = new Type(currentApplicationDomain);
 		{
 			UNTYPED.fullName = UNTYPED_NAME;
 			UNTYPED.name = UNTYPED_NAME;
 		}
 
-		public static const VOID:Type = new Type(ApplicationDomain.currentDomain);
+		public static const VOID:Type = new Type(currentApplicationDomain);
 		{
 			VOID.fullName = VOID_NAME;
 			VOID.name = VOID_NAME;
 		}
 
-		public static const PRIVATE:Type = new Type(ApplicationDomain.currentDomain);
+		public static const PRIVATE:Type = new Type(currentApplicationDomain);
 		{
 			PRIVATE.fullName = PRIVATE_NAME;
 			PRIVATE.name = PRIVATE_NAME;
@@ -94,7 +96,7 @@ package org.as3commons.reflect {
 			typeProviderKind = TypeProviderKind.JSON;
 		}
 
-		private static var logger:ILogger = getLogger(Type);
+		//private static var logger:ILogger = getLogger(Type);
 
 		private static var typeProvider:ITypeProvider;
 
@@ -110,7 +112,7 @@ package org.as3commons.reflect {
 		 * @param instance the instance from which to get a type description
 		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain=null):Type {
-			applicationDomain ||= ApplicationDomain.currentDomain;
+			applicationDomain ||= currentApplicationDomain;
 			var result:Type;
 			var clazz:Class = org.as3commons.lang.ClassUtils.forInstance(instance, applicationDomain);
 
@@ -126,7 +128,7 @@ package org.as3commons.reflect {
 		 * @param name the classname from which to get a type description
 		 */
 		public static function forName(name:String, applicationDomain:ApplicationDomain=null):Type {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= currentApplicationDomain;
 			var result:Type;
 
 			/*if(name.indexOf("$")!=-1){
@@ -141,16 +143,16 @@ package org.as3commons.reflect {
 					break;
 				default:
 					try {
-						if (getTypeProvider().getTypeCache().contains(name)) {
-							result = getTypeProvider().getTypeCache().get(name);
+						if (getTypeProvider().getTypeCache().contains(name, applicationDomain)) {
+							result = getTypeProvider().getTypeCache().get(name, applicationDomain);
 						} else {
 							result = Type.forClass(org.as3commons.lang.ClassUtils.forName(name, applicationDomain), applicationDomain);
 						}
 					} catch (e:ReferenceError) {
-						logger.warn("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
-					} catch (e:ClassNotFoundError) {
-						logger.warn("The class with the name '{0}' could not be found in the application domain '{1}'", [name, applicationDomain]);
-					}
+						trace("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
+					} // catch (e:ClassNotFoundError) {
+					//logger.warn("The class with the name '{0}' could not be found in the application domain '{1}'", [name, applicationDomain]);
+					//}
 			}
 			return result;
 		}
@@ -161,12 +163,12 @@ package org.as3commons.reflect {
 		 * @param clazz the class from which to get a type description
 		 */
 		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain=null):Type {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= currentApplicationDomain;
 			var result:Type;
 			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(clazz);
 
-			if (getTypeProvider().getTypeCache().contains(fullyQualifiedClassName)) {
-				result = getTypeProvider().getTypeCache().get(fullyQualifiedClassName);
+			if (getTypeProvider().getTypeCache().contains(fullyQualifiedClassName, applicationDomain)) {
+				result = getTypeProvider().getTypeCache().get(fullyQualifiedClassName, applicationDomain);
 			} else {
 				result = getTypeProvider().getType(clazz, applicationDomain);
 			}
@@ -704,6 +706,7 @@ package org.as3commons.reflect {
 		}
 
 		private var _metadataLookup:Dictionary;
+		private static var _currentApplicationDomain:ApplicationDomain;
 
 		public function createMetadataLookup():void {
 			_metadataLookup = new Dictionary();

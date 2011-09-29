@@ -20,6 +20,9 @@
  * THE SOFTWARE.
  */
 package org.as3commons.reflect {
+	import flash.system.ApplicationDomain;
+	import flash.utils.Dictionary;
+
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -38,7 +41,7 @@ package org.as3commons.reflect {
 		/**
 		 * Object used to internally store FullyQualifiedName/Type key/value pairs.
 		 */
-		protected var cache:Object = {};
+		protected var cache:Dictionary;
 
 		//--------------------------------------------------------------------------
 		//
@@ -51,6 +54,7 @@ package org.as3commons.reflect {
 		 */
 		public function TypeCache() {
 			super();
+			clear();
 		}
 
 		//--------------------------------------------------------------------------
@@ -62,8 +66,12 @@ package org.as3commons.reflect {
 		/**
 		 * Remove all entries from the cache.
 		 */
-		public function clear():void {
-			cache = {};
+		public function clear(applicationDomain:ApplicationDomain=null):void {
+			if (applicationDomain == null) {
+				cache = new Dictionary();
+			} else {
+				delete cache[applicationDomain];
+			}
 		}
 
 		/**
@@ -71,19 +79,22 @@ package org.as3commons.reflect {
 		 *
 		 * @param key The fully qualified name of the Type to lookup.
 		 */
-		public function contains(key:String):Boolean {
+		public function contains(key:String, applicationDomain:ApplicationDomain):Boolean {
 			Assert.hasText(key, "argument 'key' cannot be empty");
 
-			return (cache[key] != null);
+			var subCache:Object = cache[applicationDomain] as Object;
+
+			return ((subCache != null) && (subCache[key] != null));
 		}
 
 		/**
 		 * @return An <code>Array</code> of <code>Strings</code> representing the keys in the current <code>TypeCache</code>.
 		 */
-		public function getKeys():Array {
+		public function getKeys(applicationDomain:ApplicationDomain):Array {
+			var subCache:Object = cache[applicationDomain] as Object;
 			var keys:Array = [];
-			if (cache != null) {
-				for (var key:String in cache) {
+			if (subCache != null) {
+				for (var key:String in subCache) {
 					keys[keys.length] = key;
 				}
 			}
@@ -96,10 +107,10 @@ package org.as3commons.reflect {
 		 * @param key The fully qualified name of the Type to lookup.
 		 * @return An instance of Type if one is present in the cache.
 		 */
-		public function get(key:String):Type {
+		public function get(key:String, applicationDomain:ApplicationDomain):Type {
 			Assert.hasText(key, "argument 'key' cannot be empty");
-
-			return cache[key];
+			var subCache:Object = cache[applicationDomain] as Object;
+			return (subCache != null) ? subCache[key] : null;
 		}
 
 		/**
@@ -108,22 +119,25 @@ package org.as3commons.reflect {
 		 * @param key The fully qualified name of the Type to lookup.
 		 * @param type The Type instance to store at <code>key</code>
 		 */
-		public function put(key:String, type:Type):void {
+		public function put(key:String, type:Type, applicationDomain:ApplicationDomain):void {
 			Assert.notNull(key, "argument 'key' cannot be null");
 			Assert.hasText(key, "argument 'key' cannot be empty");
 			Assert.notNull(type, "argument 'type' cannot be null");
-
-			cache[key] = type;
+			var subCache:Object = cache[applicationDomain] ||= {};
+			subCache[key] = type;
 		}
 
 		/**
 		 * Returns the size of the cache. Cache size is determined by the number of
 		 * keys in the cache.
 		 */
-		public function size():int {
+		public function size(applicationDomain:ApplicationDomain):int {
+			var subCache:Object = cache[applicationDomain] as Object;
 			var index:int = 0;
-			for (var prop:String in cache) {
-				index++;
+			if (subCache != null) {
+				for (var prop:String in subCache) {
+					index++;
+				}
 			}
 			return index;
 		}

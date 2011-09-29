@@ -30,7 +30,7 @@ package org.as3commons.reflect {
 	 */
 	public class ParameterTest extends TestCase {
 
-		public function ParameterTest(methodName:String = null) {
+		public function ParameterTest(methodName:String=null) {
 			super(methodName);
 		}
 
@@ -47,7 +47,7 @@ package org.as3commons.reflect {
 		// --------------------------------------------------------------------
 
 		public function testSetProperties():void {
-			var p:Parameter = new Parameter(null, ApplicationDomain.currentDomain, false);
+			var p:Parameter = new Parameter(null, Type.currentApplicationDomain, false);
 			p.as3commons_reflect::setIsOptional(true);
 			p.as3commons_reflect::setType(Type.forClass(String).fullName);
 			assertEquals(true, p.isOptional);
@@ -78,13 +78,13 @@ package org.as3commons.reflect {
 			assertFalse(pm1 === pm2);
 		}
 
-		/*public function testNewInstance_speed():void {
-			for (var i:int = 0; i<1000; i++) {
-				testNewInstance();
-				testNewInstanceWithDifferentIsOptional();
-				testNewInstanceWithDifferentType();
-			}
-		}*/
+	/*public function testNewInstance_speed():void {
+		for (var i:int = 0; i<1000; i++) {
+			testNewInstance();
+			testNewInstanceWithDifferentIsOptional();
+			testNewInstanceWithDifferentType();
+		}
+	}*/
 
 	}
 }

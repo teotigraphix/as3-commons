@@ -14,32 +14,32 @@ package org.as3commons.reflect {
 
 		override public function setUp():void {
 			cache = new TypeCache();
-			cache.put(getQualifiedClassName(PublicClass), Type.forClass(PublicClass));
+			cache.put(getQualifiedClassName(PublicClass), Type.forClass(PublicClass), Type.currentApplicationDomain);
 
 		}
 
-		public function TypeCacheTest(methodName:String = null) {
+		public function TypeCacheTest(methodName:String=null) {
 			super(methodName);
 		}
 
 		public function testClear():void {
-			Assert.assertEquals(1, cache.size());
+			Assert.assertEquals(1, cache.size(Type.currentApplicationDomain));
 
 			cache.clear();
-			Assert.assertEquals(0, cache.size());
+			Assert.assertEquals(0, cache.size(Type.currentApplicationDomain));
 		}
 
 		public function testContains():void {
-			Assert.assertTrue(cache.contains(getQualifiedClassName(PublicClass)));
+			Assert.assertTrue(cache.contains(getQualifiedClassName(PublicClass), Type.currentApplicationDomain));
 		}
 
 		public function testGet():void {
-			Assert.assertNotNull(cache.get(getQualifiedClassName(PublicClass)));
+			Assert.assertNotNull(cache.get(getQualifiedClassName(PublicClass), Type.currentApplicationDomain));
 		}
 
 		public function testPut():void {
 			try {
-				cache.put(getQualifiedClassName(ComplexClass), Type.forClass(ComplexClass));
+				cache.put(getQualifiedClassName(ComplexClass), Type.forClass(ComplexClass), Type.currentApplicationDomain);
 			} catch (e:Error) {
 				fail("Attempt to put new key/value threw an error.");
 			}
