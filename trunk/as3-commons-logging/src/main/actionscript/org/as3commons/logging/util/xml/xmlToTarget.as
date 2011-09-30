@@ -137,63 +137,49 @@ package org.as3commons.logging.util.xml {
 					var result: ILogTarget;
 					if (l == 0) {
 						result = new type();
-					}
-					if (l == 1) {
+					} else if (l == 1) {
 						result = new type(args[0]);
-					}
-					if (l == 2) {
+					} else if (l == 2) {
 						result = new type(args[0], args[1]);
-					}
-					if (l == 3) {
+					} else if (l == 3) {
 						result = new type(args[0], args[1], args[2]);
-					}
-					if (l == 4) {
+					} else if (l == 4) {
 						result = new type(args[0], args[1], args[2], args[3]);
-					}
-					if (l == 5) {
+					} else if (l == 5) {
 						result = new type(args[0], args[1], args[2], args[3], args[4]);
-					}
-					if (l == 6) {
+					} else if (l == 6) {
 						result = new type(args[0], args[1], args[2], args[3], args[4],
 							args[5]);
-					}
-					if (l == 7) {
+					} else if (l == 7) {
 						result = new type(args[0], args[1], args[2], args[3], args[4],
 							args[5], args[6]);
-					}
-					if (l == 8) {
+					} else if (l == 8) {
 						result = new type(args[0], args[1], args[2], args[3], args[4],
 							args[5], args[6], args[7]);
-					}
-					if (l == 9) {
+					} else if (l == 9) {
 						result = new type(args[0], args[1], args[2], args[3], args[4],
 							args[5], args[6], args[7], args[8]);
-					}
-					if (l == 10) {
+					} else if (l == 10) {
 						result = new type(args[0], args[1], args[2], args[3], args[4],
 							args[5], args[6], args[7], args[8], args[9]);
-					}
-					if (l == 11) {
+					} else if (l == 11) {
 						result = new type(args[0], args[1], args[2], args[3], args[4],
 							args[5], args[6], args[7], args[8], args[9], args[10]);
-					}
-					if (l == 12) {
+					} else if (l == 12) {
 						result = new type(args[0], args[1], args[2], args[3], args[4],
 							args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
-					}
-					if (l == 13) {
+					} else if (l == 13) {
 						result = new type(args[0], args[1], args[2], args[3], args[4],
 							args[5], args[6], args[7], args[8], args[9], args[10], args[11],
 							args[12]);
-					}
-					if (l >= 14) {
+					} else {
 						result = new type(args[0], args[1], args[2], args[3], args[4],
 							args[5], args[6], args[7], args[8], args[9], args[10], args[11],
 							args[12], args[13]);
 					}
 				} catch( e: Error ) {
 					if( LOGGER.warnEnabled ) {
-						LOGGER.warn("The log target {0} was not possible to be instantiated with the arguments {1}. Error: {2}", [property.@name, args.splice(0,l), e]);
+						LOGGER.warn("The log target named {0} referencing to {1} was not possible to be instantiated with the arguments {2}. Error: {3}", [type, xml.@type, args.splice(0,l), e]);
 					}
 					return null;
 				}
@@ -236,23 +222,26 @@ const CACHE: Dictionary = new Dictionary();
 const LOGGER: ILogger = getLogger("org.as3commons.logging.util.xml#xmlToTarget");
 
 function nodeToValue( xml: XML, targetTypes: Object, targetInstances: Object ): * {
-	var argString: String;
 	var argValue: * = null;
 	if (xml.hasOwnProperty("@value") ) {
-		argString = QName(xml.@value).toString();
-		if(argString != "") {
-			argValue = parseInt(argString);
-			if (isNaN(argValue)) {
-				argValue = parseFloat(argString);
-				if (isNaN(argValue)){
-					var argBool: String = argString.toLowerCase();
-					if(argBool == "true" || argBool == "false") {
-						argValue = argBool == "true";
-					} else {
-						argValue = argString;
-					}
+		var string: String = QName(xml.@value).toString();
+		if(string != "") {
+			var bool: String = string.toLowerCase();
+			if( bool == "true" || bool == "false") {
+				argValue = bool == "true";
+			} else {
+				var float: Number = parseFloat(string);
+				var i: int = parseInt(string);
+				if(isNaN(float)) {
+					argValue = string;
+				} else if( float != i ) {
+					argValue = float;
+				} else {
+					argValue = i;
 				}
 			}
+		} else {
+			argValue = string;
 		}
 	} else {
 		var targetNode: XML = xml.xmlNs::target.(hasOwnProperty("@type"))[0];

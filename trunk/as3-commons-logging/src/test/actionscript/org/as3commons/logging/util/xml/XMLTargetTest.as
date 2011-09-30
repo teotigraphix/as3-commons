@@ -1,6 +1,5 @@
 package org.as3commons.logging.util.xml {
-	import org.as3commons.logging.setup.ILogTarget;
-	import org.as3commons.logging.setup.target.TraceTarget;
+	import avmplus.getQualifiedClassName;
 	import flexunit.framework.TestCase;
 	/**
 	 * @author mh
@@ -124,7 +123,7 @@ package org.as3commons.logging.util.xml {
 		}
 		
 		public function testComplexArgumentInjection(): void {
-			var target: TestTarget = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>]
+			var target: TestTarget = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>
 				<arg/>
 				<arg/>
 				<arg>
@@ -142,7 +141,7 @@ package org.as3commons.logging.util.xml {
 			assertNull( target.child1.arg2 );
 			
 			// Now without the property "name" !
-			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>]
+			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>
 				<arg/>
 				<arg/>
 				<arg>
@@ -160,7 +159,7 @@ package org.as3commons.logging.util.xml {
 			assertNull( target.child1.arg2 );
 			
 			// Referencing between the objects
-			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>]
+			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>
 				<arg/>
 				<arg/>
 				<arg>
@@ -181,7 +180,7 @@ package org.as3commons.logging.util.xml {
 			assertNull( target.child1.arg2 );
 			
 			// Referencing to the parent
-			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test' name="myname">]
+			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test' name="myname">
 				<arg/>
 				<arg/>
 				<arg>
@@ -195,7 +194,7 @@ package org.as3commons.logging.util.xml {
 			
 			// Referencing to a entry in my custom list
 			var customTarget: TestTarget = new TestTarget();
-			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test' name="myname">]
+			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test' name="myname">
 				<arg/>
 				<arg/>
 				<arg>
@@ -211,7 +210,7 @@ package org.as3commons.logging.util.xml {
 		}
 		
 		public function testComplexPropertyInjection(): void {
-			var target: TestTarget = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>]
+			var target: TestTarget = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>
 				<property name="child1">
 					<target type="test" name="hi">
 						<arg value="test"/>
@@ -227,7 +226,7 @@ package org.as3commons.logging.util.xml {
 			assertNull( target.child1.arg2 );
 			
 			// Now without the property "name" !
-			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>]
+			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>
 				<property name="child1">
 					<target type="test">
 						<arg value="test"/>
@@ -243,7 +242,7 @@ package org.as3commons.logging.util.xml {
 			assertNull( target.child1.arg2 );
 			
 			// Referencing between the objects
-			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>]
+			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test'>
 				<property name="child1">
 					<target type="test" name="myname">
 						<arg value="test"/>
@@ -262,7 +261,7 @@ package org.as3commons.logging.util.xml {
 			assertNull( target.child1.arg2 );
 			
 			// Referencing to the parent
-			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test' name="myname">]
+			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test' name="myname">
 				<property name="child1">
 					<target-ref ref="myname"/>
 				</property>
@@ -274,7 +273,7 @@ package org.as3commons.logging.util.xml {
 			
 			// Referencing to a entry in my custom list
 			var customTarget: TestTarget = new TestTarget();
-			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test' name="myname">]
+			target = xmlToTarget( <target xmlns='http://as3commons.org/logging/1' type='test' name="myname">
 				<property name="child1">
 					<target-ref ref="myname"/>
 				</property>
@@ -304,31 +303,76 @@ package org.as3commons.logging.util.xml {
 		}
 		
 		// http://code.google.com/p/as3-commons/issues/detail?id=95
-		public function testLogFormat(): void {
-			var target: MessageTarget = xmlToTarget(<target xmlns='http://as3commons.org/logging/1' type="trace">
-				<property name="format" value="{time} {logLevel} {shortName}{atPerson} - {message}"/>
-			</target>, {trace: MessageTarget}) as MessageTarget;
+		public function testStringParameters(): void {
+			assertParameter("{time} {logLevel} {shortName}{atPerson} - {message}", "{time} {logLevel} {shortName}{atPerson} - {message}");
+		}
+		
+		public function testBooleanParameters():void {
+			assertParameter(true, "True" );
+			assertParameter(true, "TRUE" );
+			assertParameter(true, "true" );
+			assertParameter(true, "truE" );
+			assertParameter(false, "False" );
+			assertParameter(false, "FALSE" );
+			assertParameter(false, "false" );
+			assertParameter(false, "falsE" );
+			assertParameter(" false", " false" );
+			assertParameter("false ", "false " );
+		}
+		
+		public function testNumberParameters():void {
+			assertParameter( 1.0, "1.0", [ "1", "1.0", true] );
+			assertParameter( 0.0, "0.0", [ "0", "0.0", false] );
+			assertParameter( -1, "-1.0", [ "-1.0"] );
+			assertParameter( -1.1, "-1.1", ["-1.1"] );
+			assertParameter( 1.1, "1.1", ["1.1"] );
+			assertParameter( 0.1, "0.1", ["0.1"] );
+		}
+		
+		public function testIntParameters():void {
+			assertParameter( 1, "1", ["1", "1.0", true] );
+			assertParameter( 0, "0", ["0", "0.0", false] );
+			assertParameter( -1, "-1", ["-1.0"] );
+		}
+		
+		public function testInvalidParameters():void {
+		}
+		
+		private function assertParameter( expected: *, given: String, not:Array = null ): void {
+			assertTargetForParameter(<target xmlns='http://as3commons.org/logging/1' type="trace">
+				<property name="input" value={given}/>
+			</target>, expected, not);
+			
+			assertTargetForParameter(<target xmlns='http://as3commons.org/logging/1' type="trace">
+				<arg value={given}/>
+			</target>, expected, not);
+		}
+		
+		private function assertTargetForParameter(targetXML:XML, expected: *, not: Array ):void {
+			var target: ParameterTarget = xmlToTarget(targetXML, {trace: ParameterTarget}) as ParameterTarget;
 			
 			assertNotNull(target);
-			assertEquals("{time} {logLevel} {shortName}{atPerson} - {message}", target.format);
-			
-			target = xmlToTarget(<target xmlns='http://as3commons.org/logging/1' type="trace">
-				<arg value="{time} {logLevel} {shortName}{atPerson} - {message}" />
-			</target>, {trace: MessageTarget}) as MessageTarget;
-			
-			assertNotNull(target);
-			assertEquals("{time} {logLevel} {shortName}{atPerson} - {message}", target.format);
+			assertStrictlyEquals(expected, target.input);
+			if( not ) {
+				for( var i: int = 0; i < not.length; ++i ){
+					var notValue:* = not[i];
+					if(    getQualifiedClassName(notValue) == getQualifiedClassName(target.input)
+						&& notValue === target.input ) {
+						fail("Expected output NOT to be "+notValue+ " ["+getQualifiedClassName(notValue)+"] at " + i);
+					}
+				}
+			}
 		}
 	}
 }
 import org.as3commons.logging.setup.ILogTarget;
 
-class MessageTarget implements ILogTarget {
+class ParameterTarget implements ILogTarget {
 	
-	public var format : String;
+	public var input: *;
 
-	public function MessageTarget( format: String = "") {
-		this.format = format;
+	public function ParameterTarget( input: * = null ) {
+		this.input = input;
 	}
 
 	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : *, parameters : Array, person : String) : void {
