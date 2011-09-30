@@ -41,7 +41,7 @@ package org.as3commons.bytecode.reflect {
 
 		override public function getType(cls:Class, applicationDomain:ApplicationDomain):Type {
 			Assert.notNull(cls, "cls argument must not be null");
-			return getTypeCache().get(ClassUtils.getFullyQualifiedName(cls, true));
+			return getTypeCache().get(ClassUtils.getFullyQualifiedName(cls, true), applicationDomain);
 		}
 
 		override public function clearCache():void {
@@ -94,7 +94,7 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
-		public function fromLoader(loader:LoaderInfo, applicationDomain:ApplicationDomain = null):void {
+		public function fromLoader(loader:LoaderInfo, applicationDomain:ApplicationDomain=null):void {
 			Assert.notNull(loader, "loader argument must not be null");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var loaderBytesPosition:uint = loader.bytes.position;
@@ -106,7 +106,7 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
-		public function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain = null, isLoaderBytes:Boolean = true):void {
+		public function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
 			Assert.notNull(input, "input argument must not be null");
 			if (_byteArrays[input] != null) {
 				return;

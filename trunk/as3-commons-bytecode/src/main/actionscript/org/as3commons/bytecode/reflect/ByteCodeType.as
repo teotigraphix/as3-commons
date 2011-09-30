@@ -64,7 +64,7 @@ package org.as3commons.bytecode.reflect {
 		 * @param clazz the class from which to get a type description
 		 */
 		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain=null):ByteCodeType {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= Type.currentApplicationDomain;
 			var result:ByteCodeType;
 			var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz, true);
 			var type:ByteCodeType = forName(fullyQualifiedClassName, applicationDomain);
@@ -79,7 +79,7 @@ package org.as3commons.bytecode.reflect {
 		 * @param instance the instance from which to get a type description
 		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain=null):ByteCodeType {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= Type.currentApplicationDomain;
 			var result:ByteCodeType = null;
 			var clazz:Class = ClassUtils.forInstance(instance, applicationDomain);
 
@@ -96,16 +96,16 @@ package org.as3commons.bytecode.reflect {
 		 * @param name the classname from which to get a type description
 		 */
 		public static function forName(name:String, applicationDomain:ApplicationDomain=null):ByteCodeType {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= Type.currentApplicationDomain;
 			var result:ByteCodeType;
 
 			name = AbcFileUtil.normalizeFullName(name);
 
-			result = getTypeProvider().getTypeCache().get(name) as ByteCodeType;
+			result = getTypeProvider().getTypeCache().get(name, applicationDomain) as ByteCodeType;
 			if ((result == null) && (isNativeName(name))) {
 				result = PlayerGlobalData.forName(name);
 				if (result != null) {
-					getTypeProvider().getTypeCache().put(name, result);
+					getTypeProvider().getTypeCache().put(name, result, applicationDomain);
 				}
 			}
 
@@ -119,7 +119,7 @@ package org.as3commons.bytecode.reflect {
 		 */
 		public static function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
 			Assert.notNull(input, "input argument must not be null");
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain ||= Type.currentApplicationDomain;
 			(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(input, applicationDomain, isLoaderBytes);
 		}
 

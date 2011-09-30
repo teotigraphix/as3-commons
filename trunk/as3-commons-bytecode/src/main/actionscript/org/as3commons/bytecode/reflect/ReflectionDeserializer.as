@@ -526,7 +526,7 @@ package org.as3commons.bytecode.reflect {
 				instanceInfo.fullName = fullName;
 				typeCache.as3commons_reflect::addDefinitionName(instanceInfo.fullName);
 				instanceInfo.name = instanceName;
-				typeCache.put(instanceInfo.fullName, instanceInfo);
+				typeCache.put(instanceInfo.fullName, instanceInfo, applicationDomain);
 				instances[instances.length] = instanceInfo;
 
 				include "../io/readU32.as.tmpl";

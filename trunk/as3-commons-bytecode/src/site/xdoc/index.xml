@@ -53,6 +53,7 @@
             
             <p> This library depends on these other as3commons libraries:
             	<ul>
+            		<li><a href="http://www.as3commons.org/as3-commons-logging/index.html" target="_blank">AS3Commons-logging</a></li>
             		<li><a href="http://www.as3commons.org/as3-commons-reflect/index.html" target="_blank">AS3Commons-reflect</a></li>
             		<li><a href="http://www.as3commons.org/as3-commons-lang/index.html" target="_blank">AS3Commons-lang</a></li>
             	</ul>
