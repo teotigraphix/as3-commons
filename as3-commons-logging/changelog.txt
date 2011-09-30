@@ -4,7 +4,9 @@ AS3COMMONS LOGGING CHANGELOG
 Note: dates are in DD.MM.YYYY format
 Changes in version 2.7
 -----------------------------------
-* Added: MaashaackIntegration
+* Added: Log4J style setup
+* Added: Maashaack integration
+* Fixed: http://code.google.com/p/as3-commons/issues/detail?id=95 and cleaned up target instantiation in xml setup process.
 
 Changes in version 2.6 (11.09.2011)
 -----------------------------------

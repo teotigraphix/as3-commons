@@ -21,6 +21,7 @@
  */
 package org.as3commons.logging.setup.target {
 	
+	import system.logging.LoggerStrings;
 	import system.logging.Log;
 	import system.logging.Logger;
 	import system.logging.LoggerLevel;
@@ -48,7 +49,9 @@ package org.as3commons.logging.setup.target {
 	 */
 	public final class MaashaackTarget implements ILogTarget {
 		
-		public static const DEFAULT_FORMAT: String = "{atperson} {logTime} {message}";
+		public static const DEFAULT_FORMAT: String = "{logTime} {message} {atPerson}";
+		private static const ILL_CHR: Array = LoggerStrings.ILLEGALCHARACTERS.split("");
+		private static const ILL_CHR_LEN: uint = LoggerStrings.ILLEGALCHARACTERS.length; 
 		
 		private var _formatter: LogMessageFormatter;
 		
@@ -69,13 +72,14 @@ package org.as3commons.logging.setup.target {
 		public function log(name:String, shortName:String, level:int,
 							timeStamp:Number, message:*, parameters:Array,
 							person:String): void {
-			var id: String = name;
-			if( person ) {
-				id += "@" + person;
+			for( var i: int = 0; i<ILL_CHR_LEN; ++i ) {
+				var c: String = ILL_CHR[i];
+				if( name.indexOf(c) != -1 ) {
+					name = name.split(c).join("");
+				}
 			}
-			var logger: Logger = _loggers[id] ||= Log.getLogger(id);
-			
-			_entry.channel = id;
+			var logger: Logger = _loggers[name] ||= Log.getLogger(name);
+			_entry.channel = name;
 			_entry.level = _levelMap[level] || LoggerLevel.DEBUG;
 			_entry.message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
 			logger.emit( _entry );
