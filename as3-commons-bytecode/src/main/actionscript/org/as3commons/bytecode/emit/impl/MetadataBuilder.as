@@ -59,7 +59,8 @@ package org.as3commons.bytecode.emit.impl {
 			_arguments = value;
 		}
 
-		public function defineArgument(name:String = null):MetadataArgument {
+		public function defineArgument(name:String=null):MetadataArgument {
+			_arguments ||= [];
 			var ma:MetadataArgument;
 			if ((name == null) || (_argLookup[name] == null)) {
 				ma = new MetadataArgument();

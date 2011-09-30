@@ -157,7 +157,7 @@ public function buildGetterHandler(event:AccessorBuilderEvent):void {
              .addOpcode(Opcode.setlocal_1)
              .addOpcode(Opcode.getlocal_1)
              .addOpcode(Opcode.returnvalue);</pre></div>
-        <p>For more information on AVM instructions follow this link: <a href="http://learn.adobe.com/wiki/display/AVM2/5.+AVM2+instructions" target="_blank">AVM2 instructions</a>.</p>
+        <p>For more information on AVM instructions follow this link: <a href="http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/actionscript/articles/avm2overview.pdf" target="_blank">AVM2 overview</a>.</p>
 	<p>The actionscript source equivalent of these statements would look like this:</p>
     	<div class="source"><pre>public function multiplyByHundred(value:int):int {
   value = (value * 100);
@@ -257,7 +257,7 @@ methodBuilder.addAsmSource(source);</pre></div>
     	<div class="source"><pre>var metadataBuilder:IMetadataBuilder = methodBuilder.defineMetadata("Inject");</pre></div>
     	<p>To add arguments to the metadata definition invoke the <code><a href="asdoc/org/as3commons/bytecode/emit/IMetadataBuilder.html#defineArgument()" target="_blank">defineArgument()</a></code> method:</p>
     	<div class="source"><pre>var metadataArgument:MetadataArgument = metadataBuilder.defineArgument();
-metadataArgument.name = "name";
+metadataArgument.key = "name";
 metadataArgument.value = "objectName";</pre></div>
 	<p>The actionscript source equivalent of this statement would look like this:</p>
 	<div class="source"><pre>[Inject(name="objectName")]</pre></div>

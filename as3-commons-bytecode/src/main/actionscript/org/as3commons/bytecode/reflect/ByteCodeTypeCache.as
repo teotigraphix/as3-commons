@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.reflect {
+	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 
@@ -50,8 +51,8 @@ package org.as3commons.bytecode.reflect {
 			_definitionNames = [];
 		}
 
-		override public function clear():void {
-			super.clear();
+		override public function clear(applicationDomain:ApplicationDomain=null):void {
+			super.clear(applicationDomain);
 			initByteCodeTypeCache();
 		}
 
@@ -84,22 +85,24 @@ package org.as3commons.bytecode.reflect {
 		/**
 		 * @inheritDoc
 		 */
-		override public function get(key:String):Type {
+		override public function get(key:String, applicationDomain:ApplicationDomain):Type {
 			Assert.hasText(key, "argument 'key' cannot be empty");
 
-			var type:Type = cache[key];
+
+			var type:Type = super.get(key, applicationDomain);
 			if ((type != null) && (!type.as3commons_reflect::initialized)) {
 				type.as3commons_reflect::initialize();
-			} else if (type == null) {
+			}
+			/* else if (type == null) {
 				type = Type.forName(key);
 			}
 			if (type == null) {
-				/*var func:Function = PlayerGlobalTypes.typeMethods[key];
+				var func:Function = PlayerGlobalTypes.typeMethods[key];
 				if (func != null) {
 					type = func();
 					cache[key] = type;
-				}*/
-			}
+				}
+			}*/
 			return type;
 		}
 

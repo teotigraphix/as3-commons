@@ -41,9 +41,7 @@ package org.as3commons.bytecode.util {
 			0x08, 0x00, 0x00, 0x00];
 
 		private static const ABC_HEADER:Array = [0x3f, 0x12]; // Tag type=72 (DoABC), length=next.]
-
 		private static var SWF_FOOTER:Array = [0x40, 0x00, 0x00, 0x00]; // Tag type=1 (ShowFrame), length=0
-
 		private static const INSTANCE_INITIALIZER_QNAME:String = "{instance initializer (constructor?)}";
 		private static const PERIOD:String = '.';
 
