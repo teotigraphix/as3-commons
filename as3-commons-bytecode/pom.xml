@@ -252,9 +252,9 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-reflect</artifactId>
-			<version>1.5-SNAPSHOT</version>
+			<version>1.5.1-SNAPSHOT</version>
 			<type>swc</type>
-			<scope>external</scope>
+			<scope>merged</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>com.adobe.flex.framework</groupId>
@@ -272,7 +272,7 @@
 			<artifactId>as3commons-lang</artifactId>
 			<version>0.3.5-SNAPSHOT</version>
 			<type>swc</type>
-			<scope>external</scope>
+			<scope>merged</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>com.adobe.flex.framework</groupId>
@@ -291,7 +291,7 @@
 			<artifactId>as3commons-logging</artifactId>
 			<version>2.6</version>
 			<type>swc</type>
-			<scope>external</scope>
+			<scope>merged</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>com.adobe.flex.framework</groupId>
