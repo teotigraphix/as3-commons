@@ -343,6 +343,10 @@ package org.as3commons.bytecode.proxy.impl {
 			return new QualifiedName(AS3COMMONSBYTECODEPROXY, new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, ORGAS3COMMONSBYTECODE));
 		}
 
+		/**
+		 *
+		 * @param methodProxyFactory
+		 */
 		protected function addMethodProxyFactoryListeners(methodProxyFactory:IMethodProxyFactory):void {
 			if (methodProxyFactory != null) {
 				methodProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD, redispatchBuilderEvent);

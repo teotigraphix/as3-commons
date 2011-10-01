@@ -652,7 +652,7 @@ package org.as3commons.bytecode.reflect {
 				var endpos:int = input.position + recordHeader.length;
 				if (recordHeader.id == 82) {
 					input.readInt(); //skip flags
-					SWFSpec.readString(input); //skip name
+					SWFSpec.skipString(input); //skip name
 				}
 				readABCTag(typeCache, input);
 				if (input.position < endpos) {
