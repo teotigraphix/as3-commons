@@ -19,54 +19,48 @@ package org.as3commons.metadata.registry.impl {
 
 	import org.as3commons.metadata.process.IMetadataProcessor;
 	import org.as3commons.metadata.registry.IMetadataProcessorRegistry;
-	import org.as3commons.reflect.IMetadataContainer;
-	import org.as3commons.reflect.Type;
+	import org.spicefactory.lib.reflect.ClassInfo;
+	import org.spicefactory.lib.reflect.Member;
+	import org.spicefactory.lib.reflect.Method;
 
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class AS3ReflectMetadataProcessorRegistry extends AbstractMetadataProcessorRegistry {
+	public class SpiceLibMetadataProcessorRegistry extends AbstractMetadataProcessorRegistry {
 
 		/**
-		 * Creates a new <code>AS3ReflectMetadataProcessorRegistry</code> instance.
+		 * Creates a new <code>SpiceLibMetadataProcessorRegistry</code> instance.
 		 */
-		public function AS3ReflectMetadataProcessorRegistry() {
+		public function SpiceLibMetadataProcessorRegistry() {
 			super();
 		}
 
-		/**
-		 *
-		 * @param target
-		 * @return
-		 */
 		override public function process(target:Object):* {
-			var type:Type = Type.forInstance(target, applicationDomain);
-			processType(type, target);
-		}
-
-		/**
-		 *
-		 * @param type
-		 * @param target
-		 */
-		protected function processType(type:Type, target:Object):void {
+			var type:ClassInfo = ClassInfo.forInstance(target, applicationDomain);
 			for (var name:String in metadataLookup) {
 				var processors:Vector.<IMetadataProcessor> = metadataLookup[name] as Vector.<IMetadataProcessor>;
 				var containers:Array = (type.hasMetadata(name)) ? [type] : [];
-				var memberContainers:Array = type.getMetadataContainers(name);
-				if (memberContainers != null) {
-					containers = containers.concat(memberContainers);
-				}
+				var memberContainers:Array = getMembersWithMetadata(type, name);
+				containers = containers.concat(memberContainers);
 
-				for each (var container:IMetadataContainer in containers) {
+				for each (var container:Object in containers) {
 					for each (var processor:IMetadataProcessor in processors) {
 						processor.process(target, name, container);
 					}
 				}
 			}
-
 		}
 
+		protected function getMembersWithMetadata(type:ClassInfo, name:String):Array {
+			var result:Array = [];
+			var members:Array = type.getMethods().concat(type.getStaticMethods()).concat(type.getProperties()).concat(type.getStaticProperties());
+			for each (var m:Member in members) {
+				if (m.hasMetadata(name)) {
+					result[result.length] = m;
+				}
+			}
+			return result;
+		}
 	}
 }
