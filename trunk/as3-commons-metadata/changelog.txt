@@ -1,0 +1,12 @@
+AS3COMMONS-METADATA CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+Changes in version 1.0-RC1 (??.??.2011)
+-----------------------------------
+
+* Initial release, logic refactored out of Spring Actionscript
+* Added AS3Commons-reflect specific implementation of IMetadataProcessorRegistry
+* Added Spicelib-reflect specific implementation of IMetadataProcessorRegistry
+* Added AS3Commons-Bytecode specific implementation of IMetadataProcessorRegistry
