@@ -27,9 +27,11 @@ package org.as3commons.reflect.util {
 
 	import org.as3commons.reflect.as3commons_reflect;
 
-	public class CacheUtil {
+	public final class CacheUtil {
 
 		private static var _appDomains:Array = [];
+		public static const SEMI_COLON:String = ";";
+		public static const COMMA:String = ",";
 
 		// --------------------------------------------------------------------
 		//
@@ -50,22 +52,12 @@ package org.as3commons.reflect.util {
 			if (metadataArray) {
 				var md:Array = metadataArray.getArray();
 				for each (var metadata:Metadata in md) {
-					result += Metadata.getCacheKey(metadata) + ","
+					result += Metadata.getCacheKey(metadata) + COMMA;
 				}
 			}
 
 			return result;
 		}
-
-		// --------------------------------------------------------------------
-		//
-		// Constructor
-		//
-		// --------------------------------------------------------------------
-
-		public function CacheUtil() {
-		}
-
 
 	}
 }

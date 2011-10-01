@@ -8,6 +8,7 @@ Changes in version 1.5.1 (??.??.2011)
 
 * Removed as3commons-logging dependency
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=94
+* Made metadata lookups case-insensitive again
 
 Changes in version 1.5 (23.09.2011)
 -----------------------------------
