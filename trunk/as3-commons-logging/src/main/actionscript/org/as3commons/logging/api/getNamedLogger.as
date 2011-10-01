@@ -52,7 +52,7 @@ package org.as3commons.logging.api {
 	 * @see LoggerFactory#getLogger()
 	 * @see org.as3commons.logging.api#LOGGER_FACTORY
 	 */
-	public function getNamedLogger(name:String,person:String=null):ILogger {
+	public function getNamedLogger(name:String=null,person:String=null):ILogger {
 		return LOGGER_FACTORY.getNamedLogger(name,person);
 	}
 }

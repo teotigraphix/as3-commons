@@ -42,6 +42,7 @@ package org.as3commons.logging.setup.target {
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.5
+	 * @version 2
 	 * @see org.as3commons.logging.util#flushToTarget();
 	 * @see org.as3commons.logging.util#flushToFactory();
 	 */
@@ -57,7 +58,10 @@ package org.as3commons.logging.setup.target {
 		private var _introspectDepth:uint;
 		
 		/** Max amount of statements stored. */
-		private var _maxStatements:uint;
+		private var _maxStatements : uint;
+		
+		/** True if the target should actually introspect and clone the statements */
+		private var _clone : Boolean;
 		
 		/**
 		 * Creates a new <code>BufferTarget</code> instance.
@@ -65,15 +69,17 @@ package org.as3commons.logging.setup.target {
 		 * @param maxStatements Amount of statements stored in this buffer
 		 * @param introspectDepth Depth to be used to cache statements, needs to
 		 *        be bigger than 0.
+		 * @param clone <code>true</code> if the target should actually introspect and clone the statements
 		 * @throws Error if introspectDepth is 0;
 		 */
 		public function BufferTarget(maxStatements:uint=uint.MAX_VALUE,
-									 introspectDepth:uint=5) {
+									 introspectDepth:uint=5,clone:Boolean=true) {
 			if(maxStatements == 0 ){
 				throw new Error("Buffer must have a size bigger than 0!");
 			}
 			_maxStatements=maxStatements;
 			_introspectDepth=introspectDepth;
+			_clone = clone;
 		}
 		
 		/**
@@ -110,14 +116,15 @@ package org.as3commons.logging.setup.target {
 				statement.shortName = shortName;
 				statement.level = level;
 				statement.timeStamp = timeStamp;
-				statement.message = message;
+				statement.doClone = _clone;
 				statement.parameters = params;
+				statement.message = message;
 				statement.person = person;
 				_logStatements[_length-1] = statement;
 			} else {
 				_logStatements[_length++] =
 					new LogStatement(name, shortName, level, timeStamp,
-										message, params, person, _introspectDepth);
+										message, params, person, _introspectDepth, _clone);
 			}
 		}
 		

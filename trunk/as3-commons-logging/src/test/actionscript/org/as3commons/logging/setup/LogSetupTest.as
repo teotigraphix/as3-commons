@@ -285,12 +285,12 @@ package org.as3commons.logging.setup {
 		}
 		
 		public function testNullLogger(): void {
-			assertEquals("null", getLogger(null).name );
-			assertEquals("null", getLogger(undefined).name );
-			assertEquals("null", getNamedLogger(null).name );
-			assertEquals("null", getNamedLogger(undefined).name );
-			assertEquals("null", getClassLogger(null).name );
-			assertEquals("null", getClassLogger(undefined).name );
+			assertEquals("", getLogger(null).name );
+			assertEquals("", getLogger(undefined).name );
+			assertEquals("", getNamedLogger(null).name );
+			assertEquals("", getNamedLogger(undefined).name );
+			assertEquals("", getClassLogger(null).name );
+			assertEquals("", getClassLogger(undefined).name );
 		}
 		
 		public function testEmptyLogger():void {

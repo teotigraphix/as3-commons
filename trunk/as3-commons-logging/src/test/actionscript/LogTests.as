@@ -76,6 +76,7 @@ package {
 	/**
 	 * @author Martin
 	 */
+	[SWF(backgroundColor="#FF0000")]
 	public class LogTests extends Sprite
 	{
 		public static var STAGE: Stage;
@@ -90,6 +91,8 @@ package {
 			DEBUG;
 			debugp;
 			debugs;
+			
+			trace( stage.getChildAt(0) );
 			
 			LOGGER_FACTORY.setup = new SimpleTargetSetup( new SOSTarget() );
 			
@@ -161,6 +164,7 @@ package {
 			setTimeout( run, 80 );
 		}
 		private function run(): void {
+			this.opaqueBackground = 0x000000;
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
 			core.run( [
