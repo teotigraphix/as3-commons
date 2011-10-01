@@ -205,13 +205,6 @@ package org.as3commons.reflect {
 		 */
 		public function Type(applicationDomain:ApplicationDomain) {
 			super();
-			initType(applicationDomain);
-		}
-
-		/**
-		 * Initializes the current <code>Type</code> instance.
-		 */
-		protected function initType(applicationDomain:ApplicationDomain):void {
 			_accessors = [];
 			_staticConstants = [];
 			_constants = [];
@@ -705,11 +698,11 @@ package org.as3commons.reflect {
 			}
 		}
 
-		private var _metadataLookup:Dictionary;
+		private var _metadataLookup:Object;
 		private static var _currentApplicationDomain:ApplicationDomain;
 
 		public function createMetadataLookup():void {
-			_metadataLookup = new Dictionary();
+			_metadataLookup = {};
 			addToMetadataLookup(_methods.getArray());
 			if (_fields == null) {
 				createFieldsHashArray();

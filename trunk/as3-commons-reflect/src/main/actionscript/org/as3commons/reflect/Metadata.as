@@ -21,6 +21,7 @@
  */
 package org.as3commons.reflect {
 	import org.as3commons.lang.IEquals;
+	import org.as3commons.reflect.util.CacheUtil;
 
 	/**
 	 * A Metadata object contains information about a metadata element placed above a member of a class or instance.
@@ -40,7 +41,8 @@ package org.as3commons.reflect {
 		//
 		// --------------------------------------------------------------------
 
-		public static function newInstance(name:String, arguments:Array = null):Metadata {
+		public static function newInstance(name:String, arguments:Array=null):Metadata {
+			name = name.toLowerCase();
 			var cacheKey:String = getCacheKeyByNameAndArgs(name, arguments);
 			if (!_cache[cacheKey]) {
 				_cache[cacheKey] = new Metadata(name, arguments);
@@ -53,13 +55,13 @@ package org.as3commons.reflect {
 		}
 
 		private static function getCacheKeyByNameAndArgs(key:String, metadataArgs:Array):String {
-			var result:String = key + ";";
+			var result:String = key + CacheUtil.SEMI_COLON;
 
 			if (metadataArgs) {
 				var numArgs:int = metadataArgs.length;
 				for (var i:int = 0; i < numArgs; i++) {
 					result += MetadataArgument.getCacheKey(metadataArgs[i]);
-					result += ";";
+					result += CacheUtil.SEMI_COLON;
 				}
 			}
 
@@ -78,13 +80,9 @@ package org.as3commons.reflect {
 		 * @param name the name of the metadata
 		 * @param arguments an array of MetadataArgument object that describe this metadata object
 		 */
-		public function Metadata(name:String, arguments:Array = null) {
+		public function Metadata(name:String, arguments:Array=null) {
 			super();
-			initMetadata(name, arguments);
-		}
-
-		protected function initMetadata(name:String, arguments:Array):void {
-			_name = name;
+			_name = name.toLowerCase();
 			_arguments = (arguments == null) ? [] : arguments;
 		}
 

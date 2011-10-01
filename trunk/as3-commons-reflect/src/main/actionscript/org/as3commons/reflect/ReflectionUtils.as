@@ -32,7 +32,7 @@ package org.as3commons.reflect {
 	 * @author Christophe Herreman
 	 * @author Andrew Lewisohn
 	 */
-	public class ReflectionUtils {
+	public final class ReflectionUtils {
 
 		private static var _version:String;
 		private static var _isOldPlayer:Boolean = true;
@@ -111,9 +111,13 @@ package org.as3commons.reflect {
 			if (_version == null) {
 				_version = Capabilities.version.split(' ')[1];
 				var arr:Array = _version.split(',');
-				var major:int = int(arr[0]);
-				var minor:int = (String(arr[1]).length > 0) ? int(arr[1]) : 0;
-				_isOldPlayer = (major == 10) ? (minor < 1) : (major < 9);
+				var major:int = parseInt(arr[0]);
+				var minor:int = ((arr.length > 1) && (String(arr[1]).length > 0)) ? parseInt(arr[1]) : 0;
+				if (major < 10) {
+					_isOldPlayer = true;
+				} else {
+					_isOldPlayer = (major == 10) ? (minor < 1) : false;
+				}
 			}
 			return _isOldPlayer;
 		}
