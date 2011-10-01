@@ -187,7 +187,7 @@ package org.as3commons.bytecode.util {
 		 * @return
 		 *
 		 */
-		public static function readUB(input:ByteArray, bits:uint = 1):uint {
+		public static function readUB(input:ByteArray, bits:uint=1):uint {
 			/*
 			   I copied most of this from the SwfAssist library:
 			   http://www.libspark.org/wiki/yossy/swfassist
@@ -284,6 +284,14 @@ package org.as3commons.bytecode.util {
 			return str.join('');
 		}
 
+		public static function skipString(input:ByteArray):void {
+			var chr:uint = input.readUnsignedByte();
+			while (chr > 0) {
+				chr = input.readUnsignedByte();
+			}
+			flushBits();
+		}
+
 		public static function writeString(input:ByteArray, value:String):void {
 			if (value && value.length > 0) {
 				input.writeUTFBytes(value);
@@ -291,7 +299,7 @@ package org.as3commons.bytecode.util {
 			input.writeByte(0);
 		}
 
-		public static function getMinBits(a:uint, b:uint = 0, c:uint = 0, d:uint = 0):uint {
+		public static function getMinBits(a:uint, b:uint=0, c:uint=0, d:uint=0):uint {
 			/*
 			   I copied most of this from the SwfAssist library:
 			   http://www.libspark.org/wiki/yossy/swfassist
@@ -307,7 +315,7 @@ package org.as3commons.bytecode.util {
 			return bits;
 		}
 
-		public static function getMinSBits(a:int, b:int = 0, c:int = 0, d:int = 0):uint {
+		public static function getMinSBits(a:int, b:int=0, c:int=0, d:int=0):uint {
 			/*
 			   I copied most of this from the SwfAssist library:
 			   http://www.libspark.org/wiki/yossy/swfassist

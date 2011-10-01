@@ -31,12 +31,17 @@ package org.as3commons.bytecode.reflect {
 	 */
 	public class ByteCodeTypeProvider extends AbstractTypeProvider {
 
+		private static var _currentApplicationDomain:ApplicationDomain;
 		private static var _byteArrays:Dictionary = new Dictionary(true);
 		private static var _metaLookupByteArrays:Dictionary = new Dictionary(true);
 
 		public function ByteCodeTypeProvider() {
 			typeCache = new ByteCodeTypeCache();
 			super();
+		}
+
+		public static function get currentApplicationDomain():ApplicationDomain {
+			return _currentApplicationDomain;
 		}
 
 		override public function getType(cls:Class, applicationDomain:ApplicationDomain):Type {
@@ -96,7 +101,9 @@ package org.as3commons.bytecode.reflect {
 
 		public function fromLoader(loader:LoaderInfo, applicationDomain:ApplicationDomain=null):void {
 			Assert.notNull(loader, "loader argument must not be null");
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			if (hasProcessed(loader.bytes)) {
+				return;
+			}
 			var loaderBytesPosition:uint = loader.bytes.position;
 			try {
 				loader.bytes.position = 0;
@@ -108,11 +115,11 @@ package org.as3commons.bytecode.reflect {
 
 		public function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
 			Assert.notNull(input, "input argument must not be null");
-			if (_byteArrays[input] != null) {
+			if (hasProcessed(input)) {
 				return;
 			}
 			_byteArrays[input] = true;
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+			applicationDomain = getApplicationDomain(applicationDomain);
 			var initialPosition:int = input.position;
 			try {
 				var deserializer:ReflectionDeserializer = new ReflectionDeserializer();
@@ -122,6 +129,19 @@ package org.as3commons.bytecode.reflect {
 			} finally {
 				input.position = initialPosition;
 			}
+		}
+
+		protected function getApplicationDomain(applicationDomain:ApplicationDomain):ApplicationDomain {
+			if (_currentApplicationDomain == null) {
+				applicationDomain = _currentApplicationDomain = Type.currentApplicationDomain;
+			} else {
+				applicationDomain ||= Type.currentApplicationDomain;
+			}
+			return applicationDomain;
+		}
+
+		public function hasProcessed(input:ByteArray):Boolean {
+			return (_byteArrays[input] != null);
 		}
 
 	}

@@ -128,12 +128,13 @@ package org.as3commons.bytecode.reflect {
 		 * bytecode.
 		 * @param loader The specified <code>LoaderInfo</code>.
 		 */
-		public static function fromLoader(loader:LoaderInfo):void {
+		public static function fromLoader(loader:LoaderInfo, applicationDomain:ApplicationDomain=null):void {
 			Assert.notNull(loader, "loader argument must not be null");
+			applicationDomain ||= loader.applicationDomain;
 			var loaderBytesPosition:uint = loader.bytes.position;
 			try {
 				loader.bytes.position = 0;
-				(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(loader.bytes, loader.applicationDomain);
+				(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(loader.bytes, applicationDomain);
 			} finally {
 				loader.bytes.position = loaderBytesPosition;
 			}
