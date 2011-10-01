@@ -57,7 +57,7 @@ package org.as3commons.logging.api {
 	 * @see org.as3commons.logging.api#getClassLogger()
 	 * @see org.as3commons.logging.api#LOGGER_FACTORY
 	 */
-	public function getLogger(input:*,person:String=null):ILogger {
+	public function getLogger(input:*=null,person:String=null):ILogger {
 		if(input && !(input is String)) {
 			input = toLogName(input);
 		}

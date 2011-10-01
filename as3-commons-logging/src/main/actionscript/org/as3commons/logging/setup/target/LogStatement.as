@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.target {
-	
 	import org.as3commons.logging.util.clone;
 	
 	/**
@@ -47,6 +46,8 @@ package org.as3commons.logging.setup.target {
 		/** Information about the person that logged this. */
 		public var person: String;
 		
+		public var doClone: Boolean;
+		
 		private var _message: *;
 		
 		/** Parameters for the log statement. */
@@ -67,10 +68,11 @@ package org.as3commons.logging.setup.target {
 		 * @param parameters Parameters for the log statement.
 		 * @param person Information about the person that filed this log statement.
 		 * @param introspectDepth Depth to which the passed in objects should be introspected.
+		 * @param clone <code>true</code> if the target should actually introspect and clone the statements
 		 */
 		public function LogStatement(name:String, shortName:String, level:int,
 										timeStamp:Number, message:*, parameters:Array,
-										person:String, introspectDepth:uint) {
+										person:String, introspectDepth:uint, clone: Boolean=true) {
 			this.introspectDepth = introspectDepth;
 			this.name = name;
 			this.shortName = shortName;
@@ -79,6 +81,7 @@ package org.as3commons.logging.setup.target {
 			this.message = message;
 			this.parameters = parameters;
 			this.person = person;
+			this.doClone = clone;
 		}
 		
 		/** Message of the log statement. (stored as cloned) */
@@ -87,7 +90,11 @@ package org.as3commons.logging.setup.target {
 		}
 		
 		public function set message(message:*):void {
-			_message = clone(message,introspectDepth);
+			if( doClone ) {
+				_message = clone(message,introspectDepth);
+			} else {
+				_message = message;
+			}
 		}
 		
 		/** Parameters for the log statement. */
@@ -96,7 +103,11 @@ package org.as3commons.logging.setup.target {
 		}
 
 		public function set parameters(parameters:Array):void {
-			_parameters = clone(parameters,introspectDepth);
+			if( doClone ) {
+				_parameters = clone(parameters,introspectDepth);
+			} else {
+				_parameters = parameters;
+			}
 		}
 	}
 } 

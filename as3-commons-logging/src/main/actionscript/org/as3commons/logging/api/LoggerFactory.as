@@ -75,9 +75,9 @@ package org.as3commons.logging.api {
 		
 		private const _allLoggers:Array/* <ILogger> */=[];
 		private const _loggers:Object/* <String, <String, ILogger> > */={};
-		private const _nullLogger:Object/* <String, ILogger> */={};
 		
-		private var _setup:ILogSetup;
+		private var _setup : ILogSetup;
+		private var _duringSetup : Boolean;
 		
 		/**
 		 * Constructs a new <code>LoggerFactory</code> instance.
@@ -108,16 +108,26 @@ package org.as3commons.logging.api {
 		
 		public function set setup(setup:ILogSetup):void {
 			_setup = setup;
-			const l:int = _allLoggers.length;
+			_duringSetup = true;
+			var l:int = _allLoggers.length;
 			var i: int;
+			if( setup && setup['hasOwnProperty']("init") && setup['init'] is Function && setup['init'].length == 0 ) {
+				setup['init']();
+			}
 			for( i=0; i<l; ++i ) {
 				Logger(_allLoggers[i]).allTargets = null;
 			}
 			if(setup) {
-				for( i=0; i<l; ++i ) {
-					setup.applyTo( Logger(_allLoggers[i]) );
+				// In case some loggers get added during the setup process (theoretically possible)
+				i=0;
+				while( i < l ) {
+					for( ; i<l; ++i ) {
+						setup.applyTo( Logger(_allLoggers[i]) );
+					}
+					l = _allLoggers.length;
 				}
 			}
+			_duringSetup = false;
 		}
 		
 		/**
@@ -127,26 +137,22 @@ package org.as3commons.logging.api {
 		 * @param person Information about the person that requested this logger.
 		 * @return Logger for the passed-in name
 		 */
-		public function getNamedLogger(name:String,person:String=null):ILogger {
-			var unpersonalized:Object;
-			var compileSafeName:* = name;
-			if( compileSafeName === null ) {
-				unpersonalized = _nullLogger;
-				name = "null";
-			} else {
-				unpersonalized = _loggers[name] || (_loggers[name]={});
-			}
-			var result:Logger = unpersonalized[person];
+		public function getNamedLogger(name:String=null,person:String=null):ILogger {
+			
+			name ||= "";
+			
+			var loggersWithSameName: Object = (_loggers[name] ||= {});
+			var result:Logger = loggersWithSameName[person];
 			if(!result) {
 				result = new Logger(name,person);
 				
 				// Store it the array to find later on
-				unpersonalized[person] = result;
+				loggersWithSameName[person] = result;
 				
 				// Store it in the list of all loggers to later iterate over them
 				_allLoggers[_allLoggers.length] = result;
 				
-				if(_setup) {
+				if(_setup && !_duringSetup) {
 					_setup.applyTo(result);
 				}
 			}

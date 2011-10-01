@@ -55,7 +55,7 @@ package org.as3commons.logging.api {
 	 * @see LoggerFactory#getClassLogger()
 	 * @see org.as3commons.logging.api#LOGGER_FACTORY
 	 */
-	public function getClassLogger(input:*,person:String=null):ILogger {
+	public function getClassLogger(input:*=null,person:String=null):ILogger {
 		return LOGGER_FACTORY.getNamedLogger(toLogName(input),person);
 	}
 }

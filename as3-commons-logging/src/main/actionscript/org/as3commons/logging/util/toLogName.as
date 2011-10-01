@@ -30,7 +30,7 @@ package org.as3commons.logging.util {
 	 * @param input Class or object from which the class name will be taken from
 	 * @return Classname prepared to be used within the logging framework.
 	 */
-	public function toLogName(input:*):String {
+	public function toLogName(input:*=null):String {
 		if(input == null) {
 			return input;
 		} else {
