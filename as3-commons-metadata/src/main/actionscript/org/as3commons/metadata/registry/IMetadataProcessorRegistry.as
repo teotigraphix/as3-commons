@@ -17,13 +17,37 @@ package org.as3commons.metadata.registry {
 	import org.as3commons.metadata.process.IMetadataProcessor;
 
 	/**
-	 *
+	 * Descibes an object that acts as a registry for a collection of <code>IMetadataProcessors</code>. It can be used to invoke one or more <code>IMetadataProcessors</code>
+	 * on object instances that are annotated with the exact metadata that these <code>IMetadataProcessors</code> have been associated with.
 	 * @author Roland Zwaga
 	 */
 	public interface IMetadataProcessorRegistry {
-		function getProcessorsForMetadata(metadataName:String):Vector.<IMetadataProcessor>;
-		function process(target:Object):*;
+
+		/**
+		 * Registers the specified <code>IMetadataProcessor</code> with the current <code>IMetadataProcessorRegistry</code>.
+		 * @param processor
+		 */
 		function addProcessor(processor:IMetadataProcessor):void;
+		/**
+		 * Returns a <code>Vector<code> of <code>IMetadataProcessors</code> that have been associated with the specified metadata name.<br/>
+		 * This shoudl return <code>null</code> if no processors were found.
+		 * @param metadataName
+		 * @return A <code>Vector<code> of <code>IMetadataProcessors</code>
+		 */
+		function getProcessorsForMetadata(metadataName:String):Vector.<IMetadataProcessor>;
+
+		/**
+		 * Examines the specified target instance for the existence of any metadata names that have been registered. If these are found the appropriate
+		 * <code>IMetadataProcessors</code> are invoked.
+		 * @param target
+		 * @return
+		 */
+		function process(target:Object):*;
+
+		/**
+		 * Removes the specified <code>IMetadataProcessor</code> from the current <code>IMetadataProcessorRegistry</code>.
+		 * @param processor
+		 */
 		function removeProcessor(processor:IMetadataProcessor):void;
 	}
 }

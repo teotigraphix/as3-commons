@@ -14,12 +14,19 @@
 * limitations under the License.
 */
 package org.as3commons.metadata.test {
+	import org.as3commons.metadata.process.impl.AbstractMetadataProcessorTest;
 	import org.as3commons.metadata.registry.impl.AS3ReflectMetadataProcessorRegistryTest;
+	import org.as3commons.metadata.registry.impl.AbstractMetadataProcessorRegistry;
+	import org.as3commons.metadata.registry.impl.BytecodeMetadataProcessorRegistryTest;
+	import org.as3commons.metadata.registry.impl.SpiceLibMetadataProcessorRegistryTest;
 
 	[Suite]
 	[RunWith("org.flexunit.runners.Suite")]
 	public class MetadataTestSuite {
 		public var test1:AS3ReflectMetadataProcessorRegistryTest;
-
+		public var test2:SpiceLibMetadataProcessorRegistryTest;
+		public var test3:AbstractMetadataProcessorRegistry;
+		public var test4:AbstractMetadataProcessorTest;
+		public var test5:BytecodeMetadataProcessorRegistryTest;
 	}
 }

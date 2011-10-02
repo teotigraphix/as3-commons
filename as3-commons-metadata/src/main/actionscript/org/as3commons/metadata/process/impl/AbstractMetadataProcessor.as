@@ -20,7 +20,7 @@ package org.as3commons.metadata.process.impl {
 	import org.as3commons.metadata.process.IMetadataProcessor;
 
 	/**
-	 *
+	 * Abstract base class for <code>IMetadataProcessor</code> implementations.
 	 * @author Roland Zwaga
 	 */
 	public class AbstractMetadataProcessor implements IMetadataProcessor {
@@ -34,14 +34,26 @@ package org.as3commons.metadata.process.impl {
 			super();
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function get metadataNames():Vector.<String> {
 			return _metadataNames ||= new Vector.<String>();
 		}
 
+		/**
+		 * Returns <code>true</code> if the specified metadata name is found in the metadataNames <code>Vector</code>.
+		 * @param metadataName
+		 * @return
+		 */
 		public function canProcess(metadataName:String):Boolean {
 			return (metadataNames.indexOf(metadataName) > -1);
 		}
 
+		/**
+		 * This method needs to be implemented by subclasses of <code>AbstractMetadataProcessor</code>.
+		 * @throws flash.errors.IllegalOperationError
+		 */
 		public function process(target:Object, metadataName:String, info:*=null):* {
 			throw new IllegalOperationError("Not implmented in abstract base class");
 		}

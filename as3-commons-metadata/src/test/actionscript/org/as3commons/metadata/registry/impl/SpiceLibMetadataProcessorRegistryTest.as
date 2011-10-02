@@ -22,17 +22,17 @@ package org.as3commons.metadata.registry.impl {
 
 	import org.as3commons.metadata.process.IMetadataProcessor;
 	import org.as3commons.metadata.test.AnnotatedClass;
-	import org.as3commons.reflect.Method;
-	import org.as3commons.reflect.Type;
-	import org.flexunit.asserts.assertEquals;
-	import org.flexunit.asserts.assertNotNull;
-	import org.flexunit.asserts.assertStrictlyEquals;
-	import org.hamcrest.core.anything;
 	import org.hamcrest.object.instanceOf;
+	import org.spicefactory.lib.reflect.ClassInfo;
+	import org.spicefactory.lib.reflect.Member;
 
-	public class AS3ReflectMetadataProcessorRegistryTest {
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
+	public class SpiceLibMetadataProcessorRegistryTest {
 
-		private var _registry:AS3ReflectMetadataProcessorRegistry;
+		private var _registry:SpiceLibMetadataProcessorRegistry;
 
 		[Rule]
 		public var mockolateRule:MockolateRule = new MockolateRule();
@@ -42,7 +42,7 @@ package org.as3commons.metadata.registry.impl {
 
 		[Before]
 		public function setUp():void {
-			_registry = new AS3ReflectMetadataProcessorRegistry();
+			_registry = new SpiceLibMetadataProcessorRegistry();
 		}
 
 		[Test]
@@ -50,9 +50,9 @@ package org.as3commons.metadata.registry.impl {
 			var annotated:AnnotatedClass = new AnnotatedClass();
 			var processor:IMetadataProcessor = nice(IMetadataProcessor);
 			var names:Vector.<String> = new Vector.<String>();
-			names[names.length] = "testmetadata";
+			names[names.length] = "TestMetadata";
 			stub(processor).getter("metadataNames").returns(names);
-			mock(processor).method("process").args(annotated, "testmetadata", instanceOf(Type)).once();
+			mock(processor).method("process").args(annotated, "TestMetadata", instanceOf(ClassInfo)).once();
 			_registry.addProcessor(processor);
 			_registry.process(annotated);
 			verify(processor);
@@ -63,27 +63,13 @@ package org.as3commons.metadata.registry.impl {
 			var annotated:AnnotatedClass = new AnnotatedClass();
 			var processor:IMetadataProcessor = nice(IMetadataProcessor);
 			var names:Vector.<String> = new Vector.<String>();
-			names[names.length] = "testmethod";
-			names[names.length] = "testmetadata";
+			names[names.length] = "TestMethod";
+			names[names.length] = "TestMetadata";
 			stub(processor).getter("metadataNames").returns(names);
-			mock(processor).method("process").args(annotated, "testmethod", instanceOf(Method)).times(4);
-			mock(processor).method("process").args(annotated, "testmetadata", instanceOf(Type)).once();
+			mock(processor).method("process").args(annotated, "TestMethod", instanceOf(Member)).times(4);
+			mock(processor).method("process").args(annotated, "TestMetadata", instanceOf(ClassInfo)).once();
 			_registry.addProcessor(processor);
 			_registry.process(annotated);
-			verify(processor);
-		}
-
-		[Test]
-		public function testAddProcessorCaseInsensitive():void {
-			var processor:IMetadataProcessor = nice(IMetadataProcessor);
-			var names:Vector.<String> = new Vector.<String>();
-			names[names.length] = "test";
-			mock(processor).getter("metadataNames").returns(names).once();
-			_registry.addProcessor(processor);
-			var result:Vector.<IMetadataProcessor> = _registry.getProcessorsForMetadata("TesT");
-			assertNotNull(result);
-			assertEquals(1, result.length);
-			assertStrictlyEquals(result[0], processor);
 			verify(processor);
 		}
 
