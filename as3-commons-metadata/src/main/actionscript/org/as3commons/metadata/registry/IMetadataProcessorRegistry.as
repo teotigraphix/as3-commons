@@ -29,10 +29,10 @@ package org.as3commons.metadata.registry {
 		 */
 		function addProcessor(processor:IMetadataProcessor):void;
 		/**
-		 * Returns a <code>Vector<code> of <code>IMetadataProcessors</code> that have been associated with the specified metadata name.<br/>
-		 * This shoudl return <code>null</code> if no processors were found.
+		 * Returns a <code>Vector</code> of <code>IMetadataProcessors</code> that have been associated with the specified metadata name.<br/>
+		 * This should return <code>null</code> if no processors were found.
 		 * @param metadataName
-		 * @return A <code>Vector<code> of <code>IMetadataProcessors</code>
+		 * @return A <code>Vector</code> of <code>IMetadataProcessors</code>
 		 */
 		function getProcessorsForMetadata(metadataName:String):Vector.<IMetadataProcessor>;
 

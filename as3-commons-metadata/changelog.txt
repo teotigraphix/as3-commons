@@ -10,3 +10,4 @@ Changes in version 1.0-RC1 (??.??.2011)
 * Added AS3Commons-reflect specific implementation of IMetadataProcessorRegistry
 * Added Spicelib-reflect specific implementation of IMetadataProcessorRegistry
 * Added AS3Commons-Bytecode specific implementation of IMetadataProcessorRegistry
+* Added describeType() specific implementation of IMetadataProcessorRegistry

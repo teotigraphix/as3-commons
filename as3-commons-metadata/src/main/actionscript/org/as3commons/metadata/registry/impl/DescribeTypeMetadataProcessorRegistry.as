@@ -47,6 +47,12 @@ package org.as3commons.metadata.registry.impl {
 			}
 		}
 
+		/**
+		 * Returns all the nodes the have a metadata child node whose name attribute matches the specified metadataName argument.
+		 * @param metadataName
+		 * @param type
+		 * @return
+		 */
 		protected function findContainersInXML(metadataName:String, type:XML):Array {
 			var result:Array = [];
 			var xmlList:XMLList = type..metadata.(@name == metadataName);
