@@ -7,7 +7,27 @@
 	<body>
 
 		<section name="Introduction">
+			<p>AS3Commons-metadata aims to make it easier for developers to work with custom metadata annotations in actionscript source code.</p>
+			<p>There are two main interfaces in this library:</p>
+			<ul>
+				<li><code>IMetadataProcessorRegistry</code> - A centralized registry for <code>IMetadataProcessors</code> that can decide which processors will be used for which classes or instances.</li>
+				<li><code>IMetadataProcessor</code> - Implementations that contain the actual logic that will be associated with certain metadata annotations.</li>
+			</ul>
+			<p>The <code>IMetadataProcessorRegistry</code> interface looks like this:</p>
+			<div class="source">
+			        <pre>public interface IMetadataProcessorRegistry {
+	function addProcessor(processor:IMetadataProcessor):void;
+	function getProcessorsForMetadata(metadataName:String):Vector.<IMetadataProcessor>;
+	function process(target:Object):*;
+	function removeProcessor(processor:IMetadataProcessor):void;
+}</pre>
+		<p>The addProcessor() and removeProcessor() methods speak mostly for themselves. They register or unregister a specified <code>IMetadataProcessor</code> with the registry.<br/>
+		Once any processors have been added the <code>IMetadataProcessorRegistry</code> will be able to invoke these processors on any object instances or classes passed to its <code>process()</code> method.<br/>
+		The <code>IMetadataProcessorRegistry</code> implementation will require some kind of mechanism to examine the specified objects for the existence of metadata. AS3Commons-metadata provides three reference
+		implementations that use AS3Commons-reflect, Spicelib Reflect and Flash's native describeType() method do perform this task.</p>
+		</section>
 
+		<section name="Reference implementations">
 		</section>
 
 	</body>
