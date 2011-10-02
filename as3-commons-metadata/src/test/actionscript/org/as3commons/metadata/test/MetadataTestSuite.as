@@ -29,4 +29,11 @@ package org.as3commons.metadata.test {
 		public var test4:AbstractMetadataProcessorTest;
 		public var test5:BytecodeMetadataProcessorRegistryTest;
 	}
+
+	[Ignore]
+	[Test]
+	public function testDummy():void {
+
+	}
+
 }
