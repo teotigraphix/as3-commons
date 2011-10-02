@@ -24,7 +24,8 @@ package org.as3commons.metadata.registry.impl {
 	import org.spicefactory.lib.reflect.Method;
 
 	/**
-	 *
+	 * An <code>IMetadataProcessorRegistry</code> implementation that uses the Spicelib Reflect library internally
+	 * to retrieve the metadata information for the specified instances passed into its <code>process()</code> method.
 	 * @author Roland Zwaga
 	 */
 	public class SpiceLibMetadataProcessorRegistry extends AbstractMetadataProcessorRegistry {

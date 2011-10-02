@@ -44,7 +44,6 @@ package org.as3commons.metadata.registry.impl {
 			_applicationDomain = value;
 		}
 
-
 		/**
 		 * Creates a new <code>AbstractMetadataProcessorRegistry</code> instance.
 		 */
@@ -53,7 +52,7 @@ package org.as3commons.metadata.registry.impl {
 		}
 
 		public function getProcessorsForMetadata(metadataName:String):Vector.<IMetadataProcessor> {
-			return metadataLookup[metadataName.toLowerCase()] as Vector.<IMetadataProcessor>;
+			return metadataLookup[metadataName] as Vector.<IMetadataProcessor>;
 		}
 
 		public function process(target:Object):* {
@@ -62,10 +61,14 @@ package org.as3commons.metadata.registry.impl {
 
 		public function addProcessor(processor:IMetadataProcessor):void {
 			for each (var metadataName:String in processor.metadataNames) {
-				var processors:Vector.<IMetadataProcessor> = metadataLookup[metadataName.toLowerCase()] ||= new Vector.<IMetadataProcessor>();
-				if (processors.indexOf(processor) < 0) {
-					processors[processors.length] = processor;
-				}
+				internalAddProcessor(processor, metadataName);
+			}
+		}
+
+		protected function internalAddProcessor(processor:IMetadataProcessor, metadataName:String):void {
+			var processors:Vector.<IMetadataProcessor> = metadataLookup[metadataName] ||= new Vector.<IMetadataProcessor>();
+			if (processors.indexOf(processor) < 0) {
+				processors[processors.length] = processor;
 			}
 		}
 
@@ -75,14 +78,22 @@ package org.as3commons.metadata.registry.impl {
 		 */
 		public function removeProcessor(processor:IMetadataProcessor):void {
 			for each (var metadataName:String in processor.metadataNames) {
-				var processors:Vector.<IMetadataProcessor> = metadataLookup[metadataName.toLowerCase()];
-				if (processors != null) {
-					var idx:int = processors.indexOf(processor);
-					if (idx > -1) {
-						processors.splice(idx, 1);
+				internalRemoveProcessor(processor, metadataName);
+			}
+		}
+
+		protected function internalRemoveProcessor(processor:IMetadataProcessor, metadataName:String):void {
+			var processors:Vector.<IMetadataProcessor> = metadataLookup[metadataName];
+			if (processors != null) {
+				var idx:int = processors.indexOf(processor);
+				if (idx > -1) {
+					processors.splice(idx, 1);
+					if (processors.length == 0) {
+						delete metadataLookup[metadataName];
 					}
 				}
 			}
+
 		}
 	}
 }

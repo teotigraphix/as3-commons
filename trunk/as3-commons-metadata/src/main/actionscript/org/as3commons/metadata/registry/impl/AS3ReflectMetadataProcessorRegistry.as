@@ -14,16 +14,15 @@
 * limitations under the License.
 */
 package org.as3commons.metadata.registry.impl {
-
 	import flash.system.ApplicationDomain;
-
 	import org.as3commons.metadata.process.IMetadataProcessor;
 	import org.as3commons.metadata.registry.IMetadataProcessorRegistry;
 	import org.as3commons.reflect.IMetadataContainer;
 	import org.as3commons.reflect.Type;
 
 	/**
-	 *
+	 * An <code>IMetadataProcessorRegistry</code> implementation that uses the as3commons-reflect library internally
+	 * to retrieve the metadata information for the specified instances passed into its <code>process()</code> method.
 	 * @author Roland Zwaga
 	 */
 	public class AS3ReflectMetadataProcessorRegistry extends AbstractMetadataProcessorRegistry {
@@ -35,22 +34,45 @@ package org.as3commons.metadata.registry.impl {
 			super();
 		}
 
+		override public function addProcessor(processor:IMetadataProcessor):void {
+			for each (var metadataName:String in processor.metadataNames) {
+				internalAddProcessor(processor, metadataName.toLowerCase());
+			}
+		}
+
+		override public function getProcessorsForMetadata(metadataName:String):Vector.<IMetadataProcessor> {
+			return metadataLookup[metadataName.toLowerCase()] as Vector.<IMetadataProcessor>;
+		}
+
 		/**
-		 *
+		 * Retrieves the reflection information for the specified target instance and continues to let this instance be
+		 * processed by the registered <code>IMetadataProcessors</code>.
 		 * @param target
 		 * @return
 		 */
 		override public function process(target:Object):* {
 			var type:Type = Type.forInstance(target, applicationDomain);
-			processType(type, target);
+			return processType(type, target);
 		}
 
 		/**
 		 *
+		 * @param processor
+		 */
+		override public function removeProcessor(processor:IMetadataProcessor):void {
+			for each (var metadataName:String in processor.metadataNames) {
+				internalRemoveProcessor(processor, metadataName.toLowerCase());
+			}
+		}
+
+		/**
+		 * Calls every <code>IMetadataProcessor</code> that has been registered with the metadata that is reported
+		 * by the specified <code>Type</code> object. The <code>IMetadataContainer</code> describing the member that
+		 * is annotaed with the specified metadata will be passed to the <code>IMetadataProcessors</code> as the <code>info</code> argument.
 		 * @param type
 		 * @param target
 		 */
-		protected function processType(type:Type, target:Object):void {
+		protected function processType(type:Type, target:Object):* {
 			for (var name:String in metadataLookup) {
 				var processors:Vector.<IMetadataProcessor> = metadataLookup[name] as Vector.<IMetadataProcessor>;
 				var containers:Array = (type.hasMetadata(name)) ? [type] : [];
@@ -65,8 +87,7 @@ package org.as3commons.metadata.registry.impl {
 					}
 				}
 			}
-
+			return target;
 		}
-
 	}
 }
