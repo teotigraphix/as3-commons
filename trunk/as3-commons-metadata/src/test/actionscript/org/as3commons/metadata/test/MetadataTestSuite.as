@@ -18,6 +18,7 @@ package org.as3commons.metadata.test {
 	import org.as3commons.metadata.registry.impl.AS3ReflectMetadataProcessorRegistryTest;
 	import org.as3commons.metadata.registry.impl.AbstractMetadataProcessorRegistry;
 	import org.as3commons.metadata.registry.impl.BytecodeMetadataProcessorRegistryTest;
+	import org.as3commons.metadata.registry.impl.DescribeTypeMetadataProcessorRegistryTest;
 	import org.as3commons.metadata.registry.impl.SpiceLibMetadataProcessorRegistryTest;
 
 	[Suite]
@@ -28,12 +29,13 @@ package org.as3commons.metadata.test {
 		public var test3:AbstractMetadataProcessorRegistry;
 		public var test4:AbstractMetadataProcessorTest;
 		public var test5:BytecodeMetadataProcessorRegistryTest;
-	}
+		public var test6:DescribeTypeMetadataProcessorRegistryTest;
 
-	[Ignore]
-	[Test]
-	public function testDummy():void {
+		[Ignore]
+		[Test]
+		public function testDummy():void {
 
+		}
 	}
 
 }
