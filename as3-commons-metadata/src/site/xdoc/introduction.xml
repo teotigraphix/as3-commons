@@ -40,6 +40,46 @@
 		the <code>IMetadataProcessor</code>. For example, the <code>AS3ReflectMetadataProcessorRegistry</code> and <code>BytecodeMetadataProcessorRegistry</code> will pass in a <code>Type</code>, <code>Method</code>, <code>Property</code>, 
 		<code>Accessor</code> or <code>Constant</code> instance. The <code>SpicelibMetadataProcessorRegistry</code> will pass in either a <code>ClassInfo</code>, <code>Method</code> or <code>Property</code> instance.<br/>
 		The <code>DescribeTypeMetadataProcessorRegistry</code> simply passes in the XML node containing the reflection data for the specific member or class that contains the annotation.</p>
+		<subsection name="IMetadataProcessor example">
+			<p>Let's say certain classes in a project have been annotated with custom <strong>[Validated]</strong> metadata, each of these instances need to be fed into a ValidationManager instance upon instantiation.</p>
+			<p>The metadata procesor responsible for doing so could be implemented like this:</p>
+			<div class="source"><pre>public class ValidatedMetadataProcessor extends AbstractMetadataProcessor {
+	private var _validationManager:IValidationManager;
+
+	public function ValidatedMetadataProcessor(validationManager:IValidationManager) {
+		super();
+		_validationManager = validationManager;
+		metadataNames[metadataNames.length] = "Validated";
+	}
+			
+	public function process(target:Object, metadataName:String, info:*=null):* {
+		_validationManager.register(instance);
+	}
+}</pre></div>
+		<p>The example extends the <code>AbstractMetadataProcessor</code> convenience base class provided by as3commons-metadata. But it is, of course, not required to extend this.</p>
+		<p>Another example would be a processor that replaces registered class aliases with an alternative class. The implementation of such a procesor could look like this:</p>
+			<div class="source"><pre>public class RemoteClassReplacerMetadataProcessor extends AbstractMetadataProcessor {
+
+	public function RemoteClassReplacerMetadataProcessor() {
+		super();
+		metadataNames[metadataNames.length] = "RemoteClass";
+	}
+			
+	public function process(target:Object, metadataName:String, info:*=null):* {
+		var classAlias:String = getClassAlias();
+		var alternativeClass:Class = getAlternativeClass(classAlias);
+		registerClassAlias(classAlias, alternativeClass);
+	}
+	
+	protected function getClassAlias():String {
+		//logic ommitted
+	}
+
+	protected function getAlternativeClass():Class {
+		//logic ommitted
+	}
+}</pre></div>
+		</subsection>
 		</section>
 
 		<section name="Reference implementations">
@@ -54,7 +94,8 @@
 			<p>Lastly, there is the <code>BytecodeMetadataRegistry</code>, this showcases how metadata processing doesn't necessarily need to be done on instances, but can be done on classes as well.<br/>
 			This implementation uses the <code>ByteCodeType.metaDataLookup</code> property to find any classes that have been annotated with metadata that has been registred in the <code>BytecodeMetadataRegistry</code>.<br/>
 			If one or more class names have been found it invokes its <code>IMetadataProcessors</code> as usual, only now it will pass in a <code>Class</code> object into their <code>process()</code> methods instead of
-			an instance of that class.</p>
+			an instance of that class.</br>
+			This implementation assumes that before its <code>execute()</code> method is invoked <code>BytecodeType.metadataLookupFromLoader()</code> has been invoked.</p>
 		</section>
 		
 		<section name="Working with IMetadataProcessorRegistries">

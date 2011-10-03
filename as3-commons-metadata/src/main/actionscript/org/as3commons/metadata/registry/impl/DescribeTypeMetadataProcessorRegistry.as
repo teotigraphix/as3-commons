@@ -15,7 +15,6 @@
 */
 package org.as3commons.metadata.registry.impl {
 	import flash.utils.describeType;
-
 	import org.as3commons.metadata.process.IMetadataProcessor;
 
 	/**
@@ -61,6 +60,5 @@ package org.as3commons.metadata.registry.impl {
 			}
 			return result;
 		}
-
 	}
 }

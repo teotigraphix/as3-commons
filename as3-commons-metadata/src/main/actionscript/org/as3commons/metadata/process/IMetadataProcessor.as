@@ -22,19 +22,19 @@ package org.as3commons.metadata.process {
 	public interface IMetadataProcessor {
 
 		/**
-		 * The names of the metadata annotations that the current <code>IMetadataProcessor</code> processes.
+		 * The names of the metadata annotations that the current <code>IMetadataProcessor</code> is abe to process.
 		 */
 		function get metadataNames():Vector.<String>;
 
 		/**
-		 *
+		 * Returns <code>true</code> if the specified metadataName is able to be processed by the current <code>IMetadataProcessor</code>.
 		 * @param metadataName
 		 * @return
 		 */
 		function canProcess(metadataName:String):Boolean;
 
 		/**
-		 * Processes the specified <code>Object</code>.
+		 * Processes the specified <code>Object</code>. This method return a new instance to replace the passed in object instance.
 		 * @param instance The specified <code>Object</code>.
 		 * @param metadataName The metadata name that triggered this invocation.
 		 * @param info Optional info object that contains implementation specific data.

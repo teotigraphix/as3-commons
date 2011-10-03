@@ -17,7 +17,7 @@ package org.as3commons.metadata.registry {
 	import org.as3commons.metadata.process.IMetadataProcessor;
 
 	/**
-	 * Descibes an object that acts as a registry for a collection of <code>IMetadataProcessors</code>. It can be used to invoke one or more <code>IMetadataProcessors</code>
+	 * Describes an object that acts as a registry for a collection of <code>IMetadataProcessors</code>. It can be used to invoke one or more <code>IMetadataProcessors</code>
 	 * on object instances that are annotated with the exact metadata that these <code>IMetadataProcessors</code> have been associated with.
 	 * @author Roland Zwaga
 	 */

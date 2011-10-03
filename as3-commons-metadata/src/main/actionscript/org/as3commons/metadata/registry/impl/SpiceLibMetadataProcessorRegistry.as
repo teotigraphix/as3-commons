@@ -14,14 +14,9 @@
 * limitations under the License.
 */
 package org.as3commons.metadata.registry.impl {
-
-	import flash.system.ApplicationDomain;
-
 	import org.as3commons.metadata.process.IMetadataProcessor;
-	import org.as3commons.metadata.registry.IMetadataProcessorRegistry;
 	import org.spicefactory.lib.reflect.ClassInfo;
 	import org.spicefactory.lib.reflect.Member;
-	import org.spicefactory.lib.reflect.Method;
 
 	/**
 	 * An <code>IMetadataProcessorRegistry</code> implementation that uses the Spicelib Reflect library internally
@@ -37,6 +32,11 @@ package org.as3commons.metadata.registry.impl {
 			super();
 		}
 
+		/**
+		 *
+		 * @param target
+		 * @return
+		 */
 		override public function process(target:Object):* {
 			var type:ClassInfo = ClassInfo.forInstance(target, applicationDomain);
 			for (var name:String in metadataLookup) {
@@ -53,6 +53,12 @@ package org.as3commons.metadata.registry.impl {
 			}
 		}
 
+		/**
+		 *
+		 * @param type
+		 * @param name
+		 * @return
+		 */
 		protected function getMembersWithMetadata(type:ClassInfo, name:String):Array {
 			var result:Array = [];
 			var members:Array = type.getMethods().concat(type.getStaticMethods()).concat(type.getProperties()).concat(type.getStaticProperties());

@@ -22,7 +22,8 @@ package org.as3commons.metadata.registry.impl {
 	/**
 	 * An <code>IMetadataProcessorRegistry</code> implementation that uses the as3commons-bytecode to retrieve
 	 * a list of classnames that are decorated with any of the metadata names specified by the registered <code>IMetadataProcessors</code>.<br/>
-	 * It uses as3commons-reflect to retrieve the type information that will be passed to the processors.
+	 * It uses as3commons-reflect to retrieve the type information that will be passed to the processors.<br/>
+	 * This implementation assumes that before its <code>execute()</code> method is invoked <code>BytecodeType.metadataLookupFromLoader()</code> has been invoked.
 	 * @author Roland Zwaga
 	 */
 	public class BytecodeMetadataProcessorRegistry extends AS3ReflectMetadataProcessorRegistry {
@@ -34,6 +35,10 @@ package org.as3commons.metadata.registry.impl {
 			super();
 		}
 
+		/**
+		 * Loops through all of the registered metadata names and checks whether any class names were found by the BytecodeType parser that are annotated with any
+		 * of the specified names. If so, the <code>Class</code> is retrieved for the class name and the <code>process()</code> method is invoked with it.
+		 */
 		public function execute():void {
 			for (var metadataName:String in metadataLookup) {
 				var classNames:Array = ByteCodeType.metaDataLookup[metadataName];
@@ -45,13 +50,11 @@ package org.as3commons.metadata.registry.impl {
 		}
 
 		/**
-		 *
-		 * @param target
-		 * @return
+		 * @inheritoDoc
 		 */
 		override public function process(target:Object):* {
 			var type:Type = Type.forClass(Class(target));
-			return processType(type, target);
+			processType(type, target);
 		}
 	}
 }
