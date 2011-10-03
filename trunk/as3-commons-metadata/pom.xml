@@ -13,7 +13,7 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-metadata</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0-RC1-SNAPSHOT</version>
+	<version>1.0-RC1</version>
 	<name>AS3Commons Metadata</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
@@ -23,6 +23,7 @@
 
 	<properties>
 		<flexunit.version>4.1-RC2</flexunit.version>
+		<mockolate.version>0.12.-beta</mockolate.version>
 	</properties>
 
 	<developers>
@@ -102,6 +103,24 @@
 	</build>
 
 	<dependencies>
+	
+		<dependency>
+			<groupId>org</groupId>
+			<artifactId>mockolate</artifactId>
+			<version>${mockolate.version}</version>
+			<type>swc</type>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>playerglobal</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>common-framework</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<!-- AS3Commons -->
 

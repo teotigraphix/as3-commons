@@ -94,7 +94,7 @@
 			<p>Lastly, there is the <code>BytecodeMetadataRegistry</code>, this showcases how metadata processing doesn't necessarily need to be done on instances, but can be done on classes as well.<br/>
 			This implementation uses the <code>ByteCodeType.metaDataLookup</code> property to find any classes that have been annotated with metadata that has been registred in the <code>BytecodeMetadataRegistry</code>.<br/>
 			If one or more class names have been found it invokes its <code>IMetadataProcessors</code> as usual, only now it will pass in a <code>Class</code> object into their <code>process()</code> methods instead of
-			an instance of that class.</br>
+			an instance of that class.<br/>
 			This implementation assumes that before its <code>execute()</code> method is invoked <code>BytecodeType.metadataLookupFromLoader()</code> has been invoked.</p>
 		</section>
 		

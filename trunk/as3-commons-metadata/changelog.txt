@@ -3,7 +3,7 @@ AS3COMMONS-METADATA CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.0-RC1 (??.??.2011)
+Changes in version 1.0-RC1 (03.10.2011)
 -----------------------------------
 
 * Initial release, logic refactored out of Spring Actionscript
