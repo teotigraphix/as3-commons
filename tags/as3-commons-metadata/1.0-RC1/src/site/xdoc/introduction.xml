@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Introduction to as3commons-metadata</title>
+		<author email="roland@stackandheap.com">Roland Zwaga</author>
+	</properties>
+	<body>
+
+		<section name="Introduction">
+			<p>AS3Commons-metadata aims to make it easier for developers to work with custom metadata annotations in actionscript source code.</p>
+			<p>There are two main interfaces in this library:</p>
+			<ul>
+				<li><code>IMetadataProcessorRegistry</code> - A centralized registry for <code>IMetadataProcessors</code> that can decide which processors will be used for which classes or instances.</li>
+				<li><code>IMetadataProcessor</code> - Implementations that contain the actual logic that will be associated with certain metadata annotations.</li>
+			</ul>
+			<p>The <code>IMetadataProcessorRegistry</code> interface looks like this:</p>
+			<div class="source">
+			        <pre>public interface IMetadataProcessorRegistry {
+	function addProcessor(processor:IMetadataProcessor):void;
+	function getProcessorsForMetadata(metadataName:String):Vector.&lt;IMetadataProcessor&gt;;
+	function process(target:Object):*;
+	function removeProcessor(processor:IMetadataProcessor):void;
+}</pre></div>
+		<p>The addProcessor() and removeProcessor() methods speak mostly for themselves. They register or unregister a specified <code>IMetadataProcessor</code> with the registry.<br/>
+		Once any processors have been added the <code>IMetadataProcessorRegistry</code> will be able to invoke these processors on any object instances or classes passed to its <code>process()</code> method.<br/>
+		The <code>IMetadataProcessorRegistry</code> implementation will require some kind of mechanism to examine the specified objects for the existence of metadata. AS3Commons-metadata provides three reference
+		implementations that use AS3Commons-reflect, Spicelib Reflect and Flash's native describeType() method do perform this task.</p>
+		<p>The <code>IMetadataProcessor</code> interface itself is even smaller:</p>
+		<div class="source"><pre>public interface IMetadataProcessor {
+	function get metadataNames():Vector.&lt;String&gt;;
+	function canProcess(metadataName:String):Boolean;
+	function process(target:Object, metadataName:String, info:*=null):*;
+}</pre></div>
+		<p>The <code>metadataNames</code> property indicates one or more metadata annotations that this prcoessor needs to be associated with.<br/>
+		If the decision process is slightly more complex, the <code>canProcess()</code> method may be used by an <code>IMetadataProcessorReistry</code> implementation as well,
+		perhaps the ability to perform its task by an <code>IMetadataProcessor</code> is depenendent on some kind of application state. In that case the <code>canProcess()</code>
+		offers some greater flexibility.</p>
+		<p>The <code>process()</code> method contains the actual business logic that is associated with the metadata annotations. The first argument is the instance that is annotated
+		with the metadata that is specified by the second argument. The third argument is optional and may be used by a <code>IMetadataProcessorRegistry</code> to pass extra arbitrary data to
+		the <code>IMetadataProcessor</code>. For example, the <code>AS3ReflectMetadataProcessorRegistry</code> and <code>BytecodeMetadataProcessorRegistry</code> will pass in a <code>Type</code>, <code>Method</code>, <code>Property</code>, 
+		<code>Accessor</code> or <code>Constant</code> instance. The <code>SpicelibMetadataProcessorRegistry</code> will pass in either a <code>ClassInfo</code>, <code>Method</code> or <code>Property</code> instance.<br/>
+		The <code>DescribeTypeMetadataProcessorRegistry</code> simply passes in the XML node containing the reflection data for the specific member or class that contains the annotation.</p>
+		<subsection name="IMetadataProcessor example">
+			<p>Let's say certain classes in a project have been annotated with custom <strong>[Validated]</strong> metadata, each of these instances need to be fed into a ValidationManager instance upon instantiation.</p>
+			<p>The metadata procesor responsible for doing so could be implemented like this:</p>
+			<div class="source"><pre>public class ValidatedMetadataProcessor extends AbstractMetadataProcessor {
+	private var _validationManager:IValidationManager;
+
+	public function ValidatedMetadataProcessor(validationManager:IValidationManager) {
+		super();
+		_validationManager = validationManager;
+		metadataNames[metadataNames.length] = "Validated";
+	}
+			
+	public function process(target:Object, metadataName:String, info:*=null):* {
+		_validationManager.register(instance);
+	}
+}</pre></div>
+		<p>The example extends the <code>AbstractMetadataProcessor</code> convenience base class provided by as3commons-metadata. But it is, of course, not required to extend this.</p>
+		<p>Another example would be a processor that replaces registered class aliases with an alternative class. The implementation of such a procesor could look like this:</p>
+			<div class="source"><pre>public class RemoteClassReplacerMetadataProcessor extends AbstractMetadataProcessor {
+
+	public function RemoteClassReplacerMetadataProcessor() {
+		super();
+		metadataNames[metadataNames.length] = "RemoteClass";
+	}
+			
+	public function process(target:Object, metadataName:String, info:*=null):* {
+		var classAlias:String = getClassAlias();
+		var alternativeClass:Class = getAlternativeClass(classAlias);
+		registerClassAlias(classAlias, alternativeClass);
+	}
+	
+	protected function getClassAlias():String {
+		//logic ommitted
+	}
+
+	protected function getAlternativeClass():Class {
+		//logic ommitted
+	}
+}</pre></div>
+		</subsection>
+		</section>
+
+		<section name="Reference implementations">
+			<p>AS3Commons-metadata offers a few <code>IMetadataProcessorRegistry</code> reference implementation. The AS3Commons encourages developers to create their own though.<br/>
+			The <code>AS3ReflectMetadataRegistry</code> uses the AS3Commons-reflect library to determine the various bits of metadata that may or may not be part of a speciic class.<br/>
+			When metadata is encountered that has been registered in the <code>AS3ReflectMetadataRegistry</code> it will invoke the <code>process()</code> method on each <code>IMetadataProcessor</code>
+			that is associated with this metadata.</p>
+			<p>The <code>SpicelibMetadataRegistry</code> is very similar, the only difference is that internally it uses the Spicelib Reflect library to retrieve the class information.<br/>
+			These two implementations are meant to show how the reflection logic can be abstracted and how easily a reflection library can be swapped out.<br/>
+			For completion sake, the <code>DescribeTypeMetadataRegistry</code> is also offered. This implementation doesn't depend on any thrid-party reflection library but simple uses the native <code>describeType()</code>
+			output to retrieve and examine the class information.</p>
+			<p>Lastly, there is the <code>BytecodeMetadataRegistry</code>, this showcases how metadata processing doesn't necessarily need to be done on instances, but can be done on classes as well.<br/>
+			This implementation uses the <code>ByteCodeType.metaDataLookup</code> property to find any classes that have been annotated with metadata that has been registred in the <code>BytecodeMetadataRegistry</code>.<br/>
+			If one or more class names have been found it invokes its <code>IMetadataProcessors</code> as usual, only now it will pass in a <code>Class</code> object into their <code>process()</code> methods instead of
+			an instance of that class.<br/>
+			This implementation assumes that before its <code>execute()</code> method is invoked <code>BytecodeType.metadataLookupFromLoader()</code> has been invoked.</p>
+		</section>
+		
+		<section name="Working with IMetadataProcessorRegistries">
+			<p>Here's a very simple example of how to integrate an <code>IMetadataProcessorRegistry</code> instance into an application. Suppose you have an object factory that is responsible for creating and configuring certain types.<br/>
+			This could look something like this:</p>
+			<div class="source"><pre>public class MyClassFactory extends ClassFactory {
+	
+	private var _metadataRegistry:IMetadataProcessorRegistry;
+
+	public function MyClassFactory() {
+		super();
+	}
+
+	public function get metadataRegistry():IMetadataProcessorRegistry {
+		return _metadataRegistry;
+	}
+
+	public function set metadataRegistry(value:IMetadataProcessorRegistry):void {
+		_metadataRegistry = value;
+	}
+
+	override public function newInstance():* {
+		var instance:MyComplexClass = new MyComplexClass();
+		//creation logic omitted...
+		_metadataRegistry.process(instance);
+		return instance;
+	}
+}</pre></div>
+			<p>So, after creation the instance will be examined by the <code>IMetadataProcessorRegistry</code> and processed accordingly. Obviously this is a very simplified example, but hopefully it shows off how to combine an <code>IMetadataProcessorRegistry</code>
+			with other application logic.</p>
+			<p>Another usage example would be to inject an <code>IMetadataProcessorRegistry</code> into a <code>IStageObjectProcessor</code>, as defined in the <a href="http://www.as3commons.org/as3-commons-stageprocessing/index.html" target="_blank">AS3Commons-stageprocessing</a> library.<br/>
+			Such a stage processor could look like this:</p>
+			<div class="source"><pre>public class MetadataStageObjectProcessor implements IStageObjectProcessor {
+
+	private var _metadataRegistry:IMetadataProcessorRegistry;
+
+	public function MetadataStageObjectProcessor() {
+		super()
+	}
+
+	public function get metadataRegistry():IMetadataProcessorRegistry {
+		return _metadataRegistry;
+	}
+
+	public function set metadataRegistry(value:IMetadataProcessorRegistry):void {
+		_metadataRegistry = value;
+	}
+
+	public function process(displayObject:DisplayObject):DisplayObject {
+		_metadataRegistry.process(displayObject);
+		return displayObject;
+	}
+}</pre></div>
+			<p>So in this case each display object that gets added to the stage (and is approved by the StageObjectProcessorRegistry's IObjectSelector) will be processed by the <code>IMetadataProcessorRegistry</code>.</p>
+			<p>And that is all there is to it!</p>
+		</section>
+	</body>
+</document>
+
