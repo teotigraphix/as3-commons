@@ -14,9 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.metadata.registry.impl {
-	import flash.system.ApplicationDomain;
 	import org.as3commons.metadata.process.IMetadataProcessor;
-	import org.as3commons.metadata.registry.IMetadataProcessorRegistry;
 	import org.as3commons.reflect.IMetadataContainer;
 	import org.as3commons.reflect.Type;
 
@@ -34,12 +32,20 @@ package org.as3commons.metadata.registry.impl {
 			super();
 		}
 
+		/**
+		 * Adds the processor with all of its metadata names forced to lower case.
+		 * @param processor
+		 */
 		override public function addProcessor(processor:IMetadataProcessor):void {
 			for each (var metadataName:String in processor.metadataNames) {
 				internalAddProcessor(processor, metadataName.toLowerCase());
 			}
 		}
 
+		/**
+		 * Forces the specified metadataName to lowercase and returns the associated <code>Vector.&lt;IMetadataProcessor&gt;</code> if it exists.
+		 * @return The <code>Vector.&lt;IMetadataProcessor&gt;</code> that may be associated with the specified metadata name, otherwise <code>null</code> is returned.
+		 */
 		override public function getProcessorsForMetadata(metadataName:String):Vector.<IMetadataProcessor> {
 			return metadataLookup[metadataName.toLowerCase()] as Vector.<IMetadataProcessor>;
 		}
@@ -56,7 +62,7 @@ package org.as3commons.metadata.registry.impl {
 		}
 
 		/**
-		 *
+		 * Removes the processor with all of its metadata names forced to lower case.
 		 * @param processor
 		 */
 		override public function removeProcessor(processor:IMetadataProcessor):void {

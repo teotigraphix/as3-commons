@@ -14,9 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.metadata.process.impl {
-
 	import flash.errors.IllegalOperationError;
-
 	import org.as3commons.metadata.process.IMetadataProcessor;
 
 	/**
@@ -25,14 +23,14 @@ package org.as3commons.metadata.process.impl {
 	 */
 	public class AbstractMetadataProcessor implements IMetadataProcessor {
 
-		private var _metadataNames:Vector.<String>;
-
 		/**
 		 * Creates a new <code>AbstractMetadataProcessor</code> instance.
 		 */
 		public function AbstractMetadataProcessor() {
 			super();
 		}
+
+		private var _metadataNames:Vector.<String>;
 
 		/**
 		 * @inheritDoc
