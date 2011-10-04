@@ -275,7 +275,7 @@ package org.as3commons.lang {
         /**
          * Returns the item at the specified index.
          */
-        public static function getItemAt(array:Array, index:int, defaultValue:*=null):* {
+        public static function getItemAt(array:Array, index:int, defaultValue:* = null):* {
             if (isNotEmpty(array) && array.length > index) {
                 return array[index];
             }
@@ -303,6 +303,45 @@ package org.as3commons.lang {
          */
         public static function isEmpty(array:Array):Boolean {
             return array == null || array.length == 0;
+        }
+
+        /**
+         * Adds the specified elements to the array unless the elements are null
+         *
+         * @param array the array to append to
+         * @param toAdd an array containing the elements which should be added to the original array
+         */
+        public static function addAllIgnoreNull(array:Array, toAdd:Array):void {
+            if (array != null && isNotEmpty(toAdd)) {
+                for each (var element:* in toAdd) {
+                    addIgnoreNull(array, element);
+                }
+            }
+        }
+
+        /**
+         * Adds an element to the array unless the element is null.
+         *
+         * @param array the array to append to
+         * @param element the element to add, if it is not null
+         */
+        public static function addIgnoreNull(array:Array, element:*):void {
+            if (array != null && element != null)
+                array.push(element);
+        }
+
+        /**
+         * Moves an element from the original index, to the new index in the provided array.
+         *
+         * @param array the array to modify
+         * @param element the element to move
+         * @param newIndex the desired index of the element
+         */
+        public static function moveElement(array:Array, element:*, newIndex:int):void {
+            if (isNotEmpty(array) && contains(array, element)) {
+                array.splice(array.indexOf(element), 1);
+                array.splice(newIndex, 0, element);
+            }
         }
 
     }
