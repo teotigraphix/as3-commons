@@ -207,28 +207,6 @@ package org.as3commons.lang {
         }
 
         /**
-         *  Returns <code>true</code> if the array contains an item which ObjectUtil.compare == 0, for the given item and depth
-         */
-        /*public static function containsComparable(array:Array, item:*, depth:int = -1):Boolean {
-            return indexOfComparable(array, item) > -1;
-        }*/
-
-        /**
-         * Returns the index of the first item in the array which returns ObjectUtil.compare == 0, for the given item and depth
-         */
-        /*public static function indexOfComparable(array:Array, item:*, depth:int = -1):int {
-            var numItems:int = getLength(array);
-            if (numItems > 0 && item) {
-                for (var i:int = 0; i < numItems; i++) {
-                    if (ObjectUtil.compare(item, array[i], depth) == 0) {
-                        return i;
-                    }
-                }
-            }
-            return -1;
-        }*/
-
-        /**
          * Returns <code>true</code> if the array contains the item based on equality via the equals
          * method of the IEquals interface
          */
