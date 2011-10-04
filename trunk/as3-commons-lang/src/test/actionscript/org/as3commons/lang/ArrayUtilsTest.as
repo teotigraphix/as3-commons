@@ -16,12 +16,12 @@
 package org.as3commons.lang {
 
     import flexunit.framework.TestCase;
-
+    
     import org.as3commons.lang.testclasses.EqualsImplementation;
-	import org.flexunit.asserts.assertEquals;
-	import org.flexunit.asserts.assertFalse;
-	import org.flexunit.asserts.assertNull;
-	import org.flexunit.asserts.assertTrue;
+    import org.flexunit.asserts.assertEquals;
+    import org.flexunit.asserts.assertFalse;
+    import org.flexunit.asserts.assertNull;
+    import org.flexunit.asserts.assertTrue;
 
 	/**
      * @author Christophe Herreman
@@ -117,6 +117,43 @@ package org.as3commons.lang {
             assertTrue(ArrayUtils.isEmpty(null));
             assertTrue(ArrayUtils.isEmpty([]));
             assertFalse(ArrayUtils.isEmpty([{a: "b"}]));
+        }
+
+        [Test]
+        public function testAddAllIgnoreNull():void {
+            var original:Array = ["a", "b", "c"];
+            var toAdd:Array = ["d", null, "e"];
+
+            ArrayUtils.addAllIgnoreNull(null, toAdd);
+            ArrayUtils.addAllIgnoreNull(original, null);
+            ArrayUtils.addAllIgnoreNull(original, []);
+
+            ArrayUtils.addAllIgnoreNull(original, toAdd);
+            assertEquals(5, original.length);
+            assertTrue(original.indexOf(null) < 0);
+        }
+
+        [Test]
+        public function testAddIgnoreNull():void {
+            var original:Array = ["a", "b", "c"];
+
+            ArrayUtils.addIgnoreNull(null, null);
+            ArrayUtils.addIgnoreNull(null, "ds");
+
+            ArrayUtils.addIgnoreNull(original, null);
+            ArrayUtils.addIgnoreNull(original, "d");
+            assertEquals(4, original.length);
+            assertTrue(original.indexOf(null) < 0);
+        }
+
+        [Test]
+        public function testMoveElement():void {
+            var original:Array = ["a", "b", "c"];
+
+            ArrayUtils.moveElement(original, "a", 2);
+            assertEquals("b", original[0]);
+            assertEquals("c", original[1]);
+            assertEquals("a", original[2]);
         }
 
     }
