@@ -21,7 +21,7 @@ package org.as3commons.bytecode.reflect {
 
 	public class ByteCodeParameter extends Parameter {
 
-		public function ByteCodeParameter(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false, defaultValue:* = null) {
+		public function ByteCodeParameter(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean=false, defaultValue:*=null) {
 			super(type, applicationDomain, isOptional);
 			_defaultValue = defaultValue;
 		}
@@ -42,6 +42,11 @@ package org.as3commons.bytecode.reflect {
 
 		private var _name:String = "";
 
+		/**
+		 * The name of the parameter.<br/>
+		 * NB: DO NOT WRITE CODE THAT DEPENDS ON A PARAMETER NAME!!<br/>
+		 * This value is not always available, swf's built in release mode won't have this data in it.
+		 */
 		public function get name():String {
 			return _name;
 		}
