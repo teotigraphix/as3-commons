@@ -25,7 +25,6 @@ package org.as3commons.logging.api {
 
 	import flash.utils.getTimer;
 	
-	
 	/**
 	 * Proxy for an <code>ILogger</code> implementation. This class is used
 	 * by the <code>LoggerFactory</code> in the setup process.

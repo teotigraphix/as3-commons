@@ -1,8 +1,11 @@
 package org.as3commons.logging.setup {
+	import flash.utils.getDefinitionByName;
 	import avmplus.getQualifiedClassName;
+	import flash.utils.describeType;
 	import flash.display.Sprite;
 	import org.as3commons.logging.api.LOGGER_FACTORY;
 	import org.as3commons.logging.api.getLogger;
+	import org.as3commons.logging.setup.log4j.log4j;
 	import org.as3commons.logging.setup.target.SOSTarget;
 	import org.as3commons.logging.setup.target.TraceTarget;
 
@@ -24,7 +27,7 @@ package org.as3commons.logging.setup {
 			log4j.additivity.mycompany = false;
 			
 			LOGGER_FACTORY.setup = new SimpleTargetSetup(new TraceTarget());
-			LOGGER_FACTORY.setup = log4j;
+			LOGGER_FACTORY.setup = log4j.compile();
 			
 			getLogger("mycompany").warn("hi");
 			getLogger("org.as3commons.logging").warn("ho");

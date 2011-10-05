@@ -1,70 +1,73 @@
-package org.as3commons.logging.setup {
-	import org.as3commons.logging.api.ILogSetup;
-	import org.as3commons.logging.api.Logger;
+/*
+ * Copyright (c) 2008-2009 the original author or authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package org.as3commons.logging.setup.log4j {
+	import org.as3commons.logging.setup.HierarchialSetup;
+	import org.as3commons.logging.setup.LogSetupLevel;
+	
 	/**
 	 * @author Martin Heidegger
 	 * @since 2.7
+	 * @see org.as3commons.logging.setup#log4j
 	 */
-	public class Log4JStyleSetup implements ILogSetup {
+	public class Log4JStyleSetup {
 		
 		use namespace log4j;
 		
-		private const _root: ValueEntry = new ValueEntry("");
-		private var _threshold : LogSetupLevel;
-		private var _appenderLookup : Object;
-		
-		public function set rootLogger(value: String): void {
-			parseValue(_root,value);
-		}
+		private const _root: HierarchyEntry = new HierarchyEntry("");
+		private var _threshold: LogSetupLevel;
 		
 		public const appender: Appenders = new Appenders();
 		public const logger: LevelSetup = new LevelSetup( _root );
-		public const additivity: AdditivitySetup = new AdditivitySetup( _root );
+		public const additivity: AdditivitySetup = new AdditivitySetup(_root);
 		
-		public function set threshold(level: String): void {
+		public function Log4JStyleSetup() {}
+		
+		public function set rootLogger(value: String):void {
+			parseValue(_root,value);
+		}
+		
+		public function set threshold(level: String):void {
 			_threshold = getLevel(level);
 		}
 		
-		public function init():void {
-			_appenderLookup = appender.generateAppenders();
-		}
-		
-		public function applyTo( logger: Logger ): void {
-			
-			_root.applyTo(logger, _appenderLookup, _threshold);
-			if( logger.name != "" ) {
-				var parts: Array = logger.name.split(".");
-				var entry: ValueEntry = _root;
-				
-				// TODO: is the init method really better?
-				//if ( appender.changed ) {
-				//	_appenderLookup = appender.generateAppenders();
-				//}
-				if( logger.name )
-				for each( var part: String in parts ) {
-					entry = entry._children[part];
-					if( entry ) {
-						entry.applyTo(logger, _appenderLookup, _threshold);
-					} else {
-						break;
-					}
-				}
-			}
+		public function compile():HierarchialSetup {
+			var setup: HierarchialSetup = new HierarchialSetup(".", _threshold);
+			_root.applyTo( setup, appender.generateAppenders() );
+			return setup;
 		}
 	}
 }
-import flash.utils.getDefinitionByName;
-import org.as3commons.logging.util.instantiate;
-import org.as3commons.logging.api.ILogger;
-import org.as3commons.logging.api.Logger;
-import org.as3commons.logging.api.getLogger;
-import org.as3commons.logging.setup.ILogTarget;
-import org.as3commons.logging.setup.Log4JStyleSetup;
-import org.as3commons.logging.setup.LogSetupLevel;
-import org.as3commons.logging.setup.target.mergeTargets;
 
 import flash.utils.Proxy;
 import flash.utils.flash_proxy;
+import flash.utils.getDefinitionByName;
+import org.as3commons.logging.api.ILogger;
+import org.as3commons.logging.api.getLogger;
+import org.as3commons.logging.setup.HierarchialSetup;
+import org.as3commons.logging.setup.ILogTarget;
+import org.as3commons.logging.setup.LogSetupLevel;
+import org.as3commons.logging.setup.log4j.Log4JStyleSetup;
+import org.as3commons.logging.setup.target.mergeTargets;
+import org.as3commons.logging.util.instantiate;
 
 namespace log4j;
 	
@@ -75,7 +78,6 @@ const LOGGER: ILogger = getLogger(Log4JStyleSetup);
 dynamic class Appenders extends Proxy {
 	
 	log4j var _appenders: Object = {};
-	log4j var _changed: Boolean = true;
 	
 	override flash_proxy function getProperty(name: *): * {
 		var nameStr: String = name;
@@ -84,7 +86,6 @@ dynamic class Appenders extends Proxy {
 	
 	override flash_proxy function setProperty(name: *, value: *) : void {
 		(flash_proxy::getProperty(name) as AppenderGenerator)._value = value;
-		_changed = true;
 	}
 	
 	log4j function generateAppenders(): Object {
@@ -93,30 +94,15 @@ dynamic class Appenders extends Proxy {
 			var target: ILogTarget = AppenderGenerator( _appenders[appenderName] ).getAppender();
 			appenders[appenderName] = target;
 		}
-		_changed = false;
 		return appenders;
 	}
-	
-	log4j function get changed(): Boolean {
-		if( _changed ) {
-			return true;
-		}
-		for( var child: String in _appenders ) {
-			if( (_appenders[child] as AppenderGenerator).changed ) {
-				return true;
-			}
-		}
-		return false;
-	}
 }
-
 
 dynamic class PropertyContainer extends Proxy {
 	
 	log4j var _properties : Object = {};
 	log4j var _name: String;
 	log4j var _value: *;
-	log4j var _changed: Boolean = false;
 	
 	public function PropertyContainer(propertyName: String) {
 		_name = propertyName;
@@ -150,25 +136,6 @@ dynamic class PropertyContainer extends Proxy {
 		}
 	}
 	
-	log4j function get changed(): Boolean {
-		if( _changed ) {
-			return true;
-		}
-		for( var child: String in _properties ) {
-			if( (_properties[child] as PropertyContainer).changed ) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	log4j function set changed(changed: Boolean): void {
-		_changed = changed;
-		for( var child: String in _properties ) {
-			(_properties[child] as PropertyContainer).changed = changed;
-		}
-	}
-	
 	override flash_proxy function getProperty(name: *): * {
 		var nameStr: String = name;
 		return _properties[nameStr] ||= new PropertyContainer( name );
@@ -176,10 +143,7 @@ dynamic class PropertyContainer extends Proxy {
 	
 	override flash_proxy function setProperty(name: *, value: *) : void {
 		(flash_proxy::getProperty(name) as PropertyContainer)._value = value;
-		_changed = true;
 	}
-	
-	
 }
 
 dynamic class AppenderGenerator extends PropertyContainer {
@@ -218,7 +182,6 @@ dynamic class AppenderGenerator extends PropertyContainer {
 				(_properties[name] as PropertyContainer).applyProperty(target, stack ||= [_name]);
 			}
 		}
-		changed = false;
 		return target;
 	}
 }
@@ -226,9 +189,9 @@ dynamic class AppenderGenerator extends PropertyContainer {
 dynamic class LevelSetup extends Proxy {
 	
 	log4j var _children: Object = {};
-	log4j var _entry: ValueEntry;
+	log4j var _entry: HierarchyEntry;
 	
-	public function LevelSetup( entry: ValueEntry ) {
+	public function LevelSetup( entry: HierarchyEntry ) {
 		_entry = entry;
 	}
 	
@@ -245,9 +208,9 @@ dynamic class LevelSetup extends Proxy {
 dynamic class AdditivitySetup extends Proxy {
 	
 	internal var _children: Object = {};
-	internal var _entry: ValueEntry;
+	internal var _entry: HierarchyEntry;
 	
-	public function AdditivitySetup( entry: ValueEntry ) {
+	public function AdditivitySetup( entry: HierarchyEntry ) {
 		_entry = entry;
 	}
 	
@@ -262,7 +225,7 @@ dynamic class AdditivitySetup extends Proxy {
 	}
 }
 
-function parseValue(entry: ValueEntry, value: String):ValueEntry {
+function parseValue(entry: HierarchyEntry, value: String):HierarchyEntry {
 	var valueArr: Array = value.split(",");
 	var levelStr: String = trim(valueArr.shift());
 	var i: int = valueArr.length;
@@ -304,38 +267,31 @@ function trim(str:String): String {
 	 return str.replace(/^\s*/, '').replace(/\s*$/, '');
 }
 
-class ValueEntry {
+class HierarchyEntry {
 	
 	internal var _appenders: Array = [];
 	internal var _level: LogSetupLevel;
 	internal var _additive: Boolean = true;
 	internal var _name: String;
-	internal var _children: Array = new Array();
+	internal var _children: Object = new Object();
 	
-	public function ValueEntry(name: String) {
+	public function HierarchyEntry(name: String) {
 		_name = name;
 		_level = LogSetupLevel.NONE;
 	}
 	
-	public function child(name:String): ValueEntry {
-		return _children[name] ||= new ValueEntry(_name+name);
+	public function child(name:String): HierarchyEntry {
+		return _children[name] ||= new HierarchyEntry(_name == "" ? name : _name+"."+name);
 	}
 	
-	public function applyTo(logger: Logger, appenderLookup:Object, threshold: LogSetupLevel):void {
-		var targets: Array = [];
+	public function applyTo(setup: HierarchialSetup, appenderLookup: Object ) : void {
+		var target: ILogTarget;
 		for each( var appenderName: String in _appenders ) {
-			targets.push(appenderLookup[appenderName]);
+			target = mergeTargets( target, appenderLookup[appenderName] );
 		}
-		var target: ILogTarget = mergeTargets(targets);
-		
-		if( !_additive ) {
-			logger.allTargets = null;
+		setup.setHierarchy(_name, target, _level, _additive);
+		for each( var child: HierarchyEntry in _children ) {
+			child.applyTo( setup, appenderLookup );
 		}
-		
-		if(_level.valueOf() & LogSetupLevel.DEBUG_ONLY.valueOf() & threshold.valueOf()) logger.debugTarget = mergeTargets(logger.debugTarget,target);
-		if(_level.valueOf() & LogSetupLevel.INFO_ONLY.valueOf()  & threshold.valueOf()) logger.infoTarget  = mergeTargets(logger.infoTarget,target);
-		if(_level.valueOf() & LogSetupLevel.WARN_ONLY.valueOf()  & threshold.valueOf()) logger.warnTarget  = mergeTargets(logger.warnTarget,target);
-		if(_level.valueOf() & LogSetupLevel.ERROR_ONLY.valueOf() & threshold.valueOf()) logger.errorTarget = mergeTargets(logger.errorTarget,target);
-		if(_level.valueOf() & LogSetupLevel.FATAL_ONLY.valueOf() & threshold.valueOf()) logger.fatalTarget = mergeTargets(logger.fatalTarget,target);
 	}
 }

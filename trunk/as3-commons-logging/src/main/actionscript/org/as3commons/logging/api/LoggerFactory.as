@@ -108,26 +108,23 @@ package org.as3commons.logging.api {
 		
 		public function set setup(setup:ILogSetup):void {
 			_setup = setup;
-			_duringSetup = true;
 			var l:int = _allLoggers.length;
 			var i: int;
-			if( setup && setup['hasOwnProperty']("init") && setup['init'] is Function && setup['init'].length == 0 ) {
-				setup['init']();
-			}
 			for( i=0; i<l; ++i ) {
 				Logger(_allLoggers[i]).allTargets = null;
 			}
 			if(setup) {
-				// In case some loggers get added during the setup process (theoretically possible)
 				i=0;
+				// In case some loggers get added during the setup process (theoretically possible)
+				_duringSetup = true;
 				while( i < l ) {
 					for( ; i<l; ++i ) {
 						setup.applyTo( Logger(_allLoggers[i]) );
 					}
 					l = _allLoggers.length;
 				}
+				_duringSetup = false;
 			}
-			_duringSetup = false;
 		}
 		
 		/**
