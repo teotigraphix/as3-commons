@@ -19,12 +19,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.setup {
+package org.as3commons.logging.setup.log4j {
+	
+	import org.as3commons.logging.setup.HierarchialSetup;
 	
 	/**
-	 * 
 	 * @author Martin Heidegger
 	 * @since 2.7
 	 */
-	public const log4j: Log4JStyleSetup = new Log4JStyleSetup();
+	public function log4jPropertiesToSetup(properties:String):HierarchialSetup {
+		var setup: Log4JStyleSetup = new Log4JStyleSetup();
+		// TODO: Implement me
+		return setup.compile();
+	}
 }
