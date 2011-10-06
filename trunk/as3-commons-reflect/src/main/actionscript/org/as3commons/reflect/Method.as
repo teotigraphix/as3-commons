@@ -54,12 +54,8 @@ package org.as3commons.reflect {
 		/**
 		 * Creates a new <code>Method</code> instance.
 		 */
-		public function Method(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metadata:HashArray = null) {
+		public function Method(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metadata:HashArray=null) {
 			super(metadata);
-			initMethod(declaringType, name, isStatic, parameters, returnType, applicationDomain, metadata);
-		}
-
-		protected function initMethod(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metadata:HashArray):void {
 			declaringTypeName = declaringType;
 			_name = name;
 			_isStatic = isStatic;
@@ -154,7 +150,12 @@ package org.as3commons.reflect {
 		private var _parameters:Array;
 
 		public function get parameters():Array {
-			return _parameters;
+			var result:Array = [];
+			for (var i:int = 0; i < _parameters.length; ++i) {
+				var param:BaseParameter = _parameters[i];
+				result[result.length] = new Parameter(param, i);
+			}
+			return result;
 		}
 
 		// ----------------------------

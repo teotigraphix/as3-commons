@@ -28,14 +28,14 @@ package org.as3commons.reflect {
 	/**
 	 * @author Christophe Herreman
 	 */
-	public class ParameterTest extends TestCase {
+	public class BaseParameterTest extends TestCase {
 
-		public function ParameterTest(methodName:String=null) {
+		public function BaseParameterTest(methodName:String=null) {
 			super(methodName);
 		}
 
 		public function testNewWithoutType():void {
-			var p:Parameter = new Parameter(null, ApplicationDomain.currentDomain, false);
+			var p:BaseParameter = new BaseParameter(null, ApplicationDomain.currentDomain, false);
 			assertNull(p.type);
 			assertFalse(p.isOptional);
 		}
@@ -47,7 +47,7 @@ package org.as3commons.reflect {
 		// --------------------------------------------------------------------
 
 		public function testSetProperties():void {
-			var p:Parameter = new Parameter(null, Type.currentApplicationDomain, false);
+			var p:BaseParameter = new BaseParameter(null, Type.currentApplicationDomain, false);
 			p.as3commons_reflect::setIsOptional(true);
 			p.as3commons_reflect::setType(Type.forClass(String).fullName);
 			assertEquals(true, p.isOptional);
@@ -56,9 +56,9 @@ package org.as3commons.reflect {
 
 		public function testNewInstance():void {
 			var appDomain:ApplicationDomain = ApplicationDomain.currentDomain;
-			var pm1:Parameter = Parameter.newInstance("MyClass", appDomain, false);
-			var pm2:Parameter = Parameter.newInstance("MyClass", appDomain, false);
-			var pm3:Parameter = Parameter.newInstance("MyClass", appDomain, false);
+			var pm1:BaseParameter = BaseParameter.newInstance("MyClass", appDomain, false);
+			var pm2:BaseParameter = BaseParameter.newInstance("MyClass", appDomain, false);
+			var pm3:BaseParameter = BaseParameter.newInstance("MyClass", appDomain, false);
 			assertStrictlyEquals(pm1, pm2);
 			assertStrictlyEquals(pm1, pm3);
 			assertStrictlyEquals(pm2, pm3);
@@ -66,15 +66,15 @@ package org.as3commons.reflect {
 
 		public function testNewInstanceWithDifferentIsOptional():void {
 			var appDomain:ApplicationDomain = ApplicationDomain.currentDomain;
-			var pm1:Parameter = Parameter.newInstance("MyClass", appDomain, false);
-			var pm2:Parameter = Parameter.newInstance("MyClass", appDomain, true);
+			var pm1:BaseParameter = BaseParameter.newInstance("MyClass", appDomain, false);
+			var pm2:BaseParameter = BaseParameter.newInstance("MyClass", appDomain, true);
 			assertFalse(pm1 === pm2);
 		}
 
 		public function testNewInstanceWithDifferentType():void {
 			var appDomain:ApplicationDomain = ApplicationDomain.currentDomain;
-			var pm1:Parameter = Parameter.newInstance("MyClass", appDomain, false);
-			var pm2:Parameter = Parameter.newInstance("MyClass2", appDomain, false);
+			var pm1:BaseParameter = BaseParameter.newInstance("MyClass", appDomain, false);
+			var pm2:BaseParameter = BaseParameter.newInstance("MyClass2", appDomain, false);
 			assertFalse(pm1 === pm2);
 		}
 

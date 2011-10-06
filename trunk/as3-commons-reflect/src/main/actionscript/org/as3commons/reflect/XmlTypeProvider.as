@@ -198,7 +198,7 @@ package org.as3commons.reflect {
 			var params:Array = [];
 
 			for each (var paramXML:XML in paramsXML) {
-				var param:Parameter = Parameter.newInstance(paramXML.@type, applicationDomain, paramXML.@optional == TRUE_VALUE ? true : false);
+				var param:BaseParameter = BaseParameter.newInstance(paramXML.@type, applicationDomain, paramXML.@optional == TRUE_VALUE ? true : false);
 				params[params.length] = param;
 			}
 
