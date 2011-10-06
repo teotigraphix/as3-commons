@@ -8,7 +8,7 @@ package org.as3commons.reflect {
 
 	public class JSONTypeProviderTest extends TestCase {
 
-		public function JSONTypeProviderTest(methodName:String = null) {
+		public function JSONTypeProviderTest(methodName:String=null) {
 			super(methodName);
 		}
 

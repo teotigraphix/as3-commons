@@ -42,7 +42,7 @@ package org.as3commons.reflect {
 		/**
 		 * Constructor
 		 */
-		public function MetadataContainer(metadata:HashArray = null) {
+		public function MetadataContainer(metadata:HashArray=null) {
 			_metadata = (metadata == null ? new HashArray(METADATA_NAME_PROPERTY, true) : metadata);
 		}
 
@@ -82,7 +82,7 @@ package org.as3commons.reflect {
 		 * @inheritDoc
 		 */
 		public function getMetadata(key:String):Array {
-			var result:* = _metadata.get(key);
+			var result:* = _metadata.get(key.toLowerCase());
 			return (result is Array) ? result : (result != null) ? [result] : result;
 		}
 
@@ -90,7 +90,7 @@ package org.as3commons.reflect {
 		 * @inheritDoc
 		 */
 		public function hasMetadata(key:String):Boolean {
-			return (getMetadata(key) != null);
+			return (getMetadata(key.toLowerCase()) != null);
 		}
 
 		/**

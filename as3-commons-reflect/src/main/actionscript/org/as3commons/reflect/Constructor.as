@@ -41,7 +41,7 @@ package org.as3commons.reflect {
 		 * @param declaringType The Type declaring the constrcutor.
 		 * @param parameters an Array of Parameter objects being the parameters of the constructor.
 		 */
-		public function Constructor(declaringType:String, applicationDomain:ApplicationDomain, parameters:Array = null) {
+		public function Constructor(declaringType:String, applicationDomain:ApplicationDomain, parameters:Array=null) {
 			if (parameters != null) {
 				_parameters = parameters;
 			}
@@ -53,7 +53,12 @@ package org.as3commons.reflect {
 		 * Returns the parameters of this Constructor.
 		 */
 		public function get parameters():Array {
-			return _parameters;
+			var result:Array = [];
+			for (var i:int = 0; i < _parameters.length; ++i) {
+				var param:BaseParameter = _parameters[i];
+				result[result.length] = new Parameter(param, i);
+			}
+			return result;
 		}
 
 		/**
