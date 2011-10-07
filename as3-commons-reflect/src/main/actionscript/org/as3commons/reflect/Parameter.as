@@ -19,7 +19,7 @@ package org.as3commons.reflect {
 	 *
 	 * @author Roland Zwaga
 	 */
-	public final class Parameter {
+	public class Parameter {
 
 		private var _base:BaseParameter;
 		private var _index:int;
