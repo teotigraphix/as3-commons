@@ -726,6 +726,7 @@ package org.as3commons.reflect {
 		 */
 		public function getMetadataContainers(name:String):Array {
 			if (_metadataLookup != null) {
+				name = (name != 'constructor') ? name : '_constructor';
 				return _metadataLookup[name] as Array;
 			} else {
 				return null;
@@ -736,11 +737,11 @@ package org.as3commons.reflect {
 			for each (var container:MetadataContainer in containerList) {
 				var metadatas:Array = container.metadata;
 				for each (var m:Metadata in metadatas) {
-					var arr:Array = _metadataLookup[m.name];
-					if (arr == null) {
-						arr = [];
-						_metadataLookup[m.name] = arr;
+					if (m == null) {
+						continue;
 					}
+					var name:String = (m.name != 'constructor') ? m.name : '_constructor';
+					var arr:Array = _metadataLookup[name] ||= [];
 					arr[arr.length] = container;
 				}
 			}
