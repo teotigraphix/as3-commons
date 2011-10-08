@@ -56,9 +56,9 @@ package org.as3commons.metadata.registry.impl {
 		 * @param target
 		 * @return
 		 */
-		override public function process(target:Object):* {
+		override public function process(target:Object, info:*=null):* {
 			var type:Type = Type.forInstance(target, applicationDomain);
-			return processType(type, target);
+			return processType(type, target, info);
 		}
 
 		/**
@@ -74,11 +74,14 @@ package org.as3commons.metadata.registry.impl {
 		/**
 		 * Calls every <code>IMetadataProcessor</code> that has been registered with the metadata that is reported
 		 * by the specified <code>Type</code> object. The <code>IMetadataContainer</code> describing the member that
-		 * is annotaed with the specified metadata will be passed to the <code>IMetadataProcessors</code> as the <code>info</code> argument.
+		 * is annotated with the specified metadata will be passed to the <code>IMetadataProcessors</code> as the <code>info</code> argument.
+		 * If the <code>info</code> parameter is not null it will be put into an <code>Array</code> together with the <code>IMetadataContainer</code> instance.
+		 * (First the <code>IMetadataContainer</code> instance then the <code>info</code> parameter.)
 		 * @param type
 		 * @param target
+		 * @returns
 		 */
-		protected function processType(type:Type, target:Object):* {
+		protected function processType(type:Type, target:Object, info:*):* {
 			for (var name:String in metadataLookup) {
 				var processors:Vector.<IMetadataProcessor> = metadataLookup[name] as Vector.<IMetadataProcessor>;
 				var containers:Array = (type.hasMetadata(name)) ? [type] : [];
@@ -89,7 +92,11 @@ package org.as3commons.metadata.registry.impl {
 
 				for each (var container:IMetadataContainer in containers) {
 					for each (var processor:IMetadataProcessor in processors) {
-						processor.process(target, name, container);
+						var extra:* = (info == null) ? container : [container, info];
+						var result:* = processor.process(target, name, extra);
+						if (result != null) {
+							target = result;
+						}
 					}
 				}
 			}

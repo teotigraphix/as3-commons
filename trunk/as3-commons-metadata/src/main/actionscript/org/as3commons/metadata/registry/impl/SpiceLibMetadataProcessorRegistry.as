@@ -33,34 +33,42 @@ package org.as3commons.metadata.registry.impl {
 		}
 
 		/**
-		 *
+		 * Retrieves a <code>ClassInfo</code> instance for the specified target instance. If the <code>info</code> parameter is not null
+		 * it will be put into an <code>Array</code> together with the <code>ClassInfo</code> instance. (First the <code>ClassInfo</code> instance
+		 * then the <code>info</code> parameter.) If the <code>info</code> parameter is null only the <code>ClassInfo</code> is passed to the <code>process()</code>
+		 * method.
 		 * @param target
 		 * @return
 		 */
-		override public function process(target:Object):* {
+		override public function process(target:Object, info:*=null):* {
 			var type:ClassInfo = ClassInfo.forInstance(target, applicationDomain);
 			for (var name:String in metadataLookup) {
 				var processors:Vector.<IMetadataProcessor> = metadataLookup[name] as Vector.<IMetadataProcessor>;
-				var containers:Array = (type.hasMetadata(name)) ? [type] : [];
-				var memberContainers:Array = getMembersWithMetadata(type, name);
+				var containers:Vector.<Member> = (type.hasMetadata(name)) ? new Vector.<Member>[type] : new Vector.<Member>();
+				var memberContainers:Vector.<Member> = getMembersWithMetadata(type, name);
 				containers = containers.concat(memberContainers);
 
 				for each (var container:Object in containers) {
 					for each (var processor:IMetadataProcessor in processors) {
-						processor.process(target, name, container);
+						var extra:* = (info == null) ? container : [container, info];
+						var result:* = processor.process(target, name, extra);
+						if (result != null) {
+							target = result;
+						}
+
 					}
 				}
 			}
 		}
 
 		/**
-		 *
+		 * Returns a <code>Vector</code> of <code>Member</code> instances that have been annotated with the specified metadata name.
 		 * @param type
 		 * @param name
 		 * @return
 		 */
-		protected function getMembersWithMetadata(type:ClassInfo, name:String):Array {
-			var result:Array = [];
+		protected function getMembersWithMetadata(type:ClassInfo, name:String):Vector.<Member> {
+			var result:Vector.<Member> = new Vector.<Member>();
 			var members:Array = type.getMethods().concat(type.getStaticMethods()).concat(type.getProperties()).concat(type.getStaticProperties());
 			for each (var m:Member in members) {
 				if (m.hasMetadata(name)) {
