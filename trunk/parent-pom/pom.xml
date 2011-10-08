@@ -120,6 +120,7 @@
 				</executions>
 				<configuration>
 					<storepass/>
+					<iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>true</iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>
 					<testTimeout>10000</testTimeout>
 					<targetPlayer>${flashplayer.version.major}</targetPlayer>
 					<updateSecuritySandbox>true</updateSecuritySandbox>
