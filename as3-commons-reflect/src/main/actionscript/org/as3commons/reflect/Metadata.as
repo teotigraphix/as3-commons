@@ -82,7 +82,7 @@ package org.as3commons.reflect {
 		 */
 		public function Metadata(name:String, arguments:Array=null) {
 			super();
-			_name = name.toLowerCase();
+			_name = (name != null) ? name.toLowerCase() : null;
 			_arguments = (arguments == null) ? [] : arguments;
 		}
 
