@@ -52,9 +52,9 @@ package org.as3commons.metadata.registry.impl {
 		/**
 		 * @inheritoDoc
 		 */
-		override public function process(target:Object):* {
+		override public function process(target:Object, info:*=null):* {
 			var type:Type = Type.forClass(Class(target));
-			processType(type, target);
+			processType(type, target, info);
 		}
 	}
 }

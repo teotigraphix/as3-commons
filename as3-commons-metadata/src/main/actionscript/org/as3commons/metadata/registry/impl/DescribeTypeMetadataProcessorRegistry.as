@@ -31,7 +31,7 @@ package org.as3commons.metadata.registry.impl {
 			super();
 		}
 
-		override public function process(target:Object):* {
+		override public function process(target:Object, info:*=null):* {
 			var clazz:Class = Object(target).constructor as Class;
 			var type:XML = describeType(clazz);
 			for (var name:String in metadataLookup) {
@@ -40,6 +40,7 @@ package org.as3commons.metadata.registry.impl {
 
 				for each (var container:XML in containers) {
 					for each (var processor:IMetadataProcessor in processors) {
+						var extra:* = (info == null) ? container : [container, info];
 						processor.process(target, name, container);
 					}
 				}

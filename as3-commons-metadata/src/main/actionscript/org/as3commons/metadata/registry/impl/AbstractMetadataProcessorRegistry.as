@@ -73,7 +73,7 @@ package org.as3commons.metadata.registry.impl {
 		 * This methoid needs to be overriden and implemented in subclasses of <code>AbstractMetadataProcessorRegistry</code>.
 		 * @throws flash.errors.IllegalOperationError
 		 */
-		public function process(target:Object):* {
+		public function process(target:Object, info:*=null):* {
 			throw new IllegalOperationError("Not implemented in abstract base class");
 		}
 
