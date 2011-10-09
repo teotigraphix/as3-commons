@@ -703,6 +703,7 @@ package org.as3commons.reflect {
 
 		public function createMetadataLookup():void {
 			_metadataLookup = {};
+			addToMetadataLookup([this]);
 			addToMetadataLookup(_methods.getArray());
 			if (_fields == null) {
 				createFieldsHashArray();
@@ -726,6 +727,7 @@ package org.as3commons.reflect {
 		 */
 		public function getMetadataContainers(name:String):Array {
 			if (_metadataLookup != null) {
+				name = name.toLowerCase();
 				name = (name != 'constructor') ? name : '_constructor';
 				return _metadataLookup[name] as Array;
 			} else {
