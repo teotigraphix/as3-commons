@@ -24,9 +24,13 @@ package org.as3commons.logging.util {
 	import flash.utils.describeType;
 	
 	/**
+	 * Util to instantiate classes.
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.7
+	 * @param type Class to be instantiated
+	 * @param args Constructor arguments used
+	 * @return New instance of the class
 	 */
 	public function instantiate( type: Class, args: Array = null ): * {
 		var result: *;
@@ -38,7 +42,9 @@ package org.as3commons.logging.util {
 					CACHE[ type ] = ( l = describeType( type ).factory
 											.constructor.parameter.length() );
 				} catch( e: Error ) {
-					LOGGER.warn("Could not describe {0} to analyse arguments", [type]);
+					if( LOGGER.warnEnabled ) {
+						LOGGER.warn("Could not describe {0} to analyse arguments", [type]);
+					}
 					CACHE[ type ] = 0;
 				}
 			}

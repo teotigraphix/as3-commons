@@ -104,7 +104,7 @@ package org.as3commons.logging.setup.log4j {
 	 * @since 2.7
 	 * @see org.as3commons.logging.setup#log4j
 	 */
-	public class Log4JStyleSetup {
+	public final class Log4JStyleSetup {
 		
 		use namespace log4j;
 		
