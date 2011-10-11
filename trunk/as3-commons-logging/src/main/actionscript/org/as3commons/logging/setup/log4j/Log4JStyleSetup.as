@@ -20,10 +20,86 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.log4j {
+	
 	import org.as3commons.logging.setup.HierarchialSetup;
 	import org.as3commons.logging.setup.LogSetupLevel;
 	
 	/**
+	 * <code>Log4JStyleSetup</code> is a setup that works much like the log4j 
+	 * properties format, without the text part.
+	 * 
+	 * <p>Important note: <code>Log4JStyleSetup</code> <strong>can not</strong>
+	 * implement <code>ILogSetup</code>. To setup this system its necessary to
+	 * use the <code>compile()</code> method that returns a valid setup.</p>
+	 * 
+	 * <listing>
+	 * LOGGER_FACTORY.setup = (new Log4JStyleSetup()).compile();
+	 * <listing>
+	 * 
+	 * <p>This setup allows the definition of appenders, named <code>ILogTargets</code>,
+	 * eigther by direct referencing or using a class name to instantiation.</p>
+	 * 
+	 * <listing>
+	 * var log4j: Log4JStyleSetup = new Log4JStyleSetup();
+	 * log4j.appender.referenced = new TraceTarget();
+	 * log4j.appender.generated = "org.as3commons.logging.setup.target::TraceTarget";
+	 * </listing>
+	 * 
+	 * <p>You can, as for now, also set primitive properties like "format".</p>
+	 * 
+	 * <listing>
+	 * log4j.appender.generated.format = "{message} ({logLevel}, {logTime})";
+	 * </listing>
+	 * 
+	 * <p>These appenders can be used for example with the rootLogger.</p>
+	 * 
+	 * <listing>
+	 * log4j.rootLogger = "WARN, generated";
+	 * </listing>
+	 * 
+	 * <p>The <code>rootLogger</code> defines the basic setup. The first value passed is always
+	 * the level. It can <code>DEBUG</code>,<code>INFO</code>,<code>WARN</code>,
+	 * <code>ERROR</code> or <code>FATAL</code>.</p>
+	 * 
+	 * <p>That means with <code>"WARN, generated"</code> we allow <code>warn</code>,
+	 * <code>error</code> and <code>fatal</code> log statements to be used and send
+	 * them to our target with the name <code>generated</code>.</p>
+	 * 
+	 * <p>It is further possible to use the same kind of syntax for hierarchial setups
+	 * using the <code>logger</code> property.</p>
+	 * 
+	 * <listing>
+	 * log4j.logger.org.as3commons = "ERROR, referenced";
+	 * </listing>
+	 * 
+	 * <p>The passed in loglevel <code>"ERROR"</code> always overrides the level
+	 * definition in the upper levels. The target is bydefault <strong>merged</strong>
+	 * with the parent target. This means that now <code>error</code> and <code>
+	 * fatal</code> messages will be sent to the targets named <code>generated</code>
+	 * and <code>referenced</code>!</p>
+	 * 
+	 * <p>To avoid the merging of the targets of lower levels the setup allows
+	 * switching of appending using the <code>additivity</code> flag.</p>
+	 * 
+	 * <listing>
+	 * log4j.additivity.org.as3commons = false;
+	 * </listing>
+	 * 
+	 * <p>Now the former setup will be changed to just send to the appender named
+	 * <code>referenced</code>.</p>
+	 * 
+	 * <p>There is also a way to limit the setup output using the <code>threshold</code>
+	 * property.<p>
+	 * 
+	 * <listing>
+	 * log4j.threshold = "FATAL";
+	 * </listing>
+	 * 
+	 * <p>After setting of the threshold, any other configuration will be limited
+	 * to this log level. That means that even though we defined the targets before
+	 * as sending to <code>"ERROR"</code> it will be limited to <code>"FATAL"</code>.
+	 * </p>
+	 * 
 	 * @author Martin Heidegger
 	 * @since 2.7
 	 * @see org.as3commons.logging.setup#log4j
@@ -49,6 +125,11 @@ package org.as3commons.logging.setup.log4j {
 			_threshold = getLevel(level);
 		}
 		
+		/**
+		 * Compiles the setup into a <code>HierarchialSetup</code>
+		 * 
+		 * @return Compiled HierarchialSetup with all the properties prepared.
+		 */
 		public function compile():HierarchialSetup {
 			var setup: HierarchialSetup = new HierarchialSetup(".", _threshold);
 			_root.applyTo( setup, appender.generateAppenders() );
