@@ -22,9 +22,14 @@
 package org.as3commons.logging.setup.log4j {
 	
 	/**
+	 * Natural access to to the <code>Log4JStyleSetup</code>.
+	 * 
+	 * <p>Instead of writing <code>new Log4JStyleSetup;</code> one can simply
+	 * choose to use this global variable.</p>
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.7
+	 * @see org.as3commons.logging.setup.log4j.Log4JStyleSetup;
 	 */
 	public const log4j: Log4JStyleSetup = new Log4JStyleSetup();
 }

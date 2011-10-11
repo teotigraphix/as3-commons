@@ -72,14 +72,18 @@ package org.as3commons.logging.setup.target {
 		public function log(name:String, shortName:String, level:int,
 							timeStamp:Number, message:*, parameters:Array,
 							person:String): void {
-			for( var i: int = 0; i<ILL_CHR_LEN; ++i ) {
-				var c: String = ILL_CHR[i];
-				if( name.indexOf(c) != -1 ) {
-					name = name.split(c).join("");
+			var cleanName: String = _cleanNames[name];
+			if( !cleanName ) {
+				for( var i: int = 0; i<ILL_CHR_LEN; ++i ) {
+					var c: String = ILL_CHR[i];
+					if( name.indexOf(c) != -1 ) {
+						name = name.split(c).join("");
+					}
 				}
+				_cleanNames[name] = cleanName = name;
 			}
-			var logger: Logger = _loggers[name] ||= Log.getLogger(name);
-			_entry.channel = name;
+			var logger: Logger = _loggers[cleanName] ||= Log.getLogger(cleanName);
+			_entry.channel = cleanName;
 			_entry.level = _levelMap[level] || LoggerLevel.DEBUG;
 			_entry.message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
 			logger.emit( _entry );
@@ -97,6 +101,7 @@ import org.as3commons.logging.level.DEBUG;
 
 const _entry: LoggerEntry = new LoggerEntry();
 const _loggers: Object = {};
+const _cleanNames: Object = {};
 const _levelMap: Object = {};
 {
 	_levelMap[DEBUG] = LoggerLevel.DEBUG;
