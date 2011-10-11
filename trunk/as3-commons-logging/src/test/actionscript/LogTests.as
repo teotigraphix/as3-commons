@@ -1,4 +1,5 @@
 package {
+	import org.as3commons.logging.setup.HierarchialSetupTest;
 	import org.as3commons.logging.integration.MaashaackIntegrationTest;
 	import org.as3commons.logging.util.xml.XMLRuleTest;
 	import org.as3commons.logging.util.xml.XMLTargetTest;
@@ -168,7 +169,8 @@ package {
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
 			core.run( [
-				new MaashaackIntegrationTest(),
+				new HierarchialSetupTest(),
+				/*new MaashaackIntegrationTest(),
 				new XMLSetupTest(),
 				new XMLTargetTest(),
 				new XMLRuleTest(),
@@ -203,6 +205,7 @@ package {
 				new AirTargetTest(),
 				new OSMFIntegrationTest(),
 				new LogMeisterIntegrationTest()
+				 */
 			]);
 		}
 	}

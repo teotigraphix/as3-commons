@@ -25,25 +25,57 @@ package org.as3commons.logging.setup {
 	import org.as3commons.logging.api.Logger;
 	
 	/**
+	 * Heritance based setup process much like log4j.
+	 * 
+	 * <p>Much like a log4j setup this setup allows hierarchial defininition of
+	 * loggers. It allows the definition of a target and level per hierarchy level
+	 * and automatically pass it to all sublevels.</p>
+	 * 
+	 * <p>The setup allows to define a "threshold", a global maximal LogLevel. This
+	 * allows to switch off the setup with a simple flag.</p>
+	 * 
 	 * @author Martin Heidegger
 	 * @since 2.7
 	 */
-	public class HierarchialSetup implements ILogSetup {
+	public final class HierarchialSetup implements ILogSetup {
 		
+		/** Global level threshold */
 		private var _threshold: LogSetupLevel = LogSetupLevel.ALL;
+		
+		/** Root hierachy */
 		private var _root: HierarchyData = new HierarchyData();
+		
+		/** Seperator used to split loggers names into a hierachy path. */
 		private var _separator: String;
 		
+		/**
+		 * Creates a new <code>HierarchialSetup</code>
+		 * 
+		 * @param levelSeparator Seperator for the levels in our hierarchy (as loggers just have names)
+		 * @param threshold Global threshold that limits the output level.
+		 */
 		public function HierarchialSetup(levelSeparator:String=".",threshold:LogSetupLevel=null) {
 			_separator = levelSeparator;
 			_threshold = threshold || LogSetupLevel.ALL;
 		}
 		
+		/**
+		 * Global threshold that limits the output levels.
+		 */
 		public function set threshold(level:LogSetupLevel): void {
 			_threshold = level;
 			_root.dirty = true;
 		}
 		
+		/**
+		 * Sets the properties of one hierarchy level
+		 * 
+		 * @param path Hierarchy path, unseparated.
+		 * @param target Target to be used for logging in this hierarchy and subhierarchies.
+		 * @param level Level to be used from this hierarchy on, if not given, the parent level will be used
+		 * @param additive Flat to set if the hierarchy level should merge the target
+		 *        with the parent targets or not.
+		 */
 		public function setHierarchy(path:String=null, target:ILogTarget=null,
 										level:LogSetupLevel=null, additive:Boolean=true): void {
 			var pathSplit: Array = (path && path != "") ? path.split(_separator) : null;
@@ -106,7 +138,7 @@ class HierarchyData {
 									appender: ILogTarget, threshold: LogSetupLevel):void {
 		if(_dirty) {
 			if(additive && appender) {
-				_target  = mergeTargets( this.target, appender );
+				_target  = mergeTargets( appender, this.target );
 			} else {
 				_target = this.target;
 			}
