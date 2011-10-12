@@ -9,13 +9,13 @@ package org.as3commons.logging.setup {
 	/**
 	 * @author mh
 	 */
-	public class HierarchialSetupTest extends TestCase {
+	public class HierarchicalSetupTest extends TestCase {
 		
-		public function HierarchialSetupTest() {
+		public function HierarchicalSetupTest() {
 		}
 		
 		public function testEmptySetup(): void {
-			var setup: HierarchialSetup = new HierarchialSetup();
+			var setup: HierarchicalSetup = new HierarchicalSetup();
 			
 			setup.applyTo(getLogger() as Logger);
 			setup.applyTo(getLogger("nopackage") as Logger);
@@ -31,7 +31,7 @@ package org.as3commons.logging.setup {
 		public function testThreshold(): void {
 			var target: TraceTarget = new TraceTarget();
 			var logger: Logger;
-			var setup: HierarchialSetup = new HierarchialSetup();
+			var setup: HierarchicalSetup = new HierarchicalSetup();
 			
 			logger = new Logger("");
 			setup.threshold = LogSetupLevel.DEBUG_ONLY;
@@ -86,7 +86,7 @@ package org.as3commons.logging.setup {
 			var targetB: Target = new Target("B", calls);
 			var targetC: Target = new Target("C", calls);
 			
-			var setup: HierarchialSetup = new HierarchialSetup();
+			var setup: HierarchicalSetup = new HierarchicalSetup();
 			setup.setHierarchy("", targetA, LogSetupLevel.DEBUG_ONLY );
 			setup.setHierarchy("org", targetB);
 			setup.setHierarchy("org.as3commons", targetB, LogSetupLevel.WARN_ONLY, false );
@@ -120,7 +120,7 @@ package org.as3commons.logging.setup {
 			var targetB: Target = new Target("B",calls);
 			var targetC: Target = new Target("C",calls);
 			
-			var setup: HierarchialSetup = new HierarchialSetup();
+			var setup: HierarchicalSetup = new HierarchicalSetup();
 			setup.setHierarchy("", targetA);
 			setup.setHierarchy("org", targetB);
 			setup.setHierarchy("org.as3commons", targetC);
@@ -151,7 +151,7 @@ package org.as3commons.logging.setup {
 			
 			var target: TraceTarget = new TraceTarget();
 			
-			var setup: HierarchialSetup = new HierarchialSetup();
+			var setup: HierarchicalSetup = new HierarchicalSetup();
 			setup.setHierarchy("", target, LogSetupLevel.DEBUG_ONLY );
 			setup.setHierarchy("org");
 			setup.setHierarchy("org.as3commons", null, LogSetupLevel.WARN_ONLY );

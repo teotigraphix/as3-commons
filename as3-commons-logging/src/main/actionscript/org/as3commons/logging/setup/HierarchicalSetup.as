@@ -27,7 +27,7 @@ package org.as3commons.logging.setup {
 	/**
 	 * Heritance based setup process much like log4j.
 	 * 
-	 * <p>Much like a log4j setup this setup allows hierarchial defininition of
+	 * <p>Much like a log4j setup this setup allows hierarchical defininition of
 	 * loggers. It allows the definition of a target and level per hierarchy level
 	 * and automatically pass it to all sublevels.</p>
 	 * 
@@ -37,7 +37,7 @@ package org.as3commons.logging.setup {
 	 * @author Martin Heidegger
 	 * @since 2.7
 	 */
-	public final class HierarchialSetup implements ILogSetup {
+	public final class HierarchicalSetup implements ILogSetup {
 		
 		/** Global level threshold */
 		private var _threshold: LogSetupLevel = LogSetupLevel.ALL;
@@ -49,12 +49,12 @@ package org.as3commons.logging.setup {
 		private var _separator: String;
 		
 		/**
-		 * Creates a new <code>HierarchialSetup</code>
+		 * Creates a new <code>HierarchicalSetup</code>
 		 * 
 		 * @param levelSeparator Seperator for the levels in our hierarchy (as loggers just have names)
 		 * @param threshold Global threshold that limits the output level.
 		 */
-		public function HierarchialSetup(levelSeparator:String=".",threshold:LogSetupLevel=null) {
+		public function HierarchicalSetup(levelSeparator:String=".",threshold:LogSetupLevel=null) {
 			_separator = levelSeparator;
 			_threshold = threshold || LogSetupLevel.ALL;
 		}

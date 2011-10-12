@@ -174,7 +174,7 @@ package org.as3commons.logging.api {
 		}
 		
 		public function testFatal(): void {
-			var logger: Logger = new Logger("my.log", "me");
+			var logger: Logger = new Logger("my.log", "you");
 			var tar: TestTarget = new TestTarget();
 			var msg: * = {};
 			var par: Array = [];
@@ -186,7 +186,7 @@ package org.as3commons.logging.api {
 			assertTrue( tar.timeStamp <= getTimer() );
 			assertEquals( msg, tar.message );
 			assertEquals( par, tar.parameters );
-			assertEquals( "me", tar.person );
+			assertEquals( "you", tar.person );
 		}
 	}
 }
