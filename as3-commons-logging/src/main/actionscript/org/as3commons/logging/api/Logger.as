@@ -22,7 +22,6 @@
 package org.as3commons.logging.api {
 	
 	import org.as3commons.logging.setup.ILogTarget;
-
 	import flash.utils.getTimer;
 	
 	/**
@@ -40,9 +39,6 @@ package org.as3commons.logging.api {
 	 * @see org.as3commons.logging.api.ILogSetup
 	 */
 	public final class Logger implements ILogger {
-		
-		/** Time when class is created by the .swf loader. */
-		private static const _startTime: Number = new Date().getTime() - getTimer();
 		
 		/** The logger for debug level, if not added (<code>== null</code>) debug is not enabled. */
 		public var debugTarget:ILogTarget;
@@ -85,7 +81,7 @@ package org.as3commons.logging.api {
 		public function debug(message:*, parameters:Array=null):void {
 			if(debugTarget) {
 				debugTarget.log(_name, _shortName, 0x0020 /*DEBUG*/,
-							_startTime+getTimer(), message, parameters, _person);
+							getTimer(), message, parameters, _person);
 			}
 		}
 		
@@ -95,7 +91,7 @@ package org.as3commons.logging.api {
 		public function info(message:*, parameters:Array=null):void {
 			if(infoTarget) {
 				infoTarget.log(_name, _shortName, 0x0010 /*INFO*/,
-							_startTime+getTimer(), message, parameters, _person);
+							getTimer(), message, parameters, _person);
 			}
 		}
 		
@@ -105,7 +101,7 @@ package org.as3commons.logging.api {
 		public function warn(message:*, parameters:Array=null):void {
 			if(warnTarget) {
 				warnTarget.log(_name, _shortName, 0x0008 /*WARN*/,
-							_startTime+getTimer(), message, parameters, _person);
+							getTimer(), message, parameters, _person);
 			}
 		}
 		
@@ -115,7 +111,7 @@ package org.as3commons.logging.api {
 		public function error(message:*, parameters:Array=null):void {
 			if(errorTarget) {
 				errorTarget.log(_name, _shortName, 0x0004 /*ERROR*/,
-							_startTime+getTimer(), message, parameters, _person);
+							getTimer(), message, parameters, _person);
 			}
 		}
 		
@@ -125,7 +121,7 @@ package org.as3commons.logging.api {
 		public function fatal(message:*, parameters:Array=null):void {
 			if(fatalTarget) {
 				fatalTarget.log(_name, _shortName, 0x0002 /*FATAL*/,
-							_startTime+getTimer(), message, parameters, _person);
+							getTimer(), message, parameters, _person);
 			}
 		}
 		

@@ -1,4 +1,5 @@
 package {
+	import org.as3commons.logging.api.LoggerTest;
 	import org.as3commons.logging.setup.HierarchialSetupTest;
 	import org.as3commons.logging.integration.MaashaackIntegrationTest;
 	import org.as3commons.logging.util.xml.XMLRuleTest;
@@ -66,14 +67,7 @@ package {
 	import org.as3commons.logging.util.xml.XMLSetupTest;
 	import org.flexunit.internals.TraceListener;
 	import org.flexunit.runner.FlexUnitCore;
-
-
 	
-
-
-
-
-
 	/**
 	 * @author Martin
 	 */
@@ -170,7 +164,8 @@ package {
 			core.addListener( new TraceListener() );
 			core.run( [
 				new HierarchialSetupTest(),
-				/*new MaashaackIntegrationTest(),
+				new LoggerTest(),
+				new MaashaackIntegrationTest(),
 				new XMLSetupTest(),
 				new XMLTargetTest(),
 				new XMLRuleTest(),
@@ -205,7 +200,6 @@ package {
 				new AirTargetTest(),
 				new OSMFIntegrationTest(),
 				new LogMeisterIntegrationTest()
-				 */
 			]);
 		}
 	}
