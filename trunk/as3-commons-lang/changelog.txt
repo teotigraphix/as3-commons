@@ -3,6 +3,11 @@ AS3COMMONS LANG CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 0.3.5 (12.10.2011)
+-----------------------------------
+
+* Bugfix release
+
 Changes in version 0.3.4 (23.05.2011)
 -----------------------------------
 
