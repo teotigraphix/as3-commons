@@ -21,13 +21,13 @@
  */
 package org.as3commons.logging.setup.log4j {
 	
-	import org.as3commons.logging.setup.HierarchialSetup;
+	import org.as3commons.logging.setup.HierarchicalSetup;
 	
 	/**
 	 * @author Martin Heidegger
 	 * @since 2.7
 	 */
-	public function log4jPropertiesToSetup(properties:String):HierarchialSetup {
+	public function log4jPropertiesToSetup(properties:String):HierarchicalSetup {
 		var setup: Log4JStyleSetup = new Log4JStyleSetup();
 		// TODO: Implement me
 		return setup.compile();

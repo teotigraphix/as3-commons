@@ -21,7 +21,7 @@
  */
 package org.as3commons.logging.setup.log4j {
 	
-	import org.as3commons.logging.setup.HierarchialSetup;
+	import org.as3commons.logging.setup.HierarchicalSetup;
 	import org.as3commons.logging.setup.LogSetupLevel;
 	
 	/**
@@ -41,11 +41,20 @@ package org.as3commons.logging.setup.log4j {
 	 * 
 	 * <listing>
 	 * var log4j: Log4JStyleSetup = new Log4JStyleSetup();
-	 * log4j.appender.referenced = new TraceTarget();
+	 * log4j.appender["referenced"] = new TraceTarget();
+	 * log4j.appender["generated"] = "org.as3commons.logging.setup.target::TraceTarget";
+	 * </listing>
+	 * 
+	 * <p>We just defined the two appenders named "referenced" and "generated".
+	 * As you can see <code>appender</code> is dyanmic so you can actually
+	 * just type it like this:</p>
+	 * 
+	 * <listing>
 	 * log4j.appender.generated = "org.as3commons.logging.setup.target::TraceTarget";
 	 * </listing>
 	 * 
-	 * <p>You can, as for now, also set primitive properties like "format".</p>
+	 * <p>You can also set primitive properties like "format". They will be filled
+	 * after the instantiation.</p>
 	 * 
 	 * <listing>
 	 * log4j.appender.generated.format = "{message} ({logLevel}, {logTime})";
@@ -58,28 +67,42 @@ package org.as3commons.logging.setup.log4j {
 	 * </listing>
 	 * 
 	 * <p>The <code>rootLogger</code> defines the basic setup. The first value passed is always
-	 * the level. It can <code>DEBUG</code>,<code>INFO</code>,<code>WARN</code>,
-	 * <code>ERROR</code> or <code>FATAL</code>.</p>
+	 * the level. It can be <code>DEBUG</code>,<code>INFO</code>,<code>WARN</code>,
+	 * <code>ERROR</code> or <code>FATAL</code>. Following the level you can pass
+	 * a list of appenders seperated by a colon.</p>
 	 * 
 	 * <p>That means with <code>"WARN, generated"</code> we allow <code>warn</code>,
 	 * <code>error</code> and <code>fatal</code> log statements to be used and send
 	 * them to our target with the name <code>generated</code>.</p>
 	 * 
-	 * <p>It is further possible to use the same kind of syntax for hierarchial setups
-	 * using the <code>logger</code> property.</p>
+	 * <p>It is further possible to use the same kind of syntax for hierarchical
+	 * setups using the <code>logger</code> property.</p>
+	 * 
+	 * <listing>
+	 * log4j.logger["org"]["as3commons"] = "ERROR, referenced";
+	 * </listing>
+	 * 
+	 * <p>Also here we make strong use of dynamic proxies and you could just write
+	 * it without the braces and quotes:</p>
 	 * 
 	 * <listing>
 	 * log4j.logger.org.as3commons = "ERROR, referenced";
 	 * </listing>
 	 * 
-	 * <p>The passed in loglevel <code>"ERROR"</code> always overrides the level
-	 * definition in the upper levels. The target is bydefault <strong>merged</strong>
+	 * <p>The passed in log-level <code>"ERROR"</code> always overrides the level
+	 * definition in the upper levels. The target is by default <strong>merged</strong>
 	 * with the parent target. This means that now <code>error</code> and <code>
 	 * fatal</code> messages will be sent to the targets named <code>generated</code>
 	 * and <code>referenced</code>!</p>
 	 * 
 	 * <p>To avoid the merging of the targets of lower levels the setup allows
 	 * switching of appending using the <code>additivity</code> flag.</p>
+	 * 
+	 * <listing>
+	 * log4j.additivity["org"]["as3commons"] = false;
+	 * </listing>
+	 * 
+	 * <p>Again, thanks to dynamic proxies, you can write it also without the braces.</p>
 	 * 
 	 * <listing>
 	 * log4j.additivity.org.as3commons = false;
@@ -130,8 +153,8 @@ package org.as3commons.logging.setup.log4j {
 		 * 
 		 * @return Compiled HierarchialSetup with all the properties prepared.
 		 */
-		public function compile():HierarchialSetup {
-			var setup: HierarchialSetup = new HierarchialSetup(".", _threshold);
+		public function compile():HierarchicalSetup {
+			var setup: HierarchicalSetup = new HierarchicalSetup(".", _threshold);
 			_root.applyTo( setup, appender.generateAppenders() );
 			return setup;
 		}
@@ -143,7 +166,7 @@ import flash.utils.flash_proxy;
 import flash.utils.getDefinitionByName;
 import org.as3commons.logging.api.ILogger;
 import org.as3commons.logging.api.getLogger;
-import org.as3commons.logging.setup.HierarchialSetup;
+import org.as3commons.logging.setup.HierarchicalSetup;
 import org.as3commons.logging.setup.ILogTarget;
 import org.as3commons.logging.setup.LogSetupLevel;
 import org.as3commons.logging.setup.log4j.Log4JStyleSetup;
@@ -365,7 +388,7 @@ class HierarchyEntry {
 		return _children[name] ||= new HierarchyEntry(_name == "" ? name : _name+"."+name);
 	}
 	
-	public function applyTo(setup: HierarchialSetup, appenderLookup: Object ) : void {
+	public function applyTo(setup: HierarchicalSetup, appenderLookup: Object ) : void {
 		var target: ILogTarget;
 		for each( var appenderName: String in _appenders ) {
 			target = mergeTargets( target, appenderLookup[appenderName] );
