@@ -109,6 +109,30 @@ package org.as3commons.logging.api {
 			assertNull( logger.fatalTarget );
 		}
 		
+		public function testShortName(): void {
+			var logger: Logger;
+			
+			logger = new Logger("");
+			assertEquals( "", logger.name );
+			assertEquals( "", logger.shortName );
+			
+			logger = new Logger("\n\n\asdfadsf");
+			assertEquals( "\n\n\asdfadsf", logger.name );
+			assertEquals( "\n\n\asdfadsf", logger.shortName );
+			
+			logger = new Logger("...");
+			assertEquals( "...", logger.name );
+			assertEquals( "", logger.shortName );
+			
+			logger = new Logger("org.commons.logging");
+			assertEquals( "org.commons.logging", logger.name );
+			assertEquals( "logging", logger.shortName );
+			
+			logger = new Logger("10#\"!%&'()(=~\|'.commons.20#\"!%&'()(=~\|'");
+			assertEquals( "10#\"!%&'()(=~\|'.commons.20#\"!%&'()(=~\|'", logger.name );
+			assertEquals( "20#\"!%&'()(=~\|'", logger.shortName );
+		}
+		
 		public function testDebug(): void {
 			var logger: Logger = new Logger("my.log", "me");
 			var tar: TestTarget = new TestTarget();
@@ -119,7 +143,7 @@ package org.as3commons.logging.api {
 			assertEquals( "my.log", tar.name );
 			assertEquals( "log", tar.shortName );
 			assertEquals( DEBUG, tar.level );
-			assertTrue( tar.timeStamp < getTimer() );
+			assertTrue( tar.timeStamp <= getTimer() );
 			assertEquals( msg, tar.message );
 			assertEquals( par, tar.parameters );
 			assertEquals( "me", tar.person );

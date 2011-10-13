@@ -206,36 +206,44 @@ dynamic class PropertyContainer extends Proxy {
 	
 	log4j var _properties : Object = {};
 	log4j var _name: String;
-	log4j var _value: *;
+	log4j var _value: * = undefined;
 	
 	public function PropertyContainer(propertyName: String) {
 		_name = propertyName;
 	}
 	
 	log4j function applyProperty(instance:*, stack: Array): void {
+		
+		var value: Object;
 		try {
-			instance[_name] = _value;
-			var child: String;
-			if( _value ) {
-				stack.push(_name);
-				for( child in _properties ) {
-					if( child != "Threshold" || stack.length != 0) {
-						// Ignore the "Threshold" child as its used in the setup process
-						(_properties[child] as PropertyContainer).applyProperty(_value, stack);
-					}
-				}
-				stack.pop();
+			if( _value === undefined ) {
+				value = instance[_name];
 			} else {
-				for( child in _properties ) {
-					if( LOGGER.warnEnabled ) {
-						LOGGER.warn("Can not set child properties for '{1}' of appender '{0}' as its 'null'", [stack[0], stack.slice(1, stack.length).join(".")]);
-					}
-					break;
-				}
+				value = _value;
+				instance[_name] = _value;
 			}
 		} catch( e: Error ) {
 			if( LOGGER.warnEnabled ) {
-				LOGGER.warn("Can not set property '{1}' of appender '{0}'", [stack[0], stack.slice(1, stack.length).join(".")]);
+				LOGGER.warn("Can not access property '{1}' of appender '{0}': {2}", [stack[0], stack.slice(1, stack.length).concat(_name).join("."), e]);
+			}
+			return;
+		}
+		var child: String;
+		if( value ) {
+			stack.push(_name);
+			for( child in _properties ) {
+				if( child != "Threshold" || stack.length != 0) {
+					// Ignore the "Threshold" child as its used in the setup process
+					(_properties[child] as PropertyContainer).applyProperty(value, stack);
+				}
+			}
+			stack.pop();
+		} else {
+			for( child in _properties ) {
+				if( LOGGER.warnEnabled ) {
+					LOGGER.warn("Can not set child properties for '{1}' of appender '{0}' as its 'null'", [stack[0], stack.slice(1, stack.length).concat(_name).join(".")]);
+				}
+				break;
 			}
 		}
 	}
@@ -277,7 +285,7 @@ dynamic class AppenderGenerator extends PropertyContainer {
 				LOGGER.warn( "Appender '{0}' can not be instantiated from class '{1}' because the class wasn't available at runtime.", [_name, _value] );
 			}
 		} else if( LOGGER.warnEnabled ) {
-			LOGGER.warn( "Appender '{0}' could not be used as its no ILogTarget implementation or string! Defined as: {1}", [_name, _value] );
+			LOGGER.warn( "Appender '{0}' could not be used as its no ILogTarget implementation or class name! Defined as: {1}", [_name, _value] );
 		}
 		
 		if( target ) {
@@ -390,11 +398,11 @@ class HierarchyEntry {
 	
 	public function applyTo(setup: HierarchicalSetup, appenderLookup: Object ) : void {
 		var target: ILogTarget;
-		for each( var appenderName: String in _appenders ) {
+		for each(var appenderName: String in _appenders) {
 			target = mergeTargets( target, appenderLookup[appenderName] );
 		}
 		setup.setHierarchy(_name, target, _level, _additive);
-		for each( var child: HierarchyEntry in _children ) {
+		for each(var child: HierarchyEntry in _children) {
 			child.applyTo( setup, appenderLookup );
 		}
 	}
