@@ -31,7 +31,7 @@ package org.as3commons.eventbus.impl {
 		private var _eventReceived:Boolean = false;
 		private var _eventBus:EventBus;
 
-		public function EventBusTest(methodName:String = null) {
+		public function EventBusTest(methodName:String=null) {
 			super(methodName);
 		}
 
@@ -562,6 +562,24 @@ package org.as3commons.eventbus.impl {
 			assertTrue(listener.receivedEvent);
 		}
 
+		public function testAddListenerWithSelf():void {
+			var result:Boolean = _eventBus.addListener(_eventBus);
+			assertFalse(result);
+		}
+
+		public function testLinkedEventbuses():void {
+			var eventBus1:EventBus = new EventBus();
+			var eventBus2:EventBus = new EventBus();
+			eventBus1.addListener(eventBus2);
+			eventBus2.addListener(eventBus1);
+			var listener:MockEventBusListener = new MockEventBusListener();
+			eventBus1.addListener(listener, false);
+			eventBus2.addListener(listener, false);
+			eventBus1.dispatchEvent(new Event("test"));
+			assertTrue(listener.receivedEvent);
+			assertEquals(2, listener.receivedCount);
+		}
+
 	}
 }
 
@@ -576,6 +594,7 @@ import org.as3commons.reflect.MethodInvoker;
 class MockEventBusListener implements IEventBusListener {
 
 	public var receivedEvent:Boolean = false;
+	public var receivedCount:int = 0;
 
 	public function MockEventBusListener() {
 		super();
@@ -583,6 +602,7 @@ class MockEventBusListener implements IEventBusListener {
 
 	public function onEvent(event:Event):void {
 		receivedEvent = true;
+		receivedCount++;
 	}
 }
 
@@ -608,9 +628,9 @@ class MockListenerInterceptor extends AbstractEventListenerInterceptor {
 		blockListener = block;
 	}
 
-	override public function interceptListener(listener:Function, eventType:String = null, eventClass:Class = null):void {
+	override public function interceptListener(listener:Function, eventType:String=null, eventClass:Class=null):void {
 	}
 
-	override public function interceptListenerProxy(proxy:MethodInvoker, eventType:String = null, eventClass:Class = null):void {
+	override public function interceptListenerProxy(proxy:MethodInvoker, eventType:String=null, eventClass:Class=null):void {
 	}
 }
