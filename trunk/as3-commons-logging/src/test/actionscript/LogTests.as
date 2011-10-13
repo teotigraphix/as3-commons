@@ -1,4 +1,5 @@
 package {
+	import org.as3commons.logging.setup.Log4JSetupTest;
 	import org.as3commons.logging.api.LoggerTest;
 	import org.as3commons.logging.setup.HierarchicalSetupTest;
 	import org.as3commons.logging.integration.MaashaackIntegrationTest;
@@ -165,6 +166,7 @@ package {
 			core.run( [
 				new HierarchicalSetupTest(),
 				new LoggerTest(),
+				new Log4JSetupTest(),
 				new MaashaackIntegrationTest(),
 				new XMLSetupTest(),
 				new XMLTargetTest(),
