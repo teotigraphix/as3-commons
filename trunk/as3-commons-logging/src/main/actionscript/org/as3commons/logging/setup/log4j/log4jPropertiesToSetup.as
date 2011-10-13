@@ -36,24 +36,25 @@ package org.as3commons.logging.setup.log4j {
 			line = line.replace(/^\s*/, ''); // trim left
 			var char: String = line.charAt(0);
 			if( char != "!" && char != "#" ) {
-				var regExp: RegExp = /^\s*(?P<key>([^\s\\:=]|(\\\s)|(\\n)|(\\r)|(\\t)|(\\\u[a-fA-F0-9]{4,4})|(\\[^\s]))*)\s*[=:]?\s*(?P<value>.*)$/;
-				var lineData: Object = regExp.exec(line);
-				var key: String = unescape(lineData["key"]);
-				var value: String = unescape(lineData["value"]);
-				// Add later lines
-				while( value.charAt(value.length-1) == "\\" ) {
-					++lineNo;
-					value = value.substr(0,value.length-1) + "\n" + unescape(lines[lineNo]);
-				}
-				var path: Array = key.split(".");
-				var root: String = path.shift();
-				if( root == "log4j" ) {
-					var target: Object = log4j;
-					while( path.length > 1 ) {
-						target = target[path.shift()];
+				var lineData: Object = /^\s*(?P<key>([^\s\\:=]|(\\\s)|(\\n)|(\\r)|(\\t)|(\\\u[a-fA-F0-9]{4,4})|(\\[^\s]))*)\s*[=:]?\s*(?P<value>.*)$/m.exec(line);
+				if( lineData ) {
+					var key: String = unescape(lineData["key"]);
+					var value: String = unescape(lineData["value"]);
+					// Add later lines
+					while( value.charAt(value.length-1) == "\\" ) {
+						++lineNo;
+						value = value.substr(0,value.length-1) + "\n" + unescape(lines[lineNo]);
 					}
-					if( path.length == 1 ) {
-						target[path[0]] = value;
+					var path: Array = key.split(".");
+					var root: String = path.shift();
+					if( root == "log4j" ) {
+						var target: Object = log4j;
+						while( path.length > 1 ) {
+							target = target[path.shift()];
+						}
+						if( path.length == 1 ) {
+							target[path[0]] = value;
+						}
 					}
 				}
 			}
