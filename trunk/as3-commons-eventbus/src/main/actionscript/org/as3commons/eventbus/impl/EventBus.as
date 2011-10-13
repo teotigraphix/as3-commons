@@ -46,21 +46,9 @@ package org.as3commons.eventbus.impl {
 
 		private static var LOGGER:ILogger = getLogger(EventBus);
 
-		// --------------------------------------------------------------------
-		//
-		// Constructor
-		//
-		// --------------------------------------------------------------------
-
 		public function EventBus() {
 			super();
 		}
-
-		// --------------------------------------------------------------------
-		//
-		// Protected Variables
-		//
-		// --------------------------------------------------------------------
 
 		// --------------------------------------------------------------------
 		//
@@ -114,6 +102,7 @@ package org.as3commons.eventbus.impl {
 
 		/** The IEventBusListener objects that listen to all events on the event bus. */
 		protected var listeners:EventBusCollectionLookup = new EventBusCollectionLookup();
+		private var _dispatchedEvents:Dictionary = new Dictionary(true);
 		private var _isDisposed:Boolean;
 
 		public function get isDisposed():Boolean {
@@ -230,6 +219,9 @@ package org.as3commons.eventbus.impl {
 		 * @inheritDoc
 		 */
 		public function addListener(listener:IEventBusListener, useWeakReference:Boolean=false, topic:Object=null):Boolean {
+			if (listener === this) {
+				return false;
+			}
 			var result:Boolean = internalAddListener(listeners, listener, useWeakReference, topic, null);
 			LOGGER.debug("Added IEventBusListener {0} for topic {1}", [listener, topic]);
 			return result;
@@ -265,6 +257,7 @@ package org.as3commons.eventbus.impl {
 			if (!event) {
 				return false;
 			}
+			_dispatchedEvents[event] = true;
 			var eventClass:Class = Object(event).constructor as Class;
 			if (invokeInterceptors(event, eventClass, topic) == false) {
 				notifyEventBusListeners(event, topic);
@@ -396,7 +389,9 @@ package org.as3commons.eventbus.impl {
 		 * @inheritDoc
 		 */
 		public function onEvent(event:Event):void {
-			dispatchEvent(event);
+			if (_dispatchedEvents[event] != true) {
+				dispatchEvent(event);
+			}
 		}
 
 		/**

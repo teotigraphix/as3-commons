@@ -7,6 +7,7 @@ Changes in version 1.1.2 (??.??.2011)
 -----------------------------------
 
 * Moved WeakLinkedList from as3commons-collections to -eventbus
+* Added a check to the onEvent handler that confirms that the given event wasn't dispatched by the current Eventbus, this is to prevent loops between linked eventbuses.
 
 Changes in version 1.1.1 (16.02.2011)
 -----------------------------------
