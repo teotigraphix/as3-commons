@@ -17,10 +17,10 @@ package org.as3commons.stageprocessing.impl.selector {
 	import asmock.framework.Expect;
 	import asmock.integration.flexunit.IncludeMocksRule;
 
+	import flexunit.framework.Assert;
+
 	import org.as3commons.stageprocessing.IObjectSelector;
 	import org.as3commons.stageprocessing.test.AbstractTestWithMockRepository;
-	import org.flexunit.asserts.assertFalse;
-	import org.flexunit.asserts.assertTrue;
 
 
 	public class ComposedObjectSelectorTest extends AbstractTestWithMockRepository {
@@ -46,7 +46,7 @@ package org.as3commons.stageprocessing.impl.selector {
 			var cs:ComposedObjectSelector = new ComposedObjectSelector(selectors);
 			var result:Boolean = cs.approve({});
 			mockRepository.verifyAll();
-			assertTrue(result);
+			Assert.assertTrue(result);
 		}
 
 		[Test]
@@ -63,7 +63,7 @@ package org.as3commons.stageprocessing.impl.selector {
 			var cs:ComposedObjectSelector = new ComposedObjectSelector(selectors, false);
 			var result:Boolean = cs.approve({});
 			mockRepository.verifyAll();
-			assertTrue(result);
+			Assert.assertTrue(result);
 		}
 
 		[Test]
@@ -80,7 +80,7 @@ package org.as3commons.stageprocessing.impl.selector {
 			var cs:ComposedObjectSelector = new ComposedObjectSelector(selectors);
 			var result:Boolean = cs.approve({});
 			mockRepository.verifyAll();
-			assertFalse(result);
+			Assert.assertFalse(result);
 		}
 
 	}

@@ -257,13 +257,14 @@
 		    <groupId>com.adobe.flex.framework</groupId>
 		    <artifactId>common-framework</artifactId>
 		    <version>${flex-sdk.version}</version>
+		    <scope>test</scope>
 		    <type>pom</type>
 		</dependency>
 
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.4</version>
+			<version>0.3.5</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
@@ -281,7 +282,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-logging</artifactId>
-			<version>2.5.1</version>
+			<version>2.7</version>
 			<type>swc</type>
 			<scope>external</scope>
 			<exclusions>
@@ -305,7 +306,7 @@
 		    <groupId>com.adobe.flex.framework</groupId>
 		    <artifactId>sparkskins</artifactId>
 		    <version>${flex-sdk.version}</version>
-		    <scope>external</scope>
+		    <scope>test</scope>
 		    <type>swc</type>
 		</dependency>
 
@@ -313,7 +314,7 @@
 		    <groupId>com.adobe.flex.framework</groupId>
 		    <artifactId>spark</artifactId>
 		    <version>${flex-sdk.version}</version>
-		    <scope>external</scope>
+		    <scope>test</scope>
 		    <type>swc</type>
 		</dependency>
 
@@ -321,7 +322,7 @@
 		    <groupId>com.adobe.flex.framework</groupId>
 		    <artifactId>textLayout</artifactId>
 		    <version>${flex-sdk.version}</version>
-		    <scope>external</scope>
+		    <scope>test</scope>
 		    <type>swc</type>
 		</dependency>
 
@@ -329,7 +330,7 @@
 		    <groupId>com.adobe.flex.framework</groupId>
 		    <artifactId>osmf</artifactId>
 		    <version>${flex-sdk.version}</version>
-		    <scope>external</scope>
+		    <scope>test</scope>
 		    <type>swc</type>
 		</dependency>
 
@@ -338,7 +339,7 @@
 		    <artifactId>spark</artifactId>
 		    <version>${flex-sdk.version}</version>
 		    <type>rb.swc</type>
-		    <scope>external</scope>
+		    <scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -346,7 +347,7 @@
 		    <artifactId>textLayout</artifactId>
 		    <version>${flex-sdk.version}</version>
 		    <type>rb.swc</type>
-		    <scope>external</scope>
+		    <scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -354,7 +355,7 @@
 		    <artifactId>osmf</artifactId>
 		    <version>${flex-sdk.version}</version>
 		    <type>rb.swc</type>
-		    <scope>external</scope>
+		    <scope>test</scope>
 		</dependency>
 
 		<!--dependency>
