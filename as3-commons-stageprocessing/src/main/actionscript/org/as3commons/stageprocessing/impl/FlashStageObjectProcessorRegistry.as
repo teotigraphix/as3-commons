@@ -440,19 +440,12 @@ package org.as3commons.stageprocessing.impl {
 		}
 
 		protected function getAssociatedObjectSelectors(displayObject:DisplayObject):Dictionary {
-			var selectors:Dictionary = _rootViews[displayObject];
-			while (selectors == null && displayObject.parent != null) {
-				displayObject = displayObject.parent;
+			var selectors:Dictionary = null;
+			while (selectors == null && displayObject != null) {
 				selectors = _rootViews[displayObject];
+				displayObject = displayObject.parent;
 			}
 			return selectors;
-		/*if (selectors != null) {
-			return selectors;
-		} else if (displayObject.parent != null) {
-			return getAssociatedObjectSelectors(displayObject.parent);
-		} else {
-			return null;
-		}*/
 		}
 
 		protected function getDefaultSelector():IObjectSelector {
