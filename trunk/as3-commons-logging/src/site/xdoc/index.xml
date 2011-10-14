@@ -3,7 +3,6 @@
     <properties>
         <title>Welcome to AS3commons logging</title>
         <author email="mh@leichtgewicht.at">Martin Heidegger</author>
-        <author email="mp@yoolab.com">Martino Piccinato</author>
     </properties>
     <body>
         <section name="Welcome to AS3commons logging">
@@ -13,9 +12,9 @@
         </section>
         
         <section name="Download">
-             <a href="http://as3-commons.googlecode.com/files/as3commons-logging-2.6.swc">
+             <a href="http://as3-commons.googlecode.com/files/as3commons-logging-2.7.swc">
                      <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
-                 Download latest stable (2.6)
+                 Download latest stable (2.7)
              </a> (please visit the <a href="changes.html">Important Changes</a> page if you used logging before v2.5)
         </section>	
         
