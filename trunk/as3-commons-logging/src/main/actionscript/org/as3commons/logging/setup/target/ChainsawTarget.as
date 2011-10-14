@@ -29,7 +29,7 @@ package org.as3commons.logging.setup.target {
 	 * 
 	 * @author Martin Heidegger
 	 * @see http://logging.apache.org/chainsaw
-	 * @see org.as3commons.logging.setup.target.ChainsawTarget
+	 * @see org.as3commons.logging.setup.target.ChainsawGateway
 	 * @since 2.7
 	 */
 	public final class ChainsawTarget implements ILogTarget {
