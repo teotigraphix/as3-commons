@@ -92,7 +92,11 @@ package org.as3commons.stageprocessing.impl {
 		 */
 		public function FlashStageObjectProcessorRegistry() {
 			super();
-			init();
+			_flexVersion = uint.MAX_VALUE;
+			_enabled = false;
+			_initialized = false;
+			_rootViews = new Dictionary(true);
+			_defaultSelectorClass = AllowAllObjectSelector;
 		}
 
 		private var _defaultSelector:IObjectSelector;
@@ -394,7 +398,7 @@ package org.as3commons.stageprocessing.impl {
 		 */
 		protected function added_handler(event:Event):void {
 			if (_enabled) {
-				var displayObject:DisplayObject = DisplayObject(event.target);
+				var displayObject:DisplayObject = event.target as DisplayObject;
 				processDisplayObject(displayObject);
 			}
 		}
@@ -437,13 +441,18 @@ package org.as3commons.stageprocessing.impl {
 
 		protected function getAssociatedObjectSelectors(displayObject:DisplayObject):Dictionary {
 			var selectors:Dictionary = _rootViews[displayObject];
-			if (selectors != null) {
-				return selectors;
-			} else if (displayObject.parent != null) {
-				return getAssociatedObjectSelectors(displayObject.parent);
-			} else {
-				return null;
+			while (selectors == null && displayObject.parent != null) {
+				displayObject = displayObject.parent;
+				selectors = _rootViews[displayObject];
 			}
+			return selectors;
+		/*if (selectors != null) {
+			return selectors;
+		} else if (displayObject.parent != null) {
+			return getAssociatedObjectSelectors(displayObject.parent);
+		} else {
+			return null;
+		}*/
 		}
 
 		protected function getDefaultSelector():IObjectSelector {
@@ -463,14 +472,6 @@ package org.as3commons.stageprocessing.impl {
 				}
 			}
 			return _flexVersion;
-		}
-
-		protected function init():void {
-			_flexVersion = uint.MAX_VALUE;
-			_enabled = false;
-			_initialized = false;
-			_rootViews = new Dictionary(true);
-			_defaultSelectorClass = AllowAllObjectSelector;
 		}
 
 		protected function isBeingReparented(target:DisplayObject):Boolean {

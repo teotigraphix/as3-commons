@@ -14,8 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.stageprocessing.impl.selector {
-	import org.flexunit.asserts.assertTrue;
-
+	import flexunit.framework.Assert;
 
 	public class AllowAllObjectSelectorTest {
 
@@ -26,7 +25,7 @@ package org.as3commons.stageprocessing.impl.selector {
 		[Test]
 		public function testAprove():void {
 			var selector:AllowAllObjectSelector = new AllowAllObjectSelector();
-			assertTrue(selector.approve(null));
+			Assert.assertTrue(selector.approve(null));
 		}
 	}
 }

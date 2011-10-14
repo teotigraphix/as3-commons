@@ -22,5 +22,11 @@ package org.as3commons.stageprocessing.impl.selector {
 			super();
 		}
 
+		[Ignore]
+		[Test]
+		public function testDummy():void {
+
+		}
+
 	}
 }
