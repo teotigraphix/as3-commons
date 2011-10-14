@@ -198,6 +198,8 @@ dynamic class Appenders extends Proxy {
 	
 	log4j var _appenders: Object = {};
 	
+	public function Appenders() {}
+	
 	override flash_proxy function getProperty(name: *): * {
 		var nameStr: String = name;
 		return _appenders[nameStr] ||= new AppenderGenerator(nameStr);
@@ -276,7 +278,7 @@ dynamic class PropertyContainer extends Proxy {
 dynamic class AppenderGenerator extends PropertyContainer {
 	
 	public function AppenderGenerator(name: String) {
-		super( name);
+		super(name);
 	}
 	
 	log4j function getAppender(): ILogTarget {
