@@ -112,7 +112,7 @@ package org.as3commons.logging.setup.log4j {
 	 * <code>referenced</code>.</p>
 	 * 
 	 * <p>There is also a way to limit the setup output using the <code>threshold</code>
-	 * property.<p>
+	 * property.</p>
 	 * 
 	 * <listing>
 	 * log4j.threshold = "FATAL";
