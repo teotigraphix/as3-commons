@@ -1,5 +1,5 @@
 #summary Why another logging framework?
-#labels Type-philosophy,SubProject-logging
+#labels Type-philosophy,SubProject-logging,Featured
 
 = Why another logging framework? =
 Of course we know (maybe better than anyone else) that as3commons is just one of many solutions out there to do logging. For us this question is easy: We want a solution without compromises. Our goal is to provide logging so you never need to think about choosing something else. We took our time and feel confident to have some fine piece of software waiting for you. And here is why:
