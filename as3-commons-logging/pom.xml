@@ -500,6 +500,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.maashaack</groupId>
+            <artifactId>system.logging</artifactId>
+            <version>5005</version>
+            <type>swc</type>
+        </dependency>
+
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito</artifactId>
             <version>1.4M4</version>
