@@ -5,8 +5,10 @@ Note: dates are in DD.MM.YYYY format
 Changes in version 2.7
 -----------------------------------
 * Added: Log4J style setup
+* Added: Hierarchical setup that works like the log4j process
 * Added: Maashaack integration
 * Fixed: http://code.google.com/p/as3-commons/issues/detail?id=95 and cleaned up target instantiation in xml setup process.
+* Fixed: http://code.google.com/p/as3-commons/issues/detail?id=101 now timecodes are passed properly
 
 Changes in version 2.6 (11.09.2011)
 -----------------------------------

@@ -134,12 +134,26 @@ package org.as3commons.logging.setup.log4j {
 		private const _root: HierarchyEntry = new HierarchyEntry("");
 		private var _threshold: LogSetupLevel;
 		
+		/**
+		 * Appender Registry.
+		 */
 		public const appender: Appenders = new Appenders();
+		
+		/**
+		 * Logger path configuration.
+		 */
 		public const logger: LevelSetup = new LevelSetup( _root );
+		
+		/**
+		 * Additive setup definitions.
+		 */
 		public const additivity: AdditivitySetup = new AdditivitySetup(_root);
 		
 		public function Log4JStyleSetup() {}
 		
+		/**
+		 * Root logger definition
+		 */
 		public function set rootLogger(value: String):void {
 			parseValue(_root,value);
 		}
@@ -173,6 +187,7 @@ import org.as3commons.logging.setup.log4j.Log4JStyleSetup;
 import org.as3commons.logging.setup.target.mergeTargets;
 import org.as3commons.logging.util.instantiate;
 
+// Using the internal namespace, so others DON'T use that.
 namespace log4j;
 	
 use namespace log4j;
@@ -344,7 +359,7 @@ function parseValue(entry: HierarchyEntry, value: String):HierarchyEntry {
 	while(--i-(-1)) {
 		var child:String = trim(valueArr[i]);
 		if( child.length > 0 ) {
-			valueArr[i] = child;
+			valueArr[i] = unesc(child);
 		} else {
 			valueArr.splice(i,1); // don't need empty values don't we
 		}
@@ -352,6 +367,22 @@ function parseValue(entry: HierarchyEntry, value: String):HierarchyEntry {
 	entry._level = getLevel( levelStr );
 	entry._appenders = valueArr.length > 0 ? valueArr : null;
 	return entry;
+}
+
+function unesc(str:String):String {
+	return str.replace(/\\([\\tnrb])/g, encodingReplace);
+}
+
+const tags: Object =  {
+	"t": "\t",
+	"n": "\n",
+	"r": "\r",
+	"\\": "\\",
+	"b": "\b"
+};
+
+function encodingReplace(...args:Array):String {
+	return tags[args[1]];
 }
 
 function getLevel(levelStr:String): LogSetupLevel {

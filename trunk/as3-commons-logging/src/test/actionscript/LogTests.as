@@ -1,10 +1,5 @@
 package {
-	import org.as3commons.logging.setup.Log4JSetupTest;
-	import org.as3commons.logging.api.LoggerTest;
-	import org.as3commons.logging.setup.HierarchicalSetupTest;
-	import org.as3commons.logging.integration.MaashaackIntegrationTest;
-	import org.as3commons.logging.util.xml.XMLRuleTest;
-	import org.as3commons.logging.util.xml.XMLTargetTest;
+	import org.as3commons.logging.setup.log4j.Log4JPropertiesTest;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.sampler.getSize;
@@ -27,11 +22,13 @@ package {
 	import org.as3commons.logging.api.LOGGER_FACTORY;
 	import org.as3commons.logging.api.Logger;
 	import org.as3commons.logging.api.LoggerFactory;
+	import org.as3commons.logging.api.LoggerTest;
 	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.logging.integration.ASAPIntegrationTest;
 	import org.as3commons.logging.integration.FlexIntegrationTest;
 	import org.as3commons.logging.integration.Log5FIntegrationTest;
 	import org.as3commons.logging.integration.LogMeisterIntegrationTest;
+	import org.as3commons.logging.integration.MaashaackIntegrationTest;
 	import org.as3commons.logging.integration.MateIntegrationTest;
 	import org.as3commons.logging.integration.OSMFIntegrationTest;
 	import org.as3commons.logging.integration.Progression4IntegrationTest;
@@ -43,12 +40,14 @@ package {
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.setup.ComplexSetupTest;
 	import org.as3commons.logging.setup.FlexSetupTest;
+	import org.as3commons.logging.setup.HierarchicalSetupTest;
 	import org.as3commons.logging.setup.LeveledTargetSetupTest;
 	import org.as3commons.logging.setup.LogSetupTest;
 	import org.as3commons.logging.setup.LogTargetLevelTest;
 	import org.as3commons.logging.setup.MergedSetupTest;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
 	import org.as3commons.logging.setup.SimpleTargetSetupTest;
+	import org.as3commons.logging.setup.log4j.Log4JSetupTest;
 	import org.as3commons.logging.setup.target.AirTargetTest;
 	import org.as3commons.logging.setup.target.BufferTest;
 	import org.as3commons.logging.setup.target.FrameBufferTest;
@@ -65,7 +64,9 @@ package {
 	import org.as3commons.logging.util.LogMessageFormatterTest;
 	import org.as3commons.logging.util.SWFInfo;
 	import org.as3commons.logging.util.toLogName;
+	import org.as3commons.logging.util.xml.XMLRuleTest;
 	import org.as3commons.logging.util.xml.XMLSetupTest;
+	import org.as3commons.logging.util.xml.XMLTargetTest;
 	import org.flexunit.internals.TraceListener;
 	import org.flexunit.runner.FlexUnitCore;
 	
@@ -164,6 +165,7 @@ package {
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
 			core.run( [
+				new Log4JPropertiesTest(),
 				new HierarchicalSetupTest(),
 				new LoggerTest(),
 				new Log4JSetupTest(),
