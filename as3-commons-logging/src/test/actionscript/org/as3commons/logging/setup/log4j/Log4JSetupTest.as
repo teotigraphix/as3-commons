@@ -1,16 +1,15 @@
-package org.as3commons.logging.setup {
-	import org.as3commons.logging.setup.log4j.log4jPropertiesToSetup;
-	import org.as3commons.logging.setup.log4j.TestClassWithArgument;
-	import org.as3commons.logging.level.WARN;
-	import org.as3commons.logging.setup.target.LogStatement;
+package org.as3commons.logging.setup.log4j {
 	import avmplus.getQualifiedClassName;
-
 	import flexunit.framework.TestCase;
-
 	import org.as3commons.logging.api.LOGGER_FACTORY;
 	import org.as3commons.logging.api.Logger;
-	import org.as3commons.logging.setup.log4j.Log4JStyleSetup;
+	import org.as3commons.logging.level.WARN;
+	import org.as3commons.logging.setup.HierarchicalSetup;
+	import org.as3commons.logging.setup.SimpleTargetSetup;
+	import org.as3commons.logging.setup.target.LogStatement;
 	import org.as3commons.logging.setup.target.TraceTarget;
+
+
 	
 	
 	/**
@@ -23,17 +22,6 @@ package org.as3commons.logging.setup {
 		override public function setUp() : void {
 			_testTarget = new TestTarget();
 			LOGGER_FACTORY.setup = new SimpleTargetSetup( _testTarget );
-		}
-		
-		public function testProperties(): void {
-			var logger: Logger = new Logger("name");
-			
-			log4jPropertiesToSetup(
-				"log4j.appender.trace="+getQualifiedClassName(TraceTarget)+"\n"
-				+ "log4j.rootLogger=all, trace"
-			).applyTo(logger);
-			
-			assertTrue( logger.debugTarget is TraceTarget );
 		}
 		
 		public function testRootLogger(): void {
