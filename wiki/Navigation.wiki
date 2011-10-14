@@ -8,7 +8,9 @@
 
 *Logging*([http://code.google.com/p/as3-commons/w/list?q=label:SubProject-logging all entries])
  Basics
-  [WikiSyntax#whylogging]
+  [getloggingsimple Getting started with logging (simple)]
+  [getloggingnormal Getting started with logging (normal)]
+  [whylogging Why another logging framework?]
 <wiki:comment>
 <br>[http://code.google.com/p/as3-commons/w/list?q=label:SubProject-metadata Metadata]<br>[http://code.google.com/p/as3-commons/w/list?q=label:SubProject-reflect Reflect]<br>[http://code.google.com/p/as3-commons/w/list?q=label:SubProject-serialization Serialization]<br>
 [http://code.google.com/p/as3-commons/w/list?q=label:SubProject-stageprocessing Stage Processing]<br>[http://code.google.com/p/as3-commons/w/list?q=label:SubProject-ui UI]</wiki:comment>
