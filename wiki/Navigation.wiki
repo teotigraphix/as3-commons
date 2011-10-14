@@ -8,7 +8,7 @@
 
 *Logging*([http://code.google.com/p/as3-commons/w/list?q=label:SubProject-logging all entries])
  Basics
-  [#whylogging]
+  [as3-commons#whylogging]
 <wiki:comment>
 <br>[http://code.google.com/p/as3-commons/w/list?q=label:SubProject-metadata Metadata]<br>[http://code.google.com/p/as3-commons/w/list?q=label:SubProject-reflect Reflect]<br>[http://code.google.com/p/as3-commons/w/list?q=label:SubProject-serialization Serialization]<br>
 [http://code.google.com/p/as3-commons/w/list?q=label:SubProject-stageprocessing Stage Processing]<br>[http://code.google.com/p/as3-commons/w/list?q=label:SubProject-ui UI]</wiki:comment>
