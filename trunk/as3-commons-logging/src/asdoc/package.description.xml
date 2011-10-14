@@ -33,6 +33,10 @@
 			<shortDescription><![CDATA[Setup mechanisms to define/manipulate the log output.]]></shortDescription>
 			<description><![CDATA[]]></description>
 		</package>
+		<package name="org.as3commons.logging.setup.log4j" >
+			<shortDescription><![CDATA[Log4j style setup process.]]></shortDescription>
+			<description><![CDATA[]]></description>
+		</package>
 		<package name="org.as3commons.logging.setup.target" >
 			<shortDescription><![CDATA[Various output targets that can be used in the setup process.]]></shortDescription>
 			<description><![CDATA[]]></description>
