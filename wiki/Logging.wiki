@@ -1,5 +1,5 @@
+#summary as3commons logging - a short introduction
 #labels Featured,SubProject-logging,Type-philosophy
-#as3commons logging - short overview
 
 = Welcome =
 Many people have had the same problem like us to trace their steps (or the steps of their coworkers) to find out where something went wrong.
