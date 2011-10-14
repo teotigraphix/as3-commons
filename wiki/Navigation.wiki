@@ -6,7 +6,7 @@
 [http://code.google.com/p/as3-commons/w/list?q=label:SubProject-concurrency Concurrency]<br>
 [http://code.google.com/p/as3-commons/w/list?q=label:SubProject-eventbus  Event Bus]<br>[http://code.google.com/p/as3-commons/w/list?q=label:SubProject-lang Lang]<br></wiki:comment>
 
-*Logging* ([intrologging intro] [http://code.google.com/p/as3-commons/w/list?q=label:SubProject-logging all entries])<br><br>
+*Logging* ([logging intro] [http://code.google.com/p/as3-commons/w/list?q=label:SubProject-logging all entries])<br><br>
 - _Basics_ -<br>
 [getloggingsimple Getting started] _(simple)_<br>  
 [getloggingnormal Getting started] _(normal)_<br>
