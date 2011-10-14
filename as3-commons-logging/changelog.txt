@@ -2,11 +2,12 @@ AS3COMMONS LOGGING CHANGELOG
 ============================
 
 Note: dates are in DD.MM.YYYY format
-Changes in version 2.7
+Changes in version 2.7 (14.10.2011)
 -----------------------------------
 * Added: Log4J style setup
 * Added: Hierarchical setup that works like the log4j process
 * Added: Maashaack integration
+* Added: Target to the log4j's Chainsaw tool
 * Fixed: http://code.google.com/p/as3-commons/issues/detail?id=95 and cleaned up target instantiation in xml setup process.
 * Fixed: http://code.google.com/p/as3-commons/issues/detail?id=101 now timecodes are passed properly
 

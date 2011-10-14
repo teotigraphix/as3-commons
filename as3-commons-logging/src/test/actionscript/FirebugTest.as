@@ -1,11 +1,18 @@
 package {
-	import org.as3commons.logging.setup.target.TrazzleTarget;
-	import org.as3commons.logging.setup.target.YalogTarget;
-	import org.as3commons.logging.setup.target.AlconTarget;
-	import org.as3commons.logging.setup.target.DConsoleTarget;
+	import org.as3commons.logging.setup.target.mergeTargets;
+	import org.log5f.Level;
+	import org.log5f.core.Category;
+	import org.log5f.events.LogEvent;
+	import org.log5f.layouts.Log4JLayout;
+	import org.log5f.filters.Filter;
+	import org.log5f.appenders.XMLSocketAppender;
+	import flash.events.Event;
+	import org.log5f.Log5F;
+	import org.as3commons.logging.setup.target.ChainsawTarget;
+	import org.as3commons.logging.setup.target.SOSTarget;
+	import org.as3commons.logging.util.SWFInfo;
 	import com.furusystems.dconsole2.DConsole;
 	import com.demonsters.debugger.MonsterDebugger;
-	import com.junkbyte.console.Cc;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -13,13 +20,6 @@ package {
 	import org.as3commons.logging.api.LOGGER_FACTORY;
 	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.logging.setup.SimpleTargetSetup;
-	import org.as3commons.logging.setup.target.ArthropodTarget;
-	import org.as3commons.logging.setup.target.FirebugTarget;
-	import org.as3commons.logging.setup.target.FlashConsoleTarget;
-	import org.as3commons.logging.setup.target.MonsterDebugger3LogTarget;
-	import org.as3commons.logging.setup.target.MonsterDebugger3TraceTarget;
-	import org.as3commons.logging.setup.target.ThunderBoltTarget;
-	import org.as3commons.logging.setup.target.mergeTargets;
 	import org.as3commons.logging.util.captureUncaughtErrors;
 
 
@@ -31,11 +31,12 @@ package {
 		
 		public function FirebugTest() {
 			
+			SWFInfo.init(stage);
+			
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
 			MonsterDebugger.initialize( this );
-			Cc.startOnStage( this );
 			
 			MonsterDebugger.logger = function(...rest):void {
 				trace("hi");
@@ -44,12 +45,11 @@ package {
 			addChild( DConsole.view );
 			DConsole.show();
 			
-			LOGGER_FACTORY.setup = new SimpleTargetSetup( mergeTargets(
-				new FirebugTarget(), new MonsterDebugger3TraceTarget(),
-				new MonsterDebugger3LogTarget(),
-				new ArthropodTarget(), new FlashConsoleTarget(),
-				new ThunderBoltTarget(), new DConsoleTarget(), new AlconTarget(),
-				new YalogTarget(), new TrazzleTarget(4, null, stage, "My App") )
+			LOGGER_FACTORY.setup = new SimpleTargetSetup(
+				mergeTargets(
+					new SOSTarget(),
+					new ChainsawTarget()
+				)
 			);
 			
 			captureUncaughtErrors( loaderInfo );
@@ -66,6 +66,11 @@ package {
 			logger.debug("My Text {0}ly is a {1}{2} and {1}{3}", [true, {nice:"andwarm"}, "house", 1.0] );
 			
 			//throw new Error("And here some uncaught exception\n");
+			
+			
+			addEventListener( Event.ENTER_FRAME, function(e:Event):void {
+				logger.info("hi");
+			});
 		}
 
 	}
