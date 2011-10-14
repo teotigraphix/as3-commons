@@ -10,19 +10,19 @@ When we prepared the release 2.0 of the logging framework we built it from groun
 Doing that is not an easy thing! For a picture of the extend we thought through it is better to go into examples:
 
  * *We use the method signature "info(message:{{{*}}}, args:Array=null)" instead of "info(message:{{{*}}}, ...args:Array)".*<br>In case you have no parameters to pass its about 10x faster since no array has to be instantiated.
- * *We do not create unnecessary object instances during logging.*<br> There is no "LogEvent" class that gets instantiated or polluted. This result in the fact that we need to pass down all properties to targets but its as fast as it gets.
+ * *We do not create unnecessary object instances during logging.*<br> There is no [http://help.adobe.com/de_DE/AS3LCR/Flex_4.0/mx/logging/LogEvent.html LogEvent] class that gets instantiated or polluted. This result in the fact that we need to pass down all properties to targets but its as fast as it gets.
  * *We do not compare levels!*<br>A level comparison is quite a bit slower than the null check for a reference. We check each level seperately for its target, therefore we not just have a failsafe but also a very fast way of logging.
- * *We do not iterate through a list of appenders!*<br> If you have just one appender (a quite common case) then iterating through a list is overhead. We have a special linked list called "MergedTarget" that sends out log requests at a very high speed in case you need more than one target to send to.
+ * *We do not iterate through a list of appenders!*<br> If you have just one appender (a quite common case) then iterating through a list is overhead. We have a special linked list called [http://as3commons.org/as3-commons-logging/asdoc/index.html?org/as3commons/logging/setup/target/MergedTarget.html&org/as3commons/logging/setup/target/class-list.html MergedTarget] that sends out log requests at a very high speed in case you need more than one target to send to.
  * *Most classes are final.*<br>Final classes are faster than non final ones. We designed our code that most of the classes you will get in touch with are final and stripped down so much that there is no good reason why you would want to extend them. 
 
 And that are just the basics. You can find similar, not always intuitive, performance tricks all over the library.
 
 == Size ==
-AS3 projects usually run in the web and not just JavaScript libraries need to reduce their carbon footprint. In fact most as3 projects transfer much bigger .swfs through our wires.
+AS3 projects usually run in the web and not just [http://en.wikipedia.org/wiki/JavaScript JavaScript] libraries need to reduce their carbon footprint. In fact most [http://en.wikipedia.org/wiki/ActionScript#ActionScript_3.0 ActionScript 3] projects transfer much bigger .swfs through our wires.
 
 We are now at a "silent" configuration size of ~2kb. Other libraries managed to be smaller than as3commons. But we came to the conclusion that it is hardly to do that without seriously sacrificing eighter performance or functionality. Yet we always keep an eye open and if we catch a bit that can be removed here or there, you can be sure it will be gone.
 
-To keep the codebase small we make a excessive use of "function" and "constant" files. Many ActionScript 3 developers seem not to be aware of it but constant files are actually Singleton constructs. They are smaller than writing function files.
+To keep the codebase small we make a excessive use of "function" and "constant" files. Many [http://en.wikipedia.org/wiki/ActionScript#ActionScript_3.0 ActionScript 3] developers seem not to be aware of it but constant files are actually Singleton constructs. They are smaller than writing function files.
 
 As our most prominent example we have {{{LOGGER_FACTORY}}}. Okay its a little uncommon to use a constant like this, but: in case someone just wants to use the class {{{LoggerFactory}}} then the singleton logic will not be compiled into the final swf and therefore automatically stripped apart.
 
@@ -58,4 +58,4 @@ Within our setup process we have super-low-footprint setups that just propagate 
 *Independence*<br>You might wonder why we took the time to implement connectors to so many other logging frameworks. Well the reason is simple. You might use one or another framework right now, and to make it easy for you to catch all those other frameworks we created targets in both directions. That way you can use the configuration in as3commons or in the logging framework of your choice. We already offer connections to all the big players in the flash market like Flex or Swizframework.
 
 == Future ==
-Sure, we are not yet were we want to be. There are a lot of ideas how to make this system better. Some of our plan you can find in our issue tracker http://code.google.com/p/as3-commons/issues/list?can=2&q=label%3ASubProject-logging%20label%3AType-Enhancement I you have any idea or want to help, feel free to contact us.
+Sure, we are not yet were we want to be. There are a lot of ideas how to make this system better. Some of our plan you can find in our issue tracker [http://code.google.com/p/as3-commons/issues/list?can=2&q=label%3ASubProject-logging%20label%3AType-Enhancement Future Enhancements] I you have any idea or want to help, feel free to contact us.
