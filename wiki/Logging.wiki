@@ -1,4 +1,4 @@
-#labels Featured
+#labels Featured,SubProject-logging,Type-philosophy
 #as3commons logging - short overview
 
 = Welcome =
