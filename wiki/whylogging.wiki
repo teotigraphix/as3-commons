@@ -40,7 +40,7 @@ What is a framework good if you could write it in 2 minutes by yourself? There a
 
 Take as example the {{{FirebugTarget}}: We not just send out a string over the {{{ExternalInterface}}}. Every property that you assigned in your message string is converted to a object so it stays inspectable for you. It took us a while to get there, and very few (if any?) of our competition actually thought that far.
 
-Aside well-thought implementations like the former mentioned we also have a good set of utils that can improve your daily life a lot like the tiny util {{{captureUncaughtErrors(loaderInfo);}}}. Once applied it will send all errors that were not caught by your application to the 
+Aside well-thought implementations like the former mentioned we also have a good set of utils that can improve your daily life a lot like the tiny util {{{captureUncaughtErrors(loaderInfo);}}}. Once applied it will send all errors that were not caught by your application to the logging system. 
 
 We have a big set of unit tests for many parts of our libraries. However  - we are humans and errors happen but if they do we usually answer and/or fix bugs *within a day*.
 
