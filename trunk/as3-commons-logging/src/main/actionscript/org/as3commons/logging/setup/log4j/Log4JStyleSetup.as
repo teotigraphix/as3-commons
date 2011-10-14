@@ -34,7 +34,7 @@ package org.as3commons.logging.setup.log4j {
 	 * 
 	 * <listing>
 	 * LOGGER_FACTORY.setup = (new Log4JStyleSetup()).compile();
-	 * <listing>
+	 * </listing>
 	 * 
 	 * <p>This setup allows the definition of appenders, named <code>ILogTargets</code>,
 	 * eigther by direct referencing or using a class name to instantiation.</p>
