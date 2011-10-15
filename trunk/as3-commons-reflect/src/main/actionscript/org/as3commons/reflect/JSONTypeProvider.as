@@ -66,15 +66,18 @@ package org.as3commons.reflect {
 			// Combine metadata from implemented interfaces
 			var numInterfaces:int = type.interfaces.length;
 			for (var i:int = 0; i < numInterfaces; i++) {
-				var interfaze:Type = Type.forName(type.interfaces[i], applicationDomain);
-				concatMetadata(type, interfaze.methods, "methods");
-				concatMetadata(type, interfaze.accessors, "accessors");
-				var interfaceMetadata:Array = interfaze.metadata;
-				var numMetadata:int = interfaceMetadata.length;
+				var interfaze:Type = Type.forName(type.interfaces[int(i)], applicationDomain);
+				if (interfaze != null) {
+					concatMetadata(type, interfaze.methods, "methods");
+					concatMetadata(type, interfaze.accessors, "accessors");
+					var interfaceMetadata:Array = interfaze.metadata;
+					var numMetadata:int = interfaceMetadata.length;
 
-				for (var j:int = 0; j < numMetadata; j++) {
-					if (!type.hasExactMetadata(interfaceMetadata[j])) {
-						type.addMetadata(interfaceMetadata[j]);
+					for (var j:int = 0; j < numMetadata; j++) {
+						var metadata:Metadata = interfaceMetadata[int(j)];
+						if (!type.hasExactMetadata(metadata)) {
+							type.addMetadata(metadata);
+						}
 					}
 				}
 			}
@@ -113,10 +116,8 @@ package org.as3commons.reflect {
 
 		private function parseImplementedInterfaces(interfacesDescription:Array):Array {
 			var result:Array = [];
-			if (interfacesDescription != null) {
-				for each (var fullyQualifiedInterfaceName:String in interfacesDescription) {
-					result[result.length] = ClassUtils.convertFullyQualifiedName(fullyQualifiedInterfaceName);
-				}
+			for each (var fullyQualifiedInterfaceName:String in interfacesDescription) {
+				result[result.length] = ClassUtils.convertFullyQualifiedName(fullyQualifiedInterfaceName);
 			}
 			return result;
 		}
