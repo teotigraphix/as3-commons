@@ -17,6 +17,7 @@ package org.as3commons.metadata.process.impl {
 	import org.as3commons.metadata.test.AnonMetadataProcessorWithAllArguments;
 	import org.as3commons.metadata.test.AnonMetadataProcessorWithArgumentsInDifferentOrderAndDifferentProcessName;
 	import org.as3commons.metadata.test.AnonMetadataProcessorWithOneArgument;
+	import org.as3commons.metadata.test.AnonMetadataProcessorWithTwoArgumentsAndCustomProcessName;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertStrictlyEquals;
 
@@ -67,6 +68,17 @@ package org.as3commons.metadata.process.impl {
 			_processor.process(target, "test", "testInfo");
 			assertEquals(1, anonProcessor.processArgsValues.length);
 			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
+		}
+
+		[Test]
+		public function testCreateWithObjectWithTwoArgumentsAndCustomProcessName():void {
+			var anonProcessor:AnonMetadataProcessorWithTwoArgumentsAndCustomProcessName = new AnonMetadataProcessorWithTwoArgumentsAndCustomProcessName();
+			_processor = new GenericMetadataProcessor(anonProcessor, "customProcess");
+			var target:Object = {};
+			_processor.process(target, "test", "testInfo");
+			assertEquals(2, anonProcessor.processArgsValues.length);
+			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
+			assertStrictlyEquals("testInfo", anonProcessor.processArgsValues[1]);
 		}
 	}
 }
