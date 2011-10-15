@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package org.as3commons.stageprocessing.impl {
-
 	import flash.display.DisplayObject;
 	import flash.errors.IllegalOperationError;
-
 	import org.as3commons.lang.IDisposable;
 	import org.as3commons.stageprocessing.IObjectSelector;
 	import org.as3commons.stageprocessing.IObjectSelectorAware;
@@ -30,55 +28,21 @@ package org.as3commons.stageprocessing.impl {
 	 */
 	public class AbstractStageObjectProcessor implements IStageObjectDestroyer, IDisposable {
 
-		// --------------------------------------------------------------------
-		//
-		// Constructor
-		//
-		// --------------------------------------------------------------------
-
 		/**
 		 * Abstract constructor
 		 * @throws flash.errors.IllegalOperationError When called directly
 		 */
 		public function AbstractStageObjectProcessor(self:AbstractStageObjectProcessor) {
 			super();
-			initAbstractStageProcessor(self);
-		}
-
-		protected function initAbstractStageProcessor(self:AbstractStageObjectProcessor):void {
 			if (self !== this) {
-				throw new IllegalOperationError("AbstractStageProcessor is abstract");
+				throw new IllegalOperationError("AbstractStageObjectProcessor is abstract");
 			}
 		}
-
-		// --------------------------------------------------------------------
-		//
-		// Public Properties
-		//
-		// --------------------------------------------------------------------
-
-		// ----------------------------
-		// isDisposed
-		// ----------------------------
 
 		private var _isDisposed:Boolean = false;
 
 		public function get isDisposed():Boolean {
 			return _isDisposed;
-		}
-
-		// --------------------------------------------------------------------
-		//
-		// Public Methods
-		//
-		// --------------------------------------------------------------------
-
-		/**
-		 * @throws flash.errors.IllegalOperationError When called directly, must be implemented in sub class
-		 * @inheritDoc
-		 */
-		public function process(displayObject:DisplayObject):DisplayObject {
-			throw new IllegalOperationError("Not implemented in abstract base class");
 		}
 
 		/**
@@ -89,9 +53,19 @@ package org.as3commons.stageprocessing.impl {
 			throw new IllegalOperationError("Not implemented in abstract base class");
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function dispose():void {
 			_isDisposed = true;
 		}
 
+		/**
+		 * @throws flash.errors.IllegalOperationError When called directly, must be implemented in sub class
+		 * @inheritDoc
+		 */
+		public function process(displayObject:DisplayObject):DisplayObject {
+			throw new IllegalOperationError("Not implemented in abstract base class");
+		}
 	}
 }
