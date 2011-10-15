@@ -286,7 +286,7 @@ package org.as3commons.lang {
 				throw new IllegalArgumentError("The name of an enum value can only be set once.");
 			}
 			_name = StringUtils.trim(value);
-			initializeEnum(value);
+			initializeEnum(_name);
 		}
 
 		/**
