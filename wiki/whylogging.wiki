@@ -24,7 +24,7 @@ We are now at a "silent" configuration size of ~2kb. Other libraries managed to 
 
 To keep the codebase small we make a excessive use of "function" and "constant" files. Many [http://en.wikipedia.org/wiki/ActionScript#ActionScript_3.0 ActionScript 3] developers seem not to be aware of it but constant files are actually Singleton constructs. They are smaller than writing function files.
 
-As our most prominent example we have {{{LOGGER_FACTORY}}}. Okay, its a little uncommon to use a constant like this, but: In case someone just wants to use the class {{{LoggerFactory}}} then the singleton logic will not be compiled into the final swf and therefore automatically stripped apart.
+As our most prominent example we have {{{LOGGER_FACTORY}}}. Okay, its a little uncommon to use a constant like this, but: In case someone just wants to use the class {{{LoggerFactory}}} then the singleton logic will not be compiled into the final swf and therefore automatically stripped out.
 
 So: Unless your setup or configuration actually needs a certain part of code its not included, that helps us keep our library slim and tender!
 
