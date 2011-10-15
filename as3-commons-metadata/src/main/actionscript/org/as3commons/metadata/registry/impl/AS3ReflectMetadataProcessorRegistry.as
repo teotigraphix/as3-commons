@@ -75,7 +75,7 @@ package org.as3commons.metadata.registry.impl {
 		 * Calls every <code>IMetadataProcessor</code> that has been registered with the metadata that is reported
 		 * by the specified <code>Type</code> object. The <code>IMetadataContainer</code> describing the member that
 		 * is annotated with the specified metadata will be passed to the <code>IMetadataProcessors</code> as the <code>info</code> argument.
-		 * If the <code>info</code> parameter is not null it will be put into an <code>Array</code> together with the <code>IMetadataContainer</code> instance.
+		 * The <code>info</code> parameter will be put into an <code>Array</code> together with the <code>IMetadataContainer</code> instance.
 		 * (First the <code>IMetadataContainer</code> instance then the <code>info</code> parameter.)
 		 * @param type
 		 * @param target
@@ -92,8 +92,7 @@ package org.as3commons.metadata.registry.impl {
 
 				for each (var container:IMetadataContainer in containers) {
 					for each (var processor:IMetadataProcessor in processors) {
-						var extra:* = (info == null) ? container : [container, info];
-						var result:* = processor.process(target, name, extra);
+						var result:* = processor.process(target, name, [container, info]);
 						if (result != null) {
 							target = result;
 						}
