@@ -26,6 +26,7 @@ package org.as3commons.reflect {
 
 	import flexunit.framework.TestCase;
 
+	import org.as3commons.reflect.testclasses.ClassInheritingInternalInterface;
 	import org.as3commons.reflect.testclasses.ComplexClass;
 	import org.as3commons.reflect.testclasses.ComplexerClass;
 	import org.as3commons.reflect.testclasses.ConstructorRecursionHazardClass;
@@ -38,7 +39,7 @@ package org.as3commons.reflect {
 	 */
 	public class TypeTest extends TestCase {
 
-		public function TypeTest(methodName:String = null) {
+		public function TypeTest(methodName:String=null) {
 			super(methodName);
 		}
 
@@ -188,6 +189,12 @@ package org.as3commons.reflect {
 			type = Type.forInstance(new Vector.<Type>());
 			assertEquals(1, type.parameters.length);
 			assertStrictlyEquals(Type, type.parameters[0]);
+		}
+
+		public function testClassInheritingInternalInterface():void {
+			var type:Type = Type.forClass(ClassInheritingInternalInterface);
+			assertEquals(1, type.interfaces.length);
+			assertNull(Type.forName(type.interfaces[0]));
 		}
 
 	}

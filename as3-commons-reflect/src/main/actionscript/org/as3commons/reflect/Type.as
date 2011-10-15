@@ -142,17 +142,15 @@ package org.as3commons.reflect {
 					result = Type.UNTYPED;
 					break;
 				default:
-					try {
-						if (getTypeProvider().getTypeCache().contains(name, applicationDomain)) {
-							result = getTypeProvider().getTypeCache().get(name, applicationDomain);
-						} else {
-							result = Type.forClass(org.as3commons.lang.ClassUtils.forName(name, applicationDomain), applicationDomain);
+					if (getTypeProvider().getTypeCache().contains(name, applicationDomain)) {
+						result = getTypeProvider().getTypeCache().get(name, applicationDomain);
+					} else {
+						try {
+							result = Type.forClass(ClassUtils.forName(name, applicationDomain), applicationDomain);
+						} catch (e:ClassNotFoundError) {
+							trace("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
 						}
-					} catch (e:ReferenceError) {
-						trace("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
-					} // catch (e:ClassNotFoundError) {
-					//logger.warn("The class with the name '{0}' could not be found in the application domain '{1}'", [name, applicationDomain]);
-					//}
+					}
 			}
 			return result;
 		}
