@@ -55,6 +55,5 @@ package org.as3commons.stageprocessing.impl {
 			return displayObject;
 		}
 
-
 	}
 }
