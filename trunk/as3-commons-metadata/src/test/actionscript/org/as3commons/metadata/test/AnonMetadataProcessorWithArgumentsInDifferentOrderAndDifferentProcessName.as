@@ -15,14 +15,12 @@
 */
 package org.as3commons.metadata.test {
 
-	[MetadataProcessor]
+	[MetadataProcessor(metadataNames="test")]
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class AnonMetadataProcessorWithArgumentsInDifferentOrderAndDifferentProcessName {
-
-		private var _processArgsValues:Array;
+	public class AnonMetadataProcessorWithArgumentsInDifferentOrderAndDifferentProcessName extends AbstractAnonMetadataProcessor {
 
 		/**
 		 * Creates a new <code>AnonMetadataProcessorWithAllArgumentsAndDifferentProcessName</code> instance.
@@ -31,17 +29,12 @@ package org.as3commons.metadata.test {
 			super();
 		}
 
-		public function get processArgsValues():Array {
-			return _processArgsValues;
-		}
-
 		[Ignore]
 		[Test]
 		public function process(metadataName:String, info:*, target:Object):void {
-			_processArgsValues = [];
-			_processArgsValues[_processArgsValues.length] = target;
-			_processArgsValues[_processArgsValues.length] = metadataName;
-			_processArgsValues[_processArgsValues.length] = info;
+			processArgsValues[processArgsValues.length] = target;
+			processArgsValues[processArgsValues.length] = metadataName;
+			processArgsValues[processArgsValues.length] = info;
 		}
 
 	}

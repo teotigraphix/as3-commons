@@ -15,26 +15,29 @@
 */
 package org.as3commons.metadata.test {
 
-	[MetadataProcessor(metadataNames="test")]
 	/**
 	 *
-	 * @author rolandzwaga
+	 * @author Roland Zwaga
 	 */
-	public class AnonMetadataProcessorWithAllArguments extends AbstractAnonMetadataProcessor {
+	public class AbstractAnonMetadataProcessor {
+
+		private var _processArgsValues:Array = [];
+
+		public function get processArgsValues():Array {
+			return _processArgsValues;
+		}
 
 		/**
-		 * Creates a new <code>AnonMetadataProcessorWithAllArguments</code> instance.
+		 * Creates a new <code>AbstractAnonMetadataProcessor</code> instance.
 		 */
-		public function AnonMetadataProcessorWithAllArguments() {
+		public function AbstractAnonMetadataProcessor() {
 			super();
 		}
 
 		[Ignore]
 		[Test]
-		public function process(target:Object, metadataName:String, info:*=null):void {
-			processArgsValues[processArgsValues.length] = target;
-			processArgsValues[processArgsValues.length] = metadataName;
-			processArgsValues[processArgsValues.length] = info;
+		public function testDummy():void {
+
 		}
 	}
 }

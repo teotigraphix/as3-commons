@@ -20,21 +20,21 @@ package org.as3commons.metadata.test {
 	 *
 	 * @author rolandzwaga
 	 */
-	public class AnonMetadataProcessorWithAllArguments extends AbstractAnonMetadataProcessor {
+	public class AnonMetadataProcessorWithOneArgument extends AbstractAnonMetadataProcessor {
 
 		/**
-		 * Creates a new <code>AnonMetadataProcessorWithAllArguments</code> instance.
+		 * Creates a new <code>AnonMetadataProcessorWithOneArgument</code> instance.
 		 */
-		public function AnonMetadataProcessorWithAllArguments() {
+		public function AnonMetadataProcessorWithOneArgument() {
 			super();
 		}
 
 		[Ignore]
 		[Test]
-		public function process(target:Object, metadataName:String, info:*=null):void {
+		public function process(target:Object):void {
 			processArgsValues[processArgsValues.length] = target;
-			processArgsValues[processArgsValues.length] = metadataName;
-			processArgsValues[processArgsValues.length] = info;
 		}
+
+
 	}
 }

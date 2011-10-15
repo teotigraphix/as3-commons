@@ -16,6 +16,7 @@
 package org.as3commons.metadata.process.impl {
 	import org.as3commons.metadata.test.AnonMetadataProcessorWithAllArguments;
 	import org.as3commons.metadata.test.AnonMetadataProcessorWithArgumentsInDifferentOrderAndDifferentProcessName;
+	import org.as3commons.metadata.test.AnonMetadataProcessorWithOneArgument;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertStrictlyEquals;
 
@@ -40,6 +41,7 @@ package org.as3commons.metadata.process.impl {
 			_processor = new GenericMetadataProcessor(anonProcessor, "process");
 			var target:Object = {};
 			_processor.process(target, "test", "testInfo");
+			assertEquals(3, anonProcessor.processArgsValues.length);
 			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
 			assertEquals("test", anonProcessor.processArgsValues[1]);
 			assertEquals("testInfo", anonProcessor.processArgsValues[2]);
@@ -51,9 +53,20 @@ package org.as3commons.metadata.process.impl {
 			_processor = new GenericMetadataProcessor(anonProcessor, "process");
 			var target:Object = {};
 			_processor.process(target, "test", "testInfo");
+			assertEquals(3, anonProcessor.processArgsValues.length);
 			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
 			assertEquals("test", anonProcessor.processArgsValues[1]);
 			assertEquals("testInfo", anonProcessor.processArgsValues[2]);
+		}
+
+		[Test]
+		public function testCreateWithObjectWithOneArgument():void {
+			var anonProcessor:AnonMetadataProcessorWithOneArgument = new AnonMetadataProcessorWithOneArgument();
+			_processor = new GenericMetadataProcessor(anonProcessor, "process");
+			var target:Object = {};
+			_processor.process(target, "test", "testInfo");
+			assertEquals(1, anonProcessor.processArgsValues.length);
+			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
 		}
 	}
 }
