@@ -14,12 +14,25 @@
 * limitations under the License.
 */
 package org.as3commons.metadata.process.impl {
+	import mockolate.mock;
+	import mockolate.nice;
+	import mockolate.runner.MockolateRule;
+	import mockolate.verify;
+
+	import org.as3commons.metadata.registry.IMetadataProcessorRegistry;
+	import org.as3commons.metadata.test.AnonMetadataProcessorWithTwoArgumentsAndCustomProcessName;
+	import org.hamcrest.core.anything;
 
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
 	public class MetadataMetadataProcessorTest {
+
+		[Rule]
+		public var mockolateRule:MockolateRule = new MockolateRule();
+		[Mock]
+		public var registry:IMetadataProcessorRegistry;
 
 		/**
 		 * Creates a new <code>MetadataMetadataProcessorTest</code> instance.
@@ -28,6 +41,15 @@ package org.as3commons.metadata.process.impl {
 			super();
 		}
 
+		[Test]
+		public function testProcess():void {
+			registry = nice(IMetadataProcessorRegistry);
+			var processor:MetadataMetadataProcessor = new MetadataMetadataProcessor(registry);
+			mock(registry).method("addProcessor").args(anything()).once();
+			var anonProcessor:AnonMetadataProcessorWithTwoArgumentsAndCustomProcessName = new AnonMetadataProcessorWithTwoArgumentsAndCustomProcessName();
+			processor.process(anonProcessor, "MetadataProcessor");
+			verify(registry);
+		}
 
 	}
 }

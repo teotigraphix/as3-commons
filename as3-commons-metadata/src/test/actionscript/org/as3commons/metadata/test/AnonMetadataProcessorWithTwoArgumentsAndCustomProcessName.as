@@ -15,6 +15,7 @@
 */
 package org.as3commons.metadata.test {
 
+	[MetadataProcessor(metadataNames="metadata1,metadata2", processMethod="customProcess")]
 	/**
 	 *
 	 * @author rolandzwaga
