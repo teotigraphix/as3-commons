@@ -50,7 +50,7 @@ package org.as3commons.metadata.registry.impl {
 			var names:Vector.<String> = new Vector.<String>();
 			names[names.length] = "TestMetadata";
 			stub(processor).getter("metadataNames").returns(names);
-			mock(processor).method("process").args(annotated, "TestMetadata", instanceOf(XML)).once();
+			mock(processor).method("process").args(annotated, "TestMetadata", instanceOf(Array)).once();
 			_registry.addProcessor(processor);
 			_registry.process(annotated);
 			verify(processor);

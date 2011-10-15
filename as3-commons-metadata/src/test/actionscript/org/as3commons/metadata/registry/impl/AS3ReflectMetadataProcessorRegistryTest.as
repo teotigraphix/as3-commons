@@ -52,7 +52,7 @@ package org.as3commons.metadata.registry.impl {
 			var names:Vector.<String> = new Vector.<String>();
 			names[names.length] = "testmetadata";
 			stub(processor).getter("metadataNames").returns(names);
-			mock(processor).method("process").args(annotated, "testmetadata", instanceOf(Type)).once();
+			mock(processor).method("process").args(annotated, "testmetadata", instanceOf(Array)).once();
 			_registry.addProcessor(processor);
 			_registry.process(annotated);
 			verify(processor);
@@ -66,8 +66,8 @@ package org.as3commons.metadata.registry.impl {
 			names[names.length] = "testmethod";
 			names[names.length] = "testmetadata";
 			stub(processor).getter("metadataNames").returns(names);
-			mock(processor).method("process").args(annotated, "testmethod", instanceOf(Method)).times(4);
-			mock(processor).method("process").args(annotated, "testmetadata", instanceOf(Type)).once();
+			mock(processor).method("process").args(annotated, "testmethod", instanceOf(Array)).times(4);
+			mock(processor).method("process").args(annotated, "testmetadata", instanceOf(Array)).once();
 			_registry.addProcessor(processor);
 			_registry.process(annotated);
 			verify(processor);

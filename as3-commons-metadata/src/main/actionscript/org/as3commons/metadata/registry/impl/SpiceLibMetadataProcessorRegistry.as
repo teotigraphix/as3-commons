@@ -44,18 +44,16 @@ package org.as3commons.metadata.registry.impl {
 			var type:ClassInfo = ClassInfo.forInstance(target, applicationDomain);
 			for (var name:String in metadataLookup) {
 				var processors:Vector.<IMetadataProcessor> = metadataLookup[name] as Vector.<IMetadataProcessor>;
-				var containers:Vector.<Member> = (type.hasMetadata(name)) ? new Vector.<Member>[type] : new Vector.<Member>();
-				var memberContainers:Vector.<Member> = getMembersWithMetadata(type, name);
+				var containers:Array = (type.hasMetadata(name)) ? [type] : [];
+				var memberContainers:Array = getMembersWithMetadata(type, name);
 				containers = containers.concat(memberContainers);
 
 				for each (var container:Object in containers) {
 					for each (var processor:IMetadataProcessor in processors) {
-						var extra:* = (info == null) ? container : [container, info];
-						var result:* = processor.process(target, name, extra);
+						var result:* = processor.process(target, name, [container, info]);
 						if (result != null) {
 							target = result;
 						}
-
 					}
 				}
 			}
@@ -67,8 +65,8 @@ package org.as3commons.metadata.registry.impl {
 		 * @param name
 		 * @return
 		 */
-		protected function getMembersWithMetadata(type:ClassInfo, name:String):Vector.<Member> {
-			var result:Vector.<Member> = new Vector.<Member>();
+		protected function getMembersWithMetadata(type:ClassInfo, name:String):Array {
+			var result:Array = [];
 			var members:Array = type.getMethods().concat(type.getStaticMethods()).concat(type.getProperties()).concat(type.getStaticProperties());
 			for each (var m:Member in members) {
 				if (m.hasMetadata(name)) {
