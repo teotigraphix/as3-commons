@@ -26,7 +26,7 @@ To keep the codebase small we make a excessive use of "function" and "constant" 
 
 As our most prominent example we have {{{LOGGER_FACTORY}}}. Okay, its a little uncommon to use a constant like this, but: In case someone just wants to use the class {{{LoggerFactory}}} then the singleton logic will not be compiled into the final swf and therefore automatically stripped out.
 
-So: Unless your setup or configuration actually needs a certain part of code its not included, that helps us keep our library slim and tender!
+So: Unless your setup or configuration actually needs a certain part of code, its not included. This helps us keep our library slim and tender!
 
 == Super-Easy ==
 Aside from regular access to our loggers, which is very fast and good for developers who know what they do. We also have a simple way to access our logging system.
