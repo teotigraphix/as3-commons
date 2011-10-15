@@ -47,7 +47,7 @@ package org.as3commons.metadata.registry.impl {
 		 * @return The <code>Vector.&lt;IMetadataProcessor&gt;</code> that may be associated with the specified metadata name, otherwise <code>null</code> is returned.
 		 */
 		override public function getProcessorsForMetadata(metadataName:String):Vector.<IMetadataProcessor> {
-			return metadataLookup[metadataName.toLowerCase()] as Vector.<IMetadataProcessor>;
+			return metadataLookup[metadataName.toLowerCase()];
 		}
 
 		/**

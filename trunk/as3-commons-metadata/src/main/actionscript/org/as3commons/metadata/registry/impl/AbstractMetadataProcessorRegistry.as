@@ -16,7 +16,6 @@
 package org.as3commons.metadata.registry.impl {
 	import flash.errors.IllegalOperationError;
 	import flash.system.ApplicationDomain;
-
 	import org.as3commons.metadata.process.IMetadataProcessor;
 	import org.as3commons.metadata.registry.IMetadataProcessorRegistry;
 
@@ -66,7 +65,7 @@ package org.as3commons.metadata.registry.impl {
 		 * @inheritDoc
 		 */
 		public function getProcessorsForMetadata(metadataName:String):Vector.<IMetadataProcessor> {
-			return metadataLookup[metadataName] as Vector.<IMetadataProcessor>;
+			return metadataLookup[metadataName];
 		}
 
 		/**

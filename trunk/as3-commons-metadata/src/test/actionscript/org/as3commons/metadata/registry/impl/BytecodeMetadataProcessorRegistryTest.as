@@ -61,7 +61,7 @@ package org.as3commons.metadata.registry.impl {
 			var names:Vector.<String> = new Vector.<String>();
 			names[names.length] = "testmetadata";
 			stub(processor).getter("metadataNames").returns(names);
-			mock(processor).method("process").args(AnnotatedClass, "testmetadata", instanceOf(Type)).once();
+			mock(processor).method("process").args(AnnotatedClass, "testmetadata", instanceOf(Array)).once();
 			_registry.addProcessor(processor);
 			_registry.execute();
 			verify(processor);
