@@ -29,7 +29,7 @@ package org.as3commons.lang {
 	 * @author Erik Westra
 	 */
 	public final class ClassUtils {
-		
+
 		/**
 		 * Returns a <code>Class</code> object that corresponds with the given
 		 * instance. If no correspoding class was found, a
@@ -42,7 +42,7 @@ package org.as3commons.lang {
 		 *
 		 * @see org.as3commons.lang.ClassNotFoundError
 		 */
-		public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):Class {
+		public static function forInstance(instance:*, applicationDomain:ApplicationDomain=null):Class {
 			if (instance.hasOwnProperty(CONSTRUCTOR_FIELD_NAME)) {
 				return instance[CONSTRUCTOR_FIELD_NAME] as Class;
 			} else {
@@ -50,7 +50,7 @@ package org.as3commons.lang {
 				return forName(className, applicationDomain);
 			}
 		}
-		
+
 		/**
 		 * Returns a <code>Class</code> object that corresponds with the given
 		 * name. If no correspoding class was found in the applicationdomain tree, a
@@ -63,14 +63,14 @@ package org.as3commons.lang {
 		 *
 		 * @see org.as3commons.lang.ClassNotFoundError
 		 */
-		public static function forName(name:String, applicationDomain:ApplicationDomain = null):Class {
+		public static function forName(name:String, applicationDomain:ApplicationDomain=null):Class {
 			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Class;
-			
+
 			if (!applicationDomain) {
 				applicationDomain = ApplicationDomain.currentDomain;
 			}
-			
+
 			while (!applicationDomain.hasDefinition(name)) {
 				if (applicationDomain.parentDomain) {
 					applicationDomain = applicationDomain.parentDomain;
@@ -125,7 +125,7 @@ package org.as3commons.lang {
 		 *
 		 * @return the fully qualified name of the class
 		 */
-		public static function getFullyQualifiedName(clazz:Class, replaceColons:Boolean = false):String {
+		public static function getFullyQualifiedName(clazz:Class, replaceColons:Boolean=false):String {
 			var result:String = getQualifiedClassName(clazz);
 
 			if (replaceColons) {
@@ -141,7 +141,7 @@ package org.as3commons.lang {
 		 *
 		 * @return the boolean value indicating whether objects of the type clazz2 can be assigned to objects of clazz1
 		 */
-		public static function isAssignableFrom(clazz1:Class, clazz2:Class, applicationDomain:ApplicationDomain = null):Boolean {
+		public static function isAssignableFrom(clazz1:Class, clazz2:Class, applicationDomain:ApplicationDomain=null):Boolean {
 			return (clazz1 === clazz2) || isSubclassOf(clazz2, clazz1, applicationDomain) || isImplementationOf(clazz2, clazz1, applicationDomain);
 		}
 
@@ -170,10 +170,10 @@ package org.as3commons.lang {
 
 			return (ns.indexOf(".as$") > -1);
 		}
-		
+
 		/**
 		 * Returns a list of all properties of a class.
-		 * 
+		 *
 		 * @param clazz Class of which the properties should be examined,
 		 * @param statik Static properties only, if false non-static only.
 		 * @param readable Only properties that are readable.
@@ -181,11 +181,9 @@ package org.as3commons.lang {
 		 * @param applicationDomain ApplicationDomain where the class was defined
 		 * @return List of properties that match the criterias.
 		 */
-		public static function getProperties(clazz:*, statik:Boolean = false,
-											 readable:Boolean = true, writable:Boolean = true,
-											 applicationDomain:ApplicationDomain = null): Object {
-			var xml: XML = getFromObject(clazz, applicationDomain);
-			var properties: XMLList;
+		public static function getProperties(clazz:*, statik:Boolean=false, readable:Boolean=true, writable:Boolean=true, applicationDomain:ApplicationDomain=null):Object {
+			var xml:XML = getFromObject(clazz, applicationDomain);
+			var properties:XMLList;
 			if (!statik) {
 				xml = xml.factory[0];
 			}
@@ -201,13 +199,13 @@ package org.as3commons.lang {
 				// All writable properties
 				properties = xml.accessor.(@access == "writeonly");
 			}
-			var result: Object = {};
-			var node: XML;
+			var result:Object = {};
+			var node:XML;
 			for each (node in properties) {
-				var nodeClass: Class;
+				var nodeClass:Class;
 				try {
 					nodeClass = ClassUtils.forName(node.@type);
-				} catch( e:Error ) {
+				} catch (e:Error) {
 					nodeClass = Object;
 				}
 				if (node.@uri && QName(node.@uri).localName != "") {
@@ -218,13 +216,13 @@ package org.as3commons.lang {
 			}
 			return result;
 		}
-		
+
 		/**
 		 * Returns whether the passed in Class object is a subclass of the
 		 * passed in parent Class. To check if an interface extends another interface, use the isImplementationOf()
 		 * method instead.
 		 */
-		public static function isSubclassOf(clazz:Class, parentClass:Class, applicationDomain:ApplicationDomain = null):Boolean {
+		public static function isSubclassOf(clazz:Class, parentClass:Class, applicationDomain:ApplicationDomain=null):Boolean {
 			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var parentName:String = getQualifiedClassName(parentClass);
 			return (classDescription.factory.extendsClass.(@type == parentName).length() != 0);
@@ -238,7 +236,7 @@ package org.as3commons.lang {
 		 *
 		 * @returns the super class or null if no parent class was found
 		 */
-		public static function getSuperClass(clazz:Class, applicationDomain:ApplicationDomain = null):Class {
+		public static function getSuperClass(clazz:Class, applicationDomain:ApplicationDomain=null):Class {
 			var result:Class;
 			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var superClasses:XMLList = classDescription.factory.extendsClass;
@@ -271,7 +269,7 @@ package org.as3commons.lang {
 		 *
 		 * @return the fully qualified name of the class' superclass
 		 */
-		public static function getFullyQualifiedSuperClassName(clazz:Class, replaceColons:Boolean = false):String {
+		public static function getFullyQualifiedSuperClassName(clazz:Class, replaceColons:Boolean=false):String {
 			var result:String = getQualifiedSuperclassName(clazz);
 
 			if (replaceColons) {
@@ -289,7 +287,7 @@ package org.as3commons.lang {
 		 *
 		 * @return true if the clazz object implements the given interface; false if not
 		 */
-		public static function isImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
+		public static function isImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain=null):Boolean {
 			var result:Boolean;
 
 			if (clazz == null) {
@@ -310,7 +308,7 @@ package org.as3commons.lang {
 		 *
 		 * @return true if the clazz object implements the methods of the given interface; false if not
 		 */
-		public static function isInformalImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
+		public static function isInformalImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain=null):Boolean {
 			var result:Boolean = true;
 
 			if (clazz == null) {
@@ -382,7 +380,7 @@ package org.as3commons.lang {
 		 * Returns an array of all fully qualified interface names that the
 		 * given class implements.
 		 */
-		public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean = false, applicationDomain:ApplicationDomain = null):Array {
+		public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean=false, applicationDomain:ApplicationDomain=null):Array {
 			var result:Array = [];
 			var classDescription:XML = getFromObject(clazz, applicationDomain);
 			var interfacesDescription:XMLList = classDescription.factory.implementsInterface;
@@ -405,7 +403,7 @@ package org.as3commons.lang {
 		/**
 		 * Returns an array of all interface names that the given class implements.
 		 */
-		public static function getImplementedInterfaces(clazz:Class, applicationDomain:ApplicationDomain = null):Array {
+		public static function getImplementedInterfaces(clazz:Class, applicationDomain:ApplicationDomain=null):Array {
 			applicationDomain ||= ApplicationDomain.currentDomain;
 			var result:Array = getFullyQualifiedImplementedInterfaceNames(clazz);
 
@@ -425,7 +423,7 @@ package org.as3commons.lang {
 		 * @param clazz the class from which an instance will be created
 		 * @param args the arguments that need to be passed to the constructor
 		 */
-		public static function newInstance(clazz:Class, args:Array = null):* {
+		public static function newInstance(clazz:Class, args:Array=null):* {
 			var result:*;
 			var a:Array = (args == null) ? [] : args;
 
@@ -519,7 +517,7 @@ package org.as3commons.lang {
 		 * @param applicationDomain
 		 * @return
 		 */
-		public static function getClassParameterFromFullyQualifiedName(fullName:String, applicationDomain:ApplicationDomain = null):Class {
+		public static function getClassParameterFromFullyQualifiedName(fullName:String, applicationDomain:ApplicationDomain=null):Class {
 			if (StringUtils.startsWith(fullName, AS3VEC_SUFFIX)) {
 				var startIdx:int = fullName.indexOf(LESS_THAN) + 1;
 				var len:int = (fullName.length - startIdx) - 1;

@@ -17,6 +17,7 @@ package org.as3commons.lang {
 	import flexunit.framework.TestCase;
 	import org.as3commons.lang.testclasses.Day;
 	import org.as3commons.lang.testclasses.SampleEnum;
+	import org.as3commons.lang.testclasses.UntrimmedEnum;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertNotNull;
 	import org.flexunit.asserts.assertTrue;
@@ -50,6 +51,14 @@ package org.as3commons.lang {
 		public function testGetEnum():void {
 			assertEquals("MONDAY", Enum.getEnum(Day, "MONDAY").name);
 			assertTrue(Enum.getEnum(Day, "MONDAY").equals(Day.MONDAY));
+		}
+
+		[Test]
+		public function testFetEnum_UntrimmedEnumNames():void {
+		var values:Array = UntrimmedEnum.values;
+			for each (var untrimmedEnum:UntrimmedEnum in values) {
+				assertEquals("Wrong enum returned when creating an enum from it's own name", untrimmedEnum, Enum.getEnum(UntrimmedEnum, untrimmedEnum.name))
+			}
 		}
 
 		[Test]
