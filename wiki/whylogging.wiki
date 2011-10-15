@@ -20,36 +20,36 @@ And that are just the basics. You can find similar, not always intuitive, perfor
 == Size ==
 AS3 projects usually run in the web and not just [http://en.wikipedia.org/wiki/JavaScript JavaScript] libraries need to reduce their carbon footprint. In fact most [http://en.wikipedia.org/wiki/ActionScript#ActionScript_3.0 ActionScript 3] projects transfer much bigger .swfs through our wires.
 
-We are now at a "silent" configuration size of ~2kb. Other libraries managed to be smaller than as3commons. But we came to the conclusion that it is hardly to do that without seriously sacrificing eighter performance or functionality. Yet we always keep an eye open and if we catch a bit that can be removed here or there, you can be sure it will be gone.
+We are now at a "silent" configuration size of ~2kb. Other libraries managed to be smaller than as3commons. But we came to the conclusion that it is hard to do that without seriously sacrificing either performance or functionality. Yet we always keep an eye open and if we catch a bit that can be removed here or there, you can be sure it will be gone in the next release.
 
 To keep the codebase small we make a excessive use of "function" and "constant" files. Many [http://en.wikipedia.org/wiki/ActionScript#ActionScript_3.0 ActionScript 3] developers seem not to be aware of it but constant files are actually Singleton constructs. They are smaller than writing function files.
 
-As our most prominent example we have {{{LOGGER_FACTORY}}}. Okay its a little uncommon to use a constant like this, but: in case someone just wants to use the class {{{LoggerFactory}}} then the singleton logic will not be compiled into the final swf and therefore automatically stripped apart.
+As our most prominent example we have {{{LOGGER_FACTORY}}}. Okay, its a little uncommon to use a constant like this, but: In case someone just wants to use the class {{{LoggerFactory}}} then the singleton logic will not be compiled into the final swf and therefore automatically stripped apart.
 
-So: unless your setup or configuration actually needs a certain part of code its not included, that helps us keep our library slim and tender!
+So: Unless your setup or configuration actually needs a certain part of code its not included, that helps us keep our library slim and tender!
 
 == Super-Easy ==
 Aside from regular access to our loggers, which is very fast and good for developers who know what they do. We also have a simple way to access our logging system.
 
-With calls like {{{info("hi");}}} you have directly a set of methods that you can use with one measly {{{import org.as3commons.logging.simple.*}}}. This way even designers can use the logging system without bothering too much about performance. And in case you wonder where the log statements are we even offer a way to display the class/file position for you to find it easily (as it takes quite a bit performance to implement that its not activated by default).
+With calls like {{{info("hi");}}} you directly have a set of methods that you can use with one measly {{{import org.as3commons.logging.simple.*}}}. This way even designers can use the logging system without bothering too much about performance. And in case you wonder where the log statements are, we even offer a way to display the class/file position for you to find it easily (as it takes quite a bit performance to implement that, its not activated by default).
 
-We also designed the system in a way that no exceptions are thrown and null references should never be a problem. Setups have to work even if you miss typed something or if some connection is dropped or a process returns null. That way you are a little protected for people not to make mistakes with it.
+We also designed the system in a way that no exceptions are thrown and null references should never be a problem. Setups have to work even if you misstyped something or if some connection is dropped or a process returns null. That way you are a little protected against people to make mistakes with it.
 
 == Quality to the detail ==
-What is a framework good if you could write it in 2 minutes by yourself? There are a couple of details that take long to do by yourself.
+What is a framework good for if you could write it in 2 minutes by yourself? There are a couple of details that take a long time to do by yourself.
 
-Take as example the {{{FirebugTarget}}}: We not just send out a string over the {{{ExternalInterface}}}. Every property that you assigned in your message string is converted to a object so it stays inspectable for you. It took us a while to get there, and very few (if any?) of our competition actually thought that far.
+Take for example the {{{FirebugTarget}}}: We not just send out a string over the {{{ExternalInterface}}}. Every property that you assigned in your message string is converted to a object so it stays inspectable for you. It took us a while to get there, and very few (if any?) of our competition actually thought that far.
 
-Aside well-thought implementations like the former mentioned we also have a good set of utils that can improve your daily life a lot like the tiny util {{{captureUncaughtErrors(loaderInfo);}}}. Once applied it will send all errors that were not caught by your application to the logging system. 
+Aside for well-thought-out implementations, like the former mentioned, we also have a good set of utils that can improve your daily life a lot like the tiny util {{{captureUncaughtErrors(loaderInfo);}}}. Once applied it will send all errors that were not caught by your application to the logging system. 
 
 We have a big set of unit tests for many parts of our libraries. However  - we are humans and errors happen but if they do we usually answer and/or fix bugs *within a day*.
 
-Documentation is tough and we are not masters but our asdoc is a lot more thorough than your average flash project. Most classes have meaningful and useful documentations. Take a peek by yourself:[http://as3commons.org/as3-commons-logging/asdoc/index.html Online API Docs]
+Documentation is tough and we are not masters but our asdoc is a lot more thorough than your average flash project. Most classes have meaningful and useful documentation. Take a peek for yourself:[http://as3commons.org/as3-commons-logging/asdoc/index.html Online API Docs]
 
 == Flexibility in configuration ==
 Our setup process is quite minimalistic yet offers a great deal of flexibility.
 
-Within our setup process we have super-low-footprint setups that just propagate to one specific target. Log4j like systems can be found in our 
+Within our setup process we have super-low-footprint setups that just propagate to one specific target. Log4j-like systems can be found in our 
 .swc as well. But to be honest we are much more comfortable with our one process that is far more flexible than this antiquated approach and implemented a regular expression based setup.
 
 == Integrations ==
