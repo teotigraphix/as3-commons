@@ -13,27 +13,21 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.metadata.test {
+package org.as3commons.metadata.process.impl {
 
-	[MetadataProcessor(metadataNames="test")]
 	/**
 	 *
-	 * @author rolandzwaga
+	 * @author Roland Zwaga
 	 */
-	public class AnonMetadataProcessorWithOneArgument extends AbstractAnonMetadataProcessor {
+	public class MetadataMetadataProcessorTest {
 
 		/**
-		 * Creates a new <code>AnonMetadataProcessorWithOneArgument</code> instance.
+		 * Creates a new <code>MetadataMetadataProcessorTest</code> instance.
 		 */
-		public function AnonMetadataProcessorWithOneArgument() {
+		public function MetadataMetadataProcessorTest() {
 			super();
 		}
 
-		[Ignore]
-		[Test]
-		public function process(target:Object):void {
-			processArgsValues[processArgsValues.length] = target;
-		}
 
 	}
 }
