@@ -22,7 +22,8 @@ package org.as3commons.metadata.process.impl {
 	import org.as3commons.reflect.Type;
 
 	/**
-	 *
+	 * <code>IMetadataProcessor</code> implementation that wraps instances annotated with the <code>[MetadataProcessor]</code> in a <code>GenericMetadataProcessor</code>
+	 * instance and registers this with the specified <code>IMetadataProcessorRegistry</code>.
 	 * @author Roland Zwaga
 	 */
 	public class MetadataMetadataProcessor extends AbstractMetadataProcessor {

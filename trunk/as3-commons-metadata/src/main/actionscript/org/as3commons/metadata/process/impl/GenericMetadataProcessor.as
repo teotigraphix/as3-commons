@@ -22,7 +22,9 @@ package org.as3commons.metadata.process.impl {
 	import org.as3commons.reflect.Type;
 
 	/**
-	 *
+	 * <code>IMetadatProcessor</code> implementation that acts as a wrapper for metadata processors that don't implement the <code>IMetadataProcessor</code> interface.<br/>
+	 * By default it uses a method with the name "process" as the processing method. If specified this is overriden by the <code>[MetadataProcessor(processMethod="customProcess")]</code>
+	 * metadata argument. The metadata names that the wrapped object will be invoked for are specified by the <code>[MetadataProcessor(metadataNames="metadataName1,metadataName1")]</code> argument.
 	 * @author Roland Zwaga
 	 */
 	public class GenericMetadataProcessor extends AbstractMetadataProcessor {
