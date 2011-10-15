@@ -7,7 +7,7 @@ Of course we know (maybe better than anyone else) that as3commons is just one of
 == Performance ==
 When we prepared the release 2.0 of the logging framework we built it from ground up new having one main goal: Become the fastest and smallest logging library.
 
-Doing that is not an easy thing! For a picture of the extend we thought through it is better to go into examples:
+Doing that is not an easy thing! For a picture of the extent we have thought this through it is better to go into examples:
 
  * *We use the method signature "info(message:{{{*}}}, args:Array=null)" instead of "info(message:{{{*}}}, ...args:Array)".*<br>In case you have no parameters to pass its about 10x faster since no array has to be instantiated.
  * *We do not create unnecessary object instances during logging.*<br> There is no [http://help.adobe.com/de_DE/AS3LCR/Flex_4.0/mx/logging/LogEvent.html LogEvent] class that gets instantiated or polluted. This result in the fact that we need to pass down all properties to targets but its as fast as it gets.
