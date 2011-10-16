@@ -6,7 +6,8 @@ Note: dates are in DD.MM.YYYY format
 Changes in version 1.0 (??.??.2011)
 -----------------------------------
 
-* Added info parameter to IMetadataProcessorRegistry.process() method that will be passed onto the registered IMetadataProcessors
+* BREAKING CHANGE: IMetadataProcessor.process() now receives an optional Array of parameters instead of an anonynmous object ("*")!!
+* Added optional 'params' Array parameter to IMetadataProcessorRegistry.process() method that will be passed onto the registered IMetadataProcessors.process() method
 * Added GenericMetadataProcessor that acts as a proxy for metadata processors that don't implement the IMetadatProcessor interface
 * MetadataMetadataProcessor that registers metadata processors annotated with [MetadataProcessor] metadata
 and wraps them in an GenericMetadataProcessor instance and registers them with the provided IMetadataProcessorRegistry.

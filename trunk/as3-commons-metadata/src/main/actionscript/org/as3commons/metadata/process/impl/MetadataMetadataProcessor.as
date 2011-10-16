@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 package org.as3commons.metadata.process.impl {
+	import flash.errors.IllegalOperationError;
 	import flash.system.ApplicationDomain;
 
 	import org.as3commons.lang.StringUtils;
@@ -27,6 +28,7 @@ package org.as3commons.metadata.process.impl {
 	 * @author Roland Zwaga
 	 */
 	public class MetadataMetadataProcessor extends AbstractMetadataProcessor {
+
 		private static const METADATA_PROCESSOR_METADATA_NAME:String = "MetadataProcessor";
 		private static const PROCESS_METHOD_ARG:String = "processMethod";
 		private static const METADATA_NAMES_ARG:String = "metadataNames";
@@ -45,6 +47,13 @@ package org.as3commons.metadata.process.impl {
 			_applicationDomain = applicationDomain ||= Type.currentApplicationDomain;
 		}
 
+		/**
+		 *
+		 * @param target
+		 * @param metadataName
+		 * @param params
+		 * @return
+		 */
 		override public function process(target:Object, metadataName:String, params:Array=null):* {
 			var type:Type = Type.forInstance(target, _applicationDomain);
 			var methodName:String = "process";
@@ -57,6 +66,13 @@ package org.as3commons.metadata.process.impl {
 			_metadataProcessorRegistry.addProcessor(processor);
 		}
 
+		/**
+		 * Extract a comma delimited string from the [MetadataProcessor]'s 'metadataNames' argument and returns it as a trimmed
+		 * <code>Vector</code> of strings. This this metadata argument is required this method throws an error if the argument wasn't found.
+		 * @param metadata
+		 * @param names
+		 * @throws flash.errors.IllegalOperationError
+		 */
 		protected function addMetadaNames(metadata:Metadata, names:Vector.<String>):void {
 			if (metadata.hasArgumentWithKey(METADATA_NAMES_ARG)) {
 				var argString:String = metadata.getArgument(METADATA_NAMES_ARG).value;
@@ -64,6 +80,8 @@ package org.as3commons.metadata.process.impl {
 				for each (var arg:String in args) {
 					names[names.length] = StringUtils.trim(arg);
 				}
+			} else {
+				throw new IllegalOperationError("The [MetadataProcessor] metadata is required to contain a metadataNames argument: [MetadataProcessor(metadataNames='Metdata1,Metadata2')]");
 			}
 		}
 
