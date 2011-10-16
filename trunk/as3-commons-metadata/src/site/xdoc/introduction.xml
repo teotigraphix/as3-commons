@@ -18,26 +18,27 @@
 			        <pre>public interface IMetadataProcessorRegistry {
 	function addProcessor(processor:IMetadataProcessor):void;
 	function getProcessorsForMetadata(metadataName:String):Vector.&lt;IMetadataProcessor&gt;;
-	function process(target:Object):*;
+	function process(target:Object, params:Array=null):*;
 	function removeProcessor(processor:IMetadataProcessor):void;
 }</pre></div>
 		<p>The addProcessor() and removeProcessor() methods speak mostly for themselves. They register or unregister a specified <code>IMetadataProcessor</code> with the registry.<br/>
 		Once any processors have been added the <code>IMetadataProcessorRegistry</code> will be able to invoke these processors on any object instances or classes passed to its <code>process()</code> method.<br/>
+		The <code>process()</code> method can also receieve an optional <code>Array</code> of extra parameters which will be passed into each <code>IMetadataProcessor.process()</code>  invocation.<br/>
 		The <code>IMetadataProcessorRegistry</code> implementation will require some kind of mechanism to examine the specified objects for the existence of metadata. AS3Commons-metadata provides three reference
 		implementations that use AS3Commons-reflect, Spicelib Reflect and Flash's native describeType() method do perform this task.</p>
 		<p>The <code>IMetadataProcessor</code> interface itself is even smaller:</p>
 		<div class="source"><pre>public interface IMetadataProcessor {
 	function get metadataNames():Vector.&lt;String&gt;;
 	function canProcess(metadataName:String):Boolean;
-	function process(target:Object, metadataName:String, info:*=null):*;
+	function process(target:Object, metadataName:String, params:Array=null):*;
 }</pre></div>
 		<p>The <code>metadataNames</code> property indicates one or more metadata annotations that this prcoessor needs to be associated with.<br/>
 		If the decision process is slightly more complex, the <code>canProcess()</code> method may be used by an <code>IMetadataProcessorReistry</code> implementation as well,
 		perhaps the ability to perform its task by an <code>IMetadataProcessor</code> is depenendent on some kind of application state. In that case the <code>canProcess()</code>
 		offers some greater flexibility.</p>
 		<p>The <code>process()</code> method contains the actual business logic that is associated with the metadata annotations. The first argument is the instance that is annotated
-		with the metadata that is specified by the second argument. The third argument is optional and may be used by a <code>IMetadataProcessorRegistry</code> to pass extra arbitrary data to
-		the <code>IMetadataProcessor</code>. For example, the <code>AS3ReflectMetadataProcessorRegistry</code> and <code>BytecodeMetadataProcessorRegistry</code> will pass in a <code>Type</code>, <code>Method</code>, <code>Property</code>, 
+		with the metadata that is specified by the second argument. The third argument is optional and may be used by an <code>IMetadataProcessorRegistry</code> to pass extra parameters to
+		each <code>IMetadataProcessor</code>. For example, the <code>AS3ReflectMetadataProcessorRegistry</code> and <code>BytecodeMetadataProcessorRegistry</code> will pass in a <code>Type</code>, <code>Method</code>, <code>Property</code>, 
 		<code>Accessor</code> or <code>Constant</code> instance. The <code>SpicelibMetadataProcessorRegistry</code> will pass in either a <code>ClassInfo</code>, <code>Method</code> or <code>Property</code> instance.<br/>
 		The <code>DescribeTypeMetadataProcessorRegistry</code> simply passes in the XML node containing the reflection data for the specific member or class that contains the annotation.</p>
 		<subsection name="IMetadataProcessor example">
@@ -52,7 +53,7 @@
 		metadataNames[metadataNames.length] = "Validated";
 	}
 			
-	public function process(target:Object, metadataName:String, info:*=null):* {
+	public function process(target:Object, metadataName:String, params:Array=null):* {
 		_validationManager.register(instance);
 	}
 }</pre></div>
@@ -65,7 +66,7 @@
 		metadataNames[metadataNames.length] = "RemoteClass";
 	}
 			
-	public function process(target:Object, metadataName:String, info:*=null):* {
+	public function process(target:Object, metadataName:String, params:Array=null):* {
 		var classAlias:String = getClassAlias();
 		var alternativeClass:Class = getAlternativeClass(classAlias);
 		registerClassAlias(classAlias, alternativeClass);
