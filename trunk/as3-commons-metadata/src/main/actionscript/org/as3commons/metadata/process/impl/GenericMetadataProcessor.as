@@ -50,7 +50,7 @@ package org.as3commons.metadata.process.impl {
 			_methodInvoker.method = methodName;
 			var cls:Class = wrappedMetadataProcessor.constructor;
 			var type:Type = Type.forClass(cls, applicationDomain);
-			var method:Method = type.getMethod(methodName, namespace);
+			var method:Method = type.getMethod(methodName, namespaceURI);
 			var len:int = method.parameters.length;
 			for (var i:int = 0; i < len; ++i) {
 				var param:Parameter = method.parameters[int(i)];
