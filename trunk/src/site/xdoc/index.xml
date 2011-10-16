@@ -72,14 +72,14 @@
 			<tr>
 				<td><strong>Logging</strong></td>
 				<td>An abstraction over logging framework implementations. Being a pure actionscript library it can be used for any Flash/Flex/AIR project. Its use is recommended for use with other libraries/framework trying to be logging framework agnostic.</td>
-				<td>2.6</td>
-				<td>11 Sep 2011</td>
+				<td>2.7</td>
+				<td>14 Oct 2011</td>
 			</tr>
 			<tr>
 				<td><strong>Metadata</strong></td>
 				<td>Library providing a generic mechanism for intercepting and handling of custom metadata on actionscript instances and classes.</td>
-				<td>1.0-RC1</td>
-				<td>03 Oct 2011</td>
+				<td>1.0</td>
+				<td>16 Oct 2011</td>
 			</tr>
 			<tr>
 				<td><strong>Reflect</strong></td>
