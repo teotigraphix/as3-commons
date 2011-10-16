@@ -155,11 +155,21 @@
 		
 		<section name="The GenericMetadaProcessor">
 			<p>To avoid having to implement the <code>IMetadataProcessor</code> for all processors (perhaps there are existing processors that you do not have source code access to) as3commons-metadata provides the <code>GenericMetadataProcessor</code>.<br/>
-			This is an <code>IMetadataProcessor</code> that is capable of wrapping an arbitrary object that is capable of processing metadata.<br/>
+			This is an <code>IMetadataProcessor</code> implementation that is capable of wrapping an arbitrary object that is capable of processing metadata.<br/>
 			The constructor for this <code>GenericMetadataProcessor</code> looks like this:</p>
 			<div class="source"><pre>function GenericMetadataProcessor(wrappedMetadataProcessor:Object, methodName:String="process", applicationDomain:ApplicationDomain=null, namespace:String=null)</pre></div>
 			<p>The first parameter is, naturally, the object that will be wrapped by the <code>GenericMetadataProcessor</code>, the second parameter is the method that will invoked when the <code>GenericMetadataProcessor.process()</code> method is invoked.<br/>
 			The third parameter is an optional <code>ApplicationDomain</code> that the wrapped object might live in. It defaults internally to the current domain. And the last parameter is an optional custom namespace for the wrapped method.</p>
+			<p>The metadata names that the wrapped object should be invoked for can then be added to the <code>GenericMetadataProcessor.metadataNames</code> property.</p>
+			<p>Internally the <code>GenericMetadataProcessor</code> will inspect the wrapped object's process method signature and look for parameters of type <code>Object</code>, <code>String</code> and <code>Array</code>. Not all of theese parameters need to
+			exist. If the given method only expects an <code>Object</code> then only this parameter will be used during invocation.</p>
+			<subsection name="The MetadataMetadaProcessor">
+				<p>As an addition to the <code>GenericMetadataProcessor</code> there is also the <code>MetadataMetadaProcessor</code>. This is an <code>IMetadataProcessor</code> implementation that inspects classes that have been annoated with the <strong>[MetadataProcessor]</strong> metadata.<br/>
+				It looks for the <strong>[MetadataProcessor(metadataNames='MyMetadata,MyOtherMetadata')]</strong> to determine which metadata will will trigger this procssor. By default it will assume that the process method is called <strong>'process'</strong>. If this is not the case then the
+				correct name can be added like this: <strong>[MetadataProcessor(metadataNames='MyMetadata,MyOtherMetadata', methodName='myCustomProcessMethod')]</strong>.<br/>
+				The <code>MetadataMetadaProcessor</code> holds a reference to an <code>IMetadataProcessorRegistry</code>, when it is invoked for an object that is annotated with the <strong>[MetadataProcessor]</strong> it will create a <code>GenericMetadataProcessor</code> for the given instance and
+				register this with its <code>IMetadataProcessorRegistry</code>.
+			</subsection>
 		</section>
 	</body>
 </document>
