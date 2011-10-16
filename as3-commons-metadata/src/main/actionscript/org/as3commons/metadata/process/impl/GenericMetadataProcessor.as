@@ -41,10 +41,11 @@ package org.as3commons.metadata.process.impl {
 		/**
 		 * Creates a new <code>GenericMetadataProcessor</code> instance.
 		 */
-		public function GenericMetadataProcessor(wrappedMetadataProcessor:Object, methodName:String="process", applicationDomain:ApplicationDomain=null, namespace:String=null) {
+		public function GenericMetadataProcessor(wrappedMetadataProcessor:Object, methodName:String="process", applicationDomain:ApplicationDomain=null, namespaceURI:String=null) {
 			applicationDomain ||= Type.currentApplicationDomain;
 			super();
 			_methodInvoker = new MethodInvoker();
+			_methodInvoker.namespaceURI = namespaceURI;
 			_methodInvoker.target = wrappedMetadataProcessor;
 			_methodInvoker.method = methodName;
 			var cls:Class = wrappedMetadataProcessor.constructor;
