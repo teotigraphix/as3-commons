@@ -30,9 +30,9 @@ package org.as3commons.metadata.test {
 
 		[Ignore]
 		[Test]
-		public function customProcess(target:Object, info:*):void {
+		public function customProcess(target:Object, params:Array):void {
 			processArgsValues[processArgsValues.length] = target;
-			processArgsValues[processArgsValues.length] = info;
+			processArgsValues[processArgsValues.length] = params;
 		}
 
 	}

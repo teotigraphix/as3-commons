@@ -37,9 +37,9 @@ package org.as3commons.metadata.process {
 		 * Processes the specified <code>Object</code>. This method return a new instance to replace the passed in object instance.
 		 * @param instance The specified <code>Object</code>.
 		 * @param metadataName The metadata name that triggered this invocation.
-		 * @param info Optional info object that contains implementation specific data.
+		 * @param params Optional <code>Array</code> of parameters that contains implementation specific data.
 		 */
-		function process(target:Object, metadataName:String, info:*=null):*;
+		function process(target:Object, metadataName:String, params:Array=null):*;
 
 	}
 }

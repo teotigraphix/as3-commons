@@ -40,7 +40,7 @@ package org.as3commons.metadata.registry.impl {
 		 * @param target
 		 * @return
 		 */
-		override public function process(target:Object, info:*=null):* {
+		override public function process(target:Object, params:Array=null):* {
 			var type:ClassInfo = ClassInfo.forInstance(target, applicationDomain);
 			for (var name:String in metadataLookup) {
 				var processors:Vector.<IMetadataProcessor> = metadataLookup[name] as Vector.<IMetadataProcessor>;
@@ -50,7 +50,8 @@ package org.as3commons.metadata.registry.impl {
 
 				for each (var container:Object in containers) {
 					for each (var processor:IMetadataProcessor in processors) {
-						var result:* = processor.process(target, name, [container, info]);
+						params = (params != null) ? [container].concat(params) : [container];
+						var result:* = processor.process(target, name, params);
 						if (result != null) {
 							target = result;
 						}
