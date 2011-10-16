@@ -11,7 +11,7 @@
     <name>AS3commons metadata</name>
     <src>images/as3commons-metadata.png</src>
     <href>index.html</href>
-  </bannerLef>
+  </bannerLeft>
 
     <publishDate format="dd MMM yyyy"/>
     <version/>

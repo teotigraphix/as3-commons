@@ -169,7 +169,7 @@
 				It looks for the <strong>[MetadataProcessor(metadataNames='MyMetadata,MyOtherMetadata')]</strong> to determine which metadata will will trigger this procssor. By default it will assume that the process method is called <strong>'process'</strong>. If this is not the case then the
 				correct name can be added like this: <strong>[MetadataProcessor(metadataNames='MyMetadata,MyOtherMetadata', methodName='myCustomProcessMethod')]</strong>.<br/>
 				The <code>MetadataMetadaProcessor</code> holds a reference to an <code>IMetadataProcessorRegistry</code>, when it is invoked for an object that is annotated with the <strong>[MetadataProcessor]</strong> it will create a <code>GenericMetadataProcessor</code> for the given instance and
-				register this with its <code>IMetadataProcessorRegistry</code>.
+				register this with its <code>IMetadataProcessorRegistry</code>.</p>
 			</subsection>
 		</section>
 	</body>
