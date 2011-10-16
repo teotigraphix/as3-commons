@@ -16,8 +16,10 @@
 package org.as3commons.metadata.process.impl {
 	import org.as3commons.metadata.test.AnonMetadataProcessorWithAllArguments;
 	import org.as3commons.metadata.test.AnonMetadataProcessorWithArgumentsInDifferentOrderAndDifferentProcessName;
+	import org.as3commons.metadata.test.AnonMetadataProcessorWithCustomNamespacedProcessMethod;
 	import org.as3commons.metadata.test.AnonMetadataProcessorWithOneArgument;
 	import org.as3commons.metadata.test.AnonMetadataProcessorWithTwoArgumentsAndCustomProcessName;
+	import org.as3commons.metadata.test.as3commons_metadata;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertStrictlyEquals;
 
@@ -81,5 +83,17 @@ package org.as3commons.metadata.process.impl {
 			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
 			assertStrictlyEquals(params, anonProcessor.processArgsValues[1]);
 		}
+
+		[Test]
+		public function testCreateWithObjectCustomNamespacedProcessMethod():void {
+			var anonProcessor:AnonMetadataProcessorWithCustomNamespacedProcessMethod = new AnonMetadataProcessorWithCustomNamespacedProcessMethod();
+			_processor = new GenericMetadataProcessor(anonProcessor, "customNamespacedProcess", null, as3commons_metadata);
+			var target:Object = {};
+			var params:Array = ["testInfo"];
+			_processor.process(target, "test", params);
+			assertEquals(1, anonProcessor.processArgsValues.length);
+			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
+		}
+
 	}
 }
