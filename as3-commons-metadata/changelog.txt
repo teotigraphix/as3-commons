@@ -3,7 +3,7 @@ AS3COMMONS-METADATA CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.0 (??.??.2011)
+Changes in version 1.0 (16.10.2011)
 -----------------------------------
 
 * BREAKING CHANGE: IMetadataProcessor.process() now receives an optional Array of parameters instead of an anonymous object ("*")!! (the info:*=null parameter changed to params:Array=null)
