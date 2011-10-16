@@ -13,7 +13,7 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-metadata</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0-RC2-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>AS3Commons Metadata</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
