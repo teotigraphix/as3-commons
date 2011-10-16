@@ -20,10 +20,10 @@
                 </tr>
                 <tr>
                     <td>
-                        <a href="http://www.springactionscript.org/">Spring Actionscript</a>
+                        <a href="http://www.springactionscript.org/">Spring Actionscript v2.0</a>
                     </td>
                     <td>
-                        Christophe Herreman
+                        Christophe Herreman, Roland Zwaga
                     </td>
                     <td>
                         An Inversion Of Control framework for Actionscript based application.
