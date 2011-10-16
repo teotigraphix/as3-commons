@@ -30,12 +30,12 @@ package org.as3commons.metadata.process.impl {
 	public class GenericMetadataProcessor extends AbstractMetadataProcessor {
 		private static const OBJECT_CLASSNAME:String = "Object";
 		private static const STRING_CLASSNAME:String = "String";
-		private static const VOID_CLASSNAME:String = "*";
+		private static const ARRAY_CLASSNAME:String = "Array";
 
 		private var _methodInvoker:MethodInvoker;
 		private var _objectParamIndex:int = -1;
 		private var _metadataNameIndex:int = -1;
-		private var _InfoIndex:int = -1;
+		private var _arrayIndex:int = -1;
 		private var _paramCount:int = 0;
 
 		/**
@@ -62,15 +62,15 @@ package org.as3commons.metadata.process.impl {
 						_metadataNameIndex = i;
 						_paramCount++;
 						break;
-					case VOID_CLASSNAME:
-						_InfoIndex = i;
+					case ARRAY_CLASSNAME:
+						_arrayIndex = i;
 						_paramCount++;
 						break;
 				}
 			}
 		}
 
-		override public function process(target:Object, metadataName:String, info:*=null):* {
+		override public function process(target:Object, metadataName:String, params:Array=null):* {
 			var args:Array = [];
 			if (_objectParamIndex > -1) {
 				args[_objectParamIndex] = target;
@@ -78,8 +78,8 @@ package org.as3commons.metadata.process.impl {
 			if (_metadataNameIndex > -1) {
 				args[_metadataNameIndex] = metadataName;
 			}
-			if (_InfoIndex > -1) {
-				args[_InfoIndex] = info;
+			if (_arrayIndex > -1) {
+				args[_arrayIndex] = params;
 			}
 			_methodInvoker.arguments = args;
 			return _methodInvoker.invoke();

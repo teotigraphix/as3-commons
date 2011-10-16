@@ -41,7 +41,7 @@ package org.as3commons.metadata.process.impl {
 			var anonProcessor:AnonMetadataProcessorWithAllArguments = new AnonMetadataProcessorWithAllArguments();
 			_processor = new GenericMetadataProcessor(anonProcessor, "process");
 			var target:Object = {};
-			_processor.process(target, "test", "testInfo");
+			_processor.process(target, "test", ["testInfo"]);
 			assertEquals(3, anonProcessor.processArgsValues.length);
 			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
 			assertEquals("test", anonProcessor.processArgsValues[1]);
@@ -53,7 +53,7 @@ package org.as3commons.metadata.process.impl {
 			var anonProcessor:AnonMetadataProcessorWithArgumentsInDifferentOrderAndDifferentProcessName = new AnonMetadataProcessorWithArgumentsInDifferentOrderAndDifferentProcessName();
 			_processor = new GenericMetadataProcessor(anonProcessor, "process");
 			var target:Object = {};
-			_processor.process(target, "test", "testInfo");
+			_processor.process(target, "test", ["testInfo"]);
 			assertEquals(3, anonProcessor.processArgsValues.length);
 			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
 			assertEquals("test", anonProcessor.processArgsValues[1]);
@@ -65,7 +65,7 @@ package org.as3commons.metadata.process.impl {
 			var anonProcessor:AnonMetadataProcessorWithOneArgument = new AnonMetadataProcessorWithOneArgument();
 			_processor = new GenericMetadataProcessor(anonProcessor, "process");
 			var target:Object = {};
-			_processor.process(target, "test", "testInfo");
+			_processor.process(target, "test", ["testInfo"]);
 			assertEquals(1, anonProcessor.processArgsValues.length);
 			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
 		}
@@ -75,10 +75,11 @@ package org.as3commons.metadata.process.impl {
 			var anonProcessor:AnonMetadataProcessorWithTwoArgumentsAndCustomProcessName = new AnonMetadataProcessorWithTwoArgumentsAndCustomProcessName();
 			_processor = new GenericMetadataProcessor(anonProcessor, "customProcess");
 			var target:Object = {};
-			_processor.process(target, "test", "testInfo");
+			var params:Array = ["testInfo"];
+			_processor.process(target, "test", params);
 			assertEquals(2, anonProcessor.processArgsValues.length);
 			assertStrictlyEquals(target, anonProcessor.processArgsValues[0]);
-			assertStrictlyEquals("testInfo", anonProcessor.processArgsValues[1]);
+			assertStrictlyEquals(params, anonProcessor.processArgsValues[1]);
 		}
 	}
 }

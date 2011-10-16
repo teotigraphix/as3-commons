@@ -40,10 +40,10 @@ package org.as3commons.metadata.registry {
 		 * Examines the specified target instance for the existence of any metadata names that have been registered. If these are found the appropriate
 		 * <code>IMetadataProcessors</code> are invoked.
 		 * @param target The specified target object that will be processed by the appropriate <code>IMetadataProcessors</code>.
-		 * @param info An arbitrary data object that will be passed to the <code>process()</code> method of each invoked <code>IMetadataProcessor</code>.
+		 * @param params An optional <code>Array</code> of implementation specific data that will be passed to the <code>process()</code> method of each invoked <code>IMetadataProcessor</code>.
 		 * @return
 		 */
-		function process(target:Object, info:*=null):*;
+		function process(target:Object, params:Array=null):*;
 
 		/**
 		 * Removes the specified <code>IMetadataProcessor</code> from the current <code>IMetadataProcessorRegistry</code>.

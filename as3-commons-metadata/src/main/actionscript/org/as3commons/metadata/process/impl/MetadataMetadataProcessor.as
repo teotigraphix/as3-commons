@@ -45,7 +45,7 @@ package org.as3commons.metadata.process.impl {
 			_applicationDomain = applicationDomain ||= Type.currentApplicationDomain;
 		}
 
-		override public function process(target:Object, metadataName:String, info:*=null):* {
+		override public function process(target:Object, metadataName:String, params:Array=null):* {
 			var type:Type = Type.forInstance(target, _applicationDomain);
 			var methodName:String = "process";
 			var metadata:Metadata = type.getMetadata(METADATA_PROCESSOR_METADATA_NAME)[0];

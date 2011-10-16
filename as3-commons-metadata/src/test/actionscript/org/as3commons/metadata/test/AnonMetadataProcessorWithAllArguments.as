@@ -31,10 +31,10 @@ package org.as3commons.metadata.test {
 
 		[Ignore]
 		[Test]
-		public function process(target:Object, metadataName:String, info:*=null):void {
+		public function process(target:Object, metadataName:String, params:Array=null):void {
 			processArgsValues[processArgsValues.length] = target;
 			processArgsValues[processArgsValues.length] = metadataName;
-			processArgsValues[processArgsValues.length] = info;
+			processArgsValues[processArgsValues.length] = params;
 		}
 	}
 }

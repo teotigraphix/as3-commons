@@ -52,7 +52,7 @@ package org.as3commons.metadata.process.impl {
 		 * This method needs to be implemented by subclasses of <code>AbstractMetadataProcessor</code>.
 		 * @throws flash.errors.IllegalOperationError
 		 */
-		public function process(target:Object, metadataName:String, info:*=null):* {
+		public function process(target:Object, metadataName:String, params:Array=null):* {
 			throw new IllegalOperationError("Not implmented in abstract base class");
 		}
 	}
