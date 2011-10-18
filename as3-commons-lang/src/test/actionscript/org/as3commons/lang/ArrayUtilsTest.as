@@ -33,6 +33,15 @@ package org.as3commons.lang {
         }
 
 		[Test]
+		public function testContains():void {
+			assertFalse(ArrayUtils.contains(null, null));
+			assertFalse(ArrayUtils.contains([], null));
+			var obj:Object = {a: "a"};
+			assertFalse(ArrayUtils.contains([obj], {a: "b"}));
+			assertTrue(ArrayUtils.contains([obj], obj));
+		}		
+		
+		[Test]
         public function testIndexOfEquality():void {
             assertEquals(-1, ArrayUtils.indexOfEquality(null, null));
             assertEquals(-1, ArrayUtils.indexOfEquality(null, 1234));
@@ -79,15 +88,6 @@ package org.as3commons.lang {
         }
 
 		[Test]
-        public function testContains():void {
-            assertFalse(ArrayUtils.contains(null, null));
-            assertFalse(ArrayUtils.contains([], null));
-            var obj:Object = {a: "a"};
-            assertFalse(ArrayUtils.contains([obj], {a: "b"}));
-            assertTrue(ArrayUtils.contains([obj], obj));
-        }
-
-		[Test]
         public function testGetItemAt():void {
             assertNull(ArrayUtils.getItemAt(null, 2));
             assertNull(ArrayUtils.getItemAt([], 2));
@@ -103,20 +103,6 @@ package org.as3commons.lang {
             var testArray:Array = [{a: "b"}, {b: "c"}];
             ArrayUtils.removeAll(testArray);
             assertEquals(0, testArray.length);
-        }
-
-		[Test]
-        public function testIsNotEmpty():void {
-            assertFalse(ArrayUtils.isNotEmpty(null));
-            assertFalse(ArrayUtils.isNotEmpty([]));
-            assertTrue(ArrayUtils.isNotEmpty([{a: "b"}]));
-        }
-
-		[Test]
-        public function testIsEmpty():void {
-            assertTrue(ArrayUtils.isEmpty(null));
-            assertTrue(ArrayUtils.isEmpty([]));
-            assertFalse(ArrayUtils.isEmpty([{a: "b"}]));
         }
 
         [Test]
@@ -156,5 +142,19 @@ package org.as3commons.lang {
             assertEquals("a", original[2]);
         }
 
+		[Test]
+		public function testIsNotEmpty():void {
+			assertFalse(ArrayUtils.isNotEmpty(null));
+			assertFalse(ArrayUtils.isNotEmpty([]));
+			assertTrue(ArrayUtils.isNotEmpty([{a: "b"}]));
+		}
+		
+		[Test]
+		public function testIsEmpty():void {
+			assertTrue(ArrayUtils.isEmpty(null));
+			assertTrue(ArrayUtils.isEmpty([]));
+			assertFalse(ArrayUtils.isEmpty([{a: "b"}]));
+		}		
+		
     }
 }
