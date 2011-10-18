@@ -149,6 +149,83 @@ package org.as3commons.lang {
         }
 
         /**
+         * Facade for containsAnyEquality
+         */
+        public static function containsAny(array:Array, items:Array):Boolean {
+            return containsAnyEquality(array, items);
+        }
+
+        /**
+         * Returns <code>true</code> if the array containsEquality any of them items.
+         */
+        public static function containsAnyEquality(array:Array, items:Array):Boolean {
+            return containsAnyWithComparisonFunction(array, items, containsEquality);
+        }
+
+        /**
+         * Returns <code>true</code> if the array containsStrictEquality any of them items.
+         */
+        public static function containsAnyStrictEquality(array:Array, items:Array):Boolean {
+            return containsAnyWithComparisonFunction(array, items, containsStrictEquality);
+        }
+
+        /**
+         * Returns <code>true</code> if the array containsEquals any of them items.
+         */
+        public static function containsAnyEquals(array:Array, items:Array):Boolean {
+            return containsAnyWithComparisonFunction(array, items, containsEquals);
+        }
+
+        private static function containsAnyWithComparisonFunction(array:Array, items:Array, comparisonFunction:Function):Boolean {
+            if (isNotEmpty(array) && isNotEmpty(items)) {
+                for each (var item:* in items) {
+                    if (comparisonFunction(array, item))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Facade for containsAllEquality
+         */
+        public static function containsAll(array:Array, find:Array):Boolean {
+            return containsAllEquality(array, find);
+        }
+
+        /**
+         * Returns <code>true</code> if the array containsEquality all of them items.
+         */
+        public static function containsAllEquality(array:Array, items:Array):Boolean {
+            return containsAllWithComparisonFunction(array, items, containsEquality);
+        }
+
+        /**
+         * Returns <code>true</code> if the array containsStrictEquality all of them items.
+         */
+        public static function containsAllStrictEquality(array:Array, items:Array):Boolean {
+            return containsAllWithComparisonFunction(array, items, containsStrictEquality);
+        }
+
+        /**
+         * Returns <code>true</code> if the array containsEquals all of them items.
+         */
+        public static function containsAllEquals(array:Array, items:Array):Boolean {
+            return containsAllWithComparisonFunction(array, items, containsEquals);
+        }
+
+        private static function containsAllWithComparisonFunction(array:Array, items:Array, comparisonFunction:Function):Boolean {
+            var result:Boolean = false;
+            if (isNotEmpty(array) && isNotEmpty(items)) {
+                result = true;
+                for each (var item:* in items) {
+                    result = result && comparisonFunction(array, item);
+                }
+            }
+            return result;
+        }
+
+        /**
          * Facade for containsEquality
          */
         public static function contains(array:Array, item:*):Boolean {
@@ -162,29 +239,29 @@ package org.as3commons.lang {
             return indexOfEquality(array, item) > -1;
         }
 
-		/**
-		 * Returns <code>true</code> if the array contains an item which strictly equals (===) the given item.
-		 */
-		public static function containsStrictEquality(array:Array, item:*):Boolean {
-			return indexOfStrictEquality(array, item) > -1;
-		}
-		
-		/**
-		 * Returns <code>true</code> if the array contains the item based on equality via the equals
-		 * method of the IEquals interface
-		 */
-		public static function containsEquals(array:Array, item:IEquals):Boolean {
-			return indexOfEquals(array, item) > -1;
-		}		
-		
-		
-		/**
-		 * Facade for indexOfEquality
-		 */
-		public static function indexOf(array:Array, item:*):int {
-			return indexOfEquality(array, item);
-		}		
-		
+        /**
+         * Returns <code>true</code> if the array contains an item which strictly equals (===) the given item.
+         */
+        public static function containsStrictEquality(array:Array, item:*):Boolean {
+            return indexOfStrictEquality(array, item) > -1;
+        }
+
+        /**
+         * Returns <code>true</code> if the array contains the item based on equality via the equals
+         * method of the IEquals interface
+         */
+        public static function containsEquals(array:Array, item:IEquals):Boolean {
+            return indexOfEquals(array, item) > -1;
+        }
+
+
+        /**
+         * Facade for indexOfEquality
+         */
+        public static function indexOf(array:Array, item:*):int {
+            return indexOfEquality(array, item);
+        }
+
         /**
          * Returns the index of the first item in the array which equals (==) the given item.
          */
@@ -331,19 +408,19 @@ package org.as3commons.lang {
             }
         }
 
-		/**
-		 * @return <code>true</code> if the array is not empty or null.
-		 */
-		public static function isNotEmpty(array:Array):Boolean {
-			return !isEmpty(array);
-		}
-		
-		/**
-		 * @return <code>true</code> if the array is empty or null.
-		 */
-		public static function isEmpty(array:Array):Boolean {
-			return array == null || array.length == 0;
-		}		
-		
+        /**
+         * @return <code>true</code> if the array is not empty or null.
+         */
+        public static function isNotEmpty(array:Array):Boolean {
+            return !isEmpty(array);
+        }
+
+        /**
+         * @return <code>true</code> if the array is empty or null.
+         */
+        public static function isEmpty(array:Array):Boolean {
+            return array == null || array.length == 0;
+        }
+
     }
 }
