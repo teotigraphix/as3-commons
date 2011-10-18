@@ -16,14 +16,14 @@
 package org.as3commons.lang {
 
     import flexunit.framework.TestCase;
-    
+
     import org.as3commons.lang.testclasses.EqualsImplementation;
     import org.flexunit.asserts.assertEquals;
     import org.flexunit.asserts.assertFalse;
     import org.flexunit.asserts.assertNull;
     import org.flexunit.asserts.assertTrue;
 
-	/**
+    /**
      * @author Christophe Herreman
      * @author James Ghandour
      */
@@ -32,16 +32,175 @@ package org.as3commons.lang {
         public function ArrayUtilsTest() {
         }
 
-		[Test]
-		public function testContains():void {
-			assertFalse(ArrayUtils.contains(null, null));
-			assertFalse(ArrayUtils.contains([], null));
-			var obj:Object = {a: "a"};
-			assertFalse(ArrayUtils.contains([obj], {a: "b"}));
-			assertTrue(ArrayUtils.contains([obj], obj));
-		}		
-		
-		[Test]
+        [Test]
+        public function testContainsAnyEquality():void {
+            assertFalse(ArrayUtils.containsAnyEquality(null, null));
+            assertFalse(ArrayUtils.containsAnyEquality([], null));
+            assertFalse(ArrayUtils.containsAnyEquality(null, []));
+
+            var obj1:Object = "a";
+            var obj2:Object = "2";
+            var obj3:Object = "c";
+            var notExistObject:Object = "no";
+            var fullArray:Array = [obj2, obj1, obj3];
+            assertTrue(ArrayUtils.containsAnyEquality(fullArray, [obj1]));
+            assertTrue(ArrayUtils.containsAnyEquality(fullArray, [obj2]));
+            assertTrue(ArrayUtils.containsAnyEquality(fullArray, [obj3]));
+            assertTrue(ArrayUtils.containsAnyEquality(fullArray, [obj1, obj2]));
+            assertTrue(ArrayUtils.containsAnyEquality(fullArray, [obj2, obj3]));
+            assertTrue(ArrayUtils.containsAnyEquality(fullArray, [obj1, obj3]));
+            assertTrue(ArrayUtils.containsAnyEquality(fullArray, [obj1, obj2, obj3]));
+            assertTrue(ArrayUtils.containsAnyEquality(fullArray, [notExistObject, obj1, obj2, obj3]));
+            assertTrue(ArrayUtils.containsAnyEquality(fullArray, [2]));
+            assertFalse(ArrayUtils.containsAnyEquality(fullArray, [notExistObject]));
+        }
+
+        [Test]
+        public function testContainsAnyStrictEquality():void {
+            assertFalse(ArrayUtils.containsAnyStrictEquality(null, null));
+            assertFalse(ArrayUtils.containsAnyStrictEquality([], null));
+            assertFalse(ArrayUtils.containsAnyStrictEquality(null, []));
+
+            var obj1:Object = "a";
+            var obj2:Object = "2";
+            var obj3:Object = "c";
+            var notExistObject:Object = "no";
+            var fullArray:Array = [obj2, obj1, obj3];
+            assertTrue(ArrayUtils.containsAnyStrictEquality(fullArray, [obj1]));
+            assertTrue(ArrayUtils.containsAnyStrictEquality(fullArray, [obj2]));
+            assertTrue(ArrayUtils.containsAnyStrictEquality(fullArray, [obj3]));
+            assertTrue(ArrayUtils.containsAnyStrictEquality(fullArray, [obj1, obj2]));
+            assertTrue(ArrayUtils.containsAnyStrictEquality(fullArray, [obj2, obj3]));
+            assertTrue(ArrayUtils.containsAnyStrictEquality(fullArray, [obj1, obj3]));
+            assertTrue(ArrayUtils.containsAnyStrictEquality(fullArray, [obj1, obj2, obj3]));
+            assertTrue(ArrayUtils.containsAnyStrictEquality(fullArray, [notExistObject, obj1, obj2, obj3]));
+            assertFalse(ArrayUtils.containsAnyStrictEquality(fullArray, [2]));
+            assertFalse(ArrayUtils.containsAnyStrictEquality(fullArray, [notExistObject]));
+        }
+
+        [Test]
+        public function testContainsAnyEquals():void {
+            assertFalse(ArrayUtils.containsAnyEquals(null, null));
+            assertFalse(ArrayUtils.containsAnyEquals([], null));
+            assertFalse(ArrayUtils.containsAnyEquals(null, []));
+
+            var obj1:IEquals = new EqualsImplementation("1");
+            var obj2:IEquals = new EqualsImplementation("2");
+            var obj3:IEquals = new EqualsImplementation("3");
+            var notExistObject:IEquals = new EqualsImplementation("no");
+            var fullArray:Array = [obj2, obj1, obj3];
+            assertTrue(ArrayUtils.containsAnyEquals(fullArray, [obj1]));
+            assertTrue(ArrayUtils.containsAnyEquals(fullArray, [obj2]));
+            assertTrue(ArrayUtils.containsAnyEquals(fullArray, [obj3]));
+            assertTrue(ArrayUtils.containsAnyEquals(fullArray, [obj1, obj2]));
+            assertTrue(ArrayUtils.containsAnyEquals(fullArray, [obj2, obj3]));
+            assertTrue(ArrayUtils.containsAnyEquals(fullArray, [obj1, obj3]));
+            assertTrue(ArrayUtils.containsAnyEquals(fullArray, [obj1, obj2, obj3]));
+            assertTrue(ArrayUtils.containsAnyEquals(fullArray, [notExistObject, obj1, obj2, obj3]));
+            assertFalse(ArrayUtils.containsAnyEquals(fullArray, [notExistObject]));
+        }
+
+        [Test]
+        public function testContainsAllEquality():void {
+            assertFalse(ArrayUtils.containsAllEquality(null, null));
+            assertFalse(ArrayUtils.containsAllEquality([], null));
+            assertFalse(ArrayUtils.containsAllEquality(null, []));
+
+            var obj1:Object = "a";
+            var obj2:Object = "2";
+            var obj3:Object = "c";
+
+            var fullArray:Array = [obj2, obj1, obj3];
+            assertTrue(ArrayUtils.containsAllEquality(fullArray, [obj1]));
+            assertTrue(ArrayUtils.containsAllEquality(fullArray, [obj2]));
+            assertTrue(ArrayUtils.containsAllEquality(fullArray, [obj3]));
+            assertTrue(ArrayUtils.containsAllEquality(fullArray, [obj1, obj2]));
+            assertTrue(ArrayUtils.containsAllEquality(fullArray, [obj1, obj2, obj3]));
+            assertTrue(ArrayUtils.containsAllEquality(fullArray, [obj3, obj2]));
+            assertTrue(ArrayUtils.containsAllEquality(fullArray, [ObjectUtils.clone(obj2)]));
+
+            var subsetArray:Array = [obj2, obj3];
+            assertFalse(ArrayUtils.containsAllEquality(subsetArray, [obj1]));
+            assertTrue(ArrayUtils.containsAllEquality(subsetArray, [obj2]));
+            assertTrue(ArrayUtils.containsAllEquality(subsetArray, [obj3]));
+            assertFalse(ArrayUtils.containsAllEquality(subsetArray, [obj1, obj2]));
+            assertFalse(ArrayUtils.containsAllEquality(subsetArray, [obj1, obj2, obj3]));
+            assertTrue(ArrayUtils.containsAllEquality(subsetArray, [obj3, obj2]));
+            assertTrue(ArrayUtils.containsAllEquality(subsetArray, ["2"]));
+            assertTrue(ArrayUtils.containsAllEquality(subsetArray, [2]));
+        }
+
+        [Test]
+        public function testContainsAllStrictEquality():void {
+            assertFalse(ArrayUtils.containsAllStrictEquality(null, null));
+            assertFalse(ArrayUtils.containsAllStrictEquality([], null));
+            assertFalse(ArrayUtils.containsAllStrictEquality(null, []));
+
+            var obj1:Object = "1";
+            var obj2:Object = "2";
+            var obj3:Object = "3";
+
+            var fullArray:Array = [obj2, obj1, obj3];
+            assertTrue(ArrayUtils.containsAllStrictEquality(fullArray, [obj1]));
+            assertTrue(ArrayUtils.containsAllStrictEquality(fullArray, [obj2]));
+            assertTrue(ArrayUtils.containsAllStrictEquality(fullArray, [obj3]));
+            assertTrue(ArrayUtils.containsAllStrictEquality(fullArray, [obj1, obj2]));
+            assertTrue(ArrayUtils.containsAllStrictEquality(fullArray, [obj1, obj2, obj3]));
+            assertTrue(ArrayUtils.containsAllStrictEquality(fullArray, [obj3, obj2]));
+            assertTrue(ArrayUtils.containsAllStrictEquality(fullArray, [ObjectUtils.clone(obj2)]));
+
+            var subsetArray:Array = [obj2, obj3];
+            assertFalse(ArrayUtils.containsAllStrictEquality(subsetArray, [obj1]));
+            assertTrue(ArrayUtils.containsAllStrictEquality(subsetArray, [obj2]));
+            assertTrue(ArrayUtils.containsAllStrictEquality(subsetArray, [obj3]));
+            assertFalse(ArrayUtils.containsAllStrictEquality(subsetArray, [obj1, obj2]));
+            assertFalse(ArrayUtils.containsAllStrictEquality(subsetArray, [obj1, obj2, obj3]));
+            assertTrue(ArrayUtils.containsAllStrictEquality(subsetArray, [obj3, obj2]));
+            assertTrue(ArrayUtils.containsAllStrictEquality(subsetArray, ["2"]));
+            assertFalse(ArrayUtils.containsAllStrictEquality(subsetArray, [2]));
+        }
+
+        [Test]
+        public function testContainsAllEquals():void {
+            assertFalse(ArrayUtils.containsAllEquals(null, null));
+            assertFalse(ArrayUtils.containsAllEquals([], null));
+            assertFalse(ArrayUtils.containsAllEquals(null, []));
+
+            var obj1:IEquals = new EqualsImplementation("1");
+            var obj2:IEquals = new EqualsImplementation("2");
+            var obj3:IEquals = new EqualsImplementation("3");
+
+            var fullArray:Array = [obj2, obj1, obj3];
+            assertTrue(ArrayUtils.containsAllEquals(fullArray, [obj1]));
+            assertTrue(ArrayUtils.containsAllEquals(fullArray, [obj2]));
+            assertTrue(ArrayUtils.containsAllEquals(fullArray, [obj3]));
+            assertTrue(ArrayUtils.containsAllEquals(fullArray, [obj1, obj2]));
+            assertTrue(ArrayUtils.containsAllEquals(fullArray, [obj1, obj2, obj3]));
+            assertTrue(ArrayUtils.containsAllEquals(fullArray, [obj3, obj2]));
+            assertTrue(ArrayUtils.containsAllEquals(fullArray, [new EqualsImplementation("2")]));
+
+            var subsetArray:Array = [obj2, obj3];
+            assertFalse(ArrayUtils.containsAllEquals(subsetArray, [obj1]));
+            assertTrue(ArrayUtils.containsAllEquals(subsetArray, [obj2]));
+            assertTrue(ArrayUtils.containsAllEquals(subsetArray, [obj3]));
+            assertFalse(ArrayUtils.containsAllEquals(subsetArray, [obj1, obj2]));
+            assertFalse(ArrayUtils.containsAllEquals(subsetArray, [obj1, obj2, obj3]));
+            assertTrue(ArrayUtils.containsAllEquals(subsetArray, [obj3, obj2]));
+            assertTrue(ArrayUtils.containsAllEquals(subsetArray, [new EqualsImplementation("2")]));
+            assertFalse(ArrayUtils.containsAllEquals(subsetArray, [new EqualsImplementation("2 ")]));
+        }
+
+        [Test]
+        public function testContainsEquality():void {
+            assertFalse(ArrayUtils.containsEquality(null, null));
+            assertFalse(ArrayUtils.containsEquality([], null));
+            var obj:Object = {a: "a"};
+            assertFalse(ArrayUtils.containsEquality([obj], {a: "b"}));
+            assertFalse(ArrayUtils.containsEquality([obj], {a: "a"}));
+            assertTrue(ArrayUtils.containsEquality([obj], obj));
+        }
+
+        [Test]
         public function testIndexOfEquality():void {
             assertEquals(-1, ArrayUtils.indexOfEquality(null, null));
             assertEquals(-1, ArrayUtils.indexOfEquality(null, 1234));
@@ -52,7 +211,7 @@ package org.as3commons.lang {
             assertEquals(1, ArrayUtils.indexOfEquality(["a", "b"], "b"));
         }
 
-		[Test]
+        [Test]
         public function testIndexOfStrictEquality():void {
             assertEquals(-1, ArrayUtils.indexOfStrictEquality(null, null));
             assertEquals(-1, ArrayUtils.indexOfStrictEquality(null, 1234));
@@ -63,7 +222,7 @@ package org.as3commons.lang {
             assertEquals(1, ArrayUtils.indexOfStrictEquality(["a", "b"], "b"));
         }
 
-		[Test]
+        [Test]
         public function testIndexOfEquals():void {
             assertEquals(-1, ArrayUtils.indexOfEquals(null, null));
             assertEquals(-1, ArrayUtils.indexOfEquals(null, new EqualsImplementation()));
@@ -73,21 +232,21 @@ package org.as3commons.lang {
             assertEquals(1, ArrayUtils.indexOfEquals([new EqualsImplementation("a"), new EqualsImplementation("b")], new EqualsImplementation("b")));
         }
 
-		[Test]
+        [Test]
         public function testGetLength():void {
             assertEquals(0, ArrayUtils.getLength(null));
             assertEquals(0, ArrayUtils.getLength([]));
             assertEquals(1, ArrayUtils.getLength([{a: "b"}]));
         }
 
-		[Test]
+        [Test]
         public function testGetUniqueValues():void {
             assertTrue(ArrayUtils.isSame([], ArrayUtils.getUniqueValues(null)));
             assertTrue(ArrayUtils.isSame([], ArrayUtils.getUniqueValues([])));
             assertTrue(ArrayUtils.isSame([1, 2, 3, 4, 5], ArrayUtils.getUniqueValues([1, 2, 3, 4, 5, 2, 3, 4, 5])));
         }
 
-		[Test]
+        [Test]
         public function testGetItemAt():void {
             assertNull(ArrayUtils.getItemAt(null, 2));
             assertNull(ArrayUtils.getItemAt([], 2));
@@ -96,7 +255,7 @@ package org.as3commons.lang {
             assertEquals(5, ArrayUtils.getItemAt([1, 2, 3, 4, 5], 4, 15));
         }
 
-		[Test]
+        [Test]
         public function testRemoveAll():void {
             ArrayUtils.removeAll(null);
             ArrayUtils.removeAll([]);
@@ -142,19 +301,19 @@ package org.as3commons.lang {
             assertEquals("a", original[2]);
         }
 
-		[Test]
-		public function testIsNotEmpty():void {
-			assertFalse(ArrayUtils.isNotEmpty(null));
-			assertFalse(ArrayUtils.isNotEmpty([]));
-			assertTrue(ArrayUtils.isNotEmpty([{a: "b"}]));
-		}
-		
-		[Test]
-		public function testIsEmpty():void {
-			assertTrue(ArrayUtils.isEmpty(null));
-			assertTrue(ArrayUtils.isEmpty([]));
-			assertFalse(ArrayUtils.isEmpty([{a: "b"}]));
-		}		
-		
+        [Test]
+        public function testIsNotEmpty():void {
+            assertFalse(ArrayUtils.isNotEmpty(null));
+            assertFalse(ArrayUtils.isNotEmpty([]));
+            assertTrue(ArrayUtils.isNotEmpty([{a: "b"}]));
+        }
+
+        [Test]
+        public function testIsEmpty():void {
+            assertTrue(ArrayUtils.isEmpty(null));
+            assertTrue(ArrayUtils.isEmpty([]));
+            assertFalse(ArrayUtils.isEmpty([{a: "b"}]));
+        }
+
     }
 }
