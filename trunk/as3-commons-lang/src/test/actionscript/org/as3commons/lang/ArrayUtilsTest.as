@@ -233,6 +233,102 @@ package org.as3commons.lang {
         }
 
         [Test]
+        public function testRemoveAllItemsStrictEquality():void {
+            var obj1:Object = "1";
+            var obj2:Object = "2";
+            var obj3:Object = "3";
+            var fullArray:Array = [obj1, obj2, obj2, obj3, obj1, obj3];
+            var testArray:Array = [];
+
+            testArray = ArrayUtils.clone(fullArray);
+            ArrayUtils.removeAllItemsStrictEquality(testArray, null);
+            assertEquals(fullArray.length, testArray.length);
+            ArrayUtils.removeAllItemsStrictEquality(testArray, []);
+            assertEquals(fullArray.length, testArray.length);
+            ArrayUtils.removeAllItemsStrictEquality(testArray, [null]);
+            assertEquals(fullArray.length, testArray.length);
+            ArrayUtils.removeAllItemsStrictEquality(testArray, [{a: "ccc"}]);
+            assertEquals(fullArray.length, testArray.length);
+
+            testArray = ArrayUtils.clone(fullArray);
+            ArrayUtils.removeAllItemsStrictEquality(testArray, [{a: "ccc"}, obj1, null]);
+            assertEquals(4, testArray.length);
+
+            testArray = ArrayUtils.clone(fullArray);
+            ArrayUtils.removeAllItemsStrictEquality(testArray, [{b: "ga"}, obj2, null]);
+            assertEquals(4, testArray.length);
+
+            testArray = ArrayUtils.clone(fullArray);
+            ArrayUtils.removeAllItemsStrictEquality(testArray, [obj1, obj2, obj3]);
+            assertEquals(0, testArray.length);
+        }
+
+        [Test]
+        public function testRemoveItemEquality():void {
+            var obj1:Object = "1";
+            var obj2:Object = "2";
+            var obj3:Object = "3";
+            var fullArray:Array = [obj1, obj2, obj2, obj3, obj1, obj3];
+            var testArray:Array = [];
+
+            ArrayUtils.removeItemEquality(null, fullArray);
+            ArrayUtils.removeItemEquality(fullArray, null);
+            ArrayUtils.removeItemEquality(fullArray, []);
+            ArrayUtils.removeItemEquality(fullArray, "#$@");
+            assertEquals(6, fullArray.length);
+
+            testArray = ArrayUtils.clone(fullArray);
+            ArrayUtils.removeItemEquality(testArray, 1);
+            assertEquals(4, testArray.length);
+        }
+
+        [Test]
+        public function testRemoveItemStrictEquality():void {
+            var obj1:Object = "1";
+            var obj2:Object = "2";
+            var obj3:Object = "3";
+            var fullArray:Array = [obj1, obj2, obj2, obj3, obj1, obj3];
+            var testArray:Array = [];
+
+            ArrayUtils.removeItemStrictEquality(null, fullArray);
+            ArrayUtils.removeItemStrictEquality(fullArray, null);
+            ArrayUtils.removeItemStrictEquality(fullArray, []);
+            ArrayUtils.removeItemStrictEquality(fullArray, "#$@");
+            assertEquals(6, fullArray.length);
+
+            testArray = ArrayUtils.clone(fullArray);
+            ArrayUtils.removeItemStrictEquality(testArray, obj2);
+            assertEquals(4, testArray.length);
+
+            testArray = ArrayUtils.clone(fullArray);
+            ArrayUtils.removeItemStrictEquality(testArray, 1);
+            assertEquals(6, testArray.length);
+        }
+
+        [Test]
+        public function testRemoveItemEquals():void {
+            var obj1:IEquals = new EqualsImplementation("1");
+            var obj2:IEquals = new EqualsImplementation("2");
+            var obj3:IEquals = new EqualsImplementation("3");
+            var fullArray:Array = [obj1, obj2, obj2, obj3, obj1, obj3];
+            var testArray:Array = [];
+
+            ArrayUtils.removeItemStrictEquality(null, fullArray);
+            ArrayUtils.removeItemStrictEquality(fullArray, null);
+            ArrayUtils.removeItemStrictEquality(fullArray, []);
+            ArrayUtils.removeItemStrictEquality(fullArray, "#$@");
+            assertEquals(6, fullArray.length);
+
+            testArray = ArrayUtils.clone(fullArray);
+            ArrayUtils.removeItemStrictEquality(testArray, obj2);
+            assertEquals(4, testArray.length);
+
+            testArray = ArrayUtils.clone(fullArray);
+            ArrayUtils.removeItemStrictEquality(testArray, 1);
+            assertEquals(6, testArray.length);
+        }
+
+        [Test]
         public function testGetLength():void {
             assertEquals(0, ArrayUtils.getLength(null));
             assertEquals(0, ArrayUtils.getLength([]));
@@ -262,6 +358,22 @@ package org.as3commons.lang {
             var testArray:Array = [{a: "b"}, {b: "c"}];
             ArrayUtils.removeAll(testArray);
             assertEquals(0, testArray.length);
+        }
+
+        [Test]
+        public function testAddAll():void {
+            var original:Array = ["a", "b", "c"];
+            var toAdd:Array = ["d", null, "e"];
+
+            ArrayUtils.addAll(null, toAdd);
+            ArrayUtils.addAll(original, []);
+            ArrayUtils.addAll(original, null);
+            assertEquals(3, original.length); // No changes
+
+            ArrayUtils.addAll(original, [null]);
+            assertEquals(4, original.length);
+            ArrayUtils.addAll(original, toAdd);
+            assertEquals(7, original.length);
         }
 
         [Test]
