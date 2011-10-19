@@ -196,30 +196,14 @@ package org.as3commons.lang {
          * Returns the index of the first item in the array which equals (==) the given item.
          */
         public static function indexOfEquality(array:Array, item:*):int {
-            var numItems:int = getLength(array);
-            if (numItems > 0 && item) {
-                for (var i:int = 0; i < numItems; i++) {
-                    if (item == array[i]) {
-                        return i;
-                    }
-                }
-            }
-            return -1;
+            return indexOfWithComparisonFunction(array, item, compareEquality);
         }
 
         /**
          * Returns the index of the first item in the array which strictly equals (===) the given item.
          */
         public static function indexOfStrictEquality(array:Array, item:*):int {
-            var numItems:int = getLength(array);
-            if (numItems > 0 && item) {
-                for (var i:int = 0; i < numItems; i++) {
-                    if (item === array[i]) {
-                        return i;
-                    }
-                }
-            }
-            return -1;
+            return indexOfWithComparisonFunction(array, item, compareStrictEquality);
         }
 
         /**
@@ -233,15 +217,32 @@ package org.as3commons.lang {
          * @return The index of the item, or -1 if the item was not found or if either the array or the item are null
          */
         public static function indexOfEquals(array:Array, item:IEquals):int {
+            return indexOfWithComparisonFunction(array, item, compareEquals);
+        }
+
+        private static function indexOfWithComparisonFunction(array:Array, item:*, comparisonFunction:Function):int {
             var numItems:int = getLength(array);
             if (numItems > 0 && item) {
                 for (var i:int = 0; i < numItems; i++) {
-                    if (item.equals(array[i])) {
+                    if (comparisonFunction(item, array[i])) {
                         return i;
                     }
                 }
             }
             return -1;
+        }
+
+
+        private static function compareEquality(item1:*, item2:*):Boolean {
+            return item1 == item2;
+        }
+
+        private static function compareStrictEquality(item1:*, item2:*):Boolean {
+            return item1 === item2;
+        }
+
+        private static function compareEquals(item1:IEquals, item2:IEquals):Boolean {
+            return item1.equals(item2);
         }
 
 
