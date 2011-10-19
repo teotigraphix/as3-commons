@@ -26,10 +26,10 @@ package org.as3commons.lang {
     public final class ArrayUtils {
 
         /**
-         * Facade for containsAnyEquality
+         * Facade for containsAnyStrictEquality
          */
         public static function containsAny(array:Array, items:Array):Boolean {
-            return containsAnyEquality(array, items);
+            return containsAnyStrictEquality(array, items);
         }
 
         /**
@@ -64,10 +64,10 @@ package org.as3commons.lang {
         }
 
         /**
-         * Facade for containsAllEquality
+         * Facade for containsAllStrictEquality
          */
         public static function containsAll(array:Array, find:Array):Boolean {
-            return containsAllEquality(array, find);
+            return containsAllStrictEquality(array, find);
         }
 
         /**
@@ -103,10 +103,10 @@ package org.as3commons.lang {
         }
 
         /**
-         * Facade for containsEquality
+         * Facade for containsStrictEquality
          */
         public static function contains(array:Array, item:*):Boolean {
-            return containsEquality(array, item);
+            return containsStrictEquality(array, item);
         }
 
         /**
@@ -131,65 +131,11 @@ package org.as3commons.lang {
             return indexOfEquals(array, item) > -1;
         }
 
-
         /**
-         * Removes all occurances of a the given <code>item</code> out of the passed-in
-         * <code>array</code>.
-         *
-         * @param array the array to remove the item out of
-         * @param item the item to remove
-         * @return List that contains the index of all removed occurances
-         */
-        public static function removeItem(array:Array, item:*):Array {
-            var i:Number = array.length;
-            var result:Array = [];
-
-            while (--i - (-1)) {
-                if (array[i] === item) {
-                    result.unshift(i);
-                    array.splice(i, 1);
-                }
-            }
-            return result;
-        }
-
-        /**
-         * Removes the last occurance of the given <code>item</code> out of the passed-in
-         * <code>array</code>.
-         *
-         * @param array the array to remove the item out of
-         * @param item the item to remove
-         * @return <code>-1</code> if it could not be found, else the position where it has been deleted
-         */
-        public static function removeLastOccurance(array:Array, item:*):int {
-            var idx:int = array.lastIndexOf(item);
-            if (idx > -1) {
-                array.splice(idx, 1);
-            }
-            return idx;
-        }
-
-        /**
-         * Removes the first occurance of the given <code>item</code> out of the passed-in
-         * <code>array</code>.
-         *
-         * @param array the array to remove the item out of
-         * @param item the item to remove
-         * @return <code>-1</code> if it could not be found, else the position where it has been deleted
-         */
-        public static function removeFirstOccurance(array:Array, item:*):int {
-            var idx:int = array.indexOf(item);
-            if (idx > -1) {
-                array.splice(idx, 1);
-            }
-            return idx;
-        }
-
-        /**
-         * Facade for indexOfEquality
+         * Facade for indexOfStrictEquality
          */
         public static function indexOf(array:Array, item:*):int {
-            return indexOfEquality(array, item);
+            return indexOfStrictEquality(array, item);
         }
 
         /**
@@ -232,7 +178,6 @@ package org.as3commons.lang {
             return -1;
         }
 
-
         private static function compareEquality(item1:*, item2:*):Boolean {
             return item1 == item2;
         }
@@ -245,6 +190,107 @@ package org.as3commons.lang {
             return item1.equals(item2);
         }
 
+        /**
+         * Facade for removeAllItemsStrictEquality
+         */
+        public static function removeAllItems(array:Array, itemsToRemove:Array):Array {
+            return removeAllItemsStrictEquality(array, itemsToRemove);
+        }
+
+        public static function removeAllItemsEquality(array:Array, itemsToRemove:Array):Array {
+            return removeAllItemsWithRemoveFunction(array, itemsToRemove, removeItemEquality);
+        }
+
+        public static function removeAllItemsStrictEquality(array:Array, itemsToRemove:Array):Array {
+            return removeAllItemsWithRemoveFunction(array, itemsToRemove, removeItemStrictEquality);
+        }
+
+        public static function removeAllItemsEquals(array:Array, itemsToRemove:Array):Array {
+            return removeAllItemsWithRemoveFunction(array, itemsToRemove, removeItemEquals);
+        }
+
+        private static function removeAllItemsWithRemoveFunction(array:Array, itemsToRemove:Array, removeFunction:Function):Array {
+            var result:Array = [];
+            if (isNotEmpty(array) && isNotEmpty(itemsToRemove)) {
+                for each (var item:* in itemsToRemove) {
+                    removeFunction(array, item);
+                }
+            }
+            return array;
+        }
+
+        /**
+         * Facade for removeItemStrictEquality
+         */
+        public static function removeItem(array:Array, item:*):Array {
+            return removeItemStrictEquality(array, item);
+        }
+
+        public static function removeItemEquality(array:Array, item:*):Array {
+            return removeItemWithComparisonFunction(array, item, compareEquality);
+        }
+
+        public static function removeItemStrictEquality(array:Array, item:*):Array {
+            return removeItemWithComparisonFunction(array, item, compareStrictEquality);
+        }
+
+        public static function removeItemEquals(array:Array, item:*):Array {
+            return removeItemWithComparisonFunction(array, item, compareEquals);
+        }
+
+        /**
+         * Removes all occurances of a the given <code>item</code> out of the passed-in
+         * <code>array</code>.
+         *
+         * @param array the array to remove the item out of
+         * @param item the item to remove
+         * @return List that contains the index of all removed occurances
+         */
+        private static function removeItemWithComparisonFunction(array:Array, item:*, comparisonFunction:Function):Array {
+            var result:Array = [];
+            if (isNotEmpty(array)) {
+                var i:Number = array.length;
+                while (--i - (-1)) {
+                    if (comparisonFunction(array[i], item)) {
+                        result.unshift(i);
+                        array.splice(i, 1);
+                    }
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Removes the last occurance of the given <code>item</code> out of the passed-in
+         * <code>array</code>.
+         *
+         * @param array the array to remove the item out of
+         * @param item the item to remove
+         * @return <code>-1</code> if it could not be found, else the position where it has been deleted
+         */
+        public static function removeLastOccurance(array:Array, item:*):int {
+            var idx:int = array.lastIndexOf(item);
+            if (idx > -1) {
+                array.splice(idx, 1);
+            }
+            return idx;
+        }
+
+        /**
+         * Removes the first occurance of the given <code>item</code> out of the passed-in
+         * <code>array</code>.
+         *
+         * @param array the array to remove the item out of
+         * @param item the item to remove
+         * @return <code>-1</code> if it could not be found, else the position where it has been deleted
+         */
+        public static function removeFirstOccurance(array:Array, item:*):int {
+            var idx:int = array.indexOf(item);
+            if (idx > -1) {
+                array.splice(idx, 1);
+            }
+            return idx;
+        }
 
         /**
          * Shuffles the items of the given <code>array</code>
@@ -341,15 +387,23 @@ package org.as3commons.lang {
             return result;
         }
 
+        public static function addAll(array:Array, itemsToAdd:Array):void {
+            if (array != null && isNotEmpty(itemsToAdd)) {
+                for each (var item:* in itemsToAdd) {
+                    array.push(item);
+                }
+            }
+        }
+
         /**
          * Adds the specified elements to the array unless the elements are null
          *
          * @param array the array to append to
          * @param toAdd an array containing the elements which should be added to the original array
          */
-        public static function addAllIgnoreNull(array:Array, toAdd:Array):void {
-            if (array != null && isNotEmpty(toAdd)) {
-                for each (var element:* in toAdd) {
+        public static function addAllIgnoreNull(array:Array, itemsToAdd:Array):void {
+            if (array != null && isNotEmpty(itemsToAdd)) {
+                for each (var element:* in itemsToAdd) {
                     addIgnoreNull(array, element);
                 }
             }
