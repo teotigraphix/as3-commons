@@ -15,13 +15,13 @@
  */
 package org.as3commons.lang {
 
-	import flexunit.framework.Assert;
-
-	import org.as3commons.lang.testclasses.PropertiesClass;
 	import flash.utils.getQualifiedClassName;
+
+	import flexunit.framework.Assert;
 	import flexunit.framework.Reflective;
 	import flexunit.framework.Test;
 	import flexunit.framework.TestCase;
+
 	import org.as3commons.lang.testclasses.ComplexClass;
 	import org.as3commons.lang.testclasses.ISubInterface;
 	import org.as3commons.lang.testclasses.IncompleteInterfaceImplementation;
@@ -29,10 +29,12 @@ package org.as3commons.lang {
 	import org.as3commons.lang.testclasses.InformalInterfaceImplementation;
 	import org.as3commons.lang.testclasses.Interface;
 	import org.as3commons.lang.testclasses.InterfaceImplementation;
+	import org.as3commons.lang.testclasses.PropertiesClass;
 	import org.as3commons.lang.testclasses.PublicClass;
 	import org.as3commons.lang.testclasses.PublicSubClass;
 	import org.as3commons.lang.testclasses.SampleEnum;
 	import org.as3commons.lang.testclasses.SubInterfaceImplementation;
+	import org.as3commons.lang.testclasses.TestProxy;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.assertNotNull;
@@ -125,7 +127,7 @@ package org.as3commons.lang {
 			var clazz:Class = SampleEnum;
 			var parentClass:Class = ClassUtils.getSuperClass(clazz);
 			assertEquals(Enum, parentClass);
-			
+
 			assertEquals(Enum, ClassUtils.getSuperClass(SampleEnum));
 		}
 
@@ -383,39 +385,19 @@ package org.as3commons.lang {
 
 		[Test]
 		public function testProperties():void {
-			flexunit.framework.Assert.assertObjectEquals( {
-					publicSetter: String,
-					"as3commons::publicSetter": String
-				}, ClassUtils.getProperties( PropertiesClass, false, false, true) );
-			flexunit.framework.Assert.assertObjectEquals( {
-					publicVar: String,
-					publicSetterGetter: String,
-					"as3commons::publicVar": String,
-					"as3commons::publicSetterGetter": String
-				}, ClassUtils.getProperties( PropertiesClass, false, true, true) );
-			flexunit.framework.Assert.assertObjectEquals( {
-					publicConst: String,
-					publicGetter: String,
-					"as3commons::publicConst": String,
-					"as3commons::publicGetter": String
-				}, ClassUtils.getProperties( PropertiesClass, false, true, false) );
-			flexunit.framework.Assert.assertObjectEquals( {
-					staticSetter: Number,
-					"as3commons::staticSetter": Array
-				}, ClassUtils.getProperties( PropertiesClass, true, false, true) );
-			flexunit.framework.Assert.assertObjectEquals( {
-					staticVar: int,
-					staticSetterGetter: String,
-					"as3commons::staticVar": uint,
-					"as3commons::staticSetterGetter": Object
-				}, ClassUtils.getProperties( PropertiesClass, true, true, true) );
-			flexunit.framework.Assert.assertObjectEquals( {
-					staticConst: String,
-					staticGetter: Object,
-					prototype: Object,
-					"as3commons::staticConst": int,
-					"as3commons::staticGetter": Array
-				}, ClassUtils.getProperties( PropertiesClass, true, true, false) );
+			flexunit.framework.Assert.assertObjectEquals({publicSetter: String, "as3commons::publicSetter": String}, ClassUtils.getProperties(PropertiesClass, false, false, true));
+			flexunit.framework.Assert.assertObjectEquals({publicVar: String, publicSetterGetter: String, "as3commons::publicVar": String, "as3commons::publicSetterGetter": String}, ClassUtils.getProperties(PropertiesClass, false, true, true));
+			flexunit.framework.Assert.assertObjectEquals({publicConst: String, publicGetter: String, "as3commons::publicConst": String, "as3commons::publicGetter": String}, ClassUtils.getProperties(PropertiesClass, false, true, false));
+			flexunit.framework.Assert.assertObjectEquals({staticSetter: Number, "as3commons::staticSetter": Array}, ClassUtils.getProperties(PropertiesClass, true, false, true));
+			flexunit.framework.Assert.assertObjectEquals({staticVar: int, staticSetterGetter: String, "as3commons::staticVar": uint, "as3commons::staticSetterGetter": Object}, ClassUtils.getProperties(PropertiesClass, true, true, true));
+			flexunit.framework.Assert.assertObjectEquals({staticConst: String, staticGetter: Object, prototype: Object, "as3commons::staticConst": int, "as3commons::staticGetter": Array}, ClassUtils.getProperties(PropertiesClass, true, true, false));
+		}
+
+		[Test]
+		public function testForInstanceWithProxy():void {
+			var proxy:TestProxy = new TestProxy();
+			var cls:Class = ClassUtils.forInstance(proxy);
+			assertStrictlyEquals(TestProxy, cls);
 		}
 	}
 }

@@ -17,6 +17,7 @@ package org.as3commons.lang {
 
 	import flash.events.TimerEvent;
 	import flash.system.ApplicationDomain;
+	import flash.utils.Proxy;
 	import flash.utils.Timer;
 	import flash.utils.describeType;
 	import flash.utils.getQualifiedClassName;
@@ -43,7 +44,7 @@ package org.as3commons.lang {
 		 * @see org.as3commons.lang.ClassNotFoundError
 		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain=null):Class {
-			if (instance.hasOwnProperty(CONSTRUCTOR_FIELD_NAME)) {
+			if ((!(instance is Proxy)) && (instance.hasOwnProperty(CONSTRUCTOR_FIELD_NAME))) {
 				return instance[CONSTRUCTOR_FIELD_NAME] as Class;
 			} else {
 				var className:String = getQualifiedClassName(instance);
