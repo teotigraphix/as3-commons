@@ -126,7 +126,7 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * Creates a new <code>AbcBuilder</code> instance.
 		 */
-		public function AbcBuilder(abcFile:AbcFile = null) {
+		public function AbcBuilder(abcFile:AbcFile=null) {
 			super();
 			init(abcFile);
 		}
@@ -187,10 +187,10 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineClass(fullName:String, superClassName:String = null):IClassBuilder {
+		public function defineClass(fullName:String, superClassName:String=null):IClassBuilder {
 			fullName = AbcFileUtil.normalizeFullName(fullName);
 			var packageName:String = MultinameUtil.extractPackageName(fullName);
-			var classname:String = fullName.substr(fullName.lastIndexOf(MultinameUtil.PERIOD)+1, fullName.length);
+			var classname:String = fullName.substr(fullName.lastIndexOf(MultinameUtil.PERIOD) + 1, fullName.length);
 			var packageBuilder:IPackageBuilder = definePackage(packageName);
 			var classBuilder:IClassBuilder = packageBuilder.defineClass(classname, superClassName);
 			if (_abcFile != null) {
@@ -202,7 +202,7 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineInterface(fullName:String, superInterfaceNames:Array = null):IInterfaceBuilder {
+		public function defineInterface(fullName:String, superInterfaceNames:Array=null):IInterfaceBuilder {
 			fullName = AbcFileUtil.normalizeFullName(fullName);
 			var packageName:String = MultinameUtil.extractPackageName(fullName);
 			var classname:String = fullName.substr(fullName.lastIndexOf(MultinameUtil.PERIOD), fullName.length);
@@ -237,12 +237,12 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function build(applicationDomain:ApplicationDomain = null):AbcFile {
+		public function build(applicationDomain:ApplicationDomain=null):AbcFile {
 			if (_abcFile == null) {
 				_abcFile = new AbcFile();
 			}
 			var classNames:Array = [];
-			applicationDomain = (applicationDomain) ? applicationDomain : ApplicationDomain.currentDomain;
+			applicationDomain ||= Type.currentApplicationDomain;
 			var idx:uint = 0;
 			for each (var pb:IPackageBuilder in _packageBuilders) {
 				var arr:Array = pb.build(applicationDomain);
@@ -254,7 +254,7 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function buildAndLoad(applicationDomain:ApplicationDomain = null, newApplicationDomain:ApplicationDomain = null):AbcFile {
+		public function buildAndLoad(applicationDomain:ApplicationDomain=null, newApplicationDomain:ApplicationDomain=null):AbcFile {
 			var abcFile:AbcFile = build(applicationDomain);
 			loader.loadAbcFile(abcFile, newApplicationDomain);
 			return abcFile;
@@ -263,7 +263,7 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function buildAndExport(applicationDomain:ApplicationDomain = null):ByteArray {
+		public function buildAndExport(applicationDomain:ApplicationDomain=null):ByteArray {
 			var abcFile:AbcFile = build(applicationDomain);
 			var ba:ByteArray = serializer.serializeAbcFile(abcFile);
 			return AbcFileUtil.wrapBytecodeInSWF([ba]);

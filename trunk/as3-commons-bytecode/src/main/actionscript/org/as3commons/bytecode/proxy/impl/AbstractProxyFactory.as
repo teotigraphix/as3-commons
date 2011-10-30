@@ -18,9 +18,14 @@ package org.as3commons.bytecode.proxy.impl {
 
 	import org.as3commons.bytecode.emit.IMetadataContainer;
 	import org.as3commons.bytecode.emit.impl.MetadataArgument;
+	import org.as3commons.lang.StringUtils;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.reflect.Metadata;
 
 	public class AbstractProxyFactory extends EventDispatcher {
+
+		private static const LOGGER:ILogger = getLogger(AbstractProxyFactory);
 
 		public function AbstractProxyFactory() {
 			super();
@@ -35,10 +40,14 @@ package org.as3commons.bytecode.proxy.impl {
 		protected function addMetadata(metadaContainer:IMetadataContainer, metadatas:Array):void {
 			for each (var metadata:Metadata in metadatas) {
 				var args:Array = [];
+				var argsStr:Array = [];
 				for each (var arg:org.as3commons.reflect.MetadataArgument in metadata.arguments) {
-					args[args.length] = new org.as3commons.bytecode.emit.impl.MetadataArgument(arg.key, arg.value);
+					var bcArg:org.as3commons.bytecode.emit.impl.MetadataArgument = new org.as3commons.bytecode.emit.impl.MetadataArgument(arg.key, arg.value);
+					args[args.length] = bcArg;
 					metadaContainer.defineMetadata(metadata.name, args);
+					argsStr[argsStr.length] = (StringUtils.hasText(bcArg.value)) ? bcArg.key + "=" + bcArg.value : bcArg.key;
 				}
+				LOGGER.debug("Defined metadata [{0}{1}] on proxy class", [metadata.name, ((argsStr.length > 0) ? "(" + argsStr.join(',') + ")" : "")]);
 			}
 		}
 

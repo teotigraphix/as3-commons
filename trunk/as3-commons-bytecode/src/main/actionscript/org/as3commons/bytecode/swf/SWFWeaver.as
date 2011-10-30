@@ -20,7 +20,7 @@ package org.as3commons.bytecode.swf {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	
+
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
@@ -34,6 +34,7 @@ package org.as3commons.bytecode.swf {
 	import org.as3commons.bytecode.tags.serialization.ITagSerializer;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.SWFSpec;
+	import org.as3commons.reflect.Type;
 
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
@@ -187,8 +188,8 @@ package org.as3commons.bytecode.swf {
 		/**
 		 * @inheritDoc
 		 */
-		public function buildAndLoad(applicationDomain:ApplicationDomain = null):Boolean {
-			applicationDomain ||= ApplicationDomain.currentDomain;
+		public function buildAndLoad(applicationDomain:ApplicationDomain=null):Boolean {
+			applicationDomain ||= Type.currentApplicationDomain;
 			var binaryAbcFiles:Array = build();
 			if ((binaryAbcFiles != null) && (binaryAbcFiles.length > 0)) {
 				_loader.loadClassDefinitionsFromBytecode(binaryAbcFiles, applicationDomain);
@@ -196,18 +197,18 @@ package org.as3commons.bytecode.swf {
 			}
 			return false;
 		}
-		
+
 		/**
 		 * @inheritDoc
 		 */
 		public function buildSWFFile():ByteArray {
 			if (_swfFile != null) {
 				if (_newClasses != null) {
-					 var abcFile:AbcFile = _newClasses.build();
-					 var tag:DoABCTag = new DoABCTag();
-					 tag.byteCodeName = "as3commonsByteCodeGeneratedClasses";
-					 tag.abcFile = abcFile;
-					 _swfFile.tags[_swfFile.tags.length] = tag;
+					var abcFile:AbcFile = _newClasses.build();
+					var tag:DoABCTag = new DoABCTag();
+					tag.byteCodeName = "as3commonsByteCodeGeneratedClasses";
+					tag.abcFile = abcFile;
+					_swfFile.tags[_swfFile.tags.length] = tag;
 				}
 				var result:ByteArray = new ByteArray();
 				_SWFFileIO.write(result, _swfFile);

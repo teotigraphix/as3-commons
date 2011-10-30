@@ -173,7 +173,13 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		public function ProxyFactory() {
 			super();
-			initProxyFactory();
+			_abcBuilder = new AbcBuilder();
+			_domains = new Dictionary();
+			_classProxyLookup = new Dictionary();
+			_proxyClassLookup = new Dictionary();
+			_generatedMultinames = new Dictionary();
+			proxyCreationDispatcher.addEventListener(ProxyCreationEvent.PROXY_CREATED, proxyCreatedHandler);
+			LOGGER.debug("ProxyFactory created and initialized");
 		}
 
 		private var _abcBuilder:IAbcBuilder;
@@ -187,28 +193,46 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _methodProxyFactory:IMethodProxyFactory;
 		private var _proxyClassLookup:Dictionary;
 
+		/**
+		 *
+		 */
 		public function get accessorProxyFactory():IAccessorProxyFactory {
 			return _accessorProxyFactory ||= new AccessorProxyFactory();
 		}
 
+		/**
+		 * @private
+		 */
 		public function set accessorProxyFactory(value:IAccessorProxyFactory):void {
 			removeAccessorProxyFactoryListeners(_accessorProxyFactory);
 			_accessorProxyFactory = value;
 			addAccessorProxyFactoryListeners(_accessorProxyFactory);
 		}
 
+		/**
+		 *
+		 */
 		public function get classIntroducer():IClassIntroducer {
 			return _classIntroducer ||= new ClassIntroducer(constructorProxyFactory, methodProxyFactory, accessorProxyFactory);
 		}
 
+		/**
+		 * @private
+		 */
 		public function set classIntroducer(value:IClassIntroducer):void {
 			_classIntroducer = value;
 		}
 
+		/**
+		 *
+		 */
 		public function get constructorProxyFactory():IConstructorProxyFactory {
 			return _constructorProxyFactory ||= new ConstructorProxyFactory();
 		}
 
+		/**
+		 * @private
+		 */
 		public function set constructorProxyFactory(value:IConstructorProxyFactory):void {
 			removeConstructorProxyFactoryListeners(_constructorProxyFactory);
 			_constructorProxyFactory = value;
@@ -222,10 +246,16 @@ package org.as3commons.bytecode.proxy.impl {
 			return _domains;
 		}
 
+		/**
+		 *
+		 */
 		public function get methodProxyFactory():IMethodProxyFactory {
 			return _methodProxyFactory ||= new MethodProxyFactory();
 		}
 
+		/**
+		 * @private
+		 */
 		public function set methodProxyFactory(value:IMethodProxyFactory):void {
 			removeMethodProxyFactoryListeners(_methodProxyFactory);
 			_methodProxyFactory = value;
@@ -249,10 +279,10 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		public function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class=null, applicationDomain:ApplicationDomain=null):IClassProxyInfo {
 			methodInvocationInterceptorClass ||= BasicMethodInvocationInterceptor;
+			applicationDomain ||= Type.currentApplicationDomain;
 			if (ClassUtils.isImplementationOf(methodInvocationInterceptorClass, IMethodInvocationInterceptor, applicationDomain) == false) {
 				throw new IllegalOperationError("methodInvocationInterceptorClass argument must be a class that implements IMethodInvocationInterceptor");
 			}
-			applicationDomain ||= ApplicationDomain.currentDomain;
 			var infos:Array = _domains[applicationDomain] ||= [];
 			var info:IClassProxyInfo = new ClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
 			infos[infos.length] = info;
@@ -298,7 +328,7 @@ package org.as3commons.bytecode.proxy.impl {
 			if (_isGenerating) {
 				throw new ProxyBuildError(ProxyBuildError.PROXY_FACTORY_IS_BUSY_GENERATING);
 			}
-			applicationDomain ||= ApplicationDomain.currentDomain;
+			applicationDomain ||= Type.currentApplicationDomain;
 			for (var cls:* in _classProxyLookup) {
 				ProxyInfo(_classProxyLookup[cls]).applicationDomain = applicationDomain;
 			}
@@ -309,6 +339,10 @@ package org.as3commons.bytecode.proxy.impl {
 			LOGGER.debug("Loading proxies into application domain {0}", [applicationDomain]);
 		}
 
+		/**
+		 *
+		 * @param accessorProxyFactory
+		 */
 		protected function addAccessorProxyFactoryListeners(accessorProxyFactory:IAccessorProxyFactory):void {
 			if (accessorProxyFactory != null) {
 				accessorProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_GETTER_BODY_BUILD, redispatchBuilderEvent);
@@ -318,6 +352,10 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 		}
 
+		/**
+		 *
+		 * @param constructorProxyFactory
+		 */
 		protected function addConstructorProxyFactoryListeners(constructorProxyFactory:IConstructorProxyFactory):void {
 			if (constructorProxyFactory != null) {
 				constructorProxyFactory.addEventListener(ProxyFactoryBuildEvent.BEFORE_CONSTRUCTOR_BODY_BUILD, redispatchBuilderEvent);
@@ -363,6 +401,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		protected function buildProxyClass(classProxyInfo:IClassProxyInfo, applicationDomain:ApplicationDomain):ProxyInfo {
 			var className:String = ClassUtils.getFullyQualifiedName(classProxyInfo.proxiedClass);
+			LOGGER.debug("Preparing to proxy class {0}", [className]);
 			var type:ByteCodeType = ByteCodeType.forName(className.replace(MultinameUtil.DOUBLE_COLON, MultinameUtil.PERIOD), applicationDomain);
 			if (type.isFinal) {
 				throw new ProxyBuildError(ProxyBuildError.FINAL_CLASS_ERROR, className);
@@ -432,21 +471,6 @@ package org.as3commons.bytecode.proxy.impl {
 			return new ProxyInfo(proxyClassName.split(MultinameUtil.SINGLE_COLON).join(MultinameUtil.PERIOD));
 		}
 
-		protected function createProxiedMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, event:ProxyFactoryBuildEvent, nsMultiname:Multiname, bytecodeQname:QualifiedName):void {
-			var methodBuilder:IMethodBuilder = methodProxyFactory.proxyMethod(classBuilder, type, memberInfo, true);
-			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD, methodBuilder);
-			dispatchEvent(event);
-			methodBuilder = event.methodBuilder;
-			if (methodBuilder == null) {
-				throw new ProxyBuildError(ProxyBuildError.METHOD_BUILDER_IS_NULL, "ProxyFactoryBuildEvent");
-			}
-			if (methodBuilder.opcodes.length < 1) {
-				methodProxyFactory.addMethodBody(methodBuilder, nsMultiname, bytecodeQname, type.isInterface);
-			}
-			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_METHOD_BODY_BUILD, methodBuilder);
-			dispatchEvent(event);
-		}
-
 
 		/**
 		 * Creates a valid <code>Multiname</code> for the specified class name, proxied class name and all of its
@@ -485,6 +509,31 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		/**
+		 *
+		 * @param classBuilder
+		 * @param type
+		 * @param memberInfo
+		 * @param event
+		 * @param nsMultiname
+		 * @param bytecodeQname
+		 */
+		protected function createProxiedMethod(classBuilder:IClassBuilder, type:ByteCodeType, memberInfo:MemberInfo, event:ProxyFactoryBuildEvent, nsMultiname:Multiname, bytecodeQname:QualifiedName):void {
+			var methodBuilder:IMethodBuilder = methodProxyFactory.proxyMethod(classBuilder, type, memberInfo, true);
+			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.BEFORE_METHOD_BODY_BUILD, methodBuilder);
+			dispatchEvent(event);
+			methodBuilder = event.methodBuilder;
+			if (methodBuilder == null) {
+				throw new ProxyBuildError(ProxyBuildError.METHOD_BUILDER_IS_NULL, "ProxyFactoryBuildEvent");
+			}
+			if (methodBuilder.opcodes.length < 1) {
+				methodProxyFactory.addMethodBody(methodBuilder, nsMultiname, bytecodeQname, type.isInterface);
+			}
+			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_METHOD_BODY_BUILD, methodBuilder);
+			dispatchEvent(event);
+			LOGGER.debug("Generated proxy method {0}", [memberInfo.qName]);
+		}
+
+		/**
 		 * Generates a sequence of 20 random lower case characters.
 		 * @return The generated sequence of characters.
 		 */
@@ -495,19 +544,6 @@ package org.as3commons.bytecode.proxy.impl {
 				result[len--] = CHARACTERS.charAt(Math.floor(Math.random() * 26));
 			}
 			return PROXY_PACKAGE_NAME_PREFIX + result.join('');
-		}
-
-		/**
-		 * Initializes the current <code>ProxyFactory</code>.
-		 */
-		protected function initProxyFactory():void {
-			_abcBuilder = new AbcBuilder();
-			_domains = new Dictionary();
-			_classProxyLookup = new Dictionary();
-			_proxyClassLookup = new Dictionary();
-			_generatedMultinames = new Dictionary();
-			proxyCreationDispatcher.addEventListener(ProxyCreationEvent.PROXY_CREATED, proxyCreatedHandler);
-			LOGGER.debug("ProxyFactory created and initialized");
 		}
 
 		/**
@@ -551,6 +587,10 @@ package org.as3commons.bytecode.proxy.impl {
 			return result;
 		}
 
+		/**
+		 *
+		 * @param event
+		 */
 		protected function proxyCreatedHandler(event:ProxyCreationEvent):void {
 			var cls:Class = Object(event.proxyInstance).constructor as Class;
 			var proxyInfo:ProxyInfo = _proxyClassLookup[cls];
@@ -560,11 +600,14 @@ package org.as3commons.bytecode.proxy.impl {
 				var interceptorInstance:IMethodInvocationInterceptor;
 				if (factoryEvent.methodInvocationInterceptor != null) {
 					interceptorInstance = factoryEvent.methodInvocationInterceptor;
+					LOGGER.debug("Received method invocation interceptor '{0}' through factory event", [factoryEvent.methodInvocationInterceptor]);
 				} else {
 					if (proxyInfo.interceptorFactory == null) {
 						interceptorInstance = new proxyInfo.methodInvocationInterceptorClass();
+						LOGGER.debug("Received method invocation interceptor '{0}' through proxyInfo.methodInvocationInterceptorClass property", [interceptorInstance]);
 					} else {
 						interceptorInstance = proxyInfo.interceptorFactory.newInstance();
+						LOGGER.debug("Received method invocation interceptor '{0}' through proxyInfo.interceptorFactory.newInstance() factory method", [interceptorInstance]);
 					}
 				}
 				event.methodInvocationInterceptor = interceptorInstance;
@@ -588,10 +631,20 @@ package org.as3commons.bytecode.proxy.impl {
 			dispatchEvent(event);
 		}
 
+		/**
+		 *
+		 * @param event
+		 */
 		protected function redispatchBuilderEvent(event:ProxyFactoryBuildEvent):void {
 			dispatchEvent(event.clone());
 		}
 
+		/**
+		 *
+		 * @param classProxyInfo
+		 * @param type
+		 * @param applicationDomain
+		 */
 		protected function reflectAccessors(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
 			CONFIG::debug {
 				Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
@@ -608,10 +661,17 @@ package org.as3commons.bytecode.proxy.impl {
 						continue;
 					}
 					classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI);
+					LOGGER.debug("Added accessor '{0}::{1}' to be proxied", [byteCodeAccessor.namespaceURI, byteCodeAccessor.name]);
 				}
 			}
 		}
 
+		/**
+		 *
+		 * @param classProxyInfo
+		 * @param type
+		 * @param applicationDomain
+		 */
 		protected function reflectInterfaceAccessors(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
 			CONFIG::debug {
 				Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
@@ -621,9 +681,31 @@ package org.as3commons.bytecode.proxy.impl {
 			for each (var byteCodeAccessor:ByteCodeAccessor in type.accessors) {
 				if ((byteCodeAccessor.declaringType.name != null) && (byteCodeAccessor.declaringType.name != OBJECT_DECLARINGTYPE_NAME)) {
 					classProxyInfo.proxyInterfaceAccessor(byteCodeAccessor.name, type);
+					LOGGER.debug("Added interface accessor '{0}' to be proxied", [byteCodeAccessor.name]);
 				}
 			}
 			LOGGER.debug("ClassInfoProxy for class {0}, added interface accessors of interface {1}", [classProxyInfo.proxiedClass, type.fullName]);
+		}
+
+		/**
+		 *
+		 * @param classProxyInfo
+		 * @param type
+		 * @param applicationDomain
+		 */
+		protected function reflectInterfaceMethods(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
+			CONFIG::debug {
+				Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
+				Assert.notNull(type, "type argument must not be null");
+				Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			}
+			for each (var byteCodeMethod:ByteCodeMethod in type.methods) {
+				if ((byteCodeMethod.declaringType.name != null) && (byteCodeMethod.declaringType.name != OBJECT_DECLARINGTYPE_NAME)) {
+					classProxyInfo.proxyInterfaceMethod(byteCodeMethod.name, type);
+					LOGGER.debug("Added interface method '{0}' to be proxied", [byteCodeMethod.name]);
+				}
+			}
+			LOGGER.debug("ClassInfoProxy for class {0}, added interface methods of interface {1}", [classProxyInfo.proxiedClass, type.fullName]);
 		}
 
 		/**
@@ -665,28 +747,9 @@ package org.as3commons.bytecode.proxy.impl {
 						continue;
 					}
 					classProxyInfo.proxyMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI);
+					LOGGER.debug("Added method '{0}::{1}' to be proxied", [byteCodeMethod.namespaceURI, byteCodeMethod.name]);
 				}
 			}
-		}
-
-		/**
-		 *
-		 * @param classProxyInfo
-		 * @param type
-		 * @param applicationDomain
-		 */
-		protected function reflectInterfaceMethods(classProxyInfo:IClassProxyInfo, type:ByteCodeType, applicationDomain:ApplicationDomain):void {
-			CONFIG::debug {
-				Assert.notNull(classProxyInfo, "classProxyInfo argument must not be null");
-				Assert.notNull(type, "type argument must not be null");
-				Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
-			}
-			for each (var byteCodeMethod:ByteCodeMethod in type.methods) {
-				if ((byteCodeMethod.declaringType.name != null) && (byteCodeMethod.declaringType.name != OBJECT_DECLARINGTYPE_NAME)) {
-					classProxyInfo.proxyInterfaceMethod(byteCodeMethod.name, type);
-				}
-			}
-			LOGGER.debug("ClassInfoProxy for class {0}, added interface methods of interface {1}", [classProxyInfo.proxiedClass, type.fullName]);
 		}
 
 		/**

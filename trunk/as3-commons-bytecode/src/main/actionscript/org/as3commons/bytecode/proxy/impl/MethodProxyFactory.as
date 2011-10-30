@@ -28,8 +28,12 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 
 	public class MethodProxyFactory extends AbstractMethodBodyFactory implements IMethodProxyFactory {
+
+		private static const LOGGER:ILogger = getLogger(MethodProxyFactory);
 
 		public function MethodProxyFactory() {
 			super();
@@ -69,6 +73,7 @@ package org.as3commons.bytecode.proxy.impl {
 			for each (var arg:ByteCodeParameter in method.parameters) {
 				methodBuilder.defineArgument(arg.type.fullName, arg.isOptional, arg.defaultValue);
 			}
+			LOGGER.debug("Generated method '{0}' with {1} parameters", [method.fullName, method.parameters.length]);
 			return methodBuilder;
 		}
 

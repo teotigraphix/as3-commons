@@ -26,6 +26,7 @@ package org.as3commons.bytecode.swf {
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.io.AbcSerializer;
 	import org.as3commons.bytecode.util.AbcFileUtil;
+	import org.as3commons.reflect.Type;
 
 	/**
 	 * Dispatched when the class loader has finished loading the SWF/ABC bytecode in the Flash Player/AVM.
@@ -99,8 +100,8 @@ package org.as3commons.bytecode.swf {
 		 * @see flash.utils.ByteArray
 		 * @see flash.system.ApplicationDomain
 		 */
-		public function loadClassDefinitionsFromBytecode(bytes:*, applicationDomain:ApplicationDomain = null):void {
-			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
+		public function loadClassDefinitionsFromBytecode(bytes:*, applicationDomain:ApplicationDomain=null):void {
+			applicationDomain ||= Type.currentApplicationDomain;
 			var v:uint = 0;
 			if (bytes is ByteArray) {
 				v = getType(bytes);
@@ -127,7 +128,7 @@ package org.as3commons.bytecode.swf {
 		 * @param abcFile The specified <code>AbcFile</code>.
 		 * @param applicationDomain The <code>ApplicationDomain</code> that the ABC file will be loaded into, when null, <code>ApplicationDomain.currentDomain</code> is used.
 		 */
-		public function loadAbcFile(abcFile:AbcFile, applicationDomain:ApplicationDomain = null):void {
+		public function loadAbcFile(abcFile:AbcFile, applicationDomain:ApplicationDomain=null):void {
 			loadClassDefinitionsFromBytecode(abcSerializer.serializeAbcFile(abcFile), applicationDomain);
 		}
 
