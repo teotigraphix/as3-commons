@@ -92,7 +92,6 @@ package org.as3commons.bytecode.reflect {
 
 		/**
 		 * Returns a <code>ByteCodeType</code> object that describes the given classname.
-		 *
 		 * @param name the classname from which to get a type description
 		 */
 		public static function forName(name:String, applicationDomain:ApplicationDomain=null):ByteCodeType {
@@ -134,7 +133,7 @@ package org.as3commons.bytecode.reflect {
 			var loaderBytesPosition:uint = loader.bytes.position;
 			try {
 				loader.bytes.position = 0;
-				(getTypeProvider() as ByteCodeTypeProvider).fromByteArray(loader.bytes, applicationDomain);
+				(getTypeProvider() as ByteCodeTypeProvider).fromLoader(loader, applicationDomain);
 			} finally {
 				loader.bytes.position = loaderBytesPosition;
 			}

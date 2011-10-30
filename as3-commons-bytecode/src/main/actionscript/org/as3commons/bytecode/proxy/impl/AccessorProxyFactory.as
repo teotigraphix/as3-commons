@@ -36,6 +36,8 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
+	import org.as3commons.logging.api.ILogger;
+	import org.as3commons.logging.api.getLogger;
 
 	use namespace as3commons_bytecode_proxy;
 
@@ -49,6 +51,7 @@ package org.as3commons.bytecode.proxy.impl {
 	[Event(name="beforeSetterBodyBuild", type="org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent")]
 	public class AccessorProxyFactory extends AbstractMethodBodyFactory implements IAccessorProxyFactory {
 
+		private static const LOGGER:ILogger = getLogger(AccessorProxyFactory);
 		private static const GETTER_WRAPPER_PREFIX:String = "getter_";
 		private static const SETTER_WRAPPER_PREFIX:String = "setter_";
 
@@ -80,6 +83,8 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			if ((accessor.isFinal) && (failOnFinal)) {
 				throw new ProxyBuildError(ProxyBuildError.FINAL_ACCESSOR_ERROR, accessor.name);
+			} else if ((accessor.isFinal) && (!failOnFinal)) {
+				return;
 			}
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(accessor.name, accessor.type.fullName, accessor.initializedValue);
 			addMetadata(accessorBuilder, accessor.metadata);
@@ -104,6 +109,7 @@ package org.as3commons.bytecode.proxy.impl {
 				createGetterWrapper(classBuilder, accessorBuilder, multiName, bytecodeQname);
 				createSetterWrapper(classBuilder, accessorBuilder, multiName, bytecodeQname);
 			}
+			LOGGER.debug("Finished generating proxy accessor {0}::{1}", [accessor.name, accessor.namespaceURI]);
 		}
 
 		/**
@@ -140,6 +146,7 @@ package org.as3commons.bytecode.proxy.impl {
 			var mb:IMethodBuilder = createMethod(accessorBuilder);
 			mb.returnType = accessorBuilder.type;
 			addGetterBody(mb, multiName, bytecodeQname, classBuilder, isInterface);
+			LOGGER.debug("Generated accessor getter for {0}::{1}", [accessorBuilder.name, accessorBuilder.namespaceURI]);
 			return mb;
 		}
 
@@ -156,6 +163,7 @@ package org.as3commons.bytecode.proxy.impl {
 			mb.returnType = BuiltIns.VOID.fullName;
 			mb.defineArgument(accessorBuilder.type);
 			addSetterBody(mb, accessorBuilder, multiName, bytecodeQname, classBuilder, isInterface);
+			LOGGER.debug("Generated accessor setter for {0}::{1}", [accessorBuilder.name, accessorBuilder.namespaceURI]);
 			return mb;
 		}
 
@@ -209,7 +217,7 @@ package org.as3commons.bytecode.proxy.impl {
 				.addOpcode(Opcode.pushstring, [methodBuilder.name]) //
 				.addOpcode(Opcode.constructprop, [qnameQname, 2]);
 
-			// TODO pass empty array here or null?
+			//TODO pass empty array here or null?
 			methodBuilder.addOpcode(Opcode.newarray, [0]);
 
 			// getter wrapper
@@ -224,7 +232,7 @@ package org.as3commons.bytecode.proxy.impl {
 			methodBuilder.addOpcode(Opcode.getproperty, [wrapperName]);
 
 			methodBuilder.addOpcode(Opcode.callproperty, [multiName, 5]) //
-			.addOpcode(Opcode.returnvalue);
+				.addOpcode(Opcode.returnvalue);
 
 			event = new ProxyFactoryBuildEvent(ProxyFactoryBuildEvent.AFTER_GETTER_BODY_BUILD, methodBuilder);
 			dispatchEvent(event);
@@ -303,7 +311,7 @@ package org.as3commons.bytecode.proxy.impl {
 			methodBuilder.addOpcode(Opcode.getproperty, [bytecodeQname]);
 			methodBuilder.addOpcode(Opcode.coerce, [namespaceQualifiedName]);
 			methodBuilder.addOpcode(Opcode.getproperty, [wrapperName]);
-			
+
 			methodBuilder.addOpcode(Opcode.callproperty, [multiName, 5]);
 			methodBuilder.addOpcode(Opcode.returnvoid);
 
@@ -338,7 +346,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 		/**
 		 * Creates a method that wraps the given setter. This is used to pass a function reference to the setter
-		 * which interceptors can invoke.
+		 * which interceptors can invoke.<br/>
 		 *
 		 * @param classBuilder
 		 * @param accessorBuilder

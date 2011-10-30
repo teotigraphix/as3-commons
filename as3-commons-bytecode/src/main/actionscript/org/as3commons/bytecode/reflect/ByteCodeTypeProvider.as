@@ -32,7 +32,7 @@ package org.as3commons.bytecode.reflect {
 	public class ByteCodeTypeProvider extends AbstractTypeProvider {
 
 		private static var _currentApplicationDomain:ApplicationDomain;
-		private static var _byteArrays:Dictionary = new Dictionary(true);
+		private static var _loaderInfos:Dictionary = new Dictionary(true);
 		private static var _metaLookupByteArrays:Dictionary = new Dictionary(true);
 
 		public function ByteCodeTypeProvider() {
@@ -50,7 +50,7 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		override public function clearCache():void {
-			_byteArrays = new Dictionary(true);
+			_loaderInfos = new Dictionary(true);
 			_metaLookupByteArrays = new Dictionary(true);
 			super.clearCache();
 		}
@@ -58,6 +58,10 @@ package org.as3commons.bytecode.reflect {
 		public function metaDataLookupFromLoader(loader:LoaderInfo):Object {
 			Assert.notNull(loader, "loader argument must not be null");
 			var loaderBytesPosition:uint = loader.bytes.position;
+			if (hasProcessed(loader)) {
+				return (getTypeCache() as ByteCodeTypeCache).metaDataLookup;
+			}
+			_loaderInfos[loader] = true;
 			try {
 				loader.bytes.position = 0;
 				return metaDataLookupFromByteArray(loader.bytes);
@@ -69,6 +73,10 @@ package org.as3commons.bytecode.reflect {
 
 		public function definitionNamesFromLoader(loader:LoaderInfo):Array {
 			Assert.notNull(loader, "loader argument must not be null");
+			if (hasProcessed(loader)) {
+				return (getTypeCache() as ByteCodeTypeCache).definitionNames;
+			}
+			_loaderInfos[loader] = true;
 			var loaderBytesPosition:uint = loader.bytes.position;
 			try {
 				loader.bytes.position = 0;
@@ -101,9 +109,10 @@ package org.as3commons.bytecode.reflect {
 
 		public function fromLoader(loader:LoaderInfo, applicationDomain:ApplicationDomain=null):void {
 			Assert.notNull(loader, "loader argument must not be null");
-			if (hasProcessed(loader.bytes)) {
+			if (hasProcessed(loader)) {
 				return;
 			}
+			_loaderInfos[loader] = true;
 			var loaderBytesPosition:uint = loader.bytes.position;
 			try {
 				loader.bytes.position = 0;
@@ -115,11 +124,7 @@ package org.as3commons.bytecode.reflect {
 
 		public function fromByteArray(input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
 			Assert.notNull(input, "input argument must not be null");
-			if (hasProcessed(input)) {
-				return;
-			}
-			_byteArrays[input] = true;
-			applicationDomain = getApplicationDomain(applicationDomain);
+			applicationDomain = getApplicationDomain(applicationDomain, isLoaderBytes);
 			var initialPosition:int = input.position;
 			try {
 				var deserializer:ReflectionDeserializer = new ReflectionDeserializer();
@@ -131,17 +136,17 @@ package org.as3commons.bytecode.reflect {
 			}
 		}
 
-		protected function getApplicationDomain(applicationDomain:ApplicationDomain):ApplicationDomain {
-			if (_currentApplicationDomain == null) {
-				applicationDomain = _currentApplicationDomain = Type.currentApplicationDomain;
+		protected function getApplicationDomain(applicationDomain:ApplicationDomain, isLoaderBytes:Boolean=true):ApplicationDomain {
+			if ((_currentApplicationDomain == null) && (!isLoaderBytes)) {
+				_currentApplicationDomain = Type.currentApplicationDomain;
 			} else {
 				applicationDomain ||= Type.currentApplicationDomain;
 			}
 			return applicationDomain;
 		}
 
-		public function hasProcessed(input:ByteArray):Boolean {
-			return (_byteArrays[input] != null);
+		public function hasProcessed(loader:LoaderInfo):Boolean {
+			return (_loaderInfos[loader] != null);
 		}
 
 	}

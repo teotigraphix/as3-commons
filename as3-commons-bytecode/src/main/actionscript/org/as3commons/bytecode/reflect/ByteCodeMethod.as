@@ -33,7 +33,7 @@ package org.as3commons.bytecode.reflect {
 		private var _bodyStartPosition:uint;
 		private var _hasRestArguments:Boolean;
 
-		public function ByteCodeMethod(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metaData:HashArray = null) {
+		public function ByteCodeMethod(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metaData:HashArray=null) {
 			super(declaringType, name, isStatic, parameters, returnType, applicationDomain, metaData);
 		}
 
@@ -105,14 +105,14 @@ package org.as3commons.bytecode.reflect {
 			return _scopeName;
 		}
 
-		// ----------------------------
-		// methodBody
-		// ----------------------------
-
 		private var _methodBody:MethodBody;
 
 		public function get methodBody():MethodBody {
 			return _methodBody;
+		}
+
+		override public function get parameters():Array {
+			return _parameters;
 		}
 
 		as3commons_reflect function setMethodBody(value:MethodBody):void {

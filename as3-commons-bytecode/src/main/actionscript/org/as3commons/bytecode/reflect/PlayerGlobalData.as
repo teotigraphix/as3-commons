@@ -41,7 +41,7 @@ package org.as3commons.bytecode.reflect {
 		private static const COLON:String = ':';
 
 		public static function forName(fullyQualifiedClassName:String):ByteCodeType {
-			var applicationDomain:ApplicationDomain = ApplicationDomain.currentDomain;
+			var applicationDomain:ApplicationDomain = Type.currentApplicationDomain;
 			var type:Type = Type.forName(fullyQualifiedClassName, applicationDomain);
 			if (type != null) {
 				return typeToByteCodeType(type, applicationDomain);
@@ -62,7 +62,7 @@ package org.as3commons.bytecode.reflect {
 				result.parameters[result.parameters.length] = param;
 			}
 			result.as3commons_reflect::setInstanceConstructor(constructorToByteCodeConstructor(type.constructor, applicationDomain));
-			result.constructor = new Constructor(type.fullName, applicationDomain, result.instanceConstructor.parameters);
+			result.constructor = new ByteCodeConstructor(type.fullName, applicationDomain, result.instanceConstructor.parameters);
 			var methods:Array = [];
 			for each (var method:Method in type.methods) {
 				methods[methods.length] = methodToByteCodeMethod(method, applicationDomain);
