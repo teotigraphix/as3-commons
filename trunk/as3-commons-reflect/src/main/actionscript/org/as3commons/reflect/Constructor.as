@@ -29,7 +29,7 @@ package org.as3commons.reflect {
 	 */
 	public class Constructor {
 
-		private var _parameters:Array = [];
+		protected var _parameters:Array = [];
 
 		private var _applicationDomain:ApplicationDomain;
 
@@ -54,7 +54,8 @@ package org.as3commons.reflect {
 		 */
 		public function get parameters():Array {
 			var result:Array = [];
-			for (var i:int = 0; i < _parameters.length; ++i) {
+			var len:int = _parameters.length;
+			for (var i:int = 0; i < len; ++i) {
 				var param:BaseParameter = _parameters[i];
 				result[result.length] = new Parameter(param, i);
 			}

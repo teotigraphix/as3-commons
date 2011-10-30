@@ -130,7 +130,7 @@ package org.as3commons.reflect {
 					continue;
 				}*/
 				var params:Array = parseParameters(methodObj.parameters, applicationDomain);
-				var method:Method = new Method(type.fullName, methodObj.name, isStatic, params, methodObj.returnType, applicationDomain);
+				var method:Method = new Method(methodObj.declaredBy, methodObj.name, isStatic, params, methodObj.returnType, applicationDomain);
 				method.as3commons_reflect::setNamespaceURI(methodObj.uri);
 				parseMetadata(methodObj.metadata, method);
 				result[result.length] = method;
