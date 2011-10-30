@@ -11,6 +11,7 @@ Changes in version 1.5.1 (??.??.2011)
 * Made metadata lookups case-insensitive again
 * Reintroduced the Parameter.index property, by way of decorating a cached BaseParameter. (issue https://code.google.com/p/as3-commons/issues/detail?id=99)
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=102
+* Fixed issue where declaringType was incorrectly set by the JSONTypeProvider
 
 Changes in version 1.5 (23.09.2011)
 -----------------------------------

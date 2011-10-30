@@ -147,11 +147,12 @@ package org.as3commons.reflect {
 		// parameters
 		// ----------------------------
 
-		private var _parameters:Array;
+		protected var _parameters:Array;
 
 		public function get parameters():Array {
 			var result:Array = [];
-			for (var i:int = 0; i < _parameters.length; ++i) {
+			var len:int = _parameters.length;
+			for (var i:int = 0; i < len; ++i) {
 				var param:BaseParameter = _parameters[i];
 				result[result.length] = new Parameter(param, i);
 			}
