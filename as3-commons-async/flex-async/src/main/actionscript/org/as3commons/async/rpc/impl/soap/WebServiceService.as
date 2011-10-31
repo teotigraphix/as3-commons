@@ -18,21 +18,25 @@ package org.as3commons.async.rpc.impl.soap {
 	import mx.rpc.soap.WebService;
 
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.rpc.impl.AbstractRPCService;
+	import org.as3commons.async.rpc.IService;
 	import org.as3commons.lang.Assert;
 
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class WebServiceService extends AbstractRPCService {
+	public class WebServiceService implements IService {
+
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
 
 		/**
 		 * Creates a new <code>WebServiceService</code> instance.
-		 *
 		 */
 		public function WebServiceService() {
-			super();
 		}
 
 		// --------------------------------------------------------------------
@@ -64,14 +68,14 @@ package org.as3commons.async.rpc.impl.soap {
 
 		// --------------------------------------------------------------------
 		//
-		// Methods
+		// Public Methods
 		//
 		// --------------------------------------------------------------------
 
 		/**
 		 * @inheritDoc
 		 */
-		override public function call(methodName:String, ... parameters):IOperation {
+		public function call(methodName:String, ...parameters):IOperation {
 			Assert.state(webService != null, "The webService property must not be null");
 			return new WebServiceOperation(webService, methodName, parameters);
 		}

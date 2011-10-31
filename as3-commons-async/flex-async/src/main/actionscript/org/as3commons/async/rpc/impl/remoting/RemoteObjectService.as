@@ -18,7 +18,7 @@ package org.as3commons.async.rpc.impl.remoting {
 	import mx.rpc.remoting.RemoteObject;
 
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.rpc.impl.AbstractRPCService;
+	import org.as3commons.async.rpc.IService;
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -26,7 +26,7 @@ package org.as3commons.async.rpc.impl.remoting {
 	 * @see org.as3commons.async.operation.IOperation IOperation
 	 * @author Christophe Herreman
 	 */
-	public class RemoteObjectService extends AbstractRPCService {
+	public class RemoteObjectService implements IService {
 
 		// --------------------------------------------------------------------
 		//
@@ -39,7 +39,7 @@ package org.as3commons.async.rpc.impl.remoting {
 		 *
 		 * @param remoteObject the remote object
 		 */
-		public function RemoteObjectService(remoteObject:RemoteObject=null) {
+		public function RemoteObjectService(remoteObject:RemoteObject = null) {
 			super();
 			this.remoteObject = remoteObject;
 		}
@@ -73,14 +73,14 @@ package org.as3commons.async.rpc.impl.remoting {
 
 		// --------------------------------------------------------------------
 		//
-		// Methods
+		// Public Methods
 		//
 		// --------------------------------------------------------------------
 
 		/**
 		 * @inheritDoc
 		 */
-		override public function call(methodName:String, ... parameters):IOperation {
+		public function call(methodName:String, ...parameters):IOperation {
 			Assert.state(remoteObject != null, "The remoteObject property must not be null");
 			return new RemoteObjectOperation(remoteObject, methodName, parameters);
 		}

@@ -19,13 +19,15 @@ package org.as3commons.async.rpc.impl.net {
 
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.impl.NetConnectionOperation;
-	import org.as3commons.async.rpc.impl.AbstractRPCService;
+	import org.as3commons.async.rpc.IService;
+	import org.as3commons.lang.Assert;
 
 	/**
 	 * Service that invokes methods on a NetConnection and returns an IOperation for each of these calls.
 	 * @author Christophe Herreman
 	 */
-	public class NetConnectionService extends AbstractRPCService {
+	public class NetConnectionService implements IService {
+
 
 		// --------------------------------------------------------------------
 		//
@@ -38,7 +40,7 @@ package org.as3commons.async.rpc.impl.net {
 		 *
 		 * @param netConnection the netconnection used by this service
 		 */
-		public function NetConnectionService(netConnection:NetConnection=null) {
+		public function NetConnectionService(netConnection:NetConnection = null) {
 			this.netConnection = netConnection;
 		}
 
@@ -77,7 +79,8 @@ package org.as3commons.async.rpc.impl.net {
 		/**
 		 * @inheritDoc
 		 */
-		override public function call(methodName:String, ... parameters):IOperation {
+		public function call(methodName:String, ...parameters):IOperation {
+			Assert.state(netConnection != null, "The netConnection property must not be null");
 			return new NetConnectionOperation(netConnection, methodName, parameters);
 		}
 	}
