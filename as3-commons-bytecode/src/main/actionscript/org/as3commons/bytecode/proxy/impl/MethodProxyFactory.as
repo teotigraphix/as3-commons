@@ -73,7 +73,8 @@ package org.as3commons.bytecode.proxy.impl {
 			for each (var arg:ByteCodeParameter in method.parameters) {
 				methodBuilder.defineArgument(arg.type.fullName, arg.isOptional, arg.defaultValue);
 			}
-			LOGGER.debug("Generated method '{0}' with {1} parameters", [method.fullName, method.parameters.length]);
+			var paramLen:int = (method.parameters != null) ? method.parameters.length : 0;
+			LOGGER.debug("Generated method '{0}' with {1} parameters", [method.fullName, paramLen]);
 			return methodBuilder;
 		}
 
