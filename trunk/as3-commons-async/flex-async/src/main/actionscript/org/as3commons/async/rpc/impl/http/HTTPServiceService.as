@@ -18,18 +18,33 @@ package org.as3commons.async.rpc.impl.http {
 	import mx.rpc.http.HTTPMultiService;
 
 	import org.as3commons.async.operation.IOperation;
-	import org.as3commons.async.rpc.impl.AbstractRPCService;
+	import org.as3commons.async.rpc.IService;
 	import org.as3commons.lang.Assert;
 
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class HTTPServiceService extends AbstractRPCService {
+	public class HTTPServiceService implements IService {
+
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
 
 		public function HTTPServiceService() {
-			super();
 		}
+
+		// --------------------------------------------------------------------
+		//
+		// Properties
+		//
+		// --------------------------------------------------------------------
+
+		// ----------------------------
+		// httpService
+		// ----------------------------
 
 		private var _httpService:HTTPMultiService;
 
@@ -50,14 +65,14 @@ package org.as3commons.async.rpc.impl.http {
 
 		// --------------------------------------------------------------------
 		//
-		// Methods
+		// Public Methods
 		//
 		// --------------------------------------------------------------------
 
 		/**
 		 * @inheritDoc
 		 */
-		override public function call(methodName:String, ... parameters):IOperation {
+		public function call(methodName:String, ...parameters):IOperation {
 			Assert.state(httpService != null, "The httpService property must not be null");
 			return new HTTPServiceOperation(httpService, methodName, parameters);
 		}

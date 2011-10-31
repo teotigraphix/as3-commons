@@ -16,9 +16,9 @@
 package org.as3commons.async.rpc {
 	import org.as3commons.async.operation.IOperation;
 
-
 	/**
 	 * Defines a service that invokes asynchronous operation on (remote) objects.
+	 *
 	 * @author Christophe Herreman
 	 */
 	public interface IService {
@@ -27,10 +27,10 @@ package org.as3commons.async.rpc {
 		 * Invokes a method with the given method name and parameters on a (remote) object.
 		 *
 		 * @param methodName the name of the method to invoke
-		 * @param parameters the paramters passed to the invoked method
+		 * @param parameters the parameters passed to the invoked method
 		 * @return an operation for the invoked method
 		 */
-		function call(methodName:String, ... parameters):IOperation;
+		function call(methodName:String, ...parameters):IOperation;
 
 	}
 
