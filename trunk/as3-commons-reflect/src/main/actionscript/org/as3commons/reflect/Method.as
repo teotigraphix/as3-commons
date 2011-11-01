@@ -92,10 +92,11 @@ package org.as3commons.reflect {
 				if (isStatic)
 					_fullName += "static ";
 				_fullName += name + "(";
-				for (var i:int = 0; i < parameters.length; i++) {
-					var p:Parameter = parameters[i] as Parameter;
+				var len:int = _parameters.length;
+				for (var i:int = 0; i < len; i++) {
+					var p:BaseParameter = _parameters[i];
 					_fullName += p.type.name;
-					_fullName += (i < (parameters.length - 1)) ? ", " : "";
+					_fullName += (i < (_parameters.length - 1)) ? ", " : "";
 				}
 				_fullName += "):" + returnType.name;
 				updateFullName = false;
