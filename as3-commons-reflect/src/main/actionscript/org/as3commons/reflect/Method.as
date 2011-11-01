@@ -89,14 +89,15 @@ package org.as3commons.reflect {
 		public function get fullName():String {
 			if (updateFullName) {
 				_fullName = "public ";
-				if (isStatic)
+				if (isStatic) {
 					_fullName += "static ";
+				}
 				_fullName += name + "(";
 				var len:int = _parameters.length;
-				for (var i:int = 0; i < len; i++) {
+				for (var i:int = 0; i < len; ++i) {
 					var p:BaseParameter = _parameters[i];
 					_fullName += p.type.name;
-					_fullName += (i < (_parameters.length - 1)) ? ", " : "";
+					_fullName += (i < (len - 1)) ? ", " : "";
 				}
 				_fullName += "):" + returnType.name;
 				updateFullName = false;
