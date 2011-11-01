@@ -270,7 +270,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.5</version>
+			<version>0.3.6-SNAPSHOT</version>
 			<type>swc</type>
 			<scope>merged</scope>
 			<exclusions>
