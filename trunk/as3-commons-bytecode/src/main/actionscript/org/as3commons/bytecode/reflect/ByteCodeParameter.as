@@ -19,7 +19,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.BaseParameter;
 	import org.as3commons.reflect.as3commons_reflect;
 
-	public class ByteCodeParameter extends BaseParameter {
+	public final class ByteCodeParameter extends BaseParameter {
 
 		public function ByteCodeParameter(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean=false, defaultValue:*=null) {
 			super(type, applicationDomain, isOptional);

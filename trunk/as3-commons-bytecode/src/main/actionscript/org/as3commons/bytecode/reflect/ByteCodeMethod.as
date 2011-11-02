@@ -23,7 +23,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
 
-	public class ByteCodeMethod extends Method implements IVisibleMember {
+	public final class ByteCodeMethod extends Method implements IVisibleMember {
 
 		private var _maxStack:uint;
 		private var _localCount:uint;

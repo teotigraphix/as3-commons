@@ -30,7 +30,7 @@ package org.as3commons.bytecode.reflect {
 	 * enabled by the bytecode based reflection system.
 	 * @author Roland Zwaga
 	 */
-	public class ByteCodeTypeCache extends TypeCache {
+	public final class ByteCodeTypeCache extends TypeCache {
 
 		private var _metaDataLookup:Object;
 		private var _interfaceLookup:Object;

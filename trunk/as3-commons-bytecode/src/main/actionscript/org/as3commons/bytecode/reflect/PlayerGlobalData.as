@@ -51,7 +51,7 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		private static function typeToByteCodeType(type:Type, applicationDomain:ApplicationDomain):ByteCodeType {
-			var result:ByteCodeType = new ByteCodeType(applicationDomain);
+			const result:ByteCodeType = new ByteCodeType(applicationDomain);
 			result.as3commons_reflect::setIsNative(true);
 			result.name = type.name;
 			result.fullName = type.fullName;
@@ -63,7 +63,7 @@ package org.as3commons.bytecode.reflect {
 			}
 			result.as3commons_reflect::setInstanceConstructor(constructorToByteCodeConstructor(type.constructor, applicationDomain));
 			result.constructor = new ByteCodeConstructor(type.fullName, applicationDomain, result.instanceConstructor.parameters);
-			var methods:Array = [];
+			const methods:Array = [];
 			for each (var method:Method in type.methods) {
 				methods[methods.length] = methodToByteCodeMethod(method, applicationDomain);
 			}
@@ -78,50 +78,50 @@ package org.as3commons.bytecode.reflect {
 		}
 
 		private static function constructorToByteCodeConstructor(constructor:Constructor, applicationDomain:ApplicationDomain):ByteCodeMethod {
-			var params:Array = [];
-			var idx:int = 0;
-			var len:int = constructor.parameters.length;
+			const params:Array = [];
+			const idx:int = 0;
+			const len:int = constructor.parameters.length;
 			for each (var param:Parameter in constructor.parameters) {
 				params[params.length] = paramToByteCodeParam(idx++, AbcFileUtil.normalizeFullName(constructor.declaringType.fullName) + PERIOD + constructor.declaringType.name, param, applicationDomain, len);
 			}
-			var result:ByteCodeMethod = new ByteCodeMethod(constructor.declaringType.fullName, constructor.declaringType.name, false, params, ASTERISK, applicationDomain);
+			const result:ByteCodeMethod = new ByteCodeMethod(constructor.declaringType.fullName, constructor.declaringType.name, false, params, ASTERISK, applicationDomain);
 			result.as3commons_reflect::setVisibility(NamespaceKind.PACKAGE_NAMESPACE);
 			return result;
 		}
 
 		private static function variableToBytecodeVariable(variable:Variable, applicationDomain:ApplicationDomain):ByteCodeVariable {
-			var result:ByteCodeVariable = new ByteCodeVariable(variable.name, variable.type.fullName, variable.declaringType.fullName, false, applicationDomain);
+			const result:ByteCodeVariable = new ByteCodeVariable(variable.name, variable.type.fullName, variable.declaringType.fullName, false, applicationDomain);
 			result.as3commons_reflect::setVisibility(NamespaceKind.PACKAGE_NAMESPACE);
 			return result;
 		}
 
 		private static function accessorToBytecodeAccessor(accessor:Accessor, applicationDomain:ApplicationDomain):ByteCodeAccessor {
-			var result:ByteCodeAccessor = new ByteCodeAccessor(accessor.name, accessor.access, accessor.type.fullName, accessor.declaringType.fullName, false, applicationDomain);
+			const result:ByteCodeAccessor = new ByteCodeAccessor(accessor.name, accessor.access, accessor.type.fullName, accessor.declaringType.fullName, false, applicationDomain);
 			result.as3commons_reflect::setVisibility(NamespaceKind.PACKAGE_NAMESPACE);
 			return result;
 		}
 
 		private static function methodToByteCodeMethod(method:Method, applicationDomain:ApplicationDomain):ByteCodeMethod {
-			var params:Array = [];
-			var idx:int = 0;
-			var len:int = method.parameters.length;
+			const params:Array = [];
+			const idx:int = 0;
+			const len:int = method.parameters.length;
 			for each (var param:Parameter in method.parameters) {
 				params[params.length] = paramToByteCodeParam(idx++, AbcFileUtil.normalizeFullName(method.declaringType.fullName) + PERIOD + method.name, param, applicationDomain, len);
 			}
-			var result:ByteCodeMethod = new ByteCodeMethod(method.declaringType.fullName, method.name, false, params, method.returnType.fullName, applicationDomain);
+			const result:ByteCodeMethod = new ByteCodeMethod(method.declaringType.fullName, method.name, false, params, method.returnType.fullName, applicationDomain);
 			result.as3commons_reflect::setVisibility(NamespaceKind.PACKAGE_NAMESPACE);
 			return result;
 		}
 
 		private static function paramToByteCodeParam(index:int, key:String, parameter:Parameter, applicationDomain:ApplicationDomain, total:int):ByteCodeParameter {
-			var defaultVal:* = parameter.isOptional ? createDefaultValue(key, index, total) : null;
+			const defaultVal:* = parameter.isOptional ? createDefaultValue(key, index, total) : null;
 			return new ByteCodeParameter(parameter.type.fullName, applicationDomain, parameter.isOptional, defaultVal);
 		}
 
 		private static function createDefaultValue(key:String, index:int, total:int):* {
-			var params:Array = optionalArgumentDefaultValues[key] as Array;
+			const params:Array = optionalArgumentDefaultValues[key];
 			if (params != null) {
-				var idx:int = (index) - (total - params.length);
+				const idx:int = (index) - (total - params.length);
 				if (idx < params.length) {
 					var parts:Array = String(params[idx]).split(COLON);
 					switch (String(parts[0])) {

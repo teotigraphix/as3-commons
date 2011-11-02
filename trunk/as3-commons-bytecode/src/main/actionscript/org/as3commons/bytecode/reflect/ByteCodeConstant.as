@@ -21,7 +21,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
 
-	public class ByteCodeConstant extends Constant implements IVisibleMember {
+	public final class ByteCodeConstant extends Constant implements IVisibleMember {
 
 		public function ByteCodeConstant(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain) {
 			super(name, type, declaringType, isStatic, applicationDomain);

@@ -29,7 +29,7 @@ package org.as3commons.bytecode.reflect {
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class ByteCodeTypeProvider extends AbstractTypeProvider {
+	public final class ByteCodeTypeProvider extends AbstractTypeProvider {
 
 		private static var _currentApplicationDomain:ApplicationDomain;
 		private static var _loaderInfos:Dictionary = new Dictionary(true);
