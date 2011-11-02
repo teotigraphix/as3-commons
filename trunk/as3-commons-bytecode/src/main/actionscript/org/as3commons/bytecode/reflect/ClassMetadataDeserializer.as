@@ -37,7 +37,6 @@ package org.as3commons.bytecode.reflect {
 
 		public static const DOUBLE_COLON_REGEXP:RegExp = /[:]+/;
 		public static const PERIOD:String = ".";
-		private static const DOUBLE_COLON:String = ':';
 
 		{
 			Multiname;
@@ -52,12 +51,12 @@ package org.as3commons.bytecode.reflect {
 		override public function readMethods(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain):Array {
 			var result:int;
 			include "../io/readU32.as.tmpl";
-			const methodCount:int = result;
+			var methodCount:int = result;
 
 			while (methodCount--) {
 				include "../io/readU32.as.tmpl";
-				const paramCount:uint = result; //paramcount;
-				const paramCount2:uint = paramCount; //paramcount;
+				var paramCount:uint = result; //paramcount;
+				var paramCount2:uint = paramCount; //paramcount;
 
 				include "../io/readU32.as.tmpl"; //returnTypeQName
 
@@ -66,7 +65,7 @@ package org.as3commons.bytecode.reflect {
 				}
 
 				include "../io/readU32.as.tmpl"; //methodNameIndex
-				const flags:uint = 255 & byteStream[byteStream.position++];
+				var flags:uint = 255 & byteStream[byteStream.position++];
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_OPTIONAL) == true) {
 					include "../io/readU32.as.tmpl";
 					var optionInfoCount:int = result;
@@ -88,12 +87,12 @@ package org.as3commons.bytecode.reflect {
 		override public function readTypes(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain, methods:Array, metadatas:Array, typeCache:ByteCodeTypeCache):void {
 			var result:int;
 			include "../io/readU32.as.tmpl";
-			const classCount:int = result;
-			const classCount2:int = classCount;
-			const classNames:Array = [];
+			var classCount:int = result;
+			var classCount2:int = classCount;
+			var classNames:Array = [];
 			while (classCount--) {
 				include "../io/readU32.as.tmpl";
-				const classMultiname:BaseMultiname = constantPool.multinamePool[result];
+				var classMultiname:BaseMultiname = constantPool.multinamePool[result] as BaseMultiname;
 
 				var fullName:String;
 				var classMultinameAsMultiname:Multiname;
@@ -104,20 +103,20 @@ package org.as3commons.bytecode.reflect {
 				typeCache.as3commons_reflect::addDefinitionName(fullName);
 
 				include "../io/readU32.as.tmpl";
-				const instanceInfoFlags:uint = 255 & byteStream[byteStream.position++]; //instanceInfoFlags
+				var instanceInfoFlags:uint = 255 & byteStream[byteStream.position++]; //instanceInfoFlags
 				if (ClassConstant.PROTECTED_NAMESPACE.present(instanceInfoFlags)) {
 					include "../io/readU32.as.tmpl";
 				}
 				include "../io/readU32.as.tmpl";
-				const interfaceCount:int = result;
+				var interfaceCount:int = result;
 				while (interfaceCount--) {
 					include "../io/readU32.as.tmpl";
-					const mn:BaseMultiname = constantPool.multinamePool[result];
-					const qName:QualifiedName = MultinameUtil.convertToQualifiedName(mn);
-					const impls:Array = (typeCache.interfaceLookup[qName.fullName]) ||= [];
-					const idx:int = fullName.indexOf(DOUBLE_COLON);
+					var mn:BaseMultiname = constantPool.multinamePool[result] as BaseMultiname;
+					var qName:QualifiedName = MultinameUtil.convertToQualifiedName(mn);
+					var impls:Array = ((typeCache.interfaceLookup[qName.fullName]) ||= []) as Array;
+					var idx:int = fullName.indexOf(':');
 					if (idx > -1) {
-						fullName = fullName.replace(DOUBLE_COLON, PERIOD);
+						fullName[idx] = '.';
 					}
 					impls[impls.length] = fullName;
 				}
@@ -156,7 +155,7 @@ package org.as3commons.bytecode.reflect {
 						// }
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";
-						className = classNames[result];
+						className = classNames[result] as String;
 					}
 
 					// (as listed at the top of this switch statement)
@@ -176,7 +175,7 @@ package org.as3commons.bytecode.reflect {
 						while (numberOfTraitMetadataItems--) {
 							include "../io/readU32.as.tmpl";
 							if (className != null) {
-								var md:Metadata = metadatas[result];
+								var md:Metadata = metadatas[result] as Metadata;
 								typeCache.as3commons_reflect::addToMetadataCache(md.name, className);
 							}
 						}
@@ -184,7 +183,7 @@ package org.as3commons.bytecode.reflect {
 				}
 			}
 
-			const classIndex:int = 0;
+			var classIndex:int = 0;
 			while (classCount2--) {
 				// class_info  
 				// { 
@@ -192,7 +191,7 @@ package org.as3commons.bytecode.reflect {
 				//  u30 trait_count 
 				//  traits_info traits[trait_count] 
 				// }
-				className = classNames[classIndex++];
+				className = classNames[classIndex++] as String;
 				include "../io/readU32.as.tmpl";
 				//gatherMetaData(classNames, constantPool, methods, metadatas, true, typeCache);
 				include "../io/readU32.as.tmpl";
@@ -228,7 +227,7 @@ package org.as3commons.bytecode.reflect {
 						// }
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";
-						className = classNames[result];
+						className = classNames[result] as String;
 					}
 
 					// (as listed at the top of this switch statement)
@@ -248,7 +247,7 @@ package org.as3commons.bytecode.reflect {
 						while (numberOfTraitMetadataItems--) {
 							include "../io/readU32.as.tmpl";
 							if (className != null) {
-								md = metadatas[result];
+								md = metadatas[result] as Metadata;
 								typeCache.as3commons_reflect::addToMetadataCache(md.name, className);
 							}
 						}
@@ -257,7 +256,7 @@ package org.as3commons.bytecode.reflect {
 			}
 
 			include "../io/readU32.as.tmpl";
-			const scriptCount:int = result;
+			var scriptCount:int = result;
 			while (scriptCount--) {
 				include "../io/readU32.as.tmpl";
 				//gatherMetaData(classNames, constantPool, methods, metadatas, true, typeCache);
@@ -294,7 +293,7 @@ package org.as3commons.bytecode.reflect {
 						// }
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";
-						className = classNames[result];
+						className = classNames[result] as String;
 					}
 
 					// (as listed at the top of this switch statement)
@@ -314,7 +313,7 @@ package org.as3commons.bytecode.reflect {
 						while (numberOfTraitMetadataItems--) {
 							include "../io/readU32.as.tmpl";
 							if (className != null) {
-								md = metadatas[result];
+								md = metadatas[result] as Metadata;
 								typeCache.as3commons_reflect::addToMetadataCache(md.name, className);
 							}
 						}

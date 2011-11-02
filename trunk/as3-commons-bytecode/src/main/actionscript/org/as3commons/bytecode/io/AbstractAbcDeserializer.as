@@ -139,8 +139,8 @@ package org.as3commons.bytecode.io {
 			itemCount = (result > 0) ? --result : 0;
 			while (itemCount--) {
 				include "readU32.as.tmpl";
-				const namespaceIndexRefCount:int = result;
-				const namespaceArray:Array = [];
+				var namespaceIndexRefCount:int = result;
+				var namespaceArray:Array = [];
 				while (--namespaceIndexRefCount - (-1)) {
 					include "readU32.as.tmpl";
 					namespaceArray[namespaceArray.length] = pool.namespacePool[result];
@@ -157,14 +157,14 @@ package org.as3commons.bytecode.io {
 				//QNAME or QNAME_A
 				if ((kind == 0x07) || (kind == 0x0D)) {
 					include "readU32.as.tmpl";
-					const ns:LNamespace = pool.namespacePool[result];
+					var ns:LNamespace = pool.namespacePool[result] as LNamespace;
 					include "readU32.as.tmpl";
-					const name:String = pool.stringPool[result];
+					var name:String = pool.stringPool[result] as String;
 					pool.multinamePool[pool.multinamePool.length] = new QualifiedName(name, ns, (kind == 0x07) ? MultinameKind.QNAME : MultinameKind.QNAME_A);
 						//RTQName or RTQName_A
 				} else if ((kind == 0x0f) || (kind == 0x10)) {
 					include "readU32.as.tmpl";
-					str = pool.stringPool[result];
+					str = pool.stringPool[result] as String;
 					pool.multinamePool[pool.multinamePool.length] = new RuntimeQualifiedName(str, (kind == 0x0f) ? MultinameKind.RTQNAME : MultinameKind.RTQNAME_A);
 				} else if ((kind == 0x11) || (kind == 0x12)) {
 					//RTQNAME_L or RTQNAME_LA
@@ -172,9 +172,9 @@ package org.as3commons.bytecode.io {
 				} else if ((kind == 0x09) || (kind == 0x0E)) {
 					//MULTINAME or MULTINAME_A
 					include "readU32.as.tmpl";
-					str = pool.stringPool[result];
+					str = pool.stringPool[result] as String;
 					include "readU32.as.tmpl";
-					var nss:NamespaceSet = pool.namespaceSetPool[result];
+					var nss:NamespaceSet = pool.namespaceSetPool[result] as NamespaceSet;
 					pool.multinamePool[pool.multinamePool.length] = new Multiname(str, nss, (kind == 0x09) ? MultinameKind.MULTINAME : MultinameKind.MULTINAME_A);
 				} else if ((kind == 0x1B) || (kind == 0x1C)) {
 					//MULTINAME_L or MULTINAME_LA
@@ -183,10 +183,10 @@ package org.as3commons.bytecode.io {
 				} else if (kind == 0x1D) {
 					//GENERIC
 					include "readU32.as.tmpl";
-					const qualifiedName:QualifiedName = pool.multinamePool[result];
+					var qualifiedName:QualifiedName = pool.multinamePool[result] as QualifiedName;
 					include "readU32.as.tmpl";
-					const paramCount:uint = result;
-					const params:Array = [];
+					var paramCount:uint = result;
+					var params:Array = [];
 					while (paramCount--) {
 						include "readU32.as.tmpl";
 						params[params.length] = pool.multinamePool[result];
