@@ -25,11 +25,11 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.Type;
 	import org.as3commons.reflect.as3commons_reflect;
 
-	public class ByteCodeAccessor extends Accessor implements IVisibleMember {
+	public final class ByteCodeAccessor extends Accessor implements IVisibleMember {
 
 		private static const FORWARD_SLASH:String = '/';
 
-		public function ByteCodeAccessor(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metaData:HashArray = null) {
+		public function ByteCodeAccessor(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metaData:HashArray=null) {
 			super(name, access, type, declaringType, isStatic, applicationDomain, metaData);
 		}
 

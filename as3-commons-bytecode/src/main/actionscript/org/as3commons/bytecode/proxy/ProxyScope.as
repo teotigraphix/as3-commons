@@ -16,14 +16,35 @@
 package org.as3commons.bytecode.proxy {
 	import flash.utils.Dictionary;
 
+	import org.as3commons.lang.Assert;
+
+	/**
+	 *
+	 * @author Roland Zwaga
+	 */
 	public final class ProxyScope {
+		private static var _enumCreated:Boolean = false;
+		private static const ITEMS:Dictionary = new Dictionary(true);
 
-		private static const ITEMS:Dictionary = new Dictionary();
-
+		/**
+		 * Determines that only public members will be proxied
+		 */
 		public static const PUBLIC:ProxyScope = new ProxyScope(PUBLIC_NAME);
+		/**
+		 * Determines that only protected members will be proxied
+		 */
 		public static const PROTECTED:ProxyScope = new ProxyScope(PROTECTED_NAME);
+		/**
+		 * Determines that only public and protected members will be proxied
+		 */
 		public static const PUBLIC_PROTECTED:ProxyScope = new ProxyScope(PUBLIC_PROTECTED_NAME);
+		/**
+		 * Determines that all members will be proxied, this means public, protected and custom namespaces
+		 */
 		public static const ALL:ProxyScope = new ProxyScope(ALL_NAME);
+		/**
+		 * Determines that no members will be scoped at all
+		 */
 		public static const NONE:ProxyScope = new ProxyScope(NONE_NAME);
 
 		private static const PUBLIC_NAME:String = "publicProxyScope";
@@ -34,7 +55,12 @@ package org.as3commons.bytecode.proxy {
 
 		private var _value:String;
 
+		{
+			_enumCreated = true;
+		}
+
 		public function ProxyScope(val:String) {
+			Assert.state(!_enumCreated, "The ProxyScope enum has already been created");
 			super();
 			_value = val;
 			ITEMS[_value] = this;

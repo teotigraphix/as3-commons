@@ -23,7 +23,7 @@ package org.as3commons.bytecode.reflect {
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class ByteCodeConstructor extends Constructor {
+	public final class ByteCodeConstructor extends Constructor {
 
 		/**
 		 * Creates a new <code>BytecodeConstructor</code> instance.

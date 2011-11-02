@@ -33,7 +33,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.reflect.Variable;
 	import org.as3commons.reflect.as3commons_reflect;
 
-	public class ByteCodeType extends Type {
+	public final class ByteCodeType extends Type {
 		private static const FLASH_NATIVE_PACKAGE_PREFIX:String = 'flash.';
 		private static const nativeClassNames:Dictionary = new Dictionary();
 

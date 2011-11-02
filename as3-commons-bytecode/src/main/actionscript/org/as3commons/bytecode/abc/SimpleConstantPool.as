@@ -92,8 +92,8 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function getConstantPoolItem(constantKindValue:uint, poolIndex:uint):* {
-			var constantKind:ConstantKind = ConstantKind.determineKind(constantKindValue);
-			var retVal:* = _lookup[constantKind];
+			const constantKind:ConstantKind = ConstantKind.determineKind(constantKindValue);
+			const retVal:* = _lookup[constantKind];
 			return (retVal is Array) ? retVal[0][poolIndex] : retVal;
 		}
 
