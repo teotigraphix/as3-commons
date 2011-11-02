@@ -390,7 +390,7 @@ package org.as3commons.bytecode.emit.impl {
 			var nr:uint = 4294967295;
 			var result:uint = instance.testUintMethod(nr);
 			assertEquals(0, result);
-			assertEquals("uint", getQualifiedClassName(result));
+			assertEquals("int", getQualifiedClassName(result));
 		}
 
 	}
