@@ -78,7 +78,7 @@
   		Its also possible to ignore the <code><a href="asdoc/org/as3commons/bytecode/proxy/IClassProxyInfo.html" target="_blank">IClassProxyInfo</a></code> instance entirely, in which case every public, protected and custom namespace scoped member on the specified class will be proxied. (Bytecode reflection is used here to obtain the information).</p>
   		<p>Should this not be desirable these methods will define specific members for proxying:</p>
   		<div class="source"><pre>classProxyInfo.proxyMethod("myMethod");</pre></div>
-  		<div class="source"><pre>classProxyInfo.proxyMethod("myAccessor");</pre></div>
+  		<div class="source"><pre>classProxyInfo.proxyAccessor("myAccessor");</pre></div>
   		<p>To have only methods of a certain scope proxied use the <code>proxyMethodScopes</code> property:</p>
   		<div class="source"><pre>classProxyInfo.proxyMethodScopes = ProxyScope.PUBLIC;</pre></div>
   		<p>The same mechanism can be used for accessor scopes:</p>
