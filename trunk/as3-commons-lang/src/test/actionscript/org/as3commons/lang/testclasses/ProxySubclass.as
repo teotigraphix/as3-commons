@@ -21,12 +21,12 @@ package org.as3commons.lang.testclasses {
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class TestProxy extends Proxy {
+	public class ProxySubclass extends Proxy {
 
 		/**
 		 * Creates a new <code>TestProxy</code> instance.
 		 */
-		public function TestProxy() {
+		public function ProxySubclass() {
 			super();
 		}
 	}

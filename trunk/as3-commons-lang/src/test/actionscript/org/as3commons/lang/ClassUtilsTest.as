@@ -34,7 +34,7 @@ package org.as3commons.lang {
 	import org.as3commons.lang.testclasses.PublicSubClass;
 	import org.as3commons.lang.testclasses.SampleEnum;
 	import org.as3commons.lang.testclasses.SubInterfaceImplementation;
-	import org.as3commons.lang.testclasses.TestProxy;
+	import org.as3commons.lang.testclasses.ProxySubclass;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.assertNotNull;
@@ -395,9 +395,9 @@ package org.as3commons.lang {
 
 		[Test]
 		public function testForInstanceWithProxy():void {
-			var proxy:TestProxy = new TestProxy();
+			var proxy:ProxySubclass = new ProxySubclass();
 			var cls:Class = ClassUtils.forInstance(proxy);
-			assertStrictlyEquals(TestProxy, cls);
+			assertStrictlyEquals(ProxySubclass, cls);
 		}
 	}
 }
