@@ -21,19 +21,19 @@ package org.as3commons.async.operation {
 	 * Dispatched when the current <code>IOperation</code> completed successfully.
 	 * @eventType org.as3commons.async.operation.OperationEvent.COMPLETE OperationEvent.COMPLETE
 	 */
-	[Event(name = "operationComplete", type = "org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationComplete", type="org.as3commons.async.operation.event.OperationEvent")]
 
 	/**
 	 * Dispatched when the current <code>IOperation</code> encountered an error.
 	 * @eventType org.as3commons.async.operation.OperationEvent.ERROR OperationEvent.ERROR
 	 */
-	[Event(name = "operationError", type = "org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationError", type="org.as3commons.async.operation.event.OperationEvent")]
 
 	/**
 	 * Dispatched when the current <code>IOperation</code> timed out.
 	 * @eventType org.as3commons.async.operation.OperationEvent.TIMEOUT OperationEvent.TIMEOUT
 	 */
-	[Event(name = "operationTimeout", type = "org.as3commons.async.operation.OperationEvent")]
+	[Event(name="operationTimeout", type="org.as3commons.async.operation.event.OperationEvent")]
 
 	/**
 	 * The IOperation interface describes an asynchronous operation. It serves as handle for asynchronous executions
@@ -102,42 +102,42 @@ package org.as3commons.async.operation {
 		 *
 		 * @param listener the event handler function
 		 */
-		function addCompleteListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void;
+		function addCompleteListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void;
 
 		/**
 		 * Convenience method for adding a listener to the OperationEvent.ERROR event.
 		 *
 		 * @param listener the event handler function
 		 */
-		function addErrorListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void;
+		function addErrorListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void;
 
 		/**
 		 * Convenience method for adding a listener to the OperationEvent.TIMEOUT event.
 		 *
 		 * @param listener the event handler function
 		 */
-		function addTimeoutListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void;
+		function addTimeoutListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void;
 
 		/**
 		 * Convenience method for removing a listener from the OperationEvent.COMPLETE event.
 		 *
 		 * @param listener the event handler function
 		 */
-		function removeCompleteListener(listener:Function, useCapture:Boolean = false):void;
+		function removeCompleteListener(listener:Function, useCapture:Boolean=false):void;
 
 		/**
 		 * Convenience method for removing a listener from the OperationEvent.ERROR event.
 		 *
 		 * @param listener the event handler function
 		 */
-		function removeErrorListener(listener:Function, useCapture:Boolean = false):void;
+		function removeErrorListener(listener:Function, useCapture:Boolean=false):void;
 
 		/**
 		 * Convenience method for removing a listener from the OperationEvent.TIMEOUT event.
 		 *
 		 * @param listener the event handler function
 		 */
-		function removeTimeoutListener(listener:Function, useCapture:Boolean = false):void;
+		function removeTimeoutListener(listener:Function, useCapture:Boolean=false):void;
 
 	}
 }
