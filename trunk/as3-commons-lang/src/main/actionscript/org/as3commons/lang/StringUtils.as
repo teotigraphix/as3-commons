@@ -2472,7 +2472,7 @@ package org.as3commons.lang {
 			var len:uint = rest.length;
 			var args:Array;
 			if (len == 1 && rest[0] is Array) {
-				args = rest[0] as Array;
+				args = rest[0];
 				len = args.length;
 			} else {
 				args = rest;
