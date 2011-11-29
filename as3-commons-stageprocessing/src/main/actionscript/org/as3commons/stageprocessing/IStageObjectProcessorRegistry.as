@@ -17,6 +17,7 @@ package org.as3commons.stageprocessing {
 
 	import flash.display.DisplayObject;
 	import flash.display.Stage;
+	import flash.utils.Dictionary;
 
 	/**
 	 * Describes an object that manages a collection of <code>IStageObjectProcessor</code> instances and their associated <code>IObjectSelectors</code>.
@@ -145,5 +146,27 @@ package org.as3commons.stageprocessing {
 		 * @private
 		 */
 		function set useStageDestroyers(value:Boolean):void;
+
+		/**
+		 *
+		 * @param displayObject
+		 */
+		function processDisplayObject(displayObject:DisplayObject):void;
+
+		/**
+		 *
+		 * @param displayObject
+		 * @param objectSelector
+		 * @param processors
+		 *
+		 */
+		function approveDisplayObjectAfterAdding(displayObject:DisplayObject, objectSelector:IObjectSelector, processors:Vector.<IStageObjectProcessor>):void;
+
+		/**
+		 *
+		 * @param displayObject
+		 * @return
+		 */
+		function getAssociatedObjectSelectors(displayObject:DisplayObject):Dictionary;
 	}
 }

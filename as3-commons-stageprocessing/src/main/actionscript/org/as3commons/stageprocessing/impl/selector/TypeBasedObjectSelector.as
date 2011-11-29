@@ -28,12 +28,17 @@ package org.as3commons.stageprocessing.impl.selector {
 
 		/**
 		 * Create a new <code>TypeBasedObjectSelector</code> instance.
-		 * @param typeArray
+		 * @param classNames
+		 * @param classes
 		 * @param approveOnMatch
 		 */
 		public function TypeBasedObjectSelector(classNames:Vector.<String>, classes:Vector.<Class>, approveOnMatch:Boolean=true, appDomain:ApplicationDomain=null) {
 			super();
-			initTypeBasedObjectSelector(appDomain, classNames, classes, approveOnMatch);
+			_applicationDomain ||= ApplicationDomain.currentDomain;
+			_classNames = classNames;
+			_classes = classes;
+			_approveOnMatch = approveOnMatch;
+			validateClassNames(classNames);
 		}
 
 		private var _applicationDomain:ApplicationDomain;
@@ -103,7 +108,7 @@ package org.as3commons.stageprocessing.impl.selector {
 		 * @inheritDoc
 		 */
 		public function approve(object:Object):Boolean {
-			var result:Boolean = _classNames.some(function(item:Class, index:int, arr:Array):Boolean {
+			var result:Boolean = _classes.some(function(item:Class, index:int, arr:Array):Boolean {
 				return (object is item);
 			});
 			if (result) {
@@ -111,22 +116,6 @@ package org.as3commons.stageprocessing.impl.selector {
 			} else {
 				return !_approveOnMatch;
 			}
-		}
-
-		/**
-		 *
-		 * @param appDomain
-		 * @param classNames
-		 * @param classes
-		 * @param approveOnMatch
-		 */
-		protected function initTypeBasedObjectSelector(appDomain:ApplicationDomain, classNames:Vector.<String>, classes:Vector.<Class>, approveOnMatch:Boolean):void {
-			Assert.notNull(classNames, "The typeArray argument must not be null");
-			_applicationDomain ||= ApplicationDomain.currentDomain;
-			_classNames = classNames;
-			_classes = classes;
-			_approveOnMatch = approveOnMatch;
-			validateClassNames(classNames);
 		}
 
 		/**
