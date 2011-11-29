@@ -408,7 +408,7 @@ package org.as3commons.stageprocessing.impl {
 		 * @param objectSelector
 		 * @param processors
 		 */
-		protected function approveDisplayObjectAfterAdding(displayObject:DisplayObject, objectSelector:IObjectSelector, processors:Vector.<IStageObjectProcessor>):void {
+		public function approveDisplayObjectAfterAdding(displayObject:DisplayObject, objectSelector:IObjectSelector, processors:Vector.<IStageObjectProcessor>):void {
 			if (objectSelector.approve(displayObject)) {
 				if (!isBeingReparented(displayObject)) {
 					for each (var processor:IStageObjectProcessor in processors) {
@@ -459,7 +459,7 @@ package org.as3commons.stageprocessing.impl {
 		 * @param displayObject
 		 * @return
 		 */
-		protected function getAssociatedObjectSelectors(displayObject:DisplayObject):Dictionary {
+		public function getAssociatedObjectSelectors(displayObject:DisplayObject):Dictionary {
 			var selectors:Dictionary = null;
 			while (selectors == null && displayObject != null) {
 				selectors = _rootViews[displayObject];
@@ -517,7 +517,7 @@ package org.as3commons.stageprocessing.impl {
 		 * @param displayObject a reference to the object that was added to the stage
 		 * @see org.as3commons.stageprocessing.IStageObjectProcessor IStageObjectProcessor
 		 */
-		protected function processDisplayObject(displayObject:DisplayObject):void {
+		public function processDisplayObject(displayObject:DisplayObject):void {
 			if (!displayObject || !_enabled) {
 				return;
 			}

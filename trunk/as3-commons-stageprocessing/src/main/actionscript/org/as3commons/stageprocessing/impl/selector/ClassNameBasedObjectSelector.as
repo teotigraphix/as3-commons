@@ -30,12 +30,6 @@ package org.as3commons.stageprocessing.impl.selector {
 	 */
 	public class ClassNameBasedObjectSelector implements IObjectSelector {
 
-		// --------------------------------------------------------------------
-		//
-		// Constructor
-		//
-		// --------------------------------------------------------------------
-
 		/**
 		 * Creates a new ClassBasedObjectSelector.
 		 *
@@ -47,27 +41,12 @@ package org.as3commons.stageprocessing.impl.selector {
 		 */
 		public function ClassNameBasedObjectSelector(regexpList:Vector.<String>=null, approveOnMatch:Boolean=false) {
 			super();
-			init(regexpList, approveOnMatch);
-		}
-
-		protected function init(regexpList:Vector.<String>, approveOnMatch:Boolean):void {
 			_classNameRegexpList = (regexpList != null) ? new Vector.<RegExp>() : null;
 			for each (var item:String in regexpList) {
 				_classNameRegexpList[_classNameRegexpList.length] = new RegExp(item);
 			}
 			this.approveOnMatch = approveOnMatch;
 		}
-
-
-		// --------------------------------------------------------------------
-		//
-		// Properties
-		//
-		// --------------------------------------------------------------------
-
-		// ----------------------------
-		// classRegexpArray
-		// ----------------------------
 
 		private var _classNameRegexpList:Vector.<RegExp>;
 
@@ -78,10 +57,6 @@ package org.as3commons.stageprocessing.impl.selector {
 		public function set classNameRegexpList(value:Vector.<RegExp>):void {
 			_classNameRegexpList = value;
 		}
-
-		// ----------------------------
-		// approveOnMatch
-		// ----------------------------
 
 		private var _approveOnMatch:Boolean;
 
