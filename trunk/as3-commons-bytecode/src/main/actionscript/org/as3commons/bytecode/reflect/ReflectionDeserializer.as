@@ -61,7 +61,7 @@ package org.as3commons.bytecode.reflect {
 		protected var _recordHeaderSerializer:RecordHeaderSerializer;
 
 		public function read(typeCache:ByteCodeTypeCache, input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
-			_applicationDomain ||= Type.currentApplicationDomain;
+			_applicationDomain = applicationDomain ||= Type.currentApplicationDomain;
 			byteStream = AbcSpec.newByteArray();
 			input.endian = Endian.LITTLE_ENDIAN;
 			var swfIdentifier:String = input.readUTFBytes(3);
