@@ -369,7 +369,7 @@
 			<artifactId>spark</artifactId>
 			<version>${flex-sdk.version}</version>
 			<type>rb.swc</type>
-			<scope>external</scope>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -377,7 +377,7 @@
 			<artifactId>textLayout</artifactId>
 			<version>${flex-sdk.version}</version>
 			<type>rb.swc</type>
-			<scope>external</scope>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -385,7 +385,7 @@
 			<artifactId>osmf</artifactId>
 			<version>${flex-sdk.version}</version>
 			<type>rb.swc</type>
-			<scope>external</scope>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
