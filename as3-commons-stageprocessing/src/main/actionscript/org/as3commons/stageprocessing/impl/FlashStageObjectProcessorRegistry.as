@@ -381,6 +381,10 @@ package org.as3commons.stageprocessing.impl {
 			}
 		}
 
+		/**
+		 *
+		 * @param root
+		 */
 		protected function addEventListeners(root:DisplayObject):void {
 			if (root != null) {
 				root.addEventListener(Event.ADDED_TO_STAGE, added_handler, true);

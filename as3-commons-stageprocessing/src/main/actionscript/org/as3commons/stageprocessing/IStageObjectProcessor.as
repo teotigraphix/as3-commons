@@ -22,12 +22,6 @@ package org.as3commons.stageprocessing {
 	 */
 	public interface IStageObjectProcessor {
 
-		// --------------------------------------------------------------------
-		//
-		// Methods
-		//
-		// --------------------------------------------------------------------
-
 		/**
 		 * Performs an operation on the specified <code>DisplayObject</code>.
 		 * @param displayObject The object that will be processed.
