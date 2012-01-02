@@ -8,6 +8,7 @@ Changes in version 0.3.6 (??.??.2011)
 
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=103
 * ClassUtils.forInstance no longer fails for Proxy subclasses
+* Added XMLUtils.hasAttribute method
 
 Changes in version 0.3.5 (12.10.2011)
 -----------------------------------
