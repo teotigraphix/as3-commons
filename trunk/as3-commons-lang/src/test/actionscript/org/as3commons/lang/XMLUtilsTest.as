@@ -113,7 +113,34 @@ package org.as3commons.lang {
 			assertEquals(2, source.children().length());
 		}
 
-		private function assertThrowsIllegalArgumentError(f:Function, args:Array):void {
+		[Test(expects="org.as3commons.lang.IllegalArgumentError")]
+		public function testHasAttribute_withNullXML():void {
+			XMLUtils.hasAttribute(null, "attributeName");
+		}
+
+		[Test(expects="org.as3commons.lang.IllegalArgumentError")]
+		public function testHasAttribute_withNullArgumentName():void {
+			XMLUtils.hasAttribute(<node/>, null);
+		}
+
+		[Test(expects="org.as3commons.lang.IllegalArgumentError")]
+		public function testHasAttribute_withEmptyArgumentName():void {
+			XMLUtils.hasAttribute(<node/>, "");
+		}
+
+		[Test(expects="org.as3commons.lang.IllegalArgumentError")]
+		public function testHasAttribute_withAllSpacesArgumentName():void {
+			XMLUtils.hasAttribute(<node/>, "   ");
+		}
+
+		[Test]
+		public function testHasAttribute():void {
+			assertFalse(XMLUtils.hasAttribute(<node/>, "id"));
+			assertTrue(XMLUtils.hasAttribute(<node id="123"/>, "id"));
+			assertFalse(XMLUtils.hasAttribute(<node id="123"/>, "name"));
+		}
+
+		private static function assertThrowsIllegalArgumentError(f:Function, args:Array):void {
 			try {
 				f.apply(XMLUtils, args);
 				fail("Expecting IllegalArgumentError being thrown");

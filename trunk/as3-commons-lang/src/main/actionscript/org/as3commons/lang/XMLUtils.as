@@ -133,5 +133,18 @@ package org.as3commons.lang {
 			return source;
 		}
 
+		/**
+		 * Returns whether or not the given XML node has an attribute with the given name.
+		 *
+		 * @param xml
+		 * @param attributeName
+		 * @return true if the node has the attribute; false if not
+		 */
+		public static function hasAttribute(xml:XML, attributeName:String):Boolean {
+			Assert.notNull(xml, "The xml must not be null");
+			Assert.hasText(attributeName, "The attribute name must not be null or empty");
+			return (xml.attribute(attributeName).length() > 0);
+		}
+
 	}
 }
