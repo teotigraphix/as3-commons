@@ -1,12 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.as3commons</groupId>
 	<artifactId>parent-pom</artifactId>
 	<packaging>pom</packaging>
-	<version>1-SNAPSHOT</version>
+	<version>1</version>
 	<name>AS3Commons Parent POM</name>
 	<url>http://www.as3commons.org</url>
 	<description>Parent POM for AS3Commons libraries</description>
@@ -38,9 +36,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/parent-pom</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/parent-pom</developerConnection>
-        <url>http://as3-commons.googlecode.com/svn/trunk/parent-pom</url>
+        <connection>scm:svn:http://as3-commons.googlecode.com/svn/tags/parent-pom/parent-pom-1</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/parent-pom/parent-pom-1</developerConnection>
+        <url>http://as3-commons.googlecode.com/svn/tags/parent-pom/parent-pom-1</url>
 	</scm>
 
 	<repositories>
@@ -120,7 +118,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<storepass/>
+					<storepass />
 					<iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>true</iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>
 					<testTimeout>10000</testTimeout>
 					<targetPlayer>${flashplayer.version.major}</targetPlayer>
