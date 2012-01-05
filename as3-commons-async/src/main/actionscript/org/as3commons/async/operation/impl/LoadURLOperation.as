@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.async.operation.impl {
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
@@ -115,11 +116,11 @@ package org.as3commons.async.operation.impl {
 
 		/**
 		 * Handles the <code>SecurityErrorEvent.SECURITY_ERROR</code> and <code>IOErrorEvent.IO_ERROR</code> events of the internally created <code>URLLoader</code>.
-		 * @param event The specified <code>ProgressEvent.PROGRESS</code> or <code>IOErrorEvent.IO_ERROR</code> event.
+		 * @param event The specified <code>SecurityErrorEvent.SECURITY_ERROR</code> or <code>IOErrorEvent.IO_ERROR</code> event.
 		 */
-		protected function urlLoaderErrorHandler(event:Event):void {
+		protected function urlLoaderErrorHandler(event:ErrorEvent):void {
 			removeEventListeners();
-			dispatchErrorEvent(event['text']);
+			dispatchErrorEvent(event.text);
 		}
 
 
