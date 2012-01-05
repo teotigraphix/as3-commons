@@ -13,7 +13,7 @@
 	<inceptionYear>2007</inceptionYear>
 
 	<properties>
-		<flex-mojos.version>4.0-RC1</flex-mojos.version>
+		<flex-mojos.version>4.1-beta</flex-mojos.version>
 		<flex-sdk.version>4.5.1.21328</flex-sdk.version>
 		<!--flex-sdk.version>4.1.0.16076</flex-sdk.version-->
 		<flashplayer.version.major>10</flashplayer.version.major>
@@ -40,23 +40,6 @@
 
 	<developers>
 		<developer>
-			<id>cherreman</id>
-			<name>Christophe Herreman</name>
-			<email>christophe.herreman [at] stackandheap.com</email>
-			<url>http://www.herrodius.com</url>
-			<organization>Stack &amp; Heap</organization>
-			<organizationUrl>http://www.stackandheap.com</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>martino.piccinato</id>
-			<name>Martino Piccinato</name>
-			<email>mp [at] yoolab.com</email>
-			<organization>Yoolab</organization>
-			<organizationUrl>http://www.yoolab.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
 			<id>rzwaga</id>
 			<name>Roland Zwaga</name>
 			<email>roland.zwaga [at] stackandheap.com</email>
@@ -66,31 +49,15 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>jes</id>
-			<name>Jens Struwe</name>
-			<email>jens [at] struwe.net</email>
-			<organization>Russischer B�r Software</organization>
-			<organizationUrl>http://sibirjak.com/</organizationUrl>
+			<id>cherreman</id>
+			<name>Christophe Herreman</name>
+			<email>christophe.herreman [at] stackandheap.com</email>
+			<url>http://www.herrodius.com</url>
+			<organization>Stack &amp; Heap</organization>
+			<organizationUrl>http://www.stackandheap.com</organizationUrl>
 			<timezone>+1</timezone>
 		</developer>
-		<developer>
-			<id>alewisohn</id>
-			<name>Andrew Lewisohn</name>
-			<email>alewisohn [at] gmail.com</email>
-			<organization>Arc90, Inc.</organization>
-			<organizationUrl>http://www.arc90.com/</organizationUrl>
-			<timezone>-5</timezone>
-		</developer>
-		<developer>
-			<id>jghandour</id>
-			<name>James Ghandour</name>
-			<email>jamesghandour [at] jagsits.com</email>
-			<organization>JAG's ITS Inc.</organization>
-			<organizationUrl>http://www.jagsits.com/</organizationUrl>
-			<timezone>-5</timezone>
-		</developer>
 	</developers>
-
 
 	<build>
 
@@ -106,7 +73,6 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-
 
 			<plugin>
 				<groupId>org.sonatype.flexmojos</groupId>
@@ -134,14 +100,11 @@
 					<iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>true</iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>
 					<configurationReport>true</configurationReport>
 					<defines>
-						<CONFIG::debug>false</CONFIG::debug>
-					</defines>
-					<definesDeclaration>
 						<property>
 							<name>CONFIG::debug</name>
 							<value>false</value>
 						</property>
-					</definesDeclaration>
+					</defines>
 					<testTimeout>10000</testTimeout>
 					<targetPlayer>${flashplayer.version.major}</targetPlayer>
 					<reportOutputDirectory>target/site/docs/asdoc</reportOutputDirectory>
@@ -155,7 +118,6 @@
 					<lenient>true</lenient>
 				</configuration>
 			</plugin>
-
 
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
@@ -432,7 +394,6 @@
 
 		</plugins>
 	</reporting>
-
 
 	<scm>
 		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-bytecode</developerConnection>
