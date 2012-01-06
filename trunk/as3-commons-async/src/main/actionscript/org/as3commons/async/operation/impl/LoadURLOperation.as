@@ -24,6 +24,7 @@ package org.as3commons.async.operation.impl {
 	import flash.net.URLRequest;
 	import flash.utils.clearTimeout;
 	import flash.utils.setTimeout;
+
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -38,9 +39,11 @@ package org.as3commons.async.operation.impl {
 		 * @param dataFormat Optional argument that specifies the data format of the expected data. Use the <code>flash.net.URLLoaderDataFormat</code> enumeration for this.
 		 * @see flash.net.URLLoaderDataFormat
 		 */
-		public function LoadURLOperation(url:String, dataFormat:String=null) {
+		public function LoadURLOperation(url:String="", dataFormat:String=null, request:URLRequest=null) {
+			Assert.hasText(url, "url argument must not be null or empty");
 			super();
-			init(url, dataFormat);
+			dataFormat ||= URLLoaderDataFormat.TEXT;
+			timeOutToken = setTimeout(createLoader, 1, url, dataFormat, request);
 		}
 
 		protected var timeOutToken:uint;
@@ -56,7 +59,7 @@ package org.as3commons.async.operation.impl {
 			return _url;
 		}
 
-		protected function createLoader(url:String, dataFormat:String):void {
+		protected function createLoader(url:String, dataFormat:String, request:URLRequest):void {
 			clearTimeout(timeOutToken);
 			urlLoader = new URLLoader();
 			urlLoader.dataFormat = dataFormat;
@@ -64,20 +67,8 @@ package org.as3commons.async.operation.impl {
 			urlLoader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, urlLoaderErrorHandler);
 			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, urlLoaderErrorHandler);
-			urlLoader.load(new URLRequest(url));
-		}
-
-		/**
-		 * Initializes the <code>LoadURLOperation</code> instance.
-		 * @param url The specified URL from which the data will be loaded.
-		 * @param dataFormat Optional argument that specifies the data format of the expected data. Use the <code>flash.net.URLLoaderDataFormat</code> enumeration for this. Default is "text".
-		 * @see flash.net.URLLoaderDataFormat
-		 */
-		protected function init(url:String, dataFormat:String="text"):void {
-			Assert.hasText(url, "url argument must not be null or empty");
-			dataFormat ||= URLLoaderDataFormat.TEXT;
-
-			timeOutToken = setTimeout(createLoader, 1, url, dataFormat);
+			var request:URLRequest = (request == null) ? new URLRequest(url) : request;
+			urlLoader.load(request);
 		}
 
 		/**
@@ -92,7 +83,7 @@ package org.as3commons.async.operation.impl {
 
 		/**
 		 * Removes all the registered event handlers from the internally created <code>URLLoader</code> and
-		 * sets itr to <code>null</code> afterwards.
+		 * sets it to <code>null</code> afterwards.
 		 */
 		protected function removeEventListeners():void {
 			if (urlLoader != null) {
