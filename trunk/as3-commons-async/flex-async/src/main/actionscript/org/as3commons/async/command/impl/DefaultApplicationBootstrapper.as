@@ -25,6 +25,7 @@ package org.as3commons.async.command.impl {
 	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.command.event.CompositeCommandEvent;
 	import org.as3commons.async.operation.impl.LoadModuleOperation;
+	import org.as3commons.async.operation.impl.LoadResourceBundleOperation;
 	import org.as3commons.async.operation.impl.LoadResourceModuleOperation;
 	import org.as3commons.async.operation.impl.LoadStyleModuleOperation;
 
@@ -53,7 +54,7 @@ package org.as3commons.async.command.impl {
 		}
 
 		public function addResourceBundle(url:String, name:String, locale:String):IApplicationBootstrapper {
-			(_resourceBundleCommands ||= Vector.<GenericOperationCommand>())[_resourceBundleCommands.length] = new GenericOperationCommand(LoadModuleOperation, url, name, locale);
+			(_resourceBundleCommands ||= Vector.<GenericOperationCommand>())[_resourceBundleCommands.length] = new GenericOperationCommand(LoadResourceBundleOperation, url, name, locale);
 			return this;
 		}
 
