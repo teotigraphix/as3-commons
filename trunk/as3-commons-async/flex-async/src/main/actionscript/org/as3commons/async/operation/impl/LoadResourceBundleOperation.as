@@ -85,6 +85,7 @@ package org.as3commons.async.operation.impl {
 
 			for (var key:String in properties) {
 				resourceBundle.content[key] = properties[key];
+				logger.debug("Adding property: {0}={1}", [key, properties[key]]);
 				i++;
 			}
 
