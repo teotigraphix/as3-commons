@@ -17,7 +17,6 @@ package org.as3commons.async.command {
 	import flash.events.IEventDispatcher;
 	import flash.system.ApplicationDomain;
 	import flash.system.SecurityDomain;
-
 	import mx.core.IFlexModuleFactory;
 
 	[Event(name="complete", type="flash.events.Event")]
@@ -26,6 +25,14 @@ package org.as3commons.async.command {
 	 * @author Roland Zwaga
 	 */
 	public interface IApplicationBootstrapper extends IEventDispatcher {
+		/**
+		 *
+		 * @param moduleURL
+		 * @param applicationDomain
+		 * @param securityDomain
+		 * @return
+		 */
+		function addModule(moduleURL:String, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null, moduleFactory:IFlexModuleFactory=null):IApplicationBootstrapper;
 		/**
 		 *
 		 * @param url
@@ -43,14 +50,6 @@ package org.as3commons.async.command {
 		 * @return
 		 */
 		function addResourceModule(resourceModuleURL:String, update:Boolean=true, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null):IApplicationBootstrapper;
-		/**
-		 *
-		 * @param moduleURL
-		 * @param applicationDomain
-		 * @param securityDomain
-		 * @return
-		 */
-		function addModule(moduleURL:String, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null):IApplicationBootstrapper;
 		/**
 		 *
 		 * @param styleModuleURL

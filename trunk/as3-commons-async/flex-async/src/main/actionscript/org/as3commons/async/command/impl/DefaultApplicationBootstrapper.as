@@ -48,23 +48,23 @@ package org.as3commons.async.command.impl {
 		private var _resourceModuleCommands:Vector.<GenericOperationCommand>;
 		private var _styleModuleCommands:Vector.<GenericOperationCommand>;
 
-		public function addModule(moduleURL:String, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null):IApplicationBootstrapper {
-			(_moduleCommands ||= Vector.<GenericOperationCommand>())[_moduleCommands.length] = new GenericOperationCommand(LoadModuleOperation, moduleURL, applicationDomain, securityDomain);
+		public function addModule(moduleURL:String, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null, moduleFactory:IFlexModuleFactory=null):IApplicationBootstrapper {
+			(_moduleCommands ||= new Vector.<GenericOperationCommand>())[_moduleCommands.length] = new GenericOperationCommand(LoadModuleOperation, moduleURL, applicationDomain, securityDomain, moduleFactory);
 			return this;
 		}
 
 		public function addResourceBundle(url:String, name:String, locale:String):IApplicationBootstrapper {
-			(_resourceBundleCommands ||= Vector.<GenericOperationCommand>())[_resourceBundleCommands.length] = new GenericOperationCommand(LoadResourceBundleOperation, url, name, locale);
+			(_resourceBundleCommands ||= new Vector.<GenericOperationCommand>())[_resourceBundleCommands.length] = new GenericOperationCommand(LoadResourceBundleOperation, url, name, locale);
 			return this;
 		}
 
 		public function addResourceModule(resourceModuleURL:String, update:Boolean=true, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null):IApplicationBootstrapper {
-			(_resourceModuleCommands ||= Vector.<GenericOperationCommand>())[_resourceModuleCommands.length] = new GenericOperationCommand(LoadResourceModuleOperation, resourceModuleURL, update, applicationDomain, securityDomain);
+			(_resourceModuleCommands ||= new Vector.<GenericOperationCommand>())[_resourceModuleCommands.length] = new GenericOperationCommand(LoadResourceModuleOperation, resourceModuleURL, update, applicationDomain, securityDomain);
 			return this;
 		}
 
 		public function addStyleModule(styleModuleURL:String, update:Boolean=true, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null, flexModuleFactory:IFlexModuleFactory=null):IApplicationBootstrapper {
-			(_styleModuleCommands ||= Vector.<GenericOperationCommand>())[_styleModuleCommands.length] = new GenericOperationCommand(LoadStyleModuleOperation, styleModuleURL, update, applicationDomain, securityDomain, flexModuleFactory);
+			(_styleModuleCommands ||= new Vector.<GenericOperationCommand>())[_styleModuleCommands.length] = new GenericOperationCommand(LoadStyleModuleOperation, styleModuleURL, update, applicationDomain, securityDomain, flexModuleFactory);
 			return this;
 		}
 
@@ -74,7 +74,7 @@ package org.as3commons.async.command.impl {
 			addCommands(_styleModuleCommands);
 			addCommands(_moduleCommands);
 			this.addEventListener(CompositeCommandEvent.COMPLETE, onCompositeCommandComplete);
-			load();
+			execute();
 		}
 
 		private function onCompositeCommandComplete(event:CompositeCommandEvent):void {

@@ -18,9 +18,12 @@ package org.as3commons.async.operation.impl {
 	import flash.system.ApplicationDomain;
 	import flash.system.SecurityDomain;
 	import flash.utils.Timer;
+
+	import mx.core.IFlexModuleFactory;
 	import mx.events.ModuleEvent;
 	import mx.modules.IModuleInfo;
 	import mx.modules.ModuleManager;
+
 	import org.as3commons.lang.Assert;
 
 	/**
@@ -36,22 +39,9 @@ package org.as3commons.async.operation.impl {
 		 * @param applicationDomain An optional <code>ApplicationDomain</code> for the loaded Flex module.
 		 * @param securityDomain An optional <code>SecurityDomain</code> for the loaded Flex module.
 		 */
-		public function LoadModuleOperation(moduleURL:String, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null) {
+		public function LoadModuleOperation(moduleURL:String, applicationDomain:ApplicationDomain=null, securityDomain:SecurityDomain=null, moduleFactory:IFlexModuleFactory=null) {
 			Assert.hasText(moduleURL, "The moduleURL argument must not be null or empty");
 			super();
-			init(moduleURL, applicationDomain, securityDomain);
-		}
-
-		/**
-		 * The <code>IModuleInfo</code> instance that is used to listen for <code>ModuleEvent.READY</code>, <code>ModuleEvent.ERROR</code>
-		 * and <code>ModuleEvent.PROGRESS</code> events.
-		 */
-		protected var moduleInfo:IModuleInfo;
-
-		/**
-		 * Creates a <code>IModuleInfo</code> instance by invoking <code>ModuleManager.getModule()</code> and adds appropriate event handlers.
-		 */
-		protected function init(moduleURL:String, applicationDomain:ApplicationDomain, securityDomain:SecurityDomain):void {
 			moduleInfo = ModuleManager.getModule(moduleURL);
 			moduleInfo.addEventListener(ModuleEvent.READY, readyHandler, false, 0, true);
 			moduleInfo.addEventListener(ModuleEvent.ERROR, moduleErrorHandler, false, 0, true);
@@ -61,11 +51,17 @@ package org.as3commons.async.operation.impl {
 				timer.removeEventListener(TimerEvent.TIMER, timerHandler);
 				timer.stop();
 				timer = null;
-				moduleInfo.load(applicationDomain, securityDomain);
+				moduleInfo.load(applicationDomain, securityDomain, null, moduleFactory);
 			}
 			timer.addEventListener(TimerEvent.TIMER, timerHandler);
 			timer.start();
 		}
+
+		/**
+		 * The <code>IModuleInfo</code> instance that is used to listen for <code>ModuleEvent.READY</code>, <code>ModuleEvent.ERROR</code>
+		 * and <code>ModuleEvent.PROGRESS</code> events.
+		 */
+		protected var moduleInfo:IModuleInfo;
 
 		/**
 		 * Handles the <code>ModuleEvent.ERROR</code> event.
