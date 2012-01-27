@@ -30,6 +30,8 @@ package org.as3commons.logging.util {
 	 * Introspects a object, makes it js transferable and returns it.
 	 * 
 	 * @param value any object
+     * @param map Map used to store the representations (can be passed in to reduce performance consumption)
+     * @param levels Depth used to introspect the value.
 	 * @return js valid representation
 	 * @since 2.5
 	 */
@@ -61,9 +63,7 @@ package org.as3commons.logging.util {
 					}
 				} else if( value is ByteArray ) {
 					var ba:ByteArray = value;
-					encoder.reset();
-					encoder.encodeBytes( ba, 0, ba.length );
-					result = 'BASE64'+encoder.flush();
+					result = 'BASE64'+base64enc(ba, 0);
 				} else {
 					if( type != "Object") {
 						result = {type:type};
@@ -98,10 +98,8 @@ package org.as3commons.logging.util {
 		return result;
 	}
 }
-import mx.utils.Base64Encoder;
 import flash.events.ErrorEvent;
 
-const encoder: Base64Encoder = new Base64Encoder();
 function errorToObject(error:Error):Object {
 	var obj: Object = {
 		errorNo:error.errorID,
