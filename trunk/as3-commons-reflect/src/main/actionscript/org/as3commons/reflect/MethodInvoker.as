@@ -24,6 +24,9 @@ package org.as3commons.reflect {
 	import flash.utils.Proxy;
 	import flash.utils.flash_proxy;
 
+	import org.as3commons.lang.IEquals;
+	import org.as3commons.lang.builder.EqualsBuilder;
+
 	/**
 	 * A MethodInvoker is a representation of a method call or invocation. Use this to dynamically invoke methods
 	 * on an object.
@@ -36,7 +39,7 @@ package org.as3commons.reflect {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class MethodInvoker implements INamespaceOwner {
+	public class MethodInvoker implements INamespaceOwner, IEquals {
 		private static const CONSTRUCTOR_FIELD_NAME:String = "constructor";
 
 		private var _target:*;
@@ -144,6 +147,27 @@ package org.as3commons.reflect {
 				}
 			}
 
+			return result;
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherInvoker:MethodInvoker = other as MethodInvoker;
+			var result:Boolean = false;
+			if (otherInvoker != null) {
+				result = ((this._target === otherInvoker.target) && //
+					(this._method == otherInvoker.method) && //
+					(this._namespaceURI == otherInvoker.namespaceURI));
+				if (result) {
+					if (this._arguments.length == otherInvoker.arguments.length) {
+						var i:int = 0;
+						for each (var arg:* in this._arguments) {
+							if (arg !== otherInvoker[i++]) {
+								return false;
+							}
+						}
+					}
+				}
+			}
 			return result;
 		}
 
