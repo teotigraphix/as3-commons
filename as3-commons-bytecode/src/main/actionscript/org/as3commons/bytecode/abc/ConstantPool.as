@@ -297,9 +297,9 @@ package org.as3commons.bytecode.abc {
 			}
 
 			if (multiname is MultinameG) {
-				var mg:MultinameG = MultinameG(multiname);
+				var mg:MultinameG = multiname as MultinameG;
 				addMultiname(mg.qualifiedName);
-				for each (var qn:QualifiedName in mg.parameters) {
+				for each (var qn:BaseMultiname in mg.parameters) {
 					addMultiname(qn);
 				}
 			}
