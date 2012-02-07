@@ -5,7 +5,7 @@ Note: dates are in DD.MM.YYYY format
 
 Changes in version 1.1 (??.??.2011)
 -----------------------------------
-
+* Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=108
 * Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=92 (Thanks Zach)
 * Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=93 (Thanks Zach)
 
