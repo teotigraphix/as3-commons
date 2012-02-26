@@ -683,7 +683,7 @@ package org.as3commons.reflect {
 			if (_fields == null) {
 				createFieldsHashArray();
 			}
-			if (ns == null) {
+			if ((ns == null) || (ns.length == 0)) {
 				return _fields.get(name);
 			} else {
 				var flds:Array = _fields.getArray();
