@@ -361,10 +361,7 @@ package org.as3commons.eventbus.impl {
 			if (_dispatchedEvents[event] != true) {
 				LOGGER.debug("Received event {0}, redispatching it", [event]);
 				dispatchEvent(event);
-			} else {
-				delete _dispatchedEvents[event];
-			}
-		}
+			}		}
 
 		/**
 		 * @inheritDoc
