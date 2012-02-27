@@ -28,22 +28,22 @@ package org.as3commons.async.command.event {
 		/**
 		 * Defines the value of the type property of a <code>CompositeCommandEvent.COMPLETE</code> event object.
 	   * @eventType String
-			   */
+								 */
 		public static const COMPLETE:String = "compositeCommandComplete";
 		/**
 		 * Defines the value of the type property of a <code>CompositeCommandEvent.ERROR</code> event object.
 	   * @eventType String
-			   */
+								 */
 		public static const ERROR:String = "compositeCommandError";
 		/**
 		 * Defines the value of the type property of a <code>CompositeCommandEvent.BEFORE_EXECUTE_COMMAND</code> event object.
 	   * @eventType String
-			   */
+								 */
 		public static const BEFORE_EXECUTE_COMMAND:String = "compositeCommandBeforeExecuteCommand";
 		/**
 		 * Defines the value of the type property of a <code>CompositeCommandEvent.AFTER_EXECUTE_COMMAND</code> event object.
 	   * @eventType String
-			   */
+								 */
 		public static const AFTER_EXECUTE_COMMAND:String = "compositeCommandAfterExecuteCommand";
 
 		private var _command:ICommand;
@@ -55,7 +55,7 @@ package org.as3commons.async.command.event {
 		/**
 		 * Constructs a new CompositeCommandEvent
 		 */
-		public function CompositeCommandEvent(type:String, command:ICommand = null, bubbles:Boolean = false, cancelable:Boolean = false) {
+		public function CompositeCommandEvent(type:String, command:ICommand=null, bubbles:Boolean=false, cancelable:Boolean=false) {
 			super(type, bubbles, cancelable);
 			_command = command;
 		}

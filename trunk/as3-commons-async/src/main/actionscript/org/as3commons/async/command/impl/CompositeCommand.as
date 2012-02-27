@@ -330,6 +330,20 @@ package org.as3commons.async.command.impl {
 			dispatchEvent(new CompositeCommandEvent(CompositeCommandEvent.BEFORE_EXECUTE_COMMAND, command));
 		}
 
+		public function addCommandAt(command:ICommand, index:int):ICompositeCommand {
+			if (index < _commands.length) {
+				_commands.splice(index, 0, command);
+				total++;
+				return this;
+			} else {
+				return addCommand(command);
+			}
+		}
+
+		public function addOperationAt(operationClass:Class, index:int, ... constructorArgs):ICompositeCommand {
+			return addCommandAt(GenericOperationCommand.createNew(operationClass, constructorArgs), index);
+		}
+
 	}
 
 }
