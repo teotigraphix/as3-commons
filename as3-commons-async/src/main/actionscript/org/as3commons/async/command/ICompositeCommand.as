@@ -24,6 +24,10 @@ package org.as3commons.async.command {
 	public interface ICompositeCommand extends ICommand, IOperation {
 
 		/**
+		 */
+		function addCommandAt(command:ICommand, index:int):ICompositeCommand;
+
+		/**
 		 * Adds an <code>ICommand</code> to the current <code>ICompositeCommand</code>.
 		 * @return The current <code>ICompositeCommand</code>, this way calls to <code>addCommand()</code> can be chained.
 		 */
@@ -37,6 +41,8 @@ package org.as3commons.async.command {
 		 * @return The current <code>ICompositeCommand</code>, this way calls to <code>addCommand()</code> can be chained.
 		 */
 		function addOperation(operationClass:Class, ... constructorArgs):ICompositeCommand;
+
+		function addOperationAt(operationClass:Class, index:int, ... constructorArgs):ICompositeCommand;
 
 		/**
 		 * The number of pending commands.
