@@ -60,7 +60,10 @@ package org.as3commons.async.operation.impl {
 		}
 
 		protected function createLoader(url:String, dataFormat:String, request:URLRequest):void {
+			_url = url;
+			
 			clearTimeout(timeOutToken);
+			
 			urlLoader = new URLLoader();
 			urlLoader.dataFormat = dataFormat;
 			urlLoader.addEventListener(Event.COMPLETE, urlLoaderCompleteHandler);
@@ -114,11 +117,9 @@ package org.as3commons.async.operation.impl {
 			dispatchErrorEvent(event.text);
 		}
 
-
 		public override function toString():String {
-			return "LoadURLOperation{_url:\"" + _url + "\"}";
+			return "[LoadURLOperation(url:'" + _url + "')]";
 		}
-
 
 	}
 }
