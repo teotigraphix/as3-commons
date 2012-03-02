@@ -16,7 +16,7 @@
 package org.as3commons.stageprocessing.impl.selector {
 	import flash.events.Event;
 
-	import flexunit.framework.Assert;
+	import org.flexunit.asserts.assertFalse;
 
 	public class ClassNameBasedObjectSelectorTest {
 
@@ -29,7 +29,7 @@ package org.as3commons.stageprocessing.impl.selector {
 			var regex:Vector.<String> = new Vector.<String>();
 			regex[regex.length] = '^class';
 			var selector:ClassNameBasedObjectSelector = new ClassNameBasedObjectSelector(regex);
-			Assert.assertTrue(selector.approve({}));
+			assertTrue(selector.approve({}));
 		}
 
 		[Test]
@@ -37,7 +37,7 @@ package org.as3commons.stageprocessing.impl.selector {
 			var regex:Vector.<String> = new Vector.<String>();
 			regex[regex.length] = '^flash';
 			var selector:ClassNameBasedObjectSelector = new ClassNameBasedObjectSelector(regex);
-			Assert.assertFalse(selector.approve(new Event(Event.COMPLETE)));
+			assertFalse(selector.approve(new Event(Event.COMPLETE)));
 		}
 	}
 }
