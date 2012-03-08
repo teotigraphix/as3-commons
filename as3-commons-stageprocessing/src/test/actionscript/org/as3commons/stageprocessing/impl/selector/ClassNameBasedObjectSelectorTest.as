@@ -17,6 +17,7 @@ package org.as3commons.stageprocessing.impl.selector {
 	import flash.events.Event;
 
 	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertTrue;
 
 	public class ClassNameBasedObjectSelectorTest {
 

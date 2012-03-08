@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.stageprocessing {
-
 	import flash.display.DisplayObject;
 	import flash.display.Stage;
 	import flash.utils.Dictionary;
@@ -46,11 +45,6 @@ package org.as3commons.stageprocessing {
 		function set defaultSelectorClass(value:Class):void;
 
 		/**
-		 * Clears the all processor and context registrations in the current <code>IStageProcessorRegistry</code>
-		 */
-		function clear():void;
-
-		/**
 		 * Determines if the current <code>IStageProcessorRegistry</code> is enabled.
 		 */
 		function get enabled():Boolean;
@@ -59,6 +53,42 @@ package org.as3commons.stageprocessing {
 		 * @private
 		 */
 		function set enabled(value:Boolean):void;
+
+		/**
+		 * True if the current <code>IStageProcessorRegistry</code> has been initialized.
+		 */
+		function get initialized():Boolean;
+
+		/**
+		 * A reference to the Flash stage that is used to add the event listeners to. This property is requried to be s et to a valid reference, otherwise
+		 * the <code>IStageObjectProcessorRegistry</code> will not be able to perform its logic.
+		 */
+		function get stage():Stage;
+
+		/**
+		 * Determines whether the current <code>IStageObjectProcessorRegistry</code> will listen for the <code>REMOVED_FROM_STAGE</code> event and
+		 * use any registered <code>IStageDestroyers</code>.
+		 * @default true
+		 */
+		function get useStageDestroyers():Boolean;
+		/**
+		 * @private
+		 */
+		function set useStageDestroyers(value:Boolean):void;
+
+		/**
+		 *
+		 * @param displayObject
+		 * @param objectSelector
+		 * @param processors
+		 *
+		 */
+		function approveDisplayObjectAfterAdding(displayObject:DisplayObject, objectSelector:IObjectSelector, processors:Vector.<IStageObjectProcessor>):void;
+
+		/**
+		 * Clears the all processor and context registrations in the current <code>IStageProcessorRegistry</code>
+		 */
+		function clear():void;
 
 		/**
 		 * Retrieves a list of all the <code>IObjectSelectors</code> that have been registered with the current <code>IStageProcessorRegistry</code>.
@@ -79,6 +109,13 @@ package org.as3commons.stageprocessing {
 		 * @see org.as3commons.stageprocessing.IStageProcessor IStageProcessor
 		 */
 		function getAllStageObjectProcessors():Vector.<IStageObjectProcessor>;
+
+		/**
+		 *
+		 * @param displayObject
+		 * @return
+		 */
+		function getAssociatedObjectSelectors(displayObject:DisplayObject):Dictionary;
 
 		/**
 		 * Retrieves the <code>IObjectSelector</code> instances that are associated with the specified <code>IStageProcessor</code> instance.
@@ -107,9 +144,10 @@ package org.as3commons.stageprocessing {
 		function initialize():void;
 
 		/**
-		 * True if the current <code>IStageProcessorRegistry</code> has been initialized.
+		 *
+		 * @param displayObject
 		 */
-		function get initialized():Boolean;
+		function processDisplayObject(displayObject:DisplayObject):void;
 
 		/**
 		 * Recursively loops through the stage displaylist and processes every object therein.
@@ -125,48 +163,11 @@ package org.as3commons.stageprocessing {
 		function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector=null, rootView:DisplayObject=null):void;
 
 		/**
-		 * A reference to the Flash stage that is used to add the event listeners to. This property is requried to be s et to a valid reference, otherwise
-		 * the <code>IStageObjectProcessorRegistry</code> will not be able to perform its logic.
-		 */
-		function get stage():Stage;
-
-		/**
 		 * Removes the specified <code>IStageProcessor</code> that is associated with the specified <code>IObjectSelector</code>.
 		 * @param name The name of the <code>IStageProcessor</code> that will be removed
 		 */
 		function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector=null, rootView:DisplayObject=null):void;
 
-		/**
-		 * Determines whether the current <code>IStageObjectProcessorRegistry</code> will listen for the <code>REMOVED_FROM_STAGE</code> event and
-		 * use any registered <code>IStageDestroyers</code>.
-		 * @default true
-		 */
-		function get useStageDestroyers():Boolean;
-		/**
-		 * @private
-		 */
-		function set useStageDestroyers(value:Boolean):void;
-
-		/**
-		 *
-		 * @param displayObject
-		 */
-		function processDisplayObject(displayObject:DisplayObject):void;
-
-		/**
-		 *
-		 * @param displayObject
-		 * @param objectSelector
-		 * @param processors
-		 *
-		 */
-		function approveDisplayObjectAfterAdding(displayObject:DisplayObject, objectSelector:IObjectSelector, processors:Vector.<IStageObjectProcessor>):void;
-
-		/**
-		 *
-		 * @param displayObject
-		 * @return
-		 */
-		function getAssociatedObjectSelectors(displayObject:DisplayObject):Dictionary;
+		function unregisterExtraStage(extraStage:Stage):void;
 	}
 }
