@@ -108,6 +108,7 @@ package org.as3commons.stageprocessing.impl {
 		private var _rootViews:Dictionary;
 		private var _stage:Stage;
 		private var _useStageDestroyers:Boolean = true;
+		private var _extraStages:Vector.<Stage>;
 
 		public function get defaultSelector():IObjectSelector {
 			return _defaultSelector;
@@ -351,8 +352,16 @@ package org.as3commons.stageprocessing.impl {
 		 */
 		public function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector=null, rootView:DisplayObject=null):void {
 			objectSelector ||= getDefaultSelector();
-			if ((rootView is Stage) && (_stage == null)) {
-				_stage = rootView as Stage;
+			if (rootView is Stage) {
+				if (_stage == null) {
+					_stage = rootView as Stage;
+				}
+				if (_stage !== rootView) {
+					var extraStage:Stage = rootView as Stage;
+					_extraStages ||= new Vector.<Stage>();
+					_extraStages[_extraStages.length] = extraStage;
+					addEventListeners(extraStage);
+				}
 			}
 			rootView ||= _stage ||= findFlexStage();
 			var processors:Vector.<IStageObjectProcessor> = getProcessorVector(rootView, objectSelector);
@@ -378,6 +387,9 @@ package org.as3commons.stageprocessing.impl {
 					var objectSelectors:Dictionary = _rootViews[rootView];
 					delete objectSelectors[objectSelector];
 				}
+			}
+			if (rootView is Stage) {
+				unregisterExtraStage(rootView as Stage);
 			}
 		}
 
@@ -595,6 +607,17 @@ package org.as3commons.stageprocessing.impl {
 		protected function setInitialized():void {
 			_initialized = true;
 			_enabled = true;
+		}
+
+		public function unregisterExtraStage(extraStage:Stage):void {
+			if (_extraStages == null) {
+				return;
+			}
+			var idx:int = _extraStages.indexOf(extraStage);
+			if (idx > -1) {
+				_extraStages.splice(idx, 1);
+				removeEventListeners(extraStage);
+			}
 		}
 	}
 }

@@ -6,6 +6,7 @@ Note: dates are in DD.MM.YYYY format
 Changes in version 1.1 (??.??.2011)
 -----------------------------------
 
+* Added support for multiple stages to be monitored (this way the registry can monitor extra NativeWindows in AIR apps)
 * Added unit tests for all available IObjectSelector implementations
 * Added support for default object selector, if no selector is defined at all the AllowAll selector is used.
 * Added useStageDestroyers property on FlashStageObjectProcessorRegistry to turn off stage removal behaviour.
