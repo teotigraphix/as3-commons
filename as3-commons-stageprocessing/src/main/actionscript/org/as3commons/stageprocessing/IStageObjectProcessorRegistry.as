@@ -156,6 +156,12 @@ package org.as3commons.stageprocessing {
 		function processStage(startComponent:DisplayObject=null):void;
 
 		/**
+		 *
+		 * @param extraStage
+		 */
+		function registerExtraStage(extraStage:Stage):void;
+
+		/**
 		 * Adds the specified <code>IStageProcessor</code> instance to the collection.
 		 * @param stageProcessor The specified <code>IStageProcessor</code> instance.
 		 * @param objectSelector The specified <code>IObjectSelector</code> instance.
@@ -163,11 +169,15 @@ package org.as3commons.stageprocessing {
 		function registerStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector=null, rootView:DisplayObject=null):void;
 
 		/**
+		 *
+		 * @param extraStage
+		 */
+		function unregisterExtraStage(extraStage:Stage):void;
+
+		/**
 		 * Removes the specified <code>IStageProcessor</code> that is associated with the specified <code>IObjectSelector</code>.
 		 * @param name The name of the <code>IStageProcessor</code> that will be removed
 		 */
 		function unregisterStageObjectProcessor(stageProcessor:IStageObjectProcessor, objectSelector:IObjectSelector=null, rootView:DisplayObject=null):void;
-
-		function unregisterExtraStage(extraStage:Stage):void;
 	}
 }

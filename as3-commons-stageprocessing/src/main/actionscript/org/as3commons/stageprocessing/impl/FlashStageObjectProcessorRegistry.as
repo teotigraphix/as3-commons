@@ -19,7 +19,6 @@ package org.as3commons.stageprocessing.impl {
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
-
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.IDisposable;
@@ -102,13 +101,13 @@ package org.as3commons.stageprocessing.impl {
 		private var _defaultSelector:IObjectSelector;
 		private var _defaultSelectorClass:Class;
 		private var _enabled:Boolean;
+		private var _extraStages:Vector.<Stage>;
 		private var _flexVersion:uint;
 		private var _initialized:Boolean;
 		private var _isDisposed:Boolean;
 		private var _rootViews:Dictionary;
 		private var _stage:Stage;
 		private var _useStageDestroyers:Boolean = true;
-		private var _extraStages:Vector.<Stage>;
 
 		public function get defaultSelector():IObjectSelector {
 			return _defaultSelector;
@@ -184,6 +183,22 @@ package org.as3commons.stageprocessing.impl {
 		}
 
 		/**
+		 *
+		 * @param displayObject
+		 * @param objectSelector
+		 * @param processors
+		 */
+		public function approveDisplayObjectAfterAdding(displayObject:DisplayObject, objectSelector:IObjectSelector, processors:Vector.<IStageObjectProcessor>):void {
+			if (objectSelector.approve(displayObject)) {
+				if (!isBeingReparented(displayObject)) {
+					for each (var processor:IStageObjectProcessor in processors) {
+						processor.process(displayObject);
+					}
+				}
+			}
+		}
+
+		/**
 		 * @inheritDoc
 		 */
 		public function clear():void {
@@ -250,6 +265,20 @@ package org.as3commons.stageprocessing.impl {
 				}
 			}
 			return result;
+		}
+
+		/**
+		 *
+		 * @param displayObject
+		 * @return
+		 */
+		public function getAssociatedObjectSelectors(displayObject:DisplayObject):Dictionary {
+			var selectors:Dictionary = null;
+			while (selectors == null && displayObject != null) {
+				selectors = _rootViews[displayObject];
+				displayObject = displayObject.parent;
+			}
+			return selectors;
 		}
 
 		/**
@@ -333,6 +362,22 @@ package org.as3commons.stageprocessing.impl {
 		}
 
 		/**
+		 * @param displayObject a reference to the object that was added to the stage
+		 * @see org.as3commons.stageprocessing.IStageObjectProcessor IStageObjectProcessor
+		 */
+		public function processDisplayObject(displayObject:DisplayObject):void {
+			if (!displayObject || !_enabled) {
+				return;
+			}
+			var selectors:Dictionary = getAssociatedObjectSelectors(displayObject);
+			if (selectors != null) {
+				for (var selector:* in selectors) {
+					approveDisplayObjectAfterAdding(displayObject, IObjectSelector(selector), selectors[selector]);
+				}
+			}
+		}
+
+		/**
 		 * @inheritDoc
 		 */
 		public function processStage(startComponent:DisplayObject=null):void {
@@ -347,6 +392,14 @@ package org.as3commons.stageprocessing.impl {
 			LOGGER.debug(STAGE_PROCESSING_COMPLETED);
 		}
 
+		public function registerExtraStage(extraStage:Stage):void {
+			_extraStages ||= new Vector.<Stage>();
+			if (_extraStages.indexOf(extraStage) > -1) {
+				_extraStages[_extraStages.length] = extraStage;
+				addEventListeners(extraStage);
+			}
+		}
+
 		/**
 		 * @inheritDoc
 		 */
@@ -357,10 +410,7 @@ package org.as3commons.stageprocessing.impl {
 					_stage = rootView as Stage;
 				}
 				if (_stage !== rootView) {
-					var extraStage:Stage = rootView as Stage;
-					_extraStages ||= new Vector.<Stage>();
-					_extraStages[_extraStages.length] = extraStage;
-					addEventListeners(extraStage);
+					registerExtraStage(rootView as Stage);
 				}
 			}
 			rootView ||= _stage ||= findFlexStage();
@@ -368,6 +418,17 @@ package org.as3commons.stageprocessing.impl {
 			if (processors.indexOf(stageProcessor) < 0) {
 				processors[processors.length] = stageProcessor;
 				sortOrderedVector(processors);
+			}
+		}
+
+		public function unregisterExtraStage(extraStage:Stage):void {
+			if (_extraStages == null) {
+				return;
+			}
+			var idx:int = _extraStages.indexOf(extraStage);
+			if (idx > -1) {
+				_extraStages.splice(idx, 1);
+				removeEventListeners(extraStage);
 			}
 		}
 
@@ -424,22 +485,6 @@ package org.as3commons.stageprocessing.impl {
 		 * @param objectSelector
 		 * @param processors
 		 */
-		public function approveDisplayObjectAfterAdding(displayObject:DisplayObject, objectSelector:IObjectSelector, processors:Vector.<IStageObjectProcessor>):void {
-			if (objectSelector.approve(displayObject)) {
-				if (!isBeingReparented(displayObject)) {
-					for each (var processor:IStageObjectProcessor in processors) {
-						processor.process(displayObject);
-					}
-				}
-			}
-		}
-
-		/**
-		 *
-		 * @param displayObject
-		 * @param objectSelector
-		 * @param processors
-		 */
 		protected function approveDisplayObjectAfterRemoving(displayObject:DisplayObject, objectSelector:IObjectSelector, processors:Vector.<IStageObjectProcessor>):void {
 			if (objectSelector.approve(displayObject)) {
 				if (!isBeingReparented(displayObject)) {
@@ -468,20 +513,6 @@ package org.as3commons.stageprocessing.impl {
 				}
 			}
 			return null;
-		}
-
-		/**
-		 *
-		 * @param displayObject
-		 * @return
-		 */
-		public function getAssociatedObjectSelectors(displayObject:DisplayObject):Dictionary {
-			var selectors:Dictionary = null;
-			while (selectors == null && displayObject != null) {
-				selectors = _rootViews[displayObject];
-				displayObject = displayObject.parent;
-			}
-			return selectors;
 		}
 
 		/**
@@ -527,22 +558,6 @@ package org.as3commons.stageprocessing.impl {
 				parent = parent.parent;
 			}
 			return false;
-		}
-
-		/**
-		 * @param displayObject a reference to the object that was added to the stage
-		 * @see org.as3commons.stageprocessing.IStageObjectProcessor IStageObjectProcessor
-		 */
-		public function processDisplayObject(displayObject:DisplayObject):void {
-			if (!displayObject || !_enabled) {
-				return;
-			}
-			var selectors:Dictionary = getAssociatedObjectSelectors(displayObject);
-			if (selectors != null) {
-				for (var selector:* in selectors) {
-					approveDisplayObjectAfterAdding(displayObject, IObjectSelector(selector), selectors[selector]);
-				}
-			}
 		}
 
 		/**
@@ -607,17 +622,6 @@ package org.as3commons.stageprocessing.impl {
 		protected function setInitialized():void {
 			_initialized = true;
 			_enabled = true;
-		}
-
-		public function unregisterExtraStage(extraStage:Stage):void {
-			if (_extraStages == null) {
-				return;
-			}
-			var idx:int = _extraStages.indexOf(extraStage);
-			if (idx > -1) {
-				_extraStages.splice(idx, 1);
-				removeEventListeners(extraStage);
-			}
 		}
 	}
 }
