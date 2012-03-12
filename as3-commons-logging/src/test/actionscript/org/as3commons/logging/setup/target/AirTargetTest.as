@@ -38,10 +38,10 @@ package org.as3commons.logging.setup.target {
 			_randomTime2 = Math.random() * 123456;
 			
 			_target = new AirFileTarget();
-			_target.log( "test", "test", DEBUG, _randomTime-START_TIME, "Hello World", [], null );
+			_target.log( "test", "test", DEBUG, _randomTime-START_TIME, "Hello World", [], null, null, null );
 			_eventHolder = addAsync( analyzeFile, 1000 );
 			_target.addEventListener( Event.COMPLETE, _eventHolder );
-			_target.log( "test.the.long.way", "way", ERROR, _randomTime2-START_TIME, "Some statement with \n new lines and \" doublequotes and \t tabs and # s", null, null );
+			_target.log( "test.the.long.way", "way", ERROR, _randomTime2-START_TIME, "Some statement with \n new lines and \" doublequotes and \t tabs and # s", null, null, null, null );
 		}
 		
 		private function analyzeFile(e : Event): void {

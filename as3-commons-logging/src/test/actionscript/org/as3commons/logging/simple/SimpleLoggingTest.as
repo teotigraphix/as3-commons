@@ -179,14 +179,14 @@ class SampleTarget implements ILogTarget {
 	
 	public function SampleTarget() {}
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters: *, person : String, context:String, shortContext:String) : void {
 		stack.push(level+name);
 	}
 }
 
 class FullSampleTarget implements ILogTarget {
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters: *, person : String, context:String, shortContext:String) : void {
 		stack.push([level,name,message, parameters,person]);
 	}
 }

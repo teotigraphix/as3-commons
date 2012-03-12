@@ -48,13 +48,13 @@ package org.as3commons.logging.integration {
 			logger.error( "Estaz!" );
 			logger.fatal( "Santa domingo!" );
 			
-			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(DEBUG), notNull(), eq( "Hello World" ), eq(null), eq("Maashaack") ) );
-			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(DEBUG), notNull(), eq( "Hello Mario" ), eq(null), eq("Maashaack") ) );
-			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(INFO), notNull(), eq( "Hola!" ), eq(null), eq("Maashaack") ) );
-			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(INFO), notNull(), eq( "Amigo Santa Maria" ), eq(null), eq("Maashaack") ) );
-			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(WARN), notNull(), eq( "Como!" ), eq(null), eq("Maashaack") ) );
-			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(ERROR), notNull(), eq( "Estaz!" ), eq(null), eq("Maashaack") ) );
-			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(FATAL), notNull(), eq( "Santa domingo!" ), eq(null), eq("Maashaack") ) );
+			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(DEBUG), notNull(), eq( "Hello World" ), eq(null), eq("Maashaack"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(DEBUG), notNull(), eq( "Hello Mario" ), eq(null), eq("Maashaack"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(INFO), notNull(), eq( "Hola!" ), eq(null), eq("Maashaack"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(INFO), notNull(), eq( "Amigo Santa Maria" ), eq(null), eq("Maashaack"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(WARN), notNull(), eq( "Como!" ), eq(null), eq("Maashaack"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(ERROR), notNull(), eq( "Estaz!" ), eq(null), eq("Maashaack"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.package.MyClass"), eq("MyClass"), eq(FATAL), notNull(), eq( "Santa domingo!" ), eq(null), eq("Maashaack"), eq(null), eq(null) ) );
 			
 			verifyNothingCalled( target );
 		}

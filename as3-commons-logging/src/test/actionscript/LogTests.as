@@ -165,7 +165,7 @@ package {
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
 			core.run( [
-				new LogMessageFormatterTest()/*,
+				new LogMessageFormatterTest(),
 				new Log4JPropertiesTest(),
 				new HierarchicalSetupTest(),
 				new LoggerTest(),
@@ -203,7 +203,7 @@ package {
 				new TextFieldTest(),
 				new AirTargetTest(),
 				new OSMFIntegrationTest(),
-				new LogMeisterIntegrationTest()*/
+				new LogMeisterIntegrationTest()
 			]);
 		}
 	}

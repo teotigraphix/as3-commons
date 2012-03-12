@@ -52,16 +52,17 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function set format(format:String):void {
-			_formatter = new LogMessageFormatter( format || DEFAULT_FORMAT );
+			_formatter = new LogMessageFormatter(format || DEFAULT_FORMAT);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null):void {
-			trace( _formatter.format( name, shortName, level, timeStamp, message, parameters, person));
+							timeStamp:Number, message:String, parameters:*,
+							person:String, context:String, shortContext:String):void {
+			trace( _formatter.format( name, shortName, level, timeStamp, message,
+					parameters, person, context, shortContext));
 		}
 	}
 }

@@ -49,8 +49,8 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		override protected function doLog(name:String, shortName:String, level:int,
-										  timeStamp:Number, message:String, parameters:Array=null,
-										  person:String=null):void {
+										  timeStamp:Number, message:String, parameter:Array,
+										  person:String, context:String, shortContext:String):void {
 			// Bug http://code.google.com/p/as3-commons/issues/detail?id=114
 			if( person ) {
 				name += "-"+person;
@@ -60,27 +60,27 @@ package org.as3commons.logging.setup.target {
 				cleanName = name.replace(/[\[\]\~\$\^\&\\(\)\{\}\+\?\/=`!@#%,:;'"<>\s]/g, '-');
 				_cleanNames[name] = cleanName;
 			}
-			if( parameters ) {
-				parameters.unshift(message);
+			if( parameter ) {
+				parameter.unshift(message);
 			} else {
-				parameters = [message];
+				parameter = [message];
 			}
 			var target:ILogger = _loggers[cleanName]||=Log.getLogger(cleanName);
 			switch(level) {
 				case DEBUG:
-					target.debug.apply(null, parameters);
+					target.debug.apply(null, parameter);
 					break;
 				case INFO:
-					target.info.apply(null, parameters);
+					target.info.apply(null, parameter);
 					break;
 				case WARN:
-					target.warn.apply(null, parameters);
+					target.warn.apply(null, parameter);
 					break;
 				case ERROR:
-					target.error.apply(null, parameters);
+					target.error.apply(null, parameter);
 					break;
 				case FATAL:
-					target.fatal.apply(null, parameters);
+					target.fatal.apply(null, parameter);
 					break;
 			}
 		}

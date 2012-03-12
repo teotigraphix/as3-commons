@@ -72,25 +72,26 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null):void {
-			message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
-			var logger: Logger = _loggers[ name ] ||=LogContext.getLogger( name );
+							timeStamp:Number, message:String, parameter:*,
+							person:String, context:String, shortContext:String):void {
+			message = _formatter.format(name, shortName, level, timeStamp, message,
+										parameter, person, context, shortContext);
+			var logger: Logger = _loggers[name] ||=LogContext.getLogger( name );
 			switch( level ) {
 				case DEBUG:
-					logger.debug( message );
+					logger.debug(message);
 					break;
 				case INFO:
-					logger.info( message );
+					logger.info(message);
 					break;
 				case WARN:
-					logger.warn( message );
+					logger.warn(message);
 					break;
 				case ERROR:
-					logger.error( message );
+					logger.error(message);
 					break;
 				case FATAL:
-					logger.fatal( message );
+					logger.fatal(message);
 					break;
 			}
 		}

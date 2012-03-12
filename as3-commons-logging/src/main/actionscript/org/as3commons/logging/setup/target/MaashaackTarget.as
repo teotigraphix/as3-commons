@@ -70,8 +70,8 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null): void {
+							timeStamp:Number, message:String, parameters:*,
+							person:String, context:String, shortContext:String): void {
 			var cleanName: String = _cleanNames[name];
 			if(!cleanName) {
 				for( var i: int = 0; i<ILL_CHR_LEN; ++i ) {
@@ -85,7 +85,8 @@ package org.as3commons.logging.setup.target {
 			var logger: Logger = _loggers[cleanName] ||= Log.getLogger(cleanName);
 			_entry.channel = cleanName;
 			_entry.level = _levelMap[level] || LoggerLevel.DEBUG;
-			_entry.message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
+			_entry.message = _formatter.format(name, shortName, level, timeStamp,
+								message, parameters, person, context, shortContext);
 			logger.emit( _entry );
 		}
 	}

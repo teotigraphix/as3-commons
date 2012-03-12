@@ -41,6 +41,7 @@ package org.as3commons.logging.setup.target {
 		
 		protected const _checkInterval: Timer = new Timer(1000);
 		protected const _freeLoaderPool: Array = [];
+		
 		private var _freeRequestPool:Array = [];
 		private var _infoRegistry:Dictionary = new Dictionary();
 		private var _broken:Boolean;
@@ -82,16 +83,17 @@ package org.as3commons.logging.setup.target {
 		}
 		
 		public function log(name:String, shortName:String, level:int,
-									 timeStamp:Number, message:String, parameters:*=null,
-									 person:String=null):void {
+									 timeStamp:Number, message:String, parameters:*,
+									 person:String, context:String, shortContext:String):void {
 			if(_broken || (name != logger.name || person != logger.person)) {
-				doLog(name, shortName, level, timeStamp, message, parameters, person);
+				doLog(name, shortName, level, timeStamp, message, parameters, person,
+						context, shortContext);
 			}
 		}
 		
 		protected function doLog(name:String, shortName:String, level:int,
-									 timeStamp:Number, message:String, parameters:*=null,
-									 person:String=null):void  {
+									 timeStamp:Number, message:String, parameters:*,
+									 person:String, context:String, shortContext:String):void  {
 			throw new Error("abstract");
 		}
 		
@@ -101,7 +103,9 @@ package org.as3commons.logging.setup.target {
 				logger.fatal("Logging didn't work even after 3rd time trying.");
 				handleFatal();
 			} else {
-				logger.info("Attempt #{0} to send out a logging request: {1}", [info.tries, message]);
+				if(logger.infoEnabled) {
+					logger.info("Attempt #{0} to send out a logging request: {1}", [info.tries, message]);
+				}
 				loader.load(info.request);
 				info.tries++;
 			}

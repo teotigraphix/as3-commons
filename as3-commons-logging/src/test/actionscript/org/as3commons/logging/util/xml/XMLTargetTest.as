@@ -380,7 +380,7 @@ class ParameterTarget implements ILogTarget {
 		this.input = input;
 	}
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters: *, person: String, context:String, shortContext:String) : void {
 	}
 }
 
@@ -392,7 +392,7 @@ class ErrorThrowingLogTarget implements ILogTarget {
 		throw new Error("oh!");
 	}
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters: *, person: String, context:String, shortContext:String) : void {
 	}
 	
 }
@@ -407,7 +407,7 @@ class ErrorParameterLogTarget implements ILogTarget {
 	
 	public var param3: String;
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters: *, person: String, context:String, shortContext:String) : void {
 	}
 	
 }
@@ -418,7 +418,7 @@ class FixedConstArguments implements ILogTarget {
 	}
 	
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters: *, person: String, context:String, shortContext:String) : void {
 	}
 }
 
@@ -437,7 +437,7 @@ class TestTarget implements ILogTarget  {
 	}
 	
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters: *, person: String, context:String, shortContext:String) : void {
 	}
 }
 
@@ -492,7 +492,7 @@ class MaxArgTarget implements ILogTarget {
 	}
 
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters: *, person: String, context:String, shortContext:String) : void {
 	}
 
 }

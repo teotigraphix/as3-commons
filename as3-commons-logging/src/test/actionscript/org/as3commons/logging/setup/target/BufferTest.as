@@ -30,12 +30,12 @@ package org.as3commons.logging.setup.target {
 			var target: ILogTarget = mock( ILogTarget );
 			var setup: ILogSetup = new SimpleTargetSetup( target );
 			
-			logCache.log( "debug", "test", DEBUG, 1234, "debug", [], null );
+			logCache.log( "debug", "test", DEBUG, 1234, "debug", [], null, null, null );
 			
 			// Contains smaller number to see if the number matter or not (it should not!)
-			logCache.log( "info", "test", INFO, 0, "info", [], null );
+			logCache.log( "info", "test", INFO, 0, "info", [], null, null, null );
 			
-			logCache.log( "fatal", "test", FATAL, 1, "fatal", [], null );
+			logCache.log( "fatal", "test", FATAL, 1, "fatal", [], null, null, null );
 			
 			factory.setup = setup;
 			
@@ -44,9 +44,9 @@ package org.as3commons.logging.setup.target {
 			
 			assertEquals(logCache.statements.length, 0);
 			
-			inOrder().verify().that( target.log( eq("debug"), eq("test"), eq(DEBUG), eq(1234), eq("debug"), alike([]), eq(null)));
-			inOrder().verify().that( target.log( eq("info"), eq("test"), eq(INFO), eq(0), eq("info"), alike([]), eq(null)));
-			inOrder().verify().that( target.log( eq("fatal"), eq("test"), eq(FATAL), eq(1), eq("fatal"), alike([]), eq(null)));
+			inOrder().verify().that( target.log( eq("debug"), eq("test"), eq(DEBUG), eq(1234), eq("debug"), alike([]), eq(null), eq(null), eq(null)));
+			inOrder().verify().that( target.log( eq("info"), eq("test"), eq(INFO), eq(0), eq("info"), alike([]), eq(null), eq(null), eq(null)));
+			inOrder().verify().that( target.log( eq("fatal"), eq("test"), eq(FATAL), eq(1), eq("fatal"), alike([]), eq(null), eq(null), eq(null)));
 			
 			verifyNothingCalled( target );
 		}
@@ -62,15 +62,15 @@ package org.as3commons.logging.setup.target {
 			assertTrue( "Buffer 0 should throw an error", error );
 			
 			buffer = new BufferTarget( 2 );
-			buffer.log("a.a","a",DEBUG,123,"HelloA",null, null);
-			buffer.log("b.b","b",INFO, 124,"HelloB", null, null);
-			buffer.log("c.c","c",DEBUG,125,"HelloC", null, null);
+			buffer.log("a.a","a",DEBUG,123,"HelloA",null, null, null, null);
+			buffer.log("b.b","b",INFO, 124,"HelloB", null, null, null, null);
+			buffer.log("c.c","c",DEBUG,125,"HelloC", null, null, null, null);
 			
 			assertObjectEquals(
 				buffer.statements,
 				[
-					new LogStatement( "b.b", "b", INFO, 124, "HelloB", null, null, 1),
-					new LogStatement( "c.c", "c", DEBUG, 125, "HelloC", null, null, 1)
+					new LogStatement( "b.b", "b", INFO, 124, "HelloB", null, null, null, null, 1),
+					new LogStatement( "c.c", "c", DEBUG, 125, "HelloC", null, null, null, null, 1)
 				]
 			);
 		}

@@ -122,34 +122,25 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		override public function log(name:String, shortName:String, level:int,
-									 timeStamp:Number, message:*, parameters:*=null,
-									 person:String=null):void {
+									 timeStamp:Number, message:String, parameter:*,
+									 person:String, context:String, shortContext:String):void {
 			// Don't log own output
 			if( name != logger.name || person != logger.person ) {
-				super.log(name, shortName, level, timeStamp, message, parameters, person);
+				super.log(name, shortName, level, timeStamp, message, parameter,
+							person, context, shortContext);
 			}
 		}
 		
 		override protected function doLog(name:String, shortName:String, level:int,
-									 timeStamp:Number, message:*, parameters:*=null,
-									 person:String=null):void {
+									 timeStamp:Number, message:String, parameters:*,
+									 person:String, context:String, shortContext:String):void {
 			// If strings are put into an array they do not get reallocated
 			// this effectively consumes less memory and is faster than
 			// using a bytearray or string concatination
-			var msgAsString: String;
-			if( message && !(message is String) ) {
-				if( parameters ) {
-					msgAsString = (message as String);
-				} else {
-					msgAsString = "{}";
-					parameters = message;
-				}
-			} else {
-				msgAsString = message;
-			}
 			
+			// Evaluate the indices in the index table
 			var nameIndex: int = 0;
-			if( name ) {
+			if( name != null ) {
 				nameIndex = _indexMap[name];
 				if( !nameIndex ) {
 					nameIndex = _indexMap[name] = ++_indexCnt;
@@ -158,7 +149,7 @@ package org.as3commons.logging.setup.target {
 				}
 			}
 			var personIndex: int = 0;
-			if( person ) {
+			if( person != null ) {
 				personIndex = _indexMap[person];
 				if( !personIndex ) {
 					personIndex = _indexMap[person] = ++_indexCnt;
@@ -167,12 +158,21 @@ package org.as3commons.logging.setup.target {
 				}
 			}
 			var messageIndex: int = 0;
-			if( msgAsString ) {
-				messageIndex = _indexMap[person];
+			if( message!=null ) {
+				messageIndex = _indexMap[message];
 				if( !messageIndex ) {
-					messageIndex = _indexMap[person] = ++_indexCnt;
-					_indexBuffer[++_indexBufferPos] = msgAsString.length.toString(36);
-					_indexBuffer[++_indexBufferPos] = msgAsString;
+					messageIndex = _indexMap[message] = ++_indexCnt;
+					_indexBuffer[++_indexBufferPos] = message.length.toString(36);
+					_indexBuffer[++_indexBufferPos] = message;
+				}
+			}
+			var contextIndex: int = 0;
+			if( context!=null ) {
+				contextIndex = _indexMap[context];
+				if( !contextIndex ) {
+					contextIndex = _indexMap[context] = ++_indexCnt;
+					_indexBuffer[++_indexBufferPos] = context.length.toString(36);
+					_indexBuffer[++_indexBufferPos] = context;
 				}
 			}
 			_bodyBuffer[++_bodyBufferPos] = level.toString(36);
@@ -183,7 +183,7 @@ package org.as3commons.logging.setup.target {
 			_bodyBuffer[++_bodyBufferPos] = (START_TIME_UTC + timeStamp).toString(36);
 			if(parameters) {
 				var parametersAsString:String = jsonXify(
-					objectifyLimited(parameters, extractPaths(msgAsString), _maxDepth),
+					objectifyLimited(parameters, extractPaths(message), _maxDepth),
 					int.MAX_VALUE);
 				_bodyBuffer[++_bodyBufferPos] = parametersAsString.length.toString(36);
 				_bodyBuffer[++_bodyBufferPos] = parametersAsString;

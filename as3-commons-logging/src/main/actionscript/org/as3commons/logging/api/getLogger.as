@@ -47,9 +47,10 @@ package org.as3commons.logging.api {
 	 * </listing>
 	 * 
 	 * @author Martin Heidegger
-	 * @param input If String it will just pass it to <code>getNamedLogger</code>
+	 * @param name If String it will just pass it to <code>getNamedLogger</code>
 	 *        else use it like <code>getClassLogger</code>
 	 * @param person Information about the person that requested this logger.
+	 * @param context Context in which this logger is called.
 	 * @return <code>ILogger</code> instance to publish log statements
 	 * @since 2.0
 	 * @version 2
@@ -57,10 +58,13 @@ package org.as3commons.logging.api {
 	 * @see org.as3commons.logging.api#getClassLogger()
 	 * @see org.as3commons.logging.api#LOGGER_FACTORY
 	 */
-	public function getLogger(input:*=null,person:String=null):ILogger {
-		if(input && !(input is String)) {
-			input = toLogName(input);
+	public function getLogger(name:*=null,person:String=null,context:*=null):ILogger {
+		if(name!=null && !(name is String)) {
+			name = toLogName(name);
 		}
-		return LOGGER_FACTORY.getNamedLogger(input,person);
+		if(context!=null && !(context is String)) {
+			context = toLogName(context);
+		}
+		return LOGGER_FACTORY.getNamedLogger(name,person,context);
 	}
 }

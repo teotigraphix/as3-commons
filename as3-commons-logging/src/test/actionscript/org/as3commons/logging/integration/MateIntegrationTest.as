@@ -46,11 +46,11 @@ package org.as3commons.logging.integration {
 			logger.error( LogTypes.SOURCE_NULL, new LogInfo(provider, this, null, "helloWorld") );
 			logger.fatal( LogTypes.SEQUENCE_TRIGGER, new LogInfo(provider, this, null, "helloWorld") );
 			
-			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(DEBUG), notNull(), eq( "Not an Event \n---------------------------------------------------------\n- ERROR: Unable to dispatch MateIntegrationTest because it is not an Event \n- METHOD: helloWorld\n- FILE: null\n- NO ARGUMENTS SUPPLIED \n---------------------------------------------------------\n" ), eq(null), eq("mate") ) );
-			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(INFO), notNull(), eq( "Method not found \n---------------------------------------------------------\n- ERROR: Method helloWorld not found in class MateIntegrationTest \n- METHOD: helloWorld\n- FILE: null\n- NO ARGUMENTS SUPPLIED \n---------------------------------------------------------\n" ), eq(null), eq("mate") ) );
-			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(WARN), notNull(), eq( "Sequence ended" ), eq(null), eq("mate") ) );
-			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(ERROR), notNull(), eq( "Source null" ), eq(null), eq("mate") ) );
-			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(FATAL), notNull(), eq( "Sequence triggered" ), eq(null), eq("mate") ) );
+			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(DEBUG), notNull(), eq( "Not an Event \n---------------------------------------------------------\n- ERROR: Unable to dispatch MateIntegrationTest because it is not an Event \n- METHOD: helloWorld\n- FILE: null\n- NO ARGUMENTS SUPPLIED \n---------------------------------------------------------\n" ), eq(null), eq("mate"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(INFO), notNull(), eq( "Method not found \n---------------------------------------------------------\n- ERROR: Method helloWorld not found in class MateIntegrationTest \n- METHOD: helloWorld\n- FILE: null\n- NO ARGUMENTS SUPPLIED \n---------------------------------------------------------\n" ), eq(null), eq("mate"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(WARN), notNull(), eq( "Sequence ended" ), eq(null), eq("mate"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(ERROR), notNull(), eq( "Source null" ), eq(null), eq("mate"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("com.asfusion.mate"), eq("mate"), eq(FATAL), notNull(), eq( "Sequence triggered" ), eq(null), eq("mate"), eq(null), eq(null) ) );
 		}
 		
 		public function testTarget():void {

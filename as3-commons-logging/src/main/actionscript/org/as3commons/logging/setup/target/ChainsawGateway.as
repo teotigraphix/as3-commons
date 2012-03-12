@@ -40,10 +40,10 @@ package org.as3commons.logging.setup.target {
 	public final class ChainsawGateway extends XMLSocketGateway {
 		
 		/** Default host to be used if no host ist passed in */
-		public static const DEFAULT_HOST : String = "localhost";
+		public static const DEFAULT_HOST: String = "localhost";
 		
-		private var _applicationName : String;
-		private var _applicationThread : String;
+		private var _applicationName: String;
+		private var _applicationThread: String;
 		
 		/**
 		 * Creates a new <code>ChainsawGateway</code> for sending log events to Chainsaw

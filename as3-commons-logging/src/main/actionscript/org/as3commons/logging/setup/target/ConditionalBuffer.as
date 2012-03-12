@@ -114,16 +114,18 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null): void {
+							timeStamp:Number, message:String, parameter:*,
+							person:String, context:String, shortContext:String): void {
 			
-			_buffer.log(name, shortName, level, timeStamp, message, parameters, person);
+			_buffer.log(name, shortName, level, timeStamp, message, parameter,
+						person, context, shortContext);
 			
-			if( test(name, shortName, level, timeStamp, message, parameters, person) ) {
+			if( test(name, shortName, level, timeStamp, message, parameter,
+						person, context, shortContext) ) {
 				if( _logTarget ) {
-					passToTarget( _buffer.statements, _logTarget );
+					passToTarget(_buffer.statements, _logTarget);
 				} else {
-					passToFactory( _buffer.statements, _logFactory );
+					passToFactory(_buffer.statements, _logFactory);
 				}
 				_buffer.clear();
 			}
@@ -141,10 +143,11 @@ package org.as3commons.logging.setup.target {
 		 * @param person Information about the person that filed this log statement.
 		 */
 		protected function test(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, params:*=null,
-							person:String=null):Boolean {
+							timeStamp:Number, message:String, parameter:*,
+							person:String, context:String, shortContext:String):Boolean {
 			return false;
-			name; shortName; level; timeStamp; message; person; params;
+			name; shortName; level; timeStamp; message; person; parameter; context;
+			shortContext;
 		}
 	}
 }

@@ -17,8 +17,8 @@ package org.as3commons.logging.setup.target {
 		private var _cnt:int;
 		
 		public final function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null):void {
+							timeStamp:Number, message:String, parameters:*,
+							person:String, context:String, shortContext:String):void {
 			
 			// AS3 commons logging format: {abcdef}
 			// Flex logging format: {0}
@@ -30,18 +30,18 @@ package org.as3commons.logging.setup.target {
 			} else {
 				message = "";
 			}
-			doLog(name, shortName, level, timeStamp, message, _params, person);
+			doLog(name, shortName, level, timeStamp, message, _params, person,
+					context, shortContext);
 			_params = null;
 			_posPair = null;
 			_value = null;
 		}
 		
 		protected function doLog(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:Array=null,
-							person:String=null): void {
+							timeStamp:Number, message:String, parameters:Array,
+							person:String, context:String, shortContext:String): void {
 			throw new Error("abstract");
 		}
-		
 		
 		/**
 		 * Replaces the messages in the string and fills the new Array with the necessary

@@ -23,10 +23,10 @@ package org.as3commons.logging.setup.target {
 			
 			var merged: MergedTarget = new MergedTarget( targetA, targetB );
 			
-			merged.log("A", "a", DEBUG, 1234, "Hello World", ["#"], null );
+			merged.log("A", "a", DEBUG, 1234, "Hello World", ["#"], null, null, null );
 			
-			inOrder().verify().that( targetA.log( eq("A"), eq("a"), eq( DEBUG), eq(1234), eq("Hello World"), alike(["#"]), eq(null)));
-			inOrder().verify().that( targetB.log( eq("A"), eq("a"), eq( DEBUG), eq(1234), eq("Hello World"), alike(["#"]), eq(null)));
+			inOrder().verify().that( targetA.log( eq("A"), eq("a"), eq( DEBUG), eq(1234), eq("Hello World"), alike(["#"]), eq(null), eq(null), eq(null)));
+			inOrder().verify().that( targetB.log( eq("A"), eq("a"), eq( DEBUG), eq(1234), eq("Hello World"), alike(["#"]), eq(null), eq(null), eq(null)));
 			
 			verifyNothingCalled( targetA );
 			verifyNothingCalled( targetB );
@@ -70,52 +70,52 @@ package org.as3commons.logging.setup.target {
 			assertEquals("Merging with a null array shouldn't do anything eigther", a, merged);
 			
 			merged = mergeTargets(a,b);
-			merged.log(null,null,1,1,null, null, null);
+			merged.log(null,null,1,1,null, null, null, null, null);
 			assertObjectEquals("Merging with one other setup should work", ["a","b"], stack);
 			stack = [];
 			
 			merged = mergeTargets(a,b,b);
-			merged.log(null,null,1,1,null, null, null);
+			merged.log(null,null,1,1,null, null, null, null, null);
 			assertObjectEquals("Merging with duplicates should work just once", ["a","b"], stack);
 			stack = [];
 			
 			merged = mergeTargets(a,a,b);
-			merged.log(null,null,1,1,null, null, null);
+			merged.log(null,null,1,1,null, null, null, null, null);
 			assertObjectEquals("Merging with duplicates should work just once", ["a","b"], stack);
 			stack = [];
 			
 			merged = mergeTargets(a,b,a);
-			merged.log(null,null,1,1,null, null, null);
+			merged.log(null,null,1,1,null, null, null, null, null);
 			assertObjectEquals("The order is important", ["a","b"], stack);
 			stack = [];
 			
 			merged = mergeTargets(a,b,c);
-			merged.log(null,null,1,1,null, null, null);
+			merged.log(null,null,1,1,null, null, null, null, null);
 			assertObjectEquals("Merging has to work deeper", ["a","b","c"], stack);
 			stack = [];
 			
 			merged = mergeTargets(a,b,c,d);
-			merged.log(null,null,1,1,null, null, null);
+			merged.log(null,null,1,1,null, null, null, null, null);
 			assertObjectEquals("Merging has to work even deeper", ["a","b","c","d"], stack);
 			stack = [];
 			
 			merged = mergeTargets(a,[b,c],d);
-			merged.log(null,null,1,1,null, null, null);
+			merged.log(null,null,1,1,null, null, null, null, null);
 			assertObjectEquals("Merging has to work even deeper with arrays", ["a","b","c","d"], stack);
 			stack = [];
 			
 			merged = mergeTargets(a,[b,[null,c]],d);
-			merged.log(null,null,1,1,null, null, null);
+			merged.log(null,null,1,1,null, null, null, null, null);
 			assertObjectEquals("Merging has to work even deeper with arrays", ["a","b","c","d"], stack);
 			stack = [];
 			
 			merged = mergeTargets(a,mergeTargets(mergeTargets(b,c),d));
-			merged.log(null,null,1,1,null, null, null);
+			merged.log(null,null,1,1,null, null, null, null, null);
 			assertObjectEquals("Order may not be disturbed by deeper hierarchies", ["a","b","c","d"], stack);
 			stack = [];
 			
 			merged = mergeTargets(a,mergeTargets(b,a));
-			merged.log(null,null,1,1,null, null, null);
+			merged.log(null,null,1,1,null, null, null, null, null);
 			assertObjectEquals("Order may not be disturbed by deeper hierarchies", ["a","b"], stack);
 			stack = [];
 		}
@@ -125,21 +125,21 @@ package org.as3commons.logging.setup.target {
 			var merged: MergedTarget = new MergedTarget( null, null );
 			
 			try {
-				merged.log( "A", "a", DEBUG, 1, "message", [], null );
+				merged.log( "A", "a", DEBUG, 1, "message", [], null, null, null );
 				fail( "If both targets are missing it should throw an error");
 			} catch( e: Error ) {}
 			
 			merged = new MergedTarget( target, null );
 			
 			try {
-				merged.log( "A", "a", DEBUG, 1, "message", [], null );
+				merged.log( "A", "a", DEBUG, 1, "message", [], null, null, null );
 				fail( "If second target is missing it should throw an error");
 			} catch( e: Error ) {}
 			
 			merged = new MergedTarget( null, target );
 			
 			try {
-				merged.log( "A", "a", DEBUG, 1, "message", [], null );
+				merged.log( "A", "a", DEBUG, 1, "message", [], null, null, null );
 				fail( "If first target is missing it should throw an error");
 			} catch( e: Error ) {}
 		}
@@ -157,7 +157,7 @@ class SampleTarget implements ILogTarget {
 		_name=name;
 	}
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters: *, person: String, context:String, shortContext:String) : void {
 		stack.push(_name);
 	}
 }

@@ -63,15 +63,18 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null): void {
-			_logTargetA.log(name, shortName, level, timeStamp, message, parameters, person);
+							timeStamp:Number, message:String, parameters:*,
+							person:String, context:String, shortContext:String): void {
+			_logTargetA.log(name, shortName, level, timeStamp, message, parameters,
+							person, context, shortContext);
 			var target:MergedTarget = this;
 			while (target._mergedTarget) {
 				target = target._mergedTarget;
-				target._logTargetA.log(name, shortName, level, timeStamp, message, parameters, person);
+				target._logTargetA.log(name, shortName, level, timeStamp, message,
+										parameters, person, context, shortContext);
 			};
-			target._logTargetB.log(name, shortName, level, timeStamp, message, parameters, person);
+			target._logTargetB.log(name, shortName, level, timeStamp, message,
+									parameters, person, context, shortContext);
 		}
 		
 		/**

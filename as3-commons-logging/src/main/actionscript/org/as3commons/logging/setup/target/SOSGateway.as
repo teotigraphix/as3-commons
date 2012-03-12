@@ -47,8 +47,8 @@ package org.as3commons.logging.setup.target {
 		 * @param host Host on which the SOS console is running (default: localhost)
 		 * @param port Port on which the SOS console is running (default: 4444)
 		 */
-		public function SOSGateway(host: String = null, port: uint = 4444) {
-			super( host || DEFAULT_HOST, port, 200, 1, "!SOS" );
+		public function SOSGateway(host:String = null, port:uint = 4444) {
+			super(host||DEFAULT_HOST, port, 200, 1, "!SOS");
 		}
 		
 		/**

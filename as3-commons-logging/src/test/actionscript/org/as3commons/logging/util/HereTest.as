@@ -61,7 +61,7 @@ class LocalClass {
 		inConst = here();
 	}
 	
-	function local(): String {
+	internal function local(): String {
 		return here();
 	}
 }

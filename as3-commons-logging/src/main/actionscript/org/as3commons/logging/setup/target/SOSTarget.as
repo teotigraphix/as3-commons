@@ -64,10 +64,11 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null):void {
-			_gateway.log( LEVEL_NAMES[level] || "FATAL",
-				_formatter.format(name, shortName, level, timeStamp, message, parameters, person)
+							timeStamp:Number, message:String, parameter:*,
+							person:String, context:String, shortContext:String):void {
+			_gateway.log( LEVEL_NAMES[level]||"FATAL",
+				_formatter.format(name, shortName, level, timeStamp, message,
+									parameter, person, context, shortContext)
 			);
 		}
 		

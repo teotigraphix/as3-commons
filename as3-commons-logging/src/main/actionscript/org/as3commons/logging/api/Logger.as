@@ -64,99 +64,113 @@ package org.as3commons.logging.api {
 		/** Optional Personalization option for log statements */
 		private var _person:String;
 		
+		/** Optional Contextual name for the log statements */
+		private var _context:String;
+		
+		/** Short name of the context. (Generated from the passed-in context) */
+		private var _shortContext:String;
+		
 		/**
 		 * Creates a new <code>Logger</code> Proxy.
 		 *
 		 * @param name Name of the logger
+		 * @param person Name of the person that requested this logger
+		 * @param context Name of the context in which this logger resides
 		 */
-		public function Logger(name:String, person:String=null) {
+		public function Logger(name:String, person:String=null, context:String=null) {
 			_name = name;
-			_shortName = (_shortName=_name.substr( _name.lastIndexOf(".")+1));
+			_shortName = _name.substr( _name.lastIndexOf(".")+1);
 			_person = person;
+			_context = context;
+			if( _context != null ) {
+				_shortName = _context.substr( _context.lastIndexOf(".")+1);
+			} else {
+				_shortContext = "";
+			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function debug(message:*, parameters:*=null):void {
+		public function debug(message:*, parameter:*=null):void {
 			if(debugTarget) {
 				var msg: String;
-				if(parameters || (message is String)) {
+				if(parameter != null || (message is String)) {
 					msg = String(message);
 				} else {
 					msg = "{}";
-					parameters = message;
+					parameter = message;
 				}
 				debugTarget.log(_name, _shortName, 0x0020 /*DEBUG*/,
-							getTimer(), msg, parameters, _person);
+							getTimer(), msg, parameter, _person, _context, _shortContext);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function info(message:*, parameters:*=null):void {
+		public function info(message:*, parameter:*=null):void {
 			if(infoTarget) {
 				var msg: String;
-				if(parameters || (message is String)) {
+				if(parameter != null || (message is String)) {
 					msg = String(message);
 				} else {
 					msg = "{}";
-					parameters = message;
+					parameter = message;
 				}
 				infoTarget.log(_name, _shortName, 0x0010 /*INFO*/,
-							getTimer(), msg, parameters, _person);
+							getTimer(), msg, parameter, _person, _context, _shortContext);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function warn(message:*, parameters:*=null):void {
+		public function warn(message:*, parameter:*=null):void {
 			if(warnTarget) {
 				var msg: String;
-				if(parameters || (message is String)) {
+				if(parameter != null || (message is String)) {
 					msg = String(message);
 				} else {
 					msg = "{}";
-					parameters = message;
+					parameter = message;
 				}
 				warnTarget.log(_name, _shortName, 0x0008 /*WARN*/,
-						getTimer(), msg, parameters, _person);
+						getTimer(), msg, parameter, _person, _context, _shortContext);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function error(message:*, parameters:*=null):void {
+		public function error(message:*, parameter:*=null):void {
 			if(errorTarget) {
 				var msg: String;
-				if(parameters || (message is String)) {
+				if(parameter != null || (message is String)) {
 					msg = String(message);
 				} else {
 					msg = "{}";
-					parameters = message;
+					parameter = message;
 				}
 				errorTarget.log(_name, _shortName, 0x0004 /*ERROR*/,
-							getTimer(), msg, parameters, _person);
+							getTimer(), msg, parameter, _person, _context, _shortContext);
 			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function fatal(message:*, parameters:*=null):void {
+		public function fatal(message:*, parameter:*=null):void {
 			if(fatalTarget) {
 				var msg: String;
-				if(parameters || (message is String)) {
+				if(parameter != null || (message is String)) {
 					msg = String(message);
 				} else {
 					msg = "{}";
-					parameters = message;
+					parameter = message;
 				}
 				fatalTarget.log(_name, _shortName, 0x0002 /*FATAL*/,
-							getTimer(), msg, parameters, _person);
+							getTimer(), msg, parameter, _person, _context, _shortContext);
 			}
 		}
 		
@@ -217,6 +231,20 @@ package org.as3commons.logging.api {
 		}
 		
 		/**
+		 * @inheritDoc
+		 */
+		public function get context(): String {
+			return _context;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get shortContext(): String {
+			return _shortContext;
+		}
+		
+		/**
 		 * Sets all loggers to the passed-in logTarget.
 		 *
 		 * @param logTarget target to be used for all levels
@@ -229,7 +257,8 @@ package org.as3commons.logging.api {
 		 * String representation of the Logger.
 		 */
 		public function toString(): String {
-			return "[Logger name='" + _name + ( _person ? "@" + _person: "" ) + "']";
+			return "[Logger name='" + _name + (_person!=null ? "@" + _person: "")
+					+ (_context!=null ? " in " + _context : "") + "']";
 		}
 	}
 }

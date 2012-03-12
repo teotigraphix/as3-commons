@@ -21,40 +21,18 @@
  */
 package org.as3commons.logging.setup {
 	import org.as3commons.logging.api.ILogTarget;
-	import org.as3commons.logging.api.ILogSetup;
-	import org.as3commons.logging.api.Logger;
 	
 	/**
-	 * The simplest way to use any <code>ILogTarget</code> in the setup process
-	 * is by using this <code>SimpleTargetSetup</code>. 
-	 * 
-	 * <p>It does nothing more but redirecting the <code>ILogTarget</code> to all
-	 * levels of all loggers.</p>
-	 * 
-	 * <listing>LOGGER_FACTORY.setup = new SimpleTargetSetup( new SOSTarget );</listing>
+	 * Deprecated in favor of SimpleSetup
 	 * 
 	 * @author Martin Heidegger
 	 * @since 2.0
+	 * @deprecated Deprecated in favor of SimpleSetup
 	 * @see org.as3commons.logging.LoggerFactory;
 	 */
-	public class SimpleTargetSetup implements ILogSetup {
-		
-		private var target: ILogTarget;
-		
-		/**
-		 * Constructs a new <code>SimpleTargetSetup</code>
-		 * 
-		 * @param target Target to which the output should flow to.
-		 */
-		public function SimpleTargetSetup(target:ILogTarget) {
-			this.target = target;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function applyTo(logger:Logger): void {
-			logger.allTargets = target;
+	public class SimpleTargetSetup extends SimpleSetup {
+		public function SimpleTargetSetup(target: ILogTarget) {
+			super(target);
 		}
 	}
 }

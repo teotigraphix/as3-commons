@@ -82,22 +82,39 @@ package org.as3commons.logging.util {
 	 */
 	public final class LogMessageFormatter {
 		
-		private const STATIC_TYPE: int		= 1;
-		private const MESSAGE_TYPE: int		= 2;
-		private const MESSAGE_DQT_TYPE: int	= 3;
-		private const TIME_TYPE: int		= 4;
-		private const TIME_UTC_TYPE: int	= 5;
-		private const LOG_TIME_TYPE: int	= 6;
-		private const DATE_TYPE: int		= 7;
-		private const DATE_UTC_TYPE: int	= 8;
-		private const LOG_LEVEL_TYPE: int	= 9;
-		private const SWF_TYPE: int			= 10;
-		private const SHORT_SWF_TYPE: int	= 11;
-		private const NAME_TYPE: int		= 12;
-		private const SHORT_NAME_TYPE: int	= 13;
-		private const GMT_OFFSET_TYPE: int	= 14;
-		private const PERSON_TYPE: int		= 15;
-		private const AT_PERSON_TYPE: int	= 16;
+		// A Signature <static>
+		private const STATIC_TYPE: int				= 1;
+		
+		// B Signature <parameter>
+		private const NAME_TYPE: int				= 2;
+		private const SHORT_NAME_TYPE: int			= 3;
+		private const LOG_LEVEL_TYPE: int			= 4;
+		private const MESSAGE_TYPE: int				= 5;
+		private const MESSAGE_DQT_TYPE: int			= 6;
+		private const SWF_TYPE: int					= 7;
+		private const SHORT_SWF_TYPE: int			= 8;
+		private const PERSON_TYPE: int				= 9;
+		private const CONTEXT_TYPE: int				= 10;
+		private const SHORT_CONTEXT_TYPE: int		= 11;
+		
+		// C Signature <prefix><parameter>
+		private const AT_PERSON_TYPE: int			= 12;
+		private const IN_CONTEXT_TYPE: int			= 13;
+		private const IN_SHORT_CONTEXT_TYPE: int	= 14;
+		
+		// D Signature <hour>:<minute>:<second>.<millisecond>
+		private const TIME_TYPE: int				= 15;
+		private const TIME_UTC_TYPE: int			= 16;
+		
+		// E Signature <year>/<month>/<day>
+		private const DATE_TYPE: int				= 17;
+		private const DATE_UTC_TYPE: int			= 18;
+		
+		// F Signature <0?><hour>:<0?><minute>:<0?><second>.<0?><millisecond>
+		private const LOG_TIME_TYPE: int			= 19;
+		
+		// G Signature <GMT>
+		private const GMT_OFFSET_TYPE: int			= 20;
 		
 		private const TYPES: Object			= {
 			message:		MESSAGE_TYPE,
@@ -114,7 +131,11 @@ package org.as3commons.logging.util {
 			shortName:		SHORT_NAME_TYPE,
 			gmt:			GMT_OFFSET_TYPE,
 			person:			PERSON_TYPE,
-			atPerson:		AT_PERSON_TYPE
+			atPerson:		AT_PERSON_TYPE,
+			context:		CONTEXT_TYPE,
+			shortContext:	SHORT_CONTEXT_TYPE,
+			inContext:		IN_CONTEXT_TYPE,
+			inShortContext:	IN_SHORT_CONTEXT_TYPE
 		};
 		
 		private const FILL_2: Array = ["", "0",""];
@@ -145,7 +166,6 @@ package org.as3commons.logging.util {
 			var strNode: FormatNode;
 			var strBefore: String;
 			var type: int;
-			var i: int = 0;
 			while( parseResult =  _braceRegexp.exec( format ) ) {
 				
 				if( ( type = TYPES[parseResult["field"]] ) ) {
@@ -157,10 +177,11 @@ package org.as3commons.logging.util {
 						strNode.type = STATIC_TYPE;
 						strNode.content = strBefore;
 						
-						if( lastNode )
+						if( lastNode ) {
 							lastNode.next = strNode;
-						else
+						} else {
 							_firstNode = strNode;
+						}
 						
 						lastNode = strNode;
 					}
@@ -186,105 +207,68 @@ package org.as3commons.logging.util {
 				}
 			}
 			
-			if( pos != format.length ) {
-				strBefore = format.substring( pos );
+			if(pos != format.length) {
+				strBefore = format.substring(pos);
 				strNode = new FormatNode();
 				strNode.type = STATIC_TYPE;
 				strNode.content = strBefore;
 				
-				if( lastNode )
+				if(lastNode) {
 					lastNode.next = strNode;
-				else
+				} else {
 					_firstNode = strNode;
+				}
 			}
 			
 			var node: FormatNode = _firstNode;
 			var c:int = -1;
 			while( node ) {
-				
 				type = node.type;
-				if( type < 7 ) {
-					if( type < 4 ) {
-						// 1
-						if( type == STATIC_TYPE ) {
+				if(type<17) {
+					if(type<12) {
+						if(type==1) { // Signature A
 							_parts[++c] = node.content;
-						}
-						// 2
-						else if( type == MESSAGE_TYPE ) {
+						} else { // Signature B
 							++c;
 						}
-						// 3
-						else { // Message DQT
+					} else {
+						if(type<15) { // Signature C
+							++c;
+							++c;
+						} else { // Signature D
+							++c;
+							_parts[++c] = ":";
+							++c;
+							_parts[++c] = ":";
+							++c;
+							_parts[++c] = ".";
 							++c;
 						}
 					}
-					// 6
-					else if( type == 6 ) {
-						++c;
-						++c;
-						_parts[++c] = ":";
-						++c;
-						++c;
-						_parts[++c] = ":";
-						++c;
-						++c;
-						_parts[++c] = ".";
-						++c;
-						++c;
-					}
-					// 4 || 5
-					else {
-						++c;
-						_parts[++c] = ":";
-						++c;
-						_parts[++c] = ":";
-						++c;
-						_parts[++c] = ".";
-						++c;
-					}
-				} else if( type < 13 ) {
-					if( type < 10 ) {
-						// 7 || 8
-						if( type == DATE_TYPE || type == DATE_UTC_TYPE ) {
+				} else {
+					if(type<20) {
+						if(type<19) { // Signature E
 							++c;
 							_parts[++c] = "/";
 							++c;
 							_parts[++c] = "/";
 							++c;
-						}
-						// 9
-						else { // LEVEL_TYPE
+						} else { // Signature F
+							++c;
+							++c;
+							_parts[++c] = ":";
+							++c;
+							++c;
+							_parts[++c] = ":";
+							++c;
+							++c;
+							_parts[++c] = ".";
+							++c;
 							++c;
 						}
+					} else { // Signature G
+						_parts[++c] = GMT;
 					}
-					// 10
-					else if( type == SWF_TYPE ) {
-						++c;
-					}
-					// 11
-					else if( type == SHORT_SWF_TYPE ) {
-						++c;
-					}
-					// 12
-					else { // NAME_TYPE
-						++c;
-					}
-				}
-				// 13
-				else if( type == SHORT_NAME_TYPE ) {
-					++c;
-				}
-				// 14
-				else if( type == GMT_OFFSET_TYPE ) {
-					_parts[++c] = GMT;
-				}
-				// 15
-				else if( type == PERSON_TYPE ) {
-					++c;
-				}
-				// 16
-				else {
-					c+=2;
 				}
 				node = node.next;
 			}
@@ -294,18 +278,20 @@ package org.as3commons.logging.util {
 		 * Returns a string with the parameters replaced.
 		 * 
 		 * @param name Name of the logger that initiated that log statement.
-		 * @param shortName Short name of the logger that initiated that log statement.
+		 * @param shortName Shortened name.
 		 * @param level Level of which the output happened.
 		 * @param timeMs Time in ms since 1970, passed to the log target.
 		 * @param message Message that should be logged.
 		 * @param params Parameter that should be filled in the message.
 		 * @param person Information about the person that filed this log statement.
+		 * @param context Context of the logger that initiated that log statement
+		 * @param shortContext Shortened context.
 		 * 
 		 * @see org.as3commons.logging.Logger
 		 */
 		public function format(name:String, shortName:String, level:int,
 							   timeMs:Number, message:String, params:*,
-							   person:String):String {
+							   person:String, context:String, shortContext:String):String {
 			
 			var node: FormatNode = _firstNode;
 			
@@ -330,135 +316,148 @@ package org.as3commons.logging.util {
 			}
 			
 			var c:int = -1;
+			var val:String, prefix:String, year:Number, month:Number, day:Number,
+				hour:Number, minute:Number, second:Number, millisecond:Number;
+			
 			while( node ) {
-				
 				var type: int = node.type;
-				if( type < 7 ) {
-					if( type < 4 ) {
-						// 1
-						if( type == STATIC_TYPE ) {
+				if(type<17) {
+					if(type<12) {
+						if(type==1) { // Signature A
 							++c; // Already filled in
-						}
-						// 2
-						else if( type == MESSAGE_TYPE ) {
-							_parts[++c] = message||"null";
-						}
-						// 3
-						else { // Message DQT
-							if( message ) {
-								_parts[++c] = message.split("\"").join("\\\"").split("\n").join("\\n");
+						} else { // Signature B
+							// Any parameter can be null so all need to be treated same way
+							if(type<10) {
+								if(type<6) {
+									if(type<4) {
+										if(type==2) { // NAME
+											val = name;
+										} else { // 3 SHORT_NAME
+											val = shortName;
+										}
+									} else {
+										if(type==4) { // LOG_LEVEL
+											val = LEVEL_NAMES[level];
+										} else { // 5 MESSAGE
+											val = message;
+										}
+									}
+								} else {
+									if(type<8) {
+										if(type==6) { // MESSAGE_DQT
+											if(message) {
+												val = message.split("\"").join("\\\"").split("\n").join("\\n");
+											}
+										} else { // 7 SWF
+											val = SWF_URL;
+										}
+									} else {
+										if(type==8) { // SHORT_SWF
+											val = SWF_SHORT_URL;
+										} else { // 9 PERSON
+											val = person;
+										}
+									}
+								}
 							} else {
-								_parts[++c] = "null";
+								if(type==10) { // CONTEXT
+									val = context;
+								} else { // 11 SHORT_CONTEXT
+									val = shortContext;
+								}
 							}
+							_parts[++c] = val==null ? val : null;
 						}
-					}
-					// 4
-					else if( type == TIME_TYPE ) {
-						_parts[++c] = _now.hours.toString();
-						++c;
-						_parts[++c] = _now.minutes.toString();
-						++c;
-						_parts[++c] = _now.seconds.toString();
-						++c;
-						_parts[++c] = _now.milliseconds.toString();
-					}
-					// 5
-					else if( type == TIME_UTC_TYPE ) {
-						_parts[++c] = _now.hoursUTC.toString();
-						++c;
-						_parts[++c] = _now.minutesUTC.toString();
-						++c;
-						_parts[++c] = _now.secondsUTC.toString();
-						++c;
-						_parts[++c] = _now.millisecondsUTC.toString();
-					}
-					// 6
-					else { // LOG_TIME_TYPE
-						var hrs: String = _now.hoursUTC.toString();
-						var mins: String = _now.minutesUTC.toString();
-						var secs: String = _now.secondsUTC.toString();
-						var ms: String = _now.millisecondsUTC.toString();
-						_parts[++c] = FILL_2[hrs.length];
-						_parts[++c] = hrs;
-						++c;
-						_parts[++c] = FILL_2[mins.length];
-						_parts[++c] = mins;
-						++c;
-						_parts[++c] = FILL_2[secs.length];
-						_parts[++c] = secs;
-						++c;
-						_parts[++c] = FILL_3[ms.length];
-						_parts[++c] = ms;
-					}
-				} else if( type < 13 ) {
-					if( type < 10 ) {
-						// 7
-						if( type == DATE_TYPE ) {
-							_parts[++c] = _now.fullYear.toString();
-							++c;
-							_parts[++c] = (_now.month+1).toString();
-							++c;
-							_parts[++c] = _now.date.toString();
-						}
-						// 8
-						else if( type == DATE_UTC_TYPE ) {
-							_parts[++c] = _now.fullYearUTC.toString();
-							++c;
-							_parts[++c] = (_now.monthUTC+1).toString();
-							++c;
-							_parts[++c] = _now.dateUTC.toString();
-						}
-						// 9
-						else { // LEVEL_TYPE
-							_parts[++c] = LEVEL_NAMES[level];
-						}
-					}
-					// 10
-					else if( type == SWF_TYPE ) {
-						_parts[++c] = SWF_URL;
-					}
-					// 11
-					else if( type == SHORT_SWF_TYPE ) {
-						_parts[++c] = SWF_SHORT_URL;
-					}
-					// 12
-					else { // NAME_TYPE
-						_parts[++c] = name || "null";
-					}
-				}
-				// 13
-				else if( type == SHORT_NAME_TYPE ) {
-					_parts[++c] = shortName || "null";
-				}
-				// 14
-				else if( type == GMT_OFFSET_TYPE ) {
-					++c;
-				}
-				// 15
-				else if( type == PERSON_TYPE ) {
-					_parts[++c] = person || "";
-				}
-				// 16
-				else {
-					if(person) {
-						_parts[++c] = "@";
-						_parts[++c] = person;
 					} else {
-						_parts[++c] = "";
-						_parts[++c] = "";
+						if(type<15) { // Signature C
+							if(type==12) { // AT_PERSON
+								prefix = "@";
+								val = person;
+							} else {
+								prefix = " in ";
+								if(type==13) { // IN_CONTEXT
+									val = context;
+								} else { // IN_SHORT_CONTEXT;
+									val = shortContext;
+								}
+							}
+							if(val!=null) {
+								_parts[++c] = prefix;
+								_parts[++c] = val;
+							} else {
+								_parts[++c] = "";
+								_parts[++c] = "";
+							}
+						} else { // Signature D
+							if(type==13) { // TIME
+								hour = _now.hours;
+								minute = _now.minutes;
+								second = _now.seconds;
+								millisecond = _now.milliseconds;
+							} else { // 14 TIME_UTC
+								hour = _now.hoursUTC;
+								minute = _now.minutesUTC;
+								second = _now.secondsUTC;
+								millisecond = _now.millisecondsUTC;
+							}
+							_parts[++c] = hour.toString();
+							++c;
+							_parts[++c] = minute.toString();
+							++c;
+							_parts[++c] = second.toString();
+							++c;
+							_parts[++c] = millisecond.toString();
+						}
+					}
+				} else {
+					if(type<20) {
+						if(type<19) { // Signature E
+							if(type==17) { // 17 DATE
+								year = _now.fullYear;
+								month = _now.month+1.0;
+								day = _now.date;
+							} else { // 18 DATE_UTC
+								year = _now.fullYearUTC;
+								month = _now.monthUTC+1.0;
+								day = _now.dateUTC;
+							}
+							_parts[++c] = year.toString();
+							++c;
+							_parts[++c] = month.toString();
+							++c;
+							_parts[++c] = day.toString();
+						} else { // Signature F
+							// 19 LOG_TIME
+							var hrs: String = _now.hoursUTC.toString();
+							var mins: String = _now.minutesUTC.toString();
+							var secs: String = _now.secondsUTC.toString();
+							var ms: String = _now.millisecondsUTC.toString();
+							_parts[++c] = FILL_2[hrs.length];
+							_parts[++c] = hrs;
+							++c;
+							_parts[++c] = FILL_2[mins.length];
+							_parts[++c] = mins;
+							++c;
+							_parts[++c] = FILL_2[secs.length];
+							_parts[++c] = secs;
+							++c;
+							_parts[++c] = FILL_3[ms.length];
+							_parts[++c] = ms;
+						}
+					} else { // Signature G
+						// 20 GMT
+						++c;
 					}
 				}
-				node = node.next;
 			}
 			return _parts.join("");
 		}
 		
 		private function replaceFields(field: String, no: int, len: int, intext: String):String {
-			field = field.substring(1, field.length-1);
 			var value: * = _params;
 			if( field != "") {
-				var d: String = field;
-				var start: int = 0;
+				var d: String = field.substring(1, field.length-1);
+				var start: int = 1;
 				var end: int;
 				while( value != null ) {
 					end = field.indexOf(".", start);
@@ -494,7 +493,7 @@ package org.as3commons.logging.util {
 			if( value != null ) {
 				return value.toString();
 			} else {
-				return "null";
+				return "{"+field+"}";
 			}
 		}
 	}

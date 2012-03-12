@@ -35,10 +35,10 @@ package org.as3commons.logging.integration {
 			logger.warn( "a warning" );
 			logger.error( "a error" );
 			
-			inOrder().verify().that( target.log( eq("this.is.a.Logger"), eq("Logger"), eq(INFO), anyOf(Number), eq("a log message"), alike([]), eq("OSMF")) );
-			inOrder().verify().that( target.log( eq("this.is.a.Logger"), eq("Logger"), eq(INFO), anyOf(Number), eq("a log message"), alike([true]), eq("OSMF")) );
-			inOrder().verify().that( target.log( eq("this.is.a.Logger"), eq("Logger"), eq(WARN), anyOf(Number), eq("a warning"), alike([]), eq("OSMF")) );
-			inOrder().verify().that( target.log( eq("this.is.a.Logger"), eq("Logger"), eq(ERROR), anyOf(Number), eq("a error"), alike([]), eq("OSMF")) );
+			inOrder().verify().that( target.log( eq("this.is.a.Logger"), eq("Logger"), eq(INFO), anyOf(Number), eq("a log message"), alike([]), eq("OSMF"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("this.is.a.Logger"), eq("Logger"), eq(INFO), anyOf(Number), eq("a log message"), alike([true]), eq("OSMF"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("this.is.a.Logger"), eq("Logger"), eq(WARN), anyOf(Number), eq("a warning"), alike([]), eq("OSMF"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("this.is.a.Logger"), eq("Logger"), eq(ERROR), anyOf(Number), eq("a error"), alike([]), eq("OSMF"), eq(null), eq(null)) );
 			verifyNothingCalled( target );
 		}
 		

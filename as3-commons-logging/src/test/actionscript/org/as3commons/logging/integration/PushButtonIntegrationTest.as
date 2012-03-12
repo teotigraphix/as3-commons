@@ -41,14 +41,14 @@ package org.as3commons.logging.integration {
 			Logger.warn(  Logger, "method", "A Warn" );
 			Logger.error( Logger, "method", "A Error" );
 			
-			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(DEBUG), notNull(), eq( "Print" ), eq(null), eq("pushbutton") ) );
-			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(DEBUG), notNull(), eq( "Hello Footer" ), eq(null), eq("pushbutton") ) );
-			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(DEBUG), notNull(), eq( "Hello Header" ), eq(null), eq("pushbutton") ) );
-			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(ERROR), notNull(), eq( "method - Hello Custom" ), eq(null), eq("pushbutton") ) );
-			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(DEBUG), notNull(), eq( "method - A Debug" ), eq(null), eq("pushbutton") ) );
-			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(INFO), notNull(), eq( "method - A Info" ), eq(null), eq("pushbutton") ) );
-			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(WARN), notNull(), eq( "method - A Warn" ), eq(null), eq("pushbutton") ) );
-			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(ERROR), notNull(), eq( "method - A Error" ), eq(null), eq("pushbutton") ) );
+			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(DEBUG), notNull(), eq( "Print" ), eq(null), eq("pushbutton"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(DEBUG), notNull(), eq( "Hello Footer" ), eq(null), eq("pushbutton"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(DEBUG), notNull(), eq( "Hello Header" ), eq(null), eq("pushbutton"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(ERROR), notNull(), eq( "method - Hello Custom" ), eq(null), eq("pushbutton"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(DEBUG), notNull(), eq( "method - A Debug" ), eq(null), eq("pushbutton"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(INFO), notNull(), eq( "method - A Info" ), eq(null), eq("pushbutton"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(WARN), notNull(), eq( "method - A Warn" ), eq(null), eq("pushbutton"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("com.pblabs.engine.debug.Logger"), eq("Logger"), eq(ERROR), notNull(), eq( "method - A Error" ), eq(null), eq("pushbutton"), eq(null), eq(null) ) );
 		}
 	}
 }

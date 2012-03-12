@@ -46,13 +46,13 @@ package org.as3commons.logging.integration {
 			logger.error( "Estaz!" );
 			logger.fatal( "Santa domingo!" );
 			
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), notNull(), eq( "Hello World" ), eq(null), eq("yui") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), notNull(), eq( "Hello {0}" ), alike(["Mario"]), eq("yui") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), notNull(), eq( "Hola!" ), eq(null), eq("yui") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), notNull(), eq( "Amigo {0} {1}" ), alike(["Santa", "Maria"]), eq("yui") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(WARN), notNull(), eq( "Como!" ), eq(null), eq("yui") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(ERROR), notNull(), eq( "Estaz!" ), eq(null), eq("yui") ) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(FATAL), notNull(), eq( "Santa domingo!" ), eq(null), eq("yui") ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), notNull(), eq( "Hello World" ), eq(null), eq("yui"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), notNull(), eq( "Hello {0}" ), alike(["Mario"]), eq("yui"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), notNull(), eq( "Hola!" ), eq(null), eq("yui"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), notNull(), eq( "Amigo {0} {1}" ), alike(["Santa", "Maria"]), eq("yui"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(WARN), notNull(), eq( "Como!" ), eq(null), eq("yui"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(ERROR), notNull(), eq( "Estaz!" ), eq(null), eq("yui"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(FATAL), notNull(), eq( "Santa domingo!" ), eq(null), eq("yui"), eq(null), eq(null) ) );
 			
 			verifyNothingCalled( target );
 		}

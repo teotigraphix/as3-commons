@@ -106,13 +106,15 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log(name: String, shortName: String, level: int,
-							timeStamp: Number, message: String, parameters: *=null,
-							person: String=null): void {
+		public function log(name:String, shortName:String, level:int, timeStamp:Number,
+							message:String, parameters:*, person:String, context:String,
+							shortContext:String): void {
 			var color: uint = _colors[ level ];
 			if( parameters && parameters.length == 0 ){
 				if( message is String ) {
-					message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
+					message = _formatter.format(name, shortName, level, timeStamp,
+												message, parameters, person,context,
+												shortContext);
 					if( (_warnLevels.valueOf() & level) == level ) {
 						Debug.warning( message );
 					} else {

@@ -52,8 +52,8 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		override protected function doLog(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:Array=null,
-							person:String=null): void {
+							timeStamp:Number, message:String, parameters:Array,
+							person:String, context:String, shortContext:String): void {
 			var logName: String = name;
 			if( person ) {
 				logName += "@"+person;

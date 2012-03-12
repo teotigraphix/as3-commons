@@ -64,7 +64,7 @@ package org.as3commons.logging.util {
 				logTarget.log(
 					statement.name, statement.shortName, statement.level,
 					statement.timeStamp, statement.message, statement.parameters,
-					statement.person
+					statement.person, statement.context, statement.shortContext
 				);
 			}
 		}

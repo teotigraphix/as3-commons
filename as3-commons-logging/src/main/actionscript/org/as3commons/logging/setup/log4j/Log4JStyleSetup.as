@@ -169,7 +169,7 @@ package org.as3commons.logging.setup.log4j {
 		 */
 		public function compile():HierarchicalSetup {
 			var setup: HierarchicalSetup = new HierarchicalSetup(".", _threshold);
-			_root.applyTo( setup, appender.generateAppenders() );
+			_root.applyTo( setup, appender.generateAppenders(), {} );
 			return setup;
 		}
 	}
@@ -428,14 +428,18 @@ class HierarchyEntry {
 		return _children[name] ||= new HierarchyEntry(_name == "" ? name : _name+"."+name);
 	}
 	
-	public function applyTo(setup: HierarchicalSetup, appenderLookup: Object ) : void {
+	public function applyTo(setup: HierarchicalSetup, appenderLookup: Object, thrownErrors: Object ) : void {
 		var target: ILogTarget;
 		for each(var appenderName: String in _appenders) {
+			if(appenderLookup[appenderName] == null && !thrownErrors[appenderName]) {
+				thrownErrors[appenderName] = true;
+				LOGGER.warn("Appender {} is used but not defined.", appenderName);
+			}
 			target = mergeTargets( target, appenderLookup[appenderName] );
 		}
 		setup.setHierarchy(_name, target, _level, _additive);
 		for each(var child: HierarchyEntry in _children) {
-			child.applyTo( setup, appenderLookup );
+			child.applyTo( setup, appenderLookup, thrownErrors );
 		}
 	}
 }

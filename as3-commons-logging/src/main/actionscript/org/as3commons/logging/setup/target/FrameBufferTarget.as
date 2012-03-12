@@ -106,17 +106,19 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null):void {
+							timeStamp:Number, message:String, parameter:*,
+							person:String, context:String, shortContext:String):void {
 			// Only log it if the statements this frame do not yet exceed
 			// the max statements that can be triggered per frame
 			if( _statementsThisFrame < _statementsPerFrame ) {
-				_target.log(name, shortName, level, timeStamp, message, parameters, person);
+				_target.log(name, shortName, level, timeStamp, message, parameter,
+							person, context, shortContext);
 				++_statementsThisFrame;
 			} else {
 				_bufferedStatements[_bufferLength++] =
 					new LogStatement(name, shortName, level, timeStamp, message,
-								     parameters, person, _introspectDepth);
+									parameter, person, context, shortContext,
+									_introspectDepth);
 			}
 			
 			if( !_isRegistered ) {
@@ -136,9 +138,9 @@ package org.as3commons.logging.setup.target {
 				var statement: LogStatement = _bufferedStatements.shift();
 				--_bufferLength;
 				if( statement ) {
-					_target.log(statement.name, statement.shortName,
-							statement.level, statement.timeStamp, statement.message,
-							statement.parameters, statement.person);
+					_target.log(statement.name, statement.shortName, statement.level,
+							statement.timeStamp, statement.message, statement.parameters,
+							statement.person, statement.context, statement.shortContext);
 				} else {
 					break;
 				}
