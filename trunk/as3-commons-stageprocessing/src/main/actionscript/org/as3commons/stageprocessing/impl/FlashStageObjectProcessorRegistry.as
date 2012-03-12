@@ -394,7 +394,7 @@ package org.as3commons.stageprocessing.impl {
 
 		public function registerExtraStage(extraStage:Stage):void {
 			_extraStages ||= new Vector.<Stage>();
-			if (_extraStages.indexOf(extraStage) > -1) {
+			if (_extraStages.indexOf(extraStage) < 0) {
 				_extraStages[_extraStages.length] = extraStage;
 				addEventListeners(extraStage);
 			}
