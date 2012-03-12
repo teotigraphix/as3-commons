@@ -77,12 +77,13 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							 timeStamp:Number, message:String, parameters:*=null,
-							 person:String=null): void {
+							 timeStamp:Number, message:String, parameters:*,
+							 person:String, context:String, shortContext:String): void {
 			if( person != "log5f") {
 				var logger: ILogger = _loggers[name]||=LoggerManager.getLogger(name);
 				message = _formatter.format(name, shortName, level, timeStamp,
-											message, parameters, person);
+											message, parameters, person, context,
+											shortContext);
 				if( level == INFO ) {
 					logger.info( message );
 				} else if( level == DEBUG ) {

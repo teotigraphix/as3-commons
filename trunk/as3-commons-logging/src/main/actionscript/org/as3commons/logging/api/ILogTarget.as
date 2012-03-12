@@ -46,12 +46,15 @@ package org.as3commons.logging.api {
 		 * @param shortName Shortened form of the name.
 		 * @param level Level of the log statement that got triggered.
 		 * @param timeStamp getTimer() Timestame of when the log statement was triggered.
-		 * @param message Message of the log statement.
-		 * @param parameters Parameters for the log statement.
-		 * @param person Information about the person that filed this log statement.
-		 * @version 2
+		 * @param message Message of the log statement. (can be null)
+		 * @param parameters Parameters for the log statement. (can be null)
+		 * @param person Information about the person that filed this log statement. (can be null)
+		 * @param context Name of the context in which this logger was called. (can be null)
+		 * @param context Shortened form of the context. (can be null)
+		 * @version 3
 		 */
 		function log(name:String, shortName:String, level:int, timeStamp:Number,
-					message:String, parameters:*=null, person:String=null):void;
+					message:String, parameters:*, person:String, context:String,
+					shortContext:String):void;
 	}
 }

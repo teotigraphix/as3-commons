@@ -37,12 +37,12 @@ package org.as3commons.logging.integration {
 			Log.error( "A Error", "my.super::Sender" );
 			Log.fatal( "A Fatal", "my.super::Sender" );
 			
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(DEBUG), notNull(), eq( "A Debug" ), eq(null), eq("asap") ) );
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(INFO), notNull(), eq( "A Status" ), eq(null), eq("asap") ) );
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(INFO), notNull(), eq( "A Info" ), eq(null), eq("asap") ) );
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(WARN), notNull(), eq( "A Warn" ), eq(null), eq("asap") ) );
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(ERROR), notNull(), eq( "A Error" ), eq(null), eq("asap") ) );
-			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(FATAL), notNull(), eq( "A Fatal" ), eq(null), eq("asap") ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(DEBUG), notNull(), eq( "A Debug" ), eq(null), eq("asap"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(INFO), notNull(), eq( "A Status" ), eq(null), eq("asap"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(INFO), notNull(), eq( "A Info" ), eq(null), eq("asap"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(WARN), notNull(), eq( "A Warn" ), eq(null), eq("asap"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(ERROR), notNull(), eq( "A Error" ), eq(null), eq("asap"), eq(null), eq(null) ) );
+			inOrder().verify().that( target.log( eq("my.super.Sender"), eq("Sender"), eq(FATAL), notNull(), eq( "A Fatal" ), eq(null), eq("asap"), eq(null), eq(null) ) );
 		}
 		
 		public function testTarget():void {

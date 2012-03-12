@@ -111,6 +111,19 @@ package org.as3commons.logging.api {
 			assertNull( logger.fatalTarget );
 		}
 		
+		public function testMessageVariants(): void {
+			var logger: Logger;
+			
+			var target: TestTarget = new TestTarget;
+			
+			logger = new Logger("");
+			logger.allTargets = target;
+			
+			logger.debug(null, null);
+			assertEquals(target.message, "{}");
+			
+		}
+		
 		public function testShortName(): void {
 			var logger: Logger;
 			
@@ -227,8 +240,10 @@ class TestTarget implements ILogTarget {
 	public var message: *;
 	public var parameters: Array;
 	public var person: String;
+	public var context: String;
+	public var shortContext: String;
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *, person : String, context:String, shortContext:String) : void {
 		this.name = name;
 		this.shortName = shortName;
 		this.level = level;
@@ -236,5 +251,7 @@ class TestTarget implements ILogTarget {
 		this.message = message;
 		this.parameters = parameters;
 		this.person = person;
+		this.context = context;
+		this.shortContext = shortContext;
 	}
 }

@@ -69,11 +69,15 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null): void {
-			message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
+							timeStamp:Number, message:String, parameter:*,
+							person:String, context:String, shortContext:String): void {
+			message = _formatter.format(name, shortName, level, timeStamp, message,
+										parameter, person, context, shortContext);
 			if( person ) {
 				name += "@"+person;
+			}
+			if( context ) {
+				name += " in "+context;
 			}
 			switch( level ) {
 				case DEBUG:

@@ -64,10 +64,11 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		override protected function doLog(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:Array=null,
-							person:String=null):void {
+							timeStamp:Number, message:String, parameters:Array,
+							person:String, context:String, shortContext:String):void {
 			var args: Array;
-			message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
+			message = _formatter.format(name, shortName, level, timeStamp, message,
+										parameters, person, context, shortContext);
 			if( parameters && parameters.length > 0 ) {
 				args = parameters.concat();
 				args.unshift(message);

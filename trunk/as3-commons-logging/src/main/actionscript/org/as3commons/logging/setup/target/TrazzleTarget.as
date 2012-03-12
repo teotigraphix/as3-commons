@@ -68,8 +68,8 @@ package org.as3commons.logging.setup.target {
 		 * @param stage Stage used to initialize the logger
 		 * @param title Title of this application.
 		 */
-		public function TrazzleTarget( stackIndex:uint, format:String=null,
-										stage:Stage=null, title:String=null ) {
+		public function TrazzleTarget(stackIndex:uint, format:String=null,
+										stage:Stage=null, title:String=null) {
 			if( stage && title ) {
 				zz_init(stage, title);
 			}

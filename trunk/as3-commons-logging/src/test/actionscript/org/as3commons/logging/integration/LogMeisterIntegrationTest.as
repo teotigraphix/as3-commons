@@ -51,23 +51,23 @@ package org.as3commons.logging.integration {
 			critical( "a critical msg", true );
 			notice( "a notice msg", true );
 			
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a log message"), eq(null), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(WARN), anyOf(Number), eq("a warning"), eq(null), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(ERROR), anyOf(Number), eq("a error"), eq(null), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(FATAL), anyOf(Number), eq("a fatal msg"), eq(null), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a status msg"), eq(null), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(DEBUG), anyOf(Number), eq("a debug msg"), eq(null), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(FATAL), anyOf(Number), eq("a critical msg"), eq(null), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a notice msg"), eq(null), eq("LogMeister")) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a log message"), eq(null), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(WARN), anyOf(Number), eq("a warning"), eq(null), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(ERROR), anyOf(Number), eq("a error"), eq(null), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(FATAL), anyOf(Number), eq("a fatal msg"), eq(null), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a status msg"), eq(null), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(DEBUG), anyOf(Number), eq("a debug msg"), eq(null), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(FATAL), anyOf(Number), eq("a critical msg"), eq(null), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a notice msg"), eq(null), eq("LogMeister"), eq(null), eq(null)) );
 			
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a log message"), alike([true]), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(WARN), anyOf(Number), eq("a warning"), alike([true]), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(ERROR), anyOf(Number), eq("a error"), alike([true]), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(FATAL), anyOf(Number), eq("a fatal msg"), alike([true]), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a status msg"), alike([true]), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(DEBUG), anyOf(Number), eq("a debug msg"), alike([true]), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(FATAL), anyOf(Number), eq("a critical msg"), alike([true]), eq("LogMeister")) );
-			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a notice msg"), alike([true]), eq("LogMeister")) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a log message"), alike([true]), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(WARN), anyOf(Number), eq("a warning"), alike([true]), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(ERROR), anyOf(Number), eq("a error"), alike([true]), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(FATAL), anyOf(Number), eq("a fatal msg"), alike([true]), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a status msg"), alike([true]), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(DEBUG), anyOf(Number), eq("a debug msg"), alike([true]), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(FATAL), anyOf(Number), eq("a critical msg"), alike([true]), eq("LogMeister"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("org.as3commons.logging.integration.LogMeisterIntegrationTest"), eq("LogMeisterIntegrationTest"), eq(INFO), anyOf(Number), eq("a notice msg"), alike([true]), eq("LogMeister"), eq(null), eq(null)) );
 			verifyNothingCalled( target );
 		}
 		

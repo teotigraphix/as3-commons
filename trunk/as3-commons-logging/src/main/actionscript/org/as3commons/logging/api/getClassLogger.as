@@ -20,8 +20,8 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.api {
-	
 	import org.as3commons.logging.util.toLogName;
+	
 	
 	/**
 	 * Returns a logger for the passed-in class.
@@ -46,8 +46,9 @@ package org.as3commons.logging.api {
 	 * </listing>
 	 * 
 	 * @author Martin Heidegger
-	 * @param input Any object (will be transformed by <code>toLogName</code>).
+	 * @param object Any object (will be transformed by <code>toLogName</code>).
 	 * @param person Information about the person that requested this logger.
+	 * @param context Context in which this logger is called.
 	 * @return <code>ILogger</code> instance to publish log statements
 	 * @since 2.0
 	 * @version 2
@@ -55,8 +56,11 @@ package org.as3commons.logging.api {
 	 * @see LoggerFactory#getClassLogger()
 	 * @see org.as3commons.logging.api#LOGGER_FACTORY
 	 */
-	public function getClassLogger(input:*=null,person:String=null):ILogger {
-		return LOGGER_FACTORY.getNamedLogger(toLogName(input),person);
+	public function getClassLogger(object:*=null,person:String=null,context:*=null):ILogger {
+		if(context!=null && !(context is String)) {
+			context = toLogName(context);
+		}
+		return LOGGER_FACTORY.getNamedLogger(toLogName(object),person,context);
 	}
 }
 

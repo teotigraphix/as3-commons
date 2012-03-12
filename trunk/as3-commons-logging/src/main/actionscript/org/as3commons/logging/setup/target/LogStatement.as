@@ -46,9 +46,17 @@ package org.as3commons.logging.setup.target {
 		/** Information about the person that logged this. */
 		public var person: String;
 		
+		/** Clone the parameters */
 		public var doClone: Boolean;
 		
-		private var _message: *;
+		/** Context of the logger that triggered the log statement. */
+		public var context: String;
+		
+		/** Shortened form of the context. */
+		public var shortContext: String;
+		
+		/** Message of the log statement */
+		public var message: String;
 		
 		/** Parameters for the log statement. */
 		private var _parameters: *;
@@ -72,9 +80,10 @@ package org.as3commons.logging.setup.target {
 		 */
 		public function LogStatement(name:String, shortName:String, level:int,
 										timeStamp:Number, message:*, parameters:*,
-										person:String, introspectDepth:uint,
-										cloneEnabled: Boolean=true) {
+										person:String, context:String, shortContext:String,
+										introspectDepth:uint, cloneEnabled: Boolean=true) {
 			this.introspectDepth = introspectDepth;
+			
 			this.name = name;
 			this.shortName = shortName;
 			this.level = level;
@@ -82,20 +91,9 @@ package org.as3commons.logging.setup.target {
 			this.message = message;
 			this.parameters = parameters;
 			this.person = person;
+			this.context = context;
+			this.shortContext = shortContext;
 			this.doClone = cloneEnabled;
-		}
-		
-		/** Message of the log statement. (stored as cloned) */
-		public function get message():* {
-			return _message;
-		}
-		
-		public function set message(message:*):void {
-			if( doClone ) {
-				_message = clone(message,introspectDepth);
-			} else {
-				_message = message;
-			}
 		}
 		
 		/** Parameters for the log statement. */

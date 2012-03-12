@@ -60,12 +60,12 @@ package org.as3commons.logging.setup.target {
 		/**
 		 * @inheritDoc
 		 */
-		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null):void {
+		public function log(name:String, shortName:String, level:int, timeStamp:Number,
+							message:String, parameter:*, person:String, context:String,
+							shortContext:String):void {
 			_textField.appendText(
-				_formatter.format(name, shortName, level, timeStamp,
-								  message, parameters, person)
+				_formatter.format(name, shortName, level, timeStamp, message,
+									parameter, person, context, shortContext)
 			);
 		}
 		

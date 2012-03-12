@@ -194,7 +194,7 @@ class Target implements ILogTarget {
 	}
 
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *, person : String, context: String, shortContext:String) : void {
 		_target.push( _name );
 	}
 	

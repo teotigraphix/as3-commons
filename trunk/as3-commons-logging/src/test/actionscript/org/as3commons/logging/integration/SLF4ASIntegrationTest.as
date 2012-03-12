@@ -48,16 +48,16 @@ package org.as3commons.logging.integration {
 			logger.fatal( "This is funny!" );
 			logger.fatal( "This is funny!", "me", 1  );
 			
-			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(INFO), anyOf(Number), eq("This is funny!"), eq(null), eq("slf4as")) );
-			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(INFO), anyOf(Number), eq("This is funny! me 1"), eq(null), eq("slf4as")) );
-			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(DEBUG), anyOf(Number), eq("This is funny!"), eq(null), eq("slf4as")) );
-			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(DEBUG), anyOf(Number), eq("This is funny! me 1"), eq(null), eq("slf4as")) );
-			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(WARN), anyOf(Number), eq("This is funny!"), eq(null), eq("slf4as")) );
-			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(WARN), anyOf(Number), eq("This is funny! me 1"), eq(null), eq("slf4as")) );
-			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(ERROR), anyOf(Number), eq("This is funny!"), eq(null), eq("slf4as")) );
-			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(ERROR), anyOf(Number), eq("This is funny! me 1"), eq(null), eq("slf4as")) );
-			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(FATAL), anyOf(Number), eq("This is funny!"), eq(null), eq("slf4as")) );
-			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(FATAL), anyOf(Number), eq("This is funny! me 1"), eq(null), eq("slf4as")) );
+			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(INFO), anyOf(Number), eq("This is funny!"), eq(null), eq("slf4as"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(INFO), anyOf(Number), eq("This is funny! me 1"), eq(null), eq("slf4as"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(DEBUG), anyOf(Number), eq("This is funny!"), eq(null), eq("slf4as"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(DEBUG), anyOf(Number), eq("This is funny! me 1"), eq(null), eq("slf4as"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(WARN), anyOf(Number), eq("This is funny!"), eq(null), eq("slf4as"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(WARN), anyOf(Number), eq("This is funny! me 1"), eq(null), eq("slf4as"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(ERROR), anyOf(Number), eq("This is funny!"), eq(null), eq("slf4as"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(ERROR), anyOf(Number), eq("This is funny! me 1"), eq(null), eq("slf4as"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(FATAL), anyOf(Number), eq("This is funny!"), eq(null), eq("slf4as"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("SLF4ASIntegrationTest"), eq("SLF4ASIntegrationTest"), eq(FATAL), anyOf(Number), eq("This is funny! me 1"), eq(null), eq("slf4as"), eq(null), eq(null)) );
 			
 			verifyNothingCalled( target );
 		}

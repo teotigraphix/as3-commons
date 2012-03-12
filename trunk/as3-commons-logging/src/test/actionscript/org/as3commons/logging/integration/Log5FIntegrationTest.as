@@ -76,17 +76,17 @@ package org.as3commons.logging.integration {
 			logger.fatal( "a fatal msg", true );
 			logger.debug( "a debug msg", true );
 			
-			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(INFO), anyOf(Number), eq("a log message"), eq(null), eq("log5f")) );
-			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(WARN), anyOf(Number), eq("a warning"), eq(null), eq("log5f")) );
-			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(ERROR), anyOf(Number), eq("a error"), eq(null), eq("log5f")) );
-			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(FATAL), anyOf(Number), eq("a fatal msg"), eq(null), eq("log5f")) );
-			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(DEBUG), anyOf(Number), eq("a debug msg"), eq(null), eq("log5f")) );
+			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(INFO), anyOf(Number), eq("a log message"), eq(null), eq("log5f"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(WARN), anyOf(Number), eq("a warning"), eq(null), eq("log5f"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(ERROR), anyOf(Number), eq("a error"), eq(null), eq("log5f"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(FATAL), anyOf(Number), eq("a fatal msg"), eq(null), eq("log5f"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(DEBUG), anyOf(Number), eq("a debug msg"), eq(null), eq("log5f"), eq(null), eq(null)) );
 			
-			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(INFO), anyOf(Number), eq("{0},{1}"), alike(["a log message", true]), eq("log5f")) );
-			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(WARN), anyOf(Number), eq("{0},{1}"), alike(["a warning", true]), eq("log5f")) );
-			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(ERROR), anyOf(Number), eq("{0},{1}"), alike(["a error", true]), eq("log5f")) );
-			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(FATAL), anyOf(Number), eq("{0},{1}"), alike(["a fatal msg", true]), eq("log5f")) );
-			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(DEBUG), anyOf(Number), eq("{0},{1}"), alike(["a debug msg", true]), eq("log5f")) );
+			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(INFO), anyOf(Number), eq("{0},{1}"), alike(["a log message", true]), eq("log5f"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(WARN), anyOf(Number), eq("{0},{1}"), alike(["a warning", true]), eq("log5f"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(ERROR), anyOf(Number), eq("{0},{1}"), alike(["a error", true]), eq("log5f"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(FATAL), anyOf(Number), eq("{0},{1}"), alike(["a fatal msg", true]), eq("log5f"), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("my.Test"), eq("Test"), eq(DEBUG), anyOf(Number), eq("{0},{1}"), alike(["a debug msg", true]), eq("log5f"), eq(null), eq(null)) );
 			verifyNothingCalled( target );	
 			
 			LOGGER_FACTORY.setup = new SimpleTargetSetup( new Log5FTarget("{message}") );

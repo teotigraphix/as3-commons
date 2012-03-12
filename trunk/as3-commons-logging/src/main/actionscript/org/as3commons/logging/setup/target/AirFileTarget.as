@@ -49,6 +49,8 @@ package org.as3commons.logging.setup.target {
 	 * The file will be named using the <code>SWF_URL</code>. 
 	 * </p>
 	 * 
+	 * <p>The files are stored in a
+	 * 
 	 * <listing>LOGGER_FACTORY.setup = new SimpleTargetSetup( new AirFileTarget );</listing>
 	 * 
 	 * @author Martin Heidegger
@@ -60,6 +62,7 @@ package org.as3commons.logging.setup.target {
 		
 		/**
 		 * Dispatched when the file is closed after disposing.
+		 * This gets called every time a stream is disposed.
 		 *
 		 * @eventType flash.event.Event.COMPLETE
 		 * @see #dispose()
@@ -105,25 +108,36 @@ package org.as3commons.logging.setup.target {
 		 * @param filePattern Pattern to be used to generate the output files.
 		 */
 		public function AirFileTarget(filePattern:String=null) {
+			this.filePattern = filePattern;
+		}
+		
+		public function set filePattern(filePattern:String): void {
 			_filePattern = filePattern || DEFAULT_FILE_PATTERN;
+			var newFileName: String = createFileName(new Date());
+			if( _file && _file.name != newFileName ) {
+				dispose();
+			}
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number,message:String, params:*=null,
-							person:String=null):void {
+							timeStamp:Number, message:String, params:*,
+							person:String, context:String, shortContext:String):void {
 			// TODO: Use another way to verify the date-change. This one is
 			// not super performant.
 			// Note: using the timestamp of the log statment
 			// might be a good idea but its implementation has to be able to take
 			// into account that the timeStamp can switch to days before and after
 			// the former log statement.
-			var date: Date = new Date();
-			if( !_file || !_file.exists || date.dateUTC != _formerDate ) {
+			var date: Date;
+			if( !_file || !_file.exists || (date = new Date()).dateUTC != _formerDate ) {
 				
 				dispose();
+				if(date == null) {
+					date = new Date();
+				}
 				_stream = new FileStream();
 				_formerDate = date.dateUTC;
 				_file = new File( createFileName( date ) );
@@ -151,7 +165,8 @@ package org.as3commons.logging.setup.target {
 			}
 			
 			_stream.writeUTFBytes(
-				_formatter.format(name, shortName, level, timeStamp, message, params, person)
+				_formatter.format(name, shortName, level, timeStamp, message,
+									params, person, context, shortContext)
 				+ "\n"
 			);
 		}

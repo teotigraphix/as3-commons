@@ -111,6 +111,18 @@ package org.as3commons.logging.setup.log4j {
 			// no exception here as well
 		}
 		
+		public function testMissingLogger():void {
+			log4j.rootLogger = "ALL, Test";
+			log4j.compile();
+			
+			var statement: LogStatement = _testTarget.statements.shift();
+			assertEquals( WARN, statement.level );
+			assertEquals( "org.as3commons.logging.setup.log4j.Log4JStyleSetup", statement.name );
+			assertEquals( "trace", statement.parameters[0] );
+			assertEquals( "Test", statement.parameters );
+			assertEquals( "Appender {} is used but not defined.", statement.message );
+		}
+		
 		public function testSimpleThreshold(): void {
 			var trace: TraceTarget = new TraceTarget();
 			var logger: Logger = new Logger("name");
@@ -223,8 +235,8 @@ class TestTarget implements ILogTarget {
 	
 	public const statements: Array = [];
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *=null, person : String=null) : void {
-		statements.push( new LogStatement(name, shortName, level, timeStamp, message, parameters, person, 0, false) );
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *, person : String, context:String,shortContext:String) : void {
+		statements.push( new LogStatement(name, shortName, level, timeStamp, message, parameters, person, context,shortContext, 5, false) );
 	}
 	
 }

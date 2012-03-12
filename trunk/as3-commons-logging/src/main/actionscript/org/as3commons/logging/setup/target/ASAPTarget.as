@@ -52,40 +52,41 @@ package org.as3commons.logging.setup.target {
 		 * @param format Default format to for the logging, if null, it will use
 		 *        the <code>DEFAULT_FORMAT</code>.
 		 */
-		public function ASAPTarget( format:String=null ) {
+		public function ASAPTarget(format:String=null) {
 			this.format = format;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		public function set format( format:String ): void {
-			_formatter = new LogMessageFormatter( format||DEFAULT_FORMAT );
+		public function set format(format:String): void {
+			_formatter = new LogMessageFormatter(format||DEFAULT_FORMAT);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							 timeStamp:Number, message: String, parameters: *=null,
-							 person:String=null): void {
+							 timeStamp:Number, message: String, parameters:*,
+							 person:String, context:String, shortContext:String): void {
 			message = _formatter.format(name, shortName, level, timeStamp,
-										message, parameters, person);
+										message, parameters, person, context,
+										shortContext);
 			switch( level ) {
 				case INFO:
-					Log.info( message, name );
+					Log.info(message, name);
 					break;
 				case DEBUG:
-					Log.debug( message, name );
+					Log.debug(message, name);
 					break;
 				case ERROR:
-					Log.error( message, name );
+					Log.error(message, name);
 					break;
 				case WARN:
-					Log.warn( message, name );
+					Log.warn(message, name);
 					break;
 				case FATAL:
-					Log.fatal( message, name );
+					Log.fatal(message, name);
 					break;
 			}
 		}

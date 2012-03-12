@@ -58,10 +58,10 @@ package org.as3commons.logging.setup.target {
 		private var _introspectDepth:uint;
 		
 		/** Max amount of statements stored. */
-		private var _maxStatements : uint;
+		private var _maxStatements:uint;
 		
 		/** True if the target should actually introspect and clone the statements */
-		private var _clone : Boolean;
+		private var _clone:Boolean;
 		
 		/**
 		 * Creates a new <code>BufferTarget</code> instance.
@@ -74,11 +74,11 @@ package org.as3commons.logging.setup.target {
 		 */
 		public function BufferTarget(maxStatements:uint=uint.MAX_VALUE,
 									 introspectDepth:uint=5,clone:Boolean=true) {
-			if(maxStatements == 0 ){
+			if(maxStatements == 0){
 				throw new Error("Buffer must have a size bigger than 0!");
 			}
-			_maxStatements=maxStatements;
-			_introspectDepth=introspectDepth;
+			_maxStatements = maxStatements;
+			_introspectDepth = introspectDepth;
 			_clone = clone;
 		}
 		
@@ -117,8 +117,8 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, params:*=null,
-							person:String=null): void {
+							timeStamp:Number, message:String, params:*,
+							person:String, context:String, shortContext:String): void {
 			if(_maxStatements == _length) {
 				var statement: LogStatement = _logStatements.shift();
 				statement.name = name;
@@ -132,8 +132,9 @@ package org.as3commons.logging.setup.target {
 				_logStatements[_length-1] = statement;
 			} else {
 				_logStatements[_length++] =
-					new LogStatement(name, shortName, level, timeStamp,
-										message, params, person, _introspectDepth, _clone);
+					new LogStatement(name, shortName, level, timeStamp, message,
+										params, person, context, shortContext,
+										_introspectDepth, _clone);
 			}
 		}
 		

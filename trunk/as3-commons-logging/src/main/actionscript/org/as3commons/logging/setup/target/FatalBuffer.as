@@ -53,10 +53,10 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		override protected function  test(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, params:*=null,
-							person:String=null):Boolean {
+							timeStamp:Number, message:String, parameter:*,
+							person:String, context:String, shortContext:String):Boolean {
 			return level == FATAL;
-			name; shortName; timeStamp; message; person; params;
+			name; shortName; timeStamp; message; person; parameter; context; shortContext;
 		}
 	}
 }

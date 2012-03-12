@@ -115,14 +115,14 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null):void {
+							timeStamp:Number, message:String, parameter:*,
+							person:String, context:String, shortContext:String):void {
 			MonsterDebugger.trace( name,
 								   _formatter.format(name, shortName, level,
-								       timeStamp, message, parameters, person),
+								       timeStamp, message, parameter, person, context, shortContext),
 								   person,
 								   _label.format(name, shortName, level,
-								       timeStamp, message, parameters, person),
+								       timeStamp, message, parameter, person, context, shortContext),
 								   _colors[level], _depth );
 		}
 	}

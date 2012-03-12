@@ -125,8 +125,8 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null):void {
+							timeStamp:Number, message:String, parameters:*,
+							person:String, context:String, shortContext:String):void {
 			if( !_inited ) {
 				init();
 			}
@@ -151,7 +151,7 @@ package org.as3commons.logging.setup.target {
 				message = message.replace(_fieldRegexp, replaceMessageEntries);
 				
 				_params[1] = _formatter.format( name, shortName, level, timeStamp, 
-					message, null, person ).split("\\").join("\\\\");
+					message, null, person, context, shortContext).split("\\").join("\\\\");
 				
 				try {
 					// Send it out!

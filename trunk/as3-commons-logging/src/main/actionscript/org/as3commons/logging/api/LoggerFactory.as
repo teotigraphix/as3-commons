@@ -134,14 +134,15 @@ package org.as3commons.logging.api {
 		 * @param person Information about the person that requested this logger.
 		 * @return Logger for the passed-in name
 		 */
-		public function getNamedLogger(name:String=null,person:String=null):ILogger {
+		public function getNamedLogger(name:String=null,person:String=null,context:String=null):ILogger {
 			
 			name ||= "";
 			
 			var loggersWithSameName: Object = (_loggers[name] ||= {});
-			var result:Logger = loggersWithSameName[person];
+			var loggersWithSameNameAndContext: Object = (loggersWithSameName[person] ||= {}); 
+			var result:Logger = loggersWithSameNameAndContext[context];
 			if(!result) {
-				result = new Logger(name,person);
+				result = new Logger(name,person,context);
 				
 				// Store it the array to find later on
 				loggersWithSameName[person] = result;

@@ -20,8 +20,7 @@
  * THE SOFTWARE.
  */
 package org.as3commons.logging.setup.target {
-
-	import flash.net.URLLoader;
+	
 	import flash.net.URLRequest;
 
 	public class URLRequestInfo {

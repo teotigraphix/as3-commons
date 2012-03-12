@@ -19,29 +19,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.as3commons.logging.util {
-	
+package org.as3commons.logging.setup {
 	import org.as3commons.logging.api.ILogTarget;
-	import org.as3commons.logging.setup.target.LogStatement;
+	import org.as3commons.logging.api.ILogSetup;
+	import org.as3commons.logging.api.Logger;
 	
 	/**
-	 * Logs a list of log statements to a log target.
+	 * The simplest way to use any <code>ILogTarget</code> in the setup process
+	 * is by using this <code>SimpleSetup</code>. 
 	 * 
-	 * @param statements Array of log statements (first=oldest, last=newest);
-	 * @param factory <code>ILogTarget</code> to flush to. 
-	 * @since 2.5
+	 * <p>It does nothing more but redirecting the <code>ILogTarget</code> to all
+	 * levels of all loggers.</p>
+	 * 
+	 * <listing>LOGGER_FACTORY.setup = new SimpleSetup( new SOSTarget );</listing>
+	 * 
+	 * @author Martin Heidegger
+	 * @since 3.0
+	 * @see org.as3commons.logging.LoggerFactory;
 	 */
-	public function passToTarget(statements:Array,logTarget:ILogTarget):void {
-		if(logTarget) {
-			const l: int = statements.length;
-			for( var i:int = 0; i<l; ++i) {
-				var statement:LogStatement = LogStatement(statements[i]);
-				logTarget.log(
-					statement.name, statement.shortName, statement.level,
-					statement.timeStamp, statement.message, statement.parameters,
-					statement.person, statement.context, statement.shortContext
-				);
-			}
+	public class SimpleSetup implements ILogSetup {
+		
+		private var target: ILogTarget;
+		
+		/**
+		 * Constructs a new <code>SimpleTargetSetup</code>
+		 * 
+		 * @param target Target to which the output should flow to.
+		 */
+		public function SimpleSetup(target:ILogTarget) {
+			this.target = target;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function applyTo(logger:Logger): void {
+			logger.allTargets = target;
 		}
 	}
 }

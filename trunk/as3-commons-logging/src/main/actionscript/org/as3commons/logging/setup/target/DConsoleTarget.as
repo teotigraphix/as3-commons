@@ -88,10 +88,11 @@ package org.as3commons.logging.setup.target {
 		 * @inheritDoc
 		 */
 		public function log(name:String, shortName:String, level:int,
-							timeStamp:Number, message:String, parameters:*=null,
-							person:String=null):void {
+							timeStamp:Number, message:String, parameters:*,
+							person:String, context:String, shortContext:String):void {
 			DConsole.print(
-				_formatter.format(name, shortName, level, timeStamp, message, parameters, person),
+				_formatter.format(name, shortName, level, timeStamp, message,
+									parameters, person, context, shortContext),
 				LEVELS[ level ],
 				name 
 			);
