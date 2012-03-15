@@ -37,33 +37,19 @@ package org.as3commons.logging.util {
 	 * @see http://dojotoolkit.org/api/1.5/dojox/json/ref
 	 */
 	public function jsonXify(object:*, levels:int=5): String {
-		refCounter = 0;
-		buffer = [];
-		bufferIndex = -1;
+		var result: String = createJson(object, levels, new Result() ).join("");
 		
-		result = null;
-		
-		doJsonIfy(object, levels);
-		if(result) {
-			result = result + buffer.join("");
-		} else {
-			result = buffer.join("");
-		}
 		if(result.charAt(0)!="{") {
 			result = '{data:'+result+'}';
 		}
-		refMap = null;
 		return result;
 	}
 }
 
 import flash.utils.Dictionary;
-var refMap: Dictionary;
-var refCounter: int;
-var buffer: Array;
-var bufferIndex: int;
-var result: String;
-function doJsonIfy(object:*,levels:int):void {
+
+internal function createJson(object:*,levels:int, result: Result, bufferIndex: int=-1):Array {
+	var buffer: Array = result.buffer;
 	if( object is String ) {
 		buffer[++bufferIndex] = '"';
 		buffer[++bufferIndex] = (object as String).split('"').join('\"');
@@ -80,21 +66,23 @@ function doJsonIfy(object:*,levels:int):void {
 				if(i!=0) {
 					buffer[++bufferIndex] = ',';
 				}
-				doJsonIfy(object[i],levels-1);
+				buffer = createJson(object[i],levels-1, result, bufferIndex);
+				bufferIndex = buffer.length-1;
 			}
 		}
 		buffer[++bufferIndex] = ']';
 	} else {
-		var id: int = (refMap||=new Dictionary())[object];
+		var refMap: Object = (result.refMap||=new Dictionary());
+		var id: int = refMap[object];
 		if( id > 0 ) {
 			buffer[++bufferIndex] = '{"$ref":';
 			buffer[++bufferIndex] = id.toString(16);
 			buffer[++bufferIndex] = '}';
 		} else {
-			(refMap||=new Dictionary())[object] = ++refCounter;
+			(refMap||=new Dictionary())[object] = ++result.refCounter;
 			var first:Boolean = true;
 			buffer[++bufferIndex] = '{_:';
-			buffer[++bufferIndex] = refCounter.toString(36);
+			buffer[++bufferIndex] = result.refCounter.toString(36);
 			for( var prop:String in object ) {
 				if( prop != "_" ) {
 					buffer[++bufferIndex] = ',"';
@@ -103,18 +91,20 @@ function doJsonIfy(object:*,levels:int):void {
 				} else {
 					//logger.warn("Can not process properties called '$id'.");
 				}
-				doJsonIfy(object[prop],levels);
+				buffer = createJson(object[prop], levels, result, bufferIndex);
+				bufferIndex = buffer.length-1;
 			}
 			buffer[++bufferIndex] = '}';
 		}
 	}
 	if( bufferIndex > 32760 ) {
-		if( result ) {
-			result = result + buffer.join("");
-		} else {
-			result = buffer.join("");
-		}
-		buffer = [];
-		bufferIndex = -1;
+		buffer = [buffer.join("")];
 	}
+	return buffer;
+}
+
+class Result {
+	public var buffer: Array = [];
+	public var refCounter: int = 0;
+	public var refMap: Dictionary;
 }

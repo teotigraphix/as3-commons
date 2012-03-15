@@ -1,6 +1,8 @@
 package org.as3commons.logging.setup.target {
+	import org.as3commons.logging.util.SWF_URL;
 	import flexunit.framework.TestCase;
 
+	import org.as3commons.logging.STAGE;
 	import org.as3commons.logging.level.DEBUG;
 	import org.as3commons.logging.level.ERROR;
 	import org.as3commons.logging.util.START_TIME;
@@ -28,14 +30,16 @@ package org.as3commons.logging.setup.target {
 		private var _eventHolder : Function;
 		
 		override public function setUp(): void {
-			SWFInfo.init(LogTests.STAGE);
+			SWFInfo.init(STAGE);
 			_filesToDelete = [];
 		}
 		
 		public function testMe(): void {
 			
-			_randomTime = Math.random() * 123456;
-			_randomTime2 = Math.random() * 123456;
+			var startTime: Number = START_TIME;
+			
+			_randomTime = (Math.random() * 12345678) % 1;
+			_randomTime2 = (Math.random() * 12345678) % 1;
 			
 			_target = new AirFileTarget();
 			_target.log( "test", "test", DEBUG, _randomTime-START_TIME, "Hello World", [], null, null, null );
@@ -51,8 +55,11 @@ package org.as3commons.logging.setup.target {
 			var file: File = new File( File( listing[0] ).nativePath );
 			_filesToDelete.push( file );
 			
-			var parsed: Object = /^LogTests\.swf\.(?P<year>(.{4}))(?P<month>(.{1,2}))(?P<day>(.{1,2}))\.(?P<iter>([0-9]*\.))?log$/.exec( file.name ); 
-			assertNotNull( "Last modified File " + file.name + " didnt match the file regexp", parsed );
+			var url: String = SWF_URL.split(".").join("\\.").substr(5);
+			var fileNameRegExp: RegExp = new RegExp("^"+url+"\\.(?P<year>(.{4}))(?P<month>(.{1,2}))(?P<day>(.{1,2}))\\.(?P<iter>([0-9]*\\.))?log$");
+			
+			var parsed: Object = fileNameRegExp.exec( file.name ); 
+			assertNotNull( "Last modified File " + file.name + " didnt match the file regexp ("+fileNameRegExp+")", parsed );
 			assertEquals( parsed["month"], file.modificationDate.monthUTC+1 );
 			assertEquals( parsed["year"], file.modificationDate.fullYearUTC );
 			assertEquals( parsed["day"], file.modificationDate.dateUTC );
@@ -102,7 +109,7 @@ package org.as3commons.logging.setup.target {
 			_target.dispose();
 			
 			for each ( var file: File in _filesToDelete ) {
-				//file.deleteFile();
+				file.deleteFile();
 			}
 			
 			_filesToDelete = null;

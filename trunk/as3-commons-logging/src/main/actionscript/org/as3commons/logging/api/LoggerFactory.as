@@ -145,7 +145,7 @@ package org.as3commons.logging.api {
 				result = new Logger(name,person,context);
 				
 				// Store it the array to find later on
-				loggersWithSameName[person] = result;
+				loggersWithSameNameAndContext[context] = result;
 				
 				// Store it in the list of all loggers to later iterate over them
 				_allLoggers[_allLoggers.length] = result;

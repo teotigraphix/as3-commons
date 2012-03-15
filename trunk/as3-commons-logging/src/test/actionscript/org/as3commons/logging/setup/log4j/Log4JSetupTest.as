@@ -48,15 +48,24 @@ package org.as3commons.logging.setup.log4j {
 			log4j.rootLogger = "ALL, trace";
 			log4j.compile().applyTo(logger);
 			
+			var state: LogStatement;
+			state = _testTarget.statements.shift();
+			assertEquals("Appender {} is used but not defined.", state.message);
+			assertEquals("trace", state.parameters);
+			
 			assertEquals(0, _testTarget.statements.length);
 			
 			log4j.appender.trace = 1;
 			log4j.compile().applyTo(logger);
 			
-			var state: LogStatement = _testTarget.statements.shift();
+			state = _testTarget.statements.shift();
 			assertEquals("Appender '{0}' could not be used as its no ILogTarget implementation or class name! Defined as: {1}", state.message);
 			assertEquals("org.as3commons.logging.setup.log4j.Log4JStyleSetup", state.name);
 			assertObjectEquals(["trace", 1], state.parameters);
+			
+			state = _testTarget.statements.shift();
+			assertEquals("Appender {} is used but not defined.", state.message);
+			assertEquals("trace", state.parameters);
 			
 			assertEquals(0, _testTarget.statements.length);
 			
@@ -69,16 +78,25 @@ package org.as3commons.logging.setup.log4j {
 			assertEquals("Appender '{0}' can not be instantiated from class '{1}' because the class wasn't available at runtime.", state.message);
 			assertEquals("org.as3commons.logging.setup.log4j.Log4JStyleSetup", state.name);
 			
+			state = _testTarget.statements.shift();
+			assertEquals("Appender {} is used but not defined.", state.message);
+			assertEquals("trace", state.parameters);
+			
+			assertEquals(0, _testTarget.statements.length);
+			
 			log4j.appender.trace = getQualifiedClassName(TestClassWithArgument);
 			log4j.compile().applyTo(logger);
 			
 			state = _testTarget.statements.shift();
-			
 			assertEquals("trace", state.parameters[0]);
 			assertEquals("org.as3commons.logging.setup.log4j::TestClassWithArgument", state.parameters[1]);
 			assertTrue( state.parameters[2] is ArgumentError );
 			assertEquals("Appender '{0}' could not be instantiated as '{1}' due to error '{2}'", state.message);
 			assertEquals("org.as3commons.logging.setup.log4j.Log4JStyleSetup", state.name);
+			
+			state = _testTarget.statements.shift();
+			assertEquals("Appender {} is used but not defined.", state.message);
+			assertEquals("trace", state.parameters);
 			
 			assertEquals(0, _testTarget.statements.length);
 		}
@@ -90,14 +108,14 @@ package org.as3commons.logging.setup.log4j {
 			log4j.rootLogger = "ALL, trace";
 			log4j.compile().applyTo(logger);
 			
+			assertEquals(0, _testTarget.statements.length);
 			assertTrue( logger.debugTarget is TraceTarget);
 			
 			log4j.appender.trace.notWorking = "abc";
 			log4j.compile().applyTo(logger);
-			// no exception thrown is a good thing!
-			// warning was rendered though
 			
-			var statement: LogStatement = _testTarget.statements.shift();
+			var statement: LogStatement;
+			statement = _testTarget.statements.shift();
 			assertEquals( WARN, statement.level );
 			assertEquals( "org.as3commons.logging.setup.log4j.Log4JStyleSetup", statement.name );
 			assertEquals( "trace", statement.parameters[0] );
@@ -105,9 +123,28 @@ package org.as3commons.logging.setup.log4j {
 			assertTrue( statement.parameters[2] is ReferenceError );
 			assertEquals( "Can not access property '{1}' of appender '{0}': {2}", statement.message );
 			
+			assertEquals(0, _testTarget.statements.length);
+			
 			log4j.appender.trace.something.will.notWork = "abc";
 			log4j.compile().applyTo(logger);
 			
+			statement = _testTarget.statements.shift();
+			assertEquals( WARN, statement.level );
+			assertEquals( "org.as3commons.logging.setup.log4j.Log4JStyleSetup", statement.name );
+			assertEquals( "trace", statement.parameters[0] );
+			assertEquals( "something", statement.parameters[1] );
+			assertTrue( statement.parameters[2] is ReferenceError );
+			assertEquals( "Can not access property '{1}' of appender '{0}': {2}", statement.message );
+			
+			statement = _testTarget.statements.shift();
+			assertEquals( WARN, statement.level );
+			assertEquals( "org.as3commons.logging.setup.log4j.Log4JStyleSetup", statement.name );
+			assertEquals( "trace", statement.parameters[0] );
+			assertEquals( "notWorking", statement.parameters[1] );
+			assertTrue( statement.parameters[2] is ReferenceError );
+			assertEquals( "Can not access property '{1}' of appender '{0}': {2}", statement.message );
+			
+			assertEquals(0, _testTarget.statements.length);
 			// no exception here as well
 		}
 		
@@ -118,9 +155,8 @@ package org.as3commons.logging.setup.log4j {
 			var statement: LogStatement = _testTarget.statements.shift();
 			assertEquals( WARN, statement.level );
 			assertEquals( "org.as3commons.logging.setup.log4j.Log4JStyleSetup", statement.name );
-			assertEquals( "trace", statement.parameters[0] );
-			assertEquals( "Test", statement.parameters );
 			assertEquals( "Appender {} is used but not defined.", statement.message );
+			assertEquals( "Test", statement.parameters );
 		}
 		
 		public function testSimpleThreshold(): void {

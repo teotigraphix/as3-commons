@@ -231,15 +231,15 @@ package org.as3commons.logging.setup.target {
 				monthName = "0"+monthName;
 			}
 			var dayName: String = date.dateUTC.toString();
-			if(dayName.length == 1 ) {
+			if(dayName.length == 1) {
 				dayName = "0"+dayName;
 			}
 			var dateString: String =  yearName+monthName+dayName;
 			if(no != -1) {
 				dateString += "." + no;
 			}
-			var file : String = SWF_SHORT_URL;
-			if (file == URL_ERROR) {
+			var file: String = SWF_SHORT_URL;
+			if(file == URL_ERROR) {
 				file = "out";
 			}
 			return _filePattern.replace( DATE, dateString ).replace( FILE, file);

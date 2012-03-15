@@ -143,7 +143,7 @@ package org.as3commons.logging.util {
 		
 		private const _now: Date = new Date();
 		private const _braceRegexp: RegExp = /{(?P<field>[A-Z_]+)}/ig;
-		private const _fieldRegexp: RegExp = /{(.*)}/ig;
+		private const _fieldRegexp: RegExp = /{[^}]*}/ig;
 		
 		private const _parts: Array = [];
 		
@@ -312,7 +312,7 @@ package org.as3commons.logging.util {
 			}
 
 			if( _hasTimeNode ) {
-				_now.time = isNaN( timeMs ) ? 0.0 : START_TIME+timeMs;
+				_now.time = isNaN( timeMs ) ? 0.0 : timeMs+START_TIME;
 			}
 			
 			var c:int = -1;
@@ -366,7 +366,7 @@ package org.as3commons.logging.util {
 									val = shortContext;
 								}
 							}
-							_parts[++c] = val==null ? val : null;
+							_parts[++c] = val!=null ? val : "null";
 						}
 					} else {
 						if(type<15) { // Signature C
@@ -389,7 +389,7 @@ package org.as3commons.logging.util {
 								_parts[++c] = "";
 							}
 						} else { // Signature D
-							if(type==13) { // TIME
+							if(type==15) { // TIME
 								hour = _now.hours;
 								minute = _now.minutes;
 								second = _now.seconds;
@@ -449,20 +449,21 @@ package org.as3commons.logging.util {
 						++c;
 					}
 				}
+				node = node.next;
 			}
 			return _parts.join("");
 		}
 		
-		private function replaceFields(field: String, no: int, len: int, intext: String):String {
+		private function replaceFields(field: String, no: int, intext: String):String {
 			var value: * = _params;
-			if( field != "") {
-				var d: String = field.substring(1, field.length-1);
+			if( field != "{}" ) {
+				var d: String;
 				var start: int = 1;
 				var end: int;
 				while( value != null ) {
 					end = field.indexOf(".", start);
 					if( end == -1 ) {
-						d = field.substr(start);
+						d = field.substring(start, field.length-1);
 						if( d != "" ) {
 							try {
 								value = value[d];
@@ -493,7 +494,7 @@ package org.as3commons.logging.util {
 			if( value != null ) {
 				return value.toString();
 			} else {
-				return "{"+field+"}";
+				return "null";
 			}
 		}
 	}

@@ -56,14 +56,32 @@ package org.as3commons.logging.integration {
 		 * @inheritDoc
 		 */
 		override public function testRunFinished( result:Result ):void {
-			var time: String = elapsedTimeAsString( result.runTime );
+			var time: String = String( result.runTime / 1000 ) + "s";
 			if( result.successful ) {
-				resultLogger.info( "Time: " + time );
-				resultLogger.info( "OK (" + result.runCount + " test" + (result.runCount == 1 ? "" : "s") + ")" );
+				resultLogger.info( "Time: {}", time );
+				resultLogger.info( "OK ( {runCount} test{s})",
+					{runCount: result.runCount, s: result.runCount==0 ? "" : "s"} );
 			} else {
-				resultLogger.error( "Time: " + time );
-				resultLogger.error( "FAILURES!!! Tests run: " + result.runCount + ", " + result.failureCount + " Failures." );
-				printFailures( result );
+				resultLogger.error( "Time: {}", time );
+				resultLogger.error( "FAILURES!!! Tests run: {runCount}, {failureCount} Failures.", result );
+				
+				var failures: Array = result.failures;
+				const failureCount: int = failures.length; 
+				
+				//Determine if there are any failures to print
+				if (failureCount == 1) {
+					resultLogger.error( "There was 1 failure:" );
+				} else {
+					resultLogger.error( "There were {} failures:", failures.length );
+				}
+				
+				//Print each failure
+				for ( var i:int=0; i<failureCount; ++i ) {
+					resultLogger.error(
+						"{prefix} {failure.testHeader} {failure.stackTrace}",
+						{ prefix: i+1, failure: failures[i] }
+					);
+				}
 			}
 		}
 		
@@ -71,7 +89,7 @@ package org.as3commons.logging.integration {
 		 * @inheritDoc
 		 */
 		override public function testStarted( description:IDescription ):void {
-			statusLogger.info( description.displayName + " started" );
+			statusLogger.info( "{} started", description.displayName );
 		}
 		
 		/**
@@ -80,9 +98,9 @@ package org.as3commons.logging.integration {
 		override public function testFailure( failure:Failure ):void {
 			//Determine if the exception in the failure is considered an error
 			if ( FailureFormatter.isError( failure.exception ) ) {
-				statusLogger.fatal( failure.description.displayName + " throw an exception" );
+				statusLogger.fatal( "{description.displayName} threw an exception: {exception}", failure );
 			} else {
-				statusLogger.error( failure.description.displayName + " assertion failed");
+				statusLogger.error( "{description.displayName} assertion failed: {message}", failure );
 			}
 		}
 		
@@ -91,47 +109,6 @@ package org.as3commons.logging.integration {
 		 */
 		override public function testIgnored( description:IDescription ):void {
 			statusLogger.warn( description.displayName );
-		}
-		
-		/*
-		 * Internal methods
-		 */
-		
-		/**
-		 * Traces all failures that were received in the result
-		 * 
-		 * @param result The result that contains potential failures
-		 */
-		protected function printFailures( result:Result ):void {
-			var failures:Array = result.failures;
-			//Determine if there are any failures to print
-			if (failures.length == 1)
-				resultLogger.error( "There was 1 failure:" );
-			else
-				resultLogger.error( "There were " + failures.length + " failures:" );
-			
-			//Print each failure
-			for ( var i:int=0; i<failures.length; i++ ) {
-				printFailure( failures[ i ], String( i+1 ) );
-			}
-		}
-		
-		/**
-		 * Traces a provided failure with a certain prefix
-		 * 
-		 * @param failure The provided failure
-		 * @param prefix A String prefix for the failure
-		 */
-		protected function printFailure( failure:Failure, prefix:String ):void {
-			trace( prefix + " " + failure.testHeader + " " + failure.stackTrace );
-		}
-		
-		/**
-		 * Returns the formatted string of the elapsed time. Duplicated from
-		 * BaseTestRunner. Fix it.
-		 */
-		protected function elapsedTimeAsString( runTime:Number ):String {
-			return String( runTime / 1000 );
 		}
 	}
 }

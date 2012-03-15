@@ -1,6 +1,7 @@
 package org.as3commons.logging.util.xml {
-	import avmplus.getQualifiedClassName;
+	import flash.utils.getQualifiedClassName;
 	import flexunit.framework.TestCase;
+	
 	/**
 	 * @author mh
 	 */
@@ -492,7 +493,7 @@ class MaxArgTarget implements ILogTarget {
 	}
 
 	
-	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters: *, person: String, context:String, shortContext:String) : void {
+	public function log(name : String, shortName : String, level : int, timeStamp : Number, message : String, parameters : *, person : String, context: String, shortContext:String) : void {
 	}
 
 }

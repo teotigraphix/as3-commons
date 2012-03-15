@@ -58,15 +58,15 @@ package org.as3commons.logging.integration {
 			logger.fatal( "This is funny!" );
 			logger.fatal( "This is funny!", "me", 1  );
 			
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), anyOf(Number), eq("This is funny!"), alike([]), eq(null), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), anyOf(Number), eq("This is funny!"), eq(null), eq(null), eq(null), eq(null)) );
 			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(INFO), anyOf(Number), eq("This is funny!"), alike(["me",1]), eq(null), eq(null), eq(null)) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), anyOf(Number), eq("This is funny!"), alike([]), eq(null), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), anyOf(Number), eq("This is funny!"), eq(null), eq(null), eq(null), eq(null)) );
 			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(DEBUG), anyOf(Number), eq("This is funny!"), alike(["me",1]), eq(null), eq(null), eq(null)) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(WARN), anyOf(Number), eq("This is funny!"), alike([]), eq(null), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(WARN), anyOf(Number), eq("This is funny!"), eq(null), eq(null), eq(null), eq(null)) );
 			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(WARN), anyOf(Number), eq("This is funny!"), alike(["me",1]), eq(null), eq(null), eq(null)) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(ERROR), anyOf(Number), eq("This is funny!"), alike([]), eq(null), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(ERROR), anyOf(Number), eq("This is funny!"), eq(null), eq(null), eq(null), eq(null)) );
 			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(ERROR), anyOf(Number), eq("This is funny!"), alike(["me",1]), eq(null), eq(null), eq(null)) );
-			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(FATAL), anyOf(Number), eq("This is funny!"), alike([]), eq(null), eq(null), eq(null)) );
+			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(FATAL), anyOf(Number), eq("This is funny!"), eq(null), eq(null), eq(null), eq(null)) );
 			inOrder().verify().that( target.log( eq("test"), eq("test"), eq(FATAL), anyOf(Number), eq("This is funny!"), alike(["me",1]), eq(null), eq(null), eq(null)) );
 			
 			LOGGER_FACTORY.setup = null;

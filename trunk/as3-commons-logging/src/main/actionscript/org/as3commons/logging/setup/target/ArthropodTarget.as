@@ -110,34 +110,25 @@ package org.as3commons.logging.setup.target {
 							message:String, parameters:*, person:String, context:String,
 							shortContext:String): void {
 			var color: uint = _colors[ level ];
-			if( parameters && parameters.length == 0 ){
-				if( message is String ) {
-					message = _formatter.format(name, shortName, level, timeStamp,
-												message, parameters, person,context,
-												shortContext);
-					if( (_warnLevels.valueOf() & level) == level ) {
-						Debug.warning( message );
-					} else {
-						Debug.log( message, color );
-					}
-				} else if( message is Number || message is Boolean ) {
-					if( (_warnLevels.valueOf() & level) == level ) {
-						Debug.warning( message );
-					} else {
-						Debug.log( message, color );
-					}
-				} else if( message is Array ) {
-					Debug.array( message );
-				} else {
-					Debug.object( message );
-				}
-			} else {
-				message = _formatter.format(name, shortName, level, timeStamp, message, parameters, person);
+			if( message != "{}" ) {
+				message = _formatter.format(name, shortName, level, timeStamp,
+											message, parameters, person,context,
+											shortContext);
 				if( (_warnLevels.valueOf() & level) == level ) {
 					Debug.warning( message );
 				} else {
 					Debug.log( message, color );
 				}
+			} else if( parameters is String || parameters is Number || parameters is Boolean ) {
+				if( (_warnLevels.valueOf() & level) == level ) {
+					Debug.warning( parameters );
+				} else {
+					Debug.log( parameters, color );
+				}
+			} else if( parameters is Array ) {
+				Debug.array( parameters );
+			} else {
+				Debug.object( parameters );
 			}
 		}
 	}

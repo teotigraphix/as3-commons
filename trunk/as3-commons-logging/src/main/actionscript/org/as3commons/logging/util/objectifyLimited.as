@@ -37,10 +37,10 @@ function doObjectifyLimited(value:*, paths:Object, maxDepth:int ): * {
 			}
 			(result||={})[pathName] = doObjectifyLimited( child, paths[pathName], maxDepth );
 		}
-		var str: String = Object.prototype.toString.apply(value);
+		str = Object.prototype.toString.apply(value);
 		if( noPath ) {
 			result = value;
-		} e
+		}
 		if( value is Number || value is String || value is Boolean || value is Array)
 		if( str != Object.prototype.toString.apply(value) ) {
 			result["toString"] = str;
