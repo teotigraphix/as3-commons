@@ -1,6 +1,8 @@
 package org.as3commons.logging.util {
 	import flexunit.framework.TestCase;
 
+	import org.as3commons.logging.STAGE;
+
 
 	/**
 	 * @author mh
@@ -45,8 +47,11 @@ package org.as3commons.logging.util {
 			assertEquals( "abc", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{てすと}", {"てすと":"abc"}, null, null, null ) );
 			assertEquals( "abc", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{a-b}", {"a-b":"abc"}, null, null, null ) );
 			assertEquals( "abc", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{{}", {"{":"abc"}, null, null, null ) );
-			assertEquals( "abc", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{}}", {"}":"abc"}, null, null, null ) );
-			assertEquals( "abc", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{{}}", {"{}":"abc"}, null, null, null ) );
+			assertEquals( "abc}", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{}}", "abc", null, null, null ) );
+			assertEquals( "abc}", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{{}}", {"{":"abc"}, null, null, null ) );
+			assertEquals( "abc}", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{{{}}", {"{{":"abc"}, null, null, null ) );
+			assertEquals( "abc}}", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{{{}}}", {"{{":"abc"}, null, null, null ) );
+			assertEquals( "abc[object Object]}", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{{}{}}", {"{":"abc"}, null, null, null ) );
 			assertEquals( "3", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{length}", "abc", null, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{.length}", "abc", null, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message}").format(null, null, 0, NaN, "{test.}", {"test":"abc"}, null, null, null ) );
@@ -68,10 +73,10 @@ package org.as3commons.logging.util {
 			assertEquals( "hello", new LogMessageFormatter( "hello" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			assertEquals( "a name", new LogMessageFormatter( "{name}" ).format( "a name", null, 0, NaN, null, null, null, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{name}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
-			assertEquals( "null", new LogMessageFormatter( "{name}" ).format( undefined, null, 0, NaN, null, null, null, null, null ) );
+			assertEquals( "null", new LogMessageFormatter( "{name}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			assertEquals( "a short name", new LogMessageFormatter( "{shortName}" ).format( null, "a short name", 0, NaN, null, null, null, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{shortName}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
-			assertEquals( "null", new LogMessageFormatter( "{shortName}" ).format( null, undefined, 0, NaN, null, null, null, null, null ) );
+			assertEquals( "null", new LogMessageFormatter( "{shortName}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			assertEquals( "a message", new LogMessageFormatter( "{message}" ).format( null, null, 0, NaN, "a message", null, null, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			assertEquals( "null", new LogMessageFormatter( "{message}" ).format( null, null, 0, NaN, undefined, null, null, null, null ) );
@@ -91,7 +96,7 @@ package org.as3commons.logging.util {
 			assertEquals( "1970/1/2", new LogMessageFormatter( "{dateUTC}" ).format( null, null, 0, time.getTime()-START_TIME, null, null, null, null, null ) );
 			assertEquals( "9:0:0.0", new LogMessageFormatter( "{time}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			assertEquals( "0:0:0.0", new LogMessageFormatter( "{timeUTC}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
-			assertEquals( "GMT+0900", new LogMessageFormatter( "{gmt}" ).format( null, null, 0, null, null, null, null, null, null ) );
+			assertEquals( "GMT+0900", new LogMessageFormatter( "{gmt}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			assertEquals( "{0}", new LogMessageFormatter( "{0}" ).format( null, null, 0, NaN, null, ["a"], null, null, null ) );
 			assertEquals( "{0}", new LogMessageFormatter( "{0}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			assertEquals( "a", new LogMessageFormatter( "{message}" ).format( null, null, 0, NaN, "{0}", ["a"], null, null, null ) );
@@ -99,7 +104,7 @@ package org.as3commons.logging.util {
 			assertEquals( URL_ERROR, new LogMessageFormatter( "{swf}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			assertEquals( URL_ERROR, new LogMessageFormatter( "{shortSWF}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			
-			SWFInfo.init( LogTests.STAGE );
+			SWFInfo.init( STAGE );
 			assertEquals( SWF_URL, new LogMessageFormatter( "{swf}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			assertEquals( SWF_SHORT_URL, new LogMessageFormatter( "{shortSWF}" ).format( null, null, 0, NaN, null, null, null, null, null ) );
 			SWFInfo.init( null );

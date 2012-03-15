@@ -1,4 +1,8 @@
 package {
+	import org.as3commons.logging.STAGE;
+	import org.as3commons.logging.LoggingTests;
+	import org.flexunit.listeners.UIListener;
+	import org.flexunit.listeners.CIListener;
 	import org.as3commons.logging.setup.log4j.Log4JPropertiesTest;
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -76,7 +80,6 @@ package {
 	[SWF(backgroundColor="#FF0000")]
 	public class LogTests extends Sprite
 	{
-		public static var STAGE: Stage;
 		
 		private static const debugs: int = DEBUG;
 		
@@ -164,47 +167,8 @@ package {
 			this.opaqueBackground = 0x000000;
 			var core: FlexUnitCore = new FlexUnitCore();
 			core.addListener( new TraceListener() );
-			core.run( [
-				new LogMessageFormatterTest(),
-				new Log4JPropertiesTest(),
-				new HierarchicalSetupTest(),
-				new LoggerTest(),
-				new Log4JSetupTest(),
-				new MaashaackIntegrationTest(),
-				new XMLSetupTest(),
-				new XMLTargetTest(),
-				new XMLRuleTest(),
-				new Log5FIntegrationTest(),
-				new SimpleLoggingTest(),
-				new MergedSetupTest(),
-				new MergedTest(),
-				new ComplexSetupTest(),
-				new JsonXifyTest(),
-				new HereTest(),
-				new ByteArrayCopyTest(),
-				new YUIIntegrationTest(),
-				new MateIntegrationTest(),
-				new SwizIntegrationTest(),
-				new SLF4ASIntegrationTest(),
-				new PushButtonIntegrationTest(),
-				new ASAPIntegrationTest(),
-				new SpiceLibIntegrationTest(),
-				new Progression4IntegrationTest(),
-				new LogLevelTest(),
-				new LogTargetLevelTest(),
-				new LogSetupTest(),
-				new SWFInfoTest(),
-				new FlexIntegrationTest(),
-				new SimpleTargetSetupTest(),
-				new LeveledTargetSetupTest(),
-				new FlexSetupTest(),
-				new FrameBufferTest(),
-				new BufferTest(),
-				new TextFieldTest(),
-				new AirTargetTest(),
-				new OSMFIntegrationTest(),
-				new LogMeisterIntegrationTest()
-			]);
+			core.addListener( new CIListener() ); 
+			core.run( new LoggingTests() );
 		}
 	}
 }

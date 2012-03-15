@@ -21,7 +21,7 @@ package org.as3commons.logging.util {
 			
 			var obj: Object = {test:1};
 			obj.test2 = obj;
-			assertEquals('{_:1,"test":1,"test2":{"$ref":1}}', jsonXify(objectify(obj)) );
+			assertEquals('{_:1,"test2":{"$ref":1},"test":1}', jsonXify(objectify(obj)) );
 			
 			var arr:Array = [];
 			arr.push(arr);

@@ -77,27 +77,27 @@ final class LoggerWrapper implements Logger {
 	}
 	
 	public function debug( message:String, ...args:* ):void {	
-		_logger.debug( message, args );
+		_logger.debug( message, args.length > 0 ? args : null );
 	}
 
 	public function error( message:String, ...args:* ):void {	
-		_logger.error( message, args );
+		_logger.error( message, args.length > 0 ? args : null );
 	}
 
 	public function fatal( message:String, ...args:* ):void {	
-		_logger.fatal( message, args );
+		_logger.fatal( message, args.length > 0 ? args : null );
 	}
 
 	public function info( message:String, ...args:*):void {
-		_logger.info( message, args );
+		_logger.info( message, args.length > 0 ? args : null );
 	}
 
 	public function trace( message:String, ...args:* ):void {	
-		_logger.info( message, args );
+		_logger.info( message, args.length > 0 ? args : null );
 	}
 
 	public function warn( message:String, ...args:* ):void {	
-		_logger.warn( message, args );
+		_logger.warn( message, args.length > 0 ? args : null );
 	}
 
 	public function isDebugEnabled():Boolean {

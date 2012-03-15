@@ -37,7 +37,7 @@ package org.as3commons.logging.util {
 				childArr.unshift(1);
 				childArr.unshift(i);
 				arr.splice.apply(null,childArr);
-			}
+			} 
 		}
 	}
 }

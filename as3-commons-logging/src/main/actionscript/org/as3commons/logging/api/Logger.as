@@ -83,9 +83,7 @@ package org.as3commons.logging.api {
 			_person = person;
 			_context = context;
 			if( _context != null ) {
-				_shortName = _context.substr( _context.lastIndexOf(".")+1);
-			} else {
-				_shortContext = "";
+				_shortContext = _context.substr( _context.lastIndexOf(".")+1);
 			}
 		}
 		
