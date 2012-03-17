@@ -31,6 +31,7 @@ package org.as3commons.aop.factory.impl {
 	import org.as3commons.bytecode.proxy.impl.ProxyFactory;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.lang.ClassUtils;
+	import flash.system.ApplicationDomain;
 
 	use namespace as3commons_aop;
 
@@ -52,17 +53,19 @@ package org.as3commons.aop.factory.impl {
 		// Constructor
 		//
 		// --------------------------------------------------------------------
+		private var _applicationDomain:ApplicationDomain;
 
 		/**
-		 * Creates a new AOPBatchProxyFactory.
+		 * Creates a new <code>AOPBatchProxyFactory</code>.
 		 *
 		 * @param loaderInfo an optional loaderInfo on which bytecode reflection will
 		 * be done. In case this is not provided, the loader info will be determined.
 		 * For Flex applications, this is generally not needed.
 		 */
-		public function AOPBatchProxyFactory(loaderInfo:LoaderInfo = null) {
+		public function AOPBatchProxyFactory(loaderInfo:LoaderInfo=null, factory:IProxyFactory=null) {
+			super();
 			doBytecodeReflection(loaderInfo);
-			_proxyFactory = new ProxyFactory();
+			_proxyFactory = factory ||= new ProxyFactory();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, proxyFactory_getMethodInvocationInterceptorHandler);
 		}
 
@@ -72,23 +75,23 @@ package org.as3commons.aop.factory.impl {
 		//
 		// --------------------------------------------------------------------
 
-		public function addTarget(target:*, advisors:Vector.<IAdvisor> = null):void {
+		public function addTarget(target:*, advisors:Vector.<IAdvisor>=null):void {
 			if (target is Class) {
-				_proxyFactory.defineProxy(target);
+				_proxyFactory.defineProxy(target, null, _applicationDomain);
 			} else {
 				var targetClass:Class = ClassUtils.forInstance(target);
-				_proxyFactory.defineProxy(target);
+				_proxyFactory.defineProxy(target, null, _applicationDomain);
 			}
 
 			advisors ||= new Vector.<IAdvisor>();
 			_advisors[target] = advisors;
 		}
 
-		public function addAdvice(advice:IAdvice, target:* = null):void {
+		public function addAdvice(advice:IAdvice, target:*=null):void {
 			addAdvisor(new AlwaysMatchingPointcutAdvisor(advice), target);
 		}
 
-		public function addAdvisor(advisor:IAdvisor, target:* = null):void {
+		public function addAdvisor(advisor:IAdvisor, target:*=null):void {
 			if (target) {
 				addAdvisorForTarget(advisor, target);
 			} else {
@@ -101,10 +104,10 @@ package org.as3commons.aop.factory.impl {
 			return new LoadProxyFactoryOperation(_proxyFactory);
 		}
 
-		public function getProxy(target:*, constructorArgs:Array = null):* {
+		public function getProxy(target:*, constructorArgs:Array=null):* {
 			var result:*;
 			var clazz:Class = getTargetClass(target);
-			
+
 			try {
 				result = _proxyFactory.createProxy(clazz, constructorArgs);
 			} catch (e:Error) {
@@ -112,7 +115,7 @@ package org.as3commons.aop.factory.impl {
 			} finally {
 				applyConstructorAfterAdvice(clazz, result, constructorArgs);
 			}
-			
+
 			return result;
 		}
 
@@ -124,7 +127,8 @@ package org.as3commons.aop.factory.impl {
 
 		private function doBytecodeReflection(loaderInfo:LoaderInfo):void {
 			loaderInfo ||= ProxyFactoryUtil.getLoaderInfo();
-			ByteCodeType.fromLoader(loaderInfo);
+			ByteCodeType.fromLoader(loaderInfo, loaderInfo.applicationDomain);
+			_applicationDomain = loaderInfo.applicationDomain;
 		}
 
 		private function addAdvisorForTarget(advisor:IAdvisor, target:*):void {
@@ -148,7 +152,7 @@ package org.as3commons.aop.factory.impl {
 			if (target is Class) {
 				return Class(target);
 			}
-			return ByteCodeType.forInstance(target).clazz;
+			return ByteCodeType.forInstance(target, _applicationDomain).clazz;
 		}
 
 		private function proxyFactory_getMethodInvocationInterceptorHandler(event:ProxyFactoryEvent):void {
@@ -159,11 +163,11 @@ package org.as3commons.aop.factory.impl {
 			event.methodInvocationInterceptor = interceptor;
 		}
 
-		private function applyConstructorThrowsAdvice(clazz:Class, error:Error, args:Array = null):void {
+		private function applyConstructorThrowsAdvice(clazz:Class, error:Error, args:Array=null):void {
 			_adviceInterceptor.as3commons_aop::applyConstructorThrowsAdvice(clazz, error, args);
 		}
-		
-		private function applyConstructorAfterAdvice(clazz:Class, proxy:*, args:Array = null):void {
+
+		private function applyConstructorAfterAdvice(clazz:Class, proxy:*, args:Array=null):void {
 			_adviceInterceptor.as3commons_aop::applyConstructorAfterAdvice(clazz, proxy, args);
 		}
 
