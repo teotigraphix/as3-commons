@@ -16,10 +16,10 @@
 package org.as3commons.aop.factory.impl {
 	import flash.display.LoaderInfo;
 
-	import org.as3commons.aop.factory.*;
 	import org.as3commons.aop.*;
 	import org.as3commons.aop.advice.IAdvice;
 	import org.as3commons.aop.advisor.IAdvisor;
+	import org.as3commons.aop.factory.*;
 	import org.as3commons.aop.intercept.IInterceptor;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.lang.Assert;
@@ -51,13 +51,14 @@ package org.as3commons.aop.factory.impl {
 		// --------------------------------------------------------------------
 
 		/**
-		 * Creates a new AOPProxyFactory.
+		 * Creates a new <code>AOPProxyFactory</code>.
 		 *
 		 * @param loaderInfo an optional loaderInfo on which bytecode reflection will
 		 * be done. In case this is not provided, the loader info will be determined.
 		 * For Flex applications, this is generally not needed.
 		 */
-		public function AOPProxyFactory(loaderInfo:LoaderInfo = null) {
+		public function AOPProxyFactory(loaderInfo:LoaderInfo=null) {
+			super();
 			_proxyFactory = new AOPBatchProxyFactory(loaderInfo);
 			_adviceAndAdvisors = [];
 		}
@@ -114,7 +115,7 @@ package org.as3commons.aop.factory.impl {
 			return _proxyFactory.load();
 		}
 
-		public function getProxy(constructorArgs:Array = null):* {
+		public function getProxy(constructorArgs:Array=null):* {
 			return _proxyFactory.getProxy(_target, constructorArgs);
 		}
 
@@ -125,13 +126,14 @@ package org.as3commons.aop.factory.impl {
 		// --------------------------------------------------------------------
 
 		private function addAdviceAndAdvisors():void {
-			for (var i:uint = 0; i<_adviceAndAdvisors.length; i++) {
+			for (var i:uint = 0; i < _adviceAndAdvisors.length; i++) {
 				var adviceOrAdvisor:* = _adviceAndAdvisors[i];
 				if (adviceOrAdvisor is IAdvice) {
 					_proxyFactory.addAdvice(adviceOrAdvisor, _target);
 				} else if (adviceOrAdvisor is IAdvisor) {
 					_proxyFactory.addAdvisor(adviceOrAdvisor, _target);
-				}/* else if (adviceOrAdvisor is IInterceptor) {
+				}
+				/* else if (adviceOrAdvisor is IInterceptor) {
 					addInterceptor(adviceOrAdvisor)
 				}*/
 			}

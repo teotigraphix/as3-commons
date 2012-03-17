@@ -26,7 +26,7 @@ package org.as3commons.aop.advice.util {
 	 *
 	 * @author Christophe Herreman
 	 */
-	public class AdviceUtil {
+	public final class AdviceUtil {
 
 		// --------------------------------------------------------------------
 		//
