@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.as3commons</groupId>
 	<artifactId>parent-pom</artifactId>
 	<packaging>pom</packaging>
-	<version>2</version>
+	<version>2-SNAPSHOT</version>
 	<name>AS3Commons Parent POM</name>
 	<url>http://www.as3commons.org</url>
 	<description>Parent POM for AS3Commons libraries</description>
@@ -38,10 +39,10 @@
 	</properties>
 
 	<scm>
-		<connection>scm:svn:http://as3-commons.googlecode.com/svn/tags/OVERWRITTEN-IN-VALIDATE-PHASE/2</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/OVERWRITTEN-IN-VALIDATE-PHASE/2
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/${alternativeArtifactId}</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/${alternativeArtifactId}
 		</developerConnection>
-		<url>http://as3-commons.googlecode.com/svn/tags/OVERWRITTEN-IN-VALIDATE-PHASE/2</url>
+		<url>http://as3-commons.googlecode.com/svn/trunk/${alternativeArtifactId}</url>
 	</scm>
 
 	<repositories>
@@ -121,7 +122,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<storepass />
+					<storepass/>
 					<iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>true
 					</iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>
 					<testTimeout>10000</testTimeout>
