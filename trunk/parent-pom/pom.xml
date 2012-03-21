@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.as3commons</groupId>
@@ -27,18 +28,20 @@
 		<flashplayer.version.major>10</flashplayer.version.major>
 		<flashplayer.version.minor>2</flashplayer.version.minor>
 		<flashplayer.version.revision>0</flashplayer.version.revision>
-		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}</flashplayer.version>
+		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}
+		</flashplayer.version>
 		<flex-mojos.version>4.0-RC2</flex-mojos.version>
 		<flex-sdk.version>4.5.1.21328</flex-sdk.version>
 		<flexunit.version>4.1.0-RC1.61</flexunit.version>
 		<maven-site-plugin.version>3.0-beta-3</maven-site-plugin.version>
 		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
-    </properties>
+	</properties>
 
-    <scm>
-        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/parent-pom</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/parent-pom</developerConnection>
-        <url>http://as3-commons.googlecode.com/svn/trunk/parent-pom</url>
+	<scm>
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/${alternativeArtifactId}</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/${alternativeArtifactId}
+		</developerConnection>
+		<url>http://as3-commons.googlecode.com/svn/trunk/${alternativeArtifactId}</url>
 	</scm>
 
 	<repositories>
@@ -88,12 +91,12 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-    <build>
-        <sourceDirectory>src/main/actionscript</sourceDirectory>
+	<build>
+		<sourceDirectory>src/main/actionscript</sourceDirectory>
 		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
 
-        <plugins>
-            <plugin>
+		<plugins>
+			<plugin>
 				<groupId>org.sonatype.flexmojos</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<version>${flex-mojos.version}</version>
@@ -118,8 +121,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<storepass />
-					<iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>true</iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>
+					<storepass/>
+					<iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>true
+					</iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>
 					<testTimeout>10000</testTimeout>
 					<targetPlayer>${flashplayer.version.major}</targetPlayer>
 					<updateSecuritySandbox>true</updateSecuritySandbox>
@@ -135,7 +139,7 @@
 
 			</plugin>
 
-            <plugin>
+			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptor>
@@ -159,7 +163,7 @@
 				</executions>
 			</plugin>
 
-            <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>${maven-site-plugin.version}</version>
@@ -172,56 +176,81 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
 					<tagBase>
-						https://as3-commons.googlecode.com/svn/tags/parent-pom
+						https://as3-commons.googlecode.com/svn/tags/${alternativeArtifactId}
 					</tagBase>
 				</configuration>
 			</plugin>
 
-        </plugins>
-    </build>
+			<plugin>
+				<groupId>org.codehaus.gmaven</groupId>
+				<artifactId>gmaven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<source>
+								if (project.artifactId.startsWith("as3commons-")) {
+									def libName = project.artifactId.minus("as3commons-");
+									project.properties.alternativeArtifactId = "as3-commons-" + libName;
+								} else {
+									project.properties.alternativeArtifactId = project.artifactId;
+								}
+							</source>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
-    <reporting>
+		</plugins>
+	</build>
+
+	<reporting>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.12</version>
 			</plugin>
 		</plugins>
 	</reporting>
 
-    <dependencies>
+	<dependencies>
 
-        <!-- Compile -->
+		<!-- Compile -->
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>playerglobal</artifactId>
-            <version>${flex-sdk.version}</version>
-            <type>swc</type>
-            <classifier>${playerglobal.version}</classifier>
-        </dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>playerglobal</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>swc</type>
+			<classifier>${playerglobal.version}</classifier>
+		</dependency>
 
-        <!-- Test -->
+		<!-- Test -->
 
-        <dependency>
-            <groupId>com.adobe.flex.framework</groupId>
-            <artifactId>common-framework</artifactId>
-            <version>${flex-sdk.version}</version>
-            <type>pom</type>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>common-framework</artifactId>
+			<version>${flex-sdk.version}</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>com.adobe.flexunit</groupId>
-            <artifactId>flexunit</artifactId>
-            <version>${flexunit.version}</version>
-            <type>swc</type>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.adobe.flexunit</groupId>
+			<artifactId>flexunit</artifactId>
+			<version>${flexunit.version}</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
 
-    </dependencies>
+	</dependencies>
 
-    <distributionManagement>
+	<distributionManagement>
 		<repository>
 			<id>yoolab.org-releases</id>
 			<name>Yoolab.org releases repository</name>
@@ -232,6 +261,10 @@
 			<name>Yoolab.org snapshots repository</name>
 			<url>https://dev.yoolab.org/maven/content/repositories/snapshots</url>
 		</snapshotRepository>
+		<site>
+			<id>yoolab.org-as3commons</id>
+			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/${alternativeArtifactId}</url>
+		</site>
 	</distributionManagement>
 
 </project>
