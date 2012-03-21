@@ -25,7 +25,7 @@
 	</issueManagement>
 
 	<properties>
-		<alternativeArtifactId>OVERWRITTEN-IN-VALIDATE-PHASE</alternativeArtifactId>
+		<!--<alternativeArtifactId>OVERWRITTEN-IN-VALIDATE-PHASE</alternativeArtifactId>-->
 		<flashplayer.version.major>10</flashplayer.version.major>
 		<flashplayer.version.minor>2</flashplayer.version.minor>
 		<flashplayer.version.revision>0</flashplayer.version.revision>
@@ -186,22 +186,22 @@
 				<groupId>org.codehaus.gmaven</groupId>
 				<artifactId>gmaven-plugin</artifactId>
 				<version>1.4</version>
-				<configuration>
-					<source>
-						if (project.artifactId.startsWith("as3commons-")) {
-							def libName = project.artifactId.minus("as3commons-");
-							project.properties.alternativeArtifactId = "as3-commons-" + libName;
-						} else {
-							project.properties.alternativeArtifactId = project.artifactId;
-						}
-					</source>
-				</configuration>
 				<executions>
 					<execution>
 						<phase>validate</phase>
 						<goals>
 							<goal>execute</goal>
 						</goals>
+						<configuration>
+							<source>
+								if (project.artifactId.startsWith("as3commons-")) {
+									def libName = project.artifactId.minus("as3commons-");
+									project.properties.alternativeArtifactId = "as3-commons-" + libName;
+								} else {
+									project.properties.alternativeArtifactId = project.artifactId;
+								}
+							</source>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
