@@ -33,7 +33,7 @@
 				new ToStringBuilderTest(),
 				new ObjectUtilsTest(),
 				new ClassUtilsTest(),
-				new EnumTest(),
+				new EnumTest()
 			]);
 		}
 	}

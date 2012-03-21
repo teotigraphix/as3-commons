@@ -74,6 +74,7 @@ package org.as3commons.lang {
 			assertEquals(int, ClassUtils.forName("int"));
 		}
 
+		[Test]
 		public function testForName_shouldReturnUint():void {
 			assertEquals(uint, ClassUtils.forName("uint"));
 		}
@@ -111,6 +112,7 @@ package org.as3commons.lang {
 		public function testIsPrivateClass():void {
 			assertTrue(ClassUtils.isPrivateClass(PrivateClass));
 			assertTrue(ClassUtils.isPrivateClass(getQualifiedClassName(PrivateClass)));
+			assertFalse(ClassUtils.isPrivateClass(Main));
 			assertFalse(ClassUtils.isPrivateClass(ClassUtilsTest));
 			assertFalse(ClassUtils.isPrivateClass(getQualifiedClassName(ClassUtilsTest)));
 		}
@@ -240,11 +242,11 @@ package org.as3commons.lang {
 
 		// helpers
 
-		private function assertIsAssignableFrom(c1:Class, c2:Class):void {
+		private static function assertIsAssignableFrom(c1:Class, c2:Class):void {
 			assertTrue(ClassUtils.isAssignableFrom(c1, c2));
 		}
 
-		private function assertIsNotAssignableFrom(c1:Class, c2:Class):void {
+		private static function assertIsNotAssignableFrom(c1:Class, c2:Class):void {
 			assertFalse(ClassUtils.isAssignableFrom(c1, c2));
 		}
 

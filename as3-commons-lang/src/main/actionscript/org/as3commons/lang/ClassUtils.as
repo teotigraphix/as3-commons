@@ -152,24 +152,16 @@ package org.as3commons.lang {
 		 * @return A boolean value indicating the visibility of the class.
 		 */
 		public static function isPrivateClass(object:*):Boolean {
-			var ns:String;
-			var className:String;
+			var className:String = (object is Class) ? getQualifiedClassName(object) : object.toString();
+			var index:int = className.indexOf("::");
+			var inRootPackage:Boolean = (index == -1);
 
-			if (object is Class) {
-				className = getQualifiedClassName(object);
-				ns = className.substr(0, className.indexOf("::"));
-			} else if (object is String) {
-				className = object.toString();
-				var index:int = className.indexOf("::");
-
-				if (index > 0) {
-					ns = className.substr(0, index);
-				} else {
-					ns = className;
-				}
+			if (inRootPackage) {
+				return false;
 			}
 
-			return (ns.indexOf(".as$") > -1);
+			var ns:String = className.substr(0, index);
+			return (ns === "" || ns.indexOf(".as$") > -1);
 		}
 
 		/**
