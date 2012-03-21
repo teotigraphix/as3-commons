@@ -174,7 +174,7 @@
 					<tagBase>
 						https://as3-commons.googlecode.com/svn/tags/parent-pom
 					</tagBase>
-					<tag>${project.version}</tag>
+					<tagNameFormat>@{project.version}</tagNameFormat>
 					<preparationGoals>clean deploy</preparationGoals>
 				</configuration>
 			</plugin>
