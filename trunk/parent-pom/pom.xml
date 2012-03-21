@@ -4,7 +4,7 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>parent-pom</artifactId>
 	<packaging>pom</packaging>
-	<version>4-SNAPSHOT</version>
+	<version>2-SNAPSHOT</version>
 	<name>AS3Commons Parent POM</name>
 	<url>http://www.as3commons.org</url>
 	<description>Parent POM for AS3Commons libraries</description>
@@ -164,7 +164,7 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>${maven-site-plugin.version}</version>
 				<configuration>
-					<templateFile>${basedir}/../../src/site/vm/as3commons.vm</templateFile>
+					<templateFile>${basedir}/../../../src/site/vm/as3commons.vm</templateFile>
 				</configuration>
 			</plugin>
 
