@@ -164,7 +164,7 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>${maven-site-plugin.version}</version>
 				<configuration>
-					<templateFile>${basedir}/../src/site/vm/as3commons.vm</templateFile>
+					<templateFile>${basedir}/../../src/site/vm/as3commons.vm</templateFile>
 				</configuration>
 			</plugin>
 
