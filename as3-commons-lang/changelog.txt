@@ -3,10 +3,11 @@ AS3COMMONS LANG CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 0.3.6 (??.??.2011)
------------------------------------
+Changes in version 0.3.6 (21.03.2012)
+-------------------------------------
 
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=103
+* Fixed issue in ClassUtils.isPrivateClass, tests failed when running in IDEA
 * ClassUtils.forInstance no longer fails for Proxy subclasses
 * Added XMLUtils.hasAttribute method
 
