@@ -1,0 +1,239 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.as3commons</groupId>
+	<artifactId>parent-pom</artifactId>
+	<packaging>pom</packaging>
+	<version>3</version>
+	<name>AS3Commons Parent POM</name>
+	<url>http://www.as3commons.org</url>
+	<description>Parent POM for AS3Commons libraries</description>
+	<inceptionYear>2009</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>Apache Software License 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/as3-commons/issues/list</url>
+	</issueManagement>
+
+	<properties>
+		<flashplayer.version.major>10</flashplayer.version.major>
+		<flashplayer.version.minor>2</flashplayer.version.minor>
+		<flashplayer.version.revision>0</flashplayer.version.revision>
+		<flashplayer.version>${flashplayer.version.major}.${flashplayer.version.minor}.${flashplayer.version.revision}</flashplayer.version>
+		<flex-mojos.version>4.0-RC2</flex-mojos.version>
+		<flex-sdk.version>4.5.1.21328</flex-sdk.version>
+		<flexunit.version>4.1.0-RC1.61</flexunit.version>
+		<maven-site-plugin.version>3.0-beta-3</maven-site-plugin.version>
+		<playerglobal.version>${flashplayer.version.major}.${flashplayer.version.minor}</playerglobal.version>
+    </properties>
+
+    <scm>
+        <connection>scm:svn:http://as3-commons.googlecode.com/svn/tags/parent-pom/3</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/parent-pom/3</developerConnection>
+        <url>http://as3-commons.googlecode.com/svn/tags/parent-pom/3</url>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>flex-mojos-repository</id>
+			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>yoolab.org-releases</id>
+			<url>http://projects.yoolab.org/maven/content/repositories/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>yoolab.org-snapshots</id>
+			<url>http://projects.yoolab.org/maven/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>cairngorm3-repository</id>
+			<url>http://opensource.adobe.com/svn/opensource/cairngorm3/maven-repository</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>flexmojos-plugin</id>
+			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+    <build>
+        <sourceDirectory>src/main/actionscript</sourceDirectory>
+		<testSourceDirectory>src/test/actionscript</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flex-mojos.version}</version>
+				<extensions>true</extensions>
+
+				<dependencies>
+					<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex-sdk.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+
+				<executions>
+					<execution>
+						<id>flex-reports</id>
+						<goals>
+							<goal>asdoc-report</goal>
+						</goals>
+						<phase>site</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<storepass />
+					<iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>true</iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>
+					<testTimeout>10000</testTimeout>
+					<targetPlayer>${flashplayer.version.major}</targetPlayer>
+					<updateSecuritySandbox>true</updateSecuritySandbox>
+					<description>${project.name} v${project.version} API documentation</description>
+					<mainTitle>${project.name} v${project.version} API documentation</mainTitle>
+					<windowTitle>${project.name} v${project.version} API documentation</windowTitle>
+					<name>${project.name} Docs</name>
+					<keepXml>true</keepXml>
+					<dumpConfigAttach>true</dumpConfigAttach>
+					<showWarnings>true</showWarnings>
+					<lenient>true</lenient>
+				</configuration>
+
+			</plugin>
+
+            <plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>
+						src/main/assembly/package.xml
+					</descriptor>
+					<finalName>${project.artifactId}-latest-snapshot</finalName>
+					<outputDirectory>target/site/downloads</outputDirectory>
+					<workDirectory>target/assembly/work</workDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<!-- this is used for inheritance merges -->
+						<phase>site</phase>
+						<!-- append to the packaging phase. -->
+						<goals>
+							<goal>single</goal>
+							<!-- goals == mojos -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>${maven-site-plugin.version}</version>
+				<configuration>
+					<templateFile>${basedir}/../../src/site/vm/as3commons.vm</templateFile>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagBase>
+						https://as3-commons.googlecode.com/svn/tags/parent-pom
+					</tagBase>
+					<tagNameFormat>@{project.version}</tagNameFormat>
+					<preparationGoals>clean deploy</preparationGoals>
+				</configuration>
+			</plugin>
+
+        </plugins>
+    </build>
+
+    <reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</reporting>
+
+    <dependencies>
+
+        <!-- Compile -->
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>playerglobal</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>swc</type>
+            <classifier>${playerglobal.version}</classifier>
+        </dependency>
+
+        <!-- Test -->
+
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>common-framework</artifactId>
+            <version>${flex-sdk.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.adobe.flexunit</groupId>
+            <artifactId>flexunit</artifactId>
+            <version>${flexunit.version}</version>
+            <type>swc</type>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <distributionManagement>
+		<repository>
+			<id>yoolab.org-releases</id>
+			<name>Yoolab.org releases repository</name>
+			<url>https://dev.yoolab.org/maven/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>yoolab.org-snapshots</id>
+			<name>Yoolab.org snapshots repository</name>
+			<url>https://dev.yoolab.org/maven/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>
