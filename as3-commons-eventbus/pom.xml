@@ -11,7 +11,7 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-eventbus</artifactId>
 	<packaging>swc</packaging>
-	<version>1.2.0</version>
+	<version>1.2.1-SNAPSHOT</version>
 	<name>AS3Commons EventBus</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>The EventBus is used as a publish/subscribe event mechanism that lets objects communicate with
@@ -22,10 +22,10 @@
 	<inceptionYear>2010</inceptionYear>
 
 	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-eventbus/1.2.0
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-eventbus
 		</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-eventbus/1.2.0</url>
-		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-eventbus/1.2.0</connection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-eventbus</url>
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-eventbus</connection>
 	</scm>
 
 	<distributionManagement>
