@@ -20,17 +20,15 @@
 	<inceptionYear>2011</inceptionYear>
 
 	<scm>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-stageprocessing/1.0
-		</developerConnection>
-		<url>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-stageprocessing/1.0</url>
-		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-stageprocessing/1.0</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-stageprocessing</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-stageprocessing</url>
+		<connection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-stageprocessing</connection>
 	</scm>
 
 	<distributionManagement>
 		<site>
 			<id>yoolab.org-as3commons</id>
-			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-stageprocessing
-			</url>
+			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-stageprocessing</url>
 		</site>
 	</distributionManagement>
 
