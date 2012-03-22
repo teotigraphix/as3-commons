@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.as3commons</groupId>
 		<artifactId>parent-pom</artifactId>
-		<version>1-SNAPSHOT</version>
+		<version>3</version>
         <relativePath>../parent-pom/pom.xml</relativePath>
 	</parent>
 
@@ -17,63 +17,6 @@
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>Aspect Oriented Programming library for ActionScript 3.0</description>
 	<inceptionYear>2009</inceptionYear>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>
-						https://as3-commons.googlecode.com/svn/tags/as3-commons-aop
-					</tagBase>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-async</artifactId>
-			<version>1.0-RC2-SNAPSHOT</version>
-			<type>swc</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-bytecode</artifactId>
-			<version>1.1-SNAPSHOT</version>
-			<type>swc</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.5-SNAPSHOT</version>
-			<type>swc</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-logging</artifactId>
-			<version>2.6</version>
-			<type>swc</type>
-			<exclusions>
-				<exclusion>
-					<groupId>com.adobe.flex.framework</groupId>
-					<artifactId>air-framework</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-reflect</artifactId>
-			<version>1.5</version>
-			<type>swc</type>
-		</dependency>
-
-	</dependencies>
 
 	<scm>
         <connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-aop</connection>
@@ -87,5 +30,60 @@
 			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-aop</url>
 		</site>
 	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagBase>https://as3-commons.googlecode.com/svn/tags/as3-commons-aop</tagBase>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-async</artifactId>
+			<version>1.0.0-RC.2</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-bytecode</artifactId>
+			<version>1.1-SNAPSHOT</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-lang</artifactId>
+			<version>0.3.6</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-logging</artifactId>
+			<version>2.7</version>
+			<type>swc</type>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>air-framework</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-reflect</artifactId>
+			<version>1.6.0</version>
+			<type>swc</type>
+		</dependency>
+
+	</dependencies>
 
 </project>
