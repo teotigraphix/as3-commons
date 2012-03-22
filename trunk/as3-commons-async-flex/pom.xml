@@ -19,7 +19,8 @@
 
 	<scm>
 		<connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-async-flex</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-async-flex</developerConnection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-async-flex
+		</developerConnection>
 		<url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-async-flex</url>
 	</scm>
 
@@ -29,11 +30,6 @@
 			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-async-flex</url>
 		</site>
 	</distributionManagement>
-
-	<properties>
-		<asmock.version>1.0</asmock.version>
-		<asmockflexunit4.version>1.0</asmockflexunit4.version>
-	</properties>
 
 	<developers>
 		<developer>
@@ -71,9 +67,14 @@
 
 	<dependencies>
 
-		<!-- AS3Commons -->
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-async</artifactId>
+			<version>1.0.0-RC.2</version>
+			<type>swc</type>
+		</dependency>
 
-		<!--<dependency>
+		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-lang</artifactId>
 			<version>0.3.6</version>
@@ -88,34 +89,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-reflect</artifactId>
-			<version>1.6.0</version>
-			<type>swc</type>
-		</dependency>-->
-
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-async</artifactId>
-			<version>1.0.0-RC.2</version>
-			<type>swc</type>
-		</dependency>
-
-		<!-- Test -->
-
-		<dependency>
-			<groupId>asmock</groupId>
-			<artifactId>asmock</artifactId>
-			<version>${asmock.version}</version>
-			<type>swc</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>asmock</groupId>
-			<artifactId>asmock-flexunit4.1</artifactId>
-			<version>${asmockflexunit4.version}</version>
-			<type>swc</type>
-			<scope>test</scope>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>common-framework</artifactId>
+			<version>4.5.1.21328</version>
+			<type>pom</type>
 		</dependency>
 
 	</dependencies>
