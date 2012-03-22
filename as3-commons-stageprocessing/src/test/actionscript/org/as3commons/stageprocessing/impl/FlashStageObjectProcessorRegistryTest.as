@@ -33,6 +33,10 @@ package org.as3commons.stageprocessing.impl {
 
 	public class FlashStageObjectProcessorRegistryTest extends AbstractTestWithMockRepository {
 
+		public function FlashStageObjectProcessorRegistryTest()
+		{
+		}
+
 		[Rule]
 		public var includeMocks:IncludeMocksRule = new IncludeMocksRule([ //
 			IStageObjectProcessor, //
