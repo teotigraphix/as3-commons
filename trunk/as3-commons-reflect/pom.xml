@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
 		<groupId>org.as3commons</groupId>
@@ -13,7 +11,7 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-reflect</artifactId>
 	<packaging>swc</packaging>
-	<version>1.6.0-SNAPSHOT</version>
+	<version>1.6.0</version>
 	<name>AS3Commons Reflect</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
@@ -22,9 +20,9 @@
 	<inceptionYear>2007</inceptionYear>
 
 	<scm>
-        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</developerConnection>
-        <url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</url>
+        <connection>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.6.0</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.6.0</developerConnection>
+        <url>http://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.6.0</url>
 	</scm>
 
 	<distributionManagement>
@@ -102,7 +100,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<storepass/>
+					<storepass />
 					<testTimeout>10000</testTimeout>
 					<targetPlayer>${flashplayer.version.major}</targetPlayer>
 					<updateSecuritySandbox>true</updateSecuritySandbox>
