@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.as3commons</groupId>
 		<artifactId>parent-pom</artifactId>
-		<version>1-SNAPSHOT</version>
+		<version>3</version>
         <relativePath>../parent-pom/pom.xml</relativePath>
 	</parent>
 
@@ -13,13 +13,26 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-reflect</artifactId>
 	<packaging>swc</packaging>
-	<version>1.5.1-SNAPSHOT</version>
+	<version>1.6.0-SNAPSHOT</version>
 	<name>AS3Commons Reflect</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
 		Library providing a reflection API for ActionScript 3.0
 	</description>
 	<inceptionYear>2007</inceptionYear>
+
+	<scm>
+        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</developerConnection>
+        <url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</url>
+	</scm>
+
+	<distributionManagement>
+		<site>
+			<id>yoolab.org-as3commons</id>
+			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-reflect</url>
+		</site>
+	</distributionManagement>
 
 	<properties>
 		<flexunit.version>0.90</flexunit.version>
@@ -53,27 +66,11 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>jes</id>
-			<name>Jens Struwe</name>
-			<email>jens [at] struwe.net</email>
-			<organization>Russischer B�r Software</organization>
-			<organizationUrl>http://sibirjak.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
 			<id>alewisohn</id>
 			<name>Andrew Lewisohn</name>
 			<email>alewisohn [at] gmail.com</email>
 			<organization>Arc90, Inc.</organization>
 			<organizationUrl>http://www.arc90.com/</organizationUrl>
-			<timezone>-5</timezone>
-		</developer>
-		<developer>
-			<id>jghandour</id>
-			<name>James Ghandour</name>
-			<email>jamesghandour [at] jagsits.com</email>
-			<organization>JAG's ITS Inc.</organization>
-			<organizationUrl>http://www.jagsits.com/</organizationUrl>
 			<timezone>-5</timezone>
 		</developer>
 	</developers>
@@ -134,29 +131,14 @@
 
 	<dependencies>
 
-		<!-- AS3Commons -->
-
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.5</version>
+			<version>0.3.6</version>
 			<scope>merged</scope>
 			<type>swc</type>
 		</dependency>
 
 	</dependencies>
-
-	<scm>
-        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</developerConnection>
-        <url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</url>
-	</scm>
-
-	<distributionManagement>
-		<site>
-			<id>yoolab.org-as3commons</id>
-			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-reflect</url>
-		</site>
-	</distributionManagement>
 
 </project>
