@@ -11,7 +11,7 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-reflect</artifactId>
 	<packaging>swc</packaging>
-	<version>1.6.0</version>
+	<version>1.6.1-SNAPSHOT</version>
 	<name>AS3Commons Reflect</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
@@ -20,9 +20,9 @@
 	<inceptionYear>2007</inceptionYear>
 
 	<scm>
-        <connection>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.6.0</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.6.0</developerConnection>
-        <url>http://as3-commons.googlecode.com/svn/tags/as3-commons-reflect/1.6.0</url>
+        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</developerConnection>
+        <url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-reflect</url>
 	</scm>
 
 	<distributionManagement>
