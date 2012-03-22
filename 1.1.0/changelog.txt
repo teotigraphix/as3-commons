@@ -1,0 +1,21 @@
+AS3COMMONS-STAGEPROCESSING CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+Changes in version 1.0 (04.08.2011)
+-----------------------------------
+
+* Added method that sets the stage reference automatically when used in a Flex application
+* Added check for (creatingContentPane == true) on each added or removed objects's parent. To prevent processing in the case of re-parenting by a Flex container. (After adding scrollbars, etc)
+
+Changes in version 1.0-RC2 (23.05.2011)
+-----------------------------------
+
+* Added IOrdered support to the lists of IStageObjectProcessors
+* Added a few default IObjectSelector implementations (taken from Spring Actionscript)
+
+Changes in version 1.0-RC1 (11.05.2011)
+-----------------------------------
+
+* Initial release, functionality taken out of Spring Actionscript and made a bit more generic
