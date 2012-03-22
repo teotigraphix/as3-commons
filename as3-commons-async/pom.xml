@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
 		<groupId>org.as3commons</groupId>
@@ -12,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-async</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0.0-RC.2-SNAPSHOT</version>
+	<version>1.0.0-RC.2</version>
 	<name>AS3Commons Async</name>
 	<url>http://www.as3commons.org/async</url>
 	<description>A pure actionscript 3 library that aims to make working with asynchronous processes easier.
@@ -20,9 +18,9 @@
 	<inceptionYear>2011</inceptionYear>
 
 	<scm>
-        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-async</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-async</developerConnection>
-		<url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-async</url>
+        <connection>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-async/1.0.0-RC.2</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-async/1.0.0-RC.2</developerConnection>
+		<url>http://as3-commons.googlecode.com/svn/tags/as3-commons-async/1.0.0-RC.2</url>
 	</scm>
 
 	<distributionManagement>
