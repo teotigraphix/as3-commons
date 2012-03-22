@@ -8,20 +8,6 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>flex-async/target</directory>
-			<outputDirectory>lib</outputDirectory>
-			<includes>
-				<include>*.swc</include>
-			</includes>
-		</fileSet>
-		<fileSet>
-			<directory>flex-async/target/asdoc</directory>
-			<outputDirectory>asdoc</outputDirectory>
-			<includes>
-				<include>**</include>
-			</includes>
-		</fileSet>
-		<fileSet>
 			<directory>target</directory>
 			<outputDirectory>lib</outputDirectory>
 			<includes>
