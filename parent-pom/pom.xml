@@ -4,7 +4,7 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>parent-pom</artifactId>
 	<packaging>pom</packaging>
-	<version>3-SNAPSHOT</version>
+	<version>3</version>
 	<name>AS3Commons Parent POM</name>
 	<url>http://www.as3commons.org</url>
 	<description>Parent POM for AS3Commons libraries</description>
@@ -36,9 +36,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/parent-pom</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/parent-pom</developerConnection>
-        <url>http://as3-commons.googlecode.com/svn/trunk/parent-pom</url>
+        <connection>scm:svn:http://as3-commons.googlecode.com/svn/tags/parent-pom/3</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/parent-pom/3</developerConnection>
+        <url>http://as3-commons.googlecode.com/svn/tags/parent-pom/3</url>
 	</scm>
 
 	<repositories>
