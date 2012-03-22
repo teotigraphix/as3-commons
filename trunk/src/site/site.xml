@@ -24,18 +24,19 @@
 		</menu>
 
 		<menu name="Modules">
+			<item name="Async" href="as3-commons-async/index.html" />
+			<item name="Async-Flex" href="as3-commons-async-flex/index.html" />
 			<item name="Bytecode" href="as3-commons-bytecode/index.html" />
+			<item name="Collections" href="as3-commons-collections/index.html" />
+			<item name="Concurrency" href="as3-commons-concurrency/index.html" />
 			<item name="EventBus" href="as3-commons-eventbus/index.html" />
 			<item name="Lang" href="as3-commons-lang/index.html" />
 			<item name="Logging" href="as3-commons-logging/index.html" />
 			<item name="Metadata" href="as3-commons-metadata/index.html" />
 			<item name="Reflect" href="as3-commons-reflect/index.html" />
-			<item name="Collections" href="as3-commons-collections/index.html" />
-			<item name="Concurrency" href="as3-commons-concurrency/index.html" />
 			<item name="Serialization" href="as3-commons-serialization/index.html" />
 			<item name="StageProcessing" href="as3-commons-stageprocessing/index.html" />
 			<item name="UI" href="as3-commons-ui/index.html" />
-			<item name="ASync" href="as3-commons-async/index.html" />
 		</menu>
 
 	</body>
