@@ -10,16 +10,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-async-flex</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0.0-RC.2</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>AS3Commons Async Flex</name>
 	<url>http://www.as3commons.org/async-flex</url>
 	<description>Flex extensions of the AS3Commons Async library.</description>
 	<inceptionYear>2011</inceptionYear>
 
 	<scm>
-		<connection>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-async-flex/1.0.0-RC.2</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-async-flex/1.0.0-RC.2</developerConnection>
-		<url>http://as3-commons.googlecode.com/svn/tags/as3-commons-async-flex/1.0.0-RC.2</url>
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-async-flex</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-async-flex</developerConnection>
+		<url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-async-flex</url>
 	</scm>
 
 	<distributionManagement>
