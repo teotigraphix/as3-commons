@@ -1,0 +1,20 @@
+AS3COMMONS-ASYNC CHANGELOG
+==========================
+
+Note: dates are in DD.MM.YYYY format
+
+
+Changes in version 1.0.0-RC.2 (22.03.2011)
+------------------------------------------
+
+* Added a few missing IOperation implementations from Spring Actionscript v1.1
+* Added IOperationQueue interface
+* Added operation complete triggers
+* Replaced arrays with vectors where possible
+
+
+Changes in version 1.0-RC1 (10.06.2011)
+---------------------------------------
+
+* Initial release, functionality taken out of Spring Actionscript, more unit tests added
+* Broke library up into two parts: A pure actionscript part and a Flex part
