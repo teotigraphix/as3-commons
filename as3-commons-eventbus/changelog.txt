@@ -1,16 +1,17 @@
 AS3COMMONS-EVENTBUS CHANGELOG
-============================
+=============================
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.1.2 (??.??.2011)
------------------------------------
+Changes in version 1.2.0 (22.03.2011)
+-------------------------------------
 
 * Moved WeakLinkedList from as3commons-collections to -eventbus
 * Added a check to the onEvent handler that confirms that the given event wasn't dispatched by the current Eventbus, this is to prevent loops between linked eventbuses.
+* Exposed internal eventbus instance of the StaticEventBus (that way the static bus can be added as a listener to a regular EventBus instance)
 
 Changes in version 1.1.1 (16.02.2011)
------------------------------------
+------------------------------------
 
 General
 * Critical bug fix where notifySpecificEvent() would end up in and infinite iterator loop
