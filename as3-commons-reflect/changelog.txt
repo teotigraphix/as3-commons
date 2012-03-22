@@ -3,8 +3,8 @@ AS3COMMONS-REFLECT CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.5.1 (??.??.2011)
------------------------------------
+Changes in version 1.6.0 (22.03.2012)
+-------------------------------------
 
 * Removed as3commons-logging dependency
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=94
@@ -12,6 +12,7 @@ Changes in version 1.5.1 (??.??.2011)
 * Reintroduced the Parameter.index property, by way of decorating a cached BaseParameter. (issue https://code.google.com/p/as3-commons/issues/detail?id=99)
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=102
 * Fixed issue where declaringType was incorrectly set by the JSONTypeProvider
+* MethodInvoker now implements IEquals
 
 Changes in version 1.5 (23.09.2011)
 -----------------------------------
