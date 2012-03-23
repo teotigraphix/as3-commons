@@ -57,19 +57,22 @@ package org.as3commons.bytecode.proxy.error {
 
 		public static const CANNOT_INTRODUCE_NATIVE_CLASS:uint = 0x09;
 
+		public static const NO_BYTECODE_TYPE_FOUND_FOR_CLASS:uint = 0x10;
+
 
 		private static const messages:Dictionary = new Dictionary();
 		{
-			messages[FINAL_CLASS_ERROR] = "Proxied class {0} is marked as final, cannot create a subclass";
-			messages[FINAL_METHOD_ERROR] = "Method {0} is marked as final, cannot override in the subclass";
-			messages[FINAL_ACCESSOR_ERROR] = "Accessor {0} is marked as final, cannot override in the subclass";
-			messages[METHOD_NOT_EXISTS] = "Method {1} was not found on proxied class {0}";
-			messages[ACCESSOR_NOT_EXISTS] = "Accessor {1} was not found on proxied class {0}";
-			messages[METHOD_BUILDER_IS_NULL] = "IMethodBuilder returned by the {0}.methodBuilder instance was null";
-			messages[INTRODUCED_CLASS_NOT_FOUND] = "Class {0} could not be found by ByteCodeType.forName(), unable to introduce";
-			messages[CANNOT_INTRODUCE_INTERFACE] = "Class {0} is an interface, only able to introduce concrete classes";
-			messages[PROXY_FACTORY_IS_BUSY_GENERATING] = "Cannot invoke loadProxyClasses() while the factory is busy generating proxy classes.{0}";
+			messages[FINAL_CLASS_ERROR] = "Proxied class {0} is marked as final, cannot create a subclass.";
+			messages[FINAL_METHOD_ERROR] = "Method {0} is marked as final, cannot override in the subclass.";
+			messages[FINAL_ACCESSOR_ERROR] = "Accessor {0} is marked as final, cannot override in the subclass.";
+			messages[METHOD_NOT_EXISTS] = "Method {1} was not found on proxied class {0}.";
+			messages[ACCESSOR_NOT_EXISTS] = "Accessor {1} was not found on proxied class {0}.";
+			messages[METHOD_BUILDER_IS_NULL] = "IMethodBuilder returned by the {0}.methodBuilder instance was null.";
+			messages[INTRODUCED_CLASS_NOT_FOUND] = "Class {0} could not be found by ByteCodeType.forName(), unable to introduce.";
+			messages[CANNOT_INTRODUCE_INTERFACE] = "Class {0} is an interface, it is only possible to introduce concrete classes.";
+			messages[PROXY_FACTORY_IS_BUSY_GENERATING] = "Cannot invoke loadProxyClasses() while the factory is busy generating proxy classes. {0}";
 			messages[CANNOT_INTRODUCE_NATIVE_CLASS] = "Class {0} cannot be introduced because it is a native class and therefore no bytecode is available for it.";
+			messages[NO_BYTECODE_TYPE_FOUND_FOR_CLASS] = "No ByteCodeType instance could be retrieved for class name '{0}', make sure the same ApplicationDomain instance is passed to defineProxy() as was passed to ByteCodeType.fromLoader().";
 		}
 
 		/**
@@ -78,7 +81,7 @@ package org.as3commons.bytecode.proxy.error {
 		 * @param className
 		 * @param memberName
 		 */
-		public function ProxyBuildError(id:uint, className:String = "", memberName:String = null) {
+		public function ProxyBuildError(id:uint, className:String="", memberName:String=null) {
 			var message:String;
 			if (memberName == null) {
 				message = StringUtils.substitute(String(messages[id]), className);
