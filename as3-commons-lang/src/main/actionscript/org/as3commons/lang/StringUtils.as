@@ -2098,8 +2098,9 @@ package org.as3commons.lang {
 		 * Checks if the given string has actual text.
 		 */
 		public static function hasText(string:String):Boolean {
-			if (!string)
+			if (!string) {
 				return false;
+			}
 			return (StringUtils.trim(string).length > 0);
 		}
 
