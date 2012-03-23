@@ -57,6 +57,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
+	import org.as3commons.lang.StringUtils;
 	import org.as3commons.logging.api.ILogger;
 	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.reflect.Accessor;
@@ -297,7 +298,7 @@ package org.as3commons.bytecode.proxy.impl {
 			_isGenerating = true;
 			try {
 				for (var domain:* in _domains) {
-					var infos:Array = _domains[domain] as Array;
+					var infos:Array = _domains[domain];
 					for each (var info:IClassProxyInfo in infos) {
 						var proxyInfo:ProxyInfo = buildProxyClass(info, domain);
 						proxyInfo.proxiedClass = info.proxiedClass;
@@ -403,6 +404,9 @@ package org.as3commons.bytecode.proxy.impl {
 			var className:String = ClassUtils.getFullyQualifiedName(classProxyInfo.proxiedClass);
 			LOGGER.debug("Preparing to proxy class {0}", [className]);
 			var type:ByteCodeType = ByteCodeType.forName(className.replace(MultinameUtil.DOUBLE_COLON, MultinameUtil.PERIOD), applicationDomain);
+			if (type == null) {
+				throw new ProxyBuildError(ProxyBuildError.NO_BYTECODE_TYPE_FOUND_FOR_CLASS, className);
+			}
 			if (type.isFinal) {
 				throw new ProxyBuildError(ProxyBuildError.FINAL_CLASS_ERROR, className);
 			}

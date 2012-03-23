@@ -307,14 +307,6 @@ package org.as3commons.bytecode.abc {
 			var multinameIndex:int = -1;
 			if (_dupeCheck) {
 				multinameIndex = addObject(_multinamePool, _multinameLookup, multiname);
-				/*_multinamePool.every(function(element:IEquals, index:int, array:Array):Boolean {
-					if (element.equals(multiname)) {
-						multinameIndex = index;
-						return false;
-					} else {
-						return true;
-					}
-				});*/
 			}
 
 			if (multinameIndex == -1) {

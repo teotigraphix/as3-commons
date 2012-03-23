@@ -27,6 +27,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IAccessorBuilder;
 	import org.as3commons.bytecode.emit.IClassBuilder;
+	import org.as3commons.bytecode.emit.IInterfaceBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.reflect.AccessorAccess;
@@ -256,6 +257,20 @@ package org.as3commons.bytecode.emit.impl {
 			_abcBuilder.buildAndLoad();
 		}
 
+		public function testBuildInterfaceWithCustomNameSpacedProperty():void {
+			var interfaceBuilder:IInterfaceBuilder = _abcBuilder.definePackage("com.myclasses.test").defineInterface("IMyCustomNamespacedMethodInterface");
+			interfaceBuilder.defineMethod("nameSpacedMethod");
+			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(customNamespacedMethodInInterfaceBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+		}
+
+		private function customNamespacedMethodInInterfaceBuildSuccessHandler(event:Event):void {
+			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.IMyCustomNamespacedMethodInterface") as Class;
+			assertNotNull(cls);
+			var xml:XML = describeType(cls);
+			var i:int = 0;
+		}
+
 		private function customNamespcaedPropertyBuildSuccessHandler(event:Event):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyCustomNamespacedPropertyClass") as Class;
 			assertNotNull(cls);
@@ -263,7 +278,6 @@ package org.as3commons.bytecode.emit.impl {
 			assertNotNull(instance);
 			var result:Object = instance.as3commons_bytecode_proxy::nameSpacedProperty;
 			assertNotNull(result);
-
 		}
 
 		private function methodBuildSuccessHandler(event:Event):void {

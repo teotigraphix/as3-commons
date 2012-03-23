@@ -42,7 +42,7 @@ package org.as3commons.bytecode.emit.impl {
 			super();
 		}
 
-		override protected function createAccessorBuilder(name:String, type:String, initialValue:* = undefined):IAccessorBuilder {
+		override protected function createAccessorBuilder(name:String, type:String, initialValue:*=undefined):IAccessorBuilder {
 			var ab:InterfaceAccessorBuilder = new InterfaceAccessorBuilder();
 			ab.packageName = packageName;
 			ab.interfaceName = this.name;
@@ -63,7 +63,7 @@ package org.as3commons.bytecode.emit.impl {
 		override public function build(applicationDomain:ApplicationDomain):Array {
 			var methods:Array = createMethods(metadata, 4);
 			methods = methods.concat(createAccessors());
-			var classInfo:ClassInfo = createClassInfo(null, methods, 4);
+			var classInfo:ClassInfo = createClassInfo(null, methods, 4, true);
 			var instanceInfo:InstanceInfo = new InstanceInfo();
 			var ctorBuilder:ICtorBuilder = createStaticConstructor([], true);
 			instanceInfo.instanceInitializer = ctorBuilder.build();
