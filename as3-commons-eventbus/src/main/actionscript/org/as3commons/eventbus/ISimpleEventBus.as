@@ -14,12 +14,9 @@
 * limitations under the License.
 */
 package org.as3commons.eventbus {
-
-	import flash.events.Event;
-
-	public interface IEventInterceptor extends IEventBusAware {
-		function get blockEvent():Boolean;
-		function set blockEvent(value:Boolean):void;
-		function intercept(event:Event, topic:Object=null):void;
+	
+	
+	public interface ISimpleEventBus {
+		
 	}
 }

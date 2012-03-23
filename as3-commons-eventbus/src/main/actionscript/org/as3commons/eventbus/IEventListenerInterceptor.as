@@ -19,7 +19,7 @@ package org.as3commons.eventbus {
 	public interface IEventListenerInterceptor extends IEventBusAware {
 		function get blockListener():Boolean;
 		function set blockListener(value:Boolean):void;
-		function interceptListener(listener:Function, eventType:String = null, eventClass:Class = null):void;
-		function interceptListenerProxy(proxy:MethodInvoker, eventType:String = null, eventClass:Class = null):void;
+		function interceptListener(listener:Function, eventType:String=null, eventClass:Class=null, topic:Object=null):void;
+		function interceptListenerProxy(proxy:MethodInvoker, eventType:String=null, eventClass:Class=null, topic:Object=null):void;
 	}
 }

@@ -51,7 +51,7 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function intercept(event:Event):void {
+		public function intercept(event:Event, topic:Object=null):void {
 			throw new IllegalOperationError("intercept() not implemented in abstract base class");
 		}
 	}

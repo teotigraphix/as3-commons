@@ -618,7 +618,7 @@ class MockInterceptor extends AbstractEventInterceptor {
 		blockEvent = block;
 	}
 
-	override public function intercept(event:Event):void {
+	override public function intercept(event:Event, topic:Object=null):void {
 	}
 }
 
@@ -628,9 +628,9 @@ class MockListenerInterceptor extends AbstractEventListenerInterceptor {
 		blockListener = block;
 	}
 
-	override public function interceptListener(listener:Function, eventType:String=null, eventClass:Class=null):void {
+	override public function interceptListener(listener:Function, eventType:String=null, eventClass:Class=null, topic:Object=null):void {
 	}
 
-	override public function interceptListenerProxy(proxy:MethodInvoker, eventType:String=null, eventClass:Class=null):void {
+	override public function interceptListenerProxy(proxy:MethodInvoker, eventType:String=null, eventClass:Class=null, topic:Object=null):void {
 	}
 }
