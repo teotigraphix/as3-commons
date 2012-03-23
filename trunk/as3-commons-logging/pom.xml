@@ -33,7 +33,7 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:http://as3-commons.googlecode.com/svn</connection>
+        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk</connection>
         <developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-logging
         </developerConnection>
         <url>https://code.google.com/p/as3-commons/source/browse/&#35;svn/Ftrunk%2Fas3-commons-logging</url>
