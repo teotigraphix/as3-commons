@@ -26,8 +26,12 @@ package org.as3commons.eventbus.impl {
 	public class InterceptorProxy extends AbstractEventInterceptor {
 
 		public function InterceptorProxy(target:Object, methodName:String) {
+			Assert.notNull(target, "target argument must not be null");
+			Assert.hasText(methodName, "methodName argument must not be empty or null");
 			super();
-			initInterceptorProxy(target, methodName);
+			_methodInvoker = new MethodInvoker();
+			_methodInvoker.target = target;
+			_methodInvoker.method = methodName;
 		}
 
 		private var _blockEvent:Boolean;
@@ -37,22 +41,10 @@ package org.as3commons.eventbus.impl {
 		 *
 		 * @param event
 		 */
-		override public function intercept(event:Event):void {
-			_methodInvoker.arguments = [event];
+		override public function intercept(event:Event, topic:Object=null):void {
+			_methodInvoker.arguments = [event, topic];
 			_blockEvent = _methodInvoker.invoke();
 		}
 
-		/**
-		 *
-		 * @param target
-		 * @param methodName
-		 */
-		protected function initInterceptorProxy(target:Object, methodName:String):void {
-			Assert.notNull(target, "target argument must not be null");
-			Assert.hasText(methodName, "methodName argument must not be empty or null");
-			_methodInvoker = new MethodInvoker();
-			_methodInvoker.target = target;
-			_methodInvoker.method = methodName;
-		}
 	}
 }

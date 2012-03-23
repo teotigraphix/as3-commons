@@ -361,7 +361,7 @@ package org.as3commons.eventbus.impl {
 			if (_dispatchedEvents[event] != true) {
 				LOGGER.debug("Received event {0}, redispatching it", [event]);
 				dispatchEvent(event);
-			}		
+			}
 		}
 
 		/**
@@ -505,7 +505,7 @@ package org.as3commons.eventbus.impl {
 		protected function classIntercepted(eventClass:Class, event:Event, topic:Object):Boolean {
 			if (eventClassInterceptors[eventClass] != null) {
 				var interceptors:WeakLinkedList = EventBusCollectionLookup(eventClassInterceptors[eventClass]).getCollection(topic);
-				return intercept(interceptors, event);
+				return intercept(interceptors, event, topic);
 			}
 			return false;
 		}
@@ -513,7 +513,7 @@ package org.as3commons.eventbus.impl {
 		protected function classListenerIntercepted(listener:Object, topic:Object, eventClass:Class):Boolean {
 			if (eventClassListenerInterceptors[eventClass] != null) {
 				var interceptors:WeakLinkedList = EventBusCollectionLookup(eventClassListenerInterceptors[eventClass]).getCollection(topic);
-				return listenerIntercept(interceptors, listener, null, eventClass);
+				return listenerIntercept(interceptors, listener, null, eventClass, topic);
 			} else {
 				return false;
 			}
@@ -522,14 +522,14 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		protected function intercept(interceptors:WeakLinkedList, event:Event):Boolean {
+		protected function intercept(interceptors:WeakLinkedList, event:Event, topic:Object):Boolean {
 			if (interceptors != null) {
 				var iterator:WeakLinkedListIterator = WeakLinkedListIterator(interceptors.iterator());
 				while (iterator.hasNext()) {
 					iterator.next();
 					var interceptor:IEventInterceptor = IEventInterceptor(iterator.current);
 					interceptor.eventBus = this;
-					interceptor.intercept(event);
+					interceptor.intercept(event, topic);
 					if (interceptor.blockEvent) {
 						return true;
 					}
@@ -565,7 +565,7 @@ package org.as3commons.eventbus.impl {
 		 */
 		protected function invokeInterceptors(event:Event, eventClass:Class, topic:Object):Boolean {
 			var interceptorList:WeakLinkedList = interceptors.getCollection(topic);
-			if (intercept(interceptorList, event)) {
+			if (intercept(interceptorList, event, topic)) {
 				return true;
 			}
 			if (specificEventIntercepted(event, topic)) {
@@ -588,7 +588,7 @@ package org.as3commons.eventbus.impl {
 			var interceptorList:WeakLinkedList = listenerInterceptors.getCollection(topic);
 			var eventType:String = (key as String);
 			var eventClass:Class = (key as Class);
-			if (listenerIntercept(interceptorList, listener, eventType, eventClass)) {
+			if (listenerIntercept(interceptorList, listener, eventType, eventClass, topic)) {
 				return true;
 			}
 			if ((eventType != null) && (specificEventListenerIntercepted(listener, topic, eventType))) {
@@ -608,7 +608,7 @@ package org.as3commons.eventbus.impl {
 		 * @param eventClass
 		 * @return
 		 */
-		protected function listenerIntercept(interceptors:WeakLinkedList, listener:Object, eventType:String, eventClass:Class):Boolean {
+		protected function listenerIntercept(interceptors:WeakLinkedList, listener:Object, eventType:String, eventClass:Class, topic:Object):Boolean {
 			if (interceptors != null) {
 				var iterator:WeakLinkedListIterator = WeakLinkedListIterator(interceptors.iterator());
 				while (iterator.hasNext()) {
@@ -616,9 +616,9 @@ package org.as3commons.eventbus.impl {
 					var interceptor:IEventListenerInterceptor = IEventListenerInterceptor(iterator.current);
 					interceptor.eventBus = this;
 					if (listener is Function) {
-						interceptor.interceptListener((listener as Function), eventType, eventClass);
+						interceptor.interceptListener((listener as Function), eventType, eventClass, topic);
 					} else {
-						interceptor.interceptListenerProxy(MethodInvoker(listener), eventType, eventClass);
+						interceptor.interceptListenerProxy(MethodInvoker(listener), eventType, eventClass, topic);
 					}
 					if (interceptor.blockListener) {
 						return true;
@@ -750,7 +750,7 @@ package org.as3commons.eventbus.impl {
 		protected function specificEventIntercepted(event:Event, topic:Object):Boolean {
 			if (eventInterceptors[event.type] != null) {
 				var interceptors:WeakLinkedList = EventBusCollectionLookup(eventInterceptors[event.type]).getCollection(topic);
-				return intercept(interceptors, event);
+				return intercept(interceptors, event, topic);
 			} else {
 				return false;
 			}
@@ -759,7 +759,7 @@ package org.as3commons.eventbus.impl {
 		protected function specificEventListenerIntercepted(listener:Object, topic:Object, eventType:String):Boolean {
 			if (eventListenerInterceptors[eventType] != null) {
 				var interceptors:WeakLinkedList = EventBusCollectionLookup(eventListenerInterceptors[eventType]).getCollection(topic);
-				return listenerIntercept(interceptors, listener, eventType, null);
+				return listenerIntercept(interceptors, listener, eventType, null, topic);
 			} else {
 				return false;
 			}
