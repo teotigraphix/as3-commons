@@ -5,6 +5,8 @@ Note: dates are in DD.MM.YYYY format
 
 Changes in version 1.3 (??.??.2012)
 
+* Split the IEventBus interface into an ISimpleEventBus interface that only supports the regular event dispatching, all interception logic now resides in IEventBus
+* Added StaticSimpleEventbus, similar to StaticEventbus but is a static version of the ISimpleEventBus interface
 * Added optional topic argument to IEventInterceptor and IEventListenerInterceptor methods
 * Added EventListenerGuardian class (to automatically remove listeners after an event has been dispatched a specified amount of times)
 

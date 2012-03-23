@@ -64,8 +64,6 @@ package org.as3commons.eventbus.impl {
 			var proxy:MethodInvoker = new MethodInvoker();
 
 			mock(eventBus).method("removeEventListenerProxy").args("test", proxy, nullValue()).never();
-			mock(eventBus).method("removeEventInterceptor").args("test", _guardian, nullValue()).never();
-			mock(eventBus).method("removeEventListenerInterceptor").args("test", _guardian, nullValue()).never();
 
 			_guardian.maxDispatchCount = 5;
 			_guardian.interceptListenerProxy(proxy, "test");
@@ -83,12 +81,11 @@ package org.as3commons.eventbus.impl {
 			var proxy:MethodInvoker = new MethodInvoker();
 
 			mock(eventBus).method("removeEventListenerProxy").args("test", proxy, nullValue()).once();
-			mock(eventBus).method("removeEventInterceptor").args("test", _guardian, nullValue()).once();
-			mock(eventBus).method("removeEventListenerInterceptor").args("test", _guardian, nullValue()).once();
 
 			_guardian.maxDispatchCount = 5;
 			_guardian.interceptListenerProxy(proxy, "test");
 			var event:Event = new Event("test");
+			_guardian.intercept(event);
 			_guardian.intercept(event);
 			_guardian.intercept(event);
 			_guardian.intercept(event);
@@ -103,8 +100,6 @@ package org.as3commons.eventbus.impl {
 			var proxy:MethodInvoker = new MethodInvoker();
 
 			mock(eventBus).method("removeEventClassListenerProxy").args(Event, proxy, nullValue()).never();
-			mock(eventBus).method("removeEventClassInterceptor").args(Event, _guardian, nullValue()).never();
-			mock(eventBus).method("removeEventClassListenerInterceptor").args(Event, _guardian, nullValue()).never();
 
 			_guardian.maxDispatchCount = 5;
 			_guardian.interceptListenerProxy(proxy, null, Event);
@@ -122,12 +117,11 @@ package org.as3commons.eventbus.impl {
 			var proxy:MethodInvoker = new MethodInvoker();
 
 			mock(eventBus).method("removeEventClassListenerProxy").args(Event, proxy, nullValue()).once();
-			mock(eventBus).method("removeEventClassInterceptor").args(Event, _guardian, nullValue()).once();
-			mock(eventBus).method("removeEventClassListenerInterceptor").args(Event, _guardian, nullValue()).once();
 
 			_guardian.maxDispatchCount = 5;
 			_guardian.interceptListenerProxy(proxy, null, Event);
 			var event:Event = new Event("test");
+			_guardian.intercept(event);
 			_guardian.intercept(event);
 			_guardian.intercept(event);
 			_guardian.intercept(event);
