@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-	
+
 	/**
 	 * Signals that a method has been invoked at an illegal or inappropriate time. In other words, the environment
 	 * or application is not in an appropriate state for the requested operation.
@@ -22,13 +22,13 @@ package org.as3commons.lang {
 	 * @author Christophe Herreman
 	 */
 	public class IllegalStateError extends Error {
-		
+
 		/**
 		 * Constructs a new <code>IllegalStateError</code>.
 		 *
 		 * @param message the detail message that describes the cause of the error
 		 */
-		public function IllegalStateError(message:String = "") {
+		public function IllegalStateError(message:String="") {
 			super(message);
 		}
 	}
