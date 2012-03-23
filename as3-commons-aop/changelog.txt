@@ -1,0 +1,10 @@
+AS3COMMONS-AOP CHANGELOG
+========================
+
+Note: dates are in DD.MM.YYYY format
+
+
+Changes in version 1.0.0 (??.??.2011)
+-------------------------------------
+
+* Initial release
