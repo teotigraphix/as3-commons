@@ -80,7 +80,7 @@ package org.as3commons.eventbus.impl {
 			if (_guarded) {
 				return;
 			}
-			if (++_currentDispatchCount >= _maxDispatchCount) {
+			if (++_currentDispatchCount > _maxDispatchCount) {
 				for each (var info:ListenerTypeInfo in _listeners) {
 					removeListener(info.listener, info.type, info.topic);
 					info.listener = null;

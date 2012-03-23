@@ -20,7 +20,7 @@ package org.as3commons.eventbus {
 	 * @author Roland Zwaga
 	 */
 	public interface ITopicAware {
-		function get topic():*;
-		function set topic(value:*):void;
+		function get topic():Object;
+		function set topic(value:Object):void;
 	}
 }
