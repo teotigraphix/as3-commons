@@ -24,7 +24,7 @@ package org.as3commons.eventbus.impl {
 	/**
 	 * An <code>EventListenerGuardian<code> can ensure that one or more listeners are removed after a specified
 	 * amount of dispatches have been executed.<br/>
-	 * Afterwards the <code>EventListenerGuardian<code> will also remove itself from the specified <code>IEventBus</code>.
+	 * Afterwards the <code>EventListenerGuardian<code> will reject any newly added listeners.
 	 * @author Roland Zwaga
 	 */
 	public class EventListenerGuardian implements IEventInterceptor, IEventListenerInterceptor {
@@ -42,6 +42,7 @@ package org.as3commons.eventbus.impl {
 		private var _eventBus:IEventBus;
 		private var _listeners:Array = [];
 		private var _maxDispatchCount:int = 0;
+		private var _guarded:Boolean = false;
 
 		public function get blockEvent():Boolean {
 			return _blockEvent;
@@ -76,22 +77,36 @@ package org.as3commons.eventbus.impl {
 		}
 
 		public function intercept(event:Event, topic:Object=null):void {
+			if (_guarded) {
+				return;
+			}
 			if (++_currentDispatchCount >= _maxDispatchCount) {
 				for each (var info:ListenerTypeInfo in _listeners) {
 					removeListener(info.listener, info.type, info.topic);
+					info.listener = null;
+					info.topic = null;
+					info.type = null;
 				}
 				_listeners = null;
-				_eventBus = null;
+				_guarded = true;
 			}
 		}
 
 		public function interceptListener(listener:Function, eventType:String=null, eventClass:Class=null, topic:Object=null):void {
-			addListener(eventType, eventClass, listener, topic);
+			if (!_guarded) {
+				addListener(eventType, eventClass, listener, topic);
+			} else {
+				blockListener = true;
+			}
 		}
 
 
 		public function interceptListenerProxy(proxy:MethodInvoker, eventType:String=null, eventClass:Class=null, topic:Object=null):void {
-			addListener(eventType, eventClass, proxy, topic);
+			if (!_guarded) {
+				addListener(eventType, eventClass, proxy, topic);
+			} else {
+				blockListener = true;
+			}
 		}
 
 		private function addListener(eventType:String, eventClass:Class, listener:*, topic:*=null):void {
@@ -104,8 +119,6 @@ package org.as3commons.eventbus.impl {
 			if (listener is MethodInvoker) {
 				if (listeningType is String) {
 					_eventBus.removeEventListenerProxy(listeningType, listener, topic);
-					_eventBus.removeEventInterceptor(listeningType, this, topic);
-					_eventBus.removeEventListenerInterceptor(listeningType, this, topic);
 				} else {
 					_eventBus.removeEventClassListenerProxy(listeningType, listener, topic);
 					_eventBus.removeEventClassInterceptor(listeningType, this, topic);
@@ -114,12 +127,8 @@ package org.as3commons.eventbus.impl {
 			} else {
 				if (listeningType is String) {
 					_eventBus.removeEventListener(listeningType, listener, topic);
-					_eventBus.removeEventInterceptor(listeningType, this, topic);
-					_eventBus.removeEventListenerInterceptor(listeningType, this, topic);
 				} else {
 					_eventBus.removeEventClassListener(listeningType, listener, topic);
-					_eventBus.removeEventClassInterceptor(listeningType, this, topic);
-					_eventBus.removeEventClassListenerInterceptor(listeningType, this, topic);
 				}
 			}
 		}
