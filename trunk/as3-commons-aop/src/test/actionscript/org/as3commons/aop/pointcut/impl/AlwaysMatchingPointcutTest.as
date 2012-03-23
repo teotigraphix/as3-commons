@@ -1,5 +1,5 @@
 /*
- * Copyright 2007-2011 the original author or authors.
+ * Copyright 2007-2012 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.aop.pointcut.impl {
-	import org.as3commons.aop.pointcut.impl.AlwaysMatchingPointcut;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.Constructor;
 	import org.as3commons.reflect.Method;
