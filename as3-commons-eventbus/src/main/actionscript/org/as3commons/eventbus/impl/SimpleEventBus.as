@@ -28,7 +28,7 @@ package org.as3commons.eventbus.impl {
 
 	/**
 	 *
-	 * @author rolandzwaga
+	 * @inheritDoc
 	 */
 	public class SimpleEventBus implements ISimpleEventBus, IDisposable, IEventBusListener {
 
@@ -77,23 +77,23 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addEventListener(type:String, listener:Function, useWeakReference:Boolean=false, topic:Object=null):Boolean {
-			if (eventListeners[type] == null) {
-				eventListeners[type] = new EventBusCollectionLookup();
+		public function addEventListener(eventType:String, listener:Function, useWeakReference:Boolean=false, topic:Object=null):Boolean {
+			if (eventListeners[eventType] == null) {
+				eventListeners[eventType] = new EventBusCollectionLookup();
 			}
-			var listeners:EventBusCollectionLookup = EventBusCollectionLookup(eventListeners[type]);
-			var result:Boolean = internalAddListener(listeners, listener, useWeakReference, topic, type);
-			LOGGER.debug("Added IEventBusListener listener {0} for type {1} and topic {2}", [listener, type, topic]);
+			var listeners:EventBusCollectionLookup = EventBusCollectionLookup(eventListeners[eventType]);
+			var result:Boolean = internalAddListener(listeners, listener, useWeakReference, topic, eventType);
+			LOGGER.debug("Added IEventBusListener listener {0} for type {1} and topic {2}", [listener, eventType, topic]);
 			return result;
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function addEventListenerProxy(type:String, proxy:MethodInvoker, useWeakReference:Boolean=false, topic:Object=null):Boolean {
-			var proxies:EventBusCollectionLookup = eventListenerProxies[type] ||= new EventBusCollectionLookup();
-			var result:Boolean = internalAddListener(proxies, proxy, useWeakReference, topic, type);
-			LOGGER.debug("Added eventbus listenerproxy {0} for type {1}", [proxy, type]);
+		public function addEventListenerProxy(eventType:String, proxy:MethodInvoker, useWeakReference:Boolean=false, topic:Object=null):Boolean {
+			var proxies:EventBusCollectionLookup = eventListenerProxies[eventType] ||= new EventBusCollectionLookup();
+			var result:Boolean = internalAddListener(proxies, proxy, useWeakReference, topic, eventType);
+			LOGGER.debug("Added eventbus listenerproxy {0} for type {1}", [proxy, eventType]);
 			return result;
 		}
 
@@ -119,9 +119,9 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function dispatch(type:String, topic:Object=null):Boolean {
-			LOGGER.debug("Dispatching event with type {0} for topic {1}", [type, topic]);
-			return dispatchEvent(new Event(type), topic);
+		public function dispatch(eventType:String, topic:Object=null):Boolean {
+			LOGGER.debug("Dispatching event with type {0} for topic {1}", [eventType, topic]);
+			return dispatchEvent(new Event(eventType), topic);
 		}
 
 		/**
@@ -158,16 +158,16 @@ package org.as3commons.eventbus.impl {
 			}
 		}
 
-		public function getClassListenerCount(clazz:Class, topic:Object=null):uint {
-			if (classListeners[clazz] != null) {
-				return EventBusCollectionLookup(classListeners[clazz]).getCollectionCount(topic);
+		public function getClassListenerCount(eventClass:Class, topic:Object=null):uint {
+			if (classListeners[eventClass] != null) {
+				return EventBusCollectionLookup(classListeners[eventClass]).getCollectionCount(topic);
 			}
 			return 0;
 		}
 
-		public function getClassProxyListenerCount(clazz:Class, topic:Object=null):uint {
-			if (classProxyListeners[clazz] != null) {
-				return EventBusCollectionLookup(classProxyListeners[clazz]).getCollectionCount(topic);
+		public function getClassProxyListenerCount(eventClass:Class, topic:Object=null):uint {
+			if (classProxyListeners[eventClass] != null) {
+				return EventBusCollectionLookup(classProxyListeners[eventClass]).getCollectionCount(topic);
 			}
 			return 0;
 		}
@@ -237,22 +237,22 @@ package org.as3commons.eventbus.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function removeEventListener(type:String, listener:Function, topic:Object=null):void {
-			if (eventListeners[type] != null) {
-				var eventListenerCollection:EventBusCollectionLookup = EventBusCollectionLookup(eventListeners[type]);
+		public function removeEventListener(eventType:String, listener:Function, topic:Object=null):void {
+			if (eventListeners[eventType] != null) {
+				var eventListenerCollection:EventBusCollectionLookup = EventBusCollectionLookup(eventListeners[eventType]);
 				eventListenerCollection.remove(listener, topic);
-				LOGGER.debug("Removed eventbus listener {0} for type {1} and topic {2}", [listener, type, topic]);
+				LOGGER.debug("Removed eventbus listener {0} for type {1} and topic {2}", [listener, eventType, topic]);
 			}
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function removeEventListenerProxy(type:String, proxy:MethodInvoker, topic:Object=null):void {
-			if (eventListenerProxies[type] != null) {
-				var proxies:EventBusCollectionLookup = EventBusCollectionLookup(eventListenerProxies[type]);
+		public function removeEventListenerProxy(eventType:String, proxy:MethodInvoker, topic:Object=null):void {
+			if (eventListenerProxies[eventType] != null) {
+				var proxies:EventBusCollectionLookup = EventBusCollectionLookup(eventListenerProxies[eventType]);
 				proxies.remove(proxy, topic);
-				LOGGER.debug("Removed eventbus listenerproxy {0} for type {1}", [proxy, type]);
+				LOGGER.debug("Removed eventbus listenerproxy {0} for type {1}", [proxy, eventType]);
 			}
 		}
 
