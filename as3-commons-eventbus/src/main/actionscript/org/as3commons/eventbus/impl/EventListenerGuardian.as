@@ -15,10 +15,12 @@
 */
 package org.as3commons.eventbus.impl {
 	import flash.events.Event;
-
+	import flash.utils.Dictionary;
 	import org.as3commons.eventbus.IEventBus;
 	import org.as3commons.eventbus.IEventInterceptor;
 	import org.as3commons.eventbus.IEventListenerInterceptor;
+	import org.as3commons.eventbus.IEventPostProcessor;
+	import org.as3commons.lang.IDisposable;
 	import org.as3commons.reflect.MethodInvoker;
 
 	/**
@@ -27,7 +29,7 @@ package org.as3commons.eventbus.impl {
 	 * Afterwards the <code>EventListenerGuardian<code> will reject any newly added listeners.
 	 * @author Roland Zwaga
 	 */
-	public class EventListenerGuardian implements IEventInterceptor, IEventListenerInterceptor {
+	public class EventListenerGuardian implements IEventPostProcessor, IEventListenerInterceptor, IDisposable {
 
 		/**
 		 * Creates a new <code>EventListenerGuardian</code> instance.
@@ -38,11 +40,12 @@ package org.as3commons.eventbus.impl {
 
 		private var _blockEvent:Boolean = false;
 		private var _blockListener:Boolean = false;
-		private var _currentDispatchCount:int = 0;
+		private var _currentDispatchCounts:Dictionary = new Dictionary(true);
 		private var _eventBus:IEventBus;
-		private var _listeners:Array = [];
+		private var _guards:Dictionary = new Dictionary(true);
+		private var _isDisposed:Boolean;
+		private var _listeners:Dictionary = new Dictionary(true);
 		private var _maxDispatchCount:int = 0;
-		private var _guarded:Boolean = false;
 
 		public function get blockEvent():Boolean {
 			return _blockEvent;
@@ -66,6 +69,15 @@ package org.as3commons.eventbus.impl {
 
 		public function set eventBus(value:IEventBus):void {
 			_eventBus = value;
+			if (_guards[_eventBus] == null) {
+				_guards[_eventBus] = false;
+				_currentDispatchCounts[_eventBus] = 0;
+				_listeners[_eventBus] = [];
+			}
+		}
+
+		public function get isDisposed():Boolean {
+			return _isDisposed;
 		}
 
 		public function get maxDispatchCount():int {
@@ -76,24 +88,19 @@ package org.as3commons.eventbus.impl {
 			_maxDispatchCount = value;
 		}
 
-		public function intercept(event:Event, topic:Object=null):void {
-			if (_guarded) {
-				return;
-			}
-			if (++_currentDispatchCount > _maxDispatchCount) {
-				for each (var info:ListenerTypeInfo in _listeners) {
-					removeListener(info.listener, info.type, info.topic);
-					info.listener = null;
-					info.topic = null;
-					info.type = null;
-				}
+		public function dispose():void {
+			if (!_isDisposed) {
+				_isDisposed = true;
+				_currentDispatchCounts = null;
+				_eventBus = null;
+				_guards = null;
 				_listeners = null;
-				_guarded = true;
 			}
 		}
 
 		public function interceptListener(listener:Function, eventType:String=null, eventClass:Class=null, topic:Object=null):void {
-			if (!_guarded) {
+			var guarded:Boolean = _guards[_eventBus];
+			if (!guarded) {
 				addListener(eventType, eventClass, listener, topic);
 			} else {
 				blockListener = true;
@@ -102,17 +109,40 @@ package org.as3commons.eventbus.impl {
 
 
 		public function interceptListenerProxy(proxy:MethodInvoker, eventType:String=null, eventClass:Class=null, topic:Object=null):void {
-			if (!_guarded) {
+			var guarded:Boolean = _guards[_eventBus];
+			if (!guarded) {
 				addListener(eventType, eventClass, proxy, topic);
 			} else {
 				blockListener = true;
 			}
 		}
 
+		public function postProcess(event:Event, wasIntercepted:Boolean, topic:Object=null):void {
+			var guarded:Boolean = _guards[_eventBus];
+			if (guarded) {
+				return;
+			}
+			var currentCount:int = _currentDispatchCounts[_eventBus];
+			if (++currentCount > _maxDispatchCount) {
+				var listeners:Array = _listeners[_eventBus];
+				for each (var info:ListenerTypeInfo in listeners) {
+					removeListener(info.listener, info.type, info.topic);
+					info.listener = null;
+					info.topic = null;
+					info.type = null;
+				}
+				listeners.length = 0;
+				_listeners[_eventBus] = null;
+				_guards[_eventBus] = true;
+			}
+			_currentDispatchCounts[_eventBus] = currentCount;
+		}
+
 		private function addListener(eventType:String, eventClass:Class, listener:*, topic:*=null):void {
 			var type:* = (eventType != null) ? eventType : eventClass;
 			var info:ListenerTypeInfo = new ListenerTypeInfo(listener, type, topic);
-			_listeners[_listeners.length] = info;
+			var listeners:Array = _listeners[_eventBus];
+			listeners[listeners.length] = info;
 		}
 
 		private function removeListener(listener:*, listeningType:*, topic:*=null):void {
@@ -121,7 +151,7 @@ package org.as3commons.eventbus.impl {
 					_eventBus.removeEventListenerProxy(listeningType, listener, topic);
 				} else {
 					_eventBus.removeEventClassListenerProxy(listeningType, listener, topic);
-					_eventBus.removeEventClassInterceptor(listeningType, this, topic);
+					_eventBus.removeEventClassPostProcessor(listeningType, this, topic);
 					_eventBus.removeEventClassListenerInterceptor(listeningType, this, topic);
 				}
 			} else {
