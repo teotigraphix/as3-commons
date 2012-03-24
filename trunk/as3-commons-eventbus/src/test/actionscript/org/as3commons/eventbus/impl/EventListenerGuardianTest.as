@@ -68,10 +68,10 @@ package org.as3commons.eventbus.impl {
 			_guardian.maxDispatchCount = 5;
 			_guardian.interceptListenerProxy(proxy, "test");
 			var event:Event = new Event("test");
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
 
 			verify(eventBus);
 		}
@@ -85,12 +85,11 @@ package org.as3commons.eventbus.impl {
 			_guardian.maxDispatchCount = 5;
 			_guardian.interceptListenerProxy(proxy, "test");
 			var event:Event = new Event("test");
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
 
 			verify(eventBus);
 		}
@@ -104,10 +103,10 @@ package org.as3commons.eventbus.impl {
 			_guardian.maxDispatchCount = 5;
 			_guardian.interceptListenerProxy(proxy, null, Event);
 			var event:Event = new Event("test");
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
 
 			verify(eventBus);
 		}
@@ -121,12 +120,11 @@ package org.as3commons.eventbus.impl {
 			_guardian.maxDispatchCount = 5;
 			_guardian.interceptListenerProxy(proxy, null, Event);
 			var event:Event = new Event("test");
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
-			_guardian.intercept(event);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
+			_guardian.postProcess(event, false);
 
 			verify(eventBus);
 		}

@@ -15,18 +15,22 @@
 */
 package org.as3commons.eventbus.impl {
 	import flash.events.Event;
+	import flash.utils.Dictionary;
 
-	import org.as3commons.eventbus.ITopicAware;
+	import org.as3commons.eventbus.IEventBus;
 
 	/**
-	 *
+	 * Limits a specific listener or lister proxy to the specified dispatch count. After the event has been dispatched the specified
+	 * amount of times, the listener will be removed from the <code>IEventBus</code>.
 	 * @author Roland Zwaga
 	 */
-	public class EventListenerLimiter extends AbstractEventInterceptor implements ITopicAware {
+	public class EventListenerLimiter extends AbstractEventPostProcessor {
 
 		private var _maxDispatchCount:int = 0;
-		private var _currentDispatchCount:int = 0;
+		private var _currentDispatchCounts:Dictionary = new Dictionary(true);
 		private var _topic:Object;
+		private var _listener:*;
+		private var _isClassListener:Boolean;
 
 		/**
 		 * Creates a new <code>EventListenerLimiter</code> instance.
@@ -35,12 +39,27 @@ package org.as3commons.eventbus.impl {
 			super();
 		}
 
-		public function get currentDispatchCount():int {
-			return _currentDispatchCount;
+		override public function set eventBus(value:IEventBus):void {
+			super.eventBus = value;
+			if (_currentDispatchCounts[value] == null) {
+				_currentDispatchCounts[value] = 0;
+			}
 		}
 
-		public function set currentDispatchCount(value:int):void {
-			_currentDispatchCount = value;
+		public function get isClassListener():Boolean {
+			return _isClassListener;
+		}
+
+		public function set isClassListener(value:Boolean):void {
+			_isClassListener = value;
+		}
+
+		public function get listener():* {
+			return _listener;
+		}
+
+		public function set listener(value:*):void {
+			_listener = value;
 		}
 
 		public function get maxDispatchCount():int {
@@ -51,18 +70,29 @@ package org.as3commons.eventbus.impl {
 			_maxDispatchCount = value;
 		}
 
-		override public function intercept(event:Event, topic:Object=null):void {
-			if (++_currentDispatchCount > _maxDispatchCount) {
-
+		override public function postProcess(event:Event, wasIntercepted:Boolean, topic:Object=null):void {
+			if (_listener == null) {
+				return;
 			}
+			var currentDispatchCount:int = _currentDispatchCounts[eventBus];
+			if (++currentDispatchCount > _maxDispatchCount) {
+				if (_listener is Function) {
+					if (_isClassListener) {
+						eventBus.removeEventClassListener(Object(event).constructor as Class, _listener, topic);
+					} else {
+						eventBus.removeEventListener(event.type, _listener, topic);
+					}
+				} else {
+					if (_isClassListener) {
+						eventBus.removeEventClassListenerProxy(Object(event).constructor as Class, _listener, topic);
+					} else {
+						eventBus.removeEventListenerProxy(event.type, _listener, topic);
+					}
+				}
+				currentDispatchCount = 0;
+			}
+			_currentDispatchCounts[eventBus] = currentDispatchCount;
 		}
 
-		public function get topic():Object {
-			return _topic;
-		}
-
-		public function set topic(value:Object):void {
-			_topic = value;
-		}
 	}
 }
