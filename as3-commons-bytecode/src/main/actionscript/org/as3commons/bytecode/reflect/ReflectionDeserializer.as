@@ -108,6 +108,12 @@ package org.as3commons.bytecode.reflect {
 			include "../io/readU32.as.tmpl";
 			var metadataCount:int = result;
 			var metadatas:Array = [];
+			var metadataInstance:Metadata;
+			var keyValuePairCount:int;
+			var keys:Array;
+			var i:int;
+			var len:int;
+			var key:String;
 			while (metadataCount--) {
 				// metadata_info  
 				// { 
@@ -124,25 +130,26 @@ package org.as3commons.bytecode.reflect {
 				// So, if the item_count is 3, that means you will get three keys followed by three values. The keys
 				// and values match up with each other in index, so the first key matches the first value, second key
 				// matches the second value, etc.
-				var metadataInstance:Metadata = new Metadata("");
+				metadataInstance = new Metadata("");
 				metadatas[metadatas.length] = metadataInstance;
 
 				include "../io/readU32.as.tmpl";
 				metadataInstance.as3commons_reflect::setName(constantPool.stringPool[result]);
 
 				include "../io/readU32.as.tmpl";
-				var keyValuePairCount:int = result;
-				var keys:Array = [];
+				keyValuePairCount = result;
+				keys = [];
 
 				// Suck out the keys first
 				while (keyValuePairCount--) {
 					include "../io/readU32.as.tmpl";
-					var key:String = constantPool.stringPool[result];
+					key = constantPool.stringPool[result];
 					keys[keys.length] = key;
 				}
 
+				len = keys.length;
 				// Map keys to values in another loop
-				for each (key in keys) {
+				for (i = 0; i < len; ++i) {
 					include "../io/readU32.as.tmpl";
 					metadataInstance.arguments[metadataInstance.arguments.length] = new MetadataArgument(key, constantPool.stringPool[result]);
 				}
@@ -155,6 +162,21 @@ package org.as3commons.bytecode.reflect {
 			var result:int;
 			include "../io/readU32.as.tmpl";
 			var itemCount:int = result;
+			var methodInfo:ByteCodeMethod;
+			var paramCount:int;
+			var classMultiname:BaseMultiname;
+			var fullName:String;
+			var classMultinameAsMultiname:Multiname;
+			var ns:LNamespace;
+			var params:Array;
+			var newParam:ByteCodeParameter;
+			var flags:uint;
+			var optionInfoCount:int;
+			var optionInfoIndex:int;
+			var defaultValue:*;
+			var param:ByteCodeParameter;
+			var nameIndex:int;
+			var nameCount:uint;
 			while (itemCount--) {
 				// method_info 
 				// { 
@@ -166,20 +188,17 @@ package org.as3commons.bytecode.reflect {
 				//  option_info options 
 				//  param_info param_names 
 				// }
-				var methodInfo:ByteCodeMethod = new ByteCodeMethod(null, "", false, [], null, applicationDomain);
+				methodInfo = new ByteCodeMethod(null, "", false, [], null, applicationDomain);
 				methods[methods.length] = methodInfo;
 
 				include "../io/readU32.as.tmpl";
-				var paramCount:int = result;
+				paramCount = result;
 				include "../io/readU32.as.tmpl";
-				var classMultiname:BaseMultiname = constantPool.multinamePool[result];
+				classMultiname = constantPool.multinamePool[result];
 				//convertToQualifiedName:
-				var fullName:String;
-				var classMultinameAsMultiname:Multiname;
-				var ns:LNamespace;
 				include "convertToQualifiedName.as.tmpl";
 				methodInfo.as3commons_reflect::setReturnType(fullName);
-				var params:Array = [];
+				params = [];
 				while (paramCount--) {
 					include "../io/readU32.as.tmpl";
 
@@ -187,13 +206,13 @@ package org.as3commons.bytecode.reflect {
 					classMultiname = constantPool.multinamePool[result];
 					fullName = "";
 					include "convertToQualifiedName.as.tmpl";
-					var newParam:ByteCodeParameter = new ByteCodeParameter(fullName, applicationDomain);
+					newParam = new ByteCodeParameter(fullName, applicationDomain);
 					params[params.length] = newParam;
 				}
 
 				include "../io/readU32.as.tmpl";
 
-				var flags:uint = (255 & byteStream[byteStream.position++]);
+				flags = (255 & byteStream[byteStream.position++]);
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_OPTIONAL) == true) {
 					// option_info  
 					// { 
@@ -206,19 +225,19 @@ package org.as3commons.bytecode.reflect {
 					//  u8  kind 
 					// }
 					include "../io/readU32.as.tmpl";
-					var optionInfoCount:int = result;
-					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
+					optionInfoCount = result;
+					for (optionInfoIndex = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
 						include "../io/readU32.as.tmpl";
-						var defaultValue:* = constantPool.getConstantPoolItem((255 & byteStream[byteStream.position++]), result);
-						var param:ByteCodeParameter = params[params.length - (optionInfoCount - optionInfoIndex)];
+						defaultValue = constantPool.getConstantPoolItem((255 & byteStream[byteStream.position++]), result);
+						param = params[params.length - (optionInfoCount - optionInfoIndex)];
 						param.as3commons_reflect::setIsOptional(true);
 						param.as3commons_reflect::setDefaultValue(defaultValue);
 					}
 				}
 
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_PARAM_NAMES) == true) {
-					var nameIndex:int = 0;
-					var nameCount:uint = params.length;
+					nameIndex = 0;
+					nameCount = params.length;
 					while (nameCount--) {
 						include "../io/readU32.as.tmpl";
 						ByteCodeParameter(params[nameIndex++]).as3commons_reflect::setName(constantPool.stringPool[result]);
@@ -237,6 +256,32 @@ package org.as3commons.bytecode.reflect {
 			include "../io/readU32.as.tmpl";
 			var traitCount:int = result;
 			var methods:Array = [];
+			var traitName:BaseMultiname;
+			var traitMultiname:QualifiedName;
+			var traitKindValue:int;
+			var namedMultiname:BaseMultiname;
+			var metaDataContainer:MetadataContainer;
+			var qualifiedName:QualifiedName;
+			var fullName:String;
+			var multinamePool:Array = pool.multinamePool;
+			var lastIdx:int;
+			var fullNSName:Array;
+			var getterSetterSignature:String;
+			var kindMasked:int;
+			var classMultiname:BaseMultiname;
+			var typeFullName:String;
+			var classMultinameAsMultiname:Multiname;
+			var ns:LNamespace;
+			var variable:ByteCodeVariable;
+			var constant:ByteCodeConstant;
+			var method:ByteCodeMethod;
+			var accAccess:AccessorAccess;
+			var accessorType:String;
+			var accessorMethod:ByteCodeMethod;
+			var numberOfTraitMetadataItems:int;
+			var md:Metadata;
+			var accessor:ByteCodeAccessor;
+			var member:Object;
 			while (traitCount--) {
 				var trait:TraitInfo;
 				// traits_info  
@@ -248,30 +293,28 @@ package org.as3commons.bytecode.reflect {
 				//  u30 metadata[metadata_count] 
 				// }
 				include "../io/readU32.as.tmpl";
-				var traitName:BaseMultiname = pool.multinamePool[result];
-				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
-				var traitKindValue:int = (255 & byteStream[byteStream.position++]);
-				var namedMultiname:BaseMultiname = null;
-				var metaDataContainer:MetadataContainer = null;
-				var qualifiedName:QualifiedName;
-				var fullName:String = ((instanceInfo != null)) ? instanceInfo.fullName : "";
+				traitName = multinamePool[result];
+				traitMultiname = MultinameUtil.convertToQualifiedName(traitName);
+				traitKindValue = (255 & byteStream[byteStream.position++]);
+				namedMultiname = null;
+				metaDataContainer = null;
+				fullName = ((instanceInfo != null)) ? instanceInfo.fullName : "";
 				if (traitMultiname.nameSpace.name == "*") {
-					var lastIdx:int = fullName.lastIndexOf(MultinameUtil.PERIOD);
-					var fullNSName:Array = fullName.split("");
+					lastIdx = fullName.lastIndexOf(MultinameUtil.PERIOD);
+					fullNSName = fullName.split("");
 					fullNSName[lastIdx] = MultinameUtil.SINGLE_COLON;
 					traitMultiname.nameSpace.name = fullNSName.join("");
 				}
-				var getterSetterSignature:String = "";
-				var kindMasked:int = traitKindValue & 0xF;
+				getterSetterSignature = "";
+				kindMasked = traitKindValue & 0xF;
 				if (kindMasked == 0) {
 					include "../io/readU32.as.tmpl";
 					include "../io/readU32.as.tmpl";
-					var classMultiname:BaseMultiname = pool.multinamePool[result];
-					var typeFullName:String;
+					classMultiname = multinamePool[result];
 					if (!(classMultiname is QualifiedName)) {
 						if (classMultiname is Multiname) {
-							var classMultinameAsMultiname:Multiname = classMultiname as Multiname;
-							var ns:LNamespace = classMultinameAsMultiname.namespaceSet.namespaces[0];
+							classMultinameAsMultiname = classMultiname as Multiname;
+							ns = classMultinameAsMultiname.namespaceSet.namespaces[0];
 							if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
 								if (classMultinameAsMultiname.name != '*') {
 									if ((ns.name != null) && (ns.name.length > 0)) {
@@ -290,7 +333,7 @@ package org.as3commons.bytecode.reflect {
 						typeFullName = (classMultiname as QualifiedName).fullName;
 					}
 
-					var variable:ByteCodeVariable = new ByteCodeVariable(traitMultiname.name, typeFullName, fullName, false, applicationDomain);
+					variable = new ByteCodeVariable(traitMultiname.name, typeFullName, fullName, false, applicationDomain);
 					variable.as3commons_reflect::setIsStatic(isStatic);
 					variable.as3commons_reflect::setScopeName(MultinameUtil.extractInterfaceScopeFromFullName(traitMultiname.name));
 					metaDataContainer = variable;
@@ -329,7 +372,7 @@ package org.as3commons.bytecode.reflect {
 						qualifiedName = namedMultiname as QualifiedName;
 					}
 
-					var constant:ByteCodeConstant = new ByteCodeConstant(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
+					constant = new ByteCodeConstant(traitMultiname.name, qualifiedName.fullName, fullName, false, applicationDomain);
 					constant.as3commons_reflect::setIsStatic(isStatic);
 					metaDataContainer = constant;
 					if (instanceInfo != null) {
@@ -342,7 +385,7 @@ package org.as3commons.bytecode.reflect {
 				} else if ((kindMasked == 1) || (kindMasked == 5)) {
 					include "../io/readU32.as.tmpl";
 					include "../io/readU32.as.tmpl";
-					var method:ByteCodeMethod = methodInfos[result];
+					method = methodInfos[result];
 					method.as3commons_reflect::setIsStatic(isStatic);
 					methods[methods.length] = method;
 					method.as3commons_reflect::setName(traitMultiname.name);
@@ -359,7 +402,7 @@ package org.as3commons.bytecode.reflect {
 					getterSetterSignature = (kindMasked == 2) ? GETTER_SIGNATURE : SETTER_SIGNATURE;
 					include "../io/readU32.as.tmpl";
 					include "../io/readU32.as.tmpl";
-					var accessorMethod:ByteCodeMethod = methodInfos[result];
+					accessorMethod = methodInfos[result];
 					if (instanceInfo != null) {
 						for each (var acc:ByteCodeAccessor in instanceInfo.accessors) {
 							if (acc.name == traitMultiname.name) {
@@ -374,8 +417,8 @@ package org.as3commons.bytecode.reflect {
 							}
 						}
 						if (metaDataContainer == null) {
-							var accAccess:AccessorAccess = (getterSetterSignature == GETTER_SIGNATURE) ? AccessorAccess.READ_ONLY : AccessorAccess.WRITE_ONLY;
-							var accessorType:String = '';
+							accAccess = (getterSetterSignature == GETTER_SIGNATURE) ? AccessorAccess.READ_ONLY : AccessorAccess.WRITE_ONLY;
+							accessorType = '';
 							if (accAccess === AccessorAccess.READ_ONLY) {
 								accessorType = accessorMethod.as3commons_reflect::returnTypeName;
 							} else {
@@ -383,7 +426,7 @@ package org.as3commons.bytecode.reflect {
 									accessorType = ByteCodeParameter(accessorMethod.parameters[0]).as3commons_reflect::typeName;
 								}
 							}
-							var accessor:ByteCodeAccessor = new ByteCodeAccessor(traitMultiname.name, accAccess, accessorType, instanceInfo.fullName, false, instanceInfo.applicationDomain);
+							accessor = new ByteCodeAccessor(traitMultiname.name, accAccess, accessorType, instanceInfo.fullName, false, instanceInfo.applicationDomain);
 							if (getterSetterSignature == GETTER_SIGNATURE) {
 								accessor.as3commons_reflect::setGetterMethod(accessorMethod);
 							} else {
@@ -421,10 +464,10 @@ package org.as3commons.bytecode.reflect {
 				// contains indices into the metadata array of the abcFile." 
 				if (traitKindValue & (TraitAttributes.METADATA.bitMask << 4)) {
 					include "../io/readU32.as.tmpl";
-					var numberOfTraitMetadataItems:int = result;
+					numberOfTraitMetadataItems = result;
 					while (numberOfTraitMetadataItems--) {
 						include "../io/readU32.as.tmpl";
-						var md:Metadata = metadata[result];
+						md = metadata[result];
 						metaDataContainer.addMetadata(md);
 						if (metaDataContainer is ByteCodeType) {
 							typeCache.as3commons_reflect::addToMetadataCache(md.name, ByteCodeType(metaDataContainer).fullName);
@@ -443,7 +486,7 @@ package org.as3commons.bytecode.reflect {
 				}
 
 				if ((metaDataContainer is ByteCodeMethod) || (metaDataContainer is ByteCodeAccessor) || (metaDataContainer is ByteCodeConstant) || (metaDataContainer is ByteCodeVariable)) {
-					var member:Object = Object(metaDataContainer);
+					member = Object(metaDataContainer);
 					member.as3commons_reflect::setIsFinal(Boolean((traitKindValue >> 4) & TraitAttributes.FINAL.bitMask));
 					member.as3commons_reflect::setIsOverride(Boolean((traitKindValue >> 4) & TraitAttributes.OVERRIDE.bitMask));
 				}
@@ -457,6 +500,18 @@ package org.as3commons.bytecode.reflect {
 			var classCount:int = result;
 			var classCount2:int = result;
 			var instances:Array = [];
+			var instanceInfo:ByteCodeType;
+			var classMultiname:BaseMultiname;
+			var fullName:String;
+			var instanceName:String;
+			var classMultinameAsMultiname:Multiname;
+			var superName:QualifiedName;
+			var ns:LNamespace;
+			var instanceInfoFlags:uint;
+			var interfaceCount:int;
+			var classNames:Array;
+			var method:ByteCodeMethod;
+			var constr:ByteCodeConstructor;
 			while (classCount--) {
 				// instance_info  
 				// { 
@@ -480,7 +535,7 @@ package org.as3commons.bytecode.reflect {
 				//  name 
 				//      The name field is an index into the multiname array of the constant pool; it provides a name for the 
 				//      class. The entry specified must be a QName. 
-				var instanceInfo:ByteCodeType = new ByteCodeType(applicationDomain, input, constantPool);
+				instanceInfo = new ByteCodeType(applicationDomain, input, constantPool);
 
 				// The AVM2 spec dictates that this should always be a QualifiedName, but when parsing SWFs I have come across
 				// Multinames with single namespaces (which are essentially QualifiedNames - the only reason to be a multiname
@@ -493,13 +548,11 @@ package org.as3commons.bytecode.reflect {
 				//      class. The entry specified must be a QName.
 				include "../io/readU32.as.tmpl";
 				//MultinameUtil.convertToQualifiedName():
-				var classMultiname:BaseMultiname = constantPool.multinamePool[result];
-				var fullName:String;
-				var instanceName:String;
+				classMultiname = constantPool.multinamePool[result];
 				if (!(classMultiname is QualifiedName)) {
 					if (classMultiname is Multiname) {
-						var classMultinameAsMultiname:Multiname = classMultiname as Multiname;
-						var ns:LNamespace = classMultinameAsMultiname.namespaceSet.namespaces[0];
+						classMultinameAsMultiname = classMultiname as Multiname;
+						ns = classMultinameAsMultiname.namespaceSet.namespaces[0];
 						if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
 							if (classMultinameAsMultiname.name != '*') {
 								if ((ns.name != null) && (ns.name.length > 0)) {
@@ -530,9 +583,9 @@ package org.as3commons.bytecode.reflect {
 				instances[instances.length] = instanceInfo;
 
 				include "../io/readU32.as.tmpl";
-				var superName:QualifiedName = constantPool.multinamePool[result];
+				superName = constantPool.multinamePool[result];
 				instanceInfo.extendsClasses[instanceInfo.extendsClasses.length] = QualifiedName(superName).fullName;
-				var instanceInfoFlags:uint = (255 & byteStream[byteStream.position++]);
+				instanceInfoFlags = (255 & byteStream[byteStream.position++]);
 				instanceInfo.isFinal = ClassConstant.FINAL.present(instanceInfoFlags);
 				instanceInfo.isInterface = ClassConstant.INTERFACE.present(instanceInfoFlags);
 				instanceInfo.as3commons_reflect::setIsProtected(ClassConstant.PROTECTED_NAMESPACE.present(instanceInfoFlags));
@@ -542,7 +595,7 @@ package org.as3commons.bytecode.reflect {
 					instanceInfo.as3commons_reflect::setProtectedNamespace(LNamespace(constantPool.namespacePool[result]).name);
 				}
 				include "../io/readU32.as.tmpl";
-				var interfaceCount:int = result;
+				interfaceCount = result;
 				while (interfaceCount--) {
 					include "../io/readU32.as.tmpl";
 					classMultiname = constantPool.multinamePool[result];
@@ -550,7 +603,6 @@ package org.as3commons.bytecode.reflect {
 					include "convertToQualifiedName.as.tmpl";
 					if (fullName != null) {
 						instanceInfo.interfaces[instanceInfo.interfaces.length] = fullName;
-						var classNames:Array;
 						if (!typeCache.interfaceLookup.hasOwnProperty(fullName)) {
 							classNames = [];
 							typeCache.interfaceLookup[fullName] = classNames;
@@ -561,14 +613,15 @@ package org.as3commons.bytecode.reflect {
 					}
 				}
 				include "../io/readU32.as.tmpl";
-				var method:ByteCodeMethod = methods[result];
-				var constr:ByteCodeConstructor = new ByteCodeConstructor(instanceInfo.fullName, applicationDomain, method.parameters);
+				method = methods[result];
+				constr = new ByteCodeConstructor(instanceInfo.fullName, applicationDomain, method.parameters);
 				instanceInfo.as3commons_reflect::setInstanceConstructor(method);
 				instanceInfo.constructor = constr;
 				instanceInfo.methods = readTraitsInfo(instances, instanceInfo, constantPool, methods, metadatas, false, typeCache, applicationDomain);
 			}
 
 			var classIndex:int = 0;
+			var classInfo:ByteCodeType;
 			while (classCount2--) {
 				// class_info  
 				// { 
@@ -576,7 +629,7 @@ package org.as3commons.bytecode.reflect {
 				//  u30 trait_count 
 				//  traits_info traits[trait_count] 
 				// }
-				var classInfo:ByteCodeType = instances[classIndex++];
+				classInfo = instances[classIndex++];
 				include "../io/readU32.as.tmpl";
 				classInfo.as3commons_reflect::setStaticConstructor(methods[result]);
 				classInfo.methods = classInfo.methods.concat(readTraitsInfo(instances, classInfo, constantPool, methods, metadatas, true, typeCache, applicationDomain));
@@ -591,6 +644,7 @@ package org.as3commons.bytecode.reflect {
 
 			include "../io/readU32.as.tmpl";
 			var methodBodyCount:int = result;
+			var exceptionCount:int;
 			while (methodBodyCount--) {
 				include "../io/readU32.as.tmpl";
 				method = methods[result];
@@ -608,7 +662,7 @@ package org.as3commons.bytecode.reflect {
 				byteStream.position += method.bodyLength;
 
 				include "../io/readU32.as.tmpl";
-				var exceptionCount:int = result;
+				exceptionCount = result;
 				while (exceptionCount--) {
 					include "../io/readU32.as.tmpl";
 					include "../io/readU32.as.tmpl";
@@ -619,11 +673,14 @@ package org.as3commons.bytecode.reflect {
 				//Completely skip traits info
 				include "../io/readU32.as.tmpl";
 				var traitCount:int = result;
+				var traitKindValue:uint;
+				var vindex:uint;
+				var vkind:uint;
 				while (traitCount--) {
 					include "../io/readU32.as.tmpl";
-					var traitKindValue:uint = (255 & byteStream[byteStream.position++]) & 0xF;
-					var vindex:uint = 0;
-					var vkind:uint = 0;
+					traitKindValue = (255 & byteStream[byteStream.position++]) & 0xF;
+					vindex = 0;
+					vkind = 0;
 					if ((traitKindValue == 0) || (traitKindValue == 6)) {
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";

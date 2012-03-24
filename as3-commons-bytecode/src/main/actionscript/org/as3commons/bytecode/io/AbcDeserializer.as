@@ -424,19 +424,23 @@ package org.as3commons.bytecode.io {
 				var keyValuePairCount:int = AbcSpec.readU30(byteStream);
 				var keys:Array = [];
 
+				var key:String;
+				var keyIndex:int;
 				// Suck out the keys first
-				for (var keyIndex:int = 0; keyIndex < keyValuePairCount; ++keyIndex) {
-					var key:String = pool.stringPool[AbcSpec.readU30(byteStream)];
+				for (keyIndex = 0; keyIndex < keyValuePairCount; ++keyIndex) {
+					key = pool.stringPool[AbcSpec.readU30(byteStream)];
 					CONFIG::debug {
 						Assert.notNull(key);
 					}
 					keys[keys.length] = key;
 				}
 
+				var value:String;
+				var currentKey:String;
 				// Map keys to values in another loop
-				for each (var currentKey:String in keys) {
+				for each (currentKey in keys) {
 					// Note that if a key is zero, then this is a keyless entry and only carries a value (AVM2 overview, page 27 under 4.6 metadata_info) 
-					var value:String = pool.stringPool[AbcSpec.readU30(byteStream)];
+					value = pool.stringPool[AbcSpec.readU30(byteStream)];
 					CONFIG::debug {
 						Assert.notNull(value);
 					}
