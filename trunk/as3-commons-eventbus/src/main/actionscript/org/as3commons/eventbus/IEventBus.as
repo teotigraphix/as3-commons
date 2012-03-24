@@ -15,7 +15,6 @@
  */
 package org.as3commons.eventbus {
 	import flash.events.Event;
-
 	import org.as3commons.reflect.MethodInvoker;
 
 	/**
@@ -45,20 +44,34 @@ package org.as3commons.eventbus {
 		function addEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object=null):void;
 
 		/**
-		 * Registers the specified <code>IEventInterceptor</code> to intercept events of the specified type, and optionally for the specified topic.
-		 * @param type The specified event type
+		 *
+		 * @param eventClass
+		 * @param eventPostProcessor
+		 */
+		function addEventClassPostProcessor(eventClass:Class, eventPostProcessor:IEventPostProcessor, topic:Object=null):void;
+
+		/**
+		 * Registers the specified <code>IEventInterceptor</code> to intercept events of the specified eventType, and optionally for the specified topic.
+		 * @param eventType The specified event eventType
 		 * @param interceptor The specified <code>IEventInterceptor</code>
 		 * @param topic an optional topic for which the specified <code>IEventInterceptor</code> will be registered.
 		 */
-		function addEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object=null):void;
+		function addEventInterceptor(eventType:String, interceptor:IEventInterceptor, topic:Object=null):void;
 
 		/**
-		 * Registers the specified <code>IEventListenerInterceptor</code> to intercept listeners for the specified event type, optionally for the specified topic.
-		 * @param type The specified event type
+		 * Registers the specified <code>IEventListenerInterceptor</code> to intercept listeners for the specified event eventType, optionally for the specified topic.
+		 * @param eventType The specified event eventType
 		 * @param interceptor The specified <code>IEventListenerInterceptor</code>
 		 * @param topic an optional topic for which the specified <code>IEventListenerInterceptor</code> will be registered.
 		 */
-		function addEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object=null):void;
+		function addEventListenerInterceptor(eventType:String, interceptor:IEventListenerInterceptor, topic:Object=null):void;
+
+		/**
+		 *
+		 * @param eventType
+		 * @param eventPostProcessor
+		 */
+		function addEventPostProcessor(eventType:String, eventPostProcessor:IEventPostProcessor, topic:Object=null):void;
 
 		/**
 		 * Registers the specified <code>IEventInterceptor</code> to intercept all events, optionally for the specified topic.
@@ -76,11 +89,17 @@ package org.as3commons.eventbus {
 
 		/**
 		 *
-		 * @param clazz
+		 * @param eventPostProcessor
+		 */
+		function addPostProcessor(eventPostProcessor:IEventPostProcessor, topic:Object=null):void;
+
+		/**
+		 *
+		 * @param eventClass
 		 * @param topic
 		 * @return
 		 */
-		function getClassInterceptorCount(clazz:Class, topic:Object=null):uint;
+		function getClassInterceptorCount(eventClass:Class, topic:Object=null):uint;
 
 		/**
 		 *
@@ -121,6 +140,29 @@ package org.as3commons.eventbus {
 		function getListenerInterceptorCount(topic:Object=null):uint;
 
 		/**
+		 *
+		 * @param topic
+		 * @return
+		 */
+		function getPostProcessorCount(topic:Object=null):uint;
+
+		/**
+		 *
+		 * @param eventType
+		 * @param topic
+		 * @return
+		 */
+		function getEventPostProcessorCount(eventType:String, topic:Object=null):uint;
+
+		/**
+		 *
+		 * @param eventClass
+		 * @param topic
+		 * @return
+		 */
+		function getEventClassPostProcessorCount(eventClass:Class, topic:Object=null):uint;
+
+		/**
 		 * Removes all global, event and class specific interceptors.
 		 * @param topic
 		 */
@@ -143,20 +185,35 @@ package org.as3commons.eventbus {
 		function removeEventClassListenerInterceptor(eventClass:Class, interceptor:IEventListenerInterceptor, topic:Object=null):void;
 
 		/**
-		 * Removes the specified <code>IEventInterceptor</code> for events of the specified type, and optionally for the specified topic.
-		 * @param type The specified event type
+		 *
+		 * @param postProcessor
+		 * @param topic
+		 */
+		function removeEventClassPostProcessor(eventClass:Class, postProcessor:IEventPostProcessor, topic:Object=null):void;
+
+		/**
+		 * Removes the specified <code>IEventInterceptor</code> for events of the specified eventType, and optionally for the specified topic.
+		 * @param eventType The specified event eventType
 		 * @param interceptor The specified <code>IEventInterceptor</code>
 		 * @param topic an optional topic for which the specified <code>IEventInterceptor</code> was registered.
 		 */
-		function removeEventInterceptor(type:String, interceptor:IEventInterceptor, topic:Object=null):void;
+		function removeEventInterceptor(eventType:String, interceptor:IEventInterceptor, topic:Object=null):void;
 
 		/**
-		 * Removes the specified <code>IEventListenerInterceptor</code> for listeners for the specified event type, optionally for the specified topic.
-		 * @param type The specified event type
+		 * Removes the specified <code>IEventListenerInterceptor</code> for listeners for the specified event eventType, optionally for the specified topic.
+		 * @param eventType The specified event eventType
 		 * @param interceptor The specified <code>IEventListenerInterceptor</code>
 		 * @param topic an optional topic for which the specified <code>IEventListenerInterceptor</code> will be registered.
 		 */
-		function removeEventListenerInterceptor(type:String, interceptor:IEventListenerInterceptor, topic:Object=null):void;
+		function removeEventListenerInterceptor(eventType:String, interceptor:IEventListenerInterceptor, topic:Object=null):void;
+
+		/**
+		 *
+		 * @param eventType
+		 * @param postProcessor
+		 * @param topic
+		 */
+		function removeEventPostProcessor(eventType:String, postProcessor:IEventPostProcessor, topic:Object=null):void;
 
 		/**
 		 * Removes the specified <code>IEventInterceptor</code> for all events, optionally for the specified topic.
@@ -171,5 +228,12 @@ package org.as3commons.eventbus {
 		 * @param topic an optional topic for which the specified <code>IEventListenerInterceptor</code> will be registered.
 		 */
 		function removeListenerInterceptor(interceptor:IEventListenerInterceptor, topic:Object=null):void;
+
+		/**
+		 *
+		 * @param postProcessor
+		 * @param topic
+		 */
+		function removePostProcessor(postProcessor:IEventPostProcessor, topic:Object=null):void;
 	}
 }

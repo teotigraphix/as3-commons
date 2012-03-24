@@ -48,18 +48,18 @@ package org.as3commons.eventbus {
 		function addEventClassListenerProxy(eventClass:Class, proxy:MethodInvoker, useWeakReference:Boolean=false, topic:Object=null):Boolean;
 
 		/**
-		 * Adds the given listener function as an event handler to the given event type.
-		 * @param type the type of event to listen to
+		 * Adds the given listener function as an event handler to the given event eventType.
+		 * @param eventType the type of event to listen to
 		 * @param listener the event handler function
 		 */
-		function addEventListener(type:String, listener:Function, useWeakReference:Boolean=false, topic:Object=null):Boolean;
+		function addEventListener(eventType:String, listener:Function, useWeakReference:Boolean=false, topic:Object=null):Boolean;
 
 		/**
 		 * Adds a proxied event handler as a listener to the specified event type.
-		 * @param type the type of event to listen to
+		 * @param eventType the type of event to listen to
 		 * @param proxy a proxy method invoker for the event handler
 		 */
-		function addEventListenerProxy(type:String, proxy:MethodInvoker, useWeakReference:Boolean=false, topic:Object=null):Boolean;
+		function addEventListenerProxy(eventType:String, proxy:MethodInvoker, useWeakReference:Boolean=false, topic:Object=null):Boolean;
 
 		/**
 		 * Adds the given listener object as a listener to all events sent through the event bus.
@@ -73,10 +73,10 @@ package org.as3commons.eventbus {
 
 		/**
 		 * Convenience method for dispatching an event. This will create an <code>Event</code> instance with the given
-		 * type and call <code>dispatchEvent()</code> on the event bus.
-		 * @param type the type of the event to dispatch.
+		 * eventType and call <code>dispatchEvent()</code> on the event bus.
+		 * @param eventType the type of the event to dispatch.
 		 */
-		function dispatch(type:String, topic:Object=null):Boolean;
+		function dispatch(eventType:String, topic:Object=null):Boolean;
 
 		/**
 		 * Dispatches the specified <code>Event</code> on the event bus.
@@ -91,7 +91,7 @@ package org.as3commons.eventbus {
 		 * @param topic The specified optional topic.
 		 * @return The specified number of event listeners.
 		 */
-		function getClassListenerCount(clazz:Class, topic:Object=null):uint;
+		function getClassListenerCount(eventClass:Class, topic:Object=null):uint;
 
 		/**
 		 * The number of registered event listener proxies for the specified event class, optionally also for the specified topic. Omitting the topic argument will return the number
@@ -100,10 +100,10 @@ package org.as3commons.eventbus {
 		 * @param topic The specified optional topic.
 		 * @return The specified number of event listener proxies.
 		 */
-		function getClassProxyListenerCount(clazz:Class, topic:Object=null):uint;
+		function getClassProxyListenerCount(eventClass:Class, topic:Object=null):uint;
 
 		/**
-		 * The number of registered event listeners for the specified event type, optionally also for the specified topic. Omitting the topic argument will return the number
+		 * The number of registered event listeners for the specified event eventType, optionally also for the specified topic. Omitting the topic argument will return the number
 		 * of event listeners that have been registered without a topic, so *not* the entire count.
 		 * @param eventType The specified event type.
 		 * @param topic The specified optional topic.
@@ -149,15 +149,15 @@ package org.as3commons.eventbus {
 
 		/**
 		 * Removes the given listener function as an event handler from the given event type.
-		 * @param type
+		 * @param eventType
 		 * @param listener
 		 */
-		function removeEventListener(type:String, listener:Function, topic:Object=null):void;
+		function removeEventListener(eventType:String, listener:Function, topic:Object=null):void;
 
 		/**
 		 * Removes a proxied event handler as a listener from the specified event type.
 		 */
-		function removeEventListenerProxy(type:String, proxy:MethodInvoker, topic:Object=null):void;
+		function removeEventListenerProxy(eventType:String, proxy:MethodInvoker, topic:Object=null):void;
 
 		/**
 		 * Removes the given listener from the event bus.
