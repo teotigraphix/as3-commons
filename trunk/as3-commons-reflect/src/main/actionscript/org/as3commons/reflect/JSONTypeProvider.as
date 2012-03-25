@@ -65,16 +65,22 @@ package org.as3commons.reflect {
 
 			// Combine metadata from implemented interfaces
 			var numInterfaces:int = type.interfaces.length;
-			for (var i:int = 0; i < numInterfaces; i++) {
-				var interfaze:Type = Type.forName(type.interfaces[int(i)], applicationDomain);
+			var i:int;
+			var j:int;
+			var interfaze:Type;
+			var interfaceMetadata:Array;
+			var numMetadata:int;
+			var metadata:Metadata;
+			for (i = 0; i < numInterfaces; i++) {
+				interfaze = Type.forName(type.interfaces[int(i)], applicationDomain);
 				if (interfaze != null) {
 					concatMetadata(type, interfaze.methods, "methods");
 					concatMetadata(type, interfaze.accessors, "accessors");
-					var interfaceMetadata:Array = interfaze.metadata;
-					var numMetadata:int = interfaceMetadata.length;
+					interfaceMetadata = interfaze.metadata;
+					numMetadata = interfaceMetadata.length;
 
-					for (var j:int = 0; j < numMetadata; j++) {
-						var metadata:Metadata = interfaceMetadata[int(j)];
+					for (j = 0; j < numMetadata; j++) {
+						metadata = interfaceMetadata[int(j)];
 						if (!type.hasExactMetadata(metadata)) {
 							type.addMetadata(metadata);
 						}
@@ -88,7 +94,7 @@ package org.as3commons.reflect {
 		}
 
 		protected function parseConstructor(type:Type, constructor:Array, applicationDomain:ApplicationDomain):Constructor {
-			if ((constructor != null) && (constructor.length > 0)) {
+			if ((constructor) && (constructor.length > 0)) {
 				var params:Array = parseParameters(constructor, applicationDomain);
 				return new Constructor(type.fullName, applicationDomain, params);
 			} else {
@@ -97,12 +103,22 @@ package org.as3commons.reflect {
 		}
 
 		private function concatMetadata(type:Type, metadataContainers:Array, propertyName:String):void {
-			for each (var container:IMetadataContainer in metadataContainers) {
+			if (!metadataContainers) {
+				return;
+			}
+			var metadataList:Array;
+			var numMetadata:int;
+			var j:int;
+			var i:int;
+			var container:IMetadataContainer;
+			var len:int = metadataContainers.length;
+			for (i = 0; i < len; ++i) {
+				container = metadataContainers[i];
 				type[propertyName].some(function(item:MetadataContainer, index:int, arr:Array):Boolean {
 					if (Object(item).name == Object(container).name) {
-						var metadataList:Array = container.metadata;
-						var numMetadata:int = metadataList.length;
-						for (var j:int = 0; j < numMetadata; j++) {
+						metadataList = container.metadata;
+						numMetadata = metadataList.length;
+						for (j = 0; j < numMetadata; j++) {
 							if (!item.hasExactMetadata(metadataList[j])) {
 								item.addMetadata(metadataList[j]);
 							}
@@ -116,21 +132,31 @@ package org.as3commons.reflect {
 
 		private function parseImplementedInterfaces(interfacesDescription:Array):Array {
 			var result:Array = [];
-			for each (var fullyQualifiedInterfaceName:String in interfacesDescription) {
-				result[result.length] = ClassUtils.convertFullyQualifiedName(fullyQualifiedInterfaceName);
+			if (!interfacesDescription) {
+				return result;
+			}
+			var i:int;
+			var len:int = interfacesDescription.length;
+			for (i = 0; i < len; ++i) {
+				result[result.length] = ClassUtils.convertFullyQualifiedName(interfacesDescription[i]);
 			}
 			return result;
 		}
 
 		private function parseMethods(type:Type, methods:Array, applicationDomain:ApplicationDomain, isStatic:Boolean):Array {
 			var result:Array = [];
-
-			for each (var methodObj:Object in methods) {
-				/*if (methodObj.declaredBy != type.fullName) {
-					continue;
-				}*/
-				var params:Array = parseParameters(methodObj.parameters, applicationDomain);
-				var method:Method = new Method(methodObj.declaredBy, methodObj.name, isStatic, params, methodObj.returnType, applicationDomain);
+			if (!methods) {
+				return result;
+			}
+			var params:Array;
+			var method:Method;
+			var i:int;
+			var len:int = methods.length;
+			var methodObj:Object;
+			for (i = 0; i < len; ++i) {
+				methodObj = methods[i];
+				params = parseParameters(methodObj.parameters, applicationDomain);
+				method = new Method(methodObj.declaredBy, methodObj.name, isStatic, params, methodObj.returnType, applicationDomain);
 				method.as3commons_reflect::setNamespaceURI(methodObj.uri);
 				parseMetadata(methodObj.metadata, method);
 				result[result.length] = method;
@@ -140,17 +166,31 @@ package org.as3commons.reflect {
 
 		private function parseParameters(params:Array, applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
-			for each (var paramObj:Object in params) {
-				var param:BaseParameter = BaseParameter.newInstance(paramObj.type, applicationDomain, paramObj.optional);
-				result[result.length] = param;
+			if (!params) {
+				return result;
+			}
+			var i:int;
+			var len:int = params.length;
+			var paramObj:Object;
+			for (i = 0; i < len; ++i) {
+				paramObj = params[i];
+				result[result.length] = BaseParameter.newInstance(paramObj.type, applicationDomain, paramObj.optional);
 			}
 			return result;
 		}
 
 		private function parseAccessors(type:Type, accessors:Array, applicationDomain:ApplicationDomain, isStatic:Boolean):Array {
 			var result:Array = [];
-			for each (var acc:Object in accessors) {
-				var accessor:Accessor = Accessor.newInstance(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
+			if (!accessors) {
+				return result;
+			}
+			var i:int;
+			var len:int = accessors.length;
+			var acc:Object;
+			var accessor:Accessor;
+			for (i = 0; i < len; ++i) {
+				acc = accessors[i];
+				accessor = Accessor.newInstance(acc.name, AccessorAccess.fromString(acc.access), acc.type, acc.declaredBy, isStatic, applicationDomain);
 				accessor.as3commons_reflect::setNamespaceURI(acc.uri);
 				parseMetadata(acc.metadata, accessor);
 				result[result.length] = accessor;
@@ -159,11 +199,21 @@ package org.as3commons.reflect {
 		}
 
 		private function parseMetadata(metadataNodes:Array, metadata:IMetadataContainer):void {
-			for each (var metadataObj:Object in metadataNodes) {
-				var metadataName:String = metadataObj.name;
+			if (!metadataNodes) {
+				return;
+			}
+			var i:int;
+			var len:int = metadataNodes.length;
+			var acc:Object;
+			var metadataObj:Object;
+			var metadataName:String;
+			var metadataArgs:Array;
+			for (i = 0; i < len; ++i) {
+				metadataObj = metadataNodes[i];
+				metadataName = metadataObj.name;
 
 				if (!isIgnoredMetadata(metadataName)) {
-					var metadataArgs:Array = [];
+					metadataArgs = [];
 					for each (var metadataArgNode:Object in metadataObj.value) {
 						metadataArgs[metadataArgs.length] = MetadataArgument.newInstance(metadataArgNode.key, metadataArgNode.value);
 					}
@@ -178,14 +228,21 @@ package org.as3commons.reflect {
 
 		private function parseMembers(type:Type, memberClass:Class, members:Array, declaringType:String, isStatic:Boolean, isConstant:Boolean, applicationDomain:ApplicationDomain):Array {
 			var result:Array = [];
-
-			for each (var m:Object in members) {
+			if (!members) {
+				return result;
+			}
+			var i:int;
+			var len:int = members.length;
+			var m:Object;
+			var member:IMember;
+			for (i = 0; i < len; ++i) {
+				m = members[i];
 				if ((isConstant) && (m.access != AccessorAccess.READ_ONLY.name)) {
 					continue;
 				} else if ((!isConstant) && (m.access == AccessorAccess.READ_ONLY.name)) {
 					continue;
 				}
-				var member:IMember = memberClass["newInstance"](m.name, m.type, declaringType, isStatic, applicationDomain);
+				member = memberClass["newInstance"](m.name, m.type, declaringType, isStatic, applicationDomain);
 				if (member is INamespaceOwner) {
 					INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.uri);
 				}
