@@ -41,12 +41,6 @@ package org.as3commons.eventbus.impl {
 			_eventBus = new EventBus();
 		}
 
-		public function testAddPostProcessor():void {
-			assertEquals(0, _eventBus.getPostProcessorCount());
-			_eventBus.addPostProcessor(new MockPostProcessor());
-			assertEquals(1, _eventBus.getPostProcessorCount());
-		}
-
 		public function testAddClassEventListener():void {
 			assertEquals(0, _eventBus.getClassListenerCount(MockCustomEvent));
 			_eventBus.addEventClassListener(MockCustomEvent, new Function());
@@ -103,6 +97,14 @@ package org.as3commons.eventbus.impl {
 			assertEquals(0, _eventBus.getClassListenerInterceptorCount(eventClass));
 		}
 
+		public function testAddEventClassPostProcessor():void {
+			assertEquals(0, _eventBus.getEventClassPostProcessorCount(Event));
+			_eventBus.addEventClassPostProcessor(Event, new MockPostProcessor());
+			assertEquals(1, _eventBus.getEventClassPostProcessorCount(Event));
+			_eventBus.addEventClassPostProcessor(Event, new MockPostProcessor());
+			assertEquals(2, _eventBus.getEventClassPostProcessorCount(Event));
+		}
+
 		public function testAddEventInterceptor():void {
 			assertEquals(0, _eventBus.getEventInterceptorCount("testType"));
 			_eventBus.addEventInterceptor("testType", new MockInterceptor(true));
@@ -148,6 +150,14 @@ package org.as3commons.eventbus.impl {
 			assertEquals(1, _eventBus.getEventListenerProxyCount("testType"));
 		}
 
+		public function testAddEventPostProcessor():void {
+			assertEquals(0, _eventBus.getEventPostProcessorCount("test"));
+			_eventBus.addEventPostProcessor("test", new MockPostProcessor());
+			assertEquals(1, _eventBus.getEventPostProcessorCount("test"));
+			_eventBus.addEventPostProcessor("test", new MockPostProcessor());
+			assertEquals(2, _eventBus.getEventPostProcessorCount("test"));
+		}
+
 		public function testAddInterceptor():void {
 			assertEquals(0, _eventBus.getInterceptorCount());
 			_eventBus.addInterceptor(new MockInterceptor(true));
@@ -182,6 +192,14 @@ package org.as3commons.eventbus.impl {
 		public function testAddListenerWithSelf():void {
 			var result:Boolean = _eventBus.addListener(_eventBus);
 			assertFalse(result);
+		}
+
+		public function testAddPostProcessor():void {
+			assertEquals(0, _eventBus.getPostProcessorCount());
+			_eventBus.addPostProcessor(new MockPostProcessor());
+			assertEquals(1, _eventBus.getPostProcessorCount());
+			_eventBus.addPostProcessor(new MockPostProcessor());
+			assertEquals(2, _eventBus.getPostProcessorCount());
 		}
 
 		public function testAddTopicClassEventListener():void {
@@ -582,11 +600,11 @@ package org.as3commons.eventbus.impl {
 			assertEquals(0, _eventBus.getEventListenerCount("testType", topic));
 			assertEquals(1, _eventBus.getEventListenerCount("testType"));
 		}
+
 	}
 }
 
 import flash.events.Event;
-
 import org.as3commons.eventbus.IEventBusListener;
 import org.as3commons.eventbus.IEventInterceptor;
 import org.as3commons.eventbus.impl.AbstractEventInterceptor;
@@ -640,5 +658,4 @@ class MockListenerInterceptor extends AbstractEventListenerInterceptor {
 }
 
 class MockPostProcessor extends AbstractEventPostProcessor {
-
 }

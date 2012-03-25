@@ -112,7 +112,7 @@ package org.as3commons.eventbus.impl {
 		 * @inheritDoc
 		 */
 		public function addEventPostProcessor(type:String, eventPostProcessor:IEventPostProcessor, topic:Object=null):void {
-			var evtPostProcessors:EventBusCollectionLookup = eventListenerInterceptors[type] ||= new EventBusCollectionLookup();
+			var evtPostProcessors:EventBusCollectionLookup = eventPostProcessors[type] ||= new EventBusCollectionLookup();
 			evtPostProcessors.add(eventPostProcessor, false, topic);
 			LOGGER.debug("Added IEventPostProcessor {0} for type {1} and topic {2}", [eventPostProcessor, type, topic]);
 		}
