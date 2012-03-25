@@ -98,6 +98,33 @@
 			<version>${as3commons-reflect.version}</version>
 			<type>swc</type>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.adobe.flexunit</groupId>
+			<artifactId>flexunit</artifactId>
+			<version>4.1-RC2</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org</groupId>
+			<artifactId>mockolate</artifactId>
+			<version>0.12.-beta</version>
+			<type>swc</type>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>playerglobal</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>common-framework</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 
 	</dependencies>
 
