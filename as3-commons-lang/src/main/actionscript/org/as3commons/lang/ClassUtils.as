@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-
 	import flash.events.TimerEvent;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Proxy;
@@ -30,6 +29,52 @@ package org.as3commons.lang {
 	 * @author Erik Westra
 	 */
 	public final class ClassUtils {
+
+		// --------------------------------------------------------------------
+		//
+		// describeType cache implementation
+		//
+		// --------------------------------------------------------------------
+
+		/**
+		 * The default value for the interval to clear the describe type cache.
+		 */
+		public static const CLEAR_CACHE_INTERVAL:uint = 60000;
+
+		/**
+		 * The interval (in miliseconds) at which the cache will be cleared. Note that this value is only used
+		 * on the first call to getFromObject.
+		 *
+		 * @default 60000 (one minute)
+		 */
+		public static var clearCacheInterval:uint = CLEAR_CACHE_INTERVAL;
+		private static const AS3VEC_SUFFIX:String = '__AS3__.vec';
+		private static const CONSTRUCTOR_FIELD_NAME:String = "constructor";
+		private static const LESS_THAN:String = '<';
+		private static const PACKAGE_CLASS_SEPARATOR:String = "::";
+
+		private static var _describeTypeCache:Object = {};
+
+		private static var _timer:Timer;
+
+		/**
+		 * Clears the describe type cache. This method is called automatically at regular intervals
+		 * defined by the clearCacheInterval property.
+		 */
+		public static function clearDescribeTypeCache():void {
+			_describeTypeCache = {};
+
+			if (_timer && _timer.running) {
+				_timer.stop();
+			}
+		}
+
+		/**
+		 * Converts the double colon (::) in a fully qualified class name to a dot (.)
+		 */
+		public static function convertFullyQualifiedName(className:String):String {
+			return className.replace(PACKAGE_CLASS_SEPARATOR, ".");
+		}
 
 		/**
 		 * Returns a <code>Class</code> object that corresponds with the given
@@ -89,6 +134,109 @@ package org.as3commons.lang {
 		}
 
 		/**
+		 *
+		 * @param fullName
+		 * @param applicationDomain
+		 * @return
+		 */
+		public static function getClassParameterFromFullyQualifiedName(fullName:String, applicationDomain:ApplicationDomain=null):Class {
+			if (StringUtils.startsWith(fullName, AS3VEC_SUFFIX)) {
+				var startIdx:int = fullName.indexOf(LESS_THAN) + 1;
+				var len:int = (fullName.length - startIdx) - 1;
+				var className:String = fullName.substr(startIdx, len);
+				return forName(className, applicationDomain);
+			} else {
+				return null;
+			}
+		}
+
+		/**
+		 * Returns an array of all fully qualified interface names that the
+		 * given class implements.
+		 */
+		public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean=false, applicationDomain:ApplicationDomain=null):Array {
+			var result:Array = [];
+			var classDescription:XML = getFromObject(clazz, applicationDomain);
+			var interfacesDescription:XMLList = classDescription.factory.implementsInterface;
+
+			if (interfacesDescription) {
+				var numInterfaces:int = interfacesDescription.length();
+
+				for (var i:int = 0; i < numInterfaces; i++) {
+					var fullyQualifiedInterfaceName:String = interfacesDescription[i].@type.toString();
+
+					if (replaceColons) {
+						fullyQualifiedInterfaceName = convertFullyQualifiedName(fullyQualifiedInterfaceName);
+					}
+					result[result.length] = fullyQualifiedInterfaceName;
+				}
+			}
+			return result;
+		}
+
+		/**
+		 * Returns the fully qualified name of the given class.
+		 *
+		 * @param clazz the class to get the name from
+		 * @param replaceColons whether the double colons "::" should be replaced by a dot "."
+		 *             the default is false
+		 *
+		 * @return the fully qualified name of the class
+		 */
+		public static function getFullyQualifiedName(clazz:Class, replaceColons:Boolean=false):String {
+			var result:String = getQualifiedClassName(clazz);
+
+			if (replaceColons) {
+				return convertFullyQualifiedName(result);
+			} else {
+				return result;
+			}
+		}
+
+		/**
+		 * Returns the fully qualified name of the given class' superclass.
+		 *
+		 * @param clazz the class to get its superclass' name from
+		 * @param replaceColons whether the double colons "::" should be replaced by a dot "."
+		 *             the default is false
+		 *
+		 * @return the fully qualified name of the class' superclass
+		 */
+		public static function getFullyQualifiedSuperClassName(clazz:Class, replaceColons:Boolean=false):String {
+			var result:String = getQualifiedSuperclassName(clazz);
+
+			if (replaceColons) {
+				result = convertFullyQualifiedName(result);
+			}
+			return result;
+		}
+
+		/**
+		 * Returns an array of all interface names that the given class implements.
+		 */
+		public static function getImplementedInterfaceNames(clazz:Class):Array {
+			var result:Array = getFullyQualifiedImplementedInterfaceNames(clazz);
+
+			for (var i:int = 0; i < result.length; i++) {
+				result[i] = getNameFromFullyQualifiedName(result[i]);
+			}
+			return result;
+		}
+
+		/**
+		 * Returns an array of all interface names that the given class implements.
+		 */
+		public static function getImplementedInterfaces(clazz:Class, applicationDomain:ApplicationDomain=null):Array {
+			applicationDomain ||= ApplicationDomain.currentDomain;
+			var result:Array = getFullyQualifiedImplementedInterfaceNames(clazz);
+
+			for (var i:int = 0; i < result.length; i++) {
+				result[i] = ClassUtils.forName(result[i], applicationDomain);
+			}
+			return result;
+		}
+
+		/**
 		 * Returns the name of the given class.
 		 *
 		 * @param clazz the class to get the name from
@@ -115,53 +263,6 @@ package org.as3commons.lang {
 			} else {
 				return fullyQualifiedName.substring(startIndex + PACKAGE_CLASS_SEPARATOR.length, fullyQualifiedName.length);
 			}
-		}
-
-		/**
-		 * Returns the fully qualified name of the given class.
-		 *
-		 * @param clazz the class to get the name from
-		 * @param replaceColons whether the double colons "::" should be replaced by a dot "."
-		 *             the default is false
-		 *
-		 * @return the fully qualified name of the class
-		 */
-		public static function getFullyQualifiedName(clazz:Class, replaceColons:Boolean=false):String {
-			var result:String = getQualifiedClassName(clazz);
-
-			if (replaceColons) {
-				return convertFullyQualifiedName(result);
-			} else {
-				return result;
-			}
-		}
-
-		/**
-		 * Determines if the class or interface represented by the clazz1 parameter is either the same as, or is
-		 * a superclass or superinterface of the clazz2 parameter. It returns true if so; otherwise it returns false.
-		 *
-		 * @return the boolean value indicating whether objects of the type clazz2 can be assigned to objects of clazz1
-		 */
-		public static function isAssignableFrom(clazz1:Class, clazz2:Class, applicationDomain:ApplicationDomain=null):Boolean {
-			return (clazz1 === clazz2) || isSubclassOf(clazz2, clazz1, applicationDomain) || isImplementationOf(clazz2, clazz1, applicationDomain);
-		}
-
-		/**
-		 * Determines if the namespace of the class is private.
-		 *
-		 * @return A boolean value indicating the visibility of the class.
-		 */
-		public static function isPrivateClass(object:*):Boolean {
-			var className:String = (object is Class) ? getQualifiedClassName(object) : object.toString();
-			var index:int = className.indexOf("::");
-			var inRootPackage:Boolean = (index == -1);
-
-			if (inRootPackage) {
-				return false;
-			}
-
-			var ns:String = className.substr(0, index);
-			return (ns === "" || ns.indexOf(".as$") > -1);
 		}
 
 		/**
@@ -211,17 +312,6 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * Returns whether the passed in Class object is a subclass of the
-		 * passed in parent Class. To check if an interface extends another interface, use the isImplementationOf()
-		 * method instead.
-		 */
-		public static function isSubclassOf(clazz:Class, parentClass:Class, applicationDomain:ApplicationDomain=null):Boolean {
-			var classDescription:XML = getFromObject(clazz, applicationDomain);
-			var parentName:String = getQualifiedClassName(parentClass);
-			return (classDescription.factory.extendsClass.(@type == parentName).length() != 0);
-		}
-
-		/**
 		 * Returns the class that the passed in clazz extends. If no super class
 		 * was found, in case of Object, null is returned.
 		 *
@@ -254,21 +344,13 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * Returns the fully qualified name of the given class' superclass.
+		 * Determines if the class or interface represented by the clazz1 parameter is either the same as, or is
+		 * a superclass or superinterface of the clazz2 parameter. It returns true if so; otherwise it returns false.
 		 *
-		 * @param clazz the class to get its superclass' name from
-		 * @param replaceColons whether the double colons "::" should be replaced by a dot "."
-		 *             the default is false
-		 *
-		 * @return the fully qualified name of the class' superclass
+		 * @return the boolean value indicating whether objects of the type clazz2 can be assigned to objects of clazz1
 		 */
-		public static function getFullyQualifiedSuperClassName(clazz:Class, replaceColons:Boolean=false):String {
-			var result:String = getQualifiedSuperclassName(clazz);
-
-			if (replaceColons) {
-				result = convertFullyQualifiedName(result);
-			}
-			return result;
+		public static function isAssignableFrom(clazz1:Class, clazz2:Class, applicationDomain:ApplicationDomain=null):Boolean {
+			return (clazz1 === clazz2) || isSubclassOf(clazz2, clazz1, applicationDomain) || isImplementationOf(clazz2, clazz1, applicationDomain);
 		}
 
 		/**
@@ -358,52 +440,32 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * Returns an array of all interface names that the given class implements.
+		 * Determines if the namespace of the class is private.
+		 *
+		 * @return A boolean value indicating the visibility of the class.
 		 */
-		public static function getImplementedInterfaceNames(clazz:Class):Array {
-			var result:Array = getFullyQualifiedImplementedInterfaceNames(clazz);
+		public static function isPrivateClass(object:*):Boolean {
+			var className:String = (object is Class) ? getQualifiedClassName(object) : object.toString();
+			var index:int = className.indexOf("::");
+			var inRootPackage:Boolean = (index == -1);
 
-			for (var i:int = 0; i < result.length; i++) {
-				result[i] = getNameFromFullyQualifiedName(result[i]);
+			if (inRootPackage) {
+				return false;
 			}
-			return result;
+
+			var ns:String = className.substr(0, index);
+			return (ns === "" || ns.indexOf(".as$") > -1);
 		}
 
 		/**
-		 * Returns an array of all fully qualified interface names that the
-		 * given class implements.
+		 * Returns whether the passed in Class object is a subclass of the
+		 * passed in parent Class. To check if an interface extends another interface, use the isImplementationOf()
+		 * method instead.
 		 */
-		public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean=false, applicationDomain:ApplicationDomain=null):Array {
-			var result:Array = [];
+		public static function isSubclassOf(clazz:Class, parentClass:Class, applicationDomain:ApplicationDomain=null):Boolean {
 			var classDescription:XML = getFromObject(clazz, applicationDomain);
-			var interfacesDescription:XMLList = classDescription.factory.implementsInterface;
-
-			if (interfacesDescription) {
-				var numInterfaces:int = interfacesDescription.length();
-
-				for (var i:int = 0; i < numInterfaces; i++) {
-					var fullyQualifiedInterfaceName:String = interfacesDescription[i].@type.toString();
-
-					if (replaceColons) {
-						fullyQualifiedInterfaceName = convertFullyQualifiedName(fullyQualifiedInterfaceName);
-					}
-					result[result.length] = fullyQualifiedInterfaceName;
-				}
-			}
-			return result;
-		}
-
-		/**
-		 * Returns an array of all interface names that the given class implements.
-		 */
-		public static function getImplementedInterfaces(clazz:Class, applicationDomain:ApplicationDomain=null):Array {
-			applicationDomain ||= ApplicationDomain.currentDomain;
-			var result:Array = getFullyQualifiedImplementedInterfaceNames(clazz);
-
-			for (var i:int = 0; i < result.length; i++) {
-				result[i] = ClassUtils.forName(result[i], applicationDomain);
-			}
-			return result;
+			var parentName:String = getQualifiedClassName(parentClass);
+			return (classDescription.factory.extendsClass.(@type == parentName).length() != 0);
 		}
 
 		/**
@@ -459,76 +521,6 @@ package org.as3commons.lang {
 		}
 
 		/**
-		 * Converts the double colon (::) in a fully qualified class name to a dot (.)
-		 */
-		public static function convertFullyQualifiedName(className:String):String {
-			return className.replace(PACKAGE_CLASS_SEPARATOR, ".");
-		}
-
-		// --------------------------------------------------------------------
-		//
-		// describeType cache implementation
-		//
-		// --------------------------------------------------------------------
-
-		/**
-		 * The default value for the interval to clear the describe type cache.
-		 */
-		public static const CLEAR_CACHE_INTERVAL:uint = 60000;
-		private static const AS3VEC_SUFFIX:String = '__AS3__.vec';
-		private static const LESS_THAN:String = '<';
-		private static const CONSTRUCTOR_FIELD_NAME:String = "constructor";
-		private static const PACKAGE_CLASS_SEPARATOR:String = "::";
-
-		/**
-		 * The interval (in miliseconds) at which the cache will be cleared. Note that this value is only used
-		 * on the first call to getFromObject.
-		 *
-		 * @default 60000 (one minute)
-		 */
-		public static var clearCacheInterval:uint = CLEAR_CACHE_INTERVAL;
-
-		private static var _describeTypeCache:Object = {};
-
-		private static var _timer:Timer;
-
-		/**
-		 * Clears the describe type cache. This method is called automatically at regular intervals
-		 * defined by the clearCacheInterval property.
-		 */
-		public static function clearDescribeTypeCache():void {
-			_describeTypeCache = {};
-
-			if (_timer && _timer.running) {
-				_timer.stop();
-			}
-		}
-
-		/**
-		 *
-		 * @param fullName
-		 * @param applicationDomain
-		 * @return
-		 */
-		public static function getClassParameterFromFullyQualifiedName(fullName:String, applicationDomain:ApplicationDomain=null):Class {
-			if (StringUtils.startsWith(fullName, AS3VEC_SUFFIX)) {
-				var startIdx:int = fullName.indexOf(LESS_THAN) + 1;
-				var len:int = (fullName.length - startIdx) - 1;
-				var className:String = fullName.substr(startIdx, len);
-				return forName(className, applicationDomain);
-			} else {
-				return null;
-			}
-		}
-
-		/**
-		 * Timer handler. Clear the cache.
-		 */
-		private static function timerHandler(e:TimerEvent):void {
-			clearDescribeTypeCache();
-		}
-
-		/**
 		 * Will return the metadata for the given object or class. If metadata has already been requested for
 		 * this type, it will be retrieved from cache. Note that the metadata will allways be that of the class,
 		 * even if you pass an instance.
@@ -577,6 +569,13 @@ package org.as3commons.lang {
 			}
 
 			return metadata;
+		}
+
+		/**
+		 * Timer handler. Clear the cache.
+		 */
+		private static function timerHandler(e:TimerEvent):void {
+			clearDescribeTypeCache();
 		}
 	}
 }
