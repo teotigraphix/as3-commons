@@ -724,7 +724,8 @@ package org.as3commons.bytecode.reflect {
 			var current:uint = input.readUnsignedByte();
 			var size:uint = current >> 3;
 			var off:int = 3;
-			for (var i:int = 0; i < 4; ++i) {
+			var i:int;
+			for (i = 0; i < 4; ++i) {
 				off -= size;
 				while (off < 0) {
 					current = input.readUnsignedByte();
