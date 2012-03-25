@@ -24,9 +24,9 @@ package org.as3commons.eventbus.impl {
 	import org.as3commons.reflect.MethodInvoker;
 
 	/**
-	 * An <code>EventListenerGuardian<code> can ensure that one or more listeners are removed after a specified
+	 * An <code>EventListenerGuardian</code> can ensure that one or more listeners are removed after a specified
 	 * amount of dispatches have been executed.<br/>
-	 * Afterwards the <code>EventListenerGuardian<code> will reject any newly added listeners.
+	 * Afterwards the <code>EventListenerGuardian</code> will reject any newly added listeners.
 	 * @author Roland Zwaga
 	 */
 	public class EventListenerGuardian implements IEventPostProcessor, IEventListenerInterceptor, IDisposable {
@@ -123,7 +123,7 @@ package org.as3commons.eventbus.impl {
 				return;
 			}
 			var currentCount:int = _currentDispatchCounts[_eventBus];
-			if (++currentCount > _maxDispatchCount) {
+			if (++currentCount == _maxDispatchCount) {
 				var listeners:Array = _listeners[_eventBus];
 				for each (var info:ListenerTypeInfo in listeners) {
 					removeListener(info.listener, info.type, info.topic);

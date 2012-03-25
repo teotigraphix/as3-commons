@@ -47,6 +47,10 @@ package org.as3commons.eventbus.impl {
 		protected var dispatchedEvents:Dictionary = new Dictionary(true);
 		private var _isDisposed:Boolean;
 
+		public function SimpleEventBus() {
+			super();
+		}
+
 		public function get isDisposed():Boolean {
 			return _isDisposed;
 		}
@@ -392,8 +396,5 @@ package org.as3commons.eventbus.impl {
 				}
 			}
 		}
-	/**
-	 * Creates a new <code>SimpleEventBus2</code> instance.
-	 */
 	}
 }
