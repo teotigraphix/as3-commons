@@ -98,7 +98,11 @@ package org.as3commons.reflect {
 		 */
 		public function hasExactMetadata(otherMetadata:Metadata):Boolean {
 			var metadatas:Array = getMetadata(otherMetadata.name);
-			for each (var metadata:Metadata in metadatas) {
+			var i:int;
+			var len:int = metadatas.length;
+			var metadata:Metadata;
+			for (i = 0; i < len; ++i) {
+				metadata = metadatas[i];
 				if (metadata.equals(otherMetadata)) {
 					return true;
 				}

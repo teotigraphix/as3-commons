@@ -37,8 +37,8 @@ package org.as3commons.reflect {
 		//
 		// --------------------------------------------------------------------
 
-		public static function newInstance(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):Constant {
-			return Constant(AbstractMember.newInstance(Constant, name, type, declaringType, isStatic, applicationDomain, metadata));
+		public static function newInstance(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray=null):Constant {
+			return AbstractMember.newInstance(Constant, name, type, declaringType, isStatic, applicationDomain, metadata) as Constant;
 		}
 
 		// --------------------------------------------------------------------
@@ -55,7 +55,7 @@ package org.as3commons.reflect {
 		 * @param declaringType the type that declares the constant
 		 * @param isStatic whether or not this member is static (class member)
 		 */
-		public function Constant(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) {
+		public function Constant(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray=null) {
 			super(name, type, declaringType, isStatic, applicationDomain, metadata);
 		}
 
