@@ -26,6 +26,7 @@ package org.as3commons.reflect {
 	 * Provides information about a class constructor.
 	 *
 	 * @author Martino Piccinato
+	 * @author Roland Zwaga
 	 */
 	public class Constructor {
 
@@ -56,8 +57,7 @@ package org.as3commons.reflect {
 			var result:Array = [];
 			var len:int = _parameters.length;
 			for (var i:int = 0; i < len; ++i) {
-				var param:BaseParameter = _parameters[i];
-				result[result.length] = new Parameter(param, i);
+				result[result.length] = new Parameter(_parameters[i], i);
 			}
 			return result;
 		}

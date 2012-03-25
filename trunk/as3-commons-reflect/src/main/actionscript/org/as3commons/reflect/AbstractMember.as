@@ -50,7 +50,7 @@ package org.as3commons.reflect {
 		//
 		// --------------------------------------------------------------------
 
-		public static function newInstance(clazz:Class, name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):AbstractMember {
+		public static function newInstance(clazz:Class, name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray=null):AbstractMember {
 			var cacheKey:String = getCacheKey(clazz, name, type, declaringType, isStatic, applicationDomain, metadata);
 			if (!_cache[cacheKey]) {
 				_cache[cacheKey] = new clazz(name, type, declaringType, isStatic, applicationDomain, metadata);
@@ -58,7 +58,7 @@ package org.as3commons.reflect {
 			return _cache[cacheKey];
 		}
 
-		public static function getCacheKey(clazz:Class, name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null):String {
+		public static function getCacheKey(clazz:Class, name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray=null):String {
 			var appDomainIndex:int = CacheUtil.getApplicationDomainIndex(applicationDomain);
 			var metadataString:String = CacheUtil.getMetadataString(metadata);
 			return [clazz, name, type, declaringType, isStatic, appDomainIndex, metadataString].join(":");
@@ -106,7 +106,6 @@ package org.as3commons.reflect {
 
 		protected function initAbstractType(name:String, isStatic:Boolean, type:String, declaringType:String, applicationDomain:ApplicationDomain):void {
 			Assert.hasText(name, "name argument must have text");
-			//Assert.hasText(type, "type argument must have text");
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
 			_name = name;
 			_isStatic = isStatic;
@@ -206,9 +205,19 @@ package org.as3commons.reflect {
 
 		protected function compareMetadata(metadataArray:Array):Boolean {
 			var result:Boolean = ((metadataArray.length == 0) && (this.metadata.length == 0));
-			for each (var md:Metadata in metadataArray) {
-				var mds:Array = this.getMetadata(md.name);
-				for each (var md2:Metadata in mds) {
+			var i:int;
+			var j:int;
+			var len:int = metadataArray.length;
+			var len2:int;
+			var md:Metadata;
+			var mds:Array;
+			var md2:Metadata;
+			for (i = 0; i < len; ++i) {
+				md = metadataArray[i];
+				mds = this.getMetadata(md.name);
+				len2 = mds.length;
+				for (j = 0; j < len2; ++j) {
+					md2 = mds[j];
 					if (md2 == null || !md2.equals(md)) {
 						result = false;
 						break;

@@ -113,7 +113,7 @@ package org.as3commons.reflect {
 		 * @param className    The name of the class that you want to retrieve metadata from. The className
 		 *             may be in the following forms: package.Class or package::Class
 		 */
-		static public function getFromString(className:String, applicationDomain:ApplicationDomain = null):XML {
+		static public function getFromString(className:String, applicationDomain:ApplicationDomain=null):XML {
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 			var classDefinition:Class = org.as3commons.lang.ClassUtils.forName(className, applicationDomain);
 
@@ -159,21 +159,27 @@ package org.as3commons.reflect {
 		 * @param metadataName the name of the metadata for which to look
 		 * @return the metadata tag if found, or <code>null</code> if none is found
 		 */
-		public static function findClassMetadata(clazz:Class, metadataName:String, applicationDomain:ApplicationDomain = null):Metadata {
+		public static function findClassMetadata(clazz:Class, metadataName:String, applicationDomain:ApplicationDomain=null):Metadata {
 			Assert.notNull(clazz, "clazz must not be null.");
 			Assert.hasText(metadataName, "metadataName must not be empty or null.");
 			applicationDomain = (applicationDomain == null) ? ApplicationDomain.currentDomain : applicationDomain;
 
 			var declaringClass:Class = clazz;
-
+			var type:Type;
+			var interfaces:Array;
+			var i:int;
+			var len:int;
+			var interfaze:Class;
 			while (declaringClass != null) {
-				var type:Type = Type.forClass(declaringClass, applicationDomain);
+				type = Type.forClass(declaringClass, applicationDomain);
 				if (type.hasMetadata(metadataName)) {
 					return type.getMetadata(metadataName)[0];
 				}
 
-				var interfaces:Array = org.as3commons.lang.ClassUtils.getImplementedInterfaces(declaringClass, applicationDomain);
-				for each (var interfaze:Class in interfaces) {
+				interfaces = org.as3commons.lang.ClassUtils.getImplementedInterfaces(declaringClass, applicationDomain);
+				len = interfaces.length;
+				for (i = 0; i < len; ++i) {
+					interfaze = interfaces[i];
 					type = Type.forClass(interfaze);
 
 					if (type.hasMetadata(metadataName)) {
@@ -207,7 +213,7 @@ package org.as3commons.reflect {
 		 * 	clazz which declares an annotation for the specified metadataName,
 		 * 	or null if not found.
 		 */
-		public static function findMetadataDeclaringClass(metadataName:String, clazz:Class, applicationDomain:ApplicationDomain = null):Class {
+		public static function findMetadataDeclaringClass(metadataName:String, clazz:Class, applicationDomain:ApplicationDomain=null):Class {
 			if (clazz == null) {
 				return null;
 			}

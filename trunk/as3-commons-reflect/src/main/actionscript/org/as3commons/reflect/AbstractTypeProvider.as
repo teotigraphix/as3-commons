@@ -21,9 +21,7 @@ package org.as3commons.reflect {
 
 		public function AbstractTypeProvider() {
 			super();
-			if (typeCache == null) {
-				typeCache = new TypeCache();
-			}
+			typeCache ||= new TypeCache();
 		}
 
 		protected var typeCache:TypeCache;

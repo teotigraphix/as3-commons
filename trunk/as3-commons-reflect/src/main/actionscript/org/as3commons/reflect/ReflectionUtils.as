@@ -47,13 +47,22 @@ package org.as3commons.reflect {
 		 * Adds metadata from from interfaces to concrete implementations.
 		 */
 		public static function concatTypeMetadata(type:Type, metadataContainers:Array, propertyName:String):void {
-			for each (var container:IMetadataContainer in metadataContainers) {
+			if (!metadataContainers) {
+				return;
+			}
+			var i:int;
+			var len:int = metadataContainers.length;
+			var container:IMetadataContainer;
+			var metadataList:Array;
+			var numMetadata:int;
+			var j:int;
+			for (i = 0; i < len; ++i) {
+				container = metadataContainers[i];
 				type[propertyName].some(function(item:Object, index:int, arr:Array):Boolean {
 					if (item.name == Object(container).name) {
-						var metadataList:Array = container.metadata;
-						var numMetadata:int = metadataList.length;
-
-						for (var j:int = 0; j < numMetadata; j++) {
+						metadataList = container.metadata;
+						numMetadata = metadataList.length;
+						for (j = 0; j < numMetadata; ++j) {
 							item.addMetadata(metadataList[j]);
 						}
 						return true;
@@ -77,12 +86,12 @@ package org.as3commons.reflect {
 
 			if (constructorXML && constructorXML.length() > 0) {
 				var parametersXML:XMLList = constructorXML[0].parameter;
-
-				if (parametersXML && parametersXML.length() > 0) {
+				var len:int = parametersXML.length();
+				if (parametersXML && len > 0) {
 					// Instantiate class with all null arguments.
 					var args:Array = [];
-
-					for (var n:int = 0; n < parametersXML.length(); n++) {
+					var n:int;
+					for (n = 0; n < len; ++n) {
 						args.push(null);
 					}
 

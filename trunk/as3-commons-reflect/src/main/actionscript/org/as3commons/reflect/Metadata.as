@@ -25,15 +25,17 @@ package org.as3commons.reflect {
 
 	/**
 	 * A Metadata object contains information about a metadata element placed above a member of a class or instance.
-	 *
 	 * @author Christophe Herreman
+	 * @author Roland Zwaga
 	 */
 	public class Metadata implements IEquals {
-
-		public static const TRANSIENT:String = "Transient";
 		public static const BINDABLE:String = "Bindable";
-
+		public static const TRANSIENT:String = "Transient";
 		private static const _cache:Object = {};
+
+		public static function getCacheKey(metadata:Metadata):String {
+			return getCacheKeyByNameAndArgs(metadata.name, metadata.arguments);
+		}
 
 		// --------------------------------------------------------------------
 		//
@@ -50,16 +52,13 @@ package org.as3commons.reflect {
 			return _cache[cacheKey];
 		}
 
-		public static function getCacheKey(metadata:Metadata):String {
-			return getCacheKeyByNameAndArgs(metadata.name, metadata.arguments);
-		}
-
 		private static function getCacheKeyByNameAndArgs(key:String, metadataArgs:Array):String {
 			var result:String = key + CacheUtil.SEMI_COLON;
 
 			if (metadataArgs) {
 				var numArgs:int = metadataArgs.length;
-				for (var i:int = 0; i < numArgs; i++) {
+				var i:int;
+				for (i = 0; i < numArgs; ++i) {
 					result += MetadataArgument.getCacheKey(metadataArgs[i]);
 					result += CacheUtil.SEMI_COLON;
 				}
@@ -83,8 +82,12 @@ package org.as3commons.reflect {
 		public function Metadata(name:String, arguments:Array=null) {
 			super();
 			_name = (name != null) ? name.toLowerCase() : null;
-			_arguments = (arguments == null) ? [] : arguments;
+			_arguments = arguments ||= [];
 		}
+
+		// ----------------------------
+
+		private var _arguments:Array;
 
 		// --------------------------------------------------------------------
 		//
@@ -92,9 +95,14 @@ package org.as3commons.reflect {
 		//
 		// --------------------------------------------------------------------
 
-		// ----------------------------
-
 		private var _name:String;
+
+		/**
+		 * Returns the MetadataArgument objects that describe this metadata.
+		 */
+		public function get arguments():Array {
+			return _arguments;
+		}
 
 		/**
 		 * Returns the name of this metadata.
@@ -103,15 +111,36 @@ package org.as3commons.reflect {
 			return _name;
 		}
 
-		// ----------------------------
+		public function equals(other:Object):Boolean {
+			if (this === other) {
+				return true;
+			}
 
-		private var _arguments:Array;
+			if (!(other is Metadata)) {
+				return false;
+			}
+
+			var that:Metadata = Metadata(other);
+			return ((that._name === _name) && argumentsAreEqual(that._arguments));
+		}
 
 		/**
-		 * Returns the MetadataArgument objects that describe this metadata.
+		 * Returns the MetadataArgument for the given key. If none was found, null is returned.
 		 */
-		public function get arguments():Array {
-			return _arguments;
+		public function getArgument(key:String):MetadataArgument {
+			if (!_arguments) {
+				return null;
+			}
+			var i:int;
+			var len:int = _arguments.length;
+			var arg:MetadataArgument;
+			for (i = 0; i < len; ++i) {
+				arg = _arguments[i];
+				if (arg.key === key) {
+					return arg;
+				}
+			}
+			return null;
 		}
 
 		// --------------------------------------------------------------------
@@ -129,33 +158,12 @@ package org.as3commons.reflect {
 			return (getArgument(key) != null);
 		}
 
-		/**
-		 * Returns the MetadataArgument for the given key. If none was found, null is returned.
-		 */
-		public function getArgument(key:String):MetadataArgument {
-			for each (var arg:MetadataArgument in _arguments) {
-				if (arg.key === key) {
-					return arg;
-				}
-			}
-			return null;
-		}
-
-		public function equals(other:Object):Boolean {
-			if (this === other) {
-				return true;
-			}
-
-			if (!(other is Metadata)) {
-				return false;
-			}
-
-			var that:Metadata = Metadata(other);
-			return ((that._name === _name) && argumentsAreEqual(that._arguments));
-		}
-
 		public function toString():String {
 			return "[Metadata(" + name + ", " + _arguments + ")]";
+		}
+
+		as3commons_reflect function setName(value:String):void {
+			_name = value;
 		}
 
 		private function argumentsAreEqual(metadataArgs:Array):Boolean {
@@ -163,7 +171,11 @@ package org.as3commons.reflect {
 				return false;
 			}
 
-			for each (var otherArg:MetadataArgument in metadataArgs) {
+			var i:int;
+			var len:int = metadataArgs.length;
+			var otherArg:MetadataArgument;
+			for (i = 0; i < len; ++i) {
+				otherArg = metadataArgs[i];
 				var arg:MetadataArgument = getArgument(otherArg.key);
 				if (!otherArg.equals(arg)) {
 					return false;
@@ -172,10 +184,5 @@ package org.as3commons.reflect {
 
 			return true;
 		}
-
-		as3commons_reflect function setName(value:String):void {
-			_name = value;
-		}
-
 	}
 }

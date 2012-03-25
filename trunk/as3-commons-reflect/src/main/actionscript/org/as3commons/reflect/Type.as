@@ -91,6 +91,8 @@ package org.as3commons.reflect {
 		public static const VOID_NAME:String = "void";
 		private static const UNTYPED_NAME:String = "*";
 		private static const PRIVATE_NAME:String = 'private';
+		private static const CONSTRUCTOR_NAME:String = 'constructor';
+		private static const PREFIXED_CONSTRUCTOR_NAME:String = '_constructor';
 		public static var typeProviderKind:TypeProviderKind;
 		{
 			typeProviderKind = TypeProviderKind.JSON;
@@ -663,7 +665,11 @@ package org.as3commons.reflect {
 				return _methods.get(name);
 			} else {
 				var mthds:Array = _methods.getArray();
-				for each (var method:Method in mthds) {
+				var len:int = mthds.length;
+				var method:Method;
+				var i:int;
+				for (i = 0; i < len; ++i) {
+					method = mthds[i];
 					if ((method.name == name) && (method.namespaceURI == ns)) {
 						return method;
 					}
@@ -687,7 +693,11 @@ package org.as3commons.reflect {
 				return _fields.get(name);
 			} else {
 				var flds:Array = _fields.getArray();
-				for each (var field:Field in flds) {
+				var len:int = flds.length;
+				var i:int;
+				var field:Field;
+				for (i = 0; i < len; ++i) {
+					field = flds[i];
 					if ((field.name == name) && (field.namespaceURI == ns)) {
 						return field;
 					}
@@ -726,7 +736,7 @@ package org.as3commons.reflect {
 		public function getMetadataContainers(name:String):Array {
 			if (_metadataLookup != null) {
 				name = name.toLowerCase();
-				name = (name != 'constructor') ? name : '_constructor';
+				name = (name != CONSTRUCTOR_NAME) ? name : PREFIXED_CONSTRUCTOR_NAME;
 				return _metadataLookup[name] as Array;
 			} else {
 				return null;
@@ -734,14 +744,28 @@ package org.as3commons.reflect {
 		}
 
 		private function addToMetadataLookup(containerList:Array):void {
-			for each (var container:MetadataContainer in containerList) {
+			if (!containerList) {
+				return;
+			}
+			var i:int;
+			var j:int;
+			var len:int = containerList.length;
+			var len2:int;
+			var container:MetadataContainer;
+			var m:Metadata;
+			var name:String;
+			var arr:Array;
+			for (i = 0; i < len; ++i) {
+				container = containerList[i];
 				var metadatas:Array = container.metadata;
-				for each (var m:Metadata in metadatas) {
+				len2 = metadatas.length;
+				for (j = 0; j < len2; ++j) {
+					m = metadatas[j];
 					if (m == null) {
 						continue;
 					}
-					var name:String = (m.name != 'constructor') ? m.name : '_constructor';
-					var arr:Array = _metadataLookup[name] ||= [];
+					name = (m.name != CONSTRUCTOR_NAME) ? m.name : PREFIXED_CONSTRUCTOR_NAME;
+					arr = _metadataLookup[name] ||= [];
 					arr[arr.length] = container;
 				}
 			}
