@@ -1,0 +1,11 @@
+AS3COMMONS-ZIP CHANGELOG
+========================
+
+Note: dates are in DD.MM.YYYY format
+
+
+Changes in version 1.0.0 (??.??.2011)
+-------------------------------------
+
+* Initial release
+* This project was formerly known as FZip (http://codeazur.com.br/lab/fzip/)
