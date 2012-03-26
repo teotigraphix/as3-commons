@@ -15,8 +15,11 @@
  */
 package org.as3commons.eventbus.impl {
 	import flash.events.Event;
-	import mx.events.FlexEvent;
+
 	import flexunit.framework.TestCase;
+
+	import mx.events.FlexEvent;
+
 	import org.as3commons.eventbus.IEventBusListener;
 	import org.as3commons.eventbus.IEventInterceptor;
 	import org.as3commons.eventbus.IEventListenerInterceptor;
@@ -601,10 +604,57 @@ package org.as3commons.eventbus.impl {
 			assertEquals(1, _eventBus.getEventListenerCount("testType"));
 		}
 
+		public function testPostProcess():void {
+			var processor:MockPostProcessor = new MockPostProcessor();
+			_eventBus.addPostProcessor(processor);
+			_eventBus.dispatch("test");
+			assertEquals(1, processor.callCount);
+		}
+
+		public function testEventPostProcess():void {
+			var processor:MockPostProcessor = new MockPostProcessor();
+			_eventBus.addEventPostProcessor("test", processor);
+			_eventBus.dispatch("test");
+			_eventBus.dispatch("test2");
+			assertEquals(1, processor.callCount);
+		}
+
+		public function testEventClassPostProcess():void {
+			var processor:MockPostProcessor = new MockPostProcessor();
+			_eventBus.addEventClassPostProcessor(MockCustomEvent, processor);
+			_eventBus.dispatchEvent(new MockCustomEvent());
+			_eventBus.dispatch("test2");
+			assertEquals(1, processor.callCount);
+		}
+
+		public function testPostProcessWithTopic():void {
+			var processor:MockPostProcessor = new MockPostProcessor();
+			_eventBus.addPostProcessor(processor, "testtopic");
+			_eventBus.dispatch("test");
+			_eventBus.dispatch("test", "testtopic");
+			assertEquals(1, processor.callCount);
+		}
+
+		public function testEventPostProcessWithTopic():void {
+			var processor:MockPostProcessor = new MockPostProcessor();
+			_eventBus.addEventPostProcessor("test", processor, "testtopic");
+			_eventBus.dispatch("test");
+			_eventBus.dispatch("test", "testtopic");
+			assertEquals(1, processor.callCount);
+		}
+
+		public function testEventClassPostProcessWithTopic():void {
+			var processor:MockPostProcessor = new MockPostProcessor();
+			_eventBus.addEventClassPostProcessor(MockCustomEvent, processor, "testtopic");
+			_eventBus.dispatchEvent(new MockCustomEvent());
+			_eventBus.dispatchEvent(new MockCustomEvent(), "testtopic");
+			assertEquals(1, processor.callCount);
+		}
 	}
 }
 
 import flash.events.Event;
+
 import org.as3commons.eventbus.IEventBusListener;
 import org.as3commons.eventbus.IEventInterceptor;
 import org.as3commons.eventbus.impl.AbstractEventInterceptor;
@@ -658,4 +708,9 @@ class MockListenerInterceptor extends AbstractEventListenerInterceptor {
 }
 
 class MockPostProcessor extends AbstractEventPostProcessor {
+	public var callCount:int = 0;
+
+	override public function postProcess(event:Event, wasIntercepted:Boolean, topic:Object=null):void {
+		callCount++;
+	}
 }
