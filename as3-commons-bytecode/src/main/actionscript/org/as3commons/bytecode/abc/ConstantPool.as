@@ -52,7 +52,6 @@ package org.as3commons.bytecode.abc {
 		private static const NAMESPACE_SET_PROPERTYNAME:String = "namespaceSet";
 		private static const NAME_PROPERTYNAME:String = "name";
 		private static const LOCKED_CONSTANTPOOL_ERROR:String = "Constantpool is locked";
-		private static const ZERO_VALUE:String = "zero";
 
 		private var _dupeCheck:Boolean = true;
 		private var _integerPool:Array;
@@ -70,9 +69,7 @@ package org.as3commons.bytecode.abc {
 		private var _multinamePool:Array;
 		private var _classInfo:Array;
 		private var _multinameLookup:Dictionary;
-
 		private var _lookup:Dictionary;
-
 		private var _locked:Boolean = false;
 		private var _rawConstantPool:ByteArray;
 
@@ -112,10 +109,10 @@ package org.as3commons.bytecode.abc {
 			_namespaceSetLookup = new Dictionary();
 			_multinameLookup = new Dictionary();
 
-			_integerPool = [ZERO_VALUE];
-			_integerLookup[ZERO_VALUE] = 0;
-			_uintPool = [ZERO_VALUE];
-			_uintLookup[ZERO_VALUE] = 0;
+			_integerPool = [0];
+			_integerLookup[0] = 0;
+			_uintPool = [0];
+			_uintLookup[0] = 0;
 			_doublePool = [NaN];
 			_doubleLookup[NaN] = 0;
 			_classInfo = [];
@@ -584,8 +581,8 @@ package org.as3commons.bytecode.abc {
 		 * pool in the given constant pool. Values are compared based upon value and not object instance, so two different
 		 * objects with identical semantic meaning are considered the same.
 		 *
-		 * @param constantPool    The constant pool to compare this constant pool instance against.
-		 * @return    True if the pools match, false otherwise.
+		 * @param other The constant pool to compare this constant pool instance against.
+		 * @return True if the pools match, false otherwise.
 		 */
 		public function equals(other:Object):Boolean {
 			var constantPool:ConstantPool = ConstantPool(other);
@@ -594,7 +591,7 @@ package org.as3commons.bytecode.abc {
 
 		/**
 		 * Creates a printable representation of this object instance.
-		 * @return    This constant pool instance represented as a <code>String</code>.
+		 * @return This constant pool instance represented as a <code>String</code>.
 		 */
 		public function toString():String {
 			return StringUtils.substitute("Integer Pool: {0}\n" + "Uint Pool: {1}\n" + "Double Pool: {2}\n" + "String Pool:\n\t{3}" + "\nNamespace Pool:\n\t{4}" + "\nNamespace Set Pool:\n\t{5}" + "\nMultiname Pool:\n\t{6}", _integerPool.join(), _uintPool.join(), _doublePool.join(), _stringPool.join("\n\t"), _namespacePool.join("\n\t"), _namespaceSetPool.join("\n\t"), _multinamePool.join("\n\t"));
