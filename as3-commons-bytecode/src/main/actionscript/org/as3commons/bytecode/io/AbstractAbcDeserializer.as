@@ -44,7 +44,7 @@ package org.as3commons.bytecode.io {
 		/**
 		 * Creates a new <code>AbstractAbcDeserializer2</code> instance.
 		 */
-		public function AbstractAbcDeserializer(byteArray:ByteArray = null) {
+		public function AbstractAbcDeserializer(byteArray:ByteArray=null) {
 			_byteStream = byteArray;
 		}
 
@@ -107,11 +107,11 @@ package org.as3commons.bytecode.io {
 
 			/* READ integerpool */
 			include "readU32.as.tmpl";
-			i = 1;
-			itemCount = result;
+			i = 0;
+			itemCount = --result;
 			while (i < itemCount) {
 				include "readU32.as.tmpl";
-				ints[i++] = result;
+				ints[++i] = result;
 			}
 
 			CONFIG::debug {
@@ -121,11 +121,11 @@ package org.as3commons.bytecode.io {
 
 			/* READ uintpool */
 			include "readU32.as.tmpl";
-			i = 1;
-			itemCount = result;
+			i = 0;
+			itemCount = --result;
 			while (i < itemCount) {
 				include "readU32.as.tmpl";
-				uints[i++] = result;
+				uints[++i] = result;
 			}
 
 			CONFIG::debug {
@@ -136,20 +136,20 @@ package org.as3commons.bytecode.io {
 
 			/* READ doublepool */
 			include "readU32.as.tmpl";
-			i = 1;
-			itemCount = result;
+			i = 0;
+			itemCount = --result;
 			while (i < itemCount) {
-				doubles[i++] = _byteStream.readDouble();
+				doubles[++i] = _byteStream.readDouble();
 			}
 			/* END:READ doublepool */
 
 			/* READ stringpool */
 			include "readU32.as.tmpl";
-			i = 1;
-			itemCount = result;
+			i = 0;
+			itemCount = --result;
 			while (i < itemCount) {
 				include "readU32.as.tmpl";
-				strings[i++] = _byteStream.readUTFBytes(result);
+				strings[++i] = _byteStream.readUTFBytes(result);
 			}
 			CONFIG::debug {
 				logConstantPoolRead("strings", startTime);
@@ -158,12 +158,12 @@ package org.as3commons.bytecode.io {
 
 			/* READ namespacepool */
 			include "readU32.as.tmpl";
-			i = 1;
-			itemCount = result;
+			i = 0;
+			itemCount = --result;
 			while (i < itemCount) {
 				kind = 0xff & _byteStream[_byteStream.position++];
 				include "readU32.as.tmpl";
-				namespaces[i++] = new LNamespace(NamespaceKind.determineKind(kind), strings[result]);
+				namespaces[++i] = new LNamespace(NamespaceKind.determineKind(kind), strings[result]);
 			}
 			CONFIG::debug {
 				logConstantPoolRead("namespaces", startTime);
@@ -172,17 +172,21 @@ package org.as3commons.bytecode.io {
 
 			/* READ namespacesetpool */
 			include "readU32.as.tmpl";
-			i = 1;
-			itemCount = result;
+			i = 0;
+			itemCount = --result;
+			var namespaceIndexRefCount:int;
+			var namespaceArray:Array;
+			var j:int;
 			while (i < itemCount) {
 				include "readU32.as.tmpl";
-				var namespaceIndexRefCount:int = result;
-				var namespaceArray:Array = [];
+				namespaceIndexRefCount = result;
+				namespaceArray = [];
+				j = namespaceArray.length - 1;
 				while (--namespaceIndexRefCount - (-1)) {
 					include "readU32.as.tmpl";
-					namespaceArray[namespaceArray.length] = namespaces[result];
+					namespaceArray[++j] = namespaces[result];
 				}
-				namespaceSets[i++] = new NamespaceSet(namespaceArray);
+				namespaceSets[++i] = new NamespaceSet(namespaceArray);
 			}
 			CONFIG::debug {
 				logConstantPoolRead("namespace sets", startTime);
@@ -192,17 +196,23 @@ package org.as3commons.bytecode.io {
 			/* READ multiNames */
 			var name:String;
 			include "readU32.as.tmpl";
-			i = 1;
-			itemCount = result;
+			i = 0;
+			itemCount = --result;
+			var ns:LNamespace;
+			var nss:NamespaceSet;
+			var qualifiedName:QualifiedName;
+			var paramCount:uint;
+			var params:Array;
 			while (i < itemCount) {
+				++i;
 				kind = 0xff & _byteStream[_byteStream.position++];
 				//QNAME or QNAME_A
 				if ((kind == 0x07) || (kind == 0x0D)) {
 					include "readU32.as.tmpl";
-					var ns:LNamespace = namespaces[result];
+					ns = namespaces[result];
 					include "readU32.as.tmpl";
 					multiNames[i] = new QualifiedName(strings[result], ns, (kind == 0x07) ? MultinameKind.QNAME : MultinameKind.QNAME_A);
-					//RTQName or RTQName_A
+						//RTQName or RTQName_A
 				} else if ((kind == 0x0f) || (kind == 0x10)) {
 					include "readU32.as.tmpl";
 					multiNames[i] = new RuntimeQualifiedName(strings[result], (kind == 0x0f) ? MultinameKind.RTQNAME : MultinameKind.RTQNAME_A);
@@ -214,7 +224,7 @@ package org.as3commons.bytecode.io {
 					include "readU32.as.tmpl";
 					name = strings[result];
 					include "readU32.as.tmpl";
-					var nss:NamespaceSet = namespaceSets[result];
+					nss = namespaceSets[result];
 					multiNames[i] = new Multiname(name, nss, (kind == 0x09) ? MultinameKind.MULTINAME : MultinameKind.MULTINAME_A);
 				} else if ((kind == 0x1B) || (kind == 0x1C)) {
 					//MULTINAME_L or MULTINAME_LA
@@ -223,17 +233,16 @@ package org.as3commons.bytecode.io {
 				} else if (kind == 0x1D) {
 					//GENERIC
 					include "readU32.as.tmpl";
-					var qualifiedName:QualifiedName = multiNames[result] as QualifiedName;
+					qualifiedName = multiNames[result] as QualifiedName;
 					include "readU32.as.tmpl";
-					var paramCount:uint = result;
-					var params:Array = [];
+					paramCount = result;
+					params = [];
 					while (paramCount--) {
 						include "readU32.as.tmpl";
 						params[params.length] = multiNames[result];
 					}
 					multiNames[i] = new MultinameG(qualifiedName, paramCount, params, MultinameKind.GENERIC)
 				}
-				i++;
 			}
 
 			CONFIG::debug {
@@ -251,7 +260,7 @@ package org.as3commons.bytecode.io {
 			return pool;
 		}
 
-		public function deserialize(positionInByteArrayToReadFrom:int = 0):AbcFile {
+		public function deserialize(positionInByteArrayToReadFrom:int=0):AbcFile {
 			return null;
 		}
 
@@ -274,7 +283,7 @@ package org.as3commons.bytecode.io {
 		public function deserializeMethodInfos(abcFile:AbcFile, pool:IConstantPool):void {
 		}
 
-		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false, className:String = ""):Array {
+		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
 			return null;
 		}
 
