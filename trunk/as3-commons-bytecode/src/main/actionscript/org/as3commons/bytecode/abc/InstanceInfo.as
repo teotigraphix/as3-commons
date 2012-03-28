@@ -40,10 +40,6 @@ package org.as3commons.bytecode.abc {
 
 		public function InstanceInfo() {
 			super();
-			initInstanceInfo();
-		}
-
-		private function initInstanceInfo():void {
 			interfaceMultinames = [];
 		}
 

@@ -37,7 +37,7 @@ package org.as3commons.bytecode.abc {
 		}
 
 		override public function clone():* {
-			return new NamedMultiname(this.kind, this.name);
+			return new NamedMultiname(this.kind, _name);
 		}
 
 		public function get name():String {
@@ -51,7 +51,7 @@ package org.as3commons.bytecode.abc {
 		override public function equals(other:Object):Boolean {
 			var matches:Boolean = false;
 			if (other is NamedMultiname) {
-				if (NamedMultiname(other).name == this.name) {
+				if (NamedMultiname(other).name == _name) {
 					if (super.equals(other)) {
 						matches = true;
 					}

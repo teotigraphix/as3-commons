@@ -125,7 +125,7 @@ package org.as3commons.bytecode.util {
 
 		public static function skipS24(bytes:ByteArray):void {
 			bytes.readUnsignedByte();
-			bytes.readUnsignedByte()
+			bytes.readUnsignedByte();
 			bytes.readByte();
 		}
 
@@ -139,7 +139,9 @@ package org.as3commons.bytecode.util {
 
 		public static function readU30(bytes:ByteArray):uint {
 			var value:uint = (readU32(bytes) & 0x3fffffff);
-			assertWithinRange(value < MAX_U30, MAX_U30, value);
+			CONFIG::debug {
+				assertWithinRange(value < MAX_U30, MAX_U30, value);
+			}
 			return value;
 		}
 
@@ -272,7 +274,9 @@ package org.as3commons.bytecode.util {
 		 * Writes a one-byte unsigned integer value.
 		 */
 		public static function writeU8(value:uint, byteArray:ByteArray):void {
-			assertWithinRange(value < MAX_U8, MAX_U8, value);
+			CONFIG::debug {
+				assertWithinRange(value < MAX_U8, MAX_U8, value);
+			}
 			byteArray.writeByte(value);
 		}
 

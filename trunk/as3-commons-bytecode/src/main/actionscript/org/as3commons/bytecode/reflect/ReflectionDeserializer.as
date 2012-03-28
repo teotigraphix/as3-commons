@@ -24,6 +24,7 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.MultinameG;
 	import org.as3commons.bytecode.abc.QualifiedName;
+	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SimpleConstantPool;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.ClassConstant;
@@ -62,31 +63,31 @@ package org.as3commons.bytecode.reflect {
 
 		public function read(typeCache:ByteCodeTypeCache, input:ByteArray, applicationDomain:ApplicationDomain=null, isLoaderBytes:Boolean=true):void {
 			_applicationDomain = applicationDomain ||= Type.currentApplicationDomain;
-			byteStream = AbcSpec.newByteArray();
+			_byteStream = AbcSpec.newByteArray();
 			input.endian = Endian.LITTLE_ENDIAN;
 			var swfIdentifier:String = input.readUTFBytes(3);
 			var compressed:Boolean = (swfIdentifier == SWFWeaverFileIO.SWF_SIGNATURE_COMPRESSED);
 			var version:uint = input.readByte();
 			var filesize:uint = input.readUnsignedInt();
 
-			input.readBytes(byteStream);
+			input.readBytes(_byteStream);
 			if (isLoaderBytes) {
-				byteStream.length -= 8;
+				_byteStream.length -= 8;
 			}
 
 			if (compressed) {
-				byteStream.uncompress();
+				_byteStream.uncompress();
 			}
-			byteStream.position = 0;
-			readHeader(byteStream);
-			while (byteStream.bytesAvailable) {
-				readTags(typeCache, byteStream);
+			_byteStream.position = 0;
+			readHeader(_byteStream);
+			while (_byteStream.bytesAvailable) {
+				readTags(typeCache, _byteStream);
 			}
 		}
 
 		public function readABCTag(typeCache:ByteCodeTypeCache, input:ByteArray):void {
-			AbcSpec.skipU16(byteStream);
-			AbcSpec.skipU16(byteStream);
+			AbcSpec.skipU16(_byteStream);
+			AbcSpec.skipU16(_byteStream);
 			var constantPool:IConstantPool = new SimpleConstantPool();
 			constantPool.dupeCheck = false;
 			deserializeConstantPool(constantPool);
@@ -212,7 +213,7 @@ package org.as3commons.bytecode.reflect {
 
 				include "../io/readU32.as.tmpl";
 
-				flags = (255 & byteStream[byteStream.position++]);
+				flags = (255 & _byteStream[_byteStream.position++]);
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_OPTIONAL) == true) {
 					// option_info  
 					// { 
@@ -228,7 +229,7 @@ package org.as3commons.bytecode.reflect {
 					optionInfoCount = result;
 					for (optionInfoIndex = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
 						include "../io/readU32.as.tmpl";
-						defaultValue = constantPool.getConstantPoolItem((255 & byteStream[byteStream.position++]), result);
+						defaultValue = constantPool.getConstantPoolItem((255 & _byteStream[_byteStream.position++]), result);
 						param = params[params.length - (optionInfoCount - optionInfoIndex)];
 						param.as3commons_reflect::setIsOptional(true);
 						param.as3commons_reflect::setDefaultValue(defaultValue);
@@ -263,7 +264,7 @@ package org.as3commons.bytecode.reflect {
 			var metaDataContainer:MetadataContainer;
 			var qualifiedName:QualifiedName;
 			var fullName:String;
-			var multinamePool:Array = pool.multinamePool;
+			var multinamePool:Vector.<BaseMultiname> = pool.multinamePool;
 			var lastIdx:int;
 			var fullNSName:Array;
 			var getterSetterSignature:String;
@@ -295,7 +296,7 @@ package org.as3commons.bytecode.reflect {
 				include "../io/readU32.as.tmpl";
 				traitName = multinamePool[result];
 				traitMultiname = MultinameUtil.convertToQualifiedName(traitName);
-				traitKindValue = (255 & byteStream[byteStream.position++]);
+				traitKindValue = (255 & _byteStream[_byteStream.position++]);
 				namedMultiname = null;
 				metaDataContainer = null;
 				fullName = ((instanceInfo != null)) ? instanceInfo.fullName : "";
@@ -342,7 +343,7 @@ package org.as3commons.bytecode.reflect {
 					}
 					include "../io/readU32.as.tmpl";
 					if (result != 0) {
-						variable.as3commons_reflect::setInitializedValue(pool.getConstantPoolItem((255 & byteStream[byteStream.position++]), result));
+						variable.as3commons_reflect::setInitializedValue(pool.getConstantPoolItem((255 & _byteStream[_byteStream.position++]), result));
 					}
 				} else if (kindMasked == 6) {
 					// trait_slot 
@@ -380,7 +381,7 @@ package org.as3commons.bytecode.reflect {
 					}
 					include "../io/readU32.as.tmpl";
 					if (result != 0) {
-						constant.as3commons_reflect::setInitializedValue(pool.getConstantPoolItem((255 & byteStream[byteStream.position++]), result));
+						constant.as3commons_reflect::setInitializedValue(pool.getConstantPoolItem((255 & _byteStream[_byteStream.position++]), result));
 					}
 				} else if ((kindMasked == 1) || (kindMasked == 5)) {
 					include "../io/readU32.as.tmpl";
@@ -583,9 +584,9 @@ package org.as3commons.bytecode.reflect {
 				instances[instances.length] = instanceInfo;
 
 				include "../io/readU32.as.tmpl";
-				superName = constantPool.multinamePool[result];
+				superName = QualifiedName(constantPool.multinamePool[result]);
 				instanceInfo.extendsClasses[instanceInfo.extendsClasses.length] = QualifiedName(superName).fullName;
-				instanceInfoFlags = (255 & byteStream[byteStream.position++]);
+				instanceInfoFlags = (255 & _byteStream[_byteStream.position++]);
 				instanceInfo.isFinal = ClassConstant.FINAL.present(instanceInfoFlags);
 				instanceInfo.isInterface = ClassConstant.INTERFACE.present(instanceInfoFlags);
 				instanceInfo.as3commons_reflect::setIsProtected(ClassConstant.PROTECTED_NAMESPACE.present(instanceInfoFlags));
@@ -658,8 +659,8 @@ package org.as3commons.bytecode.reflect {
 				method.as3commons_reflect::setMaxScopeDepth(result);
 				include "../io/readU32.as.tmpl";
 				method.as3commons_reflect::setBodyLength(result);
-				method.as3commons_reflect::setBodyStartPosition(byteStream.position);
-				byteStream.position += method.bodyLength;
+				method.as3commons_reflect::setBodyStartPosition(_byteStream.position);
+				_byteStream.position += method.bodyLength;
 
 				include "../io/readU32.as.tmpl";
 				exceptionCount = result;
@@ -678,7 +679,7 @@ package org.as3commons.bytecode.reflect {
 				var vkind:uint;
 				while (traitCount--) {
 					include "../io/readU32.as.tmpl";
-					traitKindValue = (255 & byteStream[byteStream.position++]) & 0xF;
+					traitKindValue = (255 & _byteStream[_byteStream.position++]) & 0xF;
 					vindex = 0;
 					vkind = 0;
 					if ((traitKindValue == 0) || (traitKindValue == 6)) {
@@ -686,7 +687,7 @@ package org.as3commons.bytecode.reflect {
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";
 						if (result != 0) {
-							byteStream.position++;
+							_byteStream.position++;
 						}
 					} else {
 						include "../io/readU32.as.tmpl";

@@ -35,11 +35,6 @@ package org.as3commons.bytecode.abc {
 		public var name:String;
 
 		public function LNamespace(kindValue:NamespaceKind, nameValue:String) {
-			super();
-			initLNamespace(kindValue, nameValue);
-		}
-
-		protected function initLNamespace(kindValue:NamespaceKind, nameValue:String):void {
 			CONFIG::debug {
 				Assert.notNull(kindValue, "kindValue argument must not be null");
 			}

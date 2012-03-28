@@ -19,7 +19,6 @@ package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.StringUtils;
-	import org.as3commons.lang.util.CloneUtils;
 
 	/**
 	 * Represents an individual opcode operation with parameters.
@@ -33,11 +32,6 @@ package org.as3commons.bytecode.abc {
 		private var _opcode:Opcode;
 
 		public function Op(opcode:Opcode, parameters:Array=null) {
-			super();
-			initOp(opcode, parameters);
-		}
-
-		protected function initOp(opcode:Opcode, parameters:Array):void {
 			_opcode = opcode;
 			_parameters = (parameters) ? parameters : [];
 		}

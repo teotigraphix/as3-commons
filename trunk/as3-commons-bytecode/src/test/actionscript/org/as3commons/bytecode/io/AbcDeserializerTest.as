@@ -16,26 +16,29 @@
 package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
 
-	import flexunit.framework.TestCase;
-
 	import org.as3commons.bytecode.TestConstants;
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.util.Assertions;
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertFalse;
+import org.flexunit.asserts.assertStrictlyEquals;
+import org.flexunit.asserts.assertTrue;
 
-	public class AbcDeserializerTest extends TestCase {
+public class AbcDeserializerTest {
 		//NOTE: This is just used to dump the proxy template for inspection and comparison to weaved proxies 
-//		public function testPrintDynamicSubclass() : void
+//		public function TestPrintDynamicSubclass() : void
 //		{
 //			trace(new AbcDeserializer(TestConstants.getProxyTemplate()).deserialize());
 //		}
 
-		public function AbcDeserializerTest(methodName:String = null) {
-			super(methodName);
+		public function AbcDeserializerTest() {
+
 		}
 
+		[Test]
 		public function testDeserializeBaseClass():void {
 			var byteStream:ByteArray = TestConstants.getBaseClassTemplate();
 			var abcFile:AbcFile = new AbcDeserializer(byteStream).deserialize();
@@ -57,7 +60,7 @@ package org.as3commons.bytecode.io {
 
 			// There's one entry in the double pool: 0
 			assertEquals(1, pool.doublePool.length);
-			assertEquals(0, pool.doublePool[0]);
+			assertTrue(isNaN(pool.doublePool[0]));
 
 			// The namespace set pool has four entries, with 1, 8, 9, and 4 namespaces in each respectively
 			//TODO: check contents
@@ -88,19 +91,18 @@ package org.as3commons.bytecode.io {
 			assertEquals(6, abcFile.methodBodies.length);
 		}
 
+		[Test]
 		public function testDeserializeFullClassDefinition():void {
 			var byteStream:ByteArray = TestConstants.getFullClassDefinitionByteCode();
 			var deserializer:AbcDeserializer = new AbcDeserializer(byteStream);
-
 			var abcFile:AbcFile = deserializer.deserialize();
-//            trace(abcFile);
+			var pool:IConstantPool = abcFile.constantPool;
 
 			// Major/Minor version are 46 and 16 respectively at the time of writing
 			assertEquals(16, abcFile.minorVersion);
 			assertEquals(46, abcFile.majorVersion);
 
 			// BEGIN CONSTANT POOL ASSERTIONS
-			var pool:IConstantPool = abcFile.constantPool;
 
 			// There are two integers in the pool: 0 and 10
 			assertEquals(2, pool.integerPool.length);
@@ -113,15 +115,66 @@ package org.as3commons.bytecode.io {
 
 			// There's one entry in the double pool: 0
 			assertEquals(1, pool.doublePool.length);
-			assertEquals(0, pool.doublePool[0]);
+			assertTrue(isNaN(pool.doublePool[0]));
 
 			// The following entries are expected in the string pool
-			var expectedStringPoolEntries:Array = ["*", "assets.abc:FullClassDefinition", "PUBLIC_STATIC_CONSTANT", "SOME_STATIC_CONSTANT", "SOME_STATIC_VAR", "FullClassDefinition.as$1", "", "assets.abc", "Object", "Dictionary", "flash.utils", "dictionary", "trace", "Constructor", "methodWithNoArguments", "void", "methodWithTwoArguments", "String", "int", "methodWithOptionalArguments", "methodWithRestArguments", "I don't want to die.", "_internalValue", "Interface", "implementMeOrDie", "MethodMetadata", "methodKey1", "methodValue1", "methodKey2", "methodValue2", "setterForInternalValue", "FieldMetadata", "fieldKey1", "fieldValue1", "fieldKey2", "fieldValue2", "getterForInternalValue", "FullClassDefinition", "ValuelessMetadata", "ValueOnlyMetadata", "valueOnlyValue", "ClassMetadata", "classKey1", "classValue1", "classKey2", "classValue2", "classKey3", "classValue3", "staticMethod", "customNamespaceFunction",
+			var expectedStringPoolEntries:Array =
+					["*",
+						"assets.abc:FullClassDefinition",
+						"PUBLIC_STATIC_CONSTANT",
+						"SOME_STATIC_CONSTANT",
+						"SOME_STATIC_VAR",
+						"FullClassDefinition.as$1",
+						"",
+						"assets.abc",
+						"Object",
+						"Dictionary",
+						"flash.utils",
+						"dictionary",
+						"trace",
+						"Constructor",
+						"methodWithNoArguments",
+						"void",
+						"methodWithTwoArguments",
+						"String",
+						"int",
+						"methodWithOptionalArguments",
+						"methodWithRestArguments",
+						"I don't want to die.",
+						"_internalValue",
+						"Interface",
+						"implementMeOrDie",
+						"MethodMetadata",
+						"methodKey1",
+						"methodValue1",
+						"methodKey2",
+						"methodValue2",
+						"setterForInternalValue",
+						"FieldMetadata",
+						"fieldKey1",
+						"fieldValue1",
+						"fieldKey2",
+						"fieldValue2",
+						"getterForInternalValue",
+						"FullClassDefinition",
+						"ValuelessMetadata",
+						"ValueOnlyMetadata",
+						"valueOnlyValue",
+						"ClassMetadata",
+						"classKey1",
+						"classValue1",
+						"classKey2",
+						"classValue2",
+						"classKey3",
+						"classValue3",
+						"staticMethod",
+						"customNamespaceFunction",
 //				"custom_namespace",
 				"http://www.maximporges.com"];
+
 			assertEquals(expectedStringPoolEntries.length, pool.stringPool.length);
 			for each (var expectedString:String in expectedStringPoolEntries) {
-				assertFalse(-1 == expectedStringPoolEntries.indexOf(expectedString));
+				assertFalse(-1 == pool.stringPool.indexOf(expectedString));
 			}
 
 			// The following entries are expected in the namespace pool
@@ -136,7 +189,7 @@ package org.as3commons.bytecode.io {
 				new LNamespace(NamespaceKind.STATIC_PROTECTED_NAMESPACE, "Object"), // Namespace[staticProtectedNamespace::Object]
 				new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "flash.utils"), // Namespace[public::flash.utils]
 				new LNamespace(NamespaceKind.NAMESPACE, "http://www.maximporges.com") // Namespace[public::flash.utils]
-				];
+			];
 			Assertions.assertArrayContentsEqual(expectedNamespaceEntries, pool.namespacePool);
 
 			// The namespace set pool has four entries, with 1, 8, 9, and 4 namespaces in each respectively

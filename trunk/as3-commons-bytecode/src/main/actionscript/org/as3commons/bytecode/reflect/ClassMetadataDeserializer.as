@@ -18,7 +18,6 @@ package org.as3commons.bytecode.reflect {
 	import flash.utils.ByteArray;
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
-	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
@@ -27,8 +26,6 @@ package org.as3commons.bytecode.reflect {
 	import org.as3commons.bytecode.abc.enum.ClassConstant;
 	import org.as3commons.bytecode.abc.enum.MethodFlag;
 	import org.as3commons.bytecode.abc.enum.TraitAttributes;
-	import org.as3commons.bytecode.abc.enum.TraitKind;
-	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.reflect.Metadata;
 	import org.as3commons.reflect.as3commons_reflect;
@@ -38,11 +35,9 @@ package org.as3commons.bytecode.reflect {
 		public static const DOUBLE_COLON_REGEXP:RegExp = /[:]+/;
 		public static const PERIOD:String = ".";
 
-		{
-			Multiname;
-			MultinameG;
-			LNamespace;
-		}
+		Multiname;
+		MultinameG;
+		LNamespace;
 
 		public function ClassMetadataDeserializer() {
 			super();
@@ -65,7 +60,7 @@ package org.as3commons.bytecode.reflect {
 				}
 
 				include "../io/readU32.as.tmpl"; //methodNameIndex
-				var flags:uint = 255 & byteStream[byteStream.position++];
+				var flags:uint = 255 & _byteStream[_byteStream.position++];
 				if (MethodFlag.flagPresent(flags, MethodFlag.HAS_OPTIONAL) == true) {
 					include "../io/readU32.as.tmpl";
 					var optionInfoCount:int = result;
@@ -103,7 +98,7 @@ package org.as3commons.bytecode.reflect {
 				typeCache.as3commons_reflect::addDefinitionName(fullName);
 
 				include "../io/readU32.as.tmpl";
-				var instanceInfoFlags:uint = 255 & byteStream[byteStream.position++]; //instanceInfoFlags
+				var instanceInfoFlags:uint = 255 & _byteStream[_byteStream.position++]; //instanceInfoFlags
 				if (ClassConstant.PROTECTED_NAMESPACE.present(instanceInfoFlags)) {
 					include "../io/readU32.as.tmpl";
 				}
@@ -135,14 +130,14 @@ package org.as3commons.bytecode.reflect {
 					//  u30 metadata[metadata_count] 
 					// }
 					include "../io/readU32.as.tmpl";
-					var traitKindValue:int = 255 & byteStream[byteStream.position++];
+					var traitKindValue:int = 255 & _byteStream[_byteStream.position++];
 					var kindMasked:uint = traitKindValue & 0xF;
 					if ((kindMasked == 0) || (kindMasked == 6)) {
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";
 						if (result != 0) {
-							byteStream.position++;
+							_byteStream.position++;
 						}
 					} else if ((kindMasked == 1) || (kindMasked == 2) || (kindMasked == 3) || (kindMasked == 5)) {
 						include "../io/readU32.as.tmpl";
@@ -207,14 +202,14 @@ package org.as3commons.bytecode.reflect {
 					//  u30 metadata[metadata_count] 
 					// }
 					include "../io/readU32.as.tmpl";
-					traitKindValue = 255 & byteStream[byteStream.position++];
+					traitKindValue = 255 & _byteStream[_byteStream.position++];
 					kindMasked = traitKindValue & 0xF;
 					if ((kindMasked == 0) || (kindMasked == 6)) {
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";
 						if (result != 0) {
-							byteStream.position++;
+							_byteStream.position++;
 						}
 					} else if ((kindMasked == 1) || (kindMasked == 2) || (kindMasked == 3) || (kindMasked == 5)) {
 						include "../io/readU32.as.tmpl";
@@ -273,14 +268,14 @@ package org.as3commons.bytecode.reflect {
 					//  u30 metadata[metadata_count] 
 					// }
 					include "../io/readU32.as.tmpl";
-					traitKindValue = 255 & byteStream[byteStream.position++];
+					traitKindValue = 255 & _byteStream[_byteStream.position++];
 					kindMasked = traitKindValue & 0xF;
 					if ((kindMasked == 0) || (kindMasked == 6)) {
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";
 						include "../io/readU32.as.tmpl";
 						if (result != 0) {
-							byteStream.position++;
+							_byteStream.position++;
 						}
 					} else if ((kindMasked == 1) || (kindMasked == 2) || (kindMasked == 3) || (kindMasked == 5)) {
 						include "../io/readU32.as.tmpl";

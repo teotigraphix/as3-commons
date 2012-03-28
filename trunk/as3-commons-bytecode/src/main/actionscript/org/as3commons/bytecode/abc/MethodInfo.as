@@ -15,7 +15,6 @@
  */
 package org.as3commons.bytecode.abc {
 
-	import flash.utils.Dictionary;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.lang.ICloneable;
@@ -35,8 +34,7 @@ package org.as3commons.bytecode.abc {
 		private static const ILLEGAL_TRAITINFO_TYPE:String = "Argument must be of type FunctionTrait or MethodTrait";
 
 		public function MethodInfo() {
-			super();
-			initMethodInfo();
+			argumentCollection = [];
 		}
 
 		public var argumentCollection:Array;
@@ -141,8 +139,5 @@ package org.as3commons.bytecode.abc {
 			return StringUtils.substitute("{0} function {1}({2}) : {3}", (namespaceString) ? namespaceString : "(no namespace)", as3commonsBytecodeName, argumentCollection.join(", "), returnType);
 		}
 
-		protected function initMethodInfo():void {
-			argumentCollection = [];
-		}
 	}
 }

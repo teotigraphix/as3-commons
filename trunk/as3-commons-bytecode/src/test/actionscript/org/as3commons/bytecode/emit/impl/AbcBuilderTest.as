@@ -18,9 +18,6 @@ package org.as3commons.bytecode.emit.impl {
 
 	import flash.events.Event;
 	import flash.system.ApplicationDomain;
-	import flash.utils.describeType;
-
-	import flexunit.framework.TestCase;
 
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.as3commons_bytecode_proxy;
@@ -30,12 +27,20 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
 	import org.as3commons.bytecode.emit.IMethodBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
+	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.reflect.AccessorAccess;
 	import org.as3commons.reflect.Field;
 	import org.as3commons.reflect.Method;
 	import org.as3commons.reflect.Type;
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertNotNull;
+	import org.flexunit.asserts.assertNull;
+	import org.flexunit.asserts.assertStrictlyEquals;
+	import org.flexunit.asserts.assertTrue;
+	import org.flexunit.asserts.fail;
+	import org.flexunit.async.Async;
 
-	public class AbcBuilderTest extends TestCase {
+	public class AbcBuilderTest {
 
 		private var _abcBuilder:IAbcBuilder;
 		private static var _staticWasCalled:Boolean;
@@ -44,18 +49,20 @@ package org.as3commons.bytecode.emit.impl {
 			super();
 		}
 
-		override public function setUp():void {
+		[Before]
+		public function setUp():void {
 			_abcBuilder = new AbcBuilder();
 		}
 
+		[Test(async)]
 		public function testBuildClassWithSimpleProperty():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MySimplePropertyTest");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testString", "String", "test");
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertyBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, propertyBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		private function propertyBuildSuccessHandler(event:Event):void {
+		private function propertyBuildSuccessHandler(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyTest") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
@@ -65,6 +72,7 @@ package org.as3commons.bytecode.emit.impl {
 			assertEquals("test2", instance.testString);
 		}
 
+		[Test(async)]
 		public function testBuildClassWithMetadata():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MySimplePropertyWithMetadataTest");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testString", "String", "test");
@@ -72,14 +80,14 @@ package org.as3commons.bytecode.emit.impl {
 			var mb:IMethodBuilder = classBuilder.defineMethod("testMethod");
 			mb.defineMetadata("CustomMethod");
 			mb.addOpcode(Opcode.getlocal_0).addOpcode(Opcode.pushscope).addOpcode(Opcode.returnvoid);
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertyMetadataBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, propertyMetadataBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 			//var abcFile:AbcFile = _abcBuilder.build();
 			//var ba:ByteArray = new AbcSerializer().serializeAbcFile(abcFile);
 			//abcFile = new AbcDeserializer(ba).deserialize();
 		}
 
-		private function propertyMetadataBuildSuccessHandler(event:Event):void {
+		private function propertyMetadataBuildSuccessHandler(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyWithMetadataTest") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
@@ -90,6 +98,7 @@ package org.as3commons.bytecode.emit.impl {
 			assertTrue(mthd.hasMetadata('CustomMethod'));
 		}
 
+		[Test(async)]
 		public function testBuildClassWithSimplePropertyWithStaticInitializer():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MySimplePropertyTestWithStaticInitializerClass");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testString", "String");
@@ -99,20 +108,21 @@ package org.as3commons.bytecode.emit.impl {
 			methodBuilder.isStatic = true;
 			methodBuilder.returnType = "String";
 			methodBuilder.addOp(Opcode.getlocal_0.op()).addOp(Opcode.pushscope.op()).addOp(Opcode.pushstring.op(["testValue"])).addOp(Opcode.returnvalue.op());
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertySimpleWithStaticInitializerBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, propertySimpleWithStaticInitializerBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
+		[Test(async)]
 		public function testBuildClassWithSimplePropertyWithStaticInitializerOnDifferentClass():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MySimplePropertyTestWithStaticInitializerClassOnDifferentClass");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testString", "String");
 			propertyBuilder.memberInitialization = new MemberInitialization();
 			propertyBuilder.memberInitialization.factoryMethodName = "org.as3commons.bytecode.emit.impl.AbcBuilderTest.createString";
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertySimpleWithStaticInitializerOnDifferentClassBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, propertySimpleWithStaticInitializerOnDifferentClassBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		private function propertySimpleWithStaticInitializerOnDifferentClassBuildSuccessHandler(event:Event):void {
+		private function propertySimpleWithStaticInitializerOnDifferentClassBuildSuccessHandler(event:Event, data:*):void {
 			_staticWasCalled = false;
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyTestWithStaticInitializerClassOnDifferentClass") as Class;
 			assertNotNull(cls);
@@ -126,21 +136,22 @@ package org.as3commons.bytecode.emit.impl {
 			return "testValue";
 		}
 
+		[Test(async)]
 		public function testBuildClassWithComplexProperty():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyComplexPropertyTest");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testObject", "flash.events.Event");
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertyComplexBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, propertyComplexBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		private function propertySimpleWithStaticInitializerBuildSuccessHandler(event:Event):void {
+		private function propertySimpleWithStaticInitializerBuildSuccessHandler(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyTestWithStaticInitializerClass") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
 			assertEquals("testValue", instance.testString);
 		}
 
-		private function propertyComplexBuildSuccessHandler(event:Event):void {
+		private function propertyComplexBuildSuccessHandler(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyComplexPropertyTest") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
@@ -152,16 +163,17 @@ package org.as3commons.bytecode.emit.impl {
 			assertStrictlyEquals(evt, instance.testObject);
 		}
 
+		[Test(async)]
 		public function testBuildClassWithPropertyInitializations():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyPropertyInitializationTest");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testObject", "flash.events.Event");
 			propertyBuilder.memberInitialization = new MemberInitialization();
 			propertyBuilder.memberInitialization.constructorArguments = ["myEventType", true, true];
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertyInitsBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, propertyInitsBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		public function propertyInitsBuildSuccessHandler(event:Event):void {
+		public function propertyInitsBuildSuccessHandler(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyPropertyInitializationTest") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
@@ -174,17 +186,18 @@ package org.as3commons.bytecode.emit.impl {
 			assertTrue(event.cancelable);
 		}
 
+		[Test(async)]
 		public function testBuildClassWithPropertyWithGeneratedNamespaceScope():void {
 			_abcBuilder.definePackage("com.myclasses.test").defineNamespace("my_namespace_test", "http://www.test.com/mytestnamespace");
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyCustomNamespacePropertyTest");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("testObject", "flash.events.Event");
 			propertyBuilder.scopeName = "my_namespace_test";
 			propertyBuilder.namespaceURI = "http://www.test.com/mytestnamespace";
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(propertyWithGeneratednamespaceBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, propertyWithGeneratednamespaceBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		private function propertyWithGeneratednamespaceBuildSuccessHandler(event:Event):void {
+		private function propertyWithGeneratednamespaceBuildSuccessHandler(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyCustomNamespacePropertyTest") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
@@ -196,6 +209,7 @@ package org.as3commons.bytecode.emit.impl {
 			assertStrictlyEquals(evt, instance[qn]);
 		}
 
+		[Test(async)]
 		public function testBuildClassWithMethodThatReturnsString():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest1");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
@@ -205,45 +219,114 @@ package org.as3commons.bytecode.emit.impl {
 			methodBuilder.addOpcode(Opcode.pushscope);
 			methodBuilder.addOpcode(Opcode.pushstring, ["testReturnString"]);
 			methodBuilder.addOpcode(Opcode.returnvalue);
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(methodBuildSuccessHandler, 5000), false, 0, true);
+
+			var handler:Function = function (event:Event, data:*):void {
+				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest1") as Class;
+				assertNotNull(cls);
+				var instance:Object = new cls();
+				assertNotNull(instance);
+				var result:String = instance.testMe();
+				assertEquals("testReturnString", result);
+			};
+
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, handler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
+		[Test(async)]
 		public function testBuildClassWithCustomNameSpacedProperty():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyCustomNamespacedPropertyClass");
 			var propertyBuilder:IPropertyBuilder = classBuilder.defineProperty("nameSpacedProperty", "Object");
 			propertyBuilder.namespaceURI = as3commons_bytecode_proxy;
 			propertyBuilder.memberInitialization = new MemberInitialization();
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(customNamespcaedPropertyBuildSuccessHandler, 5000), false, 0, true);
+
+			var handler:Function = function (event:Event, data:*):void {
+				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyCustomNamespacedPropertyClass") as Class;
+				assertNotNull(cls);
+				var instance:Object = new cls();
+				assertNotNull(instance);
+				var result:Object = instance.as3commons_bytecode_proxy::nameSpacedProperty;
+				assertNotNull(result);
+			};
+
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, handler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		public function testBuildClassWithMethodThatReturnsInt():void {
-			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest2");
+		[Test(async)]
+		 public function testBuildClassWithMethodThatReturnsInt_0():void {
+		 doTestBuildClassWithMethodThatReturnsInt(0);
+		 }
+
+		[Test(async)]
+		public function testBuildClassWithMethodThatReturnsInt_1():void {
+			doTestBuildClassWithMethodThatReturnsInt(1);
+		}
+
+		[Test(async)]
+		 public function testBuildClassWithMethodThatReturnsInt_negative1():void {
+		 doTestBuildClassWithMethodThatReturnsInt(-1);
+		 }
+
+		private function doTestBuildClassWithMethodThatReturnsInt(value:int):void {
+			var abcBuilder:AbcBuilder = new AbcBuilder();
+			var classBuilder:IClassBuilder = abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest2");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
 			methodBuilder.name = "testMe";
 			methodBuilder.returnType = "int";
 			methodBuilder.addOpcode(Opcode.getlocal_0);
 			methodBuilder.addOpcode(Opcode.pushscope);
-			methodBuilder.addOpcode(Opcode.pushint, [0]);
+			methodBuilder.addOpcode(Opcode.pushint, [value]);
 			methodBuilder.addOpcode(Opcode.returnvalue);
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(methodBuildSuccessHandler2, 5000), false, 0, true);
-			_abcBuilder.buildAndLoad();
+
+			var handler:Function = function (event:Event, data:*):void {
+				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest2") as Class;
+				assertNotNull(cls);
+				var instance:Object = new cls();
+				assertNotNull(instance);
+				var result:int = instance.testMe();
+				assertEquals(data, result);
+			};
+
+			abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, handler, 5000, value), false, 0, true);
+			abcBuilder.buildAndLoad();
 		}
 
-		public function testBuildClassWithMethodThatReturnsUint():void {
-			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest3");
+		[Test(async)]
+		 public function testBuildClassWithMethodThatReturnsUint_0():void {
+		 doTestBuildClassWithMethodThatReturnsUint(0);
+		 }
+
+		[Test(async)]
+		public function testBuildClassWithMethodThatReturnsUint_1():void {
+			doTestBuildClassWithMethodThatReturnsUint(1);
+		}
+
+		private function doTestBuildClassWithMethodThatReturnsUint(value:uint):void {
+			var abcBuilder:AbcBuilder = new AbcBuilder();
+			var classBuilder:IClassBuilder = abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest3");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
 			methodBuilder.name = "testMe";
 			methodBuilder.returnType = "uint";
 			methodBuilder.addOpcode(Opcode.getlocal_0);
 			methodBuilder.addOpcode(Opcode.pushscope);
-			methodBuilder.addOpcode(Opcode.pushuint, [0]);
+			methodBuilder.addOpcode(Opcode.pushuint, [value]);
 			methodBuilder.addOpcode(Opcode.returnvalue);
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(methodBuildSuccessHandler3, 5000), false, 0, true);
-			_abcBuilder.buildAndLoad();
+
+			var handler:Function = function (event:Event, data:*):void {
+				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest3") as Class;
+				assertNotNull(cls);
+				var instance:Object = new cls();
+				assertNotNull(instance);
+				var result:uint = instance.testMe();
+				assertEquals(data, result);
+			};
+
+			abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, handler, 5000, value), false, 0, true);
+			abcBuilder.buildAndLoad();
 		}
 
+		[Test(async)]
 		public function testBuildClassWithMethodThatReturnsDouble():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyMethodTest4");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod();
@@ -253,61 +336,26 @@ package org.as3commons.bytecode.emit.impl {
 			methodBuilder.addOpcode(Opcode.pushscope);
 			methodBuilder.addOpcode(Opcode.pushdouble, [0]);
 			methodBuilder.addOpcode(Opcode.returnvalue);
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(methodBuildSuccessHandler4, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, methodBuildSuccessHandler4, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
+		[Test(async)]
 		public function testBuildInterfaceWithCustomNameSpacedProperty():void {
 			var interfaceBuilder:IInterfaceBuilder = _abcBuilder.definePackage("com.myclasses.test").defineInterface("IMyCustomNamespacedMethodInterface");
 			interfaceBuilder.defineMethod("nameSpacedMethod");
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(customNamespacedMethodInInterfaceBuildSuccessHandler, 5000), false, 0, true);
+
+			var handler:Function = function (event:Event, data:*):void {
+				var cls:Class = Type.currentApplicationDomain.getDefinition("com.myclasses.test.IMyCustomNamespacedMethodInterface") as Class;
+				assertNotNull(cls);
+				assertTrue(ClassUtils.isInterface(cls));
+			};
+
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, handler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		private function customNamespacedMethodInInterfaceBuildSuccessHandler(event:Event):void {
-			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.IMyCustomNamespacedMethodInterface") as Class;
-			assertNotNull(cls);
-			var xml:XML = describeType(cls);
-			var i:int = 0;
-		}
-
-		private function customNamespcaedPropertyBuildSuccessHandler(event:Event):void {
-			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyCustomNamespacedPropertyClass") as Class;
-			assertNotNull(cls);
-			var instance:Object = new cls();
-			assertNotNull(instance);
-			var result:Object = instance.as3commons_bytecode_proxy::nameSpacedProperty;
-			assertNotNull(result);
-		}
-
-		private function methodBuildSuccessHandler(event:Event):void {
-			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest1") as Class;
-			assertNotNull(cls);
-			var instance:Object = new cls();
-			assertNotNull(instance);
-			var result:String = instance.testMe();
-			assertEquals("testReturnString", result);
-		}
-
-		private function methodBuildSuccessHandler2(event:Event):void {
-			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest2") as Class;
-			assertNotNull(cls);
-			var instance:Object = new cls();
-			assertNotNull(instance);
-			var result:int = instance.testMe();
-			assertEquals(0, result);
-		}
-
-		private function methodBuildSuccessHandler3(event:Event):void {
-			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest3") as Class;
-			assertNotNull(cls);
-			var instance:Object = new cls();
-			assertNotNull(instance);
-			var result:uint = instance.testMe();
-			assertEquals(0, result);
-		}
-
-		private function methodBuildSuccessHandler4(event:Event):void {
+		private function methodBuildSuccessHandler4(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest4") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
@@ -316,15 +364,16 @@ package org.as3commons.bytecode.emit.impl {
 			assertEquals(0, result);
 		}
 
+		[Test(async)]
 		public function testBuildClassReadOnlyAccessor():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyReadOnlyAccessorTest");
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor("testAccessor", "String", "test");
 			accessorBuilder.access = AccessorAccess.READ_ONLY;
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(readOnlyAccessorBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, readOnlyAccessorBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		private function readOnlyAccessorBuildSuccessHandler(event:Event):void {
+		private function readOnlyAccessorBuildSuccessHandler(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyReadOnlyAccessorTest") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
@@ -338,15 +387,16 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
+		[Test(async)]
 		public function testBuildClassWriteOnlyAccessor():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyWriteOnlyAccessorTest");
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor("testAccessor", "String");
 			accessorBuilder.access = AccessorAccess.WRITE_ONLY;
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(writeOnlyAccessorBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, writeOnlyAccessorBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		private function writeOnlyAccessorBuildSuccessHandler(event:Event):void {
+		private function writeOnlyAccessorBuildSuccessHandler(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyWriteOnlyAccessorTest") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
@@ -360,14 +410,15 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
+		[Test(async)]
 		public function testBuildClassReadWriteAccessor():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyReadWriteAccessorTest");
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor("testAccessor", "String", "test");
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(readWriteAccessorBuildSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, readWriteAccessorBuildSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		private function readWriteAccessorBuildSuccessHandler(event:Event):void {
+		private function readWriteAccessorBuildSuccessHandler(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyReadWriteAccessorTest") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();
@@ -377,6 +428,7 @@ package org.as3commons.bytecode.emit.impl {
 			assertEquals("test1", instance.testAccessor);
 		}
 
+		[Test(async)]
 		public function testBuildClassWithMethodThatUsesUint():void {
 			var classBuilder:IClassBuilder = _abcBuilder.definePackage("com.myclasses.test").defineClass("MyClassWithMethodThatUsesUintTest");
 			var methodBuilder:IMethodBuilder = classBuilder.defineMethod("testUintMethod");
@@ -392,11 +444,11 @@ package org.as3commons.bytecode.emit.impl {
 			methodBuilder.addOpcode(Opcode.subtract);
 			methodBuilder.addOpcode(Opcode.convert_u);
 			methodBuilder.addOpcode(Opcode.returnvalue);
-			_abcBuilder.addEventListener(Event.COMPLETE, addAsync(classWithMethodThatUsesUintSuccessHandler, 5000), false, 0, true);
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, classWithMethodThatUsesUintSuccessHandler, 5000), false, 0, true);
 			_abcBuilder.buildAndLoad();
 		}
 
-		private function classWithMethodThatUsesUintSuccessHandler(event:Event):void {
+		private function classWithMethodThatUsesUintSuccessHandler(event:Event, data:*):void {
 			var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyClassWithMethodThatUsesUintTest") as Class;
 			assertNotNull(cls);
 			var instance:Object = new cls();

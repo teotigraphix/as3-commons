@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-	import flexunit.framework.TestCase;
+
 
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
-	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.QualifiedName;
-	import org.as3commons.bytecode.abc.enum.BuiltIns;
-	import org.as3commons.bytecode.abc.enum.MethodFlag;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
-	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IExceptionInfoBuilder;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
-	import org.as3commons.bytecode.typeinfo.Argument;
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertStrictlyEquals;
 
-	public class MethodBodyBuilderTest extends TestCase {
+	public class MethodBodyBuilderTest {
 
 		private var _methodBodyBuilder:IMethodBodyBuilder;
 
@@ -38,22 +35,26 @@ package org.as3commons.bytecode.emit.impl {
 			super();
 		}
 
-		override public function setUp():void {
+		[Before]
+		public function setUp():void {
 			_methodBodyBuilder = new MethodBodyBuilder();
 		}
 
+		[Test]
 		public function testAddOpcode():void {
 			_methodBodyBuilder.addOpcode(Opcode.add);
 			assertEquals(_methodBodyBuilder.opcodes.length, 1);
 			assertStrictlyEquals(_methodBodyBuilder.opcodes[0].opcode, Opcode.add);
 		}
 
+		[Test]
 		public function testDefineExceptionInfo():void {
 			var ei:IExceptionInfoBuilder = _methodBodyBuilder.defineExceptionInfo();
 			assertEquals(_methodBodyBuilder.exceptionInfos.length, 1);
 			assertStrictlyEquals(_methodBodyBuilder.exceptionInfos[0], ei);
 		}
 
+		[Test]
 		public function testBuild():void {
 			_methodBodyBuilder.addOpcode(Opcode.debugfile, ["file.as"]);
 			_methodBodyBuilder.addOpcode(Opcode.debugline, [10]);

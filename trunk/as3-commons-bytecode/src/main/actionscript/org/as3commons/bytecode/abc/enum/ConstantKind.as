@@ -53,10 +53,11 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public function ConstantKind(optionKind:uint, optionDescription:String) {
-			Assert.state((!_enumCreated), "ConstantKind enum has already been created");
+			CONFIG::debug {
+				Assert.state((!_enumCreated), "ConstantKind enum has already been created");
+			}
 			_kind = optionKind;
 			_description = optionDescription;
-
 			_TYPES[_kind] = this;
 		}
 

@@ -48,11 +48,6 @@ package org.as3commons.bytecode.abc {
 		public var opcodeBaseLocations:Dictionary;
 
 		public function MethodBody() {
-			super();
-			initMethodBody();
-		}
-
-		protected function initMethodBody():void {
 			opcodes = [];
 			exceptionInfos = [];
 			traits = [];

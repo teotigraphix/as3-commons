@@ -1,13 +1,13 @@
 package org.as3commons.bytecode.abc.enum {
-	import flexunit.framework.TestCase;
+	import org.flexunit.asserts.assertTrue;
 
-	public class MethodFlagsTest extends TestCase {
+	public class MethodFlagsTest {
 
-		public function MethodFlagsTest(methodName:String = null) {
-			super(methodName);
-			MethodFlag
+		public function MethodFlagsTest() {
+			MethodFlag;
 		}
 
+		[Test]
 		public function testAddFlag():void {
 			var testFlags:uint = 0;
 			testFlags = MethodFlag.addFlag(testFlags, MethodFlag.HAS_OPTIONAL);

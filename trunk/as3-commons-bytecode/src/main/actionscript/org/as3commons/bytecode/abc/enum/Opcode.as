@@ -269,7 +269,10 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public function Opcode(opcodeValue:int, opcodeName:String, ... typeAndReadWritePairs) {
-			Assert.state((!_enumCreated), "Opcode enum has already been created");
+			CONFIG::debug {
+				Assert.state((!_enumCreated), "Opcode enum has already been created");
+			}
+
 			_value = opcodeValue;
 			_opcodeName = opcodeName;
 			_argumentTypes = typeAndReadWritePairs;
@@ -293,7 +296,7 @@ package org.as3commons.bytecode.abc.enum {
 			var opcodePositions:Dictionary = new Dictionary();
 			var serializedOpcodes:ByteArray = AbcSpec.newByteArray();
 			for each (var op:Op in ops) {
-				op.baseLocation = serializedOpcodes.position
+				op.baseLocation = serializedOpcodes.position;
 				opcodePositions[op] = serializedOpcodes.position;
 				AbcSpec.writeU8(op.opcode._value, serializedOpcodes);
 
