@@ -14,63 +14,57 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.swf {
-	import flash.events.Event;
-	import flash.utils.ByteArray;
-	import flash.utils.getDefinitionByName;
-	import flash.utils.getQualifiedClassName;
+	import org.flexunit.asserts.assertTrue;
 
-	import flexunit.framework.TestCase;
+	public class AbcClassLoaderTest {
 
-	import org.as3commons.bytecode.TestConstants;
+		public function AbcClassLoaderTest() {
 
-	public class AbcClassLoaderTest extends TestCase {
-
-		public function AbcClassLoaderTest(methodName:String = null) {
-			super(methodName);
 		}
-		
+
+		[Test]
 		public function testDummy():void {
 			assertTrue(true);
 		}
 
-	/*public function testLoadClassDefinitionsFromBytecode():void {
-	   var fixture:AbcClassLoader = new AbcClassLoader();
-	   var qualifiedNamesOfExpectedClassDefinitions:Array = ["assets.abc::Interface", "assets.abc::FullClassDefinition"];
+		/*[Test] public function testLoadClassDefinitionsFromBytecode():void {
+		 var fixture:AbcClassLoader = new AbcClassLoader();
+		 var qualifiedNamesOfExpectedClassDefinitions:Array = ["assets.abc::Interface", "assets.abc::FullClassDefinition"];
 
-	   // Assert that the class definitions we are attempting to load are not already on the classpath
-	   for each (var qualifiedName:String in qualifiedNamesOfExpectedClassDefinitions) {
-	   try {
-	   getDefinitionByName(qualifiedName);
-	   fail("Class definition for " + qualifiedName + " already present in AS classpath.");
-	   } catch (e:Error) { // expected
-	   }
-	   }
+		 // Assert that the class definitions we are attempting to load are not already on the classpath
+		 for each (var qualifiedName:String in qualifiedNamesOfExpectedClassDefinitions) {
+		 try {
+		 getDefinitionByName(qualifiedName);
+		 fail("Class definition for " + qualifiedName + " already present in AS classpath.");
+		 } catch (e:Error) { // expected
+		 }
+		 }
 
-	   var interfaceByteCode:ByteArray = TestConstants.getInterfaceDefinitionByteCode();
-	   var fullClassDefinitionByteCode:ByteArray = TestConstants.getFullClassDefinitionByteCode();
+		 var interfaceByteCode:ByteArray = TestConstants.getInterfaceDefinitionByteCode();
+		 var fullClassDefinitionByteCode:ByteArray = TestConstants.getFullClassDefinitionByteCode();
 
-	   var successHandler : Function =
-	   function (event : Event, passThroughData : Object) : void
-	   {
-	   for each (var qualifiedName : String in qualifiedNamesOfExpectedClassDefinitions)
-	   {
-	   var clazz : * = getDefinitionByName(qualifiedName);
-	   assertNotNull(clazz);
-	   assertEquals(qualifiedName, getQualifiedClassName(clazz));
-	   }
+		 var successHandler : Function =
+		 function (event : Event, passThroughData : Object) : void
+		 {
+		 for each (var qualifiedName : String in qualifiedNamesOfExpectedClassDefinitions)
+		 {
+		 var clazz : * = getDefinitionByName(qualifiedName);
+		 assertNotNull(clazz);
+		 assertEquals(qualifiedName, getQualifiedClassName(clazz));
+		 }
 
-	   // Play with the loaded class definitions a little :)
-	   var fullClassDefinitionClassRef : * = getDefinitionByName("assets.abc.FullClassDefinition");
-	   assertEquals("PUBLIC_STATIC_CONSTANT", fullClassDefinitionClassRef.PUBLIC_STATIC_CONSTANT);
+		 // Play with the loaded class definitions a little :)
+		 var fullClassDefinitionClassRef : * = getDefinitionByName("assets.abc.FullClassDefinition");
+		 assertEquals("PUBLIC_STATIC_CONSTANT", fullClassDefinitionClassRef.PUBLIC_STATIC_CONSTANT);
 
-	   var fullClassDefinitionInstance : * = new fullClassDefinitionClassRef();
-	   assertEquals(void, fullClassDefinitionInstance.methodWithNoArguments());
-	   };
+		 var fullClassDefinitionInstance : * = new fullClassDefinitionClassRef();
+		 assertEquals(void, fullClassDefinitionInstance.methodWithNoArguments());
+		 };
 
-	   fixture.addEventListener(Event.COMPLETE, addAsync(successHandler, 5000));
+		 fixture.addEventListener(Event.COMPLETE, Async.asyncHandler( this, successHandler, 5000));
 
-	   //NOTE: Order of bytecode blocks significant here. The interface must be loaded before the class definition, since this class implements the interface
-	   fixture.loadClassDefinitionsFromBytecode([interfaceByteCode, fullClassDefinitionByteCode]);
-	 }*/
+		 //NOTE: Order of bytecode blocks significant here. The interface must be loaded before the class definition, since this class implements the interface
+		 fixture.loadClassDefinitionsFromBytecode([interfaceByteCode, fullClassDefinitionByteCode]);
+		 }*/
 	}
 }

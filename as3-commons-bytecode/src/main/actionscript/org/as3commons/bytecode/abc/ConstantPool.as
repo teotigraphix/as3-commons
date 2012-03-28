@@ -66,7 +66,7 @@ package org.as3commons.bytecode.abc {
 		private var _namespaceLookup:Dictionary;
 		private var _namespaceSetPool:Array;
 		private var _namespaceSetLookup:Dictionary;
-		private var _multinamePool:Array;
+		private var _multinamePool:Vector.<BaseMultiname>;
 		private var _classInfo:Array;
 		private var _multinameLookup:Dictionary;
 		private var _lookup:Dictionary;
@@ -126,7 +126,7 @@ package org.as3commons.bytecode.abc {
 			addNamespaceSet(new NamespaceSet([LNamespace.ASTERISK]));
 			//addNamespaceSet(new NamespaceSet());
 
-			_multinamePool = [];
+			_multinamePool = new Vector.<BaseMultiname>();
 			addMultiname(new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK));
 
 			_lookup = new Dictionary();
@@ -253,11 +253,11 @@ package org.as3commons.bytecode.abc {
 		 * @see #addMultiname()
 		 * @see BaseMultiname
 		 */
-		public function get multinamePool():Array {
+		public function get multinamePool():Vector.<BaseMultiname> {
 			return _multinamePool;
 		}
 
-		as3commons_bytecode function setMultinamePool(value:Array):void {
+		as3commons_bytecode function setMultinamePool(value:Vector.<BaseMultiname>):void {
 			_multinamePool = value;
 		}
 
@@ -346,7 +346,7 @@ package org.as3commons.bytecode.abc {
 		 * Used to add objects with explicitly defined equals() methods to a pool.
 		 */
 		//TODO: Make an interface for these types?
-		private function addObject(pool:Array, lookup:Dictionary, object:Object):int {
+		private function addObject(pool:*, lookup:Dictionary, object:Object):int {
 			if (object.hasOwnProperty(NAME_PROPERTYNAME)) {
 				addString(object.name);
 			}
@@ -557,6 +557,7 @@ package org.as3commons.bytecode.abc {
 				Assert.notNull(lookup, "lookup instance cannot be null");
 				Assert.notNull(item, "constant pool item cannot be null");
 			}
+
 			var n:* = (lookup is Dictionary) ? lookup[item] : lookup.get(item);
 			var index:int = (n != null) ? n : -1;
 			if (index > -1) {
@@ -568,11 +569,13 @@ package org.as3commons.bytecode.abc {
 			} else {
 				throw new Error(LOCKED_CONSTANTPOOL_ERROR);
 			}
+
 			if (lookup is Dictionary) {
 				lookup[item] = index;
 			} else {
 				lookup.set(item, index);
 			}
+
 			return index;
 		}
 
@@ -586,7 +589,7 @@ package org.as3commons.bytecode.abc {
 		 */
 		public function equals(other:Object):Boolean {
 			var constantPool:ConstantPool = ConstantPool(other);
-			return Assertions.assertArrayContentsEqual(this._integerPool, constantPool._integerPool) && Assertions.assertArrayContentsEqual(this._uintPool, constantPool._uintPool) && Assertions.assertArrayContentsEqual(this._doublePool, constantPool._doublePool) && Assertions.assertArrayContentsEqual(this._stringPool, constantPool._stringPool) && Assertions.assertArrayContentsEqual(this._namespacePool, constantPool._namespacePool) && Assertions.assertArrayContentsEqual(this._namespaceSetPool, constantPool._namespaceSetPool) && Assertions.assertArrayContentsEqual(this._multinamePool, constantPool._multinamePool);
+			return Assertions.assertArrayContentsEqual(this._integerPool, constantPool._integerPool) && Assertions.assertArrayContentsEqual(this._uintPool, constantPool._uintPool) && Assertions.assertArrayContentsEqual(this._doublePool, constantPool._doublePool) && Assertions.assertArrayContentsEqual(this._stringPool, constantPool._stringPool) && Assertions.assertArrayContentsEqual(this._namespacePool, constantPool._namespacePool) && Assertions.assertArrayContentsEqual(this._namespaceSetPool, constantPool._namespaceSetPool) && Assertions.assertVectorContentsEqual(this._multinamePool, constantPool._multinamePool);
 		}
 
 		/**

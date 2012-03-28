@@ -41,7 +41,9 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public function ClassConstant(bitMaskValue:uint, descriptionValue:String) {
-			Assert.state((false == _enumCreated), "The ClassConstant enum has already been created.");
+			CONFIG::debug {
+				Assert.state((false == _enumCreated), "The ClassConstant enum has already been created.");
+			}
 			super(bitMaskValue);
 			_items[bitMaskValue] = this;
 			_description = descriptionValue;

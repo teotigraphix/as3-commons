@@ -23,7 +23,6 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
-	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
@@ -317,13 +316,18 @@ package org.as3commons.bytecode.emit.impl {
 					}
 				}
 			}
+
 			var cb:ICtorBuilder = createStaticConstructor(staticSlots, isInterface);
 			cb.isStatic = true;
+
 			clsInfo.staticInitializer = cb.build();
-			clsInfo.staticInitializer.methodBody.initScopeDepth = initScopeDepth++;
+
+			// TODO check initScopeDepth of interface inheritance
+			clsInfo.staticInitializer.methodBody.initScopeDepth = (isInterface) ? initScopeDepth : initScopeDepth++;
 			clsInfo.staticInitializer.methodBody.maxScopeDepth = initScopeDepth;
 			clsInfo.staticInitializer.as3commonsBytecodeName = AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME;
 			clsInfo.staticInitializer.methodName = StringUtils.substitute(STATIC_CONSTRUCTOR_NAME, packageName, name);
+
 			return clsInfo;
 		}
 
@@ -341,13 +345,13 @@ package org.as3commons.bytecode.emit.impl {
 
 			if ((classInfo == null) || (classInfo.staticInitializer == null)) {
 				if (!isInterface) {
-					ctorBuilder.addOpcode(Opcode.getlocal_0) //
-						.addOpcode(Opcode.pushscope);
+					ctorBuilder.addOpcode(Opcode.getlocal_0)//
+							.addOpcode(Opcode.pushscope);
 					for each (var slot:SlotOrConstantTrait in staticSlots) {
 						ctorBuilder.addOpcodes(createInitializer(slot));
 					}
-					ctorBuilder.addOpcode(Opcode.returnvoid);
 				}
+				ctorBuilder.addOpcode(Opcode.returnvoid);
 			}
 
 			return ctorBuilder;

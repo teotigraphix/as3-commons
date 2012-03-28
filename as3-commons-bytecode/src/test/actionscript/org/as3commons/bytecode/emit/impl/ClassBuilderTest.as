@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.emit.impl {
 	import flash.system.ApplicationDomain;
 
-	import flexunit.framework.TestCase;
+
 
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.InstanceInfo;
@@ -32,21 +32,23 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertStrictlyEquals;
 
-	public class ClassBuilderTest extends TestCase {
+	public class ClassBuilderTest {
 
 		private var _classBuilder:ClassBuilder;
 
-		public function ClassBuilderTest(methodName:String = null) {
-			super(methodName);
+		public function ClassBuilderTest() {
+
 		}
 
-		override public function setUp():void {
-			super.setUp();
+		[Before]
+		public function setUp():void {
 			_classBuilder = new ClassBuilder();
 		}
 
-		public function testDefineConstructorWithExistingInstance():void {
+		[Test] public function testDefineConstructorWithExistingInstance():void {
 			var instanceInfo:InstanceInfo = new InstanceInfo();
 			instanceInfo.superclassMultiname = new QualifiedName("supertest", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
 			instanceInfo.classMultiname = new QualifiedName("test", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
@@ -82,7 +84,7 @@ package org.as3commons.bytecode.emit.impl {
 			assertStrictlyEquals(cls, instanceInfo.classInfo);
 		}
 
-		public function testBuildWithExistingClassInfo():void {
+		[Test] public function testBuildWithExistingClassInfo():void {
 			var classInfo:ClassInfo = new ClassInfo();
 			classInfo.classMultiname = new QualifiedName("test", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
 			classInfo.staticInitializer = new MethodInfo();
@@ -99,7 +101,7 @@ package org.as3commons.bytecode.emit.impl {
 			assertStrictlyEquals(cls.staticInitializer.as3commonsByteCodeAssignedMethodTrait, classInfo.staticInitializer.as3commonsByteCodeAssignedMethodTrait);
 		}
 
-		public function testDefineExistingProperty():void {
+		[Test] public function testDefineExistingProperty():void {
 			var instanceInfo:InstanceInfo = new InstanceInfo();
 			instanceInfo.superclassMultiname = new QualifiedName("supertest", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);
 			instanceInfo.classMultiname = new QualifiedName("test", new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "com.classes"), MultinameKind.QNAME);

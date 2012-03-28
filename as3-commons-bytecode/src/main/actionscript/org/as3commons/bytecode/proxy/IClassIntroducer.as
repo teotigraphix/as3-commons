@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.proxy {
 
 	import flash.events.IEventDispatcher;
+	import flash.system.ApplicationDomain;
 
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.QualifiedName;
@@ -26,6 +27,6 @@ package org.as3commons.bytecode.proxy {
 	 * @author Roland Zwaga
 	 */
 	public interface IClassIntroducer extends IEventDispatcher {
-		function introduce(className:String, classBuilder:IClassBuilder):void;
+		function introduce(className:String, classBuilder:IClassBuilder, applicationDomain:ApplicationDomain):void;
 	}
 }

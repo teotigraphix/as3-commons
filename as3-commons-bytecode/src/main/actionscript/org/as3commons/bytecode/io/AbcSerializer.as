@@ -81,8 +81,8 @@ package org.as3commons.bytecode.io {
 		/**
 		 * Takes the given <code>AbcFile</code> and converts it to an ABC bytecode block.
 		 *
-		 * @param     The <code>AbcFile</code> to be serialized to the ABC file format.
-		 * @return    A <code>ByteArray</code> containing the bytecode. The <code>ByteArray</code> position is set to 0 so it can be read from immediately.
+		 * @param abcFile The <code>AbcFile</code> to be serialized to the ABC file format.
+		 * @return A <code>ByteArray</code> containing the bytecode. The <code>ByteArray</code> position is set to 0 so it can be read from immediately.
 		 */
 		public function serializeAbcFile(abcFile:AbcFile):ByteArray {
 			_outputStream = AbcSpec.newByteArray();
@@ -132,9 +132,9 @@ package org.as3commons.bytecode.io {
 
 					_outputStream.writeBytes(opcodesAsByteArray, 0, opcodesAsByteArray.length);
 					/*var len:uint = opcodesAsByteArray.length;
-					for (var opcodeBytePosition:int = 0; opcodeBytePosition < len; ++opcodeBytePosition) {
-						writeU8(opcodesAsByteArray[opcodeBytePosition]);
-					}*/
+					 for (var opcodeBytePosition:int = 0; opcodeBytePosition < len; ++opcodeBytePosition) {
+					 writeU8(opcodesAsByteArray[opcodeBytePosition]);
+					 }*/
 				} else {
 					writeU30(body.rawOpcodes.length);
 					_outputStream.writeBytes(body.rawOpcodes);
@@ -373,6 +373,21 @@ package org.as3commons.bytecode.io {
 					writeU30(pool.addMultiname(param.type)); // u30 param_type[param_count] 
 				}
 
+				// TODO not sure if we should add
+				// - the constructor name (not found in abc from swfdump)
+				// - static initializer (not found in abc from swfdump)
+				// - method name (method names are also added via traits)
+				/*if (methodInfo.as3commonsBytecodeName !== AbcDeserializer.CONSTRUCTOR_BYTECODENAME
+						&& (methodInfo.as3commonsBytecodeName !== AbcDeserializer.STATIC_INITIALIZER_BYTECODENAME)) {
+					writeU30(pool.addString(methodInfo.methodName));
+				}*/
+
+				// TODO
+				/*if (methodInfo.as3commonsBytecodeName === AbcDeserializer.CONSTRUCTOR_BYTECODENAME) {
+					writeU30(pool.addString(methodInfo.methodName.replace("/", ":")));
+				}*/
+
+				// TODO this does not seem to be correct
 				writeU30(pool.addString(methodInfo.methodName));
 
 				//  NEED_ARGUMENTS 0x01 Suggests to the run-time that an “arguments” object (as specified by the
@@ -490,25 +505,12 @@ package org.as3commons.bytecode.io {
 			// either (a) the number of entries + 1 if entries are present, or (b) 0 if no entries
 			// are present
 
-			// Integers
 			serializeIntegers(pool, outputStream);
-
-			// uints
 			serializeUIntegers(pool, outputStream);
-
-			// doubles
 			serializeDoubles(pool, outputStream);
-
-			// strings
 			serializeStrings(pool, outputStream);
-
-			// namespaces
 			serializeNamespaces(pool, outputStream);
-
-			// namespace sets
 			serializeNamespaceSets(pool, outputStream);
-
-			// multinames
 			serializeMultinames(pool, outputStream);
 		}
 
@@ -531,7 +533,7 @@ package org.as3commons.bytecode.io {
 			// { 
 			//  u30 ns_set - nsset pool 
 			// }
-			var multinames:Array = pool.multinamePool.slice(1, pool.multinamePool.length);
+			var multinames:Vector.<BaseMultiname> = pool.multinamePool.slice(1, pool.multinamePool.length);
 			AbcSpec.writeU30((multinames.length + 1), outputStream);
 			for each (var multiname:BaseMultiname in multinames) {
 				// multiname_info 

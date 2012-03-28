@@ -28,7 +28,6 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.NamedMultiname;
-	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.ScriptInfo;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
@@ -128,10 +127,6 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		public function AbcBuilder(abcFile:AbcFile=null) {
 			super();
-			init(abcFile);
-		}
-
-		private function init(abcFile:AbcFile):void {
 			_packageBuilders = new Dictionary();
 			_abcFile = abcFile;
 		}
@@ -210,7 +205,6 @@ package org.as3commons.bytecode.emit.impl {
 			return packageBuilder.defineInterface(classname, superInterfaceNames);
 		}
 
-
 		/**
 		 * @inheritDoc
 		 */
@@ -220,7 +214,6 @@ package org.as3commons.bytecode.emit.impl {
 			var scopeName:String = fullScopeName.substr(fullScopeName.lastIndexOf(MultinameUtil.PERIOD), fullScopeName.length);
 			return definePackage(packageName).defineNamespace(scopeName, URI);
 		}
-
 
 		/**
 		 *
@@ -238,10 +231,7 @@ package org.as3commons.bytecode.emit.impl {
 		 * @inheritDoc
 		 */
 		public function build(applicationDomain:ApplicationDomain=null):AbcFile {
-			if (_abcFile == null) {
-				_abcFile = new AbcFile();
-			}
-			var classNames:Array = [];
+			_abcFile ||= new AbcFile();
 			applicationDomain ||= Type.currentApplicationDomain;
 			var idx:uint = 0;
 			for each (var pb:IPackageBuilder in _packageBuilders) {

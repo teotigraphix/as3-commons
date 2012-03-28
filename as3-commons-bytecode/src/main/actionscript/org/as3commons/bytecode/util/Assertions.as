@@ -32,16 +32,30 @@ package org.as3commons.bytecode.util {
 		 * contents to be checked for semantic equivalence.
 		 * </p>
 		 *
-		 * @param firstArray  The first array for the comparison
-		 * @param secondArray The secon array to compare <code>firstArray</code> against
+		 * @param a  The first array for the comparison
+		 * @param b The secon array to compare <code>firstArray</code> against
 		 * @return    <code>true</code> if both arrays match, <code>false</code> otherwise.
 		 */
-		public static function assertArrayContentsEqual(firstArray:Array, secondArray:Array):Boolean {
+		public static function assertArrayContentsEqual(a:Array, b:Array):Boolean {
+			return assertArrayOrVectorContentsEqual(a, b);
+		}
+
+		public static function assertVectorContentsEqual(a:*, b:*):Boolean {
+			return assertArrayOrVectorContentsEqual(a, b);
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Private Methods
+		//
+		// --------------------------------------------------------------------
+
+		private static function assertArrayOrVectorContentsEqual(firstArray:*, secondArray:*):Boolean {
 			if (firstArray.length != secondArray.length) {
 				throw new Error("Array lengths (" + firstArray.length + "," + secondArray.length + ") do not match");
 			}
 
-			var contentsMatch:Boolean = firstArray.every(function(item:Object, index:int, array:Array):Boolean {
+			var contentsMatch:Boolean = firstArray.every(function (item:Object, index:int, array:Array):Boolean {
 				var matchFound:Boolean = false;
 				for each (var current:Object in secondArray) {
 					if (current.hasOwnProperty("equals")) {
@@ -50,7 +64,7 @@ package org.as3commons.bytecode.util {
 							break;
 						} else {
 							// as3commons-bytecode-specific exception for private LNamespaces. Allow value equality so that
-							// sample LNamespaces can be provided for comparison in tests  
+							// sample LNamespaces can be provided for comparison in tests
 							if (current is LNamespace) {
 								if (LNamespace(current).kind == NamespaceKind.PRIVATE_NAMESPACE) {
 									if (LNamespace(current).name == item.name) {

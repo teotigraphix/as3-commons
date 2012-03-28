@@ -26,8 +26,6 @@ package org.as3commons.bytecode.abc {
 	 */
 	public class SimpleConstantPool implements IConstantPool {
 
-		private static const ZERO_VALUE:String = "zero";
-
 		private var _dupeCheck:Boolean;
 		private var _integerPool:Array;
 		private var _uintPool:Array;
@@ -36,7 +34,7 @@ package org.as3commons.bytecode.abc {
 		private var _stringPool:Array;
 		private var _namespacePool:Array;
 		private var _namespaceSetPool:Array;
-		private var _multinamePool:Array;
+		private var _multinamePool:Vector.<BaseMultiname>;
 		private var _lookup:Object;
 
 		/**
@@ -55,9 +53,9 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function reset():void {
-			_integerPool = [ZERO_VALUE];
-			_uintPool = [ZERO_VALUE];
-			_doublePool = [NaN];
+			_integerPool = [0];
+			_uintPool = [0];
+			_doublePool = [0];
 			_classInfo = [];
 			_stringPool = [LNamespace.ASTERISK.name];
 
@@ -67,7 +65,7 @@ package org.as3commons.bytecode.abc {
 			_namespaceSetPool = [];
 			addNamespaceSet(new NamespaceSet([LNamespace.ASTERISK]));
 
-			_multinamePool = [];
+			_multinamePool = new Vector.<BaseMultiname>();
 			addMultiname(new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK));
 
 			_lookup = new Dictionary();
@@ -137,7 +135,7 @@ package org.as3commons.bytecode.abc {
 			return _namespaceSetPool;
 		}
 
-		public function get multinamePool():Array {
+		public function get multinamePool():Vector.<BaseMultiname> {
 			return _multinamePool;
 		}
 

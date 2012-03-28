@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
-	import flexunit.framework.TestCase;
 
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertTrue;
 
-	public class LNamespaceTest extends TestCase {
+	public class LNamespaceTest {
 
+		public function LNamespaceTest() {
 
-		public function LNamespaceTest(methodName:String = null) {
-			super(methodName);
 		}
 
+		[Test]
 		public function testEquals():void {
 			var starName:String = "*";
 			for each (var starKind:NamespaceKind in NamespaceKind.types) {

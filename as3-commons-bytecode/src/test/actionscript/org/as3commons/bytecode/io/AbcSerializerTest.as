@@ -18,8 +18,6 @@ package org.as3commons.bytecode.io {
 	import flash.events.IOErrorEvent;
 	import flash.utils.ByteArray;
 
-	import flexunit.framework.TestCase;
-
 	import org.as3commons.bytecode.TestConstants;
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ConstantPool;
@@ -34,21 +32,27 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.swf.AbcClassLoader;
 	import org.as3commons.bytecode.util.AbcSpec;
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertTrue;
+	import org.flexunit.asserts.fail;
+	import org.flexunit.async.Async;
 
-	public class AbcSerializerTest extends TestCase {
+	public class AbcSerializerTest {
 		private var _fixture:AbcSerializer;
 
 		private var _classLoader:AbcClassLoader;
 
-		public function AbcSerializerTest(methodName:String = null) {
-			super(methodName);
+		public function AbcSerializerTest() {
+
 		}
 
-		override public function setUp():void {
+		[Before]
+		public function setUp():void {
 			_fixture = new AbcSerializer();
 			_classLoader = new AbcClassLoader();
 		}
 
+		[Test(async)]
 		public function testSerializeDynamicSubClass():void {
 			var abcFileAsByteArray:ByteArray = TestConstants.getProxyTemplate();
 			var deserializedClass:AbcFile = new AbcDeserializer(abcFileAsByteArray).deserialize();
@@ -57,47 +61,49 @@ package org.as3commons.bytecode.io {
 //        	trace(deserializedClass.constantPool);
 //        	trace("Total Bytes: " + abcFileAsByteArray.length);
 			/*for (var index:int = 0; index < reserializedStream.length; index++) {
-				var originalByte:int = abcFileAsByteArray[index];
-				var serializedByte:int = reserializedStream[index];
-//                (index >= 527 && index <= 563) ? trace("abcFileAsByteArray[" + index + "] = " + originalByte + ", serializedStream[" + index + "] = " + serializedByte) : null;
-				assertEquals(originalByte, serializedByte);
-			}*/
+			 var originalByte:int = abcFileAsByteArray[index];
+			 var serializedByte:int = reserializedStream[index];
+			 //                (index >= 527 && index <= 563) ? trace("abcFileAsByteArray[" + index + "] = " + originalByte + ", serializedStream[" + index + "] = " + serializedByte) : null;
+			 assertEquals(originalByte, serializedByte);
+			 }*/
 
-			_classLoader.addEventListener(Event.COMPLETE, addAsync(function(event:Event):void {
+			_classLoader.addEventListener(Event.COMPLETE, Async.asyncHandler(this, function (event:Event, data:*):void {
 				assertTrue(true);
 			}, 5000));
-			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
+			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, function (event:IOErrorEvent):void {
 				fail("loader error: " + event.text);
 			});
-			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, function(event:IOErrorEvent):void {
+			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, function (event:IOErrorEvent):void {
 				fail("loader error: " + event.text);
 			});
 			_classLoader.loadClassDefinitionsFromBytecode([TestConstants.getBaseClassTemplate(), TestConstants.getMethodInvocation(), reserializedStream]);
 		}
 
+		[Test(async)]
 		public function testSerializeBaseClass():void {
 			var abcFileAsByteArray:ByteArray = TestConstants.getBaseClassTemplate();
 			var deserializedClass:AbcFile = new AbcDeserializer(abcFileAsByteArray).deserialize();
 			var reserializedStream:ByteArray = _fixture.serializeAbcFile(deserializedClass);
 
 			/*for (var index:int = 0; index < reserializedStream.length; index++) {
-				var originalByte:int = abcFileAsByteArray[index];
-				var serializedByte:int = reserializedStream[index];
-				assertEquals(originalByte, serializedByte);
-			}*/
+			 var originalByte:int = abcFileAsByteArray[index];
+			 var serializedByte:int = reserializedStream[index];
+			 assertEquals(originalByte, serializedByte);
+			 }*/
 
-			_classLoader.addEventListener(Event.COMPLETE, addAsync(function(event:Event):void {
+			_classLoader.addEventListener(Event.COMPLETE, Async.asyncHandler(this, function (event:Event, data:*):void {
 				assertTrue(true);
 			}, 5000));
-			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
+			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, function (event:IOErrorEvent):void {
 				fail("loader error: " + event.text);
 			});
-			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, function(event:IOErrorEvent):void {
+			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, function (event:IOErrorEvent):void {
 				fail("loader error: " + event.text);
 			});
 			_classLoader.loadClassDefinitionsFromBytecode([reserializedStream]);
 		}
 
+		[Test(async)]
 		public function testSerializeClassWithNoMethodsOrProperties():void {
 			var abcFileAsByteArray:ByteArray = TestConstants.getFullClassDefinitionByteCode();
 			var deserializedClass:AbcFile = new AbcDeserializer(abcFileAsByteArray).deserialize();
@@ -108,13 +114,13 @@ package org.as3commons.bytecode.io {
 //        		trace("abcFileAsByteArray[" + abcIndex + "] = " + abcFileAsByteArray[abcIndex]);
 //        	}
 
-			_classLoader.addEventListener(Event.COMPLETE, addAsync(function(event:Event):void {
+			_classLoader.addEventListener(Event.COMPLETE, Async.asyncHandler(this, function (event:Event, data:*):void {
 				assertTrue(true);
 			}, 5000));
-			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, function(event:IOErrorEvent):void {
+			_classLoader.addEventListener(IOErrorEvent.IO_ERROR, function (event:IOErrorEvent):void {
 				fail("loader error: " + event.text);
 			});
-			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, function(event:IOErrorEvent):void {
+			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, function (event:IOErrorEvent):void {
 				fail("loader error: " + event.text);
 			});
 			_classLoader.loadClassDefinitionsFromBytecode([TestConstants.getInterfaceDefinitionByteCode(), reserializedStream]);
@@ -177,6 +183,7 @@ package org.as3commons.bytecode.io {
 		/**
 		 * Manually assembles a ConstantPool and serializes it, checking validity.
 		 */
+		[Test]
 		public function testSerializeConstantPool():void {
 			// NOTE: The constant pool has to be completely filled before it is serialized. For example, you can't have Namespaces
 			// added late in the game and expect the bytes to be in the right position afterward, since the names of the Namespaces

@@ -51,7 +51,9 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public function MultinameKind(byteValue:int, descriptionValue:String) {
-			Assert.state((!_enumCreated), "MultinameKind enum has already been created");
+			CONFIG::debug {
+				Assert.state((!_enumCreated), "MultinameKind enum has already been created");
+			}
 			_byteValue = byteValue;
 			_description = descriptionValue;
 			_TYPES[_byteValue] = this;

@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
-	import flexunit.framework.TestCase;
 
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertTrue;
 
-	public class NamespaceSetTest extends TestCase {
+	public class NamespaceSetTest {
+
 		private var _fixture:NamespaceSet;
 
-
-		public function NamespaceSetTest(methodName:String = null) {
-			super(methodName);
+		public function NamespaceSetTest() {
 		}
 
-		public override function setUp():void {
+		[Before]
+		public function setUp():void {
 			_fixture = new NamespaceSet();
 		}
 
+		[Test]
 		public function testEquals():void {
 			var namespaceArray:Array = [new LNamespace(NamespaceKind.NAMESPACE, "namespaceOne"), new LNamespace(NamespaceKind.NAMESPACE, "namespaceTwo")];
 			_fixture = new NamespaceSet(namespaceArray);

@@ -15,17 +15,16 @@
  */
 package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
+	import flash.utils.getTimer;
 
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ClassTrait;
-	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.FunctionTrait;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.InstanceInfo;
-	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
@@ -58,7 +57,7 @@ package org.as3commons.bytecode.io {
 	 *
 	 * @see    AbcSerializer
 	 */
-	//TODO: Capture ranges for bytecode blocks so they can be checked in unit tests
+		//TODO: Capture ranges for bytecode blocks so they can be checked in unit tests
 	public class AbcDeserializer extends AbstractAbcDeserializer implements IAbcDeserializer {
 
 		public static const __NEED_CONSTANTS_:String = "~~ need constants ~~";
@@ -69,7 +68,7 @@ package org.as3commons.bytecode.io {
 
 		private var _methodBodyExtractionMethod:MethodBodyExtractionKind;
 
-		public function AbcDeserializer(byteStream:ByteArray=null) {
+		public function AbcDeserializer(byteStream:ByteArray = null) {
 			super(byteStream);
 			methodBodyExtractionMethod = MethodBodyExtractionKind.PARSE;
 		}
@@ -104,57 +103,79 @@ package org.as3commons.bytecode.io {
 		 *
 		 * @return  The <code>AbcFile</code> represented by the bytecode block given to the constructor.
 		 */
-		override public function deserialize(positionInByteArrayToReadFrom:int=0):AbcFile {
-			byteStream.position = positionInByteArrayToReadFrom;
+		override public function deserialize(positionInByteArrayToReadFrom:int = 0):AbcFile {
+			_byteStream.position = positionInByteArrayToReadFrom;
 			var abcFile:AbcFile = new AbcFile();
 			var pool:IConstantPool = abcFile.constantPool;
 
-			var startTime:Number = new Date().getTime();
+			CONFIG::debug {
+				trace("Deserialize ABC");
+				var startTimestamp:Number = getTimer();
+			}
 
-			abcFile.minorVersion = AbcSpec.readU16(byteStream);
-			abcFile.majorVersion = AbcSpec.readU16(byteStream);
+			abcFile.minorVersion = AbcSpec.readU16(_byteStream);
+			abcFile.majorVersion = AbcSpec.readU16(_byteStream);
 
 			//When deserializing a constantpool its rather senseless to perform any duplicatechecks in the pool,
 			//so in this instance we turn it off and back on after deserialization:
 			pool.dupeCheck = false;
 			deserializeConstantPool(pool);
+			CONFIG::debug {
+				logParseTime("Constant pool 1", startTimestamp);
+			}
+			pool.initializeLookups();
+			CONFIG::debug {
+				logParseTime("Constant lookups", startTimestamp);
+			}
 			pool.dupeCheck = true;
 
-			trace("Constantpool parsed by " + (new Date().getTime() - startTime) + " ms");
+			CONFIG::debug {
+				logParseTime("Constant pool", startTimestamp);
+			}
 
 			deserializeMethodInfos(abcFile, pool);
 
-			trace("MethodInfos parsed by " + (new Date().getTime() - startTime) + " ms");
+			CONFIG::debug {
+				logParseTime("Method infos", startTimestamp);
+			}
 
-//            trace("Metadata: " + _byteStream.position);
 			deserializeMetadata(abcFile, pool);
 
-			trace("Metadata parsed by " + (new Date().getTime() - startTime) + " ms");
+			CONFIG::debug {
+				logParseTime("Metadata", startTimestamp);
+			}
 
-//            trace("Classes: " + _byteStream.position);
 			var classCount:int = deserializeInstanceInfo(abcFile, pool);
 
-			trace("InstanceInfos parsed by " + (new Date().getTime() - startTime) + " ms");
+			CONFIG::debug {
+				logParseTime("Instance info", startTimestamp);
+			}
 
 			deserializeClassInfos(abcFile, pool, classCount);
 
-			trace("ClassInfos parsed by " + (new Date().getTime() - startTime) + " ms");
+			CONFIG::debug {
+				logParseTime("Class info", startTimestamp);
+			}
 
-			// script_info  
-			// { 
-			//  u30 init 
-			//  u30 trait_count 
-			//  traits_info trait[trait_count] 
+			// script_info
+			// {
+			//  u30 init
+			//  u30 trait_count
+			//  traits_info trait[trait_count]
 			// }
 //            trace("Scripts: " + _byteStream.position);
 			deserializeScriptInfos(abcFile);
 
-			trace("ScriptInfos parsed by " + (new Date().getTime() - startTime) + " ms");
+			CONFIG::debug {
+				logParseTime("Script info", startTimestamp);
+			}
 
-//            trace("MethodBodies: " + _byteStream.position);
 			deserializeMethodBodies(abcFile, pool);
 
-			trace("MethodInfos parsed by " + (new Date().getTime() - startTime) + " ms");
+			CONFIG::debug {
+				logParseTime("Method bodies", startTimestamp);
+				trace("Deserialize ABC done");
+			}
 
 			return abcFile;
 		}
@@ -163,73 +184,72 @@ package org.as3commons.bytecode.io {
 			// class info
 			//	        trace("ClassInfo: " + _byteStream.position);
 			for (var classIndex:int = 0; classIndex < classCount; ++classIndex) {
-				// class_info  
-				// { 
-				//  u30 cinit 
-				//  u30 trait_count 
-				//  traits_info traits[trait_count] 
+				// class_info
+				// {
+				//  u30 cinit
+				//  u30 trait_count
+				//  traits_info traits[trait_count]
 				// }
 				var classInfo:ClassInfo = new ClassInfo();
 				CONFIG::debug {
 					Assert.notNull(abcFile.instanceInfo[classIndex]);
 				}
 				classInfo.classMultiname = InstanceInfo(abcFile.instanceInfo[classIndex]).classMultiname;
-				classInfo.staticInitializer = abcFile.methodInfo[AbcSpec.readU30(byteStream)];
+				classInfo.staticInitializer = abcFile.methodInfo[AbcSpec.readU30(_byteStream)];
 				CONFIG::debug {
 					Assert.notNull(classInfo.staticInitializer);
 				}
 				classInfo.staticInitializer.as3commonsBytecodeName = STATIC_INITIALIZER_BYTECODENAME;
-				classInfo.traits = deserializeTraitsInfo(abcFile, byteStream, true);
+				classInfo.traits = deserializeTraitsInfo(abcFile, _byteStream, true);
 				abcFile.instanceInfo[classIndex].classInfo = classInfo;
 				abcFile.addClassInfo(classInfo);
 			}
 		}
 
-
 		public override function deserializeMethodBodies(abcFile:AbcFile, pool:IConstantPool):void {
-			var methodBodyCount:int = AbcSpec.readU30(byteStream);
+			var methodBodyCount:int = AbcSpec.readU30(_byteStream);
 			//trace("methodBody count:" + methodBodyCount);
 			for (var bodyIndex:int = 0; bodyIndex < methodBodyCount; ++bodyIndex) {
 				//trace("deserializing method body #", bodyIndex);
 				var methodBody:MethodBody = new MethodBody();
-				// method_body_info 
-				// { 
-				//  u30 method 
-				//  u30 max_stack 
-				//  u30 local_count 
-				//  u30 init_scope_depth  
-				//  u30 max_scope_depth 
-				//  u30 code_length 
-				//  u8  code[code_length] 
-				//  u30 exception_count 
-				//  exception_info exception[exception_count] 
-				//  u30 trait_count 
-				//  traits_info trait[trait_count] 
+				// method_body_info
+				// {
+				//  u30 method
+				//  u30 max_stack
+				//  u30 local_count
+				//  u30 init_scope_depth
+				//  u30 max_scope_depth
+				//  u30 code_length
+				//  u8  code[code_length]
+				//  u30 exception_count
+				//  exception_info exception[exception_count]
+				//  u30 trait_count
+				//  traits_info trait[trait_count]
 				// }
-				methodBody.methodSignature = abcFile.methodInfo[AbcSpec.readU30(byteStream)];
+				methodBody.methodSignature = abcFile.methodInfo[AbcSpec.readU30(_byteStream)];
 				CONFIG::debug {
 					Assert.notNull(methodBody.methodSignature);
 				}
 				methodBody.methodSignature.methodBody = methodBody;
-				methodBody.maxStack = AbcSpec.readU30(byteStream);
-				methodBody.localCount = AbcSpec.readU30(byteStream);
-				methodBody.initScopeDepth = AbcSpec.readU30(byteStream);
-				methodBody.maxScopeDepth = AbcSpec.readU30(byteStream);
+				methodBody.maxStack = AbcSpec.readU30(_byteStream);
+				methodBody.localCount = AbcSpec.readU30(_byteStream);
+				methodBody.initScopeDepth = AbcSpec.readU30(_byteStream);
+				methodBody.maxScopeDepth = AbcSpec.readU30(_byteStream);
 
-				var codeLength:int = AbcSpec.readU30(byteStream);
+				var codeLength:int = AbcSpec.readU30(_byteStream);
 				switch (methodBodyExtractionMethod) {
 					case MethodBodyExtractionKind.PARSE:
-						methodBody.opcodes = Opcode.parse(byteStream, codeLength, methodBody, abcFile.constantPool);
+						methodBody.opcodes = Opcode.parse(_byteStream, codeLength, methodBody, abcFile.constantPool);
 						break;
 					case MethodBodyExtractionKind.BYTEARRAY:
 						methodBody.rawOpcodes = AbcSpec.newByteArray();
-						methodBody.rawOpcodes.writeBytes(byteStream, byteStream.position, codeLength);
+						methodBody.rawOpcodes.writeBytes(_byteStream, _byteStream.position, codeLength);
 					case MethodBodyExtractionKind.SKIP:
-						byteStream.position += codeLength;
+						_byteStream.position += codeLength;
 						break;
 				}
 
-				methodBody.exceptionInfos = extractExceptionInfos(byteStream, pool, methodBody);
+				methodBody.exceptionInfos = extractExceptionInfos(_byteStream, pool, methodBody);
 
 				//Add the ExceptionInfo reference to all opcodes that until now only carried an
 				//index of the reference (this replaces the index with the actual reference in the parameter):
@@ -237,7 +257,7 @@ package org.as3commons.bytecode.io {
 					resolveExceptionInfos(methodBody);
 				}
 
-				methodBody.traits = deserializeTraitsInfo(abcFile, byteStream);
+				methodBody.traits = deserializeTraitsInfo(abcFile, _byteStream);
 
 				abcFile.addMethodBody(methodBody);
 			}
@@ -269,8 +289,8 @@ package org.as3commons.bytecode.io {
 				exceptionInfo.exceptionEnabledToCodePosition = AbcSpec.readU30(input);
 				exceptionInfo.codePositionToJumpToOnException = AbcSpec.readU30(input);
 
-				exceptionInfo.exceptionType = constantPool.multinamePool[AbcSpec.readU30(input)];
-				exceptionInfo.variableReceivingException = constantPool.multinamePool[AbcSpec.readU30(input)];
+				exceptionInfo.exceptionType = QualifiedName(constantPool.multinamePool[AbcSpec.readU30(input)]);
+				exceptionInfo.variableReceivingException = QualifiedName(constantPool.multinamePool[AbcSpec.readU30(input)]);
 				CONFIG::debug {
 					Assert.notNull(exceptionInfo.variableReceivingException);
 				}
@@ -316,33 +336,33 @@ package org.as3commons.bytecode.io {
 		}
 
 		public override function deserializeScriptInfos(abcFile:AbcFile):void {
-			var scriptCount:int = AbcSpec.readU30(byteStream);
+			var scriptCount:int = AbcSpec.readU30(_byteStream);
 			for (var scriptIndex:int = 0; scriptIndex < scriptCount; ++scriptIndex) {
 				var scriptInfo:ScriptInfo = new ScriptInfo();
-				scriptInfo.scriptInitializer = abcFile.methodInfo[AbcSpec.readU30(byteStream)];
+				scriptInfo.scriptInitializer = abcFile.methodInfo[AbcSpec.readU30(_byteStream)];
 				CONFIG::debug {
 					Assert.notNull(scriptInfo.scriptInitializer);
 				}
 				scriptInfo.scriptInitializer.as3commonsBytecodeName = SCRIPT_INITIALIZER_BYTECODENAME;
-				scriptInfo.traits = deserializeTraitsInfo(abcFile, byteStream);
+				scriptInfo.traits = deserializeTraitsInfo(abcFile, _byteStream);
 				abcFile.addScriptInfo(scriptInfo);
 			}
 		}
 
 		public override function deserializeInstanceInfo(abcFile:AbcFile, pool:IConstantPool):int {
-			var classCount:int = AbcSpec.readU30(byteStream);
+			var classCount:int = AbcSpec.readU30(_byteStream);
 			for (var instanceIndex:int = 0; instanceIndex < classCount; ++instanceIndex) {
-				// instance_info  
-				// { 
-				//  u30 name 
-				//  u30 super_name 
-				//  u8  flags 
-				//  u30 protectedNs  
-				//  u30 intrf_count 
-				//  u30 interface[intrf_count] 
-				//  u30 iinit 
-				//  u30 trait_count 
-				//  traits_info trait[trait_count] 
+				// instance_info
+				// {
+				//  u30 name
+				//  u30 super_name
+				//  u8  flags
+				//  u30 protectedNs
+				//  u30 intrf_count
+				//  u30 interface[intrf_count]
+				//  u30 iinit
+				//  u30 trait_count
+				//  traits_info trait[trait_count]
 				// }
 				//	            trace("InstanceInfo: " + _byteStream.position);
 				var instanceInfo:InstanceInfo = new InstanceInfo();
@@ -353,82 +373,81 @@ package org.as3commons.bytecode.io {
 				// list yet on this anomaly so I'm going to convert single-namespace Multinames to QualifiedNames here.
 				//
 				// From the spec (Section 4.7 "Instance", page 28):
-				//  name 
-				//      The name field is an index into the multiname array of the constant pool; it provides a name for the 
-				//      class. The entry specified must be a QName. 
-				var classMultiname:BaseMultiname = pool.multinamePool[AbcSpec.readU30(byteStream)];
+				//  name
+				//      The name field is an index into the multiname array of the constant pool; it provides a name for the
+				//      class. The entry specified must be a QName.
+				var classMultiname:BaseMultiname = pool.multinamePool[AbcSpec.readU30(_byteStream)];
 				CONFIG::debug {
 					Assert.notNull(classMultiname);
 				}
 
 				instanceInfo.classMultiname = MultinameUtil.convertToQualifiedName(classMultiname);
-				instanceInfo.superclassMultiname = pool.multinamePool[AbcSpec.readU30(byteStream)];
+				instanceInfo.superclassMultiname = pool.multinamePool[AbcSpec.readU30(_byteStream)];
 				CONFIG::debug {
 					Assert.notNull(instanceInfo.superclassMultiname);
 				}
-				var instanceInfoFlags:int = AbcSpec.readU8(byteStream);
+				var instanceInfoFlags:int = AbcSpec.readU8(_byteStream);
 				instanceInfo.isFinal = ClassConstant.FINAL.present(instanceInfoFlags);
 				instanceInfo.isInterface = ClassConstant.INTERFACE.present(instanceInfoFlags);
 				instanceInfo.isProtected = ClassConstant.PROTECTED_NAMESPACE.present(instanceInfoFlags);
 				instanceInfo.isSealed = ClassConstant.SEALED.present(instanceInfoFlags);
 				if (instanceInfo.isProtected) {
-					instanceInfo.protectedNamespace = pool.namespacePool[AbcSpec.readU30(byteStream)];
+					instanceInfo.protectedNamespace = pool.namespacePool[AbcSpec.readU30(_byteStream)];
 					CONFIG::debug {
 						Assert.notNull(instanceInfo.protectedNamespace);
 					}
 				}
-				var interfaceCount:int = AbcSpec.readU30(byteStream);
+				var interfaceCount:int = AbcSpec.readU30(_byteStream);
 				for (var interfaceIndex:int = 0; interfaceIndex < interfaceCount; ++interfaceIndex) {
-					var intfIdx:int = AbcSpec.readU30(byteStream);
+					var intfIdx:int = AbcSpec.readU30(_byteStream);
 					instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = pool.multinamePool[intfIdx];
 					CONFIG::debug {
 						Assert.notNull(pool.multinamePool[intfIdx]);
 					}
 				}
-				instanceInfo.instanceInitializer = abcFile.methodInfo[AbcSpec.readU30(byteStream)];
+				instanceInfo.instanceInitializer = abcFile.methodInfo[AbcSpec.readU30(_byteStream)];
 				CONFIG::debug {
 					Assert.notNull(instanceInfo.instanceInitializer);
 				}
 				instanceInfo.instanceInitializer.as3commonsBytecodeName = CONSTRUCTOR_BYTECODENAME;
-				instanceInfo.traits = deserializeTraitsInfo(abcFile, byteStream, false, instanceInfo.classMultiname.fullName);
+				instanceInfo.traits = deserializeTraitsInfo(abcFile, _byteStream, false, instanceInfo.classMultiname.fullName);
 				abcFile.addInstanceInfo(instanceInfo);
 			}
 			return classCount;
 		}
 
-
 		public override function deserializeMetadata(abcFile:AbcFile, pool:IConstantPool):void {
-			var metadataCount:int = AbcSpec.readU30(byteStream);
+			var metadataCount:int = AbcSpec.readU30(_byteStream);
 			for (var metadataIndex:int = 0; metadataIndex < metadataCount; ++metadataIndex) {
-				// metadata_info  
-				// { 
-				//  u30 name 
-				//  u30 item_count 
-				//  item_info items[item_count] 
+				// metadata_info
+				// {
+				//  u30 name
+				//  u30 item_count
+				//  item_info items[item_count]
 				// }
-				// item_info  
-				// { 
-				//  u30 key 
-				//  u30 value 
+				// item_info
+				// {
+				//  u30 key
+				//  u30 value
 				// }
 				// The above is a lie... the metadata is saved with all the keys first, then all the values afterwards.
 				// So, if the item_count is 3, that means you will get three keys followed by three values. The keys
 				// and values match up with each other in index, so the first key matches the first value, second key
 				// matches the second value, etc.
 				var metadataInstance:Metadata = new Metadata();
-				metadataInstance.name = pool.stringPool[AbcSpec.readU30(byteStream)];
+				metadataInstance.name = pool.stringPool[AbcSpec.readU30(_byteStream)];
 				CONFIG::debug {
 					Assert.notNull(metadataInstance.name);
 				}
 				abcFile.addMetadataInfo(metadataInstance);
-				var keyValuePairCount:int = AbcSpec.readU30(byteStream);
+				var keyValuePairCount:int = AbcSpec.readU30(_byteStream);
 				var keys:Array = [];
 
 				var key:String;
 				var keyIndex:int;
 				// Suck out the keys first
 				for (keyIndex = 0; keyIndex < keyValuePairCount; ++keyIndex) {
-					key = pool.stringPool[AbcSpec.readU30(byteStream)];
+					key = pool.stringPool[AbcSpec.readU30(_byteStream)];
 					CONFIG::debug {
 						Assert.notNull(key);
 					}
@@ -439,8 +458,8 @@ package org.as3commons.bytecode.io {
 				var currentKey:String;
 				// Map keys to values in another loop
 				for each (currentKey in keys) {
-					// Note that if a key is zero, then this is a keyless entry and only carries a value (AVM2 overview, page 27 under 4.6 metadata_info) 
-					value = pool.stringPool[AbcSpec.readU30(byteStream)];
+					// Note that if a key is zero, then this is a keyless entry and only carries a value (AVM2 overview, page 27 under 4.6 metadata_info)
+					value = pool.stringPool[AbcSpec.readU30(_byteStream)];
 					CONFIG::debug {
 						Assert.notNull(value);
 					}
@@ -449,89 +468,88 @@ package org.as3commons.bytecode.io {
 			}
 		}
 
-
 		public override function deserializeMethodInfos(abcFile:AbcFile, pool:IConstantPool):void {
-			var methodCount:int = AbcSpec.readU30(byteStream);
+			var methodCount:int = AbcSpec.readU30(_byteStream);
 			//trace("MethodInfo count: " + methodCount);
 			for (var methodIndex:int = 0; methodIndex < methodCount; ++methodIndex) {
 				//trace("---------------------------------------------------------------------");
-				// method_info 
-				// { 
-				//  u30 param_count 
-				//  u30 return_type 
-				//  u30 param_type[param_count] 
-				//  u30 name 
-				//  u8  flags 
-				//  option_info options 
-				//  param_info param_names 
+				// method_info
+				// {
+				//  u30 param_count
+				//  u30 return_type
+				//  u30 param_type[param_count]
+				//  u30 name
+				//  u8  flags
+				//  option_info options
+				//  param_info param_names
 				// }
 				var methodInfo:MethodInfo = new MethodInfo();
 				abcFile.addMethodInfo(methodInfo);
-				var paramCount:int = AbcSpec.readU30(byteStream);
+				var paramCount:int = AbcSpec.readU30(_byteStream);
 				//trace("MethodInfo param count: " + paramCount);
-				methodInfo.returnType = pool.multinamePool[AbcSpec.readU30(byteStream)];
+				methodInfo.returnType = pool.multinamePool[AbcSpec.readU30(_byteStream)];
 				CONFIG::debug {
 					Assert.notNull(methodInfo.returnType);
 				}
 				//trace("MethodInfo return type: " + methodInfo.returnType);
 				for (var argumentIndex:int = 0; argumentIndex < paramCount; ++argumentIndex) {
-					var mn:BaseMultiname = pool.multinamePool[AbcSpec.readU30(byteStream)];
+					var mn:BaseMultiname = pool.multinamePool[AbcSpec.readU30(_byteStream)];
 					CONFIG::debug {
 						Assert.notNull(mn);
 					}
 					var paramQName:BaseMultiname = (mn is MultinameG) ? mn : MultinameUtil.convertToQualifiedName(mn);
 					var arg:Argument = new Argument(paramQName);
 					methodInfo.argumentCollection[methodInfo.argumentCollection.length] = arg;
-						//trace("MethodInfo param " + argumentIndex + ": " + arg.toString());
+					//trace("MethodInfo param " + argumentIndex + ": " + arg.toString());
 				}
-				methodInfo.methodName = pool.stringPool[AbcSpec.readU30(byteStream)];
+				methodInfo.methodName = pool.stringPool[AbcSpec.readU30(_byteStream)];
 				CONFIG::debug {
 					Assert.notNull(methodInfo.methodName);
 				}
 				methodInfo.scopeName = MultinameUtil.extractInterfaceScopeFromFullName(methodInfo.methodName);
 				//trace("Method name " + methodInfo.methodName);
-				methodInfo.flags = AbcSpec.readU8(byteStream);
+				methodInfo.flags = AbcSpec.readU8(_byteStream);
 
 				if (MethodFlag.flagPresent(methodInfo.flags, MethodFlag.HAS_OPTIONAL)) {
 					// option_info
-					// { 
-					//  u30 option_count 
-					//  option_detail option[option_count] 
+					// {
+					//  u30 option_count
+					//  option_detail option[option_count]
 					// }
-					// option_detail 
-					// { 
-					//  u30 val 
-					//  u8  kind 
+					// option_detail
+					// {
+					//  u30 val
+					//  u8  kind
 					// }
-					var optionInfoCount:int = AbcSpec.readU30(byteStream);
+					var optionInfoCount:int = AbcSpec.readU30(_byteStream);
 					//trace("Method has " + optionInfoCount + " optional parameters");
 					//trace("optioninfo count:" + optionInfoCount);
 					for (var optionInfoIndex:int = 0; optionInfoIndex < optionInfoCount; ++optionInfoIndex) {
-						var valueIndexInConstantPool:int = AbcSpec.readU30(byteStream);
-						var optionalValueKind:int = AbcSpec.readU8(byteStream);
+						var valueIndexInConstantPool:int = AbcSpec.readU30(_byteStream);
+						var optionalValueKind:int = AbcSpec.readU8(_byteStream);
 						var defaultValue:* = null;
 						switch (optionalValueKind) {
 							case ConstantKind.INT.value:
 								defaultValue = pool.integerPool[valueIndexInConstantPool];
-								CONFIG::debug {
+							CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 							}
 								break;
 							case ConstantKind.UINT.value:
 								defaultValue = pool.uintPool[valueIndexInConstantPool];
-								CONFIG::debug {
+							CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 							}
 								break;
 							case ConstantKind.DOUBLE.value:
 								defaultValue = pool.doublePool[valueIndexInConstantPool];
-								CONFIG::debug {
+							CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 							}
 								break;
 							case ConstantKind.UTF8.value:
 								defaultValue = pool.stringPool[valueIndexInConstantPool];
-								CONFIG::debug {
+							CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 							}
 								break;
@@ -559,7 +577,7 @@ package org.as3commons.bytecode.io {
 							case ConstantKind.STATIC_PROTECTED_NAMESPACE.value:
 							case ConstantKind.PRIVATE_NAMESPACE.value:
 								defaultValue = pool.namespacePool[valueIndexInConstantPool];
-								CONFIG::debug {
+							CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 							}
 								break;
@@ -576,7 +594,7 @@ package org.as3commons.bytecode.io {
 						optArg.defaultValue = defaultValue;
 						optArg.kind = ConstantKind.determineKind(optionalValueKind);
 						optArg.isOptional = true;
-							//trace("Optional argument " + optionInfoIndex + ": " + optArg.toString());
+						//trace("Optional argument " + optionInfoIndex + ": " + optArg.toString());
 					}
 				}
 
@@ -588,17 +606,16 @@ package org.as3commons.bytecode.io {
 					// }
 					var nameCount:uint = methodInfo.argumentCollection.length;
 					for (var nameIndex:uint = 0; nameIndex < nameCount; ++nameIndex) {
-						var paramName:String = abcFile.constantPool.stringPool[AbcSpec.readU30(byteStream)];
+						var paramName:String = abcFile.constantPool.stringPool[AbcSpec.readU30(_byteStream)];
 						CONFIG::debug {
 							Assert.notNull(paramName);
 						}
 						Argument(methodInfo.argumentCollection[nameIndex]).name = paramName;
-							//trace("Param name " + nameIndex + ": " + paramName);
+						//trace("Param name " + nameIndex + ": " + paramName);
 					}
 				}
 			}
 		}
-
 
 		public static function getExceptionInfoArgumentIndex(op:Op):int {
 			if (op.opcode === Opcode.newcatch) {
@@ -607,51 +624,51 @@ package org.as3commons.bytecode.io {
 			return -1;
 		}
 
-		public override function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
+		public override function deserializeTraitsInfo(abcFile:AbcFile, _byteStream:ByteArray, isStatic:Boolean = false, className:String = ""):Array {
 			var traits:Array = [];
 			var pool:IConstantPool = abcFile.constantPool;
 			var methodInfos:Array = abcFile.methodInfo;
 			var metadata:Array = abcFile.metadataInfo;
 
-			var traitCount:int = AbcSpec.readU30(byteStream);
+			var traitCount:int = AbcSpec.readU30(_byteStream);
 			for (var traitIndex:int = 0; traitIndex < traitCount; ++traitIndex) {
 				var trait:TraitInfo;
-				// traits_info  
-				// { 
-				//  u30 name 
-				//  u8  kind 
-				//  u8  data[] 
-				//  u30 metadata_count 
-				//  u30 metadata[metadata_count] 
+				// traits_info
+				// {
+				//  u30 name
+				//  u8  kind
+				//  u8  data[]
+				//  u30 metadata_count
+				//  u30 metadata[metadata_count]
 				// }
-				var multiNameIndex:uint = AbcSpec.readU30(byteStream);
+				var multiNameIndex:uint = AbcSpec.readU30(_byteStream);
 				var traitName:BaseMultiname = pool.multinamePool[multiNameIndex];
 				CONFIG::debug {
 					Assert.notNull(traitName);
 				}
 				var traitMultiname:QualifiedName = MultinameUtil.convertToQualifiedName(traitName);
-				var traitKindValue:int = AbcSpec.readU8(byteStream);
+				var traitKindValue:int = AbcSpec.readU8(_byteStream);
 				var traitKind:TraitKind = TraitKind.determineKind(traitKindValue);
 				switch (traitKind) {
 					case TraitKind.SLOT:
 					case TraitKind.CONST:
-						// trait_slot 
-						// { 
-						//  u30 slot_id 
-						//  u30 type_name 
-						//  u30 vindex 
-						//  u8  vkind  
+						// trait_slot
+						// {
+						//  u30 slot_id
+						//  u30 type_name
+						//  u30 vindex
+						//  u8  vkind
 						// }
 						var slotOrConstantTrait:SlotOrConstantTrait = new SlotOrConstantTrait();
-						slotOrConstantTrait.slotId = AbcSpec.readU30(byteStream);
-						slotOrConstantTrait.typeMultiname = pool.multinamePool[AbcSpec.readU30(byteStream)];
-						CONFIG::debug {
+						slotOrConstantTrait.slotId = AbcSpec.readU30(_byteStream);
+						slotOrConstantTrait.typeMultiname = pool.multinamePool[AbcSpec.readU30(_byteStream)];
+					CONFIG::debug {
 						Assert.notNull(slotOrConstantTrait.typeMultiname);
 					}
-						slotOrConstantTrait.vindex = AbcSpec.readU30(byteStream);
+						slotOrConstantTrait.vindex = AbcSpec.readU30(_byteStream);
 						slotOrConstantTrait.isStatic = isStatic;
 						if (slotOrConstantTrait.vindex > 0) {
-							slotOrConstantTrait.vkind = ConstantKind.determineKind(AbcSpec.readU8(byteStream));
+							slotOrConstantTrait.vkind = ConstantKind.determineKind(AbcSpec.readU8(_byteStream));
 							slotOrConstantTrait.defaultValue = getSlotOrConstantDefaultValue(pool, slotOrConstantTrait.vindex, slotOrConstantTrait.vkind);
 						}
 						trait = slotOrConstantTrait;
@@ -660,19 +677,19 @@ package org.as3commons.bytecode.io {
 					case TraitKind.METHOD:
 					case TraitKind.GETTER:
 					case TraitKind.SETTER:
-						// trait_method 
-						// { 
-						//  u30 disp_id 
-						//  u30 method 
+						// trait_method
+						// {
+						//  u30 disp_id
+						//  u30 method
 						// }
 						var methodTrait:MethodTrait = new MethodTrait();
 						methodTrait.isStatic = isStatic;
-						methodTrait.dispositionId = AbcSpec.readU30(byteStream);
+						methodTrait.dispositionId = AbcSpec.readU30(_byteStream);
 
 						// It's not strictly necessary to do this, but it helps the API for the MethodInfo to have a
-						// reference to its traits and vice versa 
-						var associatedMethodInfo:MethodInfo = methodInfos[AbcSpec.readU30(byteStream)];
-						CONFIG::debug {
+						// reference to its traits and vice versa
+						var associatedMethodInfo:MethodInfo = methodInfos[AbcSpec.readU30(_byteStream)];
+					CONFIG::debug {
 						Assert.notNull(associatedMethodInfo);
 					}
 						associatedMethodInfo.methodName = traitMultiname.name;
@@ -684,28 +701,28 @@ package org.as3commons.bytecode.io {
 						break;
 
 					case TraitKind.CLASS:
-						// trait_class 
-						// { 
-						//  u30 slot_id 
-						//  u30 classi 
+						// trait_class
+						// {
+						//  u30 slot_id
+						//  u30 classi
 						// }
 						var classTrait:ClassTrait = new ClassTrait();
-						classTrait.classSlotId = AbcSpec.readU30(byteStream);
-						classTrait.classIndex = AbcSpec.readU30(byteStream);
+						classTrait.classSlotId = AbcSpec.readU30(_byteStream);
+						classTrait.classIndex = AbcSpec.readU30(_byteStream);
 						classTrait.classInfo = ClassInfo(abcFile.classInfo[classTrait.classIndex]);
 						trait = classTrait;
 						break;
 
 					case TraitKind.FUNCTION:
-						// trait_function 
-						// { 
-						//  u30 slot_id 
-						//  u30 function 
-						// } 
+						// trait_function
+						// {
+						//  u30 slot_id
+						//  u30 function
+						// }
 						var functionTrait:FunctionTrait = new FunctionTrait();
-						functionTrait.functionSlotId = AbcSpec.readU30(byteStream);
-						functionTrait.functionMethod = methodInfos[AbcSpec.readU30(byteStream)];
-						CONFIG::debug {
+						functionTrait.functionSlotId = AbcSpec.readU30(_byteStream);
+						functionTrait.functionMethod = methodInfos[AbcSpec.readU30(_byteStream)];
+					CONFIG::debug {
 						Assert.notNull(functionTrait.functionMethod);
 					}
 						functionTrait.functionMethod.methodName = traitMultiname.name;
@@ -719,17 +736,17 @@ package org.as3commons.bytecode.io {
 				// traits_info
 				// {
 				//  ...
-				//  u30 metadata_count 
+				//  u30 metadata_count
 				//  u30 metadata[metadata_count]
 				// }
 				// AVM2 overview, page 29
-				// "These fields are present only if ATTR_Metadata is present in the upper four bits of the kind field. 
-				// The value of the metadata_count field is the number of entries in the metadata array. That array 
-				// contains indices into the metadata array of the abcFile." 
+				// "These fields are present only if ATTR_Metadata is present in the upper four bits of the kind field.
+				// The value of the metadata_count field is the number of entries in the metadata array. That array
+				// contains indices into the metadata array of the abcFile."
 				if (traitKindValue & (TraitAttributes.METADATA.bitMask << 4)) {
-					var traitMetadataCount:int = AbcSpec.readU30(byteStream);
+					var traitMetadataCount:int = AbcSpec.readU30(_byteStream);
 					for (var traitMetadataIndex:int = 0; traitMetadataIndex < traitMetadataCount; ++traitMetadataIndex) {
-						var mt:Metadata = metadata[AbcSpec.readU30(byteStream)];
+						var mt:Metadata = metadata[AbcSpec.readU30(_byteStream)];
 						CONFIG::debug {
 							Assert.notNull(mt);
 						}
@@ -749,6 +766,12 @@ package org.as3commons.bytecode.io {
 
 		protected function getSlotOrConstantDefaultValue(pool:IConstantPool, poolIndex:uint, constantKind:ConstantKind):* {
 			return pool.getConstantPoolItem(constantKind.value, poolIndex);
+		}
+
+		CONFIG::debug {
+			private static function logParseTime(name:String, startTimestamp:Number):void {
+				trace(" - " + name + " parsed at " + (getTimer() - startTimestamp) + " ms");
+			}
 		}
 
 	}

@@ -51,8 +51,10 @@ package org.as3commons.bytecode.io {
 		private var _value:String;
 
 		public function MethodBodyExtractionKind(val:String) {
-			Assert.state(!_enumCreated, "The MethodBodyExtractionMethod enumeration has already been created");
-			Assert.hasText(val, "val argument must have text");
+			CONFIG::debug {
+				Assert.state(!_enumCreated, "The MethodBodyExtractionMethod enumeration has already been created");
+				Assert.hasText(val, "val argument must have text");
+			}
 			_value = val;
 			_items[_value] = this;
 		}

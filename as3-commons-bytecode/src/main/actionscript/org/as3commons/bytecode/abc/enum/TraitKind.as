@@ -46,7 +46,9 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public function TraitKind(bitValue:uint, descriptionValue:String) {
-			Assert.state((!_enumCreated), "TraitKind enum has already been created");
+			CONFIG::debug {
+				Assert.state((!_enumCreated), "TraitKind enum has already been created");
+			}
 			_value = bitValue;
 			_description = descriptionValue;
 			_TYPES[_value] = this;

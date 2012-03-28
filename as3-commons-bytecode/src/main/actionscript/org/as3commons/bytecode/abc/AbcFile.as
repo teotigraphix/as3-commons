@@ -124,7 +124,6 @@ package org.as3commons.bytecode.abc {
 			if (indexOfItem == -1) {
 				indexOfItem = (collectionToAddTo.push(itemToAdd) - 1);
 			}
-
 			return indexOfItem;
 		}
 
@@ -161,22 +160,30 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function addInstanceInfos(instanceInfos:Array):void {
-			Assert.notNull(instanceInfos);
+			CONFIG::debug {
+				Assert.notNull(instanceInfos);
+			}
 			addCollection(addInstanceInfo, instanceInfos);
 		}
 
 		public function addScriptInfo(scriptInfo:ScriptInfo):int {
-			Assert.notNull(scriptInfo);
+			CONFIG::debug {
+				Assert.notNull(scriptInfo);
+			}
 			return addUniquely(scriptInfo, _scriptInfo);
 		}
 
 		public function addScriptInfos(scriptInfos:Array):void {
-			Assert.notNull(scriptInfos);
+			CONFIG::debug {
+				Assert.notNull(scriptInfos);
+			}
 			addCollection(addScriptInfo, scriptInfos);
 		}
 
 		public function addMethodBody(methodBody:MethodBody):int {
-			Assert.notNull(methodBody);
+			CONFIG::debug {
+				Assert.notNull(methodBody);
+			}
 			return addUniquely(methodBody, _methodBodies);
 		}
 

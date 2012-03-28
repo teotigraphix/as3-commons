@@ -183,15 +183,18 @@ package org.as3commons.bytecode.emit.impl {
 
 		public function build(initScopeDepth:uint=1):MethodInfo {
 			var mi:MethodInfo = (methodInfo != null) ? methodInfo : new MethodInfo();
+
 			for each (var methodArg:MethodArgument in _arguments) {
 				var arg:Argument = methodArg.build();
 				mi.addArgument(arg);
 			}
-			if (_methodBodyBuilder != null) {
+
+			if (_methodBodyBuilder) {
 				var extraLocalCount:uint = mi.argumentCollection.length + ((_hasRestArguments) ? 1 : 0);
 				mi.methodBody = _methodBodyBuilder.buildBody(initScopeDepth, extraLocalCount);
 				mi.methodBody.methodSignature = mi;
 			}
+
 			trait = buildTrait();
 			MethodTrait(trait).traitMethod = mi;
 			trait.addMetadataList(buildMetadata());

@@ -21,6 +21,10 @@ package org.as3commons.bytecode.testclasses {
 			InlineTest;
 		}
 
+
+		public function Flavour() {
+		}
+
 		private var _name:String;
 		private var _ingredients:Array;
 		private var _liked:Boolean;

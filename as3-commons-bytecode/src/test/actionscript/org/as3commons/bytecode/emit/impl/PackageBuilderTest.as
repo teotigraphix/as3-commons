@@ -15,23 +15,23 @@
  */
 package org.as3commons.bytecode.emit.impl {
 
-	import flexunit.framework.TestCase;
 
-	import org.as3commons.bytecode.emit.impl.PackageBuilder;
+	import org.flexunit.asserts.assertEquals;
 
-	public class PackageBuilderTest extends TestCase {
+	public class PackageBuilderTest {
 
 		public function PackageBuilderTest() {
 			super();
 		}
 
+		[Test]
 		public function testRemoveTrailingPeriod():void {
 			var str1:String = "com.classes.generated";
 			str1 = PackageBuilder.removeTrailingPeriod(str1);
-			assertEquals(str1,"com.classes.generated");
+			assertEquals(str1, "com.classes.generated");
 			str1 = "com.classes.generated.";
 			str1 = PackageBuilder.removeTrailingPeriod(str1);
-			assertEquals(str1,"com.classes.generated");
+			assertEquals(str1, "com.classes.generated");
 		}
 	}
 }

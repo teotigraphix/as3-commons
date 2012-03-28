@@ -431,7 +431,7 @@ package org.as3commons.bytecode.proxy.impl {
 			var bytecodeQname:QualifiedName = addInterceptorProperty(classBuilder);
 
 			for each (var introducedClassName:String in classProxyInfo.introductions) {
-				classIntroducer.introduce(introducedClassName, classBuilder);
+				classIntroducer.introduce(introducedClassName, classBuilder, applicationDomain);
 			}
 
 			var ctorBuilder:ICtorBuilder = constructorProxyFactory.addConstructor(classBuilder, type, classProxyInfo);

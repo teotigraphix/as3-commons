@@ -1,20 +1,20 @@
 /*
-* Copyright 2007-2011 the original author or authors.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2007-2011 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.as3commons.bytecode.proxy.impl {
-	import flash.utils.ByteArray;
+	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.ExceptionInfo;
@@ -43,7 +43,6 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.reflect.ByteCodeMethod;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.reflect.ByteCodeVariable;
-	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
@@ -78,18 +77,15 @@ package org.as3commons.bytecode.proxy.impl {
 			_setterBuilders = new Dictionary();
 		}
 
-		public function introduce(className:String, classBuilder:IClassBuilder):void {
-			var type:ByteCodeType = ByteCodeType.forName(className);
+		public function introduce(className:String, classBuilder:IClassBuilder, applicationDomain:ApplicationDomain):void {
+			var type:ByteCodeType = ByteCodeType.forName(className, applicationDomain);
 			if (type == null) {
 				throw new ProxyBuildError(ProxyBuildError.INTRODUCED_CLASS_NOT_FOUND, className);
-			}
-			if (type.isInterface) {
+			} else if (type.isInterface) {
 				throw new ProxyBuildError(ProxyBuildError.CANNOT_INTRODUCE_INTERFACE, className);
-			}
-			if (type.isNative) {
+			} else if (type.isNative) {
 				throw new ProxyBuildError(ProxyBuildError.CANNOT_INTRODUCE_NATIVE_CLASS, className);
-			}
-			if (type != null) {
+			} else {
 				internalIntroduce(type, classBuilder);
 			}
 		}
@@ -146,7 +142,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			if (constructorBody.opcodes.length > 0) {
 				constructorBody.opcodes[constructorBody.opcodes.length] = Opcode.getlocal_0.op();
-				var mergeConstructor:Function = function(event:ProxyFactoryBuildEvent):void {
+				var mergeConstructor:Function = function (event:ProxyFactoryBuildEvent):void {
 					var ctorBuilder:ICtorBuilder = event.methodBuilder as ICtorBuilder;
 					var trailingOpcodes:Array = ctorBuilder.opcodes.splice(2, ctorBuilder.opcodes.length);
 					ctorBuilder.opcodes.push.apply(ctorBuilder.opcodes, constructorBody.opcodes);

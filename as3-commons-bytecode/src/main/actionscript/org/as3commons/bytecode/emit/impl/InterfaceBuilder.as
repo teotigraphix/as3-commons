@@ -61,9 +61,9 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		override public function build(applicationDomain:ApplicationDomain):Array {
-			var methods:Array = createMethods(metadata, 4);
+			var methods:Array = createMethods(metadata, 3);
 			methods = methods.concat(createAccessors());
-			var classInfo:ClassInfo = createClassInfo(null, methods, 4, true);
+			var classInfo:ClassInfo = createClassInfo(null, methods, 3, true);
 			var instanceInfo:InstanceInfo = new InstanceInfo();
 			var ctorBuilder:ICtorBuilder = createStaticConstructor([], true);
 			instanceInfo.instanceInitializer = ctorBuilder.build();

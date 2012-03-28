@@ -17,669 +17,668 @@ package org.as3commons.bytecode.abc.enum {
 
 	import flash.utils.ByteArray;
 
-	import flexunit.framework.TestCase;
-
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
-	import org.as3commons.bytecode.abc.NamedMultiname;
 	import org.as3commons.bytecode.abc.Op;
-	import org.as3commons.bytecode.util.AbcSpec;
+	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertStrictlyEquals;
+	import org.flexunit.asserts.assertTrue;
 
-	public class OpcodeTest extends TestCase {
+	public class OpcodeTest {
 
 		public function OpcodeTest() {
 			super();
 		}
 
-		public function testParseAdd():void {
+		[Test] public function testParseAdd():void {
 			doTestParse(Opcode.add, []);
 		}
 
-		public function testParseAdd_d():void {
+		[Test] public function testParseAdd_d():void {
 			doTestParse(Opcode.add_d, []);
 		}
 
-		public function testParseAdd_i():void {
+		[Test] public function testParseAdd_i():void {
 			doTestParse(Opcode.add_i, []);
 		}
 
-		public function testapplytype():void {
+		[Test] public function testapplytype():void {
 			doTestParse(Opcode.applytype, [1]);
 		}
 
-		public function testastype():void {
+		[Test] public function testastype():void {
 			doTestParse(Opcode.astype, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testastypelate():void {
+		[Test] public function testastypelate():void {
 			doTestParse(Opcode.astypelate, []);
 		}
 
-		public function testbitand():void {
+		[Test] public function testbitand():void {
 			doTestParse(Opcode.bitand, []);
 		}
 
-		public function testbitnot():void {
+		[Test] public function testbitnot():void {
 			doTestParse(Opcode.bitnot, []);
 		}
 
-		public function testbitor():void {
+		[Test] public function testbitor():void {
 			doTestParse(Opcode.bitor, []);
 		}
 
-		public function testbitxor():void {
+		[Test] public function testbitxor():void {
 			doTestParse(Opcode.bitxor, []);
 		}
 
-		public function testbkpt():void {
+		[Test] public function testbkpt():void {
 			doTestParse(Opcode.bkpt, []);
 		}
 
-		public function testbkptline():void {
+		[Test] public function testbkptline():void {
 			doTestParse(Opcode.bkptline, [1]);
 		}
 
-		public function testcall():void {
+		[Test] public function testcall():void {
 			doTestParse(Opcode.call, [1]);
 		}
 
-		public function testcallinterface():void {
+		[Test] public function testcallinterface():void {
 			doTestParse(Opcode.callinterface, [new BaseMultiname(MultinameKind.QNAME), 1]);
 		}
 
-		public function testcallmethod():void {
+		[Test] public function testcallmethod():void {
 			doTestParse(Opcode.callmethod, [1, 1]);
 		}
 
-		public function testcallproperty():void {
+		[Test] public function testcallproperty():void {
 			doTestParse(Opcode.callproperty, [new BaseMultiname(MultinameKind.QNAME), 1]);
 		}
 
-		public function testcallproplex():void {
+		[Test] public function testcallproplex():void {
 			doTestParse(Opcode.callproplex, [new BaseMultiname(MultinameKind.QNAME), 1]);
 		}
 
-		public function testcallpropvoid():void {
+		[Test] public function testcallpropvoid():void {
 			doTestParse(Opcode.callpropvoid, [new BaseMultiname(MultinameKind.QNAME), 1]);
 		}
 
-		public function testcallstatic():void {
+		[Test] public function testcallstatic():void {
 			doTestParse(Opcode.callstatic, [1, 1]);
 		}
 
-		public function testcallsuper():void {
+		[Test] public function testcallsuper():void {
 			doTestParse(Opcode.callsuper, [new BaseMultiname(MultinameKind.QNAME), 1]);
 		}
 
-		public function testcallsuperid():void {
+		[Test] public function testcallsuperid():void {
 			doTestParse(Opcode.callsuperid, []);
 		}
 
-		public function testcallsupervoid():void {
+		[Test] public function testcallsupervoid():void {
 			doTestParse(Opcode.callsupervoid, [new BaseMultiname(MultinameKind.QNAME), 1]);
 		}
 
-		public function testcheckfilter():void {
+		[Test] public function testcheckfilter():void {
 			doTestParse(Opcode.checkfilter, []);
 		}
 
-		public function testcoerce():void {
+		[Test] public function testcoerce():void {
 			doTestParse(Opcode.coerce, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testcoerce_a():void {
+		[Test] public function testcoerce_a():void {
 			doTestParse(Opcode.coerce_a, []);
 		}
 
-		public function testcoerce_b():void {
+		[Test] public function testcoerce_b():void {
 			doTestParse(Opcode.coerce_b, []);
 		}
 
-		public function testcoerce_d():void {
+		[Test] public function testcoerce_d():void {
 			doTestParse(Opcode.coerce_d, []);
 		}
 
-		public function testcoerce_i():void {
+		[Test] public function testcoerce_i():void {
 			doTestParse(Opcode.coerce_i, []);
 		}
 
-		public function testcoerce_o():void {
+		[Test] public function testcoerce_o():void {
 			doTestParse(Opcode.coerce_o, []);
 		}
 
-		public function testcoerce_s():void {
+		[Test] public function testcoerce_s():void {
 			doTestParse(Opcode.coerce_s, []);
 		}
 
-		public function testcoerce_u():void {
+		[Test] public function testcoerce_u():void {
 			doTestParse(Opcode.coerce_u, []);
 		}
 
-		public function testconcat():void {
+		[Test] public function testconcat():void {
 			doTestParse(Opcode.concat, []);
 		}
 
-		public function testconstruct():void {
+		[Test] public function testconstruct():void {
 			doTestParse(Opcode.construct, [1]);
 		}
 
-		public function testconstructprop():void {
+		[Test] public function testconstructprop():void {
 			doTestParse(Opcode.constructprop, [new BaseMultiname(MultinameKind.QNAME), 1]);
 		}
 
-		public function testconstructsuper():void {
+		[Test] public function testconstructsuper():void {
 			doTestParse(Opcode.constructsuper, [1]);
 		}
 
-		public function testconvert_b():void {
+		[Test] public function testconvert_b():void {
 			doTestParse(Opcode.convert_b, []);
 		}
 
-		public function testconvert_d():void {
+		[Test] public function testconvert_d():void {
 			doTestParse(Opcode.convert_d, []);
 		}
 
-		public function testconvert_i():void {
+		[Test] public function testconvert_i():void {
 			doTestParse(Opcode.convert_i, []);
 		}
 
-		public function testconvert_o():void {
+		[Test] public function testconvert_o():void {
 			doTestParse(Opcode.convert_o, []);
 		}
 
-		public function testconvert_s():void {
+		[Test] public function testconvert_s():void {
 			doTestParse(Opcode.convert_s, []);
 		}
 
-		public function testconvert_u():void {
+		[Test] public function testconvert_u():void {
 			doTestParse(Opcode.convert_u, []);
 		}
 
-		public function testdebug():void {
+		[Test] public function testdebug():void {
 			doTestParse(Opcode.debug, [1, 1, 1, 1]);
 		}
 
-		public function testdebugfile():void {
+		[Test] public function testdebugfile():void {
 			doTestParse(Opcode.debugfile, ["testfile.as"]);
 		}
 
-		public function testdebugline():void {
+		[Test] public function testdebugline():void {
 			doTestParse(Opcode.debugline, [1]);
 		}
 
-		public function testdeclocal():void {
+		[Test] public function testdeclocal():void {
 			doTestParse(Opcode.declocal, [1]);
 		}
 
-		public function testdeclocal_i():void {
+		[Test] public function testdeclocal_i():void {
 			doTestParse(Opcode.declocal_i, [1]);
 		}
 
-		public function testdecrement():void {
+		[Test] public function testdecrement():void {
 			doTestParse(Opcode.decrement, []);
 		}
 
-		public function testdecrement_i():void {
+		[Test] public function testdecrement_i():void {
 			doTestParse(Opcode.decrement_i, []);
 		}
 
-		public function testdeleteproperty():void {
+		[Test] public function testdeleteproperty():void {
 			doTestParse(Opcode.deleteproperty, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testdeletepropertylate():void {
+		[Test] public function testdeletepropertylate():void {
 			doTestParse(Opcode.deletepropertylate, []);
 		}
 
-		public function testdivide():void {
+		[Test] public function testdivide():void {
 			doTestParse(Opcode.divide, []);
 		}
 
-		public function testdup():void {
+		[Test] public function testdup():void {
 			doTestParse(Opcode.dup, []);
 		}
 
-		public function testdxns():void {
+		[Test] public function testdxns():void {
 			doTestParse(Opcode.dxns, ["test_namespacename"]);
 		}
 
-		public function testdxnslate():void {
+		[Test] public function testdxnslate():void {
 			doTestParse(Opcode.dxnslate, []);
 		}
 
-		public function testequals():void {
+		[Test] public function testequals():void {
 			doTestParse(Opcode.equals, []);
 		}
 
-		public function testesc_xattr():void {
+		[Test] public function testesc_xattr():void {
 			doTestParse(Opcode.esc_xattr, []);
 		}
 
-		public function testesc_xelem():void {
+		[Test] public function testesc_xelem():void {
 			doTestParse(Opcode.esc_xelem, []);
 		}
 
-		public function testfinddef():void {
+		[Test] public function testfinddef():void {
 			doTestParse(Opcode.finddef, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testfindpropglobalstrict():void {
+		[Test] public function testfindpropglobalstrict():void {
 			doTestParse(Opcode.findpropglobalstrict, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testfindpropglobal():void {
+		[Test] public function testfindpropglobal():void {
 			doTestParse(Opcode.findpropglobal, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testfindproperty():void {
+		[Test] public function testfindproperty():void {
 			doTestParse(Opcode.findproperty, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testfindpropstrict():void {
+		[Test] public function testfindpropstrict():void {
 			doTestParse(Opcode.findpropstrict, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testgetdescendants():void {
+		[Test] public function testgetdescendants():void {
 			doTestParse(Opcode.getdescendants, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testgetglobalscope():void {
+		[Test] public function testgetglobalscope():void {
 			doTestParse(Opcode.getglobalscope, []);
 		}
 
-		public function testgetglobalslot():void {
+		[Test] public function testgetglobalslot():void {
 			doTestParse(Opcode.getglobalslot, [1]);
 		}
 
-		public function testgetlex():void {
+		[Test] public function testgetlex():void {
 			doTestParse(Opcode.getlex, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testgetlocal():void {
+		[Test] public function testgetlocal():void {
 			doTestParse(Opcode.getlocal, [1]);
 		}
 
-		public function testgetlocal_0():void {
+		[Test] public function testgetlocal_0():void {
 			doTestParse(Opcode.getlocal_0, []);
 		}
 
-		public function testgetlocal_1():void {
+		[Test] public function testgetlocal_1():void {
 			doTestParse(Opcode.getlocal_1, []);
 		}
 
-		public function testgetlocal_2():void {
+		[Test] public function testgetlocal_2():void {
 			doTestParse(Opcode.getlocal_2, []);
 		}
 
-		public function testgetlocal_3():void {
+		[Test] public function testgetlocal_3():void {
 			doTestParse(Opcode.getlocal_3, []);
 		}
 
-		public function testgetouterscope():void {
+		[Test] public function testgetouterscope():void {
 			doTestParse(Opcode.getouterscope, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testgetproperty():void {
+		[Test] public function testgetproperty():void {
 			doTestParse(Opcode.getproperty, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testgetscopeobject():void {
+		[Test] public function testgetscopeobject():void {
 			doTestParse(Opcode.getscopeobject, [1]);
 		}
 
-		public function testgetslot():void {
+		[Test] public function testgetslot():void {
 			doTestParse(Opcode.getslot, [1]);
 		}
 
-		public function testgetsuper():void {
+		[Test] public function testgetsuper():void {
 			doTestParse(Opcode.getsuper, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testgreaterequals():void {
+		[Test] public function testgreaterequals():void {
 			doTestParse(Opcode.greaterequals, []);
 		}
 
-		public function testgreaterthan():void {
+		[Test] public function testgreaterthan():void {
 			doTestParse(Opcode.greaterthan, []);
 		}
 
-		public function testhasnext2():void {
+		[Test] public function testhasnext2():void {
 			doTestParse(Opcode.hasnext2, [1, 1]);
 		}
 
-		public function testhasnext():void {
+		[Test] public function testhasnext():void {
 			doTestParse(Opcode.hasnext, []);
 		}
 
-		public function testifeq():void {
+		[Test] public function testifeq():void {
 			doTestParse(Opcode.ifeq, [1]);
 		}
 
-		public function testiffalse():void {
+		[Test] public function testiffalse():void {
 			doTestParse(Opcode.iffalse, [1]);
 		}
 
-		public function testifge():void {
+		[Test] public function testifge():void {
 			doTestParse(Opcode.ifge, [1]);
 		}
 
-		public function testifgt():void {
+		[Test] public function testifgt():void {
 			doTestParse(Opcode.ifgt, [1]);
 		}
 
-		public function testifle():void {
+		[Test] public function testifle():void {
 			doTestParse(Opcode.ifle, [1]);
 		}
 
-		public function testiflt():void {
+		[Test] public function testiflt():void {
 			doTestParse(Opcode.iflt, [1]);
 		}
 
-		public function testifne():void {
+		[Test] public function testifne():void {
 			doTestParse(Opcode.ifne, [1]);
 		}
 
-		public function testifnge():void {
+		[Test] public function testifnge():void {
 			doTestParse(Opcode.ifnge, [1]);
 		}
 
-		public function testifnle():void {
+		[Test] public function testifnle():void {
 			doTestParse(Opcode.ifnle, [1]);
 		}
 
-		public function testifnlt():void {
+		[Test] public function testifnlt():void {
 			doTestParse(Opcode.ifnlt, [1]);
 		}
 
-		public function testifngt():void {
+		[Test] public function testifngt():void {
 			doTestParse(Opcode.ifngt, [1]);
 		}
 
-		public function testifstricteq():void {
+		[Test] public function testifstricteq():void {
 			doTestParse(Opcode.ifstricteq, [1]);
 		}
 
-		public function testifstrictne():void {
+		[Test] public function testifstrictne():void {
 			doTestParse(Opcode.ifstrictne, [1]);
 		}
 
-		public function testiftrue():void {
+		[Test] public function testiftrue():void {
 			doTestParse(Opcode.iftrue, [1]);
 		}
 
-		public function testin_op():void {
+		[Test] public function testin_op():void {
 			doTestParse(Opcode.in_op, []);
 		}
 
-		public function testinclocal():void {
+		[Test] public function testinclocal():void {
 			doTestParse(Opcode.inclocal, [1]);
 		}
 
-		public function testinclocal_i():void {
+		[Test] public function testinclocal_i():void {
 			doTestParse(Opcode.inclocal_i, [1]);
 		}
 
-		public function testincrement():void {
+		[Test] public function testincrement():void {
 			doTestParse(Opcode.increment, []);
 		}
 
-		public function testincrement_i():void {
+		[Test] public function testincrement_i():void {
 			doTestParse(Opcode.increment_i, []);
 		}
 
-		public function testinitproperty():void {
+		[Test] public function testinitproperty():void {
 			doTestParse(Opcode.initproperty, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testinstance_of():void {
+		[Test] public function testinstance_of():void {
 			doTestParse(Opcode.instance_of, []);
 		}
 
-		public function testistype():void {
+		[Test] public function testistype():void {
 			doTestParse(Opcode.istype, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testistypelate():void {
+		[Test] public function testistypelate():void {
 			doTestParse(Opcode.istypelate, []);
 		}
 
-		public function testjump():void {
+		[Test] public function testjump():void {
 			doTestParse(Opcode.jump, [1]);
 		}
 
-		public function testkill():void {
+		[Test] public function testkill():void {
 			doTestParse(Opcode.kill, [1]);
 		}
 
-		public function testlabel():void {
+		[Test] public function testlabel():void {
 			doTestParse(Opcode.label, []);
 		}
 
-		public function testlessequals():void {
+		[Test] public function testlessequals():void {
 			doTestParse(Opcode.lessequals, []);
 		}
 
-		public function testlessthan():void {
+		[Test] public function testlessthan():void {
 			doTestParse(Opcode.lessthan, []);
 		}
 
-		public function testlookupswitch():void {
+		[Test] public function testlookupswitch():void {
 			doTestParse(Opcode.lookupswitch, [1, 1, [1, 1]]);
 		}
 
-		public function testlshift():void {
+		[Test] public function testlshift():void {
 			doTestParse(Opcode.lshift, []);
 		}
 
-		public function testmodulo():void {
+		[Test] public function testmodulo():void {
 			doTestParse(Opcode.modulo, []);
 		}
 
-		public function testmultiply():void {
+		[Test] public function testmultiply():void {
 			doTestParse(Opcode.multiply, []);
 		}
 
-		public function testmultiply_i():void {
+		[Test] public function testmultiply_i():void {
 			doTestParse(Opcode.multiply_i, []);
 		}
 
-		public function testnegate():void {
+		[Test] public function testnegate():void {
 			doTestParse(Opcode.negate, []);
 		}
 
-		public function testnegate_i():void {
+		[Test] public function testnegate_i():void {
 			doTestParse(Opcode.negate_i, []);
 		}
 
-		public function testnewactivation():void {
+		[Test] public function testnewactivation():void {
 			doTestParse(Opcode.newactivation, []);
 		}
 
-		public function testnewarray():void {
+		[Test] public function testnewarray():void {
 			doTestParse(Opcode.newarray, [1]);
 		}
 
-		public function testnewcatch():void {
+		[Test] public function testnewcatch():void {
 			doTestParse(Opcode.newcatch, [new ExceptionInfo()]);
 		}
 
-		public function testnewclass():void {
+		[Test] public function testnewclass():void {
 			doTestParse(Opcode.newclass, [new ClassInfo()]);
 		}
 
-		public function testnewfunction():void {
+		[Test] public function testnewfunction():void {
 			doTestParse(Opcode.newfunction, [1]);
 		}
 
-		public function testnewobject():void {
+		[Test] public function testnewobject():void {
 			doTestParse(Opcode.newobject, [1]);
 		}
 
-		public function testnextname():void {
+		[Test] public function testnextname():void {
 			doTestParse(Opcode.nextname, []);
 		}
 
-		public function testnextvalue():void {
+		[Test] public function testnextvalue():void {
 			doTestParse(Opcode.nextvalue, []);
 		}
 
-		public function testnop():void {
+		[Test] public function testnop():void {
 			doTestParse(Opcode.nop, []);
 		}
 
-		public function testnot():void {
+		[Test] public function testnot():void {
 			doTestParse(Opcode.not, []);
 		}
 
-		public function testpop():void {
+		[Test] public function testpop():void {
 			doTestParse(Opcode.pop, []);
 		}
 
-		public function testpopscope():void {
+		[Test] public function testpopscope():void {
 			doTestParse(Opcode.popscope, []);
 		}
 
-		public function testpushbyte():void {
+		[Test] public function testpushbyte():void {
 			doTestParse(Opcode.pushbyte, [1]);
 		}
 
-		public function testpushconstant():void {
+		[Test] public function testpushconstant():void {
 			doTestParse(Opcode.pushconstant, ["TestConstant"]);
 		}
 
-		public function testpushdouble():void {
+		[Test] public function testpushdouble():void {
 			doTestParse(Opcode.pushdouble, [1]);
 		}
 
-		public function testpushfalse():void {
+		[Test] public function testpushfalse():void {
 			doTestParse(Opcode.pushfalse, []);
 		}
 
-		public function testpushint():void {
+		[Test] public function testpushint():void {
 			doTestParse(Opcode.pushint, [1]);
 		}
 
-		public function testpushnamespace():void {
+		[Test] public function testpushnamespace():void {
 			doTestParse(Opcode.pushnamespace, [new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "public")]);
 		}
 
-		public function testpushnan():void {
+		[Test] public function testpushnan():void {
 			doTestParse(Opcode.pushnan, []);
 		}
 
-		public function testpushnull():void {
+		[Test] public function testpushnull():void {
 			doTestParse(Opcode.pushnull, []);
 		}
 
-		public function testpushscope():void {
+		[Test] public function testpushscope():void {
 			doTestParse(Opcode.pushscope, []);
 		}
 
-		public function testpushshort():void {
+		[Test] public function testpushshort():void {
 			doTestParse(Opcode.pushshort, [1]);
 		}
 
-		public function testpushstring():void {
+		[Test] public function testpushstring():void {
 			doTestParse(Opcode.pushstring, ["TestString"]);
 		}
 
-		public function testpushtrue():void {
+		[Test] public function testpushtrue():void {
 			doTestParse(Opcode.pushtrue, []);
 		}
 
-		public function testpushuint():void {
+		[Test] public function testpushuint():void {
 			doTestParse(Opcode.pushuint, [1]);
 		}
 
-		public function testpushundefined():void {
+		[Test] public function testpushundefined():void {
 			doTestParse(Opcode.pushundefined, []);
 		}
 
-		public function testpushwith():void {
+		[Test] public function testpushwith():void {
 			doTestParse(Opcode.pushwith, []);
 		}
 
-		public function testreturnvalue():void {
+		[Test] public function testreturnvalue():void {
 			doTestParse(Opcode.returnvalue, []);
 		}
 
-		public function testreturnvoid():void {
+		[Test] public function testreturnvoid():void {
 			doTestParse(Opcode.returnvoid, []);
 		}
 
-		public function testrshift():void {
+		[Test] public function testrshift():void {
 			doTestParse(Opcode.rshift, []);
 		}
 
-		public function testsetglobalslot():void {
+		[Test] public function testsetglobalslot():void {
 			doTestParse(Opcode.setglobalslot, [1]);
 		}
 
-		public function testsetlocal():void {
+		[Test] public function testsetlocal():void {
 			doTestParse(Opcode.setlocal, [1]);
 		}
 
-		public function testsetlocal_0():void {
+		[Test] public function testsetlocal_0():void {
 			doTestParse(Opcode.setlocal_0, []);
 		}
 
-		public function testsetlocal_1():void {
+		[Test] public function testsetlocal_1():void {
 			doTestParse(Opcode.setlocal_1, []);
 		}
 
-		public function testsetlocal_2():void {
+		[Test] public function testsetlocal_2():void {
 			doTestParse(Opcode.setlocal_2, []);
 		}
 
-		public function testsetlocal_3():void {
+		[Test] public function testsetlocal_3():void {
 			doTestParse(Opcode.setlocal_3, []);
 		}
 
-		public function testsetproperty():void {
+		[Test] public function testsetproperty():void {
 			doTestParse(Opcode.setproperty, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function testsetpropertylate():void {
+		[Test] public function testsetpropertylate():void {
 			doTestParse(Opcode.setpropertylate, []);
 		}
 
-		public function testsetslot():void {
+		[Test] public function testsetslot():void {
 			doTestParse(Opcode.setslot, [1]);
 		}
 
-		public function testsetsuper():void {
+		[Test] public function testsetsuper():void {
 			doTestParse(Opcode.setsuper, [new BaseMultiname(MultinameKind.QNAME)]);
 		}
 
-		public function teststrictequals():void {
+		[Test] public function teststrictequals():void {
 			doTestParse(Opcode.strictequals, []);
 		}
 
-		public function testsubtract():void {
+		[Test] public function testsubtract():void {
 			doTestParse(Opcode.subtract, []);
 		}
 
-		public function testsubtract_i():void {
+		[Test] public function testsubtract_i():void {
 			doTestParse(Opcode.subtract_i, []);
 		}
 
-		public function testswap():void {
+		[Test] public function testswap():void {
 			doTestParse(Opcode.swap, []);
 		}
 
-		public function testthrow_op():void {
+		[Test] public function testthrow_op():void {
 			doTestParse(Opcode.throw_op, []);
 		}
 
-		public function testtypeof_op():void {
+		[Test] public function testtypeof_op():void {
 			doTestParse(Opcode.typeof_op, []);
 		}
 
-		public function testurshift():void {
+		[Test] public function testurshift():void {
 			doTestParse(Opcode.urshift, []);
 		}
 

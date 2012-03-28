@@ -35,7 +35,7 @@ package org.as3commons.bytecode.abc {
 		function get stringPool():Array;
 		function get namespacePool():Array;
 		function get namespaceSetPool():Array;
-		function get multinamePool():Array;
+		function get multinamePool():Vector.<BaseMultiname>;
 		function get classInfo():Array;
 		function get locked():Boolean;
 		function set locked(value:Boolean):void;

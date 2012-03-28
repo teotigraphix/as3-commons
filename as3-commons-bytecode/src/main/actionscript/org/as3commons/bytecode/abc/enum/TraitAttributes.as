@@ -38,7 +38,9 @@ package org.as3commons.bytecode.abc.enum {
 		}
 
 		public function TraitAttributes(bitMaskValue:uint, descriptionValue:String) {
-			Assert.state((!_enumCreated), "TraitAttributes enum has already been created");
+			CONFIG::debug {
+				Assert.state((!_enumCreated), "TraitAttributes enum has already been created");
+			}
 			_bitMask = bitMaskValue;
 			_description = descriptionValue;
 			_TYPES[_TYPES.length] = this;
