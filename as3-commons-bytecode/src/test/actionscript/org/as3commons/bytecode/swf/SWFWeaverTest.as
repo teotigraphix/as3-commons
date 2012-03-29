@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.swf {
 	import flash.utils.ByteArray;
 
-	import org.as3commons.bytecode.TestConstants;
+	import org.as3commons.bytecode.Resources;
 	import org.as3commons.bytecode.emit.IClassBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.flexunit.asserts.assertEquals;
@@ -36,7 +36,7 @@ package org.as3commons.bytecode.swf {
 
 		[Test]
 		public function testEditClassDebugBuild():void {
-			var input:ByteArray = TestConstants.getDebugBuildSWFWeaverTest();
+			var input:ByteArray = Resources.getDebugBuildSWFWeaverTest();
 			_weaver.read(input);
 			var clsBuilder:IClassBuilder = _weaver.getClassBuilder("testclasses.WovenClassTest");
 			assertNotNull(clsBuilder);

@@ -14,28 +14,37 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.testclasses.interceptors {
+	import org.as3commons.bytecode.interception.IInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
+	import org.as3commons.bytecode.interception.impl.BasicMethodInvocation;
 	import org.as3commons.bytecode.interception.impl.InvocationKind;
-	import org.as3commons.bytecode.testclasses.ProxySubClass;
 
-	public class TestMethodInterceptor extends AssertingInterceptor {
+	public class InterfaceMethodInterceptorImpl implements IInterceptor {
 
-		public function TestMethodInterceptor() {
-			super();
-			ProxySubClass;
+		public function InterfaceMethodInterceptorImpl() {
 		}
 
-		override public function intercept(invocation:IMethodInvocation):void {
-			super.intercept(invocation);
+		public function intercept(invocation:IMethodInvocation):void {
 			if (invocation.kind === InvocationKind.METHOD) {
 				invocation.proceed = false;
 				invocation.returnValue = "interceptedReturnValue";
 			} else if (invocation.kind === InvocationKind.GETTER) {
 				invocation.proceed = false;
-				invocation.returnValue = "interceptedGetterValue";
+				if (invocation.targetMember.localName == "name") {
+					invocation.returnValue = "interceptedGetterValue";
+				} else {
+					invocation.returnValue = ["interceptedGetterValue"];
+				}
 			} else if (invocation.kind === InvocationKind.SETTER) {
-				invocation.proceed = false;
-				invocation.returnValue = "interceptedSetterValue";
+				if (invocation is BasicMethodInvocation) {
+					var invoc:BasicMethodInvocation = BasicMethodInvocation(invocation);
+					invoc.proceed = false;
+					if (invoc.targetMember.localName == "ingredients") {
+						invoc.targetMethod.apply(invoc.targetInstance, ["interceptedSetterValue"]);
+					} else {
+						invoc.targetMethod.apply(invoc.targetInstance, [true]);
+					}
+				}
 			}
 		}
 	}

@@ -15,9 +15,9 @@
  */
 package org.as3commons.bytecode.interception.impl {
 
-	import org.as3commons.bytecode.testclasses.interceptors.TestBlockingInterceptor;
-	import org.as3commons.bytecode.testclasses.interceptors.TestInterceptor;
-	import org.as3commons.bytecode.testclasses.interceptors.TestMethodInterceptor;
+	import org.as3commons.bytecode.testclasses.interceptors.BlockingInterceptorImpl;
+	import org.as3commons.bytecode.testclasses.interceptors.InterceptorImpl;
+	import org.as3commons.bytecode.testclasses.interceptors.MethodInterceptorImpl;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertNull;
 
@@ -44,21 +44,21 @@ package org.as3commons.bytecode.interception.impl {
 
 		[Test]
 		public function testInterceptWithInterceptorThatChangesParameter():void {
-			_interceptor.interceptors[_interceptor.interceptors.length] = new TestInterceptor();
+			_interceptor.interceptors[_interceptor.interceptors.length] = new InterceptorImpl();
 			_interceptor.intercept(this, InvocationKind.METHOD, new QName("", "testMethod"), ['test'], testMethod);
 			assertEquals('intercepted', _testResult);
 		}
 
 		[Test]
 		public function testInterceptWithInterceptorThatChangesReturnValue():void {
-			_interceptor.interceptors[_interceptor.interceptors.length] = new TestMethodInterceptor();
+			_interceptor.interceptors[_interceptor.interceptors.length] = new MethodInterceptorImpl();
 			var returnValue:String = _interceptor.intercept(this, InvocationKind.METHOD, new QName("", "testMethod"), null, testMethod);
 			assertEquals('interceptedReturnValue', returnValue);
 		}
 
 		[Test]
 		public function testInterceptWithBlockingInterceptor():void {
-			_interceptor.interceptors[_interceptor.interceptors.length] = new TestBlockingInterceptor();
+			_interceptor.interceptors[_interceptor.interceptors.length] = new BlockingInterceptorImpl();
 			_interceptor.intercept(this, InvocationKind.METHOD, new QName("", "testMethod"), ['test'], testMethod);
 			assertNull(_testResult);
 		}

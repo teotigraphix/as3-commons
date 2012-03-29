@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.reflect {
+	import flash.display.LoaderInfo;
+	import flash.system.ApplicationDomain;
+
 	import mx.core.Application;
 	import mx.core.FlexGlobals;
 
@@ -21,17 +24,21 @@ package org.as3commons.bytecode.reflect {
 
 	public class PlayerGlobalDataTest {
 
+		private var _applicationDomain:ApplicationDomain;
+
 		public function PlayerGlobalDataTest() {
 		}
 
 		[Before]
 		public function setUp():void {
-			ByteCodeType.fromLoader(Application(FlexGlobals.topLevelApplication).loaderInfo);
+			var loaderInfo:LoaderInfo = Application(FlexGlobals.topLevelApplication).loaderInfo;
+			_applicationDomain = loaderInfo.applicationDomain;
+			ByteCodeType.fromLoader(loaderInfo, _applicationDomain);
 		}
 
 		[Test]
 		public function testForNameEventDispatcher():void {
-			var type:ByteCodeType = ByteCodeType.forClass(Application);
+			var type:ByteCodeType = ByteCodeType.forClass(Application, _applicationDomain);
 			for each (var method:ByteCodeMethod in type.methods) {
 				var i:int = 0;
 			}

@@ -25,7 +25,7 @@ package org.as3commons.bytecode.testclasses.interceptors {
 		}
 
 		public function newInstance():* {
-			return new TestMethodInvocationInterceptor();
+			return new MethodInvocationInterceptorImpl();
 		}
 	}
 }

@@ -18,7 +18,7 @@ package org.as3commons.bytecode.io {
 	import flash.events.IOErrorEvent;
 	import flash.utils.ByteArray;
 
-	import org.as3commons.bytecode.TestConstants;
+	import org.as3commons.bytecode.Resources;
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
@@ -54,7 +54,7 @@ package org.as3commons.bytecode.io {
 
 		[Test(async)]
 		public function testSerializeDynamicSubClass():void {
-			var abcFileAsByteArray:ByteArray = TestConstants.getProxyTemplate();
+			var abcFileAsByteArray:ByteArray = Resources.getProxyTemplate();
 			var deserializedClass:AbcFile = new AbcDeserializer(abcFileAsByteArray).deserialize();
 			var reserializedStream:ByteArray = _fixture.serializeAbcFile(deserializedClass);
 
@@ -76,12 +76,12 @@ package org.as3commons.bytecode.io {
 			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, function (event:IOErrorEvent):void {
 				fail("loader error: " + event.text);
 			});
-			_classLoader.loadClassDefinitionsFromBytecode([TestConstants.getBaseClassTemplate(), TestConstants.getMethodInvocation(), reserializedStream]);
+			_classLoader.loadClassDefinitionsFromBytecode([Resources.getBaseClassTemplate(), Resources.getMethodInvocation(), reserializedStream]);
 		}
 
 		[Test(async)]
 		public function testSerializeBaseClass():void {
-			var abcFileAsByteArray:ByteArray = TestConstants.getBaseClassTemplate();
+			var abcFileAsByteArray:ByteArray = Resources.getBaseClassTemplate();
 			var deserializedClass:AbcFile = new AbcDeserializer(abcFileAsByteArray).deserialize();
 			var reserializedStream:ByteArray = _fixture.serializeAbcFile(deserializedClass);
 
@@ -105,7 +105,7 @@ package org.as3commons.bytecode.io {
 
 		[Test(async)]
 		public function testSerializeClassWithNoMethodsOrProperties():void {
-			var abcFileAsByteArray:ByteArray = TestConstants.getFullClassDefinitionByteCode();
+			var abcFileAsByteArray:ByteArray = Resources.getFullClassDefinitionByteCode();
 			var deserializedClass:AbcFile = new AbcDeserializer(abcFileAsByteArray).deserialize();
 			var reserializedStream:ByteArray = _fixture.serializeAbcFile(deserializedClass);
 
@@ -123,7 +123,7 @@ package org.as3commons.bytecode.io {
 			_classLoader.addEventListener(IOErrorEvent.VERIFY_ERROR, function (event:IOErrorEvent):void {
 				fail("loader error: " + event.text);
 			});
-			_classLoader.loadClassDefinitionsFromBytecode([TestConstants.getInterfaceDefinitionByteCode(), reserializedStream]);
+			_classLoader.loadClassDefinitionsFromBytecode([Resources.getInterfaceDefinitionByteCode(), reserializedStream]);
 //
 //        	var deserializer : AbcDeserializer = new AbcDeserializer(serializedStream);
 //        	assertEquals(16, deserializer.readU16());

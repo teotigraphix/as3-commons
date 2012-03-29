@@ -22,7 +22,7 @@ package org.as3commons.bytecode.swf {
 	import mx.core.FlexGlobals;
 	import mx.managers.SystemManager;
 
-	import org.as3commons.bytecode.TestConstants;
+	import org.as3commons.bytecode.Resources;
 
 	public class SWFFileIOTest {
 
@@ -41,12 +41,12 @@ package org.as3commons.bytecode.swf {
 		}
 
 		[Test] public function testDeserializeFramework4():void {
-			var byteStream:ByteArray = TestConstants.getFramework4();
+			var byteStream:ByteArray = Resources.getFramework4();
 			var file:SWFFile = _swfFileIO.read(byteStream);
 		}
 
 		[Test] public function testDeserializeFramework41():void {
-			var byteStream:ByteArray = TestConstants.getFramework41();
+			var byteStream:ByteArray = Resources.getFramework41();
 			var file:SWFFile = _swfFileIO.read(byteStream);
 		}
 

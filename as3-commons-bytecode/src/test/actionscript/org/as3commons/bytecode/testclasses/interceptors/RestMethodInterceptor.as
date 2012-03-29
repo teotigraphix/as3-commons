@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.testclasses.interceptors {
-	import org.as3commons.bytecode.interception.IMethodInvocationInterceptor;
+	import org.as3commons.bytecode.interception.IMethodInvocation;
 	import org.as3commons.bytecode.interception.impl.InvocationKind;
 
-	public class TestMethodInvocationInterceptor implements IMethodInvocationInterceptor {
+	public class RestMethodInterceptor extends AssertingInterceptor {
 
-		public function TestMethodInvocationInterceptor() {
+		public function RestMethodInterceptor() {
 			super();
 		}
 
-		final public function intercept(targetInstance:Object, kind:InvocationKind, member:QName, arguments:Array = null, method:Function = null):* {
-			return null;
+		override public function intercept(invocation:IMethodInvocation):void {
+			super.intercept(invocation);
+			if (invocation.kind === InvocationKind.METHOD) {
+				for (var i:int = 0; i < invocation.arguments.length; ++i) {
+					invocation.arguments[i] = 'intercept' + (i + 1);
+				}
+			}
 		}
+
 	}
 }

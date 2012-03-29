@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.reflect {
 	import flash.utils.ByteArray;
 
-	import org.as3commons.bytecode.TestConstants;
+	import org.as3commons.bytecode.Resources;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertNotNull;
 
@@ -33,7 +33,7 @@ package org.as3commons.bytecode.reflect {
 
 		[Test]
 		public function testDebugBuildRead():void {
-			var source:ByteArray = TestConstants.getDebugBuildTest();
+			var source:ByteArray = Resources.getDebugBuildTest();
 			ByteCodeType.fromByteArray(source, null, false);
 			var type:ByteCodeType = ByteCodeType.forName("classes.TestImplementation");
 			assertNotNull(type);
@@ -71,7 +71,7 @@ package org.as3commons.bytecode.reflect {
 
 		[Test]
 		public function testReleaseBuildRead():void {
-			var source:ByteArray = TestConstants.getReleaseBuildTest();
+			var source:ByteArray = Resources.getReleaseBuildTest();
 			ByteCodeType.fromByteArray(source, null, false);
 			var type:ByteCodeType = ByteCodeType.forName("classes.TestImplementation");
 			assertNotNull(type);
