@@ -33,7 +33,7 @@ package org.as3commons.bytecode.interception.impl {
 		/**
 		 * Creates a new <code>BasicMethodInvocation</code> instance.
 		 * @param instance
-		 * @param methodName
+		 * @param kind
 		 * @param method
 		 * @param args
 		 */
