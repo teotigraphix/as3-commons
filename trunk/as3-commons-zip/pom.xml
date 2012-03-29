@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
 		<groupId>org.as3commons</groupId>
@@ -12,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-zip</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0.0-alpha.1-SNAPSHOT</version>
+	<version>1.0.0-alpha.1</version>
 	<name>AS3Commons Zip</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>ActionScript 3.0 library that offers functionality for working with Zip files.</description>
@@ -31,9 +29,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-zip</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-zip</developerConnection>
-		<url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-zip</url>
+		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-zip/1.0.0-alpha.1</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-zip/1.0.0-alpha.1</developerConnection>
+		<url>http://as3-commons.googlecode.com/svn/tags/as3-commons-zip/1.0.0-alpha.1</url>
 	</scm>
 
 	<distributionManagement>
