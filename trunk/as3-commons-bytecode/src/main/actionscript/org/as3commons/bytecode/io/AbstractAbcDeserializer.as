@@ -237,9 +237,10 @@ package org.as3commons.bytecode.io {
 					include "readU32.as.tmpl";
 					paramCount = result;
 					params = [];
+					j = 0;
 					while (paramCount--) {
 						include "readU32.as.tmpl";
-						params[params.length] = multiNames[result];
+						params[++j] = multiNames[result];
 					}
 					multiNames[i] = new MultinameG(qualifiedName, paramCount, params, MultinameKind.GENERIC)
 				}

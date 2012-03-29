@@ -65,7 +65,12 @@
   		The generation of dynamic proxy classes relies on the bytecode based reflection. This is because, unfortunately, information such as the value of optional arguments is
   		not available through regular reflection but is necessary to correctly create a valid subclass.<br/>
   		<p>So, before using the proxy API be sure to populate the ByteCodeType cache:</p>
-  		<div class="source">ByteCodeType.fromLoader(FlexGlobals.topLevelApplication.loaderInfo);</div>
+  		<div class="source"><pre>var _applicationDomain:ApplicationDomain = FlexGlobals.topLevelApplication.loaderInfo.applicationDomain;
+ByteCodeType.fromLoader(FlexGlobals.topLevelApplication.loaderInfo);</pre></div>
+  		<blockquote><i>Do note that we keep a reference to the loaderInfo's ApplicationDomain property, this reference is very important for the proxy generation.<br/>
+  		The ByteCodeType parsing will cache type information by ApplicationDomain, that way different definitions loaded into separate ApplicationDomains can be
+  		cached. However, ApplicationDomain.currentDomain will always return a new reference to an ApplicationDomain instance. So, be sure to hoist the loaderInfo.applicationDomain
+  		reference and pass that one into the defineProxy() methods later on. Otherwise the library will not be able to locate the necessary ByteCodeType data and will throw a <code>ProxyBuildError</code>.</i></blockquote>
   		<p>For more information on bytecode based reflection visit the <a href="introduction.html">Bytecode reflection</a> section.</p>
   	</section>
   	<section name="Defining proxies">
@@ -73,7 +78,7 @@
   		To make use of this create an instance of the <code><a href="asdoc/org/as3commons/bytecode/proxy/impl/ProxyFactory.html" target="_blank">ProxyFactory</a></code> class:</p>
   		<div class="source"><pre>var proxyFactory:IProxyFactory = new ProxyFactory();</pre></div>
   		<p>Now, to define a proxy for a specified class invoke the defineProxy() method:</p>
-  		<div class="source"><pre>var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyClass);</pre></div>
+  		<div class="source"><pre>var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyClass, null, _applicationDomain);</pre></div>
   		<p>This method returns an <code><a href="asdoc/org/as3commons/bytecode/proxy/IClassProxyInfo.html" target="_blank">IClassProxyInfo</a></code> instance which allows further definition of the proxy.<br/>
   		Its also possible to ignore the <code><a href="asdoc/org/as3commons/bytecode/proxy/IClassProxyInfo.html" target="_blank">IClassProxyInfo</a></code> instance entirely, in which case every public, protected and custom namespace scoped member on the specified class will be proxied. (Bytecode reflection is used here to obtain the information).</p>
   		<p>Should this not be desirable these methods will define specific members for proxying:</p>
@@ -182,7 +187,7 @@ function getMethodInterceptor(event:ProxyFactoryEvent):void {
 	event.methodInvocationInterceptor = interceptor;
 }</pre></div>
 		<p>Another way to delegate the creation of an <code><a href="asdoc/org/as3commons/bytecode/interception/IMethodInvocationInterceptor.html" target="_blank">IMethodInvocationInterceptor</a></code> is to assign an <code>IFactory</code> instance to the <code>IClassProxyInfo</code> instance returned by the <code>defineProxy()</code> method:</p>
-		<div class="source"><pre>var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyClass);
+		<div class="source"><pre>var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyClass, null, _applicationDomain);
 classProxyInfo.interceptorFactory = new MyInterceptorFactory();
 
 public class MyInterceptorFactory:IFactory {
@@ -236,7 +241,7 @@ public class MyInterceptorFactory:IFactory {
 	<div class="source"><pre>var proxyFactory:IProxyFactory = new ProxyFactory();
 //Note: we don't use the IClassProxyInfo instance returned by the defineProxy method
 //since we want all members (one method in this case) to be proxied:
-proxyFactory.defineProxy(TracingInterceptor, BasicMethodInvocationInterceptor);
+proxyFactory.defineProxy(TracingInterceptor, BasicMethodInvocationInterceptor, _applicationDomain);
 proxyFactory.generateProxyClasses();
 proxyFactory.addEventListener(Event.COMPLETE, proxiesLoadedHandler);
 proxyFactory.loadProxyClasses();
@@ -341,7 +346,7 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 }</pre></div>
 	<p>That's all that's needed, now the proxy can be defined with an introduction:</p>
 	<div class="source"><pre>var proxyFactory:IProxyFactory = new ProxyFactory();
-var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(Order);
+var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(Order, null, _applicationDomain);
 classProxyInfo.introduce(PartialChangeTracker);
 proxyFactory.generateProxyClasses();
 proxyFactory.loadProxyClasses();
@@ -430,7 +435,7 @@ var dirty:Boolean = IChangeTrackable(order).isDirty;
 	class, scoping its members to a namespace reduces the risks of duplicate members in the generated class.</p>
 	<p>Now the class is ready to be introduced (merged) into a proxy class, let's suppose there is an <code>IEventDispatcher</code> implementation called <code>MyEventDispatcher</code>:</p>
 	<div class="source"><pre>var proxyfactory:IProxyFactory = new ProxyFactory();
-var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyEventDispatcher);
+var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyEventDispatcher, null, _applicationDomain);
 classProxyInfo.introduce(EventDispatcherExImpl);
 classProxyInfo.proxyMethod("addEventListener");
 classProxyInfo.proxyMethod("removeEventListener");
@@ -487,7 +492,7 @@ proxyFactory.loadProxyClasses();
 	<subsection name="Dynamically implementing interfaces">
 		<p>A second, and perhaps more convenient, way to add interfaces to a proxy is by dynamically implementing them and letting the susual interceptor mechanism handle its implementation.</p>
 		<p>Getting this to work is fairly easy, use the <code>implementedInterface()</code> method on the <code>IClassProxyInfo</code> and pass into it an interface class:</p>
-		<div class="source"><pre>var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyClass);
+		<div class="source"><pre>var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyClass, null, _applicationDomain);
 classProxyInfo.implementInterface(IEventDispatcherEx);
 </pre></div>
 		<p>The <code>ProxyFactory</code> afterwards will make sure that all the members of the specified interface are dynamically added to the proxy class.</p>
@@ -541,10 +546,11 @@ public class PartialTimeStampable implements ITimeStampable {
 </pre></div>
 	<p>All that remains is figuring out which classes ought to be proxied and their class aliases overriden:</p>
 	<div class="source"><pre>var classNames:Array = ByteCodeType.fromLoader(Application.loaderInfo);
+var _applicationDomain:ApplicationDomain = Application.loaderInfo.applicationDomain;
 var classNames:Array = ByteCodeType.getClassesWithMetadata('RemoteClass');
 var proxyFactory:IProxyfactory = new ProxyFactory();
 for each(var className:String in classNames) {
-	var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(ApplicationDomain.currentDomain.getDefinition(className) as Class);
+	var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(_applicationDomain.getDefinition(className) as Class, null, _applicationDomain);
 	classProxyInfo.proxyMethodScopes = ProxyScope.NONE;
 	classProxyInfo.proxyAccessorScopes = ProxyScope.NONE;
 	classProxyInfo.introduce(PartialTimeStampable);
@@ -556,7 +562,7 @@ proxyFactory.loadProxyClasses();
 function proxiesLoadedHandler(event:Complete):void {
 	var classNames:Array = ByteCodeType.getClassesWithMetadata('RemoteClass');
 	for each(var className:String in classNames) {
-		var clazz:Class = ApplicationDomain.currentDomain.getDefinition(className) as Class;
+		var clazz:Class = _applicationDomain.getDefinition(className) as Class;
 		var proxyInfo:ProxyInfo = proxyFactory.getProxyInfoForClass(clazz);
 		var type:Type = Type.forClass(clazz);
 		var classAlias:String = Metadata(type.getMetadata('RemoteClass')[0]).getArgument('alias').value;
