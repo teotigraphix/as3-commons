@@ -1,0 +1,31 @@
+AS3COMMONS-METADATA CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+
+Changes in version 1.0.1 (29.03.2011)
+-------------------------------------
+
+* changed dependency on bytecode (was snapshot version)
+
+
+Changes in version 1.0 (16.10.2011)
+-----------------------------------
+
+* BREAKING CHANGE: IMetadataProcessor.process() now receives an optional Array of parameters instead of an anonymous object ("*")!! (the info:*=null parameter changed to params:Array=null)
+* Added optional 'params' Array parameter to IMetadataProcessorRegistry.process() method that will be passed onto the registered IMetadataProcessors.process() method
+* Added GenericMetadataProcessor that acts as a proxy for metadata processors that don't implement the IMetadatProcessor interface. This enables a developer to use metadataprocessors for other frameworks to be
+used with as3commons-metadata seamlessly.
+* MetadataMetadataProcessor that registers metadata processors annotated with [MetadataProcessor] metadata
+and wraps them in an GenericMetadataProcessor instance and registers them with the provided IMetadataProcessorRegistry.
+
+
+Changes in version 1.0-RC1 (03.10.2011)
+---------------------------------------
+
+* Initial release, logic refactored out of Spring Actionscript
+* Added AS3Commons-reflect specific implementation of IMetadataProcessorRegistry
+* Added Spicelib-reflect specific implementation of IMetadataProcessorRegistry
+* Added AS3Commons-Bytecode specific implementation of IMetadataProcessorRegistry
+* Added describeType() specific implementation of IMetadataProcessorRegistry
