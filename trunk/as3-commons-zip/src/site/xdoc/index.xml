@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>Welcome to AS3Commons Zip</title>
+    </properties>
+    <body>
+        <section name="Welcome to AS3Commons Zip">
+            
+            <div id="downloadbox">
+                <h5>Get latest stable</h5>
+                <p>
+                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-zip/1.0.0.alpha.1/as3commons-zip-1.0.0.alpha.1.swc">
+                        <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                        Download
+                    </a>
+                    latest stable
+                </p>
+                <br/>
+                <h5>Get lastest development snapshot</h5>
+                <p>
+                    <a href="downloads/as3commons-zip-latest-snapshot-bin.zip">
+                        <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                        Download
+                    </a>
+                    latest snapshot
+                </p>
+            </div>
+            
+            <p>
+                AS3Commons Zip is an Actionscript 3 class library to load, modify and create standard ZIP archives. It parses ZIP archives progressively, allowing access to contained files while the archive is loading.
+            </p>
+            
+        </section>
+
+    </body>
+</document>
+
