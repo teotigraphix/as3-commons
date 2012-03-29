@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
 		<groupId>org.as3commons</groupId>
@@ -13,7 +11,7 @@
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-metadata</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<name>AS3Commons Metadata</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
@@ -120,10 +118,10 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-metadata</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-metadata
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn/tags/as3-commons-metadata/1.0.1</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-metadata/1.0.1
 		</developerConnection>
-		<url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-metadata</url>
+		<url>http://as3-commons.googlecode.com/svn/tags/as3-commons-metadata/1.0.1</url>
 	</scm>
 
 	<distributionManagement>
