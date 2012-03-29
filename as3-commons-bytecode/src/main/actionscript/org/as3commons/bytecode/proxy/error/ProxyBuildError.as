@@ -75,7 +75,7 @@ package org.as3commons.bytecode.proxy.error {
 			messages[PROXY_FACTORY_IS_BUSY_GENERATING] = "Cannot invoke loadProxyClasses() while the factory is busy generating proxy classes. {0}";
 			messages[CANNOT_INTRODUCE_NATIVE_CLASS] = "Class {0} cannot be introduced because it is a native class and therefore no bytecode is available for it.";
 			messages[NO_BYTECODE_TYPE_FOUND_FOR_CLASS] = "No ByteCodeType instance could be retrieved for class name '{0}', make sure the same ApplicationDomain instance is passed to defineProxy() as was passed to ByteCodeType.fromLoader().";
-			message[UNABLE_TO_RETRIEVE_PROXY_CLASS_ERROR] = "Unable to retrieve the proxy class {0} from the proxy application domain";
+			messages[UNABLE_TO_RETRIEVE_PROXY_CLASS_ERROR] = "Unable to retrieve the proxy class {0} from the proxy application domain";
 		}
 
 		/**
