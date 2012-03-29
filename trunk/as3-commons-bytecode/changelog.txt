@@ -1,10 +1,14 @@
 AS3COMMONS-BYTECODE CHANGELOG
-============================
+=============================
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.1 (??.??.2011)
------------------------------------
+Changes in version 1.1.0 (29.03.2011)
+-------------------------------------
+* Added wrapper methods for accessors to allow passing function references
+* Accessors are now executed via wrapper methods
+* Added per application domain caching
+* Speed optimizations
 * Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=108
 * Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=92 (Thanks Zach)
 * Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=93 (Thanks Zach)
@@ -16,7 +20,7 @@ Changes in version 1.0 (14.09.2011)
 * Lots of speed optimizations in ReflectionDeserializer (a 1.7MB SWF now takes 2.7 seconds for a debug build, 2.3 seconds for release build)
 
 Changes in version 1.0-RC6 (03.09.2011)
------------------------------------
+---------------------------------------
 
 * Added implementInterface() method to IClassProxyInfo (http://code.google.com/p/as3-commons/issues/detail?id=57) (Thanks for the suggestion Marty!)
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=68
@@ -25,13 +29,13 @@ Changes in version 1.0-RC6 (03.09.2011)
 * Fixed issue where eventlisteners were removed instead of added to the MethodProxyBuilder (stupid, stupid mistake...)
 
 Changes in version 1.0-RC5 (08.08.2011)
------------------------------------
+---------------------------------------
 
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=67
 * defineMetadata() on CtorBuilder now throws an exception
 
 Changes in version 1.0-RC4 (04.08.2011)
------------------------------------
+---------------------------------------
 
 * Fixed some issues concerning parsing of opcodes that involve lookupswitches
 * Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=45
@@ -42,12 +46,12 @@ Changes in version 1.0-RC4 (04.08.2011)
 * Upgraded dependency to as3commons-reflect v1.4.2
 
 Changes in version 1.0-RC3 (14.03.2011)
------------------------------------
+---------------------------------------
 
 * Fixed backpatch resolving issues plus some optimizations
 
 Changes in version 1.0-RC2 (04.03.2011)
------------------------------------
+---------------------------------------
 
 * Fixed several critical bugs related to differences between debug and release builds
 * Added getImplementationNames(intf:Class) method to ByteCodeCache and ByteCodeType for retrieving a list of classnames that implement a specified interface
