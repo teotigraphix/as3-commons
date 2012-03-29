@@ -12,11 +12,23 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-zip</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0-alpha.1-SNAPSHOT</version>
 	<name>AS3Commons Zip</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>ActionScript 3.0 library that offers functionality for working with Zip files.</description>
 	<inceptionYear>2012</inceptionYear>
+
+	<developers>
+		<developer>
+			<id>claus [at] codeazur.com.br</id>
+			<name>Claus Wahlers</name>
+			<email>claus [at] codeazur.com.br</email>
+			<url>http://codeazur.com.br/</url>
+			<organization>codeazur brasil ltda.</organization>
+			<organizationUrl>http://codeazur.com.br/</organizationUrl>
+			<timezone>-3</timezone>
+		</developer>
+	</developers>
 
 	<scm>
 		<connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-zip</connection>
