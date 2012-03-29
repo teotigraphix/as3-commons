@@ -79,7 +79,7 @@ package org.as3commons.metadata.registry.impl {
 		 * (First the <code>IMetadataContainer</code> instance then the <code>info</code> parameter.)
 		 * @param type
 		 * @param target
-		 * @returns
+		 * @returns the target object
 		 */
 		protected function processType(type:Type, target:Object, params:Array):* {
 			for (var name:String in metadataLookup) {
