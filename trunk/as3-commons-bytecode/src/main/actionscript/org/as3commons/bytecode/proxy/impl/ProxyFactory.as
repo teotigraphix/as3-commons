@@ -626,7 +626,11 @@ package org.as3commons.bytecode.proxy.impl {
 			if (event.type == Event.COMPLETE) {
 				for (var obj:* in _classProxyLookup) {
 					var proxyInfo:ProxyInfo = _classProxyLookup[obj];
-					proxyInfo.proxyClass = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
+					try {
+						proxyInfo.proxyClass = proxyInfo.applicationDomain.getDefinition(proxyInfo.proxyClassName) as Class;
+					} catch (e:Error) {
+						throw new ProxyBuildError(ProxyBuildError.UNABLE_TO_RETRIEVE_PROXY_CLASS_ERROR, proxyInfo.proxyClassName);
+					}
 					_proxyClassLookup[proxyInfo.proxyClass] = proxyInfo;
 				}
 			}
