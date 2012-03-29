@@ -15,14 +15,14 @@
  */
 package org.as3commons.bytecode.testclasses {
 
-	public class TestIntroduction implements ITestIntroduction {
+	public class IntroductionImpl implements ITestIntroduction {
 
 		private var _test:String = "test";
 		private var _testString:String = "testString";
 
 		private var _testObject:SimpleClassWithAccessors;
 
-		public function TestIntroduction() {
+		public function IntroductionImpl() {
 			super();
 			_testObject = new SimpleClassWithAccessors();
 		}

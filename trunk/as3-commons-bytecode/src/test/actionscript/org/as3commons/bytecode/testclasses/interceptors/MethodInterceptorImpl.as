@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.testclasses.interceptors {
-
 	import org.as3commons.bytecode.interception.IMethodInvocation;
 	import org.as3commons.bytecode.interception.impl.BasicMethodInvocation;
 	import org.as3commons.bytecode.interception.impl.InvocationKind;
+	import org.as3commons.bytecode.testclasses.ProxySubClass;
 
-	public class TestAccessorInterceptor extends AssertingInterceptor {
+	public class MethodInterceptorImpl extends AssertingInterceptor {
 
-		public function TestAccessorInterceptor() {
+		public function MethodInterceptorImpl() {
 			super();
+			ProxySubClass;
 		}
 
 		override public function intercept(invocation:IMethodInvocation):void {
 			super.intercept(invocation);
-			if (invocation.kind === InvocationKind.GETTER) {
+			if (invocation.kind === InvocationKind.METHOD) {
 				invocation.proceed = false;
-				invocation.returnValue = 100;
+				invocation.returnValue = "interceptedReturnValue";
+			} else if (invocation.kind === InvocationKind.GETTER) {
+				invocation.proceed = false;
+				invocation.returnValue = "interceptedGetterValue";
 			} else if (invocation.kind === InvocationKind.SETTER) {
-				invocation.proceed = false;
 				if (invocation is BasicMethodInvocation) {
 					var invoc:BasicMethodInvocation = BasicMethodInvocation(invocation);
-					invoc.targetMethod.apply(invoc.targetInstance, [100]);
+					invoc.proceed = false;
+					invoc.targetMethod.apply(invoc.targetInstance, ["interceptedSetterValue"]);
 				}
 			}
 		}

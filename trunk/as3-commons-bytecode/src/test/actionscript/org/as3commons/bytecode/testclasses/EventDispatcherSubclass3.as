@@ -19,14 +19,14 @@ package org.as3commons.bytecode.testclasses {
 
 	import org.as3commons.bytecode.as3commons_bytecode;
 
-	public class TestProxiedClass extends EventDispatcher {
+	public class EventDispatcherSubclass3 extends EventDispatcher {
 
 		private var _getter:String = "testGetterValue";
 		private var _getterSetter:uint = 100;
 
 		public var ordinaryProperty:String = "ordinaryValue";
 
-		public function TestProxiedClass(target:IEventDispatcher = null, somethingElse:Object = null) {
+		public function EventDispatcherSubclass3(target:IEventDispatcher = null, somethingElse:Object = null) {
 			super(target);
 		}
 

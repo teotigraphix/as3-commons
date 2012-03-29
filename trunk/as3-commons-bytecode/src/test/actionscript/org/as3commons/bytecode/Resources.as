@@ -17,7 +17,7 @@ package org.as3commons.bytecode {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 
-	public class TestConstants {
+	public class Resources {
 
 		[Embed(source="../../../../../test/resources/assets/SWFWeaverTest-debug.swf", mimeType="application/octet-stream")]
 		private static var debugbuildswfweavertest:Class;

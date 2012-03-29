@@ -14,22 +14,22 @@
 * limitations under the License.
 */
 package org.as3commons.bytecode.testclasses {
+	import flash.events.Event;
 
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
+	import mx.events.FlexEvent;
 
-	public class TestEventDispatcher2 extends EventDispatcher {
+	public class Inline {
 
-		public function TestEventDispatcher2() {
+		public var event:Event = new Event("customEvent");
+
+		public var flexEvent:FlexEvent = createEvent();
+
+		public function Inline() {
 			super();
 		}
 
-		override public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
-			super.addEventListener(type, listener, useCapture, priority, useWeakReference);
-		}
-
-		override public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
-			super.removeEventListener(type, listener, useCapture);
+		public function createEvent():FlexEvent {
+			return new FlexEvent("customFlexEvent");
 		}
 	}
 }

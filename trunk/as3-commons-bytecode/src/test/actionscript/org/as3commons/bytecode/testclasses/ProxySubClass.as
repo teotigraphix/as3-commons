@@ -22,7 +22,7 @@ package org.as3commons.bytecode.testclasses {
 	import org.as3commons.bytecode.proxy.event.ProxyCreationEvent;
 	import org.as3commons.bytecode.proxy.impl.ProxyFactory;
 
-	public class ProxySubClass extends TestProxiedClass {
+	public class ProxySubClass extends EventDispatcherSubclass3 {
 
 		as3commons_bytecode_proxy var methodInvocationInterceptor:IMethodInvocationInterceptor;
 

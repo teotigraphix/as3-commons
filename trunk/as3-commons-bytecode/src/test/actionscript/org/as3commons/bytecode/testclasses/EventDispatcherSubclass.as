@@ -18,9 +18,9 @@ package org.as3commons.bytecode.testclasses {
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 
-	public class TestEventDispatcher extends EventDispatcher {
+	public class EventDispatcherSubclass extends EventDispatcher {
 
-		public function TestEventDispatcher() {
+		public function EventDispatcherSubclass() {
 			super();
 		}
 

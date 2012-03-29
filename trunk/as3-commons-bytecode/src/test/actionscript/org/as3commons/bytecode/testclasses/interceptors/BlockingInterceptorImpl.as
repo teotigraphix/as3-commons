@@ -15,22 +15,16 @@
  */
 package org.as3commons.bytecode.testclasses.interceptors {
 	import org.as3commons.bytecode.interception.IMethodInvocation;
-	import org.as3commons.bytecode.interception.impl.InvocationKind;
 
-	public class TestRestMethodInterceptor extends AssertingInterceptor {
+	public class BlockingInterceptorImpl extends AssertingInterceptor {
 
-		public function TestRestMethodInterceptor() {
+		public function BlockingInterceptorImpl() {
 			super();
 		}
 
 		override public function intercept(invocation:IMethodInvocation):void {
 			super.intercept(invocation);
-			if (invocation.kind === InvocationKind.METHOD) {
-				for (var i:int = 0; i < invocation.arguments.length; ++i) {
-					invocation.arguments[i] = 'intercept' + (i + 1);
-				}
-			}
+			invocation.proceed = false;
 		}
-
 	}
 }

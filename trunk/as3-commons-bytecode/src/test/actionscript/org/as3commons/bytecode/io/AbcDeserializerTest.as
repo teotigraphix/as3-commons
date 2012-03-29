@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.io {
 	import flash.utils.ByteArray;
 
-	import org.as3commons.bytecode.TestConstants;
+	import org.as3commons.bytecode.Resources;
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
@@ -40,7 +40,7 @@ public class AbcDeserializerTest {
 
 		[Test]
 		public function testDeserializeBaseClass():void {
-			var byteStream:ByteArray = TestConstants.getBaseClassTemplate();
+			var byteStream:ByteArray = Resources.getBaseClassTemplate();
 			var abcFile:AbcFile = new AbcDeserializer(byteStream).deserialize();
 
 			// Major/Minor version are 46 and 16 respectively at the time of writing
@@ -93,7 +93,7 @@ public class AbcDeserializerTest {
 
 		[Test]
 		public function testDeserializeFullClassDefinition():void {
-			var byteStream:ByteArray = TestConstants.getFullClassDefinitionByteCode();
+			var byteStream:ByteArray = Resources.getFullClassDefinitionByteCode();
 			var deserializer:AbcDeserializer = new AbcDeserializer(byteStream);
 			var abcFile:AbcFile = deserializer.deserialize();
 			var pool:IConstantPool = abcFile.constantPool;

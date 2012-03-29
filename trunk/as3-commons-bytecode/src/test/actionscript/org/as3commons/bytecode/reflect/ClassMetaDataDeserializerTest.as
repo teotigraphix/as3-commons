@@ -16,7 +16,7 @@
 package org.as3commons.bytecode.reflect {
 	import flash.utils.ByteArray;
 
-	import org.as3commons.bytecode.TestConstants;
+	import org.as3commons.bytecode.Resources;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertNotNull;
 	import org.flexunit.asserts.assertTrue;
@@ -37,7 +37,7 @@ package org.as3commons.bytecode.reflect {
 
 		[Test]
 		public function testRead():void {
-			var ba:ByteArray = TestConstants.getMetadataLookupTest();
+			var ba:ByteArray = Resources.getMetadataLookupTest();
 			var typeCache:ByteCodeTypeCache = new ByteCodeTypeCache();
 			_ds.read(typeCache, ba, null, false);
 			var lookup:Object = typeCache.metaDataLookup;

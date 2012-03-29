@@ -3,8 +3,8 @@ package org.as3commons.bytecode.testclasses.interceptors {
 	import org.as3commons.bytecode.interception.impl.InvocationKind;
 	import org.as3commons.lang.Assert;
 
-	public class TestOptionalArgInterceptor extends AssertingInterceptor {
-		public function TestOptionalArgInterceptor() {
+	public class OptionalArgInterceptorImpl extends AssertingInterceptor {
+		public function OptionalArgInterceptorImpl() {
 			super();
 		}
 

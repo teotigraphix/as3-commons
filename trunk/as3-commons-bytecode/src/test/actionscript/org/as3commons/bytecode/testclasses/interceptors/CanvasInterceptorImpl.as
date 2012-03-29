@@ -16,32 +16,15 @@
 package org.as3commons.bytecode.testclasses.interceptors {
 	import org.as3commons.bytecode.interception.IInterceptor;
 	import org.as3commons.bytecode.interception.IMethodInvocation;
-	import org.as3commons.bytecode.interception.impl.InvocationKind;
 
-	public class TestInterfaceMethodInterceptor implements IInterceptor {
+	public class CanvasInterceptorImpl implements IInterceptor {
 
-		public function TestInterfaceMethodInterceptor() {
+		public function CanvasInterceptorImpl() {
+			super();
 		}
 
 		public function intercept(invocation:IMethodInvocation):void {
-			if (invocation.kind === InvocationKind.METHOD) {
-				invocation.proceed = false;
-				invocation.returnValue = "interceptedReturnValue";
-			} else if (invocation.kind === InvocationKind.GETTER) {
-				invocation.proceed = false;
-				if (invocation.targetMember.localName == "name") {
-					invocation.returnValue = "interceptedGetterValue";
-				} else {
-					invocation.returnValue = ["interceptedGetterValue"];
-				}
-			} else if (invocation.kind === InvocationKind.SETTER) {
-				invocation.proceed = false;
-				if (invocation.targetMember.localName == "ingredients") {
-					invocation.returnValue = ["interceptedSetterValue"];
-				} else {
-					invocation.returnValue = true;
-				}
-			}
+			trace("invocation:" + invocation);
 		}
 	}
 }
