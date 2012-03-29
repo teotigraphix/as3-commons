@@ -34,16 +34,16 @@
 			<subsection name="Project descriptions">
 				<table>
 					<tr>
-						<td align="center">
+						<td align="center" width="150">
 							<strong>Name</strong>
 						</td>
 						<td align="center">
 							<strong>Description</strong>
 						</td>
-						<td align="center">
+						<td align="center" width="100">
 							<strong>Version</strong>
 						</td>
-						<td align="center">
+						<td align="center" width="100">
 							<strong>Last update</strong>
 						</td>
 					</tr>
@@ -175,6 +175,20 @@
 			<subsection name="Dormant projects">
 				<p>These are AS3Commons projects that haven't been updated in a longer time.</p>
 				<table>
+					<tr>
+						<td align="center" width="150">
+							<strong>Name</strong>
+						</td>
+						<td align="center">
+							<strong>Description</strong>
+						</td>
+						<td align="center" width="100">
+							<strong>Version</strong>
+						</td>
+						<td align="center" width="100">
+							<strong>Last update</strong>
+						</td>
+					</tr>
 					<tr>
 						<td>
 							<strong>Concurrency</strong>
