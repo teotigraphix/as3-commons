@@ -31,7 +31,7 @@
 					http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons
 				</a>
 			</p>
-			<subsection name="Project descriptions">
+			<subsection name="Projects">
 				<table>
 					<tr>
 						<td align="center" width="150">
@@ -49,7 +49,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Async</strong>
+							<strong><a href="as3-commons-async/index.html">Async</a></strong>
 						</td>
 						<td>A library that aims to make working with asynchronous processes easier. Providing operation,
 							command, service and task interfaces.
@@ -59,7 +59,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Async Flex</strong>
+							<strong><a href="as3-commons-async-flex/index.html">Async Flex</a></strong>
 						</td>
 						<td>Includes an extra SWC with Flex extensions for the Async library.</td>
 						<td>1.0.0-RC.2</td>
@@ -67,7 +67,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Bytecode</strong>
+							<strong><a href="as3-commons-bytecode/index.html">Bytecode</a></strong>
 						</td>
 						<td>Bytecode parsing and publishing formerly known as Loom. Capable of generating classes at
 							runtime, bytecode based reflection and more.
@@ -77,7 +77,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Collections</strong>
+							<strong><a href="as3-commons-collections/index.html">Collections</a></strong>
 						</td>
 						<td>Collections framework including several lists, sets and maps, many of them in an additional
 							bindable version.
@@ -87,7 +87,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>EventBus</strong>
+							<strong><a href="as3-commons-eventbus/index.html">EventBus</a></strong>
 						</td>
 						<td>The EventBus is used as a publish/subscribe event mechanism that lets objects communicate
 							with eachother in a loosely coupled way. It offers event subscription based on event name,
@@ -99,7 +99,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Lang</strong>
+							<strong><a href="as3-commons-lang/index.html">Lang</a></strong>
 						</td>
 						<td>Language utilities and extensions.</td>
 						<td>0.3.6</td>
@@ -107,7 +107,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Logging</strong>
+							<strong><a href="as3-commons-logging/index.html">Logging</a></strong>
 						</td>
 						<td>An abstraction over logging framework implementations. Being a pure actionscript library it
 							can be used for any Flash/Flex/AIR project. Its use is recommended for use with other
@@ -118,7 +118,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Metadata</strong>
+							<strong><a href="as3-commons-metadata/index.html">Metadata</a></strong>
 						</td>
 						<td>Library providing a generic mechanism for intercepting and handling of custom metadata on
 							actionscript instances and classes.
@@ -128,7 +128,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Reflect</strong>
+							<strong><a href="as3-commons-reflect/index.html">Reflect</a></strong>
 						</td>
 						<td>A reflection API for ActionScript 3.0. Being a pure actionscript library it can be used for
 							any Flash/Flex/AIR project. It functions as a wrapper for the native describeType and
@@ -139,7 +139,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>StageProcessing</strong>
+							<strong><a href="as3-commons-stageprocessing/index.html">Stage Processing</a></strong>
 						</td>
 						<td>A pure actionscript 3 library that provides an API for intercepting objects that have been
 							added to or removed from the Flash stage.
@@ -149,7 +149,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>UI</strong>
+							<strong><a href="as3-commons-ui/index.html">UI</a></strong>
 						</td>
 						<td>Algorithms and managers to serve common UI releated tasks such as layouting, focus and
 							keyboard management, popup handling, drag and drop control and so on. All packages support
@@ -162,7 +162,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Zip</strong>
+							<strong><a href="as3-commons-zip/index.html">Zip</a></strong>
 						</td>
 						<td>A library to load, modify and create standard ZIP archives. It parses ZIP archives
 							progressively, allowing access to contained files while the archive is loading.
@@ -172,7 +172,7 @@
 					</tr>
 				</table>
 			</subsection>
-			<subsection name="Dormant projects">
+			<subsection name="Dormant Projects">
 				<p>These are AS3Commons projects that haven't been updated in a longer time.</p>
 				<table>
 					<tr>
@@ -191,7 +191,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Concurrency</strong>
+							<strong><a href="as3-commons-concurrency/index.html">Concurrency</a></strong>
 						</td>
 						<td>Pseudo-threading support.</td>
 						<td>1.0-RC1</td>
@@ -199,7 +199,7 @@
 					</tr>
 					<tr>
 						<td>
-							<strong>Serialization</strong>
+							<strong><a href="as3-commons-serialization/index.html">Serialization</a></strong>
 						</td>
 						<td>XML Serialization library for ActionScript 3.0.</td>
 						<td>0.1</td>
