@@ -40,6 +40,9 @@ package org.as3commons.metadata.registry.impl {
 		[Mock]
 		public var metadataProcessor:IMetadataProcessor;
 
+		public function AS3ReflectMetadataProcessorRegistryTest() {
+		}
+
 		[Before]
 		public function setUp():void {
 			_registry = new AS3ReflectMetadataProcessorRegistry();

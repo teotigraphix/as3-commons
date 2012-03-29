@@ -38,6 +38,9 @@ package org.as3commons.metadata.registry.impl {
 		[Mock]
 		public var metadataProcessor:IMetadataProcessor;
 
+		public function DescribeTypeMetadataProcessorRegistryTest() {
+		}
+
 		[Before]
 		public function setUp():void {
 			_registry = new DescribeTypeMetadataProcessorRegistry();
