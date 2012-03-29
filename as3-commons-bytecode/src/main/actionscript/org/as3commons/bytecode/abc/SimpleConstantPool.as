@@ -55,7 +55,7 @@ package org.as3commons.bytecode.abc {
 		public function reset():void {
 			_integerPool = [0];
 			_uintPool = [0];
-			_doublePool = [0];
+			_doublePool = [NaN];
 			_classInfo = [];
 			_stringPool = [LNamespace.ASTERISK.name];
 
