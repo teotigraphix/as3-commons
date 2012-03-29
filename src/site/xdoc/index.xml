@@ -58,12 +58,6 @@
 				<td>19 Sep 2011</td>
 			</tr>
 			<tr>
-				<td><strong>Concurrency</strong></td>
-				<td>Pseudo-threading support.</td>
-				<td>1.0-RC1</td>
-				<td>09 Sep 2010</td>
-			</tr>
-			<tr>
 				<td><strong>Lang</strong></td>
 				<td>Language utilities and extensions.</td>
 				<td>0.3.5</td>
@@ -88,12 +82,6 @@
 				<td>23 Sep 2011</td>
 			</tr>
 			<tr>
-				<td><strong>Serialization</strong></td>
-				<td>XML Serialization library for ActionScript 3.0.</td>
-				<td>0.1</td>
-				<td>09 Sep 2010</td>
-			</tr>
-			<tr>
 				<td><strong>StageProcessing</strong></td>
 				<td>A pure actionscript 3 library that provides an API for intercepting objects that have been added to or removed from the Flash stage.</td>
 				<td>1.0</td>
@@ -110,6 +98,23 @@
 				<td>A pure actionscript 3 library that aims to make working with asynchronous processes easier. Providing operation, command, service and task interfaces. Also includes an extra SWC with Flex extensions.</td>
 				<td>1.0-RC1</td>
 				<td>10 Jun 2011</td>
+			</tr>
+		</table>
+		</subsection>
+		<subsection name="Dormant projects">
+		<p>These are AS3Commons projects that haven't been updated in a longer time.<p>
+		<table>
+			<tr>
+				<td><strong>Concurrency</strong></td>
+				<td>Pseudo-threading support.</td>
+				<td>1.0-RC1</td>
+				<td>09 Sep 2010</td>
+			</tr>
+			<tr>
+				<td><strong>Serialization</strong></td>
+				<td>XML Serialization library for ActionScript 3.0.</td>
+				<td>0.1</td>
+				<td>09 Sep 2010</td>
 			</tr>
 		</table>
 		</subsection>
