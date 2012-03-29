@@ -1,23 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
 		<groupId>org.as3commons</groupId>
 		<artifactId>parent-pom</artifactId>
-		<version>1-SNAPSHOT</version>
-        <relativePath>../parent-pom/pom.xml</relativePath>
+		<version>3</version>
+		<relativePath>../parent-pom/pom.xml</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.as3commons</groupId>
 	<artifactId>as3commons-metadata</artifactId>
 	<packaging>swc</packaging>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>AS3Commons Metadata</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>
-		Library providing a generic mechanism for intercepting and handling of custom metadata on actionscript instances and classes.
+		Library providing a generic mechanism for intercepting and handling of custom metadata on actionscript instances
+		and classes.
 	</description>
 	<inceptionYear>2011</inceptionYear>
 
@@ -50,60 +51,54 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.sonatype.flexmojos</groupId>
-				<artifactId>flexmojos-maven-plugin</artifactId>
-				<version>${flex-mojos.version}</version>
-				<extensions>true</extensions>
-
-				<dependencies>
-					<dependency>
-						<groupId>com.adobe.flex</groupId>
-						<artifactId>compiler</artifactId>
-						<version>${flex-sdk.version}</version>
-						<type>pom</type>
-					</dependency>
-				</dependencies>
-
-				<executions>
-					<execution>
-						<id>flex-reports</id>
-						<goals>
-							<goal>asdoc-report</goal>
-						</goals>
-						<phase>site</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<storepass/>
-					<iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>true</iKnowWhatImDoingPleaseBreakMyBuildIwontBlameFlexmojosForStopWorking>
-					<testTimeout>10000</testTimeout>
-					<targetPlayer>${flashplayer.version.major}</targetPlayer>
-					<updateSecuritySandbox>true</updateSecuritySandbox>
-					<description>AS3Commons Metadata v${project.version} API documentation</description>
-					<mainTitle>AS3Commons Metadata v${project.version} API documentation</mainTitle>
-					<windowTitle>AS3Commons Metadata v${project.version} API documentation</windowTitle>
-					<name>As3CommonsMetadataDocs</name>
-					<keepXml>false</keepXml>
-					<dumpConfigAttach>true</dumpConfigAttach>
-					<showWarnings>true</showWarnings>
-					<lenient>true</lenient>
-				</configuration>
-
-			</plugin>
-
-			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
-					<tagBase>
-						https://as3-commons.googlecode.com/svn/tags/as3-commons-metadata
-					</tagBase>
+					<tagBase>https://as3-commons.googlecode.com/svn/tags/as3-commons-metadata</tagBase>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
-	
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-lang</artifactId>
+			<version>0.3.6</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-reflect</artifactId>
+			<version>1.6.0</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-bytecode</artifactId>
+			<version>1.1.0</version>
+			<scope>external</scope>
+			<type>swc</type>
+			<exclusions>
+				<exclusion>
+					<groupId>org.as3commons</groupId>
+					<artifactId>as3commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.spicefactory</groupId>
+		    <artifactId>spicelib-flex</artifactId>
+		    <version>2.4.0</version>
+		    <scope>external</scope>
+		    <type>swc</type>
+		</dependency>
+
+		<!-- Test -->
+
 		<dependency>
 			<groupId>org</groupId>
 			<artifactId>mockolate</artifactId>
@@ -122,46 +117,13 @@
 			</exclusions>
 		</dependency>
 
-		<!-- AS3Commons -->
-
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.7</version>
-			<scope>merged</scope>
-			<type>swc</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-reflect</artifactId>
-			<version>1.6.0</version>
-			<scope>merged</scope>
-			<type>swc</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.as3commons</groupId>
-			<artifactId>as3commons-bytecode</artifactId>
-			<version>1.1-SNAPSHOT</version>
-			<scope>merged</scope>
-			<type>swc</type>
-		</dependency>
-
-		<dependency>
-		    <groupId>org.spicefactory</groupId>
-		    <artifactId>spicelib-flex</artifactId>
-		    <version>2.4.0</version>
-		    <scope>merged</scope>
-		    <type>swc</type>
-		</dependency>
-
 	</dependencies>
 
 	<scm>
-        <connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-metadata</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-metadata</developerConnection>
-        <url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-metadata</url>
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-metadata</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-metadata
+		</developerConnection>
+		<url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-metadata</url>
 	</scm>
 
 	<distributionManagement>
