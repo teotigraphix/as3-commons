@@ -81,11 +81,13 @@ package org.as3commons.bytecode.proxy.impl {
 			if (accessor == null) {
 				throw new ProxyBuildError(ProxyBuildError.ACCESSOR_NOT_EXISTS, classBuilder.name, memberInfo.qName.localName);
 			}
-			if ((accessor.isFinal) && (failOnFinal)) {
+
+			if (accessor.isFinal && failOnFinal) {
 				throw new ProxyBuildError(ProxyBuildError.FINAL_ACCESSOR_ERROR, accessor.name);
-			} else if ((accessor.isFinal) && (!failOnFinal)) {
+			} else if (accessor.isFinal && !failOnFinal) {
 				return;
 			}
+
 			var accessorBuilder:IAccessorBuilder = classBuilder.defineAccessor(accessor.name, accessor.type.fullName, accessor.initializedValue);
 			addMetadata(accessorBuilder, accessor.metadata);
 			accessorBuilder.namespaceURI = accessor.namespaceURI;
@@ -94,21 +96,22 @@ package org.as3commons.bytecode.proxy.impl {
 			accessorBuilder.access = accessor.access;
 			accessorBuilder.createPrivateProperty = false;
 			accessorBuilder.visibility = (!type.isInterface) ? ProxyFactory.getMemberVisibility(accessor) : MemberVisibility.PUBLIC;
+
 			var getterFunc:Function = function(event:AccessorBuilderEvent):void {
 				IEventDispatcher(event.target).removeEventListener(AccessorBuilderEvent.BUILD_GETTER, getterFunc);
 				event.builder = createGetter(event.accessorBuilder, classBuilder, multiName, bytecodeQname, type.isInterface);
 			};
 			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_GETTER, getterFunc);
+
 			var setterFunc:Function = function(event:AccessorBuilderEvent):void {
 				IEventDispatcher(event.target).removeEventListener(AccessorBuilderEvent.BUILD_SETTER, setterFunc);
 				event.builder = createSetter(event.accessorBuilder, classBuilder, multiName, bytecodeQname, type.isInterface);
 			};
 			accessorBuilder.addEventListener(AccessorBuilderEvent.BUILD_SETTER, setterFunc);
 
-			if (!type.isInterface) {
-				createGetterWrapper(classBuilder, accessorBuilder, multiName, bytecodeQname);
-				createSetterWrapper(classBuilder, accessorBuilder, multiName, bytecodeQname);
-			}
+			createGetterWrapper(classBuilder, accessorBuilder, multiName, bytecodeQname);
+			createSetterWrapper(classBuilder, accessorBuilder, multiName, bytecodeQname);
+
 			LOGGER.debug("Finished generating proxy accessor {0}::{1}", [accessor.name, accessor.namespaceURI]);
 		}
 
