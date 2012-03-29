@@ -141,7 +141,7 @@ package org.as3commons.lang {
 
 			// Find the objects and byetArray.writeObject them, adding in the
 			// class configuration variable name -- essentially, we're constructing
-			// and AMF packet here that contains the class information so that
+			// an AMF packet here that contains the class information so that
 			// we can simplly byteArray.readObject the sucker for the translation
 
 			// Write out the bytes of the original object
