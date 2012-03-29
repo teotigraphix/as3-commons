@@ -3,6 +3,13 @@ AS3COMMONS-METADATA CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+
+Changes in version 1.0.1 (29.03.2011)
+-------------------------------------
+
+* changed dependency on bytecode (was snapshot version)
+
+
 Changes in version 1.0 (16.10.2011)
 -----------------------------------
 
@@ -13,8 +20,9 @@ used with as3commons-metadata seamlessly.
 * MetadataMetadataProcessor that registers metadata processors annotated with [MetadataProcessor] metadata
 and wraps them in an GenericMetadataProcessor instance and registers them with the provided IMetadataProcessorRegistry.
 
+
 Changes in version 1.0-RC1 (03.10.2011)
------------------------------------
+---------------------------------------
 
 * Initial release, logic refactored out of Spring Actionscript
 * Added AS3Commons-reflect specific implementation of IMetadataProcessorRegistry
