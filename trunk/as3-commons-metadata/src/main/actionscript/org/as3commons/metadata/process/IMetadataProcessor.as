@@ -35,7 +35,7 @@ package org.as3commons.metadata.process {
 
 		/**
 		 * Processes the specified <code>Object</code>. This method return a new instance to replace the passed in object instance.
-		 * @param instance The specified <code>Object</code>.
+		 * @param target The specified <code>Object</code>.
 		 * @param metadataName The metadata name that triggered this invocation.
 		 * @param params Optional <code>Array</code> of parameters that contains implementation specific data.
 		 */
