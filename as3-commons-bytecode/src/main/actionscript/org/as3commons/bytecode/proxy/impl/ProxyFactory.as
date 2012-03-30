@@ -21,7 +21,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
-
+	import flash.utils.Proxy;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.NamespaceSet;
@@ -264,15 +264,16 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		/**
+		 * @throws ProxyBuildError.UNKNOWN_PROXIED_CLASS if the specified class has not been proxied.
 		 * @inheritDoc
 		 */
 		public function createProxy(clazz:Class, constructorArgs:Array=null):* {
-			var proxyInfo:ProxyInfo = _classProxyLookup[clazz] as ProxyInfo;
+			var proxyInfo:ProxyInfo = _classProxyLookup[clazz];
 			if (proxyInfo != null) {
 				LOGGER.debug("Creating proxy for class {0} with arguments: {1}", [clazz, (constructorArgs != null) ? constructorArgs.join(',') : ""]);
 				return ClassUtils.newInstance(proxyInfo.proxyClass, constructorArgs);
 			}
-			return null;
+			throw new ProxyBuildError(ProxyBuildError.UNKNOWN_PROXIED_CLASS, clazz.toString());
 		}
 
 		/**
@@ -320,6 +321,10 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		public function getProxyInfoForClass(proxiedClass:Class):ProxyInfo {
 			return _classProxyLookup[proxiedClass] as ProxyInfo;
+		}
+
+		public function hasProxy(clazz:Class):Boolean {
+			return (_classProxyLookup[clazz] != null)
 		}
 
 		/**

@@ -89,7 +89,7 @@ package org.as3commons.bytecode.proxy {
 		 * @param applicationDomain The <code>ApplicationDomain</code> that contains the defintion of the specified <code>proxiedClass</code>.
 		 * @return
 		 */
-		function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class = null, applicationDomain:ApplicationDomain = null):IClassProxyInfo;
+		function defineProxy(proxiedClass:Class, methodInvocationInterceptorClass:Class=null, applicationDomain:ApplicationDomain=null):IClassProxyInfo;
 		/**
 		 * Generates the definitions for all proxied class.
 		 * @return The <code>IAbcBuilder</code> instance that contains all the definitions for the proxies.
@@ -100,7 +100,7 @@ package org.as3commons.bytecode.proxy {
 		 * Loads the generated classes into the VM.
 		 * @param applicationDomain The <code>ApplicationDomain</code> that will be used to load the generated proxies into. By default <code>ApplicationDomain.currentDomain</code> is used.
 		 */
-		function loadProxyClasses(applicationDomain:ApplicationDomain = null):void;
+		function loadProxyClasses(applicationDomain:ApplicationDomain=null):void;
 
 		/**
 		 * Creates a proxy instance for the specified <code>Class</code>. This method can only be invoked after the <code>defineProxy()</code> and <code>createProxyClasses()</code> methods
@@ -109,7 +109,7 @@ package org.as3commons.bytecode.proxy {
 		 * @param constructorArgs
 		 * @return An instance of the proxy class.
 		 */
-		function createProxy(clazz:Class, constructorArgs:Array = null):*;
+		function createProxy(clazz:Class, constructorArgs:Array=null):*;
 
 		/**
 		 * Returns a <code>ProxyInfo</code> instance associated with the specified proxied class,
@@ -119,5 +119,12 @@ package org.as3commons.bytecode.proxy {
 		 * @return A <code>ProxyInfo</code> instance associated with the specified proxied class.
 		 */
 		function getProxyInfoForClass(proxiedClass:Class):ProxyInfo;
+
+		/**
+		 * Returns <code>true</code> if a proxy class has been generated for the specified <code>Class</code>.
+		 * @param clazz
+		 * @return <code>true</code> if a proxy class has been generated for the specified <code>Class</code>.
+		 */
+		function hasProxy(clazz:Class):Boolean;
 	}
 }

@@ -33,13 +33,6 @@ package org.as3commons.bytecode.interception.impl {
 		 */
 		public function BasicMethodInvocationInterceptor() {
 			super();
-			initBasicMethodInvocationInterceptor();
-		}
-
-		/**
-		 * Initializes the current <code>BasicMethodInvocationInterceptor</code> instance.
-		 */
-		protected function initBasicMethodInvocationInterceptor():void {
 			_invocationClass = BasicMethodInvocation;
 			_interceptors = [];
 		}
@@ -47,7 +40,7 @@ package org.as3commons.bytecode.interception.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function intercept(targetInstance:Object, kind:InvocationKind, member:QName, arguments:Array = null, targetMethod:Function = null):* {
+		public function intercept(targetInstance:Object, kind:InvocationKind, member:QName, arguments:Array=null, targetMethod:Function=null):* {
 			var proceed:Boolean = true;
 			var invoc:IMethodInvocation;
 			if ((_interceptors != null) && (_interceptors.length > 0)) {
