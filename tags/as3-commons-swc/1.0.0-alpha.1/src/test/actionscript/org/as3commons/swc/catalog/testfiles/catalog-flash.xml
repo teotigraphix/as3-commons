@@ -1,0 +1,103 @@
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.2" />
+    <flash version="11.5" build="d325" platform="WIN" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-files />
+  </features>
+  <libraries>
+    <library path="library.swf">
+      <script name="BasisAchterGrond" mod="1324497165288" >
+        <def id="BasisAchterGrond" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisHart" mod="1324497165288" >
+        <def id="BasisHart" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisJeBentEenJongen" mod="1324497165288" >
+        <def id="BasisJeBentEenJongen" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisJeBentEenMeisje" mod="1324497165288" >
+        <def id="BasisJeBentEenMeisje" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisKiesUwGeslacht" mod="1324497165288" >
+        <def id="BasisKiesUwGeslacht" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisMan" mod="1324497165288" >
+        <def id="BasisMan" /> 
+        <dep id="flash.text:TextField" type="s" /> 
+        <dep id="BasisTekenMan" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisNaam" mod="1324497165288" >
+        <def id="BasisNaam" /> 
+        <dep id="flash.text:TextField" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisNogEenKeer" mod="1324497165288" >
+        <def id="BasisNogEenKeer" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisQuote" mod="1324497165288" >
+        <def id="BasisQuote" /> 
+        <dep id="flash.text:TextField" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisTekenMan" mod="1324497165288" >
+        <def id="BasisTekenMan" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisTekenVrouw" mod="1324497165288" >
+        <def id="BasisTekenVrouw" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisTitel" mod="1324497165288" >
+        <def id="BasisTitel" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisVlakNaam" mod="1324497165288" >
+        <def id="BasisVlakNaam" /> 
+        <dep id="flash.text:TextField" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisVrouw" mod="1324497165288" >
+        <def id="BasisVrouw" /> 
+        <dep id="flash.text:TextField" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BasisWatIsJeNaam" mod="1324497165288" >
+        <def id="BasisWatIsJeNaam" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+      <script name="BerekenProcent" mod="1324497165289" >
+        <def id="BerekenProcent" /> 
+        <dep id="flash.text:TextField" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:MovieClip" type="i" /> 
+      </script>
+    </library>
+  </libraries>
+  <files>
+  </files>
+</swc>
