@@ -4,7 +4,7 @@ AS3COMMONS-SWC CHANGELOG
 Note: dates are in DD.MM.YYYY format
 
 
-Changes in version 1.0.0 (??.??.2011)
--------------------------------------
+Changes in version 1.0.0-alpha.1 (30.03.2011)
+---------------------------------------------
 
 * Initial release
