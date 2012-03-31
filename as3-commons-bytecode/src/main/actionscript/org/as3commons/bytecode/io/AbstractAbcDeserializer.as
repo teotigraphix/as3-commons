@@ -150,11 +150,7 @@ package org.as3commons.bytecode.io {
 			var str:String;
 			while (i < itemCount) {
 				include "readU32.as.tmpl";
-				str = _byteStream.readUTFBytes(result);
-				if (result != str.length) {
-					str = "UTF8_BAD" + (_illegalCount++).toString();
-				}
-				strings[++i] = str;
+				strings[++i] = _byteStream.readUTFBytes(result);
 			}
 			CONFIG::debug {
 				logConstantPoolRead("strings", startTime);
