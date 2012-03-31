@@ -629,8 +629,9 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function serializeStrings(pool:IConstantPool, outputStream:ByteArray):void {
+			var strLen:int = pool.stringPool.length;
 			var strings:Vector.<String> = pool.stringPool.slice(1, pool.stringPool.length);
-			AbcSpec.writeU30((strings.length + 1), outputStream);
+			AbcSpec.writeU30(strLen, outputStream);
 			for each (var string:String in strings) {
 				AbcSpec.writeStringInfo(string, outputStream);
 			}
@@ -638,7 +639,7 @@ package org.as3commons.bytecode.io {
 
 		public function serializeDoubles(pool:IConstantPool, outputStream:ByteArray):void {
 			var doubles:Vector.<Number> = pool.doublePool.slice(1, pool.doublePool.length);
-			if (doubles.length != 0) {
+			if (doubles.length > 0) {
 				AbcSpec.writeU30(doubles.length + 1, outputStream);
 				for each (var double:Number in doubles) {
 					AbcSpec.writeD64(double, outputStream);
@@ -650,7 +651,7 @@ package org.as3commons.bytecode.io {
 
 		public function serializeUIntegers(pool:IConstantPool, outputStream:ByteArray):void {
 			var uints:Vector.<uint> = pool.uintPool.slice(1, pool.uintPool.length);
-			if (uints.length != 0) {
+			if (uints.length > 0) {
 				AbcSpec.writeU30(uints.length + 1, outputStream);
 				for each (var uinteger:int in uints) {
 					AbcSpec.writeU32(uinteger, outputStream);
@@ -663,7 +664,7 @@ package org.as3commons.bytecode.io {
 
 		public function serializeIntegers(pool:IConstantPool, outputStream:ByteArray):void {
 			var integers:Vector.<int> = pool.integerPool.slice(1, pool.integerPool.length);
-			if (integers.length != 0) {
+			if (integers.length > 0) {
 				AbcSpec.writeU30(integers.length + 1, outputStream);
 				for each (var integer:int in integers) {
 					AbcSpec.writeU32(integer, outputStream);

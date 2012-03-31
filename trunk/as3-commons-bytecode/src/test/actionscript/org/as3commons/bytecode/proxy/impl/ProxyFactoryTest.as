@@ -27,11 +27,14 @@ package org.as3commons.bytecode.proxy.impl {
 	import mx.containers.Canvas;
 	import mx.core.FlexGlobals;
 
+	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.abc.SimpleConstantPool;
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.emit.IAbcBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.impl.MemberInitialization;
 	import org.as3commons.bytecode.interception.impl.BasicMethodInvocationInterceptor;
+	import org.as3commons.bytecode.io.AbcDeserializer;
 	import org.as3commons.bytecode.proxy.IClassProxyInfo;
 	import org.as3commons.bytecode.proxy.IProxyFactory;
 	import org.as3commons.bytecode.proxy.ProxyScope;

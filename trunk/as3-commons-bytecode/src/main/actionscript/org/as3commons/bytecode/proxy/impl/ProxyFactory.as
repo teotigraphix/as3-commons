@@ -20,8 +20,12 @@ package org.as3commons.bytecode.proxy.impl {
 	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	import flash.utils.Endian;
 	import flash.utils.Proxy;
+
+	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.NamespaceSet;
@@ -54,6 +58,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.reflect.ByteCodeMethod;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.reflect.IVisibleMember;
+	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
@@ -343,6 +348,17 @@ package org.as3commons.bytecode.proxy.impl {
 			_abcBuilder.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch, false, 0, true);
 			_abcBuilder.buildAndLoad(applicationDomain);
 			LOGGER.debug("Loading proxies into application domain {0}", [applicationDomain]);
+		}
+
+		public function exportProxyClasses(applicationDomain:ApplicationDomain=null):ByteArray {
+			if (_isGenerating) {
+				throw new ProxyBuildError(ProxyBuildError.PROXY_FACTORY_IS_BUSY_GENERATING);
+			}
+			applicationDomain ||= Type.currentApplicationDomain;
+			for (var cls:* in _classProxyLookup) {
+				ProxyInfo(_classProxyLookup[cls]).applicationDomain = applicationDomain;
+			}
+			return _abcBuilder.buildAndExport(applicationDomain);
 		}
 
 		/**

@@ -16,6 +16,7 @@
 package org.as3commons.bytecode.typeinfo {
 	import flash.errors.IllegalOperationError;
 
+	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.util.CloneUtils;
 
@@ -26,11 +27,11 @@ package org.as3commons.bytecode.typeinfo {
 
 		protected static const NOT_IMPLEMENTED_ERROR:String = "Not implemented in base class";
 
-		private var _metadata:Array;
+		private var _metadata:Vector.<Metadata>;
 
 		public function Annotatable() {
 			super();
-			_metadata = [];
+			_metadata = new Vector.<Metadata>();
 		}
 
 		/**
@@ -45,7 +46,7 @@ package org.as3commons.bytecode.typeinfo {
 		/**
 		 * Adds a <code>Metadata</code> entry to this object instance.
 		 */
-		public function addMetadataList(metadataList:Array):void {
+		public function addMetadataList(metadataList:Vector.<Metadata>):void {
 			for each (var metadata:Metadata in metadataList) {
 				addMetadata(metadata);
 			}
@@ -54,7 +55,7 @@ package org.as3commons.bytecode.typeinfo {
 		/**
 		 * Gets all the metadata entries for this object instance.
 		 */
-		public function get metadata():Array {
+		public function get metadata():Vector.<Metadata> {
 			return _metadata;
 		}
 
@@ -63,7 +64,7 @@ package org.as3commons.bytecode.typeinfo {
 		}
 
 		protected function populateClone(annotatable:Annotatable):void {
-			annotatable.addMetadataList(CloneUtils.cloneList(metadata));
+			annotatable.addMetadataList(AbcFileUtil.cloneVector(metadata));
 		}
 	}
 }

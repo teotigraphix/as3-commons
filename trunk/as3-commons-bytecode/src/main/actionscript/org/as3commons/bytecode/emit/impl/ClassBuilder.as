@@ -233,8 +233,13 @@ package org.as3commons.bytecode.emit.impl {
 			classInfo.metadata = buildMetadata();
 
 			var metadata:Vector.<Metadata> = classInfo.metadata.concat(new Vector.<Metadata>());
+			var len:int;
+			var i:int;
 			for each (var st:SlotOrConstantTrait in slotTraits) {
-				metadata.push.apply(metadata, st.metadata);
+				len = st.metadata.length;
+				for (i = 0; i < len; ++i) {
+					metadata[metadata.length] = st.metadata[i];
+				}
 				if (st.isStatic) {
 					classInfo.addTrait(st);
 				} else {

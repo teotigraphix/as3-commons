@@ -17,6 +17,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IEmitMember;
 	import org.as3commons.bytecode.emit.IMetadataBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
+	import org.as3commons.bytecode.typeinfo.Metadata;
 
 	public class EmitMember extends BaseBuilder implements IEmitMember {
 
@@ -25,7 +26,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _isFinal:Boolean;
 		private var _isStatic:Boolean;
 
-		public function EmitMember(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
+		public function EmitMember(name:String=null, visibility:MemberVisibility=null, nameSpace:String=null) {
 			super(name, visibility, nameSpace);
 		}
 
@@ -61,7 +62,7 @@ package org.as3commons.bytecode.emit.impl {
 			_metadata = value;
 		}
 
-		public function defineMetadata(name:String = null, arguments:Array = null):IMetadataBuilder {
+		public function defineMetadata(name:String=null, arguments:Array=null):IMetadataBuilder {
 			var mdb:MetadataBuilder = new MetadataBuilder();
 			mdb.name = name;
 			mdb.arguments = arguments;
@@ -69,8 +70,8 @@ package org.as3commons.bytecode.emit.impl {
 			return mdb;
 		}
 
-		protected function buildMetadata():Array {
-			var result:Array = [];
+		protected function buildMetadata():Vector.<Metadata> {
+			var result:Vector.<Metadata> = new Vector.<Metadata>();
 			for each (var mdb:MetadataBuilder in _metadata) {
 				result[result.length] = mdb.build();
 			}

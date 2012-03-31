@@ -63,13 +63,6 @@ package org.as3commons.bytecode.swf {
 		 */
 		public function AbcClassLoader() {
 			super();
-			initAbcLoader();
-		}
-
-		/**
-		 * Initializes the current <code>AbcClassLoader</code>.
-		 */
-		protected function initAbcLoader():void {
 			_loader = new Loader();
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, redispatch);
 			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, redispatch);
@@ -84,8 +77,7 @@ package org.as3commons.bytecode.swf {
 		 * Internally used <code>AbcSerializer</code> to serialize incoming <code>AbcFiles</code>.
 		 */
 		protected function get abcSerializer():AbcSerializer {
-			_abcSerializer ||= new AbcSerializer();
-			return _abcSerializer;
+			return _abcSerializer ||= new AbcSerializer();
 		}
 
 
