@@ -8,6 +8,7 @@ Changes in version 1.1.1 (??.??.2011)
 * Changed most Arrays into Vectors
 * Added more ProxyBuildError types with better descriptions
 * Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=121 (thanks to Sean Rea for bring this up)
+* Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=108
 
 Changes in version 1.1.0 (29.03.2012)
 -------------------------------------

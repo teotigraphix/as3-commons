@@ -15,12 +15,13 @@
  */
 package org.as3commons.bytecode.abc {
 	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.IEquals;
 
 	/**
 	 * as3commons-bytecode representation of <code>exception_info</code> in the ABC file format.
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Exception" in the AVM Spec (page 34)
 	 */
-	public class ExceptionInfo implements ICloneable {
+	public class ExceptionInfo implements ICloneable, IEquals {
 
 		public var exceptionEnabledFromCodePosition:int;
 		public var exceptionEnabledFromOpcode:Op;
@@ -56,6 +57,38 @@ package org.as3commons.bytecode.abc {
 
 		public function toString():String {
 			return "ExceptionInfo{exceptionEnabledFromCodePosition:" + exceptionEnabledFromCodePosition + ", exceptionEnabledToCodePosition:" + exceptionEnabledToCodePosition + ", codePositionToJumpToOnException:" + codePositionToJumpToOnException + ", exceptionTypeName:\"" + exceptionType + "\", nameOfVariableReceivingException:\"" + variableReceivingException + "\"}";
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherInfo:ExceptionInfo = other as ExceptionInfo;
+			if (otherInfo != null) {
+				if (exceptionEnabledFromCodePosition != otherInfo.exceptionEnabledFromCodePosition) {
+					return false;
+				}
+				if (!exceptionEnabledFromOpcode.equals(otherInfo.exceptionEnabledFromOpcode)) {
+					return false;
+				}
+				if (exceptionEnabledToCodePosition != otherInfo.exceptionEnabledToCodePosition) {
+					return false;
+				}
+				if (!exceptionEnabledToOpcode.equals(otherInfo.exceptionEnabledToOpcode)) {
+					return false;
+				}
+				if (codePositionToJumpToOnException != otherInfo.codePositionToJumpToOnException) {
+					return false;
+				}
+				if (!opcodeToJumpToOnException.equals(otherInfo.opcodeToJumpToOnException)) {
+					return false;
+				}
+				if (!exceptionType.equals(otherInfo.exceptionType)) {
+					return false;
+				}
+				if (!variableReceivingException.equals(otherInfo.variableReceivingException)) {
+					return false;
+				}
+				return true;
+			}
+			return false;
 		}
 
 
