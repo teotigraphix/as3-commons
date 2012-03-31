@@ -33,7 +33,19 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		public function ClassProxyInfo(proxiedClass:Class, methodInvocationInterceptorClass:Class=null) {
 			super();
-			initClassProxyInfo(proxiedClass, methodInvocationInterceptorClass);
+			CONFIG::debug {
+				Assert.notNull(proxiedClass, "proxiedClass argument must not be null");
+			}
+			_proxiedClass = proxiedClass;
+			_methodInvocationInterceptorClass = methodInvocationInterceptorClass;
+			_methods = [];
+			_interfaceMethods = [];
+			_accessors = [];
+			_interfaceAccessors = [];
+			_introductions = [];
+			_implementedInterfaces = [];
+			_proxyAccessorScopes = ProxyScope.ALL;
+			_proxyMethodScopes = ProxyScope.ALL;
 		}
 
 		private var _accessors:Array;
@@ -239,25 +251,5 @@ package org.as3commons.bytecode.proxy.impl {
 			_methods[_methods.length] = new MemberInfo(methodName, namespace);
 		}
 
-		/**
-		 * Initializes the current <code>ClassProxyInfo</code>.
-		 * @param proxiedClass
-		 * @param methodInvocationInterceptorClass
-		 */
-		protected function initClassProxyInfo(proxiedClass:Class, methodInvocationInterceptorClass:Class):void {
-			CONFIG::debug {
-				Assert.notNull(proxiedClass, "proxiedClass argument must not be null");
-			}
-			_proxiedClass = proxiedClass;
-			_methodInvocationInterceptorClass = methodInvocationInterceptorClass;
-			_methods = [];
-			_interfaceMethods = [];
-			_accessors = [];
-			_interfaceAccessors = [];
-			_introductions = [];
-			_implementedInterfaces = [];
-			_proxyAccessorScopes = ProxyScope.ALL;
-			_proxyMethodScopes = ProxyScope.ALL;
-		}
 	}
 }

@@ -31,7 +31,7 @@ package org.as3commons.bytecode.reflect {
 
 		[Before]
 		public function setUp():void {
-			var loaderInfo:LoaderInfo = Application(FlexGlobals.topLevelApplication).loaderInfo;
+			var loaderInfo:LoaderInfo = FlexGlobals.topLevelApplication.loaderInfo;
 			_applicationDomain = loaderInfo.applicationDomain;
 			ByteCodeType.fromLoader(loaderInfo, _applicationDomain);
 		}

@@ -55,8 +55,22 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		[Test(async)]
+		public function testBuildClassInDefaultPackage():void {
+			var handler:Function = function(event:Event, data:*):void {
+				var cls:Class = ApplicationDomain.currentDomain.getDefinition("MyClassInDefaultPackageTest") as Class;
+				assertNotNull(cls);
+				var instance:Object = new cls();
+				assertNotNull(instance);
+			};
+
+			var classBuilder:IClassBuilder = _abcBuilder.definePackage("").defineClass("MyClassInDefaultPackageTest");
+			_abcBuilder.addEventListener(Event.COMPLETE, Async.asyncHandler(this, handler, 5000), false, 0, true);
+			_abcBuilder.buildAndLoad();
+		}
+
+		[Test(async)]
 		public function testBuildClassWithSimpleProperty():void {
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyTest") as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();
@@ -100,7 +114,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		[Test(async)]
 		public function testBuildClassWithSimplePropertyWithStaticInitializer():void {
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyTestWithStaticInitializerClass") as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();
@@ -121,7 +135,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		[Test(async)]
 		public function testBuildClassWithSimplePropertyWithStaticInitializerOnDifferentClass():void {
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				_staticWasCalled = false;
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MySimplePropertyTestWithStaticInitializerClassOnDifferentClass") as Class;
 				assertNotNull(cls);
@@ -145,7 +159,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		[Test(async)]
 		public function testBuildClassWithComplexProperty():void {
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyComplexPropertyTest") as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();
@@ -165,7 +179,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		[Test(async)]
 		public function testBuildClassWithPropertyInitializations():void {
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyPropertyInitializationTest") as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();
@@ -188,7 +202,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		[Test(async)]
 		public function testBuildClassWithPropertyWithGeneratedNamespaceScope():void {
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyCustomNamespacePropertyTest") as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();
@@ -220,7 +234,7 @@ package org.as3commons.bytecode.emit.impl {
 			methodBuilder.addOpcode(Opcode.pushstring, ["testReturnString"]);
 			methodBuilder.addOpcode(Opcode.returnvalue);
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyMethodTest1") as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();
@@ -240,7 +254,7 @@ package org.as3commons.bytecode.emit.impl {
 			propertyBuilder.namespaceURI = as3commons_bytecode_proxy;
 			propertyBuilder.memberInitialization = new MemberInitialization();
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyCustomNamespacedPropertyClass") as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();
@@ -320,7 +334,7 @@ package org.as3commons.bytecode.emit.impl {
 			methodBuilder.addOpcode(opcode, [value]);
 			methodBuilder.addOpcode(Opcode.returnvalue);
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test." + className) as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();
@@ -355,7 +369,7 @@ package org.as3commons.bytecode.emit.impl {
 			methodBuilder.addOpcode(Opcode.pushbyte, [value]);
 			methodBuilder.addOpcode(Opcode.returnvalue);
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test." + className) as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();
@@ -396,7 +410,7 @@ package org.as3commons.bytecode.emit.impl {
 			var interfaceBuilder:IInterfaceBuilder = _abcBuilder.definePackage("com.myclasses.test").defineInterface("IMyCustomNamespacedMethodInterface");
 			interfaceBuilder.defineMethod("nameSpacedMethod");
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = Type.currentApplicationDomain.getDefinition("com.myclasses.test.IMyCustomNamespacedMethodInterface") as Class;
 				assertNotNull(cls);
 				assertTrue(ClassUtils.isInterface(cls));
@@ -431,7 +445,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		[Test(async)]
 		public function testBuildClassWriteOnlyAccessor():void {
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyWriteOnlyAccessorTest") as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();
@@ -472,7 +486,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		[Test(async)]
 		public function testBuildClassWithMethodThatUsesUint():void {
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var cls:Class = ApplicationDomain.currentDomain.getDefinition("com.myclasses.test.MyClassWithMethodThatUsesUintTest") as Class;
 				assertNotNull(cls);
 				var instance:Object = new cls();

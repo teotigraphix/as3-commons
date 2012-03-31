@@ -22,18 +22,18 @@ package org.as3commons.bytecode.abc {
 
 	/**
 	 *
-	 * @author rolandzwaga
+	 * @author Roland Zwaga
 	 */
 	public class SimpleConstantPool implements IConstantPool {
 
 		private var _dupeCheck:Boolean;
-		private var _integerPool:Array;
-		private var _uintPool:Array;
-		private var _doublePool:Array;
-		private var _classInfo:Array;
-		private var _stringPool:Array;
-		private var _namespacePool:Array;
-		private var _namespaceSetPool:Array;
+		private var _integerPool:Vector.<int>;
+		private var _uintPool:Vector.<uint>;
+		private var _doublePool:Vector.<Number>;
+		private var _classInfo:Vector.<ClassInfo>;
+		private var _stringPool:Vector.<String>;
+		private var _namespacePool:Vector.<LNamespace>;
+		private var _namespaceSetPool:Vector.<NamespaceSet>;
 		private var _multinamePool:Vector.<BaseMultiname>;
 		private var _lookup:Object;
 
@@ -53,20 +53,17 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function reset():void {
-			_integerPool = [0];
-			_uintPool = [0];
-			_doublePool = [NaN];
-			_classInfo = [];
-			_stringPool = [LNamespace.ASTERISK.name];
+			_integerPool = new <int>[0];
+			_uintPool = new <uint>[0];
+			_doublePool = new <Number>[NaN];
+			_classInfo = new Vector.<ClassInfo>;
+			_stringPool = new <String>[LNamespace.ASTERISK.name];
 
-			_namespacePool = [];
-			addNamespace(LNamespace.ASTERISK);
+			_namespacePool = new <LNamespace>[LNamespace.ASTERISK];
 
-			_namespaceSetPool = [];
-			addNamespaceSet(new NamespaceSet([LNamespace.ASTERISK]));
+			_namespaceSetPool = new <NamespaceSet>[new NamespaceSet([LNamespace.ASTERISK])];
 
-			_multinamePool = new Vector.<BaseMultiname>();
-			addMultiname(new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK));
+			_multinamePool = new <BaseMultiname>[new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK)];
 
 			_lookup = new Dictionary();
 			_lookup[ConstantKind.INT] = [_integerPool, null];
@@ -90,8 +87,8 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function getConstantPoolItem(constantKindValue:uint, poolIndex:uint):* {
-			const constantKind:ConstantKind = ConstantKind.determineKind(constantKindValue);
-			const retVal:* = _lookup[constantKind];
+			var constantKind:ConstantKind = ConstantKind.determineKind(constantKindValue);
+			var retVal:* = _lookup[constantKind];
 			return (retVal is Array) ? retVal[0][poolIndex] : retVal;
 		}
 
@@ -111,27 +108,27 @@ package org.as3commons.bytecode.abc {
 			_dupeCheck = value;
 		}
 
-		public function get integerPool():Array {
+		public function get integerPool():Vector.<int> {
 			return _integerPool;
 		}
 
-		public function get uintPool():Array {
+		public function get uintPool():Vector.<uint> {
 			return _uintPool;
 		}
 
-		public function get doublePool():Array {
+		public function get doublePool():Vector.<Number> {
 			return _doublePool;
 		}
 
-		public function get stringPool():Array {
+		public function get stringPool():Vector.<String> {
 			return _stringPool;
 		}
 
-		public function get namespacePool():Array {
+		public function get namespacePool():Vector.<LNamespace> {
 			return _namespacePool;
 		}
 
-		public function get namespaceSetPool():Array {
+		public function get namespaceSetPool():Vector.<NamespaceSet> {
 			return _namespaceSetPool;
 		}
 
@@ -139,7 +136,7 @@ package org.as3commons.bytecode.abc {
 			return _multinamePool;
 		}
 
-		public function get classInfo():Array {
+		public function get classInfo():Vector.<ClassInfo> {
 			return _classInfo;
 		}
 
@@ -210,7 +207,7 @@ package org.as3commons.bytecode.abc {
 			return _namespaceSetPool.push(namespaceSet) - 1;
 		}
 
-		public function addToPool(pool:Array, lookup:*, item:Object):int {
+		public function addToPool(pool:*, lookup:*, item:Object):int {
 			return 0;
 		}
 	}

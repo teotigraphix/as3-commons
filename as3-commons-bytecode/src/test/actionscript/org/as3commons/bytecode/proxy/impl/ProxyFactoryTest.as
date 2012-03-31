@@ -124,6 +124,14 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		[Test(async)]
+		public function testLoadProxyClassInDefaultPackage():void {
+			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(ClassInDefaultPackage, null, _applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, Async.asyncHandler(this, handleClassInDefaultPackageTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		[Test(async)]
 		public function testLoadProxyClassForClassWithOneCtorParam():void {
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(SimpleClassWithOneConstructorArgument, null, _applicationDomain);
 			classProxyInfo.proxyAccessorScopes = ProxyScope.NONE;
@@ -169,7 +177,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 		[Test(async)]
 		public function testLoadProxyClassForClassWithMethodWithOptionalArg():void {
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var instance:SimpleClassWithMethodWithOptionalArgs = _proxyFactory.createProxy(SimpleClassWithMethodWithOptionalArgs) as SimpleClassWithMethodWithOptionalArgs;
 				assertNotNull(instance);
 				instance.methodWithOptionalArgs("test");
@@ -211,7 +219,7 @@ package org.as3commons.bytecode.proxy.impl {
 			classProxyInfo.proxyMethod("returnString");
 			classProxyInfo.proxyMethod("returnStringWithParam");
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var instance:SimpleClassWithTwoMethods = _proxyFactory.createProxy(SimpleClassWithTwoMethods) as SimpleClassWithTwoMethods;
 				assertNotNull(instance);
 				assertEquals('interceptedReturnValue', instance.returnString());
@@ -228,7 +236,7 @@ package org.as3commons.bytecode.proxy.impl {
 		public function testProxyInterface():void {
 			_proxyFactory.defineProxy(IFlavour, null, _applicationDomain);
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var instance:IFlavour = _proxyFactory.createProxy(IFlavour) as IFlavour;
 				assertNotNull(instance);
 				instance.add(instance);
@@ -264,7 +272,7 @@ package org.as3commons.bytecode.proxy.impl {
 			classProxyInfo.proxyAccessor("customProp", "http://www.as3commons.org/bytecode");
 			classProxyInfo.proxyAccessor("customSetProp", "http://www.as3commons.org/bytecode");
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var instance:SimpleClassWithCustomNamespaceMethod = _proxyFactory.createProxy(SimpleClassWithCustomNamespaceMethod) as SimpleClassWithCustomNamespaceMethod;
 				var instance2:SimpleClassWithCustomNamespaceMethod = new SimpleClassWithCustomNamespaceMethod();
 				assertNotNull(instance);
@@ -283,7 +291,7 @@ package org.as3commons.bytecode.proxy.impl {
 		public function testLoadProxyWithRestParameters():void {
 			_proxyFactory.defineProxy(SimpleClassWithRestParameters, null, _applicationDomain);
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var instance:SimpleClassWithRestParameters = _proxyFactory.createProxy(SimpleClassWithRestParameters) as SimpleClassWithRestParameters;
 				assertNotNull(instance);
 				var arr:Array = instance.restArguments('test1', 'test2', 'test3');
@@ -312,7 +320,7 @@ package org.as3commons.bytecode.proxy.impl {
 			classProxyInfo.proxyAccessor("setter");
 			classProxyInfo.makeDynamic = true;
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var instance:SimpleClassWithAccessors = _proxyFactory.createProxy(SimpleClassWithAccessors) as SimpleClassWithAccessors;
 				instance['dynamicProperty'] = "test";
 				assertEquals("test", instance['dynamicProperty']);
@@ -335,7 +343,7 @@ package org.as3commons.bytecode.proxy.impl {
 			classProxyInfo.proxyAccessor("getter");
 
 
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var instance:SimpleClassWithMetadata = _proxyFactory.createProxy(SimpleClassWithMetadata) as SimpleClassWithMetadata;
 				var type:Type = Type.forInstance(instance);
 				assertTrue(type.hasMetadata('Transient'));
@@ -386,7 +394,7 @@ package org.as3commons.bytecode.proxy.impl {
 		[Test]
 		public function testBusyGeneratingError():void {
 			_proxyFactory.defineProxy(Flavour, null, _applicationDomain);
-			var func:Function = function (event:ProxyFactoryBuildEvent):void {
+			var func:Function = function(event:ProxyFactoryBuildEvent):void {
 				var factory:IProxyFactory = IProxyFactory(event.target);
 				try {
 					factory.loadProxyClasses();
@@ -401,7 +409,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 		[Test(async)]
 		public function testSerialization():void {
-			var handler:Function = function (event:Event, data:*):void {
+			var handler:Function = function(event:Event, data:*):void {
 				var proxyFactory:IProxyFactory = event.target as IProxyFactory;
 				var instance:Flavour = proxyFactory.createProxy(Flavour) as Flavour;
 				assertNotNull(instance);
@@ -554,7 +562,7 @@ package org.as3commons.bytecode.proxy.impl {
 			assertNotNull(instance);
 			var testInterface:IEventDispatcherEx = instance as IEventDispatcherEx;
 			assertNotNull(testInterface);
-			var func1:Function = function (event:Event):void {
+			var func1:Function = function(event:Event):void {
 			};
 			instance.addEventListener(Event.ACTIVATE, func1, false, 0, true);
 			assertEquals(1, testInterface.getCountListeners(Event.ACTIVATE));
@@ -573,7 +581,7 @@ package org.as3commons.bytecode.proxy.impl {
 			assertNotNull(instance);
 			var testInterface:IEventDispatcherEx = instance as IEventDispatcherEx;
 			assertNotNull(testInterface);
-			var func1:Function = function (event:Event):void {
+			var func1:Function = function(event:Event):void {
 			};
 			instance.addEventListener(Event.ACTIVATE, func1, false, 0, true);
 			assertEquals(1, testInterface.getCountListeners(Event.ACTIVATE));
@@ -650,11 +658,17 @@ package org.as3commons.bytecode.proxy.impl {
 			assertNotNull(instance);
 		}
 
+		protected function handleClassInDefaultPackageTestComplete(event:Event, data:*):void {
+			var instance:ClassInDefaultPackage = _proxyFactory.createProxy(ClassInDefaultPackage);
+			assertNotNull(instance);
+		}
+
 		protected function handleConstructorTestComplete(event:Event, data:*):void {
 			var instance:SimpleClassWithOneConstructorArgument = _proxyFactory.createProxy(SimpleClassWithOneConstructorArgument, ["testarg"]) as SimpleClassWithOneConstructorArgument;
 			assertNotNull(instance);
 			assertEquals('intercepted', instance.string);
 		}
+
 
 		protected function handleConstructorTwoParamsTestComplete(event:Event, data:*):void {
 			var instance:SimpleClassWithTwoConstructorArguments = _proxyFactory.createProxy(SimpleClassWithTwoConstructorArguments, ["testarg", 1]) as SimpleClassWithTwoConstructorArguments;

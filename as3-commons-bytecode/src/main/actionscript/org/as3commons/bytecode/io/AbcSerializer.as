@@ -115,7 +115,7 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function serializeMethodBodies(abcFile:AbcFile):void {
-			var methodBodies:Array = abcFile.methodBodies;
+			var methodBodies:Vector.<MethodBody> = abcFile.methodBodies;
 			var pool:IConstantPool = abcFile.constantPool;
 
 			writeU30(methodBodies.length);
@@ -159,7 +159,7 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function serializeScriptInfo(abcFile:AbcFile):void {
-			var scriptInfo:Array = abcFile.scriptInfo;
+			var scriptInfo:Vector.<ScriptInfo> = abcFile.scriptInfo;
 
 			writeU30(scriptInfo.length);
 			for each (var script:ScriptInfo in scriptInfo) {
@@ -267,8 +267,8 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function serializeClassAndInstanceInfo(abcFile:AbcFile):void {
-			var instanceInfo:Array = abcFile.instanceInfo;
-			var classInfo:Array = abcFile.classInfo;
+			var instanceInfo:Vector.<InstanceInfo> = abcFile.instanceInfo;
+			var classInfo:Vector.<ClassInfo> = abcFile.classInfo;
 			var pool:IConstantPool = abcFile.constantPool;
 
 			// class_count u30
@@ -324,7 +324,7 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function serializeMetadataInfo(abcFile:AbcFile):void {
-			var metadataInfo:Array = abcFile.metadataInfo;
+			var metadataInfo:Vector.<Metadata> = abcFile.metadataInfo;
 			var pool:IConstantPool = abcFile.constantPool;
 
 			writeU30(metadataInfo.length);
@@ -363,7 +363,7 @@ package org.as3commons.bytecode.io {
 			//  param_info param_names 
 			// }
 			var pool:IConstantPool = abcFile.constantPool;
-			var methodInfoArray:Array = abcFile.methodInfo;
+			var methodInfoArray:Vector.<MethodInfo> = abcFile.methodInfo;
 
 			writeU30(methodInfoArray.length); // u30 method_count
 			for each (var methodInfo:MethodInfo in methodInfoArray) {
@@ -609,7 +609,7 @@ package org.as3commons.bytecode.io {
 
 
 		public function serializeNamespaceSets(pool:IConstantPool, outputStream:ByteArray):void {
-			var namespaceSets:Array = pool.namespaceSetPool.slice(1, pool.namespaceSetPool.length);
+			var namespaceSets:Vector.<NamespaceSet> = pool.namespaceSetPool.slice(1, pool.namespaceSetPool.length);
 			AbcSpec.writeU30((namespaceSets.length + 1), outputStream);
 			for each (var namespaceSet:NamespaceSet in namespaceSets) { // ns_set_info
 				AbcSpec.writeU30(namespaceSet.namespaces.length, outputStream); // u30 count
@@ -620,7 +620,7 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function serializeNamespaces(pool:IConstantPool, outputStream:ByteArray):void {
-			var namespaces:Array = pool.namespacePool.slice(1, pool.namespacePool.length);
+			var namespaces:Vector.<LNamespace> = pool.namespacePool.slice(1, pool.namespacePool.length);
 			AbcSpec.writeU30((namespaces.length + 1), outputStream);
 			for each (var namespaceInstance:LNamespace in namespaces) {
 				AbcSpec.writeU8(namespaceInstance.kind.byteValue, outputStream);
@@ -629,7 +629,7 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function serializeStrings(pool:IConstantPool, outputStream:ByteArray):void {
-			var strings:Array = pool.stringPool.slice(1, pool.stringPool.length);
+			var strings:Vector.<String> = pool.stringPool.slice(1, pool.stringPool.length);
 			AbcSpec.writeU30((strings.length + 1), outputStream);
 			for each (var string:String in strings) {
 				AbcSpec.writeStringInfo(string, outputStream);
@@ -637,7 +637,7 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function serializeDoubles(pool:IConstantPool, outputStream:ByteArray):void {
-			var doubles:Array = pool.doublePool.slice(1, pool.doublePool.length);
+			var doubles:Vector.<Number> = pool.doublePool.slice(1, pool.doublePool.length);
 			if (doubles.length != 0) {
 				AbcSpec.writeU30(doubles.length + 1, outputStream);
 				for each (var double:Number in doubles) {
@@ -649,7 +649,7 @@ package org.as3commons.bytecode.io {
 		}
 
 		public function serializeUIntegers(pool:IConstantPool, outputStream:ByteArray):void {
-			var uints:Array = pool.uintPool.slice(1, pool.uintPool.length);
+			var uints:Vector.<uint> = pool.uintPool.slice(1, pool.uintPool.length);
 			if (uints.length != 0) {
 				AbcSpec.writeU30(uints.length + 1, outputStream);
 				for each (var uinteger:int in uints) {
@@ -662,7 +662,7 @@ package org.as3commons.bytecode.io {
 
 
 		public function serializeIntegers(pool:IConstantPool, outputStream:ByteArray):void {
-			var integers:Array = pool.integerPool.slice(1, pool.integerPool.length);
+			var integers:Vector.<int> = pool.integerPool.slice(1, pool.integerPool.length);
 			if (integers.length != 0) {
 				AbcSpec.writeU30(integers.length + 1, outputStream);
 				for each (var integer:int in integers) {

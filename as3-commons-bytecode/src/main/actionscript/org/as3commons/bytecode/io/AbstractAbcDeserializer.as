@@ -97,12 +97,12 @@ package org.as3commons.bytecode.io {
 			var i:uint;
 			var result:int;
 			var kind:uint;
-			var ints:Array = pool.integerPool;
-			var uints:Array = pool.uintPool;
-			var doubles:Array = pool.doublePool;
-			var strings:Array = pool.stringPool;
-			var namespaces:Array = pool.namespacePool;
-			var namespaceSets:Array = pool.namespaceSetPool;
+			var ints:Vector.<int> = pool.integerPool;
+			var uints:Vector.<uint> = pool.uintPool;
+			var doubles:Vector.<Number> = pool.doublePool;
+			var strings:Vector.<String> = pool.stringPool;
+			var namespaces:Vector.<LNamespace> = pool.namespacePool;
+			var namespaceSets:Vector.<NamespaceSet> = pool.namespaceSetPool;
 			var multiNames:Vector.<BaseMultiname> = pool.multinamePool;
 
 			/* READ integerpool */

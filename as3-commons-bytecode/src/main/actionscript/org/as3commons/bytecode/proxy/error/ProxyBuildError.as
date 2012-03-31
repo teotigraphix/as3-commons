@@ -59,9 +59,9 @@ package org.as3commons.bytecode.proxy.error {
 
 		public static const NO_BYTECODE_TYPE_FOUND_FOR_CLASS:uint = 0x10;
 
-		public static const UNABLE_TO_RETRIEVE_PROXY_CLASS_ERROR = 0x11;
+		public static const UNABLE_TO_RETRIEVE_PROXY_CLASS_ERROR:uint = 0x11;
 
-		public static const UNKNOWN_PROXIED_CLASS = 0x12;
+		public static const UNKNOWN_PROXIED_CLASS:uint = 0x12;
 
 
 		private static const messages:Dictionary = new Dictionary();

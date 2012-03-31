@@ -29,14 +29,14 @@ package org.as3commons.bytecode.abc {
 		function addItemToPool(constantKindValue:ConstantKind, item:*):int;
 		function get dupeCheck():Boolean;
 		function set dupeCheck(value:Boolean):void;
-		function get integerPool():Array;
-		function get uintPool():Array;
-		function get doublePool():Array;
-		function get stringPool():Array;
-		function get namespacePool():Array;
-		function get namespaceSetPool():Array;
+		function get integerPool():Vector.<int>;
+		function get uintPool():Vector.<uint>;
+		function get doublePool():Vector.<Number>;
+		function get stringPool():Vector.<String>;
+		function get namespacePool():Vector.<LNamespace>;
+		function get namespaceSetPool():Vector.<NamespaceSet>;
 		function get multinamePool():Vector.<BaseMultiname>;
-		function get classInfo():Array;
+		function get classInfo():Vector.<ClassInfo>;
 		function get locked():Boolean;
 		function set locked(value:Boolean):void;
 		function addMultiname(multiname:BaseMultiname):int;
@@ -54,6 +54,6 @@ package org.as3commons.bytecode.abc {
 		function addDouble(double:Number):int;
 		function addNamespace(namespaceValue:LNamespace):int;
 		function addNamespaceSet(namespaceSet:NamespaceSet):int;
-		function addToPool(pool:Array, lookup:*, item:Object):int;
+		function addToPool(pool:*, lookup:*, item:Object):int;
 	}
 }
