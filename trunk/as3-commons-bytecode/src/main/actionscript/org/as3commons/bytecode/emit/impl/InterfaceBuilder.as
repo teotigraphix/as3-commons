@@ -29,6 +29,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IInterfaceBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
+	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.StringUtils;
 
@@ -85,7 +86,7 @@ package org.as3commons.bytecode.emit.impl {
 			for each (var intfName:String in _extendingInterfacesNames) {
 				instanceInfo.interfaceMultinames[instanceInfo.interfaceMultinames.length] = MultinameUtil.toArgumentMultiName(intfName, NamespaceKind.PACKAGE_NAMESPACE);
 			}
-			var metadata:Array = buildMetadata();
+			var metadata:Vector.<Metadata> = buildMetadata();
 			return [classInfo, instanceInfo, methods, metadata];
 		}
 

@@ -17,26 +17,22 @@ package org.as3commons.bytecode.typeinfo {
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
 	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.IEquals;
 
 	/**
 	 * Represents an argument to a method, including its type, name, optional status, default value (if optional), and kind.
 	 */
 	//TODO: Set this up so that the user does not need to worry about the ConstantKind. You should be able to determine this from the default value 
-	public final class Argument implements ICloneable {
+	public final class Argument implements ICloneable, IEquals {
 
 		public var name:String;
-		public var defaultValue:Object;
+		public var defaultValue:*;
 		public var isOptional:Boolean;
 		public var kind:ConstantKind;
-
 		public var type:BaseMultiname;
 
-		public function Argument(typeValue:BaseMultiname = null, hasOptionalValue:Boolean = false, defaultVal:Object = null, defaultValueKind:ConstantKind = null) {
+		public function Argument(typeValue:BaseMultiname=null, hasOptionalValue:Boolean=false, defaultVal:*=null, defaultValueKind:ConstantKind=null) {
 			super();
-			initArgument(typeValue, hasOptionalValue, defaultVal, defaultValueKind);
-		}
-
-		protected function initArgument(typeValue:BaseMultiname, hasOptionalValue:Boolean, defaultVal:Object, defaultValueKind:ConstantKind):void {
 			type = typeValue;
 			isOptional = hasOptionalValue;
 			defaultValue = defaultVal;
@@ -49,6 +45,33 @@ package org.as3commons.bytecode.typeinfo {
 
 		public function toString():String {
 			return type + "";
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherArg:Argument = other as Argument;
+			if (otherArg != null) {
+				if (name != otherArg.name) {
+					return false;
+				}
+				if (!isNaN(defaultValue)) {
+					if (defaultValue !== otherArg.defaultValue) {
+						return false;
+					}
+				} else if (isNaN(defaultValue) && isNaN(otherArg.defaultValue) == false) {
+					return false;
+				}
+				if (isOptional != otherArg.isOptional) {
+					return false;
+				}
+				if (kind !== otherArg.kind) {
+					return false;
+				}
+				if (!type.equals(otherArg.type)) {
+					return false;
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 }

@@ -74,7 +74,7 @@ package org.as3commons.bytecode.util {
 					namespacePortion = portions.join(PERIOD);
 				}
 				var QName:QualifiedName = new QualifiedName(classNamePortion, toLNamespace(namespacePortion + PERIOD + classNamePortion, kind));
-				return new MultinameG(QName, params.length, params);
+				return new MultinameG(QName, params);
 			}
 		}
 

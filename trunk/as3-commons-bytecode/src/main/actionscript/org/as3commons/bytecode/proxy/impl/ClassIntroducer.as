@@ -60,10 +60,6 @@ package org.as3commons.bytecode.proxy.impl {
 
 		public function ClassIntroducer(constructorProxyFactory:IConstructorProxyFactory, methodProxyFactory:IMethodProxyFactory, accessorProxyFactory:IAccessorProxyFactory) {
 			super();
-			initClassIntroducer(constructorProxyFactory, methodProxyFactory, accessorProxyFactory);
-		}
-
-		protected function initClassIntroducer(constructorProxyFactory:IConstructorProxyFactory, methodProxyFactory:IMethodProxyFactory, accessorProxyFactory:IAccessorProxyFactory):void {
 			CONFIG::debug {
 				Assert.notNull(methodProxyFactory, "methodProxyFactory argument must not be null");
 				Assert.notNull(accessorProxyFactory, "accessorProxyFactory argument must not be null");
@@ -142,11 +138,19 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			if (constructorBody.opcodes.length > 0) {
 				constructorBody.opcodes[constructorBody.opcodes.length] = Opcode.getlocal_0.op();
-				var mergeConstructor:Function = function (event:ProxyFactoryBuildEvent):void {
+				var mergeConstructor:Function = function(event:ProxyFactoryBuildEvent):void {
+					//_constructorProxyFactory.removeEventListener(ProxyFactoryBuildEvent.AFTER_CONSTRUCTOR_BODY_BUILD, mergeConstructor);
 					var ctorBuilder:ICtorBuilder = event.methodBuilder as ICtorBuilder;
-					var trailingOpcodes:Array = ctorBuilder.opcodes.splice(2, ctorBuilder.opcodes.length);
-					ctorBuilder.opcodes.push.apply(ctorBuilder.opcodes, constructorBody.opcodes);
-					ctorBuilder.opcodes.push.apply(ctorBuilder.opcodes, trailingOpcodes);
+					var trailingOpcodes:Vector.<Op> = ctorBuilder.opcodes.splice(2, ctorBuilder.opcodes.length);
+					var len:int = constructorBody.opcodes.length;
+					var i:int;
+					for (i = 0; i < len; ++i) {
+						ctorBuilder.opcodes[ctorBuilder.opcodes.length] = constructorBody.opcodes[i];
+					}
+					len = trailingOpcodes.length;
+					for (i = 0; i < len; ++i) {
+						ctorBuilder.opcodes[ctorBuilder.opcodes.length] = trailingOpcodes[i];
+					}
 				};
 				_constructorProxyFactory.addEventListener(ProxyFactoryBuildEvent.AFTER_CONSTRUCTOR_BODY_BUILD, mergeConstructor);
 			}
@@ -198,7 +202,7 @@ package org.as3commons.bytecode.proxy.impl {
 			return arr.join('');
 		}
 
-		protected function translateOpcodesNamespaces(opcodes:Array, oldScopeName:String, newScopeName:String):void {
+		protected function translateOpcodesNamespaces(opcodes:Vector.<Op>, oldScopeName:String, newScopeName:String):void {
 			for each (var op:Op in opcodes) {
 				translateOpcodeNamespaces(op, oldScopeName, newScopeName);
 			}

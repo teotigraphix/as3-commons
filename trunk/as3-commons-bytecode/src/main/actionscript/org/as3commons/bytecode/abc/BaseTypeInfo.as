@@ -15,14 +15,15 @@
  */
 package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.lang.IEquals;
 
-	public class BaseTypeInfo {
+	public class BaseTypeInfo implements IEquals {
 
-		public var traits:Array;
+		public var traits:Vector.<TraitInfo>;
 
 		public function BaseTypeInfo() {
 			super();
-			traits = [];
+			traits = new Vector.<TraitInfo>();
 		}
 
 		public function addTrait(trait:TraitInfo):void {
@@ -49,7 +50,7 @@ package org.as3commons.bytecode.abc {
 		}
 
 		public function getMethodTraitByName(name:String):MethodTrait {
-			var methods:Array = methodTraits;
+			var methods:Vector.<TraitInfo> = methodTraits;
 			for each (var method:MethodTrait in methods) {
 				if (method.traitMultiname.name == name) {
 					return method;
@@ -75,31 +76,53 @@ package org.as3commons.bytecode.abc {
 			return matchingTraits;
 		}
 
-		public function getTraitsByKind(traitKind:TraitKind):Array {
-			return traits.filter(function(trait:TraitInfo, index:int, array:Array):Boolean {
-				return (trait.traitKind == traitKind);
+		public function getTraitsByKind(traitKind:TraitKind):Vector.<TraitInfo> {
+			return traits.filter(function(trait:TraitInfo, index:int, array:Vector.<TraitInfo>):Boolean {
+				return (trait.traitKind === traitKind);
 			});
 		}
 
-		public function get methodTraits():Array {
+		public function get methodTraits():Vector.<TraitInfo> {
 			return getTraitsByKind(TraitKind.METHOD);
 		}
 
-		public function get methodInfo():Array {
-			var traits:Array = methodTraits.concat(getterTraits).concat(setterTraits);
-			var result:Array = [];
+		public function get methodInfo():Vector.<MethodInfo> {
+			var traits:Vector.<TraitInfo> = methodTraits.concat(getterTraits).concat(setterTraits);
+			var result:Vector.<MethodInfo> = new Vector.<MethodInfo>();
 			for each (var trait:MethodTrait in traits) {
 				result[result.length] = trait.traitMethod;
 			}
 			return result;
 		}
 
-		public function get getterTraits():Array {
+		public function get getterTraits():Vector.<TraitInfo> {
 			return getTraitsByKind(TraitKind.GETTER);
 		}
 
-		public function get setterTraits():Array {
+		public function get setterTraits():Vector.<TraitInfo> {
 			return getTraitsByKind(TraitKind.SETTER);
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherTypeInfo:BaseTypeInfo = other as BaseTypeInfo;
+			if (otherTypeInfo != null) {
+				if (traits.length != otherTypeInfo.traits.length) {
+					return false;
+				}
+				var len:int = traits.length;
+				var i:int;
+				var trait:TraitInfo;
+				var otherTrait:TraitInfo;
+				for (i = 0; i < len; ++i) {
+					trait = traits[i];
+					otherTrait = otherTypeInfo.traits[i];
+					if (!trait.equals(otherTrait)) {
+						return false;
+					}
+				}
+				return true;
+			}
+			return false;
 		}
 
 	}

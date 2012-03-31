@@ -17,6 +17,7 @@ package org.as3commons.bytecode.typeinfo {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.lang.util.CloneUtils;
 
@@ -29,10 +30,8 @@ package org.as3commons.bytecode.typeinfo {
 	 * <code>property2</code> would be keys in the <code>properties</code> Dictionary, with <code>value1</code>
 	 * and <code>value2</code> as their respective values.
 	 * </p>
-	 *
-	 * @see Annotatable
 	 */
-	public final class Metadata implements ICloneable {
+	public final class Metadata implements ICloneable, IEquals {
 
 		private static const KEY_VALUE_PAIR_TOSTRING:String = "{0}=\"{1}\"";
 		private static const METADATA_TOSTRING:String = "[{0}({1})]";
@@ -40,6 +39,7 @@ package org.as3commons.bytecode.typeinfo {
 		public var properties:Dictionary;
 
 		public function Metadata() {
+			super();
 			properties = new Dictionary();
 		}
 
@@ -56,6 +56,25 @@ package org.as3commons.bytecode.typeinfo {
 				keyValuePairs[keyValuePairs.length] = StringUtils.substitute(KEY_VALUE_PAIR_TOSTRING, key, properties[key]);
 			}
 			return StringUtils.substitute(METADATA_TOSTRING, name, keyValuePairs.join());
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherMetadata:Metadata = other as Metadata;
+			if (otherMetadata != null) {
+				if (name != otherMetadata.name) {
+					return false;
+				}
+				for (var key:String in properties) {
+					if (!otherMetadata.properties.hasOwnProperty(key)) {
+						return false;
+					}
+					if (properties[key] != otherMetadata.properties[key]) {
+						return false;
+					}
+				}
+				return true;
+			}
+			return false;
 		}
 
 	}

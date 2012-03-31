@@ -168,7 +168,7 @@ package org.as3commons.bytecode.io {
 			}
 		}
 
-		public function serializeTraits(traits:Array, abcFile:AbcFile):void {
+		public function serializeTraits(traits:Vector.<TraitInfo>, abcFile:AbcFile):void {
 			writeU30(traits.length);
 			var pool:IConstantPool = abcFile.constantPool;
 
@@ -367,6 +367,9 @@ package org.as3commons.bytecode.io {
 
 			writeU30(methodInfoArray.length); // u30 method_count
 			for each (var methodInfo:MethodInfo in methodInfoArray) {
+				if ((methodInfo.as3commonsByteCodeAssignedMethodTrait != null) && (methodInfo.as3commonsByteCodeAssignedMethodTrait.traitMultiname.name == 'decomposeMatrix')) {
+					var asdad:int = 0;
+				}
 				writeU30(methodInfo.argumentCollection.length); // u30 param_count
 				writeU30(pool.addMultiname(methodInfo.returnType)); // u30 return_type
 				for each (var param:Argument in methodInfo.argumentCollection) {
@@ -410,7 +413,7 @@ package org.as3commons.bytecode.io {
 				// }
 				// This entry is only made if MethodFlag.HAS_OPTIONAL is present 
 				if (MethodFlag.flagPresent(methodInfo.flags, MethodFlag.HAS_OPTIONAL)) {
-					var optionalParams:Array = methodInfo.optionalParameters;
+					var optionalParams:Vector.<Argument> = methodInfo.optionalParameters;
 					writeU30(optionalParams.length); // u30 option_count
 					for each (var optionalArgument:Argument in optionalParams) {
 						var defaultValue:* = optionalArgument.defaultValue;
@@ -599,7 +602,7 @@ package org.as3commons.bytecode.io {
 						var paramCount:uint = generic.parameters.length;
 						AbcSpec.writeU30(paramCount, outputStream);
 						for (var idx:uint = 0; idx < paramCount; ++idx) {
-							AbcSpec.writeU30(pool.addMultiname(BaseMultiname(generic.parameters[idx])), outputStream);
+							AbcSpec.writeU30(pool.addMultiname(generic.parameters[idx]), outputStream);
 						}
 						break;
 

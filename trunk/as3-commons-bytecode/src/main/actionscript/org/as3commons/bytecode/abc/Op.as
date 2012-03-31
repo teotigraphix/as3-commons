@@ -18,12 +18,13 @@ package org.as3commons.bytecode.abc {
 
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.StringUtils;
 
 	/**
 	 * Represents an individual opcode operation with parameters.
 	 */
-	public final class Op implements ICloneable {
+	public final class Op implements ICloneable, IEquals {
 
 		private static const ARGUMENT_TYPE_ERROR:String = "Wrong opcode argument type for opcode {0}, expected {1}, but got {2}";
 		private static const OBJECT_TYPE_NAME:String = "object";
@@ -32,8 +33,9 @@ package org.as3commons.bytecode.abc {
 		private var _opcode:Opcode;
 
 		public function Op(opcode:Opcode, parameters:Array=null) {
+			super();
 			_opcode = opcode;
-			_parameters = (parameters) ? parameters : [];
+			_parameters = parameters ||= [];
 		}
 
 		public function clone():* {
@@ -100,6 +102,37 @@ package org.as3commons.bytecode.abc {
 
 		public function toString():String {
 			return baseLocation + ":" + _opcode.opcodeName + "\t\t" + ((_parameters.length > 0) ? "[" + _parameters.join(", ") + "]:" : ":") + endLocation;
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherOp:Op = other as Op;
+			if (otherOp != null) {
+				if (_opcode.opcodeName != otherOp.opcode.opcodeName) {
+					return false;
+				}
+				if (parameters.length != otherOp.parameters.length) {
+					return false;
+				}
+				var len:int = parameters.length;
+				var i:int;
+				var param:*;
+				var otherParam:*;
+				for (i = 0; i < len; ++i) {
+					param = parameters[i];
+					otherParam = otherOp.parameters[i];
+					if (param is IEquals) {
+						if (!IEquals(param).equals(otherParam)) {
+							return false;
+						}
+					} else {
+						if (param != otherParam) {
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 }

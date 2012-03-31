@@ -25,6 +25,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
 	import org.as3commons.bytecode.abc.Multiname;
+	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.enum.BuiltIns;
@@ -35,13 +36,14 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.ICtorBuilder;
 	import org.as3commons.bytecode.emit.IPropertyBuilder;
 	import org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError;
+	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.util.EmitUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.Type;
 
-	[Event(name = "extendedClassesNotFound", type = "org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
+	[Event(name="extendedClassesNotFound", type="org.as3commons.bytecode.emit.impl.event.ExtendedClassesNotFoundError")]
 	/**
 	 * @author Roland Zwaga
 	 */
@@ -165,7 +167,7 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineProperty(propertyName:String = null, type:String = null, initialValue:* = undefined):IPropertyBuilder {
+		public function defineProperty(propertyName:String=null, type:String=null, initialValue:*=undefined):IPropertyBuilder {
 			var vb:PropertyBuilder = new PropertyBuilder();
 			vb.packageName = packageName + MultinameUtil.SINGLE_COLON + this.name;
 			vb.name = propertyName;
@@ -230,7 +232,7 @@ package org.as3commons.bytecode.emit.impl {
 			instanceInfo.classInfo = classInfo;
 			classInfo.metadata = buildMetadata();
 
-			var metadata:Array = classInfo.metadata.concat();
+			var metadata:Vector.<Metadata> = classInfo.metadata.concat(new Vector.<Metadata>());
 			for each (var st:SlotOrConstantTrait in slotTraits) {
 				metadata.push.apply(metadata, st.metadata);
 				if (st.isStatic) {
@@ -267,7 +269,7 @@ package org.as3commons.bytecode.emit.impl {
 					}
 				}
 			}
-			var initOpcodes:Array = [];
+			var initOpcodes:Vector.<Op> = new Vector.<Op>();
 			for each (var pb:IPropertyBuilder in _propertyBuilders) {
 				if (pb.memberInitialization != null) {
 					initOpcodes.push.apply(initOpcodes, pb.buildPropertyInitializers());
@@ -301,20 +303,27 @@ package org.as3commons.bytecode.emit.impl {
 			return instInfo;
 		}
 
-		protected function mergeOpcodes(constructorBody:Array, initializers:Array):void {
+		protected function mergeOpcodes(constructorBody:Vector.<Op>, initializers:Vector.<Op>):void {
 			if (initializers.length > 0) {
-				var trailingOpcodes:Array = constructorBody.splice(2, constructorBody.length);
-				constructorBody.push.apply(constructorBody, initializers);
-				constructorBody.push.apply(constructorBody, trailingOpcodes);
+				var trailingOpcodes:Vector.<Op> = constructorBody.splice(2, constructorBody.length);
+				var len:int = initializers.length;
+				var i:int;
+				for (i = 0; i < len; ++i) {
+					constructorBody[constructorBody.length] = initializers[i];
+				}
+				len = trailingOpcodes.length;
+				for (i = 0; i < len; ++i) {
+					constructorBody[constructorBody.length] = trailingOpcodes[i];
+				}
 			}
 		}
 
-		override public function removeAccessor(name:String, nameSpace:String = null):void {
+		override public function removeAccessor(name:String, nameSpace:String=null):void {
 			super.removeAccessor(name, nameSpace);
 			removeProperty(StringUtils.substitute(AccessorBuilder.PRIVATE_VAR_NAME_TEMPLATE, name));
 		}
 
-		public function removeProperty(name:String, nameSpace:String = null):void {
+		public function removeProperty(name:String, nameSpace:String=null):void {
 			var idx:int = -1;
 			for each (var pb:IPropertyBuilder in _propertyBuilders) {
 				if (pb.name == name) {
@@ -340,7 +349,7 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
-		public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
+		public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
 			_eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
 
@@ -352,7 +361,7 @@ package org.as3commons.bytecode.emit.impl {
 			return _eventDispatcher.hasEventListener(type);
 		}
 
-		public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
+		public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void {
 			_eventDispatcher.removeEventListener(type, listener, useCapture);
 		}
 

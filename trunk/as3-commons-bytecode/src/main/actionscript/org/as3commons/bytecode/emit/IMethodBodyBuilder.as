@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.emit {
 	import org.as3commons.bytecode.abc.ConstantPool;
+	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
@@ -28,19 +29,19 @@ package org.as3commons.bytecode.emit {
 		/**
 		 * An <code>Array</code> of <code>Op</code> instances that represent the programming logic inside the method.
 		 */
-		function get opcodes():Array;
+		function get opcodes():Vector.<Op>;
 		/**
 		 * @private
 		 */
-		function set opcodes(value:Array):void;
+		function set opcodes(value:Vector.<Op>):void;
 		/**
 		 * An <code>Array</code> of <code>IExceptionInfoBuilders</code> that are able to generate the necessary <code>ExceptionInfo</code> instances references in the method body.
 		 */
-		function get exceptionInfos():Array;
+		function get exceptionInfos():Vector.<ExceptionInfo>;
 		/**
 		 * @private
 		 */
-		function set exceptionInfos(value:Array):void;
+		function set exceptionInfos(value:Vector.<ExceptionInfo>):void;
 		/**
 		 * Adds an extra <code>Op</code> instance with the specified <code>Opcode</code> and parameters.
 		 * @param opcode The specified <code>Op</code>.
@@ -97,7 +98,7 @@ package org.as3commons.bytecode.emit {
 		 * @param newOpcodes The specified <code>Array</code> of <code>Op</code> instances.
 		 * @return the current <code>IMethodBodyBuilder</code> to enable chaining of <code>addOpcodes()</code> invocations.
 		 */
-		function addOpcodes(newOpcodes:Array):IMethodBodyBuilder;
+		function addOpcodes(newOpcodes:Vector.<Op>):IMethodBodyBuilder;
 
 		/**
 		 *

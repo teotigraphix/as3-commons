@@ -30,9 +30,8 @@ package org.as3commons.bytecode.abc {
 		public var classMultiname:QualifiedName;
 		public var superclassMultiname:BaseMultiname;
 		public var protectedNamespace:LNamespace;
-		public var interfaceMultinames:Array;
+		public var interfaceMultinames:Vector.<BaseMultiname>;
 		public var instanceInitializer:MethodInfo;
-
 		public var isProtected:Boolean;
 		public var isFinal:Boolean;
 		public var isSealed:Boolean;
@@ -40,7 +39,7 @@ package org.as3commons.bytecode.abc {
 
 		public function InstanceInfo() {
 			super();
-			interfaceMultinames = [];
+			interfaceMultinames = new Vector.<BaseMultiname>();
 		}
 
 		/**
@@ -56,6 +55,58 @@ package org.as3commons.bytecode.abc {
 
 		public function toString():String {
 			return StringUtils.substitute("InstanceInfo[\n\tclassName={0}\n\tsuperclassName={1}\n\tisProtected={2}\n\tprotectedNamespace={3}\n\tinterfaceCount={4}\n\tinterfaces={5}\n\tinstanceInitializer={6}\n\ttraits=[\n\t\t{7}\n\t]\n]", classMultiname, superclassMultiname, isProtected, protectedNamespace, interfaceCount, interfaceMultinames, instanceInitializer, traits.join("\n\t\t"));
+		}
+
+		override public function equals(other:Object):Boolean {
+			var result:Boolean = super.equals(other);
+			if (result) {
+				var otherInstanceInfo:InstanceInfo = other as InstanceInfo;
+				if (otherInstanceInfo != null) {
+					if (!classMultiname.equals(otherInstanceInfo.classMultiname)) {
+						return false;
+					}
+					if (!superclassMultiname.equals(otherInstanceInfo.superclassMultiname)) {
+						return false;
+					}
+					if (protectedNamespace != null) {
+						if (!protectedNamespace.equals(otherInstanceInfo.protectedNamespace)) {
+							return false;
+						}
+					}
+					if (interfaceCount != otherInstanceInfo.interfaceCount) {
+						return false;
+					}
+					var len:int = interfaceCount;
+					var i:int;
+					var multiName:BaseMultiname;
+					var otherMultiName:BaseMultiname;
+					for (i = 0; i < len; ++i) {
+						multiName = interfaceMultinames[i];
+						otherMultiName = otherInstanceInfo.interfaceMultinames[i];
+						if (!multiName.equals(otherMultiName)) {
+							return false;
+						}
+					}
+					if (!instanceInitializer.equals(otherInstanceInfo.instanceInitializer)) {
+						return false;
+					}
+					if (isProtected != otherInstanceInfo.isProtected) {
+						return false;
+					}
+					if (isFinal != otherInstanceInfo.isFinal) {
+						return false;
+					}
+					if (isSealed != otherInstanceInfo.isSealed) {
+						return false;
+					}
+					if (isInterface != otherInstanceInfo.isInterface) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+			return result;
 		}
 	}
 }

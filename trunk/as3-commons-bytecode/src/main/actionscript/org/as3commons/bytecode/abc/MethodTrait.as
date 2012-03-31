@@ -44,5 +44,27 @@ package org.as3commons.bytecode.abc {
 		public function toString():String {
 			return StringUtils.substitute("MethodTrait[name={0}, override={1}, metadata={2}, dispositionId={3}, method={4}]", traitMultiname, isOverride, metadata, dispositionId, traitMethod);
 		}
+
+		override public function equals(other:Object):Boolean {
+			var result:Boolean = super.equals(other);
+			if (result) {
+				var otherTrait:MethodTrait = other as MethodTrait;
+				if (otherTrait != null) {
+					if (dispositionId != otherTrait.dispositionId) {
+						return false;
+					}
+					if (!traitMethod.equals(otherTrait.traitMethod)) {
+						return false;
+					}
+					if (isStatic != otherTrait.isStatic) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+				return true;
+			}
+			return result;
+		}
 	}
 }

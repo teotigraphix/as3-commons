@@ -18,6 +18,7 @@ package org.as3commons.bytecode.io {
 
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.IConstantPool;
+	import org.as3commons.bytecode.abc.TraitInfo;
 
 	public interface IAbcDeserializer {
 		function get methodBodyExtractionMethod():MethodBodyExtractionKind;
@@ -28,7 +29,7 @@ package org.as3commons.bytecode.io {
 
 		function deserializeConstantPool(pool:IConstantPool):IConstantPool;
 
-		function deserialize(positionInByteArrayToReadFrom:int = 0):AbcFile;
+		function deserialize(positionInByteArrayToReadFrom:int=0):AbcFile;
 
 		function deserializeClassInfos(abcFile:AbcFile, pool:IConstantPool, classCount:int):void;
 
@@ -42,6 +43,6 @@ package org.as3commons.bytecode.io {
 
 		function deserializeMethodInfos(abcFile:AbcFile, pool:IConstantPool):void;
 
-		function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean = false, className:String = ""):Array;
+		function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Vector.<TraitInfo>;
 	}
 }

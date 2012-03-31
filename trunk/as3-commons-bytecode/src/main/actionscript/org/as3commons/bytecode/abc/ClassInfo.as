@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.lang.StringUtils;
 
 	/**
@@ -27,7 +28,7 @@ package org.as3commons.bytecode.abc {
 
 		public var classMultiname:QualifiedName;
 
-		public var metadata:Array;
+		public var metadata:Vector.<Metadata>;
 
 		public function ClassInfo() {
 			super();
@@ -35,6 +36,41 @@ package org.as3commons.bytecode.abc {
 
 		public function toString():String {
 			return StringUtils.substitute("ClassInfo[\n\tstaticInitializer={0}\n\ttraits=[\n\t\t{1}\n\t]\n]", staticInitializer, traits.join("\n\t\t"));
+		}
+
+		override public function equals(other:Object):Boolean {
+			var result:Boolean = super.equals(other);
+			if (result) {
+				var otherClassInfo:ClassInfo = other as ClassInfo;
+				if (otherClassInfo != null) {
+					if (!staticInitializer.equals(otherClassInfo.staticInitializer)) {
+						return false;
+					}
+					if (!classMultiname.equals(otherClassInfo.classMultiname)) {
+						return false;
+					}
+					if (metadata != null) {
+						if (metadata.length != otherClassInfo.metadata.length) {
+							return false;
+						}
+						var len:int = metadata.length;
+						var i:int;
+						var md:Metadata;
+						var otherMd:Metadata;
+						for (i = 0; i < len; ++i) {
+							md = metadata[i];
+							otherMd = otherClassInfo.metadata[i];
+							if (!md.equals(otherMd)) {
+								return false;
+							}
+						}
+					}
+					return true;
+				} else {
+					return false;
+				}
+			}
+			return result;
 		}
 	}
 }
