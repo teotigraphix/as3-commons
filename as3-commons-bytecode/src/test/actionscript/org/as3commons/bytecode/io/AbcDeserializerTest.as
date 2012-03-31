@@ -18,16 +18,18 @@ package org.as3commons.bytecode.io {
 
 	import org.as3commons.bytecode.Resources;
 	import org.as3commons.bytecode.abc.AbcFile;
+	import org.as3commons.bytecode.abc.ConstantPool;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.Assertions;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertFalse;
-import org.flexunit.asserts.assertStrictlyEquals;
-import org.flexunit.asserts.assertTrue;
+	import org.flexunit.asserts.assertStrictlyEquals;
+	import org.flexunit.asserts.assertTrue;
 
-public class AbcDeserializerTest {
+	public class AbcDeserializerTest {
 		//NOTE: This is just used to dump the proxy template for inspection and comparison to weaved proxies 
 //		public function TestPrintDynamicSubclass() : void
 //		{
@@ -118,57 +120,7 @@ public class AbcDeserializerTest {
 			assertTrue(isNaN(pool.doublePool[0]));
 
 			// The following entries are expected in the string pool
-			var expectedStringPoolEntries:Array =
-					["*",
-						"assets.abc:FullClassDefinition",
-						"PUBLIC_STATIC_CONSTANT",
-						"SOME_STATIC_CONSTANT",
-						"SOME_STATIC_VAR",
-						"FullClassDefinition.as$1",
-						"",
-						"assets.abc",
-						"Object",
-						"Dictionary",
-						"flash.utils",
-						"dictionary",
-						"trace",
-						"Constructor",
-						"methodWithNoArguments",
-						"void",
-						"methodWithTwoArguments",
-						"String",
-						"int",
-						"methodWithOptionalArguments",
-						"methodWithRestArguments",
-						"I don't want to die.",
-						"_internalValue",
-						"Interface",
-						"implementMeOrDie",
-						"MethodMetadata",
-						"methodKey1",
-						"methodValue1",
-						"methodKey2",
-						"methodValue2",
-						"setterForInternalValue",
-						"FieldMetadata",
-						"fieldKey1",
-						"fieldValue1",
-						"fieldKey2",
-						"fieldValue2",
-						"getterForInternalValue",
-						"FullClassDefinition",
-						"ValuelessMetadata",
-						"ValueOnlyMetadata",
-						"valueOnlyValue",
-						"ClassMetadata",
-						"classKey1",
-						"classValue1",
-						"classKey2",
-						"classValue2",
-						"classKey3",
-						"classValue3",
-						"staticMethod",
-						"customNamespaceFunction",
+			var expectedStringPoolEntries:Array = ["*", "assets.abc:FullClassDefinition", "PUBLIC_STATIC_CONSTANT", "SOME_STATIC_CONSTANT", "SOME_STATIC_VAR", "FullClassDefinition.as$1", "", "assets.abc", "Object", "Dictionary", "flash.utils", "dictionary", "trace", "Constructor", "methodWithNoArguments", "void", "methodWithTwoArguments", "String", "int", "methodWithOptionalArguments", "methodWithRestArguments", "I don't want to die.", "_internalValue", "Interface", "implementMeOrDie", "MethodMetadata", "methodKey1", "methodValue1", "methodKey2", "methodValue2", "setterForInternalValue", "FieldMetadata", "fieldKey1", "fieldValue1", "fieldKey2", "fieldValue2", "getterForInternalValue", "FullClassDefinition", "ValuelessMetadata", "ValueOnlyMetadata", "valueOnlyValue", "ClassMetadata", "classKey1", "classValue1", "classKey2", "classValue2", "classKey3", "classValue3", "staticMethod", "customNamespaceFunction",
 //				"custom_namespace",
 				"http://www.maximporges.com"];
 
@@ -189,7 +141,7 @@ public class AbcDeserializerTest {
 				new LNamespace(NamespaceKind.STATIC_PROTECTED_NAMESPACE, "Object"), // Namespace[staticProtectedNamespace::Object]
 				new LNamespace(NamespaceKind.PACKAGE_NAMESPACE, "flash.utils"), // Namespace[public::flash.utils]
 				new LNamespace(NamespaceKind.NAMESPACE, "http://www.maximporges.com") // Namespace[public::flash.utils]
-			];
+				];
 			Assertions.assertArrayContentsEqual(expectedNamespaceEntries, pool.namespacePool);
 
 			// The namespace set pool has four entries, with 1, 8, 9, and 4 namespaces in each respectively
@@ -222,6 +174,29 @@ public class AbcDeserializerTest {
 			//TODO: method bodies
 			assertEquals(abcFile.methodInfo.length, abcFile.methodBodies.length);
 			assertEquals(12, abcFile.methodBodies.length);
+		}
+
+		[Test]
+		public function testDeserializeConstantPool():void {
+			var ba:ByteArray = AbcSpec.newByteArray();
+			var constantpool:ConstantPool = new ConstantPool();
+			var newConstantPool:ConstantPool = new ConstantPool();
+			constantpool.addInt(-100);
+			constantpool.addUint(100);
+			constantpool.addDouble(104.2346);
+			constantpool.addString("");
+			constantpool.addString("asdsadaasdfsadfasdlfhalishfliashficlnweinfcewrirufyewirrflinsufilwhenicfysadlicfynweqlifhynweilfhclieyfcliuelfcyewliucfgweligcnweliugnliewglwergoyweuilngwleirgliuewyngilnowenogyewlognweoygloiewrngliwergiluerf");
+			constantpool.addString("asdasdasdd");
+			constantpool.addString("testtesttest");
+			new AbcSerializer().serializeConstantPool(constantpool, ba);
+			ba.position = 0;
+			new AbcDeserializer(ba).deserializeConstantPool(newConstantPool);
+			assertEquals(5, newConstantPool.stringPool.length);
+			assertEquals("*", newConstantPool.stringPool[0]);
+			assertEquals("", newConstantPool.stringPool[1]);
+			assertEquals("asdsadaasdfsadfasdlfhalishfliashficlnweinfcewrirufyewirrflinsufilwhenicfysadlicfynweqlifhynweilfhclieyfcliuelfcyewliucfgweligcnweliugnliewglwergoyweuilngwleirgliuewyngilnowenogyewlognweoygloiewrngliwergiluerf", newConstantPool.stringPool[2]);
+			assertEquals("asdasdasdd", newConstantPool.stringPool[3]);
+			assertEquals("testtesttest", newConstantPool.stringPool[4]);
 		}
 	}
 }

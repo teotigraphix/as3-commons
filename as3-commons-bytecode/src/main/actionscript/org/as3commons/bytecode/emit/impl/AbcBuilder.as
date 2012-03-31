@@ -268,7 +268,7 @@ package org.as3commons.bytecode.emit.impl {
 		 * @param index The current class index in the <code>AbcFile</code>.
 		 * @return The current class index in the <code>AbcFile</code>.
 		 */
-		protected function addAbcObjects(instances:Array, abcFile:AbcFile, applicationDomain:ApplicationDomain, index:uint):uint {
+		protected function addAbcObjects(instances:*, abcFile:AbcFile, applicationDomain:ApplicationDomain, index:uint):uint {
 			Assert.notNull(instances, "instances argument must not be null");
 			Assert.notNull(abcFile, "abcFile argument must not be null");
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
@@ -283,10 +283,15 @@ package org.as3commons.bytecode.emit.impl {
 				} else if (inst is Metadata) {
 					abcFile.addMetadataInfo(Metadata(inst));
 				} else if (inst is Array) {
-					addAbcObjects((inst as Array), abcFile, applicationDomain, index);
+					addAbcObjects(inst, abcFile, applicationDomain, index);
 				} else if (inst is SlotOrConstantTrait) {
 					addNamespace(abcFile, SlotOrConstantTrait(inst));
+				} else if (inst is Object) {
+					addAbcObjects(inst, abcFile, applicationDomain, index);
+				} else {
+					throw new Error((Object(inst).constructor as Class).toString());
 				}
+
 			}
 			return index;
 		}
