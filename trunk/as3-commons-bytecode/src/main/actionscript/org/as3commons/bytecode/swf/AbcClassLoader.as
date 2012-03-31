@@ -84,9 +84,7 @@ package org.as3commons.bytecode.swf {
 		 * Internally used <code>AbcSerializer</code> to serialize incoming <code>AbcFiles</code>.
 		 */
 		protected function get abcSerializer():AbcSerializer {
-			if (_abcSerializer == null) {
-				_abcSerializer = new AbcSerializer();
-			}
+			_abcSerializer ||= new AbcSerializer();
 			return _abcSerializer;
 		}
 

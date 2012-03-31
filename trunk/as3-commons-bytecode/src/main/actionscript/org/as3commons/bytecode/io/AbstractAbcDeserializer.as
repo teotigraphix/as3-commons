@@ -147,9 +147,14 @@ package org.as3commons.bytecode.io {
 			include "readU32.as.tmpl";
 			i = 0;
 			itemCount = --result;
+			var str:String;
 			while (i < itemCount) {
 				include "readU32.as.tmpl";
-				strings[++i] = _byteStream.readUTFBytes(result);
+				str = _byteStream.readUTFBytes(result);
+				if (result != str.length) {
+					str = "UTF8_BAD" + (_illegalCount++).toString();
+				}
+				strings[++i] = str;
 			}
 			CONFIG::debug {
 				logConstantPoolRead("strings", startTime);
@@ -240,7 +245,7 @@ package org.as3commons.bytecode.io {
 					j = 0;
 					while (paramCount--) {
 						include "readU32.as.tmpl";
-						params[++j] = multiNames[result];
+						params[j++] = multiNames[result];
 					}
 					multiNames[i] = new MultinameG(qualifiedName, paramCount, params, MultinameKind.GENERIC)
 				}
