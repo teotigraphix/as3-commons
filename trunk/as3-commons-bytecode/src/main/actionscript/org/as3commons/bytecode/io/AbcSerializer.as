@@ -367,9 +367,6 @@ package org.as3commons.bytecode.io {
 
 			writeU30(methodInfoArray.length); // u30 method_count
 			for each (var methodInfo:MethodInfo in methodInfoArray) {
-				if ((methodInfo.as3commonsByteCodeAssignedMethodTrait != null) && (methodInfo.as3commonsByteCodeAssignedMethodTrait.traitMultiname.name == 'decomposeMatrix')) {
-					var asdad:int = 0;
-				}
 				writeU30(methodInfo.argumentCollection.length); // u30 param_count
 				writeU30(pool.addMultiname(methodInfo.returnType)); // u30 return_type
 				for each (var param:Argument in methodInfo.argumentCollection) {
