@@ -345,8 +345,12 @@ package org.as3commons.bytecode.util {
 		 * the string plus UTF-8 encoded characters representing the string's value.
 		 */
 		public static function writeStringInfo(string:String, byteArray:ByteArray):void {
-			writeU30(string.length, byteArray);
-			byteArray.writeUTFBytes(string);
+			var tmpArray:ByteArray = new ByteArray();
+			tmpArray.endian = Endian.LITTLE_ENDIAN;
+			tmpArray.writeUTFBytes(string);
+			tmpArray.position = 0;
+			writeU30(tmpArray.length, byteArray);
+			byteArray.writeBytes(tmpArray);
 		}
 
 		/**
