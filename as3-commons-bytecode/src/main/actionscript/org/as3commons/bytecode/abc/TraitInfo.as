@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
-import flash.errors.IllegalOperationError;
+	import flash.errors.IllegalOperationError;
 
-import org.as3commons.bytecode.abc.enum.TraitKind;
-import org.as3commons.bytecode.typeinfo.Annotatable;
+	import org.as3commons.bytecode.abc.enum.TraitKind;
+	import org.as3commons.bytecode.typeinfo.Annotatable;
+	import org.as3commons.lang.IEquals;
 
-/**
-	 * as3commons-bytecode representation of <code>traits_info</code> in the ABC file format, which is the base type for all kinds of object traits
-	 * (both class and instance traits).
-	 *
-	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Trait" in the AVM Spec (page 29)
-	 */
-	public class TraitInfo extends Annotatable {
+	/**
+		 * as3commons-bytecode representation of <code>traits_info</code> in the ABC file format, which is the base type for all kinds of object traits
+		 * (both class and instance traits).
+		 *
+		 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Trait" in the AVM Spec (page 29)
+		 */
+	public class TraitInfo extends Annotatable implements IEquals {
 
 		public var traitMultiname:QualifiedName;
 		public var traitKind:TraitKind;
@@ -51,6 +52,26 @@ import org.as3commons.bytecode.typeinfo.Annotatable;
 
 		public function get hasMetadata():Boolean {
 			return (metadata.length > 0);
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherTrait:TraitInfo = other as TraitInfo;
+			if (otherTrait != null) {
+				if (!traitMultiname.equals(otherTrait.traitMultiname)) {
+					return false;
+				}
+				if (this.traitKind !== otherTrait.traitKind) {
+					return false;
+				}
+				if (this.isFinal != otherTrait.isFinal) {
+					return false;
+				}
+				if (this.isOverride != otherTrait.isOverride) {
+					return false;
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 }

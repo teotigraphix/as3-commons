@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.abc {
+	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.lang.util.CloneUtils;
 
@@ -23,25 +25,50 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Script" in the AVM Spec (page 32)
 	 */
-	public final class ScriptInfo implements ICloneable {
+	public final class ScriptInfo implements ICloneable, IEquals {
 		public var scriptInitializer:MethodInfo;
-		public var traits:Array;
+		public var traits:Vector.<TraitInfo>;
 
 		public function ScriptInfo() {
 			super();
-			traits = [];
+			traits = new Vector.<TraitInfo>();
 		}
 
 
 		public function clone():* {
 			var scriptInfo:ScriptInfo = new ScriptInfo();
 			scriptInfo.scriptInitializer = scriptInitializer.clone();
-			scriptInfo.traits = CloneUtils.cloneList(traits);
+			scriptInfo.traits = AbcFileUtil.cloneVector(traits);
 			return scriptInfo;
 		}
 
 		public function toString():String {
 			return StringUtils.substitute("ScriptInfo[\n\tscriptInitializer={0}\n\ttraits=[\n\t\t{1}\n\t]\n]", scriptInitializer, traits.join("\n\t\t"));
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherScript:ScriptInfo = other as ScriptInfo;
+			if (otherScript != null) {
+				if (!scriptInitializer.equals(otherScript.scriptInitializer)) {
+					return false;
+				}
+				if (traits.length != otherScript.traits.length) {
+					return false;
+				}
+				var i:int;
+				var len:int = traits.length;
+				var trait:TraitInfo;
+				var otherTrait:TraitInfo;
+				for (i = 0; i < len; ++i) {
+					trait = traits[i];
+					otherTrait = otherScript.traits[i];
+					if (!trait.equals(otherTrait)) {
+						return false;
+					}
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 }

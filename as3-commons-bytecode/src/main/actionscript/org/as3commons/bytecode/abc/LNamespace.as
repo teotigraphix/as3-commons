@@ -15,6 +15,7 @@
  */
 package org.as3commons.bytecode.abc {
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
+	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ICloneable;
 	import org.as3commons.lang.IEquals;
@@ -52,7 +53,7 @@ package org.as3commons.bytecode.abc {
 
 			var thisNamespaceIsPrivate:Boolean = (this.kind == NamespaceKind.PRIVATE_NAMESPACE);
 			var comparingNamespaceIsPrivate:Boolean = (namespaze.kind == NamespaceKind.PRIVATE_NAMESPACE);
-			if (thisNamespaceIsPrivate && comparingNamespaceIsPrivate) {
+			if ((thisNamespaceIsPrivate && comparingNamespaceIsPrivate) && (!as3commons_bytecode::semanticEquality)) {
 				namespacesMatch = (namespaze == this);
 			} else {
 				namespacesMatch = (this.kind == namespaze.kind) && (this.name == namespaze.name);
@@ -60,6 +61,8 @@ package org.as3commons.bytecode.abc {
 
 			return namespacesMatch;
 		}
+
+		as3commons_bytecode static var semanticEquality:Boolean = false;
 
 		public function toString():String {
 			var string:String = "Namespace[" + kind.description;

@@ -26,9 +26,9 @@ package org.as3commons.bytecode.abc {
 
 		private var _jumpOpcode:Op;
 		private var _targetOpcode:Op;
-		private var _extraOpcodes:Array;
+		private var _extraOpcodes:Vector.<Op>;
 
-		public function get extraOpcodes():Array {
+		public function get extraOpcodes():Vector.<Op> {
 			return _extraOpcodes;
 		}
 
@@ -56,7 +56,8 @@ package org.as3commons.bytecode.abc {
 			if (targetOp == null) {
 				return;
 			}
-			(_extraOpcodes ||= [])[_extraOpcodes.length] = targetOp;
+			_extraOpcodes ||= new Vector.<Op>();
+			_extraOpcodes[_extraOpcodes.length] = targetOp;
 		}
 
 		/**

@@ -29,6 +29,7 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.RuntimeQualifiedName;
 	import org.as3commons.bytecode.abc.RuntimeQualifiedNameL;
+	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 
@@ -243,7 +244,7 @@ package org.as3commons.bytecode.io {
 						include "readU32.as.tmpl";
 						params[j++] = multiNames[result];
 					}
-					multiNames[i] = new MultinameG(qualifiedName, paramCount, params, MultinameKind.GENERIC)
+					multiNames[i] = new MultinameG(qualifiedName, params, MultinameKind.GENERIC)
 				}
 			}
 
@@ -285,7 +286,7 @@ package org.as3commons.bytecode.io {
 		public function deserializeMethodInfos(abcFile:AbcFile, pool:IConstantPool):void {
 		}
 
-		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
+		public function deserializeTraitsInfo(abcFile:AbcFile, byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Vector.<TraitInfo> {
 			return null;
 		}
 

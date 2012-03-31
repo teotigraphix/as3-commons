@@ -270,8 +270,8 @@ package org.as3commons.bytecode.io {
 			resolveOpcodeExceptionInfos(methodBody);
 		}
 
-		public static function extractExceptionInfos(input:ByteArray, constantPool:IConstantPool, methodBody:MethodBody):Array {
-			var exceptionInfos:Array = [];
+		public static function extractExceptionInfos(input:ByteArray, constantPool:IConstantPool, methodBody:MethodBody):Vector.<ExceptionInfo> {
+			var exceptionInfos:Vector.<ExceptionInfo> = new Vector.<ExceptionInfo>();
 			var exceptionCount:int = AbcSpec.readU30(input);
 			for (var exceptionIndex:int = 0; exceptionIndex < exceptionCount; ++exceptionIndex) {
 				// exception_info
@@ -503,11 +503,7 @@ package org.as3commons.bytecode.io {
 						//trace("MethodInfo param " + argumentIndex + ": " + arg.toString());
 				}
 				methodInfo.methodName = pool.stringPool[AbcSpec.readU30(_byteStream)];
-				CONFIG::debug {
-					Assert.notNull(methodInfo.methodName);
-				}
 				methodInfo.scopeName = MultinameUtil.extractInterfaceScopeFromFullName(methodInfo.methodName);
-				//trace("Method name " + methodInfo.methodName);
 				methodInfo.flags = AbcSpec.readU8(_byteStream);
 
 				if (MethodFlag.flagPresent(methodInfo.flags, MethodFlag.HAS_OPTIONAL)) {
@@ -624,8 +620,8 @@ package org.as3commons.bytecode.io {
 			return -1;
 		}
 
-		public override function deserializeTraitsInfo(abcFile:AbcFile, _byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
-			var traits:Array = [];
+		public override function deserializeTraitsInfo(abcFile:AbcFile, _byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Vector.<TraitInfo> {
+			var traits:Vector.<TraitInfo> = new Vector.<TraitInfo>();
 			var pool:IConstantPool = abcFile.constantPool;
 			var methodInfos:Vector.<MethodInfo> = abcFile.methodInfo;
 			var metadata:Vector.<Metadata> = abcFile.metadataInfo;

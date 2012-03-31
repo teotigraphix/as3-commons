@@ -23,6 +23,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.MethodTrait;
+	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
 	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.ConstantKind;
@@ -35,6 +36,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.ITypeBuilder;
 	import org.as3commons.bytecode.emit.enum.MemberVisibility;
 	import org.as3commons.bytecode.io.AbcDeserializer;
+	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
@@ -71,7 +73,7 @@ package org.as3commons.bytecode.emit.impl {
 		private var _isFinal:Boolean;
 		private var _isInternal:Boolean;
 
-		public function BaseTypeBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
+		public function BaseTypeBuilder(name:String=null, visibility:MemberVisibility=null, nameSpace:String=null) {
 			super(name, visibility, nameSpace);
 			initBaseTypeBuilder();
 		}
@@ -114,7 +116,7 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineMethod(methodName:String = null, nameSpace:String = null):IMethodBuilder {
+		public function defineMethod(methodName:String=null, nameSpace:String=null):IMethodBuilder {
 			var mb:MethodBuilder = new MethodBuilder();
 			mb.packageName = packageName + MultinameUtil.PERIOD + this.name;
 			mb.name = methodName;
@@ -135,7 +137,7 @@ package org.as3commons.bytecode.emit.impl {
 			return mb;
 		}
 
-		public function removeAccessor(name:String, nameSpace:String = null):void {
+		public function removeAccessor(name:String, nameSpace:String=null):void {
 			var idx:int = -1;
 			for each (var ab:IAccessorBuilder in _accessorBuilders) {
 				if (ab.name == name) {
@@ -156,7 +158,7 @@ package org.as3commons.bytecode.emit.impl {
 			}
 		}
 
-		public function removeMethod(name:String, nameSpace:String = null):void {
+		public function removeMethod(name:String, nameSpace:String=null):void {
 			var idx:int = -1;
 			for each (var mb:IMethodBuilder in _methodBuilders) {
 				if (mb.name == name) {
@@ -193,13 +195,13 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineAccessor(name:String = null, type:String = null, initialValue:* = undefined):IAccessorBuilder {
+		public function defineAccessor(name:String=null, type:String=null, initialValue:*=undefined):IAccessorBuilder {
 			var ab:IAccessorBuilder = createAccessorBuilder(name, type, initialValue);
 			_accessorBuilders[_accessorBuilders.length] = ab;
 			return ab;
 		}
 
-		protected function createAccessorBuilder(name:String, type:String, initialValue:* = undefined):IAccessorBuilder {
+		protected function createAccessorBuilder(name:String, type:String, initialValue:*=undefined):IAccessorBuilder {
 			var ab:IAccessorBuilder = new AccessorBuilder();
 			ab.packageName = packageName + MultinameUtil.PERIOD + this.name;
 			ab.name = name;
@@ -255,7 +257,7 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function defineMetadata(name:String = null, arguments:Array = null):IMetadataBuilder {
+		public function defineMetadata(name:String=null, arguments:Array=null):IMetadataBuilder {
 			var mdb:MetadataBuilder = new MetadataBuilder();
 			mdb.name = name;
 			mdb.arguments = arguments;
@@ -263,8 +265,8 @@ package org.as3commons.bytecode.emit.impl {
 			return mdb;
 		}
 
-		protected function buildMetadata():Array {
-			var result:Array = [];
+		protected function buildMetadata():Vector.<Metadata> {
+			var result:Vector.<Metadata> = new Vector.<Metadata>();
 			for each (var mdb:MetadataBuilder in _metadata) {
 				result[result.length] = mdb.build();
 			}
@@ -281,7 +283,7 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
-		protected function createAccessors(variableTraits:Array = null):Array {
+		protected function createAccessors(variableTraits:Array=null):Array {
 			var result:Array = [];
 			for each (var ab:IAccessorBuilder in _accessorBuilders) {
 				var lst:Array = ab.build() as Array;
@@ -296,7 +298,7 @@ package org.as3commons.bytecode.emit.impl {
 			return result;
 		}
 
-		protected function createClassInfo(slotTraits:Array, methods:Array, initScopeDepth:uint, isInterface:Boolean = false):ClassInfo {
+		protected function createClassInfo(slotTraits:Array, methods:Array, initScopeDepth:uint, isInterface:Boolean=false):ClassInfo {
 			var clsInfo:ClassInfo = (classInfo != null) ? classInfo : new ClassInfo();
 			for each (var mi:MethodInfo in methods) {
 				if (!methodExists(mi)) {
@@ -345,8 +347,8 @@ package org.as3commons.bytecode.emit.impl {
 
 			if ((classInfo == null) || (classInfo.staticInitializer == null)) {
 				if (!isInterface) {
-					ctorBuilder.addOpcode(Opcode.getlocal_0)//
-							.addOpcode(Opcode.pushscope);
+					ctorBuilder.addOpcode(Opcode.getlocal_0) //
+						.addOpcode(Opcode.pushscope);
 					for each (var slot:SlotOrConstantTrait in staticSlots) {
 						ctorBuilder.addOpcodes(createInitializer(slot));
 					}
@@ -357,8 +359,8 @@ package org.as3commons.bytecode.emit.impl {
 			return ctorBuilder;
 		}
 
-		protected function createInitializer(slot:SlotOrConstantTrait):Array {
-			var result:Array = [];
+		protected function createInitializer(slot:SlotOrConstantTrait):Vector.<Op> {
+			var result:Vector.<Op> = new Vector.<Op>();
 			if (slot.defaultValue !== undefined) {
 				result[result.length] = Opcode.findproperty.op([slot.traitMultiname]);
 				result[result.length] = determinePushOpcode(slot).op([slot.defaultValue]);

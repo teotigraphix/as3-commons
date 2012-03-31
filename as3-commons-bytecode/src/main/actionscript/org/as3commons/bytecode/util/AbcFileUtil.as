@@ -15,8 +15,11 @@
  */
 package org.as3commons.bytecode.util {
 
+	import avmplus.getQualifiedClassName;
+
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
+	import flash.utils.getDefinitionByName;
 
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -26,6 +29,7 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.as3commons_bytecode;
 	import org.as3commons.bytecode.swf.SWFFile;
 	import org.as3commons.bytecode.tags.DoABCTag;
+	import org.as3commons.lang.ICloneable;
 
 	/**
 	 * Helper methods for modifying <code>ABCFiles</code>, <code>ConstantPools</code> and <code>SWFFile</code>.
@@ -209,6 +213,16 @@ package org.as3commons.bytecode.util {
 
 			outputStream.position = 0;
 			return outputStream;
+		}
+
+		public static function cloneVector(cloneables:*):* {
+			var className:String = getQualifiedClassName(cloneables);
+			var cls:Class = getDefinitionByName(className) as Class;
+			var clone:* = new cls();
+			for each (var cloneable:ICloneable in cloneables) {
+				clone[clone.length] = cloneable.clone();
+			}
+			return clone;
 		}
 
 	}

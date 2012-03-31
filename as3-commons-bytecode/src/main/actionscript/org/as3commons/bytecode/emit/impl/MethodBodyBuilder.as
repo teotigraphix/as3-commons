@@ -18,10 +18,12 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.utils.Dictionary;
 
 	import org.as3commons.bytecode.abc.BaseMultiname;
+	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.JumpTargetData;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.abc.TraitInfo;
 	import org.as3commons.bytecode.abc.enum.MultinameKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.as3commons_bytecode;
@@ -131,10 +133,10 @@ package org.as3commons.bytecode.emit.impl {
 			stackModifiers[Opcode.sf64] = -2;
 		}
 
-		private var _opcodes:Array = [];
-		private var _backpatches:Array = [];
-		private var _exceptionInfos:Array = [];
-		private var _traits:Array = [];
+		private var _opcodes:Vector.<Op> = new Vector.<Op>();
+		private var _backpatches:Vector.<JumpTargetData> = new Vector.<JumpTargetData>();
+		private var _exceptionInfos:Vector.<ExceptionInfo> = new Vector.<ExceptionInfo>();
+		private var _traits:Vector.<TraitInfo> = new Vector.<TraitInfo>();
 		private var _currentStack:int = 0;
 		private var _maxStack:int = 0;
 		private var _currentScope:int = 0;
@@ -168,12 +170,12 @@ package org.as3commons.bytecode.emit.impl {
 				AbcDeserializer.resolveOpcodeExceptionInfos(methodBody);
 				_methodBody.rawOpcodes = null;
 			}
-			_opcodes = _methodBody.opcodes.concat([]);
-			if (_methodBody.backPatches != null) {
-				_backpatches = _methodBody.backPatches.concat([]);
+			_opcodes = _methodBody.opcodes.concat(new Vector.<Op>);
+			if (_methodBody.jumpTargets != null) {
+				_backpatches = _methodBody.jumpTargets.concat(new Vector.<JumpTargetData>);
 			}
-			_exceptionInfos = _methodBody.exceptionInfos.concat([]);
-			_traits = _methodBody.traits.concat([]);
+			_exceptionInfos = _methodBody.exceptionInfos.concat(new Vector.<ExceptionInfo>());
+			_traits = _methodBody.traits.concat(new Vector.<TraitInfo>());
 			_maxStack = _methodBody.maxStack;
 			_maxScope = _methodBody.maxScopeDepth;
 		}
@@ -190,19 +192,19 @@ package org.as3commons.bytecode.emit.impl {
 			return _needArguments;
 		}
 
-		public function get opcodes():Array {
+		public function get opcodes():Vector.<Op> {
 			return _opcodes;
 		}
 
-		public function set opcodes(value:Array):void {
+		public function set opcodes(value:Vector.<Op>):void {
 			_opcodes = value;
 		}
 
-		public function get exceptionInfos():Array {
+		public function get exceptionInfos():Vector.<ExceptionInfo> {
 			return _exceptionInfos;
 		}
 
-		public function set exceptionInfos(value:Array):void {
+		public function set exceptionInfos(value:Vector.<ExceptionInfo>):void {
 			_exceptionInfos = value;
 		}
 
@@ -226,18 +228,15 @@ package org.as3commons.bytecode.emit.impl {
 			_currentScope = initScopeDepth;
 			_maxScope = 0;
 			var mb:MethodBody = (_methodBody != null) ? _methodBody : new MethodBody();
-			if (mb.backPatches == null) {
-				mb.backPatches = [];
-			}
+			mb.jumpTargets ||= _backpatches.concat(new Vector.<JumpTargetData>());
 			mb.initScopeDepth = initScopeDepth;
-			mb.opcodes = _opcodes.concat([]);
-			mb.exceptionInfos = _exceptionInfos.concat([]);
-			mb.traits = _traits.concat([]);
+			mb.opcodes = _opcodes.concat(new Vector.<Op>());
+			mb.exceptionInfos = _exceptionInfos.concat(new Vector.<ExceptionInfo>());
+			mb.traits = _traits.concat(new Vector.<TraitInfo>());
 			extraLocalCount += analyzeOpcodes(mb, extraLocalCount);
 			mb.localCount += extraLocalCount;
 			mb.maxStack = _maxStack;
 			mb.maxScopeDepth = _maxScope;
-			mb.backPatches = _backpatches.concat([]);
 			return mb;
 		}
 
@@ -413,7 +412,7 @@ package org.as3commons.bytecode.emit.impl {
 			return this;
 		}
 
-		public function addOpcodes(newOpcodes:Array):IMethodBodyBuilder {
+		public function addOpcodes(newOpcodes:Vector.<Op>):IMethodBodyBuilder {
 			_opcodes = _opcodes.concat(newOpcodes);
 			return this;
 		}

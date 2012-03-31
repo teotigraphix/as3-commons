@@ -292,7 +292,7 @@ package org.as3commons.bytecode.abc.enum {
 		/**
 		 * Serializes an array of Ops, returning a ByteArray with the opcode output block.
 		 */
-		public static function serialize(ops:Array, methodBody:MethodBody, abcFile:AbcFile):ByteArray {
+		public static function serialize(ops:Vector.<Op>, methodBody:MethodBody, abcFile:AbcFile):ByteArray {
 			var opcodePositions:Dictionary = new Dictionary();
 			var serializedOpcodes:ByteArray = AbcSpec.newByteArray();
 			for each (var op:Op in ops) {
@@ -304,24 +304,24 @@ package org.as3commons.bytecode.abc.enum {
 				op.endLocation = serializedOpcodes.position;
 			}
 			serializedOpcodes.position = 0;
-			resolveBackPatches(serializedOpcodes, methodBody.backPatches, opcodePositions);
+			resolveJumpTargets(serializedOpcodes, methodBody.jumpTargets, opcodePositions);
 			serializedOpcodes.position = 0;
 			methodBody.opcodeBaseLocations = opcodePositions;
 			return serializedOpcodes;
 		}
 
-		public static function resolveBackPatches(serializedOpcodes:ByteArray, backPatches:Array, positions:Dictionary):void {
+		public static function resolveJumpTargets(serializedOpcodes:ByteArray, backPatches:Vector.<JumpTargetData>, positions:Dictionary):void {
 			for each (var jumpData:JumpTargetData in backPatches) {
 				var changed:Boolean = false;
 				if (jumpData.targetOpcode != null) {
-					if (resolveBackpatch(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes, (jumpData.jumpOpcode.opcode === Opcode.lookupswitch)) == true) {
+					if (resolveJumpTarget(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes, (jumpData.jumpOpcode.opcode === Opcode.lookupswitch)) == true) {
 						changed = true;
 					}
 				}
 				if (jumpData.extraOpcodes != null) {
 					var idx:int = 0;
 					for each (var targetOpcode:Op in jumpData.extraOpcodes) {
-						if (resolveBackpatch(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes, true, idx++)) {
+						if (resolveJumpTarget(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes, true, idx++)) {
 							changed = true;
 						}
 					}
@@ -330,7 +330,7 @@ package org.as3commons.bytecode.abc.enum {
 			}
 		}
 
-		public static function resolveBackpatch(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean=false, index:int=-1):Boolean {
+		public static function resolveJumpTarget(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean=false, index:int=-1):Boolean {
 			var jumpParam:int = (index < 0) ? int(jumpOpcode.parameters[0]) : jumpOpcode.parameters[2][index];
 			var baseLocation:int = (isLookupSwitch) ? jumpOpcode.baseLocation : jumpOpcode.endLocation;
 			var targetPos:int = baseLocation + jumpParam;
@@ -441,22 +441,20 @@ package org.as3commons.bytecode.abc.enum {
 		 * bytecode in the Ops. This method assumes that the ByteArray is positioned at the top of an
 		 * opcode block.
 		 */
-		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, constantPool:IConstantPool):Array {
+		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, constantPool:IConstantPool):Vector.<Op> {
 			var opcodePositions:Dictionary = new Dictionary();
 			var opcodeEndPositions:Dictionary = new Dictionary();
-			var ops:Array = [];
-			if (methodBody.backPatches == null) {
-				methodBody.backPatches = [];
-			}
+			var ops:Vector.<Op> = new Vector.<Op>();
+			methodBody.jumpTargets ||= new Vector.<JumpTargetData>();
 			var methodBodyPosition:uint = byteArray.position;
 			var opcodeStartPosition:uint = 0;
 			var offset:uint = 0;
-
+			var newOp:Op;
 			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCodeLength);
 			try {
 				while (byteArray.position < positionAtEndOfBytecode) {
 					opcodeStartPosition = byteArray.position;
-					var newOp:Op = parseOpcode(byteArray, constantPool, ops, methodBody);
+					newOp = parseOpcode(byteArray, constantPool, ops, methodBody);
 					newOp.baseLocation = offset;
 					offset += (byteArray.position - opcodeStartPosition);
 					newOp.endLocation = offset;
@@ -475,16 +473,18 @@ package org.as3commons.bytecode.abc.enum {
 				throw e;
 			}
 
-			resolveJumpTargets(methodBody, opcodePositions, opcodeEndPositions, opcodeByteCodeLength);
+			resolveParsedJumpTargets(methodBody, opcodePositions, opcodeEndPositions, opcodeByteCodeLength);
 			methodBody.opcodeBaseLocations = opcodePositions;
 			return ops;
 		}
 
-		public static function resolveJumpTargets(methodBody:MethodBody, opcodeStartPositions:Dictionary, opcodeEndPositions:Dictionary, positionAtEndOfMethodBody:int):void {
+		public static function resolveParsedJumpTargets(methodBody:MethodBody, opcodeStartPositions:Dictionary, opcodeEndPositions:Dictionary, positionAtEndOfMethodBody:int):void {
 			var pos:int;
 			var targetPos:int;
 			var target:Op;
-			for each (var jmpTarget:JumpTargetData in methodBody.backPatches) {
+			var len:int;
+			var arr:Array;
+			for each (var jmpTarget:JumpTargetData in methodBody.jumpTargets) {
 				if (jmpTarget.jumpOpcode.opcode !== Opcode.lookupswitch) {
 					pos = int(jmpTarget.jumpOpcode.parameters[0]);
 					targetPos = jmpTarget.jumpOpcode.endLocation + pos;
@@ -495,8 +495,8 @@ package org.as3commons.bytecode.abc.enum {
 					}
 					jmpTarget.targetOpcode = target;
 				} else {
-					var arr:Array = jmpTarget.jumpOpcode.parameters[2] as Array;
-					var len:int = arr.length;
+					arr = jmpTarget.jumpOpcode.parameters[2] as Array;
+					len = arr.length;
 					for (var i:int = 0; i < len; ++i) {
 						pos = arr[i];
 						targetPos = jmpTarget.jumpOpcode.baseLocation + pos;
@@ -519,7 +519,7 @@ package org.as3commons.bytecode.abc.enum {
 			}
 		}
 
-		public static function parseOpcode(byteArray:ByteArray, constantPool:IConstantPool, ops:Array, methodBody:MethodBody):Op {
+		public static function parseOpcode(byteArray:ByteArray, constantPool:IConstantPool, ops:Vector.<Op>, methodBody:MethodBody):Op {
 			var startPos:int = byteArray.position;
 			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
 			var argumentValues:Array = [];
@@ -531,7 +531,7 @@ package org.as3commons.bytecode.abc.enum {
 			var op:Op = opcode.op(argumentValues);
 			ops[ops.length] = op;
 			if (jumpOpcodes[opcode] == true) {
-				methodBody.backPatches[methodBody.backPatches.length] = new JumpTargetData(op);
+				methodBody.jumpTargets[methodBody.jumpTargets.length] = new JumpTargetData(op);
 			}
 			return op;
 		}

@@ -57,7 +57,7 @@ package org.as3commons.bytecode.abc {
 		public function equals(other:Object):Boolean {
 			var matches:Boolean = false;
 			var multiname:BaseMultiname = BaseMultiname(other);
-			if (multiname.kind.byteValue == kind.byteValue) {
+			if (multiname.kind === kind) {
 				matches = true;
 			}
 

@@ -17,7 +17,9 @@ package org.as3commons.bytecode.abc {
 
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.typeinfo.Argument;
+	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.lang.ICloneable;
+	import org.as3commons.lang.IEquals;
 	import org.as3commons.lang.IllegalArgumentError;
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.lang.util.CloneUtils;
@@ -29,15 +31,16 @@ package org.as3commons.bytecode.abc {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "Method signature" in the AVM Spec (page 24)
 	 * @see MethodTrait
 	 */
-	public final class MethodInfo implements ICloneable {
+	public final class MethodInfo implements ICloneable, IEquals {
 
 		private static const ILLEGAL_TRAITINFO_TYPE:String = "Argument must be of type FunctionTrait or MethodTrait";
 
 		public function MethodInfo() {
-			argumentCollection = [];
+			super();
+			argumentCollection = new Vector.<Argument>();
 		}
 
-		public var argumentCollection:Array;
+		public var argumentCollection:Vector.<Argument>;
 
 		/**
 		 * The <code>method_info</code> entries written by the compiler have never had a name when I have parsed them, so
@@ -83,7 +86,7 @@ package org.as3commons.bytecode.abc {
 
 		public function clone():* {
 			var clone:MethodInfo = new MethodInfo();
-			clone.argumentCollection = CloneUtils.cloneList(argumentCollection);
+			clone.argumentCollection = AbcFileUtil.cloneVector(argumentCollection);
 			clone.returnType = returnType;
 			clone.methodName = methodName;
 			return clone;
@@ -92,8 +95,8 @@ package org.as3commons.bytecode.abc {
 		/**
 		 * Returns an array of the formal parameters (i.e. this required parameters for this method).
 		 */
-		public function get formalParameters():Array {
-			var formalParams:Array = [];
+		public function get formalParameters():Vector.<Argument> {
+			var formalParams:Vector.<Argument> = new Vector.<Argument>();
 			for each (var argument:Argument in argumentCollection) {
 				if (!argument.isOptional) {
 					formalParams[formalParams.length] = argument;
@@ -102,8 +105,8 @@ package org.as3commons.bytecode.abc {
 			return formalParams;
 		}
 
-		public function get optionalParameters():Array {
-			var optionalParams:Array = [];
+		public function get optionalParameters():Vector.<Argument> {
+			var optionalParams:Vector.<Argument> = new Vector.<Argument>();
 			for each (var argument:Argument in argumentCollection) {
 				if (argument.isOptional) {
 					optionalParams[optionalParams.length] = argument;
@@ -137,6 +140,40 @@ package org.as3commons.bytecode.abc {
 			}
 
 			return StringUtils.substitute("{0} function {1}({2}) : {3}", (namespaceString) ? namespaceString : "(no namespace)", as3commonsBytecodeName, argumentCollection.join(", "), returnType);
+		}
+
+		public function equals(other:Object):Boolean {
+			var otherMethod:MethodInfo = other as MethodInfo;
+			if (otherMethod != null) {
+				if (flags != otherMethod.flags) {
+					return false;
+				}
+				if (methodName != otherMethod.methodName) {
+					return false;
+				}
+				if (!returnType.equals(otherMethod.returnType)) {
+					return false;
+				}
+				if (scopeName != otherMethod.scopeName) {
+					return false;
+				}
+				if (argumentCollection.length != otherMethod.argumentCollection.length) {
+					return false;
+				}
+				var len:int = argumentCollection.length;
+				var i:int;
+				var arg:Argument;
+				var otherArg:Argument;
+				for (i = 0; i < len; ++i) {
+					arg = argumentCollection[i];
+					otherArg = otherMethod.argumentCollection[i];
+					if (!arg.equals(otherArg)) {
+						return false;
+					}
+				}
+				return true;
+			}
+			return false;
 		}
 
 	}

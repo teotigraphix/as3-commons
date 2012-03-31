@@ -56,5 +56,39 @@ package org.as3commons.bytecode.abc {
 		public function toString():String {
 			return StringUtils.substitute("SlotOrConstantTrait[name={0}, metadata={1}, kind={2}, slot={3}, typeName={4}, vindex={5}, vkind={6}]", ((traitMultiname) ? traitMultiname : ""), metadata, traitKind.description, slotId, typeMultiname, vindex, ((vkind) ? vkind : ""));
 		}
+
+		override public function equals(other:Object):Boolean {
+			var result:Boolean = super.equals(other);
+			if (result) {
+				var otherTrait:SlotOrConstantTrait = other as SlotOrConstantTrait;
+				if (otherTrait != null) {
+					if (slotId != otherTrait.slotId) {
+						return false;
+					}
+					if (!typeMultiname.equals(otherTrait.typeMultiname)) {
+						return false;
+					}
+					if (vindex != otherTrait.vindex) {
+						return false;
+					}
+					if (vkind !== otherTrait.vkind) {
+						return false;
+					}
+					if (isStatic != otherTrait.isStatic) {
+						return false;
+					}
+					if (!isNaN(defaultValue)) {
+						if (defaultValue !== otherTrait.defaultValue) {
+							return false;
+						}
+					} else if (isNaN(defaultValue) && isNaN(otherTrait.defaultValue) == false) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+			return result;
+		}
 	}
 }

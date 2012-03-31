@@ -28,6 +28,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.MethodInfo;
 	import org.as3commons.bytecode.abc.NamedMultiname;
+	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.ScriptInfo;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
@@ -435,7 +436,7 @@ package org.as3commons.bytecode.emit.impl {
 			if (superClassName != BuiltIns.OBJECT.fullName) {
 				extendedClasses[extendedClasses.length] = superClassName;
 			}
-			var popscopes:Array = [];
+			var popscopes:Vector.<Op> = new Vector.<Op>();
 			var mn:QualifiedName;
 			var len:int = extendedClasses.length;
 			for (var i:int = 0; i < len; i++) {

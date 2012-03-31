@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
@@ -73,14 +74,14 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get exceptionInfos():Array {
+		public function get exceptionInfos():Vector.<ExceptionInfo> {
 			return methodBodyBuilder.exceptionInfos;
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function set exceptionInfos(value:Array):void {
+		public function set exceptionInfos(value:Vector.<ExceptionInfo>):void {
 			methodBodyBuilder.exceptionInfos = value;
 		}
 
@@ -123,14 +124,14 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get opcodes():Array {
+		public function get opcodes():Vector.<Op> {
 			return methodBodyBuilder.opcodes;
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function set opcodes(value:Array):void {
+		public function set opcodes(value:Vector.<Op>):void {
 			methodBodyBuilder.opcodes = value;
 		}
 
@@ -177,7 +178,7 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function addOpcodes(newOpcodes:Array):IMethodBodyBuilder {
+		public function addOpcodes(newOpcodes:Vector.<Op>):IMethodBodyBuilder {
 			return methodBodyBuilder.addOpcodes(newOpcodes);
 		}
 

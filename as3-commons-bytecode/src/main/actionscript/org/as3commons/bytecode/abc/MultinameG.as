@@ -20,32 +20,22 @@ package org.as3commons.bytecode.abc {
 	public final class MultinameG extends BaseMultiname {
 
 		private var _qualifiedName:QualifiedName;
-		private var _paramCount:uint;
 		private var _parameters:Array;
 
-		public function MultinameG(qName:QualifiedName, pCount:uint, params:Array, kindValue:MultinameKind = null) {
+		public function MultinameG(qName:QualifiedName, params:Array, kindValue:MultinameKind=null) {
 			kindValue ||= MultinameKind.GENERIC;
 			super(kindValue);
-			initMultinameG(kindValue, qName, pCount, params);
-		}
-
-		private function initMultinameG(kindValue:MultinameKind, qName:QualifiedName, pCount:uint, params:Array):void {
 			assertAppropriateMultinameKind([MultinameKind.GENERIC], kindValue);
 			_qualifiedName = qName;
-			_paramCount = pCount;
 			_parameters = params;
 		}
 
 		override public function clone():* {
-			return new MultinameG(_qualifiedName.clone(), _paramCount, _parameters, kind);
+			return new MultinameG(_qualifiedName.clone(), _parameters, kind);
 		}
 
 		public function get paramCount():uint {
-			return _paramCount;
-		}
-
-		public function set paramCount(value:uint):void {
-			_paramCount = value;
+			return _parameters.length;
 		}
 
 		public function get parameters():Array {
@@ -68,9 +58,9 @@ package org.as3commons.bytecode.abc {
 			var mg:MultinameG = (other as MultinameG);
 			if (mg != null) {
 				if (_qualifiedName.equals(mg.qualifiedName)) {
-					if (_paramCount == mg._paramCount) {
+					if (paramCount == mg.paramCount) {
 						for (var i:int = 0; i < paramCount; ++i) {
-							if (IEquals(_parameters[i]).equals(mg.parameters[i])) {
+							if (!IEquals(_parameters[i]).equals(mg.parameters[i])) {
 								return false;
 							}
 						}
@@ -79,6 +69,18 @@ package org.as3commons.bytecode.abc {
 				}
 			}
 			return false;
+		}
+
+		public override function toString():String {
+			return "MultinameG{qualifiedName:" + _qualifiedName + ", parameters:[" + paramatersToString(_parameters) + "]}";
+		}
+
+		private function paramatersToString(params:Array):String {
+			var result:Vector.<String> = new Vector.<String>();
+			for each (var mn:BaseMultiname in params) {
+				result[result.length] = mn.toString();
+			}
+			return result.join(",");
 		}
 
 	}

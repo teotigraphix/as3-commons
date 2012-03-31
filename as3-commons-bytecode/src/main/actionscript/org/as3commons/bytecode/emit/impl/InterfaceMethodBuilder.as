@@ -18,6 +18,7 @@ package org.as3commons.bytecode.emit.impl {
 
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodInfo;
+	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.NamespaceKind;
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
@@ -36,7 +37,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		public var interfaceName:String;
 
-		public function InterfaceMethodBuilder(name:String = null, visibility:MemberVisibility = null, nameSpace:String = null) {
+		public function InterfaceMethodBuilder(name:String=null, visibility:MemberVisibility=null, nameSpace:String=null) {
 			super(name, visibility, nameSpace);
 		}
 
@@ -44,11 +45,11 @@ package org.as3commons.bytecode.emit.impl {
 			return StringUtils.substitute(INTERFACE_METHOD_NAME, packageName, name, methodInfo.as3commonsBytecodeName);
 		}
 
-		override public function addOpcode(opcode:Opcode, params:Array = null):IMethodBodyBuilder {
+		override public function addOpcode(opcode:Opcode, params:Array=null):IMethodBodyBuilder {
 			throw new IllegalOperationError(INTERFACE_METHODS_BODY_ERROR);
 		}
 
-		override public function addOpcodes(newOpcodes:Array):IMethodBodyBuilder {
+		override public function addOpcodes(newOpcodes:Vector.<Op>):IMethodBodyBuilder {
 			throw new IllegalOperationError(INTERFACE_METHODS_BODY_ERROR);
 		}
 
