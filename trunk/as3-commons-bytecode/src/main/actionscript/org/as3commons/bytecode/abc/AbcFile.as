@@ -34,11 +34,11 @@ package org.as3commons.bytecode.abc {
 		private static const NEWLINE_CHAR:String = "\n";
 		private static const TOSTRING_TEMPLATE:String = "Method Signatures (MethodInfo):";
 		private var _classNameLookup:Dictionary;
-		private var _methodInfo:Array;
-		private var _metadataInfo:Array;
-		private var _instanceInfo:Array;
-		private var _scriptInfo:Array;
-		private var _methodBodies:Array;
+		private var _methodInfo:Vector.<MethodInfo>;
+		private var _metadataInfo:Vector.<Metadata>;
+		private var _instanceInfo:Vector.<InstanceInfo>;
+		private var _scriptInfo:Vector.<ScriptInfo>;
+		private var _methodBodies:Vector.<MethodBody>;
 
 		public var minorVersion:int;
 		public var majorVersion:int;
@@ -50,20 +50,13 @@ package org.as3commons.bytecode.abc {
 		 */
 		public function AbcFile() {
 			super();
-			initAbcFile();
-		}
-
-		/**
-		 * Initializes the current <code>AbcFile</code>.
-		 */
-		protected function initAbcFile():void {
 			constantPool = new ConstantPool();
 			_classNameLookup = new Dictionary();
-			_methodInfo = [];
-			_metadataInfo = [];
-			_instanceInfo = [];
-			_scriptInfo = [];
-			_methodBodies = [];
+			_methodInfo = new Vector.<MethodInfo>();
+			_metadataInfo = new Vector.<Metadata>();
+			_instanceInfo = new Vector.<InstanceInfo>();
+			_scriptInfo = new Vector.<ScriptInfo>();
+			_methodBodies = new Vector.<MethodBody>();
 		}
 
 		public function addClassInfoReference(classInfoReference:ClassInfoReference):int {
@@ -119,7 +112,7 @@ package org.as3commons.bytecode.abc {
 			addCollection(addMethodInfo, methodInfo);
 		}
 
-		public function addUniquely(itemToAdd:Object, collectionToAddTo:Array):int {
+		public function addUniquely(itemToAdd:Object, collectionToAddTo:*):int {
 			var indexOfItem:int = collectionToAddTo.indexOf(itemToAdd);
 			if (indexOfItem == -1) {
 				indexOfItem = (collectionToAddTo.push(itemToAdd) - 1);
@@ -187,31 +180,31 @@ package org.as3commons.bytecode.abc {
 			return addUniquely(methodBody, _methodBodies);
 		}
 
-		public function get metadataInfo():Array {
+		public function get metadataInfo():Vector.<Metadata> {
 			return _metadataInfo;
 		}
 
-		as3commons_bytecode function setMetadataInfo(value:Array):void {
+		as3commons_bytecode function setMetadataInfo(value:Vector.<Metadata>):void {
 			_metadataInfo = value;
 		}
 
-		public function get methodInfo():Array {
+		public function get methodInfo():Vector.<MethodInfo> {
 			return _methodInfo;
 		}
 
-		as3commons_bytecode function setMethodInfo(value:Array):void {
+		as3commons_bytecode function setMethodInfo(value:Vector.<MethodInfo>):void {
 			_methodInfo = value;
 		}
 
-		public function get instanceInfo():Array {
+		public function get instanceInfo():Vector.<InstanceInfo> {
 			return _instanceInfo;
 		}
 
-		as3commons_bytecode function setInstanceInfo(value:Array):void {
+		as3commons_bytecode function setInstanceInfo(value:Vector.<InstanceInfo>):void {
 			_instanceInfo = value;
 		}
 
-		public function get classInfo():Array {
+		public function get classInfo():Vector.<ClassInfo> {
 			return constantPool.classInfo;
 		}
 
@@ -219,23 +212,23 @@ package org.as3commons.bytecode.abc {
 			constantPool.as3commons_bytecode::setClassInfo(value);
 		}
 
-		public function get scriptInfo():Array {
+		public function get scriptInfo():Vector.<ScriptInfo> {
 			return _scriptInfo;
 		}
 
-		as3commons_bytecode function setScriptInfo(value:Array):void {
+		as3commons_bytecode function setScriptInfo(value:Vector.<ScriptInfo>):void {
 			_scriptInfo = value;
 		}
 
-		public function get methodBodies():Array {
+		public function get methodBodies():Vector.<MethodBody> {
 			return _methodBodies;
 		}
 
-		as3commons_bytecode function setMethodBodies(value:Array):void {
+		as3commons_bytecode function setMethodBodies(value:Vector.<MethodBody>):void {
 			_methodBodies = value;
 		}
 
-		protected function addCollection(addFunction:Function, collection:Array):void {
+		protected function addCollection(addFunction:Function, collection:*):void {
 			for each (var obj:Object in collection) {
 				addFunction(obj);
 			}

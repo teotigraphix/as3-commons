@@ -54,20 +54,20 @@ package org.as3commons.bytecode.abc {
 		private static const LOCKED_CONSTANTPOOL_ERROR:String = "Constantpool is locked";
 
 		private var _dupeCheck:Boolean = true;
-		private var _integerPool:Array;
+		private var _integerPool:Vector.<int>;
 		private var _integerLookup:Dictionary;
-		private var _uintPool:Array;
+		private var _uintPool:Vector.<uint>;
 		private var _uintLookup:Dictionary;
-		private var _doublePool:Array;
+		private var _doublePool:Vector.<Number>;
 		private var _doubleLookup:Dictionary;
-		private var _stringPool:Array;
+		private var _stringPool:Vector.<String>;
 		private var _stringLookup:StringLookup;
-		private var _namespacePool:Array;
+		private var _namespacePool:Vector.<LNamespace>;
 		private var _namespaceLookup:Dictionary;
-		private var _namespaceSetPool:Array;
+		private var _namespaceSetPool:Vector.<NamespaceSet>;
 		private var _namespaceSetLookup:Dictionary;
 		private var _multinamePool:Vector.<BaseMultiname>;
-		private var _classInfo:Array;
+		private var _classInfo:Vector.<ClassInfo>;
 		private var _multinameLookup:Dictionary;
 		private var _lookup:Dictionary;
 		private var _locked:Boolean = false;
@@ -109,25 +109,25 @@ package org.as3commons.bytecode.abc {
 			_namespaceSetLookup = new Dictionary();
 			_multinameLookup = new Dictionary();
 
-			_integerPool = [0];
+			_integerPool = new <int>[0];
+			_uintPool = new <uint>[0];
+			_doublePool = new <Number>[NaN];
+			_classInfo = new Vector.<ClassInfo>;
+			_stringPool = new <String>[LNamespace.ASTERISK.name];
+
 			_integerLookup[0] = 0;
-			_uintPool = [0];
 			_uintLookup[0] = 0;
-			_doublePool = [NaN];
 			_doubleLookup[NaN] = 0;
-			_classInfo = [];
-			_stringPool = [LNamespace.ASTERISK.name];
 			_stringLookup.set(LNamespace.ASTERISK.name, 0);
 
-			_namespacePool = [];
-			addNamespace(LNamespace.ASTERISK);
+			_namespacePool = new <LNamespace>[LNamespace.ASTERISK];
+			_namespaceLookup[LNamespace.ASTERISK.toString()] = 0;
 
-			_namespaceSetPool = [];
-			addNamespaceSet(new NamespaceSet([LNamespace.ASTERISK]));
-			//addNamespaceSet(new NamespaceSet());
+			_namespaceSetPool = new <NamespaceSet>[new NamespaceSet([LNamespace.ASTERISK])];
+			_namespaceSetLookup[_namespaceSetPool[0].toString()] = 0;
 
-			_multinamePool = new Vector.<BaseMultiname>();
-			addMultiname(new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK));
+			_multinamePool = new <BaseMultiname>[new QualifiedName(LNamespace.ASTERISK.name, LNamespace.ASTERISK)];
+			_multinameLookup[_multinamePool[0].toString()] = 0;
 
 			_lookup = new Dictionary();
 			_lookup[ConstantKind.INT] = [_integerPool, _integerLookup];
@@ -161,7 +161,7 @@ package org.as3commons.bytecode.abc {
 		public function addItemToPool(constantKindValue:ConstantKind, item:*):int {
 			var pool:* = _lookup[constantKindValue];
 			if (pool is Array) {
-				return addToPool(pool[0] as Array, pool[1], item);
+				return addToPool(pool[0], pool[1], item);
 			} else {
 				return 1;
 			}
@@ -172,11 +172,11 @@ package org.as3commons.bytecode.abc {
 		 *
 		 * @see #addInt()
 		 */
-		public function get integerPool():Array {
+		public function get integerPool():Vector.<int> {
 			return _integerPool;
 		}
 
-		as3commons_bytecode function setIntegerPool(value:Array):void {
+		as3commons_bytecode function setIntegerPool(value:Vector.<int>):void {
 			_integerPool = value;
 		}
 
@@ -185,11 +185,11 @@ package org.as3commons.bytecode.abc {
 		 *
 		 * @see #addUint()
 		 */
-		public function get uintPool():Array {
+		public function get uintPool():Vector.<uint> {
 			return _uintPool;
 		}
 
-		as3commons_bytecode function setUintPool(value:Array):void {
+		as3commons_bytecode function setUintPool(value:Vector.<uint>):void {
 			_uintPool = value;
 		}
 
@@ -198,11 +198,11 @@ package org.as3commons.bytecode.abc {
 		 *
 		 * @see #addDouble()
 		 */
-		public function get doublePool():Array {
+		public function get doublePool():Vector.<Number> {
 			return _doublePool;
 		}
 
-		as3commons_bytecode function setDoublePool(value:Array):void {
+		as3commons_bytecode function setDoublePool(value:Vector.<Number>):void {
 			_doublePool = value;
 		}
 
@@ -211,11 +211,11 @@ package org.as3commons.bytecode.abc {
 		 *
 		 * @see #addString()
 		 */
-		public function get stringPool():Array {
+		public function get stringPool():Vector.<String> {
 			return _stringPool;
 		}
 
-		as3commons_bytecode function setStringPool(value:Array):void {
+		as3commons_bytecode function setStringPool(value:Vector.<String>):void {
 			_stringPool = value;
 		}
 
@@ -225,11 +225,11 @@ package org.as3commons.bytecode.abc {
 		 * @see #addNamespace()
 		 * @see LNamespace
 		 */
-		public function get namespacePool():Array {
+		public function get namespacePool():Vector.<LNamespace> {
 			return _namespacePool;
 		}
 
-		as3commons_bytecode function setNamespacePool(value:Array):void {
+		as3commons_bytecode function setNamespacePool(value:Vector.<LNamespace>):void {
 			_namespacePool = value;
 		}
 
@@ -239,11 +239,11 @@ package org.as3commons.bytecode.abc {
 		 * @see #addNamespaceSet()
 		 * @see NamespaceSet
 		 */
-		public function get namespaceSetPool():Array {
+		public function get namespaceSetPool():Vector.<NamespaceSet> {
 			return _namespaceSetPool;
 		}
 
-		as3commons_bytecode function setNamespaceSetPool(value:Array):void {
+		as3commons_bytecode function setNamespaceSetPool(value:Vector.<NamespaceSet>):void {
 			_namespaceSetPool = value;
 		}
 
@@ -261,11 +261,11 @@ package org.as3commons.bytecode.abc {
 			_multinamePool = value;
 		}
 
-		public function get classInfo():Array {
+		public function get classInfo():Vector.<ClassInfo> {
 			return _classInfo;
 		}
 
-		as3commons_bytecode function setClassInfo(value:Array):void {
+		as3commons_bytecode function setClassInfo(value:Vector.<ClassInfo>):void {
 			_classInfo = value;
 		}
 
@@ -551,7 +551,7 @@ package org.as3commons.bytecode.abc {
 		 * @param lookup    The item to index Dictionary.
 		 * @param item    The item to add to the pool.
 		 */
-		public function addToPool(pool:Array, lookup:*, item:Object):int {
+		public function addToPool(pool:*, lookup:*, item:Object):int {
 			CONFIG::debug {
 				Assert.notNull(pool, "pool instance cannot be null");
 				Assert.notNull(lookup, "lookup instance cannot be null");

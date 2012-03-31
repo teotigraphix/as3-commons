@@ -416,10 +416,10 @@ package org.as3commons.bytecode.proxy.impl {
 				throw new ProxyBuildError(ProxyBuildError.FINAL_CLASS_ERROR, className);
 			}
 			var classParts:Array = className.split(MultinameUtil.DOUBLE_COLON);
-			var packageName:String = classParts[0] + MultinameUtil.PERIOD + generateSuffix();
+			var packageName:String = (classParts.length > 1) ? classParts[0] + MultinameUtil.PERIOD + generateSuffix() : generateSuffix();
 			var packageBuilder:IPackageBuilder = _abcBuilder.definePackage(packageName);
 
-			var classBuilder:IClassBuilder = packageBuilder.defineClass(classParts[1], (type.isInterface ? null : className));
+			var classBuilder:IClassBuilder = packageBuilder.defineClass((classParts.length > 1) ? classParts[1] : classParts[0], (type.isInterface ? null : className));
 			addMetadata(classBuilder, type.metadata);
 			if ((type.isDynamic == false) && (classProxyInfo.makeDynamic == true)) {
 				classBuilder.isDynamic = true;
@@ -431,7 +431,7 @@ package org.as3commons.bytecode.proxy.impl {
 				classBuilder.implementInterface(type.fullName);
 			}
 
-			var proxyClassName:String = packageName + MultinameUtil.SINGLE_COLON + classParts[1];
+			var proxyClassName:String = packageName + MultinameUtil.SINGLE_COLON + ((classParts.length > 1) ? classParts[1] : classParts[0]);
 			var nsMultiname:Multiname = createMultiname(proxyClassName, classParts.join(MultinameUtil.SINGLE_COLON), type.extendsClasses);
 			var bytecodeQname:QualifiedName = addInterceptorProperty(classBuilder);
 

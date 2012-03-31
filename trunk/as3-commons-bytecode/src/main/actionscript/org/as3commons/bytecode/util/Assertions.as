@@ -36,7 +36,7 @@ package org.as3commons.bytecode.util {
 		 * @param b The secon array to compare <code>firstArray</code> against
 		 * @return    <code>true</code> if both arrays match, <code>false</code> otherwise.
 		 */
-		public static function assertArrayContentsEqual(a:Array, b:Array):Boolean {
+		public static function assertArrayContentsEqual(a:*, b:*):Boolean {
 			return assertArrayOrVectorContentsEqual(a, b);
 		}
 
@@ -55,7 +55,7 @@ package org.as3commons.bytecode.util {
 				throw new Error("Array lengths (" + firstArray.length + "," + secondArray.length + ") do not match");
 			}
 
-			var contentsMatch:Boolean = firstArray.every(function (item:Object, index:int, array:Array):Boolean {
+			var contentsMatch:Boolean = firstArray.every(function(item:Object, index:int, array:Array):Boolean {
 				var matchFound:Boolean = false;
 				for each (var current:Object in secondArray) {
 					if (current.hasOwnProperty("equals")) {

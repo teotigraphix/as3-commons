@@ -57,7 +57,7 @@ package org.as3commons.bytecode.io {
 	 *
 	 * @see    AbcSerializer
 	 */
-		//TODO: Capture ranges for bytecode blocks so they can be checked in unit tests
+	//TODO: Capture ranges for bytecode blocks so they can be checked in unit tests
 	public class AbcDeserializer extends AbstractAbcDeserializer implements IAbcDeserializer {
 
 		public static const __NEED_CONSTANTS_:String = "~~ need constants ~~";
@@ -68,7 +68,7 @@ package org.as3commons.bytecode.io {
 
 		private var _methodBodyExtractionMethod:MethodBodyExtractionKind;
 
-		public function AbcDeserializer(byteStream:ByteArray = null) {
+		public function AbcDeserializer(byteStream:ByteArray=null) {
 			super(byteStream);
 			methodBodyExtractionMethod = MethodBodyExtractionKind.PARSE;
 		}
@@ -103,7 +103,7 @@ package org.as3commons.bytecode.io {
 		 *
 		 * @return  The <code>AbcFile</code> represented by the bytecode block given to the constructor.
 		 */
-		override public function deserialize(positionInByteArrayToReadFrom:int = 0):AbcFile {
+		override public function deserialize(positionInByteArrayToReadFrom:int=0):AbcFile {
 			_byteStream.position = positionInByteArrayToReadFrom;
 			var abcFile:AbcFile = new AbcFile();
 			var pool:IConstantPool = abcFile.constantPool;
@@ -500,7 +500,7 @@ package org.as3commons.bytecode.io {
 					var paramQName:BaseMultiname = (mn is MultinameG) ? mn : MultinameUtil.convertToQualifiedName(mn);
 					var arg:Argument = new Argument(paramQName);
 					methodInfo.argumentCollection[methodInfo.argumentCollection.length] = arg;
-					//trace("MethodInfo param " + argumentIndex + ": " + arg.toString());
+						//trace("MethodInfo param " + argumentIndex + ": " + arg.toString());
 				}
 				methodInfo.methodName = pool.stringPool[AbcSpec.readU30(_byteStream)];
 				CONFIG::debug {
@@ -531,25 +531,25 @@ package org.as3commons.bytecode.io {
 						switch (optionalValueKind) {
 							case ConstantKind.INT.value:
 								defaultValue = pool.integerPool[valueIndexInConstantPool];
-							CONFIG::debug {
+								CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 							}
 								break;
 							case ConstantKind.UINT.value:
 								defaultValue = pool.uintPool[valueIndexInConstantPool];
-							CONFIG::debug {
+								CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 							}
 								break;
 							case ConstantKind.DOUBLE.value:
 								defaultValue = pool.doublePool[valueIndexInConstantPool];
-							CONFIG::debug {
+								CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 							}
 								break;
 							case ConstantKind.UTF8.value:
 								defaultValue = pool.stringPool[valueIndexInConstantPool];
-							CONFIG::debug {
+								CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 							}
 								break;
@@ -577,7 +577,7 @@ package org.as3commons.bytecode.io {
 							case ConstantKind.STATIC_PROTECTED_NAMESPACE.value:
 							case ConstantKind.PRIVATE_NAMESPACE.value:
 								defaultValue = pool.namespacePool[valueIndexInConstantPool];
-							CONFIG::debug {
+								CONFIG::debug {
 								Assert.notNull(defaultValue, "defaultValue returned null from constant pool");
 							}
 								break;
@@ -594,7 +594,7 @@ package org.as3commons.bytecode.io {
 						optArg.defaultValue = defaultValue;
 						optArg.kind = ConstantKind.determineKind(optionalValueKind);
 						optArg.isOptional = true;
-						//trace("Optional argument " + optionInfoIndex + ": " + optArg.toString());
+							//trace("Optional argument " + optionInfoIndex + ": " + optArg.toString());
 					}
 				}
 
@@ -611,7 +611,7 @@ package org.as3commons.bytecode.io {
 							Assert.notNull(paramName);
 						}
 						Argument(methodInfo.argumentCollection[nameIndex]).name = paramName;
-						//trace("Param name " + nameIndex + ": " + paramName);
+							//trace("Param name " + nameIndex + ": " + paramName);
 					}
 				}
 			}
@@ -624,11 +624,11 @@ package org.as3commons.bytecode.io {
 			return -1;
 		}
 
-		public override function deserializeTraitsInfo(abcFile:AbcFile, _byteStream:ByteArray, isStatic:Boolean = false, className:String = ""):Array {
+		public override function deserializeTraitsInfo(abcFile:AbcFile, _byteStream:ByteArray, isStatic:Boolean=false, className:String=""):Array {
 			var traits:Array = [];
 			var pool:IConstantPool = abcFile.constantPool;
-			var methodInfos:Array = abcFile.methodInfo;
-			var metadata:Array = abcFile.metadataInfo;
+			var methodInfos:Vector.<MethodInfo> = abcFile.methodInfo;
+			var metadata:Vector.<Metadata> = abcFile.metadataInfo;
 
 			var traitCount:int = AbcSpec.readU30(_byteStream);
 			for (var traitIndex:int = 0; traitIndex < traitCount; ++traitIndex) {
@@ -662,7 +662,7 @@ package org.as3commons.bytecode.io {
 						var slotOrConstantTrait:SlotOrConstantTrait = new SlotOrConstantTrait();
 						slotOrConstantTrait.slotId = AbcSpec.readU30(_byteStream);
 						slotOrConstantTrait.typeMultiname = pool.multinamePool[AbcSpec.readU30(_byteStream)];
-					CONFIG::debug {
+						CONFIG::debug {
 						Assert.notNull(slotOrConstantTrait.typeMultiname);
 					}
 						slotOrConstantTrait.vindex = AbcSpec.readU30(_byteStream);
@@ -689,7 +689,7 @@ package org.as3commons.bytecode.io {
 						// It's not strictly necessary to do this, but it helps the API for the MethodInfo to have a
 						// reference to its traits and vice versa
 						var associatedMethodInfo:MethodInfo = methodInfos[AbcSpec.readU30(_byteStream)];
-					CONFIG::debug {
+						CONFIG::debug {
 						Assert.notNull(associatedMethodInfo);
 					}
 						associatedMethodInfo.methodName = traitMultiname.name;
@@ -722,7 +722,7 @@ package org.as3commons.bytecode.io {
 						var functionTrait:FunctionTrait = new FunctionTrait();
 						functionTrait.functionSlotId = AbcSpec.readU30(_byteStream);
 						functionTrait.functionMethod = methodInfos[AbcSpec.readU30(_byteStream)];
-					CONFIG::debug {
+						CONFIG::debug {
 						Assert.notNull(functionTrait.functionMethod);
 					}
 						functionTrait.functionMethod.methodName = traitMultiname.name;
