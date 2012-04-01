@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-	import avmplus.getQualifiedClassName;
 
 	import flash.events.Event;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
+	import flash.utils.getQualifiedClassName;
 
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.enum.Opcode;

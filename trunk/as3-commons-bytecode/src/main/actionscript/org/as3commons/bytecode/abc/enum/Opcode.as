@@ -15,26 +15,16 @@
  */
 package org.as3commons.bytecode.abc.enum {
 	import flash.errors.IllegalOperationError;
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
-	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
-	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
-	import org.as3commons.bytecode.abc.ByteCodeErrorEvent;
 	import org.as3commons.bytecode.abc.ClassInfo;
 	import org.as3commons.bytecode.abc.ExceptionInfo;
-	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.Integer;
-	import org.as3commons.bytecode.abc.JumpTargetData;
 	import org.as3commons.bytecode.abc.LNamespace;
-	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.UnsignedInteger;
-	import org.as3commons.bytecode.emit.asm.ClassInfoReference;
 	import org.as3commons.bytecode.util.AbcSpec;
-	import org.as3commons.bytecode.util.ReadWritePair;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
@@ -44,12 +34,11 @@ package org.as3commons.bytecode.abc.enum {
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "AVM2 instructions" in the AVM Spec (page 35)
 	 */
 	public final class Opcode {
-
-		private static var _enumCreated:Boolean = false;
 		private static const _ALL_OPCODES:Dictionary = new Dictionary();
 		private static const _opcodeNameLookup:Dictionary = new Dictionary();
+		private static var _enumCreated:Boolean = false;
 
-		public static const errorDispatcher:IEventDispatcher = new EventDispatcher();
+		public static const END_OF_BODY:Opcode = new Opcode(int.MIN_VALUE, "endOfBody");
 
 		// 164 total opcodes
 		public static const add:Opcode = new Opcode(0xa0, "add");
@@ -130,8 +119,8 @@ package org.as3commons.bytecode.abc.enum {
 		public static const getsuper:Opcode = new Opcode(0x04, "getsuper", [BaseMultiname, AbcSpec.U30]);
 		public static const greaterequals:Opcode = new Opcode(0xb0, "greaterequals");
 		public static const greaterthan:Opcode = new Opcode(0xaf, "greaterthan");
-		public static const hasnext2:Opcode = new Opcode(0x32, "hasnext2", [int, AbcSpec.U30], [int, AbcSpec.U30]); // I'm guessing this is two u30s since they are register positions - the spec was not explicit about this
 		public static const hasnext:Opcode = new Opcode(0x1F, "hasnext"); //Added
+		public static const hasnext2:Opcode = new Opcode(0x32, "hasnext2", [int, AbcSpec.U30], [int, AbcSpec.U30]); // I'm guessing this is two u30s since they are register positions - the spec was not explicit about this
 		public static const ifeq:Opcode = new Opcode(0x13, "ifeq", [int, AbcSpec.S24]);
 		public static const iffalse:Opcode = new Opcode(0x12, "iffalse", [int, AbcSpec.S24]);
 		public static const ifge:Opcode = new Opcode(0x18, "ifge", [int, AbcSpec.S24]);
@@ -160,6 +149,11 @@ package org.as3commons.bytecode.abc.enum {
 		public static const label:Opcode = new Opcode(0x09, "label");
 		public static const lessequals:Opcode = new Opcode(0xae, "lessequals");
 		public static const lessthan:Opcode = new Opcode(0xad, "lessthan");
+		public static const lf32:Opcode = new Opcode(0x38, "lf32");
+		public static const lf64:Opcode = new Opcode(0x39, "lf64");
+		public static const li16:Opcode = new Opcode(0x36, "li16");
+		public static const li32:Opcode = new Opcode(0x37, "li32");
+		public static const li8:Opcode = new Opcode(0x35, "li8");
 		public static const lookupswitch:Opcode = new Opcode(0x1b, "lookupswitch", [int, AbcSpec.S24], [int, AbcSpec.U30], [Array, AbcSpec.S24_ARRAY]); // NOTE: lookupswitch is a special case because it has a variable number of arguments
 		public static const lshift:Opcode = new Opcode(0xa5, "lshift");
 		public static const modulo:Opcode = new Opcode(0xa4, "modulo");
@@ -209,427 +203,27 @@ package org.as3commons.bytecode.abc.enum {
 		public static const setpropertylate:Opcode = new Opcode(0x69, "setpropertylate"); //Added
 		public static const setslot:Opcode = new Opcode(0x6d, "setslot", [int, AbcSpec.U30]); // u30 - slotId
 		public static const setsuper:Opcode = new Opcode(0x05, "setsuper", [BaseMultiname, AbcSpec.U30]);
+		public static const sf32:Opcode = new Opcode(0x3d, "sf32");
+		public static const sf64:Opcode = new Opcode(0x3e, "sf64");
+		public static const si16:Opcode = new Opcode(0x3b, "si16");
+		public static const si32:Opcode = new Opcode(0x3c, "si32");
+
+		//Alchemy specific opcodes:
+		public static const si8:Opcode = new Opcode(0x3a, "si8");
 		public static const strictequals:Opcode = new Opcode(0xac, "strictequals");
 		public static const subtract:Opcode = new Opcode(0xa1, "subtract");
 		public static const subtract_i:Opcode = new Opcode(0xC6, "subtract_i"); //Added
 		public static const swap:Opcode = new Opcode(0x2b, "swap");
+
+		public static const sxi1:Opcode = new Opcode(0x50, "sxi1");
+		public static const sxi16:Opcode = new Opcode(0x52, "sxi16");
+		public static const sxi8:Opcode = new Opcode(0x51, "sxi8");
 		public static const throw_op:Opcode = new Opcode(0x03, "throw");
 		public static const typeof_op:Opcode = new Opcode(0x95, "typeof");
 		public static const urshift:Opcode = new Opcode(0xa7, "urshift");
 
-		//Alchemy specific opcodes:
-		public static const si8:Opcode = new Opcode(0x3a, "si8");
-		public static const si16:Opcode = new Opcode(0x3b, "si16");
-		public static const si32:Opcode = new Opcode(0x3c, "si32");
-		public static const sf32:Opcode = new Opcode(0x3d, "sf32");
-		public static const sf64:Opcode = new Opcode(0x3e, "sf64");
-
-		public static const li8:Opcode = new Opcode(0x35, "li8");
-		public static const li16:Opcode = new Opcode(0x36, "li16");
-		public static const li32:Opcode = new Opcode(0x37, "li32");
-		public static const lf32:Opcode = new Opcode(0x38, "lf32");
-		public static const lf64:Opcode = new Opcode(0x39, "lf64");
-
-		public static const sxi1:Opcode = new Opcode(0x50, "sxi1");
-		public static const sxi8:Opcode = new Opcode(0x51, "sxi8");
-		public static const sxi16:Opcode = new Opcode(0x52, "sxi16");
-
-		public static const END_OF_BODY:Opcode = new Opcode(int.MIN_VALUE, "endOfBody");
-
-		private static const UNKNOWN_OPCODE_ARGUMENTTYPE:String = "Unknown Opcode argument type. {0}";
-
-
-		private static var _jumpLookup:Dictionary;
-		public static const jumpOpcodes:Dictionary = new Dictionary();
-		{
-			jumpOpcodes[ifeq] = true;
-			jumpOpcodes[ifge] = true;
-			jumpOpcodes[ifgt] = true;
-			jumpOpcodes[ifle] = true;
-			jumpOpcodes[iflt] = true;
-			jumpOpcodes[ifne] = true;
-			jumpOpcodes[ifnge] = true;
-			jumpOpcodes[ifngt] = true;
-			jumpOpcodes[ifnle] = true;
-			jumpOpcodes[ifnlt] = true;
-			jumpOpcodes[ifstricteq] = true;
-			jumpOpcodes[ifstrictne] = true;
-			jumpOpcodes[iffalse] = true;
-			jumpOpcodes[iftrue] = true;
-			jumpOpcodes[jump] = true;
-			jumpOpcodes[lookupswitch] = true;
-		}
-
-		private var _opcodeName:String;
-		private var _value:int;
-		private var _argumentTypes:Array;
-
-		{
-			_enumCreated = true;
-		}
-
-		public function Opcode(opcodeValue:int, opcodeName:String, ... typeAndReadWritePairs) {
-			CONFIG::debug {
-				Assert.state((!_enumCreated), "Opcode enum has already been created");
-			}
-
-			_value = opcodeValue;
-			_opcodeName = opcodeName;
-			_argumentTypes = typeAndReadWritePairs;
-
-			if (_ALL_OPCODES[_value] == null) {
-				_ALL_OPCODES[_value] = this;
-			} else {
-				throw new IllegalOperationError("duplicate! " + opcodeName + " : " + Opcode(_ALL_OPCODES[_value]).opcodeName);
-			}
-			_opcodeNameLookup[opcodeName] = this;
-		}
-
-		public static function fromName(opcodeName:String):Opcode {
-			return _opcodeNameLookup[opcodeName] as Opcode;
-		}
-
-		/**
-		 * Serializes an array of Ops, returning a ByteArray with the opcode output block.
-		 */
-		public static function serialize(ops:Vector.<Op>, methodBody:MethodBody, abcFile:AbcFile):ByteArray {
-			var opcodePositions:Dictionary = new Dictionary();
-			var serializedOpcodes:ByteArray = AbcSpec.newByteArray();
-			for each (var op:Op in ops) {
-				op.baseLocation = serializedOpcodes.position;
-				opcodePositions[op] = serializedOpcodes.position;
-				AbcSpec.writeU8(op.opcode._value, serializedOpcodes);
-
-				serializeOpcodeArguments(op, abcFile, methodBody, serializedOpcodes);
-				op.endLocation = serializedOpcodes.position;
-			}
-			serializedOpcodes.position = 0;
-			resolveJumpTargets(serializedOpcodes, methodBody.jumpTargets, opcodePositions);
-			serializedOpcodes.position = 0;
-			methodBody.opcodeBaseLocations = opcodePositions;
-			return serializedOpcodes;
-		}
-
-		public static function resolveJumpTargets(serializedOpcodes:ByteArray, backPatches:Vector.<JumpTargetData>, positions:Dictionary):void {
-			for each (var jumpData:JumpTargetData in backPatches) {
-				var changed:Boolean = false;
-				if (jumpData.targetOpcode != null) {
-					if (resolveJumpTarget(positions, jumpData.jumpOpcode, jumpData.targetOpcode, serializedOpcodes, (jumpData.jumpOpcode.opcode === Opcode.lookupswitch)) == true) {
-						changed = true;
-					}
-				}
-				if (jumpData.extraOpcodes != null) {
-					var idx:int = 0;
-					for each (var targetOpcode:Op in jumpData.extraOpcodes) {
-						if (resolveJumpTarget(positions, jumpData.jumpOpcode, targetOpcode, serializedOpcodes, true, idx++)) {
-							changed = true;
-						}
-					}
-				}
-
-			}
-		}
-
-		public static function resolveJumpTarget(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean=false, index:int=-1):Boolean {
-			var jumpParam:int = (index < 0) ? int(jumpOpcode.parameters[0]) : jumpOpcode.parameters[2][index];
-			var baseLocation:int = (isLookupSwitch) ? jumpOpcode.baseLocation : jumpOpcode.endLocation;
-			var targetPos:int = baseLocation + jumpParam;
-			if (targetPos != targetOpcode.baseLocation) {
-				var operandPos:int = jumpOpcode.baseLocation;
-				var newJump:int = (targetOpcode.baseLocation - baseLocation);
-				serializedOpcodes.position = operandPos + 1;
-				if (index > -1) {
-					AbcSpec.readU30(serializedOpcodes);
-				}
-				while (index-- > 0) {
-					AbcSpec.readS24(serializedOpcodes);
-				}
-				AbcSpec.writeS24(newJump, serializedOpcodes);
-				return true;
-			}
-			return false;
-		}
-
-		public static function serializeOpcodeArguments(op:Op, abcFile:AbcFile, methodBody:MethodBody, serializedOpcodes:ByteArray):void {
-			var serializedArgumentCount:int = 0;
-			for each (var typeAndReadWritePair:Array in op.opcode.argumentTypes) {
-				var argumentType:* = typeAndReadWritePair[0];
-				var readWritePair:ReadWritePair = typeAndReadWritePair[1];
-				var rawValue:* = op.parameters[serializedArgumentCount++];
-				serializeOpcodeArgument(rawValue, argumentType, abcFile, methodBody, op, serializedOpcodes, readWritePair);
-			}
-		}
-
-		public static function serializeOpcodeArgument(rawValue:*, argumentType:*, abcFile:AbcFile, methodBody:MethodBody, op:Op, serializedOpcodes:ByteArray, readWritePair:ReadWritePair):void {
-			var abcCompatibleValue:* = rawValue;
-
-			switch (argumentType) {
-				case uint:
-				case int:
-					abcCompatibleValue = rawValue;
-					//trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
-					break;
-
-				case Integer:
-					abcCompatibleValue = abcFile.constantPool.addInt(rawValue);
-					break;
-
-				case UnsignedInteger:
-					abcCompatibleValue = abcFile.constantPool.addUint(rawValue);
-					break;
-
-				case Number:
-					abcCompatibleValue = abcFile.constantPool.addDouble(rawValue);
-					//trace("\tNumber: " + abcCompatibleValue + "(" + rawValue + ")");
-					break;
-
-				case BaseMultiname:
-					abcCompatibleValue = abcFile.constantPool.addMultiname(rawValue);
-					//trace("\tMultiname: " + abcCompatibleValue + "(" + rawValue + ")");
-					break;
-
-				case ClassInfo:
-					if (rawValue is ClassInfoReference) {
-						abcCompatibleValue = abcFile.addClassInfoReference(rawValue);
-						CONFIG::debug {
-							Assert.state(abcCompatibleValue > 0, "Unknown classinfo: " + ClassInfoReference(rawValue).classMultiName.toString());
-						}
-					} else {
-						abcCompatibleValue = abcFile.addClassInfo(rawValue);
-					}
-					//                            trace("\tClassInfo: " + abcCompatibleValue + "(" + rawValue + ")");
-					break;
-
-				case String:
-					abcCompatibleValue = abcFile.constantPool.addString(rawValue);
-					//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
-					break;
-
-				case LNamespace:
-					abcCompatibleValue = abcFile.constantPool.addNamespace(rawValue);
-					//                            trace("\tString: " + abcCompatibleValue + "(" + rawValue + ")");
-					break;
-
-				case ExceptionInfo:
-					abcCompatibleValue = methodBody.addExceptionInfo(rawValue);
-					break;
-
-				case Array:
-					var arr:Array = rawValue as Array;
-					var caseCount:int = arr.length;
-					for (var i:int = 0; i < caseCount; ++i) {
-						readWritePair.write(arr[i], serializedOpcodes);
-					}
-					break;
-
-				default:
-					throw new Error(StringUtils.substitute(UNKNOWN_OPCODE_ARGUMENTTYPE, +argumentType));
-			}
-
-			try {
-				if (!(abcCompatibleValue is Array)) {
-					readWritePair.write(abcCompatibleValue, serializedOpcodes);
-				}
-			} catch (e:Error) {
-				trace(e);
-			}
-		}
-
-
-		/**
-		 * Parses the bytecode block out of the given ByteArray, returning an array of Ops representing the
-		 * bytecode in the Ops. This method assumes that the ByteArray is positioned at the top of an
-		 * opcode block.
-		 */
-		public static function parse(byteArray:ByteArray, opcodeByteCodeLength:int, methodBody:MethodBody, constantPool:IConstantPool):Vector.<Op> {
-			var opcodePositions:Dictionary = new Dictionary();
-			var opcodeEndPositions:Dictionary = new Dictionary();
-			var ops:Vector.<Op> = new Vector.<Op>();
-			methodBody.jumpTargets ||= new Vector.<JumpTargetData>();
-			var methodBodyPosition:uint = byteArray.position;
-			var opcodeStartPosition:uint = 0;
-			var offset:uint = 0;
-			var newOp:Op;
-			var positionAtEndOfBytecode:int = (byteArray.position + opcodeByteCodeLength);
-			try {
-				while (byteArray.position < positionAtEndOfBytecode) {
-					opcodeStartPosition = byteArray.position;
-					newOp = parseOpcode(byteArray, constantPool, ops, methodBody);
-					newOp.baseLocation = offset;
-					offset += (byteArray.position - opcodeStartPosition);
-					newOp.endLocation = offset;
-					opcodePositions[newOp.baseLocation] = newOp;
-					opcodeEndPositions[newOp.endLocation] = newOp;
-				}
-				if (byteArray.position > positionAtEndOfBytecode) {
-					throw new Error("Opcode parsing read beyond end of method body");
-				}
-			} catch (e:*) {
-				var pos:int = (byteArray.position - methodBodyPosition);
-				var fragment:ByteArray = AbcSpec.newByteArray();
-				fragment.writeBytes(byteArray, methodBodyPosition, opcodeByteCodeLength);
-				fragment.position = 0;
-				errorDispatcher.dispatchEvent(new ByteCodeErrorEvent(ByteCodeErrorEvent.BYTECODE_METHODBODY_ERROR, fragment, pos));
-				throw e;
-			}
-
-			resolveParsedJumpTargets(methodBody, opcodePositions, opcodeEndPositions, opcodeByteCodeLength);
-			methodBody.opcodeBaseLocations = opcodePositions;
-			return ops;
-		}
-
-		public static function resolveParsedJumpTargets(methodBody:MethodBody, opcodeStartPositions:Dictionary, opcodeEndPositions:Dictionary, positionAtEndOfMethodBody:int):void {
-			var pos:int;
-			var targetPos:int;
-			var target:Op;
-			var len:int;
-			var arr:Array;
-			for each (var jmpTarget:JumpTargetData in methodBody.jumpTargets) {
-				if (jmpTarget.jumpOpcode.opcode !== Opcode.lookupswitch) {
-					pos = int(jmpTarget.jumpOpcode.parameters[0]);
-					targetPos = jmpTarget.jumpOpcode.endLocation + pos;
-					target = opcodeStartPositions[targetPos];
-					if (target == null) {
-						target = Opcode.END_OF_BODY.op();
-						target.baseLocation = positionAtEndOfMethodBody;
-					}
-					jmpTarget.targetOpcode = target;
-				} else {
-					arr = jmpTarget.jumpOpcode.parameters[2] as Array;
-					len = arr.length;
-					for (var i:int = 0; i < len; ++i) {
-						pos = arr[i];
-						targetPos = jmpTarget.jumpOpcode.baseLocation + pos;
-						target = opcodeStartPositions[targetPos];
-						if (target == null) {
-							target = Opcode.END_OF_BODY.op();
-							target.baseLocation = positionAtEndOfMethodBody;
-						}
-						jmpTarget.addTarget(target);
-					}
-					pos = jmpTarget.jumpOpcode.parameters[0];
-					targetPos = jmpTarget.jumpOpcode.baseLocation + pos;
-					target = opcodeStartPositions[targetPos];
-					if (target == null) {
-						target = Opcode.END_OF_BODY.op();
-						target.baseLocation = positionAtEndOfMethodBody;
-					}
-					jmpTarget.targetOpcode = target;
-				}
-			}
-		}
-
-		public static function parseOpcode(byteArray:ByteArray, constantPool:IConstantPool, ops:Vector.<Op>, methodBody:MethodBody):Op {
-			var startPos:int = byteArray.position;
-			var opcode:Opcode = determineOpcode(AbcSpec.readU8(byteArray));
-			var argumentValues:Array = [];
-			for each (var argument:* in opcode.argumentTypes) {
-				parseOpcodeArguments(argument, byteArray, constantPool, methodBody, argumentValues);
-			}
-			var endPos:int = byteArray.position;
-
-			var op:Op = opcode.op(argumentValues);
-			ops[ops.length] = op;
-			if (jumpOpcodes[opcode] == true) {
-				methodBody.jumpTargets[methodBody.jumpTargets.length] = new JumpTargetData(op);
-			}
-			return op;
-		}
-
-		public static function parseOpcodeArguments(argument:*, byteArray:ByteArray, constantPool:IConstantPool, methodBody:MethodBody, argumentValues:Array):void {
-			var argumentType:* = argument[0];
-			var readWritePair:ReadWritePair = argument[1];
-			var byteCodeValue:* = readWritePair.read(byteArray);
-			var constantPoolValue:*;
-
-			switch (argumentType) {
-				case uint:
-				case int:
-					argumentValues[argumentValues.length] = byteCodeValue;
-					break;
-
-				case Integer:
-					constantPoolValue = constantPool.integerPool[byteCodeValue];
-					CONFIG::debug {
-					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
-				}
-					argumentValues[argumentValues.length] = constantPoolValue;
-					break;
-
-				case UnsignedInteger:
-					constantPoolValue = constantPool.uintPool[byteCodeValue];
-					CONFIG::debug {
-					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
-				}
-					argumentValues[argumentValues.length] = constantPoolValue;
-					break;
-
-				case Number:
-					constantPoolValue = constantPool.doublePool[byteCodeValue];
-					CONFIG::debug {
-					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
-				}
-					argumentValues[argumentValues.length] = constantPoolValue;
-					break;
-
-				case BaseMultiname:
-					constantPoolValue = constantPool.multinamePool[byteCodeValue];
-					CONFIG::debug {
-					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
-				}
-					argumentValues[argumentValues.length] = constantPoolValue;
-					break;
-
-				case ClassInfo:
-					constantPoolValue = constantPool.classInfo[byteCodeValue];
-					CONFIG::debug {
-					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
-				}
-					argumentValues[argumentValues.length] = constantPoolValue;
-					break;
-
-				case String:
-					constantPoolValue = constantPool.stringPool[byteCodeValue];
-					CONFIG::debug {
-					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
-				}
-					argumentValues[argumentValues.length] = constantPoolValue;
-					break;
-
-				case LNamespace:
-					constantPoolValue = constantPool.namespacePool[byteCodeValue];
-					CONFIG::debug {
-					Assert.notNull(constantPoolValue, "constantPoolValue value is null");
-				}
-					argumentValues[argumentValues.length] = constantPoolValue;
-					break;
-
-				case Array:
-					//TODO: Come back and clean this up with a different parser model. lookupswitch f'd up the clean pre-existing model
-					// Special case for lookupswitch opcode. We need to iterate the possible case
-					// values and pull their offsets from the bytestream. The first value has
-					// already been read for us by the time this switch is invoked, we just need
-					// to pull the rest of the offsets. We determine how many there are by looking at
-					// the second argument to the op, which is the case_count
-					//new Opcode(0x1b, "lookupswitch", [int, AbcSpec.S24], [int, AbcSpec.U30], [Array, AbcSpec.S24_ARRAY]);
-					var caseOffsets:Array = [];
-					var caseCount:int = int(argumentValues[1]);
-					caseOffsets[caseOffsets.length] = byteCodeValue;
-					for (var i:int = 0; i < caseCount; ++i) {
-						caseOffsets[caseOffsets.length] = readWritePair.read(byteArray);
-					}
-					argumentValues[argumentValues.length] = caseOffsets;
-					break;
-
-				case ExceptionInfo:
-					//Exception info is assigned after all opcodes and exception infos have been parsed,
-					//so for now we only assign the raw value (which is the index into the methodbody's exception info array)
-					argumentValues[argumentValues.length] = byteCodeValue;
-					break;
-
-				default:
-					throw new Error("Unknown Opcode argument type." + argumentType.toString());
-			}
+		public function get opcodeValue():int {
+			return _opcodeValue;
 		}
 
 		public static function determineOpcode(opcodeByte:int):Opcode {
@@ -640,6 +234,36 @@ package org.as3commons.bytecode.abc.enum {
 			return matchingOpcode;
 		}
 
+		public static function fromName(opcodeName:String):Opcode {
+			return _opcodeNameLookup[opcodeName] as Opcode;
+		}
+
+		{
+			_enumCreated = true;
+		}
+
+		public function Opcode(value:int, opcodeName:String, ... typeAndReadWritePairs) {
+			CONFIG::debug {
+				Assert.state((!_enumCreated), "Opcode enum has already been created");
+			}
+			_opcodeValue = value;
+			_opcodeName = opcodeName;
+			_argumentTypes = typeAndReadWritePairs;
+
+			CONFIG::debug {
+				if (_ALL_OPCODES[_opcodeValue] != null) {
+					throw new IllegalOperationError("duplicate! " + opcodeName + " : " + Opcode(_ALL_OPCODES[_opcodeValue]).opcodeName);
+				}
+			}
+			_ALL_OPCODES[_opcodeValue] = this;
+
+			_opcodeNameLookup[opcodeName] = this;
+		}
+
+		private var _argumentTypes:Array;
+		private var _opcodeName:String;
+		private var _opcodeValue:int;
+
 		public function get argumentTypes():Array {
 			return _argumentTypes;
 		}
@@ -648,16 +272,16 @@ package org.as3commons.bytecode.abc.enum {
 			return _opcodeName;
 		}
 
-		public function toString():String {
-			return StringUtils.substitute("[Opcode(value={0},name={1})]", _value, _opcodeName);
-		}
-
 		public function op(opArguments:Array=null):Op {
 			if ((this._argumentTypes != null) && (this._argumentTypes.length > 0)) {
 				return new Op(this, opArguments);
 			} else {
 				return new Op(this);
 			}
+		}
+
+		public function toString():String {
+			return StringUtils.substitute("[Opcode(value={0},name={1})]", _opcodeValue, _opcodeName);
 		}
 	}
 

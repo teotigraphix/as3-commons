@@ -24,6 +24,7 @@ package org.as3commons.bytecode.abc.enum {
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
+	import org.as3commons.bytecode.util.OpcodeIO;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertStrictlyEquals;
 	import org.flexunit.asserts.assertTrue;
@@ -851,11 +852,11 @@ package org.as3commons.bytecode.abc.enum {
 			if (args[0] is ExceptionInfo) {
 				methodBody.addExceptionInfo(ExceptionInfo(args[0]));
 			}
-			var ba:ByteArray = Opcode.serialize(new <Op>[op], methodBody, abcFile);
+			var ba:ByteArray = OpcodeIO.serialize(new <Op>[op], methodBody, abcFile);
 			ba.position = 0;
 			//abcFile = new AbcFile();
 			//methodBody = new MethodBody();
-			var opcodes:Vector.<Op> = Opcode.parse(ba, ba.length, methodBody, abcFile.constantPool);
+			var opcodes:Vector.<Op> = OpcodeIO.parse(ba, ba.length, methodBody, abcFile.constantPool);
 			assertEquals(1, opcodes.length);
 			assertTrue(opcodes[0] is Op);
 			assertStrictlyEquals(Op(opcodes[0]).opcode, opcode);
