@@ -444,8 +444,9 @@ package org.as3commons.bytecode.emit.impl {
 			var popscopes:Vector.<Op> = new Vector.<Op>();
 			var mn:QualifiedName;
 			var len:int = extendedClasses.length;
-			for (var i:int = 0; i < len; i++) {
-				var clsName:String = extendedClasses[i];
+			var clsName:String;
+			for (var i:int = 0; i < len; ++i) {
+				clsName = extendedClasses[i];
 				mn = MultinameUtil.toQualifiedName(clsName);
 				mb.addOpcode(Opcode.findpropstrict, [mn]) //
 					.addOpcode(Opcode.getproperty, [mn]);

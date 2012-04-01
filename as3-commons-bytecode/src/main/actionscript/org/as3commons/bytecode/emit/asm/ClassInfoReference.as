@@ -23,10 +23,6 @@ package org.as3commons.bytecode.emit.asm {
 
 		public function ClassInfoReference(clsName:QualifiedName) {
 			super();
-			init(clsName);
-		}
-
-		protected function init(clsName:QualifiedName):void {
 			CONFIG::debug {
 				Assert.notNull(clsName, "clsName argument must not be null");
 			}

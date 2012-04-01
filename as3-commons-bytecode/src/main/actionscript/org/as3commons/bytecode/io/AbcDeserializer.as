@@ -705,7 +705,7 @@ package org.as3commons.bytecode.io {
 						var classTrait:ClassTrait = new ClassTrait();
 						classTrait.classSlotId = AbcSpec.readU30(_byteStream);
 						classTrait.classIndex = AbcSpec.readU30(_byteStream);
-						classTrait.classInfo = ClassInfo(abcFile.classInfo[classTrait.classIndex]);
+						classTrait.classInfo = abcFile.classInfo[classTrait.classIndex];
 						trait = classTrait;
 						break;
 
