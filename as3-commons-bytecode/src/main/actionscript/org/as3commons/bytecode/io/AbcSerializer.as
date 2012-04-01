@@ -49,6 +49,7 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.typeinfo.Argument;
 	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.util.AbcSpec;
+	import org.as3commons.bytecode.util.OpcodeIO;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
@@ -127,7 +128,7 @@ package org.as3commons.bytecode.io {
 				writeU30(body.maxScopeDepth);
 
 				if (body.rawOpcodes == null) {
-					var opcodesAsByteArray:ByteArray = Opcode.serialize(body.opcodes, body, abcFile);
+					var opcodesAsByteArray:ByteArray = OpcodeIO.serialize(body.opcodes, body, abcFile);
 					writeU30(opcodesAsByteArray.length);
 
 					_outputStream.writeBytes(opcodesAsByteArray, 0, opcodesAsByteArray.length);

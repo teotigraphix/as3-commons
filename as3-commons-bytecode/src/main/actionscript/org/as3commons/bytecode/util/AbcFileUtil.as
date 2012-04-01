@@ -15,7 +15,7 @@
  */
 package org.as3commons.bytecode.util {
 
-	import avmplus.getQualifiedClassName;
+	import flash.utils.getQualifiedClassName;
 
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;

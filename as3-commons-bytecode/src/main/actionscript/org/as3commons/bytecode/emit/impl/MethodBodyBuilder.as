@@ -31,6 +31,7 @@ package org.as3commons.bytecode.emit.impl {
 	import org.as3commons.bytecode.emit.IMethodBodyBuilder;
 	import org.as3commons.bytecode.emit.asm.Asm;
 	import org.as3commons.bytecode.io.AbcDeserializer;
+	import org.as3commons.bytecode.util.OpcodeIO;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
@@ -166,7 +167,7 @@ package org.as3commons.bytecode.emit.impl {
 			_methodBody = methodBody;
 			if ((_methodBody.rawOpcodes != null) && (_methodBody.opcodes.length == 0) && (constantPool != null)) {
 				_methodBody.rawOpcodes.position = 0;
-				methodBody.opcodes = Opcode.parse(_methodBody.rawOpcodes, _methodBody.rawOpcodes.length, methodBody, constantPool);
+				methodBody.opcodes = OpcodeIO.parse(_methodBody.rawOpcodes, _methodBody.rawOpcodes.length, methodBody, constantPool);
 				AbcDeserializer.resolveOpcodeExceptionInfos(methodBody);
 				_methodBody.rawOpcodes = null;
 			}
@@ -392,7 +393,7 @@ package org.as3commons.bytecode.emit.impl {
 		 * @inheritDoc
 		 */
 		public function defineJump(triggerOpcode:Op, targetOpcode:Op, isDefault:Boolean=false):IMethodBodyBuilder {
-			if (Opcode.jumpOpcodes[triggerOpcode.opcode] == null) {
+			if (OpcodeIO.jumpOpcodes[triggerOpcode.opcode] == null) {
 				throw new IllegalOperationError(StringUtils.substitute(ILLEGAL_JUMP_OPCODE_ERROR, triggerOpcode.opcode));
 			}
 			if (_opcodes.indexOf(targetOpcode) < 0) {

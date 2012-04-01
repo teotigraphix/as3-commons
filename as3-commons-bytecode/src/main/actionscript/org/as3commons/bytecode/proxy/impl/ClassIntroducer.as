@@ -44,6 +44,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.reflect.ByteCodeVariable;
 	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.bytecode.util.OpcodeIO;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 	import org.as3commons.reflect.AccessorAccess;
@@ -185,7 +186,7 @@ package org.as3commons.bytecode.proxy.impl {
 				var originalPosition:int = type.byteArray.position;
 				try {
 					type.byteArray.position = method.bodyStartPosition;
-					method.methodBody.opcodes = Opcode.parse(type.byteArray, method.bodyLength, method.methodBody, type.constantPool);
+					method.methodBody.opcodes = OpcodeIO.parse(type.byteArray, method.bodyLength, method.methodBody, type.constantPool);
 					method.methodBody.exceptionInfos = AbcDeserializer.extractExceptionInfos(type.byteArray, type.constantPool, method.methodBody);
 					AbcDeserializer.resolveExceptionInfos(method.methodBody);
 				} finally {

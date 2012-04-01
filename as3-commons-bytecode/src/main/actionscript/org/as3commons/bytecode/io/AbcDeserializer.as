@@ -44,6 +44,7 @@ package org.as3commons.bytecode.io {
 	import org.as3commons.bytecode.typeinfo.Metadata;
 	import org.as3commons.bytecode.util.AbcSpec;
 	import org.as3commons.bytecode.util.MultinameUtil;
+	import org.as3commons.bytecode.util.OpcodeIO;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.StringUtils;
 
@@ -239,7 +240,7 @@ package org.as3commons.bytecode.io {
 				var codeLength:int = AbcSpec.readU30(_byteStream);
 				switch (methodBodyExtractionMethod) {
 					case MethodBodyExtractionKind.PARSE:
-						methodBody.opcodes = Opcode.parse(_byteStream, codeLength, methodBody, abcFile.constantPool);
+						methodBody.opcodes = OpcodeIO.parse(_byteStream, codeLength, methodBody, abcFile.constantPool);
 						break;
 					case MethodBodyExtractionKind.BYTEARRAY:
 						methodBody.rawOpcodes = AbcSpec.newByteArray();

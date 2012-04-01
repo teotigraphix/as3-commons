@@ -17,6 +17,7 @@ package org.as3commons.bytecode.abc {
 	import flash.errors.IllegalOperationError;
 
 	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.bytecode.util.OpcodeIO;
 
 	/**
 	 *
@@ -72,7 +73,7 @@ package org.as3commons.bytecode.abc {
 		 */
 		public function set jumpOpcode(value:Op):void {
 			_jumpOpcode = value;
-			if ((_jumpOpcode != null) && (Opcode.jumpOpcodes[_jumpOpcode.opcode] == null)) {
+			if ((_jumpOpcode != null) && (OpcodeIO.jumpOpcodes[_jumpOpcode.opcode] == null)) {
 				throw new IllegalOperationError("Opcode " + _jumpOpcode.opcode.opcodeName + " is not a jump code");
 			}
 		}
