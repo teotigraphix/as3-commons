@@ -232,7 +232,12 @@ package org.as3commons.bytecode.emit.impl {
 			mb.jumpTargets ||= _backpatches.concat(new Vector.<JumpTargetData>());
 			mb.initScopeDepth = initScopeDepth;
 			mb.opcodes = _opcodes.concat(new Vector.<Op>());
-			mb.exceptionInfos = _exceptionInfos.concat(new Vector.<ExceptionInfo>());
+			var len:int = _exceptionInfos.length;
+			var i:int;
+			var infos:Vector.<ExceptionInfo> = mb.exceptionInfos ||= new Vector.<ExceptionInfo>();
+			for (i = 0; i < len; ++i) {
+				infos[infos.length] = _exceptionInfos[i].build();
+			}
 			mb.traits = _traits.concat(new Vector.<TraitInfo>());
 			extraLocalCount += analyzeOpcodes(mb, extraLocalCount);
 			mb.localCount += extraLocalCount;
