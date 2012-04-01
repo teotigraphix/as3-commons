@@ -136,7 +136,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		private var _opcodes:Vector.<Op> = new Vector.<Op>();
 		private var _backpatches:Vector.<JumpTargetData> = new Vector.<JumpTargetData>();
-		private var _exceptionInfos:Vector.<ExceptionInfo> = new Vector.<ExceptionInfo>();
+		private var _exceptionInfos:Vector.<ExceptionInfoBuilder> = new Vector.<ExceptionInfoBuilder>();
 		private var _traits:Vector.<TraitInfo> = new Vector.<TraitInfo>();
 		private var _currentStack:int = 0;
 		private var _maxStack:int = 0;
@@ -201,11 +201,11 @@ package org.as3commons.bytecode.emit.impl {
 			_opcodes = value;
 		}
 
-		public function get exceptionInfos():Vector.<ExceptionInfo> {
+		public function get exceptionInfos():Vector.<ExceptionInfoBuilder> {
 			return _exceptionInfos;
 		}
 
-		public function set exceptionInfos(value:Vector.<ExceptionInfo>):void {
+		public function set exceptionInfos(value:Vector.<ExceptionInfoBuilder>):void {
 			_exceptionInfos = value;
 		}
 

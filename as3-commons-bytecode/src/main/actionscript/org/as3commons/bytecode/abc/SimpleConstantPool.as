@@ -24,7 +24,7 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class SimpleConstantPool implements IConstantPool {
+	public final class SimpleConstantPool implements IConstantPool {
 
 		private var _dupeCheck:Boolean;
 		private var _integerPool:Vector.<int>;

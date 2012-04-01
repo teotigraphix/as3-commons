@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit {
-	import org.as3commons.bytecode.abc.ConstantPool;
-	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.MethodBody;
 	import org.as3commons.bytecode.abc.Op;
 	import org.as3commons.bytecode.abc.enum.Opcode;
+	import org.as3commons.bytecode.emit.impl.ExceptionInfoBuilder;
 
 	/**
 	 * Describes an object that can generate a <code>MethodBody</code> to be used in an <code>AbcFile</code>.
@@ -37,11 +36,11 @@ package org.as3commons.bytecode.emit {
 		/**
 		 * An <code>Array</code> of <code>IExceptionInfoBuilders</code> that are able to generate the necessary <code>ExceptionInfo</code> instances references in the method body.
 		 */
-		function get exceptionInfos():Vector.<ExceptionInfo>;
+		function get exceptionInfos():Vector.<ExceptionInfoBuilder>;
 		/**
 		 * @private
 		 */
-		function set exceptionInfos(value:Vector.<ExceptionInfo>):void;
+		function set exceptionInfos(value:Vector.<ExceptionInfoBuilder>):void;
 		/**
 		 * Adds an extra <code>Op</code> instance with the specified <code>Opcode</code> and parameters.
 		 * @param opcode The specified <code>Op</code>.
