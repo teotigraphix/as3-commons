@@ -3,7 +3,7 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.1.1 (??.??.2011)
+Changes in version 1.1.1 (01.04.2011)
 -------------------------------------
 * Changed most Arrays into Vectors
 * Added more ProxyBuildError types with better descriptions
