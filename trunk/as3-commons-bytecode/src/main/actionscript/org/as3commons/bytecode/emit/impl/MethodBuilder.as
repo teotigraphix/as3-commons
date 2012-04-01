@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
-	import org.as3commons.bytecode.abc.ExceptionInfo;
 	import org.as3commons.bytecode.abc.IConstantPool;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.MethodBody;
@@ -74,14 +73,14 @@ package org.as3commons.bytecode.emit.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get exceptionInfos():Vector.<ExceptionInfo> {
+		public function get exceptionInfos():Vector.<ExceptionInfoBuilder> {
 			return methodBodyBuilder.exceptionInfos;
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function set exceptionInfos(value:Vector.<ExceptionInfo>):void {
+		public function set exceptionInfos(value:Vector.<ExceptionInfoBuilder>):void {
 			methodBodyBuilder.exceptionInfos = value;
 		}
 

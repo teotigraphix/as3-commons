@@ -22,11 +22,11 @@ package org.as3commons.bytecode.abc {
 	 *
 	 * @see http://www.adobe.com/devnet/actionscript/articles/avm2overview.pdf     "MultinameL" in the AVM Spec (page 24)
 	 */
-	public class MultinameL extends BaseMultiname {
+	public final class MultinameL extends BaseMultiname {
 
 		private var _namespaceSet:NamespaceSet;
 
-		public function MultinameL(namespaceSet:NamespaceSet, kindValue:MultinameKind = null) {
+		public function MultinameL(namespaceSet:NamespaceSet, kindValue:MultinameKind=null) {
 			kindValue = (kindValue) ? kindValue : MultinameKind.MULTINAME_L;
 			super(kindValue);
 			initMultinameL(kindValue, namespaceSet);
