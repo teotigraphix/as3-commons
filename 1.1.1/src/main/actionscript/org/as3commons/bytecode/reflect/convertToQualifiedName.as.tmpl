@@ -1,0 +1,21 @@
+if (!(classMultiname is QualifiedName)) {
+	if (classMultiname is Multiname) {
+		classMultinameAsMultiname = classMultiname as Multiname;
+		ns = classMultinameAsMultiname.namespaceSet.namespaces[0];
+		if (classMultinameAsMultiname.namespaceSet.namespaces.length == 1) {
+			if (classMultinameAsMultiname.name != '*') {
+				if ((ns.name != null) && (ns.name.length > 0)) {
+					fullName = ns.name + '.' + classMultinameAsMultiname.name;
+				} else {
+					fullName = classMultinameAsMultiname.name;
+				}
+			} else {
+				fullName = '*';
+			}
+		}
+	} else if (classMultiname is MultinameG) {
+		fullName = (classMultiname as MultinameG).qualifiedName.fullName;
+	}
+} else {
+	fullName = (classMultiname as QualifiedName).fullName;
+}

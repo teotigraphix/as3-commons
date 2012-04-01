@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.as3commons</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>4-SNAPSHOT</version>
+		<relativePath>../parent-pom/pom.xml</relativePath>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.as3commons</groupId>
+	<artifactId>as3commons-bytecode</artifactId>
+	<packaging>swc</packaging>
+	<version>1.1.1</version>
+	<name>AS3Commons Bytecode</name>
+	<url>http://code.google.com/p/as3-commons</url>
+	<description>Bytecode parsing and publishing formerly known as Loom. Capable of generating classes at runtime,
+		bytecode based reflection and more.
+	</description>
+	<inceptionYear>2010</inceptionYear>
+
+	<developers>
+		<developer>
+			<id>rzwaga</id>
+			<name>Roland Zwaga</name>
+			<email>roland.zwaga [at] stackandheap.com</email>
+			<url>http://zwaga.blogspot.com/</url>
+			<organization>Stack &amp; Heap</organization>
+			<organizationUrl>http://www.stackandheap.com</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>cherreman</id>
+			<name>Christophe Herreman</name>
+			<email>christophe.herreman [at] stackandheap.com</email>
+			<url>http://www.herrodius.com</url>
+			<organization>Stack &amp; Heap</organization>
+			<organizationUrl>http://www.stackandheap.com</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<configuration>
+					<defines>
+						<property>
+							<name>CONFIG::debug</name>
+							<value>false</value>
+						</property>
+					</defines>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagBase>https://as3-commons.googlecode.com/svn/tags/as3-commons-bytecode</tagBase>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-reflect</artifactId>
+			<version>1.6.0</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-lang</artifactId>
+			<version>0.3.6</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-logging</artifactId>
+			<version>2.7</version>
+			<type>swc</type>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>air-framework</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+	</dependencies>
+
+	<scm>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-bytecode
+		</developerConnection>
+		<url>scm:svn:http://as3-commons.googlecode.com/svn/trunk/as3-commons-bytecode</url>
+		<connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-bytecode</connection>
+	</scm>
+
+	<distributionManagement>
+		<site>
+			<id>yoolab.org-as3commons</id>
+			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-bytecode</url>
+		</site>
+	</distributionManagement>
+
+</project>

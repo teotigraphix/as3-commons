@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>Welcome to as3commons-bytecode</title>
+        <author email="scab@dds.nl">Roland Zwaga</author>
+    </properties>
+    <body>
+        <section name="Welcome to as3-commons-bytecode">
+            
+            <div id="downloadbox">
+                <h5>Get latest stable</h5>
+                <p>
+                    <a href="https://as3-commons.googlecode.com/files/as3commons-bytecode-1.1.1.swc">
+                        <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                        Download
+                    </a>
+                    latest stable (1.1.1)
+                </p>
+                <br/>
+                <h5>Get lastest development snapshot</h5>
+                <p>
+                    <a href="downloads/as3commons-bytecode-latest-snapshot-bin.zip">
+                        <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                        Download
+                    </a>
+                    latest snapshot
+                </p>
+            </div>
+            
+            <p>This project depends on the following AS3Commons projects:<br/>
+            <ul>
+            	<li><a href="http://as3commons.org/as3-commons-reflect/index.html" target="_blank">AS3Commons-reflect</a></li>
+            	<li><a href="http://as3commons.org/as3-commons-logging/index.html" target="_blank">AS3Commons-logging</a></li>
+            	<li><a href="http://as3commons.org/as3-commons-lang/index.html" target="_blank">AS3Commons-lang</a></li>
+            </ul>
+            </p>
+            
+            <p>
+                AS3Commons-bytecode is an open-source library providing a ABC bytecode parsing and publishing and bytecode based reflection API for ActionScript 3.0.
+            </p>
+            <p>
+            	It offers an <em>emit API</em> for generating classes at runtime, and a <em>proxy API</em> to generate dynamic runtime proxies along with an interception mechanism.<br/>
+                Either of these can be used as a foundation for mocking or AOP libraries, or any other kind of project that requires runtime class generation.
+            </p>
+            <p>
+                Being a pure actionscript library it can be used for any Flash/Flex/AIR project.
+            </p>
+            
+            <p>
+            	This project used to be known as Loom as created by Maxim Porges. (<a href="http://code.google.com/p/loom-as3/">http://code.google.com/p/loom-as3/</a>)
+            </p>
+
+            <p>
+            	The library provides clean, easy and complete introspection on class variables,
+            	accessors, methods, metadata and more, by parsing the bytecode returned by 
+            	<code>loaderInfo.bytes</code>. By parsing the bytecode directly it is possible to
+            	gain complete class insight, which means private members and methods, default values
+            	for optional parameters, etc.<br/>
+            	Parsing results are cached so that a SWF only needs to be parsed once.
+            </p>
+            
+            <p>
+            	The library is thoroughly tested and is being used in the
+            	<a href="http://www.springactionscript.org/">Spring Actionscript</a> project for its <a href="http://www.springactionscript.org/docs/reference/html/the_component_scanner.html">class scanning system</a>.
+            </p>
+            
+        </section>
+
+    </body>
+</document>
+
