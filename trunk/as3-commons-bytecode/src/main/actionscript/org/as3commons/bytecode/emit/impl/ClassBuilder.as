@@ -68,7 +68,10 @@ package org.as3commons.bytecode.emit.impl {
 		 */
 		public function ClassBuilder() {
 			super();
-			initClassBuilder();
+			_eventDispatcher = new EventDispatcher();
+			_propertyBuilders = [];
+			_implementedInterfaceNames = [];
+			_superClassName = BuiltIns.OBJECT.fullName;
 		}
 
 		as3commons_bytecode function setInstanceInfo(instanceInfo:InstanceInfo):void {
@@ -82,16 +85,6 @@ package org.as3commons.bytecode.emit.impl {
 			isFinal = this.instanceInfo.isFinal;
 			isInternal = (this.instanceInfo.classMultiname.nameSpace.kind === NamespaceKind.PACKAGE_INTERNAL_NAMESPACE);
 			_isDynamic = !this.instanceInfo.isSealed;
-		}
-
-		/**
-		 * Initializes the current <code>ClassBuilder</code>.
-		 */
-		protected function initClassBuilder():void {
-			_eventDispatcher = new EventDispatcher();
-			_propertyBuilders = [];
-			_implementedInterfaceNames = [];
-			_superClassName = BuiltIns.OBJECT.fullName;
 		}
 
 		public function get constantPool():IConstantPool {
