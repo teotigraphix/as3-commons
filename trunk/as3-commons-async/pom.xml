@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.as3commons</groupId>
 		<artifactId>parent-pom</artifactId>
-		<version>3</version>
+		<version>4-SNAPSHOT</version>
         <relativePath>../parent-pom/pom.xml</relativePath>
 	</parent>
 
