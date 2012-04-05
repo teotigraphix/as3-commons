@@ -13,8 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.zip
-{
+package org.as3commons.zip {
 	import flash.utils.*;
 
 	import org.as3commons.zip.utils.ChecksumUtil;
@@ -24,9 +23,8 @@ package org.as3commons.zip
 	 *
 	 * @author Claus Wahlers
 	 * @author Max Herkender
-	 */		
-	public class ZipFile
-	{
+	 */
+	public class ZipFile implements IZipFile {
 		protected var _versionHost:int = 0;
 		protected var _versionNumber:String = "2.0";
 		protected var _compressionMethod:int = 8;
@@ -57,88 +55,91 @@ package org.as3commons.zip
 		// compression methods
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_NONE:int = 0;
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_SHRUNK:int = 1;
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_REDUCED_1:int = 2;
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_REDUCED_2:int = 3;
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_REDUCED_3:int = 4;
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_REDUCED_4:int = 5;
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_IMPLODED:int = 6;
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_TOKENIZED:int = 7;
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_DEFLATED:int = 8;
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_DEFLATED_EXT:int = 9;
 		/**
 		 * @private
-		 */		
+		 */
 		public static const COMPRESSION_IMPLODED_PKWARE:int = 10;
 
 		/**
 		 * @private
-		 */		
+		 */
 		protected static var HAS_UNCOMPRESS:Boolean = (describeType(ByteArray).factory.method.(@name == "uncompress").parameter.length() > 0);
 		/**
 		 * @private
-		 */		
+		 */
 		protected static var HAS_INFLATE:Boolean = (describeType(ByteArray).factory.method.(@name == "inflate").length() > 0);
-		
+
 		/**
 		 * Constructor
-		 */		
-		public function ZipFile(filenameEncoding:String = "utf-8") {
+		 */
+		public function ZipFile(filenameEncoding:String="utf-8") {
+			super();
 			_filenameEncoding = filenameEncoding;
 			_extraFields = new Dictionary();
 			_content = new ByteArray();
 			_content.endian = Endian.BIG_ENDIAN;
 		}
-		
+
 		/**
 		 * The Date and time the file was created.
 		 */
 		public function get date():Date {
 			return _date;
 		}
+
 		public function set date(value:Date):void {
 			_date = (value != null) ? value : new Date();
 		}
-		
+
 		/**
 		 * The file name (including relative path).
 		 */
 		public function get filename():String {
 			return _filename;
 		}
+
 		public function set filename(value:String):void {
 			_filename = value;
 		}
-		
+
 		/**
 		 * Whether this file has a data descriptor or not (only used internally).
 		 */
@@ -147,26 +148,27 @@ package org.as3commons.zip
 		}
 
 		/**
-		 * The raw, uncompressed file. 
+		 * The raw, uncompressed file.
 		 */
 		public function get content():ByteArray {
-			if(isCompressed) {
+			if (isCompressed) {
 				uncompress();
 			}
 			return _content;
 		}
+
 		public function set content(data:ByteArray):void {
 			setContent(data);
 		}
-		
+
 		/**
 		 * Sets the file's content as ByteArray.
-		 * 
+		 *
 		 * @param data The new content.
 		 * @param doCompress Compress the data after adding.
 		 */
-		public function setContent(data:ByteArray, doCompress:Boolean = true):void {
-			if(data != null && data.length > 0) {
+		public function setContent(data:ByteArray, doCompress:Boolean=true):void {
+			if (data != null && data.length > 0) {
 				data.position = 0;
 				data.readBytes(_content, 0, data.length);
 				_crc32 = ChecksumUtil.CRC32(_content);
@@ -176,60 +178,60 @@ package org.as3commons.zip
 				_content.position = 0;
 				isCompressed = false;
 			}
-			if(doCompress) {
+			if (doCompress) {
 				compress();
 			} else {
 				_sizeUncompressed = _sizeCompressed = _content.length;
 			}
 		}
-		
+
 		/**
-		 * The ZIP specification version supported by the software 
+		 * The ZIP specification version supported by the software
 		 * used to encode the file.
 		 */
 		public function get versionNumber():String {
 			return _versionNumber;
 		}
-		
+
 		/**
 		 * The size of the compressed file (in bytes).
 		 */
 		public function get sizeCompressed():uint {
 			return _sizeCompressed;
 		}
-		
+
 		/**
 		 * The size of the uncompressed file (in bytes).
 		 */
 		public function get sizeUncompressed():uint {
 			return _sizeUncompressed;
 		}
-		
+
 		/**
 		 * Gets the files content as string.
-		 * 
+		 *
 		 * @param recompress If <code>true</code>, the raw file content
 		 * is recompressed after decoding the string.
-		 * 
+		 *
 		 * @param charset The character set used for decoding.
-		 * 
+		 *
 		 * @return The file as string.
 		 */
-		public function getContentAsString(recompress:Boolean = true, charset:String = "utf-8"):String {
-			if(isCompressed) {
+		public function getContentAsString(recompress:Boolean=true, charset:String="utf-8"):String {
+			if (isCompressed) {
 				uncompress();
 			}
 			_content.position = 0;
 			var str:String;
 			// Is readMultiByte completely trustworthy with utf-8?
 			// For now, readUTFBytes will take over.
-			if(charset == "utf-8") {
+			if (charset == "utf-8") {
 				str = _content.readUTFBytes(_content.bytesAvailable);
 			} else {
 				str = _content.readMultiByte(_content.bytesAvailable, charset);
 			}
 			_content.position = 0;
-			if(recompress) {
+			if (recompress) {
 				compress();
 			}
 			return str;
@@ -237,17 +239,17 @@ package org.as3commons.zip
 
 		/**
 		 * Sets a string as the file's content.
-		 * 
+		 *
 		 * @param value The string.
 		 * @param charset The character set used for decoding.
 		 * @param doCompress Compress the string after adding.
 		 */
-		public function setContentAsString(value:String, charset:String = "utf-8", doCompress:Boolean = true):void {
+		public function setContentAsString(value:String, charset:String="utf-8", doCompress:Boolean=true):void {
 			_content.length = 0;
 			_content.position = 0;
 			isCompressed = false;
-			if(value != null && value.length > 0) {
-				if(charset == "utf-8") {
+			if (value != null && value.length > 0) {
+				if (charset == "utf-8") {
 					_content.writeUTFBytes(value);
 				} else {
 					_content.writeMultiByte(value, charset);
@@ -255,7 +257,7 @@ package org.as3commons.zip
 				_crc32 = ChecksumUtil.CRC32(_content);
 				_hasAdler32 = false;
 			}
-			if(doCompress) {
+			if (doCompress) {
 				compress();
 			} else {
 				_sizeUncompressed = _sizeCompressed = _content.length;
@@ -263,19 +265,21 @@ package org.as3commons.zip
 		}
 
 		/**
-		 * Serializes this zip archive into an IDataOutput stream (such as 
+		 * Serializes this zip archive into an IDataOutput stream (such as
 		 * ByteArray or FileStream) according to PKZIP APPNOTE.TXT
-		 * 
+		 *
 		 * @param stream The stream to serialize the zip archive into.
 		 * @param includeAdler32 If set to true, include Adler32 checksum.
 		 * @param centralDir If set to true, serialize a central directory entry
 		 * @param centralDirOffset Relative offset of local header (for central directory only).
-		 * 
+		 *
 		 * @return The number of bytes written to the stream.
 		 */
-		public function serialize(stream:IDataOutput, includeAdler32:Boolean, centralDir:Boolean = false, centralDirOffset:uint = 0):uint {
-			if(stream == null) { return 0; }
-			if(centralDir) {
+		public function serialize(stream:IDataOutput, includeAdler32:Boolean, centralDir:Boolean=false, centralDirOffset:uint=0):uint {
+			if (stream == null) {
+				return 0;
+			}
+			if (centralDir) {
 				// Write central directory file header signature
 				stream.writeUnsignedInt(Zip.SIG_CENTRAL_FILE_HEADER);
 				// Write "version made by" host (usually 0) and number (always 2.0)
@@ -317,9 +321,9 @@ package org.as3commons.zip
 			}
 			var filenameSize:uint = ba.position;
 			// Prep extra fields
-			for(var headerId:Object in _extraFields) {
+			for (var headerId:Object in _extraFields) {
 				var extraBytes:ByteArray = _extraFields[headerId] as ByteArray;
-				if(extraBytes != null) {
+				if (extraBytes != null) {
 					ba.writeShort(uint(headerId));
 					ba.writeShort(uint(extraBytes.length));
 					ba.writeBytes(extraBytes);
@@ -328,10 +332,14 @@ package org.as3commons.zip
 			if (includeAdler32) {
 				if (!_hasAdler32) {
 					var compressed:Boolean = isCompressed;
-					if (compressed) { uncompress(); }
+					if (compressed) {
+						uncompress();
+					}
 					_adler32 = ChecksumUtil.Adler32(_content, 0, _content.length);
 					_hasAdler32 = true;
-					if (compressed) { compress(); }
+					if (compressed) {
+						compress();
+					}
 				}
 				ba.writeShort(0xdada);
 				ba.writeShort(4);
@@ -339,7 +347,7 @@ package org.as3commons.zip
 			}
 			var extrafieldsSize:uint = ba.position - filenameSize;
 			// Prep comment (currently unused)
-			if(centralDir && _comment.length > 0) {
+			if (centralDir && _comment.length > 0) {
 				if (_filenameEncoding == "utf-8") {
 					ba.writeUTFBytes(_comment);
 				} else {
@@ -350,7 +358,7 @@ package org.as3commons.zip
 			// Write filename and extra field sizes
 			stream.writeShort(filenameSize);
 			stream.writeShort(extrafieldsSize);
-			if(centralDir) {
+			if (centralDir) {
 				// Write comment size
 				stream.writeShort(commentSize);
 				// Write disk number start (always 0)
@@ -362,14 +370,14 @@ package org.as3commons.zip
 				stream.writeUnsignedInt(centralDirOffset);
 			}
 			// Write filename, extra field and comment
-			if(filenameSize + extrafieldsSize + commentSize > 0) {
+			if (filenameSize + extrafieldsSize + commentSize > 0) {
 				stream.writeBytes(ba);
 			}
 			// Write file
 			var fileSize:uint = 0;
-			if(!centralDir && _content.length > 0) {
-				if(isCompressed) {
-					if(HAS_UNCOMPRESS || HAS_INFLATE) {
+			if (!centralDir && _content.length > 0) {
+				if (isCompressed) {
+					if (HAS_UNCOMPRESS || HAS_INFLATE) {
 						fileSize = _content.length;
 						stream.writeBytes(_content, 0, fileSize);
 					} else {
@@ -382,35 +390,36 @@ package org.as3commons.zip
 				}
 			}
 			var size:uint = 30 + filenameSize + extrafieldsSize + commentSize + fileSize;
-			if(centralDir) {
+			if (centralDir) {
 				size += 16;
 			}
 			return size;
-		} 
+		}
 
 
 		/**
 		 * @private
-		 */		
+		 */
 		internal function parse(stream:IDataInput):Boolean {
-			while (stream.bytesAvailable && parseFunc(stream)) {}
+			while (stream.bytesAvailable && parseFunc(stream)) {
+			}
 			return (parseFunc === parseFileIdle);
 		}
 
 		/**
 		 * @private
-		 */		
+		 */
 		protected function parseFileIdle(stream:IDataInput):Boolean {
 			return false;
 		}
 
 		/**
 		 * @private
-		 */		
+		 */
 		protected function parseFileHead(stream:IDataInput):Boolean {
-			if(stream.bytesAvailable >= 30) {
+			if (stream.bytesAvailable >= 30) {
 				parseHead(stream);
-				if(_sizeFilename + _sizeExtra > 0) {
+				if (_sizeFilename + _sizeExtra > 0) {
 					parseFunc = parseFileHeadExt;
 				} else {
 					parseFunc = parseFileContent;
@@ -422,31 +431,31 @@ package org.as3commons.zip
 
 		/**
 		 * @private
-		 */		
+		 */
 		protected function parseFileHeadExt(stream:IDataInput):Boolean {
-			if(stream.bytesAvailable >= _sizeFilename + _sizeExtra) {
+			if (stream.bytesAvailable >= _sizeFilename + _sizeExtra) {
 				parseHeadExt(stream);
 				parseFunc = parseFileContent;
 				return true;
 			}
 			return false;
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function parseFileContent(stream:IDataInput):Boolean {
 			var continueParsing:Boolean = true;
-			if(_hasDataDescriptor) {
+			if (_hasDataDescriptor) {
 				// If the file has a data descriptor, bail out.
 				// We first need to figure out the length of the file. 
 				// See Zip::parseLocalfile()
 				parseFunc = parseFileIdle;
 				continueParsing = false;
-			} else if(_sizeCompressed == 0) {
+			} else if (_sizeCompressed == 0) {
 				// This entry has no file attached
 				parseFunc = parseFileIdle;
-			} else if(stream.bytesAvailable >= _sizeCompressed) {
+			} else if (stream.bytesAvailable >= _sizeCompressed) {
 				parseContent(stream);
 				parseFunc = parseFileIdle;
 			} else {
@@ -457,7 +466,7 @@ package org.as3commons.zip
 
 		/**
 		 * @private
-		 */		
+		 */
 		protected function parseHead(data:IDataInput):void {
 			var vSrc:uint = data.readUnsignedShort();
 			_versionHost = vSrc >> 8;
@@ -470,10 +479,10 @@ package org.as3commons.zip
 			if ((flag & 800) !== 0) {
 				_filenameEncoding = "utf-8";
 			}
-			if(_compressionMethod === COMPRESSION_IMPLODED) {
+			if (_compressionMethod === COMPRESSION_IMPLODED) {
 				_implodeDictSize = (flag & 0x02) !== 0 ? 8192 : 4096;
 				_implodeShannonFanoTrees = (flag & 0x04) !== 0 ? 3 : 2;
-			} else if(_compressionMethod === COMPRESSION_DEFLATED) {
+			} else if (_compressionMethod === COMPRESSION_DEFLATED) {
 				_deflateSpeedOption = (flag & 0x06) >> 1;
 			}
 			var msdosTime:uint = data.readUnsignedShort();
@@ -491,50 +500,50 @@ package org.as3commons.zip
 			_sizeFilename = data.readUnsignedShort();
 			_sizeExtra = data.readUnsignedShort();
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function parseHeadExt(data:IDataInput):void {
 			if (_filenameEncoding == "utf-8") {
-				_filename = data.readUTFBytes(_sizeFilename);// Fixes a bug in some players
+				_filename = data.readUTFBytes(_sizeFilename); // Fixes a bug in some players
 			} else {
 				_filename = data.readMultiByte(_sizeFilename, _filenameEncoding);
 			}
 			var bytesLeft:uint = _sizeExtra;
-			while(bytesLeft > 4) {
+			while (bytesLeft > 4) {
 				var headerId:uint = data.readUnsignedShort();
 				var dataSize:uint = data.readUnsignedShort();
-				if(dataSize > bytesLeft) {
+				if (dataSize > bytesLeft) {
 					throw new Error("Parse error in file " + _filename + ": Extra field data size too big.");
 				}
-				if(headerId === 0xdada && dataSize === 4) {
+				if (headerId === 0xdada && dataSize === 4) {
 					_adler32 = data.readUnsignedInt();
 					_hasAdler32 = true;
-				} else if(dataSize > 0) {
+				} else if (dataSize > 0) {
 					var extraBytes:ByteArray = new ByteArray();
 					data.readBytes(extraBytes, 0, dataSize);
 					_extraFields[headerId] = extraBytes;
 				}
 				bytesLeft -= dataSize + 4;
 			}
-			if(bytesLeft > 0) {
+			if (bytesLeft > 0) {
 				data.readBytes(new ByteArray(), 0, bytesLeft);
 			}
 		}
 
 		/**
 		 * @private
-		 */		
+		 */
 		internal function parseContent(data:IDataInput):void {
-			if(_compressionMethod === COMPRESSION_DEFLATED && !_encrypted) {
-				if(HAS_UNCOMPRESS || HAS_INFLATE) {
+			if (_compressionMethod === COMPRESSION_DEFLATED && !_encrypted) {
+				if (HAS_UNCOMPRESS || HAS_INFLATE) {
 					// Adobe Air supports inflate decompression.
 					// If we got here, this is an Air application
 					// and we can decompress without using the Adler32 hack
 					// so we just write out the raw deflate compressed file
 					data.readBytes(_content, 0, _sizeCompressed);
-				} else if(_hasAdler32) {
+				} else if (_hasAdler32) {
 					// Add zlib header
 					// CMF (compression method and info)
 					_content.writeByte(0x78);
@@ -551,7 +560,7 @@ package org.as3commons.zip
 					throw new Error("Adler32 checksum not found.");
 				}
 				isCompressed = true;
-			} else if(_compressionMethod == COMPRESSION_NONE) {
+			} else if (_compressionMethod == COMPRESSION_NONE) {
 				data.readBytes(_content, 0, _sizeCompressed);
 				isCompressed = false;
 			} else {
@@ -559,19 +568,19 @@ package org.as3commons.zip
 			}
 			_content.position = 0;
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function compress():void {
-			if(!isCompressed) {
-				if(_content.length > 0) {
+			if (!isCompressed) {
+				if (_content.length > 0) {
 					_content.position = 0;
 					_sizeUncompressed = _content.length;
-					if(HAS_INFLATE) {
+					if (HAS_INFLATE) {
 						_content.deflate();
 						_sizeCompressed = _content.length;
-					} else if(HAS_UNCOMPRESS) {
+					} else if (HAS_UNCOMPRESS) {
 						_content.compress.apply(_content, ["deflate"]);
 						_sizeCompressed = _content.length;
 					} else {
@@ -586,16 +595,16 @@ package org.as3commons.zip
 				}
 			}
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function uncompress():void {
-			if(isCompressed && _content.length > 0) {
+			if (isCompressed && _content.length > 0) {
 				_content.position = 0;
-				if(HAS_INFLATE) {
+				if (HAS_INFLATE) {
 					_content.inflate();
-				} else if(HAS_UNCOMPRESS) {
+				} else if (HAS_UNCOMPRESS) {
 					_content.uncompress.apply(_content, ["deflate"]);
 				} else {
 					_content.uncompress();
@@ -604,25 +613,12 @@ package org.as3commons.zip
 				isCompressed = false;
 			}
 		}
-		
+
 		/**
 		 * Returns a string representation of the ZipFile object.
-		 */		
+		 */
 		public function toString():String {
-			return "[ZipFile]"
-				+ "\n  name:" + _filename
-				+ "\n  date:" + _date
-				+ "\n  sizeCompressed:" + _sizeCompressed
-				+ "\n  sizeUncompressed:" + _sizeUncompressed
-				+ "\n  versionHost:" + _versionHost
-				+ "\n  versionNumber:" + _versionNumber
-				+ "\n  compressionMethod:" + _compressionMethod
-				+ "\n  encrypted:" + _encrypted
-				+ "\n  hasDataDescriptor:" + _hasDataDescriptor
-				+ "\n  hasCompressedPatchedData:" + _hasCompressedPatchedData
-				+ "\n  filenameEncoding:" + _filenameEncoding
-				+ "\n  crc32:" + _crc32.toString(16)
-				+ "\n  adler32:" + _adler32.toString(16);
+			return "[ZipFile]" + "\n  name:" + _filename + "\n  date:" + _date + "\n  sizeCompressed:" + _sizeCompressed + "\n  sizeUncompressed:" + _sizeUncompressed + "\n  versionHost:" + _versionHost + "\n  versionNumber:" + _versionNumber + "\n  compressionMethod:" + _compressionMethod + "\n  encrypted:" + _encrypted + "\n  hasDataDescriptor:" + _hasDataDescriptor + "\n  hasCompressedPatchedData:" + _hasCompressedPatchedData + "\n  filenameEncoding:" + _filenameEncoding + "\n  crc32:" + _crc32.toString(16) + "\n  adler32:" + _adler32.toString(16);
 		}
 	}
 }

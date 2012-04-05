@@ -13,15 +13,14 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.zip
-{
+package org.as3commons.zip {
 	import flash.events.*;
 	import flash.net.URLRequest;
 	import flash.net.URLStream;
 	import flash.utils.*;
 
 	/**
-	 * Dispatched when a file contained in a ZIP archive has 
+	 * Dispatched when a file contained in a ZIP archive has
 	 * loaded successfully.
 	 *
 	 * @eventType org.as3commons.zip.ZipEvent.FILE_LOADED
@@ -29,7 +28,7 @@ package org.as3commons.zip
 	[Event(name="fileLoaded", type="org.as3commons.zip.ZipEvent")]
 
 	/**
-	 * Dispatched when an error is encountered while parsing a 
+	 * Dispatched when an error is encountered while parsing a
 	 * ZIP Archive.
 	 *
 	 * @eventType org.as3commons.zip.ZipErrorEvent.PARSE_ERROR
@@ -37,27 +36,27 @@ package org.as3commons.zip
 	[Event(name="parseError", type="org.as3commons.zip.ZipErrorEvent")]
 
 	/**
-	 * Dispatched when data has loaded successfully. 
+	 * Dispatched when data has loaded successfully.
 	 *
-	 * @eventType flash.events.Event.COMPLETE 
+	 * @eventType flash.events.Event.COMPLETE
 	 */
 	[Event(name="complete", type="flash.events.Event")]
 
 	/**
 	 * Dispatched if a call to Zip.load() attempts to access data
-	 * over HTTP, and the current Flash Player is able to detect 
-	 * and return the status code for the request. (Some browser 
-	 * environments may not be able to provide this information.) 
-	 * Note that the httpStatus (if any) will be sent before (and 
+	 * over HTTP, and the current Flash Player is able to detect
+	 * and return the status code for the request. (Some browser
+	 * environments may not be able to provide this information.)
+	 * Note that the httpStatus (if any) will be sent before (and
 	 * in addition to) any complete or error event
 	 *
-	 * @eventType flash.events.HTTPStatusEvent.HTTP_STATUS 
+	 * @eventType flash.events.HTTPStatusEvent.HTTP_STATUS
 	 */
 	[Event(name="httpStatus", type="flash.events.HTTPStatusEvent")]
 
 	/**
-	 * Dispatched when an input/output error occurs that causes a 
-	 * load operation to fail. 
+	 * Dispatched when an input/output error occurs that causes a
+	 * load operation to fail.
 	 *
 	 * @eventType flash.events.IOErrorEvent.IO_ERROR
 	 */
@@ -68,11 +67,11 @@ package org.as3commons.zip
 	 *
 	 * @eventType flash.events.Event.OPEN
 	 */
-	 
+
 	[Event(name="open", type="flash.events.Event")]
 
 	/**
-	 * Dispatched when data is received as the download operation 
+	 * Dispatched when data is received as the download operation
 	 * progresses.
 	 *
 	 * @eventType flash.events.ProgressEvent.PROGRESS
@@ -81,8 +80,8 @@ package org.as3commons.zip
 
 	/**
 	 * Dispatched if a call to Zip.load() attempts to load data
-	 * from a server outside the security sandbox. 
-	 * 
+	 * from a server outside the security sandbox.
+	 *
 	 * @eventType flash.events.SecurityErrorEvent.SECURITY_ERROR
 	 */
 	[Event(name="securityError", type="flash.events.SecurityErrorEvent")]
@@ -90,10 +89,10 @@ package org.as3commons.zip
 
 	/**
 	 * Loads and parses ZIP archives.
-	 * 
+	 *
 	 * <p>Zip is able to process, create and modify standard ZIP archives as described in the
 	 * <a href="http://www.pkware.com/business_and_developers/developer/popups/appnote.txt">PKZIP file format documentation</a>.</p>
-	 * 
+	 *
 	 * <p>Limitations:</p>
 	 * <ul>
 	 * <li>ZIP feature versions &gt; 2.0 are not supported</li>
@@ -106,9 +105,8 @@ package org.as3commons.zip
 	 *
 	 * @author Claus Wahlers
 	 * @author Max Herkender
-	 */		
-	public class Zip extends EventDispatcher
-	{
+	 */
+	public class Zip extends EventDispatcher implements IZip {
 		protected var filesList:Array;
 		protected var filesDict:Dictionary;
 
@@ -116,7 +114,7 @@ package org.as3commons.zip
 		protected var charEncoding:String;
 		protected var parseFunc:Function;
 		protected var currentFile:ZipFile;
-		
+
 		protected var ddBuffer:ByteArray;
 		protected var ddSignature:uint;
 		protected var ddCompressedSize:uint;
@@ -135,14 +133,14 @@ package org.as3commons.zip
 
 		/**
 		 * Constructor
-		 * 
+		 *
 		 * @param filenameEncoding The character encoding used for filenames
 		 * contained in the zip. If unspecified, unicode ("utf-8") is used.
 		 * Older zips commonly use encoding "IBM437" (aka "cp437"),
 		 * while other European countries use "ibm850".
 		 * @see http://livedocs.adobe.com/labs/as3preview/langref/charset-codes.html
-		 */		
-		public function Zip(filenameEncoding:String = "utf-8") {
+		 */
+		public function Zip(filenameEncoding:String="utf-8") {
 			super();
 			charEncoding = filenameEncoding;
 			parseFunc = parseIdle;
@@ -150,7 +148,7 @@ package org.as3commons.zip
 
 		/**
 		 * Indicates whether a file is currently being processed or not.
-		 */		
+		 */
 		public function get active():Boolean {
 			return (parseFunc !== parseIdle);
 		}
@@ -158,15 +156,15 @@ package org.as3commons.zip
 		/**
 		 * Begins downloading the ZIP archive specified by the request
 		 * parameter.
-		 * 
+		 *
 		 * @param request A URLRequest object specifying the URL of a ZIP archive
-		 * to download. 
-		 * If the value of this parameter or the URLRequest.url property 
-		 * of the URLRequest object passed are null, Flash Player throws 
+		 * to download.
+		 * If the value of this parameter or the URLRequest.url property
+		 * of the URLRequest object passed are null, Flash Player throws
 		 * a null pointer error.
-		 */		
+		 */
 		public function load(request:URLRequest):void {
-			if(!urlStream && parseFunc == parseIdle) {
+			if (!urlStream && parseFunc == parseIdle) {
 				urlStream = new URLStream();
 				urlStream.endian = Endian.LITTLE_ENDIAN;
 				addEventHandlers();
@@ -176,7 +174,7 @@ package org.as3commons.zip
 				urlStream.load(request);
 			}
 		}
-		
+
 		/**
 		 * Loads a ZIP archive from a ByteArray.
 		 *
@@ -202,9 +200,9 @@ package org.as3commons.zip
 		 * Immediately closes the stream and cancels the download operation.
 		 * Files contained in the ZIP archive being loaded stay accessible
 		 * through the getFileAt() and getFileByName() methods.
-		 */		
+		 */
 		public function close():void {
-			if(urlStream) {
+			if (urlStream) {
 				parseFunc = parseIdle;
 				removeEventHandlers();
 				urlStream.close();
@@ -213,26 +211,26 @@ package org.as3commons.zip
 		}
 
 		/**
-		 * Serializes this zip archive into an IDataOutput stream (such as 
+		 * Serializes this zip archive into an IDataOutput stream (such as
 		 * ByteArray or FileStream) according to PKZIP APPNOTE.TXT
-		 * 
+		 *
 		 * @param stream The stream to serialize the zip file into.
 		 * @param includeAdler32 To decompress compressed files, Zip needs Adler32
 		 * 		checksums to be injected into the zipped files. Zip will do that
 		 * 		automatically if includeAdler32 is set to true. Note that if the
 		 * 		ZIP contains a lot of files, or big files, the calculation of the
 		 * 		checksums may take a while.
-		 */		
-		public function serialize(stream:IDataOutput, includeAdler32:Boolean = false):void {
-			if(stream != null && filesList.length > 0) {
+		 */
+		public function serialize(stream:IDataOutput, includeAdler32:Boolean=false):void {
+			if (stream != null && filesList.length > 0) {
 				var endian:String = stream.endian;
 				var ba:ByteArray = new ByteArray();
 				stream.endian = ba.endian = Endian.LITTLE_ENDIAN;
 				var offset:uint = 0;
 				var files:uint = 0;
-				for(var i:int = 0; i < filesList.length; i++) {
+				for (var i:int = 0; i < filesList.length; i++) {
 					var file:ZipFile = filesList[i] as ZipFile;
-					if(file != null) {
+					if (file != null) {
 						// first serialize the central directory item
 						// into our temporary ByteArray
 						file.serialize(ba, includeAdler32, true, offset);
@@ -243,7 +241,7 @@ package org.as3commons.zip
 						files++;
 					}
 				}
-				if(ba.length > 0) {
+				if (ba.length > 0) {
 					// Write the central directory items
 					stream.writeBytes(ba);
 				}
@@ -271,83 +269,83 @@ package org.as3commons.zip
 
 		/**
 		 * Gets the number of accessible files in the ZIP archive.
-		 * 
+		 *
 		 * @return The number of files
-		 */				
+		 */
 		public function getFileCount():uint {
 			return filesList ? filesList.length : 0;
 		}
 
 		/**
 		 * Retrieves a file contained in the ZIP archive, by index.
-		 * 
+		 *
 		 * @param index The index of the file to retrieve
 		 * @return A reference to a ZipFile object
-		 */				
+		 */
 		public function getFileAt(index:uint):ZipFile {
 			return filesList ? filesList[index] as ZipFile : null;
 		}
 
 		/**
 		 * Retrieves a file contained in the ZIP archive, by filename.
-		 * 
+		 *
 		 * @param name The filename of the file to retrieve
 		 * @return A reference to a ZipFile object
-		 */				
+		 */
 		public function getFileByName(name:String):ZipFile {
 			return filesDict[name] ? filesDict[name] as ZipFile : null;
 		}
 
 		/**
 		 * Adds a file to the ZIP archive.
-		 * 
+		 *
 		 * @param name The filename
 		 * @param content The ByteArray containing the uncompressed data (pass <code>null</code> to add a folder)
 		 * @param doCompress Compress the data after adding.
-		 * 
+		 *
 		 * @return A reference to the newly created ZipFile object
-		 */				
-		public function addFile(name:String, content:ByteArray = null, doCompress:Boolean = true):ZipFile {
+		 */
+		public function addFile(name:String, content:ByteArray=null, doCompress:Boolean=true):ZipFile {
 			return addFileAt(filesList ? filesList.length : 0, name, content, doCompress);
 		}
 
 		/**
 		 * Adds a file from a String to the ZIP archive.
-		 * 
+		 *
 		 * @param name The filename
 		 * @param content The String
 		 * @param charset The character set
 		 * @param doCompress Compress the string after adding.
-		 * 
+		 *
 		 * @return A reference to the newly created ZipFile object
-		 */				
-		public function addFileFromString(name:String, content:String, charset:String = "utf-8", doCompress:Boolean = true):ZipFile {
+		 */
+		public function addFileFromString(name:String, content:String, charset:String="utf-8", doCompress:Boolean=true):ZipFile {
 			return addFileFromStringAt(filesList ? filesList.length : 0, name, content, charset, doCompress);
 		}
 
 		/**
 		 * Adds a file to the ZIP archive, at a specified index.
-		 * 
+		 *
 		 * @param index The index
 		 * @param name The filename
 		 * @param content The ByteArray containing the uncompressed data (pass <code>null</code> to add a folder)
 		 * @param doCompress Compress the data after adding.
-		 * 
+		 *
 		 * @return A reference to the newly created ZipFile object
-		 */				
-		public function addFileAt(index:uint, name:String, content:ByteArray = null, doCompress:Boolean = true):ZipFile {
-			if(filesList == null) {
+		 */
+		public function addFileAt(index:uint, name:String, content:ByteArray=null, doCompress:Boolean=true):ZipFile {
+			if (filesList == null) {
 				filesList = [];
 			}
-			if(filesDict == null) {
+			if (filesDict == null) {
 				filesDict = new Dictionary();
-			} else if(filesDict[name]) {
+			} else if (filesDict[name]) {
 				throw(new Error("File already exists: " + name + ". Please remove first."));
 			}
 			var file:ZipFile = new ZipFile();
 			file.filename = name;
 			file.setContent(content, doCompress);
-			if(index >= filesList.length) {
+			if (index >= filesList.length) {
 				filesList.push(file);
 			} else {
 				filesList.splice(index, 0, file);
@@ -358,28 +356,28 @@ package org.as3commons.zip
 
 		/**
 		 * Adds a file from a String to the ZIP archive, at a specified index.
-		 * 
+		 *
 		 * @param index The index
 		 * @param name The filename
 		 * @param content The String
 		 * @param charset The character set
 		 * @param doCompress Compress the string after adding.
-		 * 
+		 *
 		 * @return A reference to the newly created ZipFile object
-		 */				
-		public function addFileFromStringAt(index:uint, name:String, content:String, charset:String = "utf-8", doCompress:Boolean = true):ZipFile {
-			if(filesList == null) {
+		 */
+		public function addFileFromStringAt(index:uint, name:String, content:String, charset:String="utf-8", doCompress:Boolean=true):ZipFile {
+			if (filesList == null) {
 				filesList = [];
 			}
-			if(filesDict == null) {
+			if (filesDict == null) {
 				filesDict = new Dictionary();
-			} else if(filesDict[name]) {
+			} else if (filesDict[name]) {
 				throw(new Error("File already exists: " + name + ". Please remove first."));
 			}
 			var file:ZipFile = new ZipFile();
 			file.filename = name;
 			file.setContentAsString(content, charset, doCompress);
-			if(index >= filesList.length) {
+			if (index >= filesList.length) {
 				filesList.push(file);
 			} else {
 				filesList.splice(index, 0, file);
@@ -390,14 +388,14 @@ package org.as3commons.zip
 
 		/**
 		 * Removes a file at a specified index from the ZIP archive.
-		 * 
+		 *
 		 * @param index The index
 		 * @return A reference to the removed ZipFile object
-		 */				
+		 */
 		public function removeFileAt(index:uint):ZipFile {
-			if(filesList != null && filesDict != null && index < filesList.length) {
+			if (filesList != null && filesDict != null && index < filesList.length) {
 				var file:ZipFile = filesList[index] as ZipFile;
-				if(file != null) {
+				if (file != null) {
 					filesList.splice(index, 1);
 					delete filesDict[file.filename];
 					return file;
@@ -408,26 +406,27 @@ package org.as3commons.zip
 
 		/**
 		 * @private
-		 */		
+		 */
 		protected function parse(stream:IDataInput):Boolean {
-			while (parseFunc(stream)) {}
+			while (parseFunc(stream)) {
+			}
 			return (parseFunc === parseIdle);
 		}
 
 		/**
 		 * @private
-		 */		
+		 */
 		protected function parseIdle(stream:IDataInput):Boolean {
 			return false;
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function parseSignature(stream:IDataInput):Boolean {
-			if(stream.bytesAvailable >= 4) {
+			if (stream.bytesAvailable >= 4) {
 				var sig:uint = stream.readUnsignedInt();
-				switch(sig) {
+				switch (sig) {
 					case SIG_LOCAL_FILE_HEADER:
 						parseFunc = parseLocalfile;
 						currentFile = new ZipFile(charEncoding);
@@ -454,25 +453,25 @@ package org.as3commons.zip
 
 		/**
 		 * @private
-		 */		
+		 */
 		protected function parseLocalfile(stream:IDataInput):Boolean {
-			if(currentFile.parse(stream)) {
-				if(currentFile.hasDataDescriptor) {
-					
+			if (currentFile.parse(stream)) {
+				if (currentFile.hasDataDescriptor) {
+
 					// This file uses a data descriptor:
-					
+
 					// "[A data] descriptor exists only if bit 3 of the
 					// general purpose bit flag is set.  It is byte aligned
 					// and immediately follows the last byte of compressed data.
 					// This descriptor is used only when it was not possible to
 					// seek in the output .ZIP file, e.g., when the output .ZIP file
 					// was standard output or a non-seekable device" (APPNOTE.TXT).
-					
+
 					// The file parser stops parsing after the file header.
 					// We need to figure out the compressed size of the file's
 					// payload (by searching ahead for the data descriptor
 					// signature). See findDataDescriptor() below.
-					
+
 					parseFunc = findDataDescriptor;
 					ddBuffer = new ByteArray();
 					ddSignature = 0;
@@ -494,12 +493,12 @@ package org.as3commons.zip
 
 		/**
 		 * @private
-		 */		
+		 */
 		protected function findDataDescriptor(stream:IDataInput):Boolean {
-			while(stream.bytesAvailable > 0) {
+			while (stream.bytesAvailable > 0) {
 				var c:uint = stream.readUnsignedByte();
 				ddSignature = (ddSignature >>> 8) | (c << 24);
-				if(ddSignature == SIG_DATA_DESCRIPTOR) {
+				if (ddSignature == SIG_DATA_DESCRIPTOR) {
 					// Data descriptor signature found
 					// Remove last three (signature-) bytes from buffer
 					ddBuffer.length -= 3;
@@ -513,7 +512,7 @@ package org.as3commons.zip
 
 		/**
 		 * @private
-		 */		
+		 */
 		protected function validateDataDescriptor(stream:IDataInput):Boolean {
 			// TODO [CW]
 			// In case validation fails, we should reexamine the 
@@ -525,7 +524,7 @@ package org.as3commons.zip
 				var ddSizeUncompressed:uint = stream.readUnsignedInt();
 				// If the compressed size from the descriptor matches the buffer length,
 				// we can be reasonably sure that this really is the descriptor.
-				if(ddBuffer.length == ddSizeCompressed) {
+				if (ddBuffer.length == ddSizeCompressed) {
 					ddBuffer.position = 0;
 					// Inject the descriptor data into current file
 					currentFile._crc32 = ddCRC32;
@@ -548,10 +547,10 @@ package org.as3commons.zip
 			}
 			return false;
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function onFileLoaded():void {
 			filesList.push(currentFile);
 			if (currentFile.filename) {
@@ -560,45 +559,45 @@ package org.as3commons.zip
 			dispatchEvent(new ZipEvent(ZipEvent.FILE_LOADED, currentFile));
 			currentFile = null;
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function progressHandler(evt:Event):void {
 			dispatchEvent(evt.clone());
 			try {
-				if(parse(urlStream)) {
+				if (parse(urlStream)) {
 					close();
 					dispatchEvent(new Event(Event.COMPLETE));
 				}
-			} catch(e:Error) {
+			} catch (e:Error) {
 				close();
-				if(hasEventListener(ZipErrorEvent.PARSE_ERROR)) {
+				if (hasEventListener(ZipErrorEvent.PARSE_ERROR)) {
 					dispatchEvent(new ZipErrorEvent(ZipErrorEvent.PARSE_ERROR, e.message));
 				} else {
 					throw(e);
 				}
 			}
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function defaultHandler(evt:Event):void {
 			dispatchEvent(evt.clone());
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function defaultErrorHandler(evt:Event):void {
 			close();
 			dispatchEvent(evt.clone());
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function addEventHandlers():void {
 			urlStream.addEventListener(Event.COMPLETE, defaultHandler);
 			urlStream.addEventListener(Event.OPEN, defaultHandler);
@@ -607,10 +606,10 @@ package org.as3commons.zip
 			urlStream.addEventListener(SecurityErrorEvent.SECURITY_ERROR, defaultErrorHandler);
 			urlStream.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 		}
-		
+
 		/**
 		 * @private
-		 */		
+		 */
 		protected function removeEventHandlers():void {
 			urlStream.removeEventListener(Event.COMPLETE, defaultHandler);
 			urlStream.removeEventListener(Event.OPEN, defaultHandler);
