@@ -1,0 +1,272 @@
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.2" />
+    <flex version="4.5.1" build="21328" minimumSupportedVersion="3.0.0" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-files />
+  </features>
+  <libraries>
+    <library path="library.swf">
+      <script name="org/as3commons/lang/StringUtils" mod="1330333367880" signatureChecksum="3364146582" >
+        <def id="org.as3commons.lang:StringUtils" /> 
+        <dep id="Math" type="e" /> 
+        <dep id="RegExp" type="e" /> 
+        <dep id="org.as3commons.lang:IllegalArgumentError" type="e" /> 
+        <dep id="RegExp" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/DictionaryUtils" mod="1330333367861" signatureChecksum="2362595786" >
+        <def id="org.as3commons.lang:DictionaryUtils" /> 
+        <dep id="org.as3commons.lang:ObjectUtils" type="e" /> 
+        <dep id="flash.utils:Dictionary" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/HashArray" mod="1330333367853" signatureChecksum="3674127503" >
+        <def id="org.as3commons.lang:HashArray" /> 
+        <dep id="Math" type="e" /> 
+        <dep id="org.as3commons.lang:ArrayUtils" type="e" /> 
+        <dep id="flash.utils:Dictionary" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/builder/ToStringBuilder" mod="1330333367551" signatureChecksum="2252039117" >
+        <def id="org.as3commons.lang.builder:ToStringBuilder" /> 
+        <dep id="org.as3commons.lang.builder:ToStringStyle" type="e" /> 
+        <dep id="org.as3commons.lang:StringBuffer" type="e" /> 
+        <dep id="org.as3commons.lang.builder:ToStringStyle" type="s" /> 
+        <dep id="org.as3commons.lang:StringBuffer" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/SoftReference" mod="1330333367888" signatureChecksum="2611101388" >
+        <def id="org.as3commons.lang:SoftReference" /> 
+        <dep id="flash.utils:Dictionary" type="e" /> 
+        <dep id="flash.utils:Dictionary" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/IApplicationDomainAware" mod="1330333367855" signatureChecksum="2680044320" >
+        <def id="org.as3commons.lang:IApplicationDomainAware" /> 
+        <dep id="flash.system:ApplicationDomain" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/IOrdered" mod="1330333367896" signatureChecksum="1849697797" >
+        <def id="org.as3commons.lang:IOrdered" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/IIterator" mod="1330333367915" signatureChecksum="2781228073" >
+        <def id="org.as3commons.lang:IIterator" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/ICloneable" mod="1330333367894" signatureChecksum="833952771" >
+        <def id="org.as3commons.lang:ICloneable" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/DateUtils" mod="1330333367903" signatureChecksum="1341363913" >
+        <def id="org.as3commons.lang:DateUtils" /> 
+        <dep id="org.as3commons.lang:Assert" type="e" /> 
+        <dep id="Date" type="e" /> 
+        <dep id="Math" type="e" /> 
+        <dep id="Date" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/builder/ToStringStyle" mod="1330333367556" signatureChecksum="4196127107" >
+        <def id="org.as3commons.lang.builder:ToStringStyle" /> 
+        <dep id="flash.utils:getQualifiedClassName" type="e" /> 
+        <dep id="org.as3commons.lang:ObjectUtils" type="e" /> 
+        <dep id="org.as3commons.lang:StringBuffer" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/IllegalStateError" mod="1330333367857" signatureChecksum="2780047437" >
+        <def id="org.as3commons.lang:IllegalStateError" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Error" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/XMLUtils" mod="1330333367851" signatureChecksum="4094031640" >
+        <def id="org.as3commons.lang:XMLUtils" /> 
+        <dep id="org.as3commons.lang:Assert" type="e" /> 
+        <dep id="flash.xml:XMLNodeType" type="e" /> 
+        <dep id="flash.xml:XMLNode" type="e" /> 
+        <dep id="XML" type="e" /> 
+        <dep id="flash.xml:XMLNode" type="s" /> 
+        <dep id="XML" type="s" /> 
+        <dep id="XMLList" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/INamed" mod="1330333367892" signatureChecksum="2992973447" >
+        <def id="org.as3commons.lang:INamed" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/util/CloneUtils" mod="1330333367782" signatureChecksum="1179736667" >
+        <def id="org.as3commons.lang.util:CloneUtils" /> 
+        <dep id="org.as3commons.lang:Assert" type="e" /> 
+        <dep id="org.as3commons.lang:ICloneable" type="e" /> 
+        <dep id="flash.utils:Dictionary" type="e" /> 
+        <dep id="org.as3commons.lang:ICloneable" type="s" /> 
+        <dep id="flash.utils:Dictionary" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/util/OrderedUtils" mod="1330333367785" signatureChecksum="491083038" >
+        <def id="org.as3commons.lang.util:OrderedUtils" /> 
+        <dep id="org.as3commons.lang:IOrdered" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/ArrayUtils" mod="1330333367908" signatureChecksum="3851471414" >
+        <def id="org.as3commons.lang:ArrayUtils" /> 
+        <dep id="Math" type="e" /> 
+        <dep id="org.as3commons.lang:IEquals" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/ClassNotFoundError" mod="1330333367890" signatureChecksum="4185073949" >
+        <def id="org.as3commons.lang:ClassNotFoundError" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Error" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/IllegalArgumentError" mod="1330333367863" signatureChecksum="2831821521" >
+        <def id="org.as3commons.lang:IllegalArgumentError" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Error" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/IComparable" mod="1330333367802" signatureChecksum="3327336837" >
+        <def id="org.as3commons.lang:IComparable" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/StringBuffer" mod="1330333367910" signatureChecksum="4207298221" >
+        <def id="org.as3commons.lang:StringBuffer" /> 
+        <dep id="org.as3commons.lang:StringUtils" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/Assert" mod="1330333367913" signatureChecksum="2354575686" >
+        <def id="org.as3commons.lang:Assert" /> 
+        <dep id="flash.utils:getQualifiedClassName" type="e" /> 
+        <dep id="org.as3commons.lang:StringUtils" type="e" /> 
+        <dep id="org.as3commons.lang:ClassUtils" type="e" /> 
+        <dep id="org.as3commons.lang:IllegalArgumentError" type="e" /> 
+        <dep id="org.as3commons.lang:IllegalStateError" type="e" /> 
+        <dep id="flash.utils:Dictionary" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/ClassUtils" mod="1332317997272" signatureChecksum="2185918409" >
+        <def id="org.as3commons.lang:ClassUtils" /> 
+        <dep id="org.as3commons.lang:Assert" type="e" /> 
+        <dep id="flash.utils:describeType" type="e" /> 
+        <dep id="ReferenceError" type="e" /> 
+        <dep id="QName" type="e" /> 
+        <dep id="org.as3commons.lang:ClassNotFoundError" type="e" /> 
+        <dep id="XMLList" type="e" /> 
+        <dep id="flash.system:ApplicationDomain" type="e" /> 
+        <dep id="flash.utils:Proxy" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="flash.utils:getQualifiedClassName" type="e" /> 
+        <dep id="org.as3commons.lang:StringUtils" type="e" /> 
+        <dep id="flash.utils:Timer" type="e" /> 
+        <dep id="flash.events:TimerEvent" type="e" /> 
+        <dep id="flash.utils:getQualifiedSuperclassName" type="e" /> 
+        <dep id="ReferenceError" type="s" /> 
+        <dep id="flash.utils:Timer" type="s" /> 
+        <dep id="flash.events:TimerEvent" type="s" /> 
+        <dep id="XML" type="s" /> 
+        <dep id="XMLList" type="s" /> 
+        <dep id="flash.system:ApplicationDomain" type="s" /> 
+        <dep id="Error" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="_43d34ecf69da8a2fd8083d984e9f5b619aa0ad23226e7703e4d85a9abf83ddd7_flash_display_Sprite" mod="1332358497583" signatureChecksum="1825405913" >
+        <def id="_43d34ecf69da8a2fd8083d984e9f5b619aa0ad23226e7703e4d85a9abf83ddd7_flash_display_Sprite" /> 
+        <dep id="flash.system:Security" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:Sprite" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/ObjectIterator" mod="1330333367849" signatureChecksum="2118086160" >
+        <def id="org.as3commons.lang:ObjectIterator" /> 
+        <dep id="org.as3commons.lang:IllegalArgumentError" type="e" /> 
+        <dep id="XMLList" type="e" /> 
+        <dep id="org.as3commons.lang:ObjectUtils" type="e" /> 
+        <dep id="XMLList" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+        <dep id="org.as3commons.lang:IIterator" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/ObjectUtils" mod="1330333367886" signatureChecksum="4211632329" >
+        <def id="org.as3commons.lang:ObjectUtils" /> 
+        <dep id="flash.utils:describeType" type="e" /> 
+        <dep id="flash.net:ObjectEncoding" type="e" /> 
+        <dep id="flash.net:registerClassAlias" type="e" /> 
+        <dep id="flash.utils:ByteArray" type="e" /> 
+        <dep id="Date" type="e" /> 
+        <dep id="org.as3commons.lang:ObjectIterator" type="e" /> 
+        <dep id="org.as3commons.lang:ClassUtils" type="e" /> 
+        <dep id="flash.utils:Dictionary" type="e" /> 
+        <dep id="flash.utils:ByteArray" type="s" /> 
+        <dep id="XML" type="s" /> 
+        <dep id="XMLList" type="s" /> 
+        <dep id="flash.utils:Dictionary" type="s" /> 
+        <dep id="org.as3commons.lang:IIterator" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/IDisposable" mod="1330333367898" signatureChecksum="3631360467" >
+        <def id="org.as3commons.lang:IDisposable" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/IEquals" mod="1330333367917" signatureChecksum="1701126224" >
+        <def id="org.as3commons.lang:IEquals" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/Enum" mod="1330333367922" signatureChecksum="302813774" >
+        <def id="org.as3commons.lang:Enum" /> 
+        <dep id="flash.utils:getQualifiedClassName" type="e" /> 
+        <dep id="org.as3commons.lang:StringUtils" type="e" /> 
+        <dep id="QName" type="e" /> 
+        <dep id="trace" type="e" /> 
+        <dep id="org.as3commons.lang:ClassUtils" type="e" /> 
+        <dep id="org.as3commons.lang:IllegalArgumentError" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="org.as3commons.lang:ObjectUtils" type="e" /> 
+        <dep id="Error" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="org.as3commons.lang:IEquals" type="i" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="org/as3commons/lang/builder/EqualsBuilder" mod="1330333367553" signatureChecksum="778923480" >
+        <def id="org.as3commons.lang.builder:EqualsBuilder" /> 
+        <dep id="org.as3commons.lang:IEquals" type="e" /> 
+        <dep id="flash.utils:getQualifiedClassName" type="e" /> 
+        <dep id="Date" type="e" /> 
+        <dep id="XML" type="e" /> 
+        <dep id="org.as3commons.lang:ObjectUtils" type="e" /> 
+        <dep id="org.as3commons.lang:IEquals" type="s" /> 
+        <dep id="Date" type="s" /> 
+        <dep id="XML" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <digests>
+        <digest type="SHA-256" signed="false" value="98f83493e656be26a042c811ead68b518948bf317a108aaa56131f28bc0ffe6b"   />
+      </digests>
+    </library>
+  </libraries>
+  <files>
+  </files>
+</swc>
