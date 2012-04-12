@@ -3,16 +3,12 @@ package org.as3commons.swc {
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
+	import org.as3commons.swc.catalog.SWCCatalog;
+	import org.as3commons.zip.Zip;
 
 	public class SWC {
 
-		public var libVersion:String = "";
-		public var flexVersion:String = "";
-		public var flexMinimumSupportedVersion:String = "";
-		public var flexBuild:String = "";
-		public var flashVersion:String = "";
-		public var flashBuild:String = "";
-		public var flashPlatform:String = "";
+		private var _catalog:SWCCatalog;
 
 		// --------------------------------------------------------------------
 		//
@@ -44,18 +40,20 @@ package org.as3commons.swc {
 
 		// ----------------------------
 
-		private var _components:Vector.<SWCComponent> = new Vector.<SWCComponent>();
-
 		public function get components():Vector.<SWCComponent> {
-			return _components.concat();
+			return _catalog.components;
 		}
 
 		// ----------------------------
 
-		private var _libraries:Vector.<SWCLibrary> = new Vector.<SWCLibrary>();
-
 		public function get libraries():Vector.<SWCLibrary> {
-			return _libraries.concat();
+			return _catalog.libraries;
+		}
+
+		// ----------------------------
+
+		public function get files():Vector.<SWCFile> {
+			return _catalog.files;
 		}
 
 		// ----------------------------
@@ -71,9 +69,10 @@ package org.as3commons.swc {
 
 		private function getClassNames():Vector.<String> {
 			var result:Vector.<String> = new Vector.<String>();
+			var libraries:Vector.<SWCLibrary> = _catalog.libraries;
 
-			for (var i:int = 0; i < _libraries.length; i++) {
-				var lib:SWCLibrary = _libraries[i];
+			for (var i:int = 0; i < libraries.length; i++) {
+				var lib:SWCLibrary = libraries[i];
 				for (var j:int = 0; j < lib.classNames.length; j++) {
 					result.push(lib.classNames[j]);
 				}
@@ -90,20 +89,45 @@ package org.as3commons.swc {
 			return _loaded;
 		}
 
-		public function set loaded(value:Boolean):void {
+		as3commons_swc function set loaded(value:Boolean):void {
 			_loaded = value;
 		}
 
 		// ----------------------------
 
 		public function get numComponents():uint {
-			return _components.length;
+			return components.length;
 		}
 
 		// ----------------------------
 
 		public function get numLibraries():uint {
-			return _libraries.length;
+			return libraries.length;
+		}
+
+		// ----------------------------
+
+		public function get numFiles():uint {
+			return files.length;
+		}
+
+		// ----------------------------
+
+		as3commons_swc function set catalog(value:SWCCatalog):void {
+			Assert.state(_catalog == null, "The catalog can only be set once.");
+			_catalog = value;
+		}
+
+		// ----------------------------
+
+		private var _zip:Zip;
+
+		as3commons_swc function get zip():Zip {
+			return _zip;
+		}
+
+		as3commons_swc function set zip(value:Zip):void {
+			_zip = value;
 		}
 
 		// --------------------------------------------------------------------
@@ -113,6 +137,7 @@ package org.as3commons.swc {
 		// --------------------------------------------------------------------
 
 		public function load():IOperation {
+			Assert.state(!_loaded, "The SWC can only be loaded once.");
 			Assert.hasText(_url, "The 'url' property must be set before loading the SWC.");
 			return new LoadLibraryOperation(this);
 		}
@@ -120,16 +145,6 @@ package org.as3commons.swc {
 		public function getClass(name:String):Class {
 			Assert.state(_loaded, "The SWC must be loaded before classes can be retrieved from it.");
 			return ClassUtils.forName(name);
-		}
-
-		public function addComponent(component:SWCComponent):void {
-			Assert.state(!_loaded, "Components cannot be added after the SWC has been loaded");
-			_components.push(component);
-		}
-
-		public function addLibrary(library:SWCLibrary):void {
-			Assert.state(!_loaded, "Libraries cannot be added after the SWC has been loaded");
-			_libraries.push(library);
 		}
 
 	}
@@ -140,12 +155,20 @@ import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.events.SecurityErrorEvent;
 import flash.net.URLRequest;
+import flash.net.registerClassAlias;
 import flash.system.LoaderContext;
 
 import org.as3commons.async.operation.impl.AbstractOperation;
+import org.as3commons.logging.api.ILogger;
+import org.as3commons.logging.api.getClassLogger;
+import org.as3commons.reflect.Metadata;
+import org.as3commons.reflect.MetadataArgument;
 import org.as3commons.reflect.Type;
 import org.as3commons.swc.SWC;
-import org.as3commons.swc.catalog.CatalogReader;
+import org.as3commons.swc.SWCFile;
+import org.as3commons.swc.as3commons_swc;
+import org.as3commons.swc.catalog.SWCCatalog;
+import org.as3commons.swc.catalog.reader.impl.XMLCatalogReader;
 import org.as3commons.zip.Zip;
 import org.as3commons.zip.ZipErrorEvent;
 import org.as3commons.zip.ZipFile;
@@ -155,31 +178,56 @@ class LoadLibraryOperation extends AbstractOperation {
 	private static const LIBRARY_FILE_NAME:String = "library.swf";
 	private static const CATALOG_FILE_NAME:String = "catalog.xml";
 
+	private static const logger:ILogger = getClassLogger(LoadLibraryOperation);
+
 	private var _zip:Zip;
 	private var _loader:Loader;
 	private var _swc:SWC;
 
-	/**
-	 * Creates a new <code>LoadLibraryOperation</code> instance.
-	 */
+	use namespace as3commons_swc;
+
+	// --------------------------------------------------------------------
+	//
+	// Constructor
+	//
+	// --------------------------------------------------------------------
+
 	public function LoadLibraryOperation(swc:SWC) {
 		_swc = swc;
 		load();
 	}
 
-	protected function loader_securityErrorHandler(event:SecurityErrorEvent):void {
+	// --------------------------------------------------------------------
+	//
+	// Private Methods
+	//
+	// --------------------------------------------------------------------
+
+	private function loader_securityErrorHandler(event:SecurityErrorEvent):void {
 		dispatchErrorEvent(event.text);
 	}
 
-	protected function ioErrorHandler(event:IOErrorEvent):void {
+	private function ioErrorHandler(event:IOErrorEvent):void {
 		dispatchErrorEvent(event.text);
 		cleanupZip();
 	}
 
-	protected function loader_completeHandler(event:Event):void {
-		_swc.loaded = true;
+	private function loader_completeHandler(event:Event):void {
+		_swc.as3commons_swc::loaded = true;
 		cleanUpLoader();
+		registerClassAliases();
 		dispatchCompleteEvent(_swc);
+	}
+
+	private function registerClassAliases():void {
+		for each(var className:String in _swc.classNames) {
+			var type:Type = Type.forName(className);
+			for each(var metaData:Metadata in type.getMetadata("RemoteClass")) {
+				var metadataArgument:MetadataArgument = metaData.getArgument("alias");
+				logger.info("Registering class alias '{0}' for class '{1}'", [metadataArgument.value, className]);
+				registerClassAlias(metadataArgument.value, type.clazz);
+			}
+		}
 	}
 
 	private function cleanUpLoader():void {
@@ -189,20 +237,21 @@ class LoadLibraryOperation extends AbstractOperation {
 		_loader = null;
 	}
 
-	protected function load():void {
+	private function load():void {
 		_zip = new Zip();
 		_zip.addEventListener(Event.COMPLETE, unzipLibrary_completeHandler);
 		_zip.addEventListener(ZipErrorEvent.PARSE_ERROR, unzip_parseErrorHandler);
 		_zip.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 		_zip.load(new URLRequest(_swc.url));
+		_swc.as3commons_swc::zip = _zip;
 	}
 
-	protected function unzip_parseErrorHandler(event:ZipErrorEvent):void {
+	private function unzip_parseErrorHandler(event:ZipErrorEvent):void {
 		dispatchErrorEvent(event.text);
 		cleanupZip();
 	}
 
-	protected function unzipLibrary_completeHandler(event:Event):void {
+	private function unzipLibrary_completeHandler(event:Event):void {
 		readCatalog();
 		loadClasses();
 		cleanupZip();
@@ -211,8 +260,16 @@ class LoadLibraryOperation extends AbstractOperation {
 	private function readCatalog():void {
 		var catalogFile:ZipFile = _zip.getFileByName(CATALOG_FILE_NAME);
 		var catalogData:String = catalogFile.getContentAsString(false);
-		var reader:CatalogReader = new CatalogReader(_swc, catalogData);
-		reader.read();
+		var reader:XMLCatalogReader = new XMLCatalogReader(catalogData);
+		var catalog:SWCCatalog = reader.read();
+		_swc.as3commons_swc::catalog = catalog;
+		addFileContent(catalog);
+	}
+
+	private function addFileContent(catalog:SWCCatalog):void {
+		for each (var file:SWCFile in catalog.files) {
+			file.as3commons_swc::zipFile = _zip.getFileByName(file.path);
+		}
 	}
 
 	private function loadClasses():void {

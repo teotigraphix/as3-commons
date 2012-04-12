@@ -24,7 +24,7 @@ package org.as3commons.swc {
 		public function testLoad():void {
 			var swc:SWC = new SWC("as3commons-concurrency.swc");
 			var operation:IOperation = swc.load();
-			operation.addCompleteListener(Async.asyncHandler(this, testLoad_completeHandler, 1000));
+			operation.addCompleteListener(Async.asyncHandler(this, testLoad_completeHandler, 10000));
 		}
 
 		private function testLoad_completeHandler(event:OperationEvent, data:*):void {
