@@ -10,16 +10,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-swc</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0-alpha.2</version>
 	<name>AS3Commons SWC</name>
 	<url>http://code.google.com/p/as3-commons</url>
 	<description>ActionScript 3.0 library that offers functionality for working with SWC files.</description>
 	<inceptionYear>2012</inceptionYear>
 
 	<scm>
-		<connection>scm:svn:http://as3-commons.googlecode.com/svn/as3commons-swc</connection>
-		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/trunk/as3-commons-swc</developerConnection>
-		<url>http://as3-commons.googlecode.com/svn/trunk/as3-commons-swc</url>
+		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-swc/1.0.0-alpha.2</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-swc/1.0.0-alpha.2</developerConnection>
+		<url>http://as3-commons.googlecode.com/svn/tags/as3-commons-swc/1.0.0-alpha.2</url>
 	</scm>
 
 	<distributionManagement>
