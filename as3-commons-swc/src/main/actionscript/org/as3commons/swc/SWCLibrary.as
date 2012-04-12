@@ -1,7 +1,16 @@
 package org.as3commons.swc {
 	public class SWCLibrary {
 
-		public function SWCLibrary() {
+		// --------------------------------------------------------------------
+		//
+		// Constructor
+		//
+		// --------------------------------------------------------------------
+
+		public function SWCLibrary(path:String, classNames:Vector.<String>, metadata:Vector.<String>) {
+			_path = path;
+			_classNames = classNames;
+			_metadata = metadata;
 		}
 
 		// --------------------------------------------------------------------
@@ -28,14 +37,13 @@ package org.as3commons.swc {
 			return _classNames;
 		}
 
-		// --------------------------------------------------------------------
-		//
-		// Public Methods
-		//
-		// --------------------------------------------------------------------
+		// ----------------------------
 
-		public function addClassName(name:String):void {
-			_classNames.push(name);
+		private var _metadata:Vector.<String> = new Vector.<String>();
+
+		public function get metadata():Vector.<String> {
+			return _metadata;
 		}
+
 	}
 }
