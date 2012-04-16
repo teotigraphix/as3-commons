@@ -54,6 +54,7 @@ package org.as3commons.bytecode.reflect {
 			const result:ByteCodeType = new ByteCodeType(applicationDomain);
 			result.as3commons_reflect::setIsNative(true);
 			result.name = type.name;
+			result.isInterface = type.isInterface;
 			result.fullName = type.fullName;
 			result.clazz = type.clazz;
 			result.extendsClasses = type.extendsClasses.concat([]);
