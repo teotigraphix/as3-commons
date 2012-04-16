@@ -480,7 +480,7 @@ package org.as3commons.bytecode.reflect {
 				if (metaDataContainer is IVisibleMember) {
 					visibleMember.as3commons_reflect::setVisibility(traitMultiname.nameSpace.kind);
 					if (traitMultiname.nameSpace.kind === NamespaceKind.NAMESPACE) {
-						if (traitMultiname.nameSpace.name.substr(0, 5) == HTTP_PREFIX) {
+						if (isCustomNamespace(traitMultiname.nameSpace)) { // traitMultiname.nameSpace.name.substr(0, 5) == HTTP_PREFIX) {
 							visibleMember.as3commons_reflect::setNamespaceURI(traitMultiname.nameSpace.name);
 						}
 					}
@@ -493,6 +493,26 @@ package org.as3commons.bytecode.reflect {
 				}
 			}
 			return methods;
+		}
+
+		private function isCustomNamespace(namespace:LNamespace):Boolean
+		{
+			if (namespace.name == LNamespace.PUBLIC.name)
+			{
+				return false;
+			}
+
+			if (namespace.name.substr(0, "protectedNamespace::".length) == "protectedNamespace::")
+			{
+				return false;
+			}
+
+			if (namespace.name.substr(0, "private::".length) == "private::")
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		public function readTypes(input:ByteArray, constantPool:IConstantPool, applicationDomain:ApplicationDomain, methods:Array, metadatas:Array, typeCache:ByteCodeTypeCache):void {
