@@ -52,6 +52,8 @@ package org.as3commons.bytecode.reflect {
 		private static const GETTER_SIGNATURE:String = "get";
 		private static const HTTP_PREFIX:String = 'http:';
 		private static const SETTER_SIGNATURE:String = "set";
+		private static const PROTECTED_NAMESPACE_NAME_PREFIX:String = "protectedNamespace::";
+		private static const PRIVATE_NAMESPACE_NAME_PREFIX:String = "private::";
 
 		public function ReflectionDeserializer() {
 			super();
@@ -480,7 +482,7 @@ package org.as3commons.bytecode.reflect {
 				if (metaDataContainer is IVisibleMember) {
 					visibleMember.as3commons_reflect::setVisibility(traitMultiname.nameSpace.kind);
 					if (traitMultiname.nameSpace.kind === NamespaceKind.NAMESPACE) {
-						if (isCustomNamespace(traitMultiname.nameSpace)) { // traitMultiname.nameSpace.name.substr(0, 5) == HTTP_PREFIX) {
+						if (isCustomNamespace(traitMultiname.nameSpace)) {
 							visibleMember.as3commons_reflect::setNamespaceURI(traitMultiname.nameSpace.name);
 						}
 					}
@@ -495,20 +497,14 @@ package org.as3commons.bytecode.reflect {
 			return methods;
 		}
 
-		private function isCustomNamespace(namespace:LNamespace):Boolean
-		{
-			if (namespace.name == LNamespace.PUBLIC.name)
-			{
+		private function isCustomNamespace(namespace:LNamespace):Boolean {
+			if (namespace.name == LNamespace.PUBLIC.name) {
 				return false;
 			}
-
-			if (namespace.name.substr(0, "protectedNamespace::".length) == "protectedNamespace::")
-			{
+			if (namespace.name.substr(0, PROTECTED_NAMESPACE_NAME_PREFIX.length) == PROTECTED_NAMESPACE_NAME_PREFIX) {
 				return false;
 			}
-
-			if (namespace.name.substr(0, "private::".length) == "private::")
-			{
+			if (namespace.name.substr(0, PRIVATE_NAMESPACE_NAME_PREFIX.length) == PRIVATE_NAMESPACE_NAME_PREFIX) {
 				return false;
 			}
 

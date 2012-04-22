@@ -38,9 +38,6 @@ package org.as3commons.bytecode.io {
 	 * @author Roland Zwaga
 	 */
 	public class AbstractAbcDeserializer implements IAbcDeserializer {
-		private static const UTF8_BAD_PREFIX:String = "UTF8_BAD";
-
-		private var _illegalCount:uint = 0;
 
 		/**
 		 * Creates a new <code>AbstractAbcDeserializer2</code> instance.

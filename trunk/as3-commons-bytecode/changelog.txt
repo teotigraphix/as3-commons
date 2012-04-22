@@ -3,7 +3,13 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.1.1 (01.04.2011)
+Changes in version 1.1.2 (??.??.2012)
+-------------------------------------
+
+* Fixed issue where custom namespaces whose value is not a URL are not recognized as such (thanks Drew)
+* Temporary bytearray in which strings are serialzied for the constantpool now gets cached and emptied (thanks Drew)
+
+Changes in version 1.1.1 (01.04.2012)
 -------------------------------------
 * Changed most Arrays into Vectors
 * Added more ProxyBuildError types with better descriptions
