@@ -79,6 +79,7 @@ package org.as3commons.bytecode.util {
 		private static const TWENTY_EIGHT:Number = 28;
 		private static const MAX_S24:Number = 8388607;
 		private static var _illegalCount:int = 0;
+		private static var _stringByteArray:ByteArray;
 
 		public static function readUnsigned(bytes:ByteArray):uint {
 			return bytes.readUnsignedByte();
@@ -346,12 +347,15 @@ package org.as3commons.bytecode.util {
 		 */
 		public static function writeStringInfo(string:String, byteArray:ByteArray):void {
 			if (string.length > 0) {
-				var tmpArray:ByteArray = new ByteArray();
-				tmpArray.endian = Endian.BIG_ENDIAN;
-				tmpArray.writeUTFBytes(string);
-				tmpArray.position = 0;
-				writeU30(tmpArray.length, byteArray);
-				byteArray.writeBytes(tmpArray);
+				if (_stringByteArray == null) {
+					_stringByteArray = new ByteArray();
+					_stringByteArray.endian = Endian.BIG_ENDIAN;
+				}
+				_stringByteArray.writeUTFBytes(string);
+				_stringByteArray.position = 0;
+				writeU30(_stringByteArray.length, byteArray);
+				byteArray.writeBytes(_stringByteArray);
+				_stringByteArray.length = 0;
 			} else {
 				writeU30(0, byteArray);
 			}
