@@ -100,13 +100,9 @@ package org.as3commons.reflect {
 		 * @param metadata an array of Metadata objects describing this member
 		 */
 		public function AbstractMember(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray=null) {
-			super(metadata);
-			initAbstractType(name, isStatic, type, declaringType, applicationDomain);
-		}
-
-		protected function initAbstractType(name:String, isStatic:Boolean, type:String, declaringType:String, applicationDomain:ApplicationDomain):void {
 			Assert.hasText(name, "name argument must have text");
 			Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
+			super(metadata);
 			_name = name;
 			_isStatic = isStatic;
 			typeName = type;
