@@ -56,7 +56,7 @@ package org.as3commons.bytecode.proxy {
 		/**
 		 * An <code>Array</code> of interfaces that need to be dynamically added to the proxy.
 		 */
-		function get implementedInterfaces():Array;
+		function get implementedInterfaces():Vector.<Class>;
 
 		/**
 		 * An <code>Array</code> of <code>Classes</code> that will be merged with the generated proxy.

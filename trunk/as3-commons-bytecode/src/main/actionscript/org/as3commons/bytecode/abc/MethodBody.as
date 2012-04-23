@@ -169,6 +169,7 @@ package org.as3commons.bytecode.abc {
 					op = opcodes[i];
 					otherOp = otherBody.opcodes[i];
 					if (!op.equals(otherOp)) {
+						op.equals(otherOp);
 						return false;
 					}
 				}
