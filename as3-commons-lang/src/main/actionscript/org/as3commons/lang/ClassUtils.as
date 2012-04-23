@@ -90,7 +90,7 @@ package org.as3commons.lang {
 		 */
 		public static function forInstance(instance:*, applicationDomain:ApplicationDomain=null):Class {
 			if ((!(instance is Proxy)) && (instance.hasOwnProperty(CONSTRUCTOR_FIELD_NAME))) {
-				return instance[CONSTRUCTOR_FIELD_NAME] as Class;
+				return instance[CONSTRUCTOR_FIELD_NAME];
 			} else {
 				var className:String = getQualifiedClassName(instance);
 				return forName(className, applicationDomain);
