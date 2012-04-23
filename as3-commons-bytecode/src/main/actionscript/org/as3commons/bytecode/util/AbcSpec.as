@@ -347,10 +347,7 @@ package org.as3commons.bytecode.util {
 		 */
 		public static function writeStringInfo(string:String, byteArray:ByteArray):void {
 			if (string.length > 0) {
-				if (_stringByteArray == null) {
-					_stringByteArray = new ByteArray();
-					_stringByteArray.endian = Endian.BIG_ENDIAN;
-				}
+				_stringByteArray ||= newByteArray();
 				_stringByteArray.writeUTFBytes(string);
 				_stringByteArray.position = 0;
 				writeU30(_stringByteArray.length, byteArray);
