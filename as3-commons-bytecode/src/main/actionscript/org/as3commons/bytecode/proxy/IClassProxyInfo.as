@@ -15,6 +15,7 @@
 */
 package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.interception.IMethodInvocationInterceptorFactory;
+	import org.as3commons.bytecode.proxy.impl.MemberInfo;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 
 	/**
@@ -28,19 +29,19 @@ package org.as3commons.bytecode.proxy {
 		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the accessors belonging to the interfaces
 		 * that were implemented by the specified class.
 		 */
-		function get interfaceAccessors():Array;
+		function get interfaceAccessors():Vector.<MemberInfo>;
 
 		/**
-		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the methods belonging to the interfaces
+		 * A <code>Vector</code> of <code>MemberInfo</code> instances that describe the methods belonging to the interfaces
 		 * that were implemented by the specified class.
 		 */
-		function get interfaceMethods():Array;
+		function get interfaceMethods():Vector.<MemberInfo>;
 
 		/**
-		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the accessors
+		 * A <code>Vector</code> of <code>MemberInfo</code> instances that describe the accessors
 		 * that will be proxied for the specified class.
 		 */
-		function get accessors():Array;
+		function get accessors():Vector.<MemberInfo>;
 
 		/**
 		 * An <code>IMethodInvocationInterceptorFactory</code> instance capable of creating an <code>IMethodInvocationInterceptor</code>
@@ -54,14 +55,14 @@ package org.as3commons.bytecode.proxy {
 		function set interceptorFactory(value:IMethodInvocationInterceptorFactory):void;
 
 		/**
-		 * An <code>Array</code> of interfaces that need to be dynamically added to the proxy.
+		 * A <code>Vector</code> of interfaces that need to be dynamically added to the proxy.
 		 */
 		function get implementedInterfaces():Vector.<Class>;
 
 		/**
-		 * An <code>Array</code> of <code>Classes</code> that will be merged with the generated proxy.
+		 * An <code>Vector</code> of <code>Classes</code> that will be merged with the generated proxy.
 		 */
-		function get introductions():Array;
+		function get introductions():Vector.<String>;
 
 		/**
 		 * Determines if the generated proxy class will be marked as <code>dynamic</code>.
@@ -81,10 +82,10 @@ package org.as3commons.bytecode.proxy {
 		function get methodInvocationInterceptorClass():Class;
 
 		/**
-		 * An <code>Array</code> of <code>MemberInfo</code> instances that describe the methods
+		 * A <code>Vector</code> of <code>MemberInfo</code> instances that describe the methods
 		 * that will be proxied for the specified class.
 		 */
-		function get methods():Array;
+		function get methods():Vector.<MemberInfo>;
 
 		/**
 		 * The <code>Class</code> for which a dynamic proxy class will be generated.

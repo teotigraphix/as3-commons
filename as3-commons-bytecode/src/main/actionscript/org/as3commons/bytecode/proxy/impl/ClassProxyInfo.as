@@ -38,25 +38,25 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			_proxiedClass = proxiedClass;
 			_methodInvocationInterceptorClass = methodInvocationInterceptorClass;
-			_methods = [];
-			_interfaceMethods = [];
-			_accessors = [];
-			_interfaceAccessors = [];
-			_introductions = [];
+			_methods = new Vector.<MemberInfo>();
+			_interfaceMethods = new Vector.<MemberInfo>();
+			_accessors = new Vector.<MemberInfo>();
+			_interfaceAccessors = new Vector.<MemberInfo>();
+			_introductions = new Vector.<String>();
 			_implementedInterfaces = new Vector.<Class>();
 			_proxyAccessorScopes = ProxyScope.ALL;
 			_proxyMethodScopes = ProxyScope.ALL;
 		}
 
-		private var _accessors:Array;
+		private var _accessors:Vector.<MemberInfo>;
 		private var _interceptorFactory:IMethodInvocationInterceptorFactory;
-		private var _interfaceAccessors:Array;
-		private var _interfaceMethods:Array;
+		private var _interfaceAccessors:Vector.<MemberInfo>;
+		private var _interfaceMethods:Vector.<MemberInfo>;
 		private var _implementedInterfaces:Vector.<Class>;
-		private var _introductions:Array;
+		private var _introductions:Vector.<String>;
 		private var _makeDynamic:Boolean = false;
 		private var _methodInvocationInterceptorClass:Class;
-		private var _methods:Array;
+		private var _methods:Vector.<MemberInfo>;
 		private var _onlyProxyConstructor:Boolean = false;
 		private var _proxiedClass:Class;
 		private var _proxyAccessorNamespaces:Array;
@@ -67,7 +67,7 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get accessors():Array {
+		public function get accessors():Vector.<MemberInfo> {
 			return _accessors;
 		}
 
@@ -88,14 +88,14 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get interfaceAccessors():Array {
+		public function get interfaceAccessors():Vector.<MemberInfo> {
 			return _interfaceAccessors;
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function get interfaceMethods():Array {
+		public function get interfaceMethods():Vector.<MemberInfo> {
 			return _interfaceMethods;
 		}
 
@@ -109,7 +109,7 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get introductions():Array {
+		public function get introductions():Vector.<String> {
 			return _introductions;
 		}
 
@@ -137,7 +137,7 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get methods():Array {
+		public function get methods():Vector.<MemberInfo> {
 			return _methods;
 		}
 
