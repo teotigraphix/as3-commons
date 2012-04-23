@@ -114,7 +114,9 @@ package org.as3commons.bytecode.abc {
 					return false;
 				}
 				var len:int = parameters.length;
+				var len2:int;
 				var i:int;
+				var j:int;
 				var param:*;
 				var otherParam:*;
 				for (i = 0; i < len; ++i) {
@@ -123,6 +125,16 @@ package org.as3commons.bytecode.abc {
 					if (param is IEquals) {
 						if (!IEquals(param).equals(otherParam)) {
 							return false;
+						}
+					} else if (param is Array) {
+						len2 = param.length;
+						if (len2 != otherParam.length) {
+							return false;
+						}
+						for (j = 0; j < len2; ++j) {
+							if (param[j] != otherParam[j]) {
+								return false;
+							}
 						}
 					} else {
 						if (param != otherParam) {

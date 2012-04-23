@@ -18,6 +18,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.net.registerClassAlias;
 	import flash.system.ApplicationDomain;
@@ -252,6 +253,29 @@ package org.as3commons.bytecode.proxy.impl {
 
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createInterfaceMethodInterceptor);
+			_proxyFactory.addEventListener(Event.COMPLETE, Async.asyncHandler(this, handler, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		[Test(async)]
+		public function testProxyClassThatImplementsExtraInterface():void {
+			var clsInfo:IClassProxyInfo = _proxyFactory.defineProxy(IEventDispatcher, null, _applicationDomain);
+			clsInfo.implementInterface(IFlavour);
+
+			var handler:Function = function(event:Event, data:*):void {
+				var instance:IEventDispatcher = _proxyFactory.createProxy(IEventDispatcher);
+				assertNotNull(instance);
+				var flavour:IFlavour = instance as IFlavour;
+				flavour.add(flavour);
+				flavour.combine(1, 2, 3, 4);
+				assertEquals("interceptedReturnValue", flavour.toString());
+				assertEquals("interceptedGetterValue", flavour.name);
+				assertEquals(1, flavour.ingredients.length);
+				assertEquals("interceptedGetterValue", flavour.ingredients[0]);
+			};
+
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createClassWithExtraInterfaceMethodInterceptor);
 			_proxyFactory.addEventListener(Event.COMPLETE, Async.asyncHandler(this, handler, 1000));
 			_proxyFactory.loadProxyClasses();
 		}
@@ -651,6 +675,12 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		protected static function createInterfaceMethodInterceptor(event:ProxyFactoryEvent):void {
+			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
+			interceptor.interceptors[interceptor.interceptors.length] = new InterfaceMethodInterceptorImpl();
+			event.methodInvocationInterceptor = interceptor;
+		}
+
+		protected static function createClassWithExtraInterfaceMethodInterceptor(event:ProxyFactoryEvent):void {
 			var interceptor:BasicMethodInvocationInterceptor = new event.methodInvocationInterceptorClass() as BasicMethodInvocationInterceptor;
 			interceptor.interceptors[interceptor.interceptors.length] = new InterfaceMethodInterceptorImpl();
 			event.methodInvocationInterceptor = interceptor;

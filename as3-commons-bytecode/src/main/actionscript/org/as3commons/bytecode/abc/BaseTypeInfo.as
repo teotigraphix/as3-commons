@@ -117,6 +117,7 @@ package org.as3commons.bytecode.abc {
 					trait = traits[i];
 					otherTrait = otherTypeInfo.traits[i];
 					if (!trait.equals(otherTrait)) {
+						trait.equals(otherTrait);
 						return false;
 					}
 				}

@@ -200,6 +200,9 @@ package org.as3commons.bytecode.util {
 		}
 
 		public static function resolveJumpTarget(positions:Dictionary, jumpOpcode:Op, targetOpcode:Op, serializedOpcodes:ByteArray, isLookupSwitch:Boolean=false, index:int=-1):Boolean {
+			if (targetOpcode.opcode === Opcode.END_OF_BODY) {
+				return false;
+			}
 			var jumpParam:int = (index < 0) ? int(jumpOpcode.parameters[0]) : jumpOpcode.parameters[2][index];
 			var baseLocation:int = (isLookupSwitch) ? jumpOpcode.baseLocation : jumpOpcode.endLocation;
 			var targetPos:int = baseLocation + jumpParam;

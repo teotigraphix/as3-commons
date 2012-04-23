@@ -43,7 +43,7 @@ package org.as3commons.bytecode.proxy.impl {
 			_accessors = [];
 			_interfaceAccessors = [];
 			_introductions = [];
-			_implementedInterfaces = [];
+			_implementedInterfaces = new Vector.<Class>();
 			_proxyAccessorScopes = ProxyScope.ALL;
 			_proxyMethodScopes = ProxyScope.ALL;
 		}
@@ -52,7 +52,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private var _interceptorFactory:IMethodInvocationInterceptorFactory;
 		private var _interfaceAccessors:Array;
 		private var _interfaceMethods:Array;
-		private var _implementedInterfaces:Array;
+		private var _implementedInterfaces:Vector.<Class>;
 		private var _introductions:Array;
 		private var _makeDynamic:Boolean = false;
 		private var _methodInvocationInterceptorClass:Class;
@@ -102,7 +102,7 @@ package org.as3commons.bytecode.proxy.impl {
 		/**
 		 * @inheritDoc
 		 */
-		public function get implementedInterfaces():Array {
+		public function get implementedInterfaces():Vector.<Class> {
 			return _implementedInterfaces;
 		}
 
