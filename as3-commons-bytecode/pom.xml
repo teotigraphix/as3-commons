@@ -81,6 +81,7 @@
 			<artifactId>as3commons-reflect</artifactId>
 			<version>1.6.0</version>
 			<type>swc</type>
+			<scope>merged</scope>
 		</dependency>
 
 		<dependency>
@@ -88,6 +89,7 @@
 			<artifactId>as3commons-lang</artifactId>
 			<version>0.3.6</version>
 			<type>swc</type>
+			<scope>merged</scope>
 		</dependency>
 
 		<dependency>
@@ -101,6 +103,7 @@
 					<artifactId>air-framework</artifactId>
 				</exclusion>
 			</exclusions>
+			<scope>merged</scope>
 		</dependency>
 
 	</dependencies>

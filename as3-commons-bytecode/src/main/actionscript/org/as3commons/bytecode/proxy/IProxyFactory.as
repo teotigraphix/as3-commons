@@ -21,6 +21,14 @@ package org.as3commons.bytecode.proxy {
 	import org.as3commons.bytecode.proxy.impl.ProxyInfo;
 
 	/**
+	 *
+	 */
+	[Event(name="createProxyPackageName", type="org.as3commons.bytecode.proxy.event.ProxyNameCreationEvent")]
+	/**
+	 *
+	 */
+	[Event(name="createProxyClassName", type="org.as3commons.bytecode.proxy.event.ProxyNameCreationEvent")]
+	/**
 	 * Dispatched before a proxy class is created, it allows the creation of a <code>IMethodInvocationInterceptor</code> to be
 	 * delegated to an event handler. The event handler needs to assign a valid <code>IMethodInvocationInterceptor</code> instance
 	 * to the <code>ProxyFactoryEvent.methodInvocationInterceptor</code> property in order for it to be used for the newly created proxy.

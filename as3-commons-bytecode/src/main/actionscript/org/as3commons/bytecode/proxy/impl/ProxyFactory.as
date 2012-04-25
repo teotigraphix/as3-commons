@@ -22,10 +22,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-	import flash.utils.Endian;
-	import flash.utils.Proxy;
 
-	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.NamespaceSet;
@@ -54,21 +51,28 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.proxy.event.ProxyCreationEvent;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
+	import org.as3commons.bytecode.proxy.event.ProxyNameCreationEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeAccessor;
 	import org.as3commons.bytecode.reflect.ByteCodeMethod;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
 	import org.as3commons.bytecode.reflect.IVisibleMember;
-	import org.as3commons.bytecode.util.AbcFileUtil;
 	import org.as3commons.bytecode.util.MultinameUtil;
 	import org.as3commons.lang.Assert;
 	import org.as3commons.lang.ClassUtils;
-	import org.as3commons.lang.StringUtils;
 	import org.as3commons.logging.api.ILogger;
 	import org.as3commons.logging.api.getLogger;
 	import org.as3commons.reflect.Accessor;
 	import org.as3commons.reflect.MetadataContainer;
 	import org.as3commons.reflect.Type;
 
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="createProxyPackageName", type="org.as3commons.bytecode.proxy.event.ProxyNameCreationEvent")]
+	/**
+	 * @inheritDoc
+	 */
+	[Event(name="createProxyClassName", type="org.as3commons.bytecode.proxy.event.ProxyNameCreationEvent")]
 	/**
 	 * @inheritDoc
 	 */
@@ -432,10 +436,11 @@ package org.as3commons.bytecode.proxy.impl {
 				throw new ProxyBuildError(ProxyBuildError.FINAL_CLASS_ERROR, className);
 			}
 			var classParts:Array = className.split(MultinameUtil.DOUBLE_COLON);
-			var packageName:String = (classParts.length > 1) ? classParts[0] + MultinameUtil.PERIOD + generateSuffix() : generateSuffix();
+			var packageName:String = generateProxyPackagename(classParts);
 			var packageBuilder:IPackageBuilder = _abcBuilder.definePackage(packageName);
 
-			var classBuilder:IClassBuilder = packageBuilder.defineClass((classParts.length > 1) ? classParts[1] : classParts[0], (type.isInterface ? null : className));
+			var proxyClassName:String = generateProxyClassName(classParts);
+			var classBuilder:IClassBuilder = packageBuilder.defineClass(proxyClassName, (type.isInterface ? null : className));
 			addMetadata(classBuilder, type.metadata);
 			if ((type.isDynamic == false) && (classProxyInfo.makeDynamic == true)) {
 				classBuilder.isDynamic = true;
@@ -447,7 +452,7 @@ package org.as3commons.bytecode.proxy.impl {
 				classBuilder.implementInterface(type.fullName);
 			}
 
-			var proxyClassName:String = packageName + MultinameUtil.SINGLE_COLON + ((classParts.length > 1) ? classParts[1] : classParts[0]);
+			proxyClassName = packageName + MultinameUtil.SINGLE_COLON + proxyClassName;
 			var nsMultiname:Multiname = createMultiname(proxyClassName, classParts.join(MultinameUtil.SINGLE_COLON), type.extendsClasses);
 			var bytecodeQname:QualifiedName = addInterceptorProperty(classBuilder);
 
@@ -496,6 +501,28 @@ package org.as3commons.bytecode.proxy.impl {
 			return new ProxyInfo(proxyClassName.split(MultinameUtil.SINGLE_COLON).join(MultinameUtil.PERIOD));
 		}
 
+		private function generateProxyClassName(classParts:Array):String {
+			var proxyClassName:String = null;
+			if (hasEventListener(ProxyNameCreationEvent.CREATE_CLASS_NAME)) {
+				var event:ProxyNameCreationEvent = new ProxyNameCreationEvent(ProxyNameCreationEvent.CREATE_CLASS_NAME, classParts.join(MultinameUtil.PERIOD));
+				dispatchEvent(event);
+				proxyClassName = event.proxyName;
+			}
+			proxyClassName ||= (classParts.length > 1) ? classParts[1] : classParts[0];
+			return proxyClassName;
+		}
+
+
+		private function generateProxyPackagename(classParts:Array):String {
+			var packageName:String = null;
+			if (hasEventListener(ProxyNameCreationEvent.CREATE_PACKAGE_NAME)) {
+				var event:ProxyNameCreationEvent = new ProxyNameCreationEvent(ProxyNameCreationEvent.CREATE_PACKAGE_NAME, classParts.join(MultinameUtil.PERIOD));
+				dispatchEvent(event);
+				packageName = event.proxyName;
+			}
+			packageName ||= (classParts.length > 1) ? classParts[0] + MultinameUtil.PERIOD + generateSuffix() : generateSuffix();
+			return packageName;
+		}
 
 		/**
 		 * Creates a valid <code>Multiname</code> for the specified class name, proxied class name and all of its
