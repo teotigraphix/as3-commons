@@ -150,7 +150,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private static const NS_FILENAME_SUFFIX:String = '.as$666';
 		private static const OBJECT_DECLARINGTYPE_NAME:String = 'Object';
 		private static const ORGAS3COMMONSBYTECODE:String = "org.as3commons.bytecode";
-		private static const PROXY_PACKAGE_NAME_PREFIX:String = "as3commons_bytecode_generated_";
+		private static const PROXY_PACKAGE_NAME_PREFIX:String = "_as3commons_bytecode_generated_";
 		private static const VISIBILITY_FIELD_NAME:String = 'visibility';
 
 		/**
@@ -508,7 +508,7 @@ package org.as3commons.bytecode.proxy.impl {
 				dispatchEvent(event);
 				proxyClassName = event.proxyName;
 			}
-			proxyClassName ||= (classParts.length > 1) ? classParts[1] : classParts[0];
+			proxyClassName ||= ((classParts.length > 1) ? classParts[1] : classParts[0]) + generateSuffix();
 			return proxyClassName;
 		}
 
@@ -520,7 +520,8 @@ package org.as3commons.bytecode.proxy.impl {
 				dispatchEvent(event);
 				packageName = event.proxyName;
 			}
-			packageName ||= (classParts.length > 1) ? classParts[0] + MultinameUtil.PERIOD + generateSuffix() : generateSuffix();
+			//packageName ||= (classParts.length > 1) ? classParts[0] + MultinameUtil.PERIOD + generateSuffix() : generateSuffix();
+			packageName ||= (classParts.length > 1) ? classParts[0] : "";
 			return packageName;
 		}
 
