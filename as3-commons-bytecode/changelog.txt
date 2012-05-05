@@ -6,16 +6,18 @@ Note: dates are in DD.MM.YYYY format
 Changes in version 1.1.2 (??.??.2012)
 -------------------------------------
 
+* Added implementInterface() method to IClassProxyInfo to add additional interfaces to a Proxy. (This one is for Drew)
 * Added ProxyNameCreationEvent that enables a user to specify the package and class names of the generated class names (Another one for Drew)
+* Changed default generated package and class name so that proxies are created in the original package, that way internal classes can be easily proxied as well (Another one for Drew)
 * Fixed issue where custom namespaces whose value is not a URL are not recognized as such (thanks Drew)
-* Temporary bytearray in which strings are serialzied for the constantpool now gets cached and emptied (thanks Drew)
+* Temporary bytearray in which strings are serialized for the constantpool now gets cached and emptied (thanks Drew)
 
 Changes in version 1.1.1 (01.04.2012)
 -------------------------------------
 * Changed most Arrays into Vectors
 * Added more ProxyBuildError types with better descriptions
 * Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=121 (thanks to Sean Rea for bring this up)
-* Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=108
+* Fixed issue https://code.google.com/p/as3-commons/issues/detail?id=108 (this time for real...)
 
 Changes in version 1.1.0 (29.03.2012)
 -------------------------------------
