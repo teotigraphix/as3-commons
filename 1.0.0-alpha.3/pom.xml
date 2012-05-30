@@ -1,0 +1,97 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.as3commons</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>3</version>
+		<relativePath>../parent-pom/pom.xml</relativePath>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>as3commons-swc</artifactId>
+	<packaging>swc</packaging>
+	<version>1.0.0-alpha.3</version>
+	<name>AS3Commons SWC</name>
+	<url>http://code.google.com/p/as3-commons</url>
+	<description>ActionScript 3.0 library that offers functionality for working with SWC files.</description>
+	<inceptionYear>2012</inceptionYear>
+
+	<scm>
+		<connection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-swc/1.0.0-alpha.3</connection>
+		<developerConnection>scm:svn:https://as3-commons.googlecode.com/svn/tags/as3-commons-swc/1.0.0-alpha.3</developerConnection>
+		<url>http://as3-commons.googlecode.com/svn/tags/as3-commons-swc/1.0.0-alpha.3</url>
+	</scm>
+
+	<distributionManagement>
+		<site>
+			<id>yoolab.org-as3commons</id>
+			<url>scp://www.as3commons.org/srv/www/yoolab/www.as3commons.org/public_html/as3-commons-swc</url>
+		</site>
+	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagBase>https://as3-commons.googlecode.com/svn/tags/as3-commons-swc</tagBase>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flex-mojos.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<debug>false</debug>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-async</artifactId>
+			<version>1.0.0-RC.2</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-lang</artifactId>
+			<version>0.3.6</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-logging</artifactId>
+			<version>2.7</version>
+			<type>swc</type>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>air-framework</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-reflect</artifactId>
+			<version>1.6.0</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-zip</artifactId>
+			<version>1.0.0-alpha.1</version>
+			<type>swc</type>
+		</dependency>
+
+	</dependencies>
+
+</project>
