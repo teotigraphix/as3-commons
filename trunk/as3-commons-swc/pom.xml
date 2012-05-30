@@ -68,6 +68,19 @@
 
 		<dependency>
 			<groupId>org.as3commons</groupId>
+			<artifactId>as3commons-logging</artifactId>
+			<version>2.7</version>
+			<type>swc</type>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>air-framework</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-reflect</artifactId>
 			<version>1.6.0</version>
 			<type>swc</type>
