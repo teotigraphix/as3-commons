@@ -1,3 +1,18 @@
+/*
+* Copyright 2007-2012 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.as3commons.swc {
 	public class SWCLibrary {
 
@@ -7,9 +22,9 @@ package org.as3commons.swc {
 		//
 		// --------------------------------------------------------------------
 
-		public function SWCLibrary(path:String, classNames:Vector.<String>, metadata:Vector.<String>) {
+		public function SWCLibrary(path:String, scripts:Vector.<SWCScript>, metadata:Vector.<String>) {
 			_path = path;
-			_classNames = classNames;
+			_scripts = scripts;
 			_metadata = metadata;
 		}
 
@@ -31,10 +46,10 @@ package org.as3commons.swc {
 
 		// ----------------------------
 
-		private var _classNames:Vector.<String> = new Vector.<String>();
+		private var _scripts:Vector.<SWCScript> = new Vector.<SWCScript>();
 
-		public function get classNames():Vector.<String> {
-			return _classNames;
+		public function get scripts():Vector.<SWCScript> {
+			return _scripts;
 		}
 
 		// ----------------------------
@@ -43,6 +58,32 @@ package org.as3commons.swc {
 
 		public function get metadata():Vector.<String> {
 			return _metadata;
+		}
+
+		// ----------------------------
+
+		private var _classNames:Vector.<String>;
+
+		public function get classNames():Vector.<String> {
+			if (!_classNames) {
+				_classNames = createClassNamesVector();
+			}
+			return _classNames;
+		}
+
+		// --------------------------------------------------------------------
+		//
+		// Private Methods
+		//
+		// --------------------------------------------------------------------
+
+		private function createClassNamesVector():Vector.<String> {
+			var result:Vector.<String> = new Vector.<String>(_scripts.length, true);
+			var numScripts:uint = _scripts.length;
+			for (var i:int = 0; i < numScripts; i++) {
+				_classNames[i] = _scripts[i].name;
+			}
+			return result;
 		}
 
 	}

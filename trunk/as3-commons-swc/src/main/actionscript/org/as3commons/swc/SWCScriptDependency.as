@@ -14,17 +14,10 @@
 * limitations under the License.
 */
 package org.as3commons.swc {
+	public class SWCScriptDependency {
 
-	/**
-	 * Represents a component defined in a SWC catalog.
-	 *
-	 * @author Christophe Herreman
-	 */
-	public class SWCComponent {
-
-		private var _className:String;
 		private var _name:String;
-		private var _uri:String;
+		private var _type:String;
 
 		// --------------------------------------------------------------------
 		//
@@ -32,10 +25,9 @@ package org.as3commons.swc {
 		//
 		// --------------------------------------------------------------------
 
-		public function SWCComponent(className:String, name:String, uri:String) {
-			_className = className;
+		public function SWCScriptDependency(name:String, type:String) {
 			_name = name;
-			_uri = uri;
+			_type = type;
 		}
 
 		// --------------------------------------------------------------------
@@ -44,16 +36,12 @@ package org.as3commons.swc {
 		//
 		// --------------------------------------------------------------------
 
-		public function get className():String {
-			return _className;
-		}
-
 		public function get name():String {
 			return _name;
 		}
 
-		public function get uri():String {
-			return _uri;
+		public function get type():String {
+			return _type;
 		}
 	}
 }

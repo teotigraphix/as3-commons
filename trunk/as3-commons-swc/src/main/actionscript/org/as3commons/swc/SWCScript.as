@@ -15,16 +15,12 @@
 */
 package org.as3commons.swc {
 
-	/**
-	 * Represents a component defined in a SWC catalog.
-	 *
-	 * @author Christophe Herreman
-	 */
-	public class SWCComponent {
+	public class SWCScript {
 
-		private var _className:String;
 		private var _name:String;
-		private var _uri:String;
+		private var _mod:Number;
+		private var _signatureChecksum:Number;
+		private var _dependencies:Vector.<SWCScriptDependency>;
 
 		// --------------------------------------------------------------------
 		//
@@ -32,10 +28,11 @@ package org.as3commons.swc {
 		//
 		// --------------------------------------------------------------------
 
-		public function SWCComponent(className:String, name:String, uri:String) {
-			_className = className;
+		public function SWCScript(name:String, mod:Number, signatureChecksum:Number, dependencies:Vector.<SWCScriptDependency>) {
 			_name = name;
-			_uri = uri;
+			_mod = mod;
+			_signatureChecksum = signatureChecksum;
+			_dependencies = dependencies;
 		}
 
 		// --------------------------------------------------------------------
@@ -44,16 +41,20 @@ package org.as3commons.swc {
 		//
 		// --------------------------------------------------------------------
 
-		public function get className():String {
-			return _className;
-		}
-
 		public function get name():String {
 			return _name;
 		}
 
-		public function get uri():String {
-			return _uri;
+		public function get mod():Number {
+			return _mod;
+		}
+
+		public function get signatureChecksum():Number {
+			return _signatureChecksum;
+		}
+
+		public function get dependencies():Vector.<SWCScriptDependency> {
+			return _dependencies;
 		}
 	}
 }
