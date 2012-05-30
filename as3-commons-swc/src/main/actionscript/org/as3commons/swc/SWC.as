@@ -1,3 +1,18 @@
+/*
+* Copyright 2007-2012 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.as3commons.swc {
 
 	import org.as3commons.async.operation.IOperation;
@@ -58,6 +73,31 @@ package org.as3commons.swc {
 
 		// ----------------------------
 
+		private var _scripts:Vector.<SWCScript>;
+
+		public function get scripts():Vector.<SWCScript> {
+			if (!_scripts) {
+				_scripts = getScripts();
+			}
+			return _scripts;
+		}
+
+		private function getScripts():Vector.<SWCScript> {
+			var result:Vector.<SWCScript> = new Vector.<SWCScript>();
+			var libraries:Vector.<SWCLibrary> = _catalog.libraries;
+
+			for (var i:int = 0; i < libraries.length; i++) {
+				var lib:SWCLibrary = libraries[i];
+				for (var j:int = 0; j < lib.scripts.length; j++) {
+					result.push(lib.scripts[j]);
+				}
+			}
+
+			return result;
+		}
+
+		// ----------------------------
+
 		private var _classNames:Vector.<String>;
 
 		public function get classNames():Vector.<String> {
@@ -69,13 +109,10 @@ package org.as3commons.swc {
 
 		private function getClassNames():Vector.<String> {
 			var result:Vector.<String> = new Vector.<String>();
-			var libraries:Vector.<SWCLibrary> = _catalog.libraries;
+			var numScripts:uint = scripts.length;
 
-			for (var i:int = 0; i < libraries.length; i++) {
-				var lib:SWCLibrary = libraries[i];
-				for (var j:int = 0; j < lib.classNames.length; j++) {
-					result.push(lib.classNames[j]);
-				}
+			for (var i:int = 0; i < scripts.length; i++) {
+				result[i] = scripts[i].name;
 			}
 
 			return result;
@@ -166,6 +203,8 @@ import org.as3commons.reflect.MetadataArgument;
 import org.as3commons.reflect.Type;
 import org.as3commons.swc.SWC;
 import org.as3commons.swc.SWCFile;
+import org.as3commons.swc.SWCScript;
+import org.as3commons.swc.SWCScriptDependency;
 import org.as3commons.swc.as3commons_swc;
 import org.as3commons.swc.catalog.SWCCatalog;
 import org.as3commons.swc.catalog.reader.impl.XMLCatalogReader;
@@ -220,12 +259,32 @@ class LoadLibraryOperation extends AbstractOperation {
 	}
 
 	private function registerClassAliases():void {
-		for each(var className:String in _swc.classNames) {
-			var type:Type = Type.forName(className);
-			for each(var metaData:Metadata in type.getMetadata("RemoteClass")) {
-				var metadataArgument:MetadataArgument = metaData.getArgument("alias");
-				logger.info("Registering class alias '{0}' for class '{1}'", [metadataArgument.value, className]);
-				registerClassAlias(metadataArgument.value, type.clazz);
+		for each(var script:SWCScript in _swc.scripts) {
+			var className:String = script.name;
+
+			try {
+				var type:Type = Type.forName(className);
+
+				if (type) {
+					for each(var metaData:Metadata in type.getMetadata("RemoteClass")) {
+						var metadataArgument:MetadataArgument = metaData.getArgument("alias");
+						logger.info("Registering class alias '{0}' for class '{1}'", [metadataArgument.value, className]);
+						registerClassAlias(metadataArgument.value, type.clazz);
+					}
+				} else {
+					logger.error("Type for name '" + className + "' is null");
+				}
+			} catch (e:Error) {
+				logger.error("Cannot get type for name '" + className + "'. Error: '" + e.message + "'. Trying to resolve types of script dependencies.");
+
+				for each (var dependency:SWCScriptDependency in script.dependencies) {
+					try {
+						Type.forName(dependency.name);
+					}
+					catch (e:Error) {
+						logger.error("Cannot get type for script dependency with name '" + dependency.name + "'");
+					}
+				}
 			}
 		}
 	}

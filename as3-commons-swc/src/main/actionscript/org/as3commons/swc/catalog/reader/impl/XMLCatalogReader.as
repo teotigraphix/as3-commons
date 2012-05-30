@@ -1,7 +1,24 @@
+/*
+* Copyright 2007-2012 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.as3commons.swc.catalog.reader.impl {
 	import org.as3commons.swc.SWCComponent;
 	import org.as3commons.swc.SWCFile;
 	import org.as3commons.swc.SWCLibrary;
+	import org.as3commons.swc.SWCScript;
+	import org.as3commons.swc.SWCScriptDependency;
 	import org.as3commons.swc.SWCVersions;
 	import org.as3commons.swc.catalog.SWCCatalog;
 	import org.as3commons.swc.catalog.reader.ICatalogReader;
@@ -97,7 +114,7 @@ package org.as3commons.swc.catalog.reader.impl {
 		}
 
 		private function readLibrary(xml:XML):SWCLibrary {
-			return new SWCLibrary(xml.@path, readClassNames(xml.script), readMetadata(xml.child("keep-as3-metadata")));
+			return new SWCLibrary(xml.@path, readScripts(xml.script), readMetadata(xml.child("keep-as3-metadata")));
 		}
 
 		private function readMetadata(keepAS3MetadataXMLList:XMLList):Vector.<String> {
@@ -112,14 +129,33 @@ package org.as3commons.swc.catalog.reader.impl {
 			return result;
 		}
 
-		private function readClassNames(scriptXMLList:XMLList):Vector.<String> {
-			var result:Vector.<String> = new Vector.<String>();
+		private function readScripts(scriptXMLList:XMLList):Vector.<SWCScript> {
+			var result:Vector.<SWCScript> = new Vector.<SWCScript>();
 			var numScripts:int = scriptXMLList.length();
 			for (var i:int = 0; i < numScripts; i++) {
-				var className:String = scriptXMLList[i].def[0].@id;
-				result[i] = className.replace(":", ".");
+				result[i] = readScript(scriptXMLList[i]);
 			}
 			return result;
+		}
+
+		private function readScript(scriptXML:XML):SWCScript {
+			var name:String = scriptXML.@name.toString().split("/").join(".");
+			var mode:Number = scriptXML.@mod;
+			var signatureChecksum:Number = scriptXML.@signatureChecksum;
+			return new SWCScript(name, mode, signatureChecksum, readScriptDependencies(scriptXML));
+		}
+
+		private function readScriptDependencies(scriptXML:XML):Vector.<SWCScriptDependency> {
+			var result:Vector.<SWCScriptDependency> = new Vector.<SWCScriptDependency>();
+			var numDependencies:int = scriptXML.dep.length();
+			for (var i:int = 0; i < numDependencies; i++) {
+				result[i] = readScriptDependency(scriptXML.dep[i]);
+			}
+			return result;
+		}
+
+		private function readScriptDependency(scriptDependencyXML:XML):SWCScriptDependency {
+			return new SWCScriptDependency(scriptDependencyXML.@id.toString().replace(":", "."), scriptDependencyXML.@type);
 		}
 
 		protected function readComponents():Vector.<SWCComponent> {
