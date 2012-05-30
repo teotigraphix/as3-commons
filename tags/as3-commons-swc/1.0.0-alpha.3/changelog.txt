@@ -1,0 +1,27 @@
+AS3COMMONS-SWC CHANGELOG
+========================
+
+Note: dates are in DD.MM.YYYY format
+
+
+Changes in version 1.0.0-alpha.3 (30.05.2011)
+---------------------------------------------
+
+* added SWCScript and SWCScriptDependency classes
+* fixed auto registration of class aliases
+
+
+Changes in version 1.0.0-alpha.2 (12.04.2011)
+---------------------------------------------
+
+* added SWCVersions object to encapsulate version info
+* added SWCFile with option to retrieve file contents
+* added SWCCatalog to hold the parsed catalog info
+* added as3commons_swc namespace to allow access to zip file
+* made components immutable
+
+
+Changes in version 1.0.0-alpha.1 (30.03.2011)
+---------------------------------------------
+
+* Initial release

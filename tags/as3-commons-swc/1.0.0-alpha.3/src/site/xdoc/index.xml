@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>Welcome to AS3Common SWC</title>
+        <author email="christophe@stackandheap.com">Christophe Herreman</author>
+    </properties>
+    <body>
+        <section name="Welcome to as3commons-swc">
+            
+            <div id="downloadbox">
+                <h5>Get latest stable</h5>
+                <p>
+                    <a href="http://projects.yoolab.org/maven/content/repositories/releases/org/as3commons/as3commons-swc/1.0.0.alpha.2/as3commons-swc-1.0.0.alpha.2.swc">
+                        <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                        Download
+                    </a>
+                    latest stable
+                </p>
+                <br/>
+                <h5>Get lastest development snapshot</h5>
+                <p>
+                    <a href="downloads/as3commons-aop-latest-snapshot-bin.zip">
+                        <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                        Download
+                    </a>
+                    latest snapshot
+                </p>
+            </div>
+            
+            <p>
+                A library for working with swc files at runtime. It provides a simple class loading system and an API on top of the catalog inside a SWC file.
+            </p>
+            
+        </section>
+
+    </body>
+</document>
+
