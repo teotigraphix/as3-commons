@@ -10,7 +10,7 @@ Changes in version 1.1.2 (??.??.2012)
 * Added ProxyNameCreationEvent that enables a user to specify the package and class names of the generated class names (Another one for Drew)
 * Changed default generated package and class name so that proxies are created in the original package, that way internal classes can be easily proxied as well (Another one for Drew)
 * Fixed issue where custom namespaces whose value is not a URL are not recognized as such (thanks Drew)
-* Temporary bytearray in which strings are serialized for the constantpool now gets cached and emptied (thanks Drew)
+* Optimization: Temporary bytearray in which strings are serialized for the constantpool now gets cached and emptied (thanks Drew)
 
 Changes in version 1.1.1 (01.04.2012)
 -------------------------------------
