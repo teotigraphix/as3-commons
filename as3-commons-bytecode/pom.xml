@@ -4,7 +4,7 @@
 		<groupId>org.as3commons</groupId>
 		<artifactId>parent-pom</artifactId>
 		<version>4-SNAPSHOT</version>
-		<relativePath>../parent-pom/pom.xml</relativePath>
+		<!--relativePath>../parent-pom/pom.xml</relativePath-->
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>

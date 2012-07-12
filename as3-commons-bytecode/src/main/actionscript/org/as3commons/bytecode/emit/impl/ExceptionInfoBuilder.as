@@ -21,9 +21,9 @@ package org.as3commons.bytecode.emit.impl {
 
 	public class ExceptionInfoBuilder implements IExceptionInfoBuilder {
 
-		public function ExceptionInfoBuilder() {
+		public function ExceptionInfoBuilder(exceptionInfo:ExceptionInfo=null) {
 			super();
-			_exceptionInfo = new ExceptionInfo();
+			_exceptionInfo = exceptionInfo ||= new ExceptionInfo();
 		}
 
 		private var _exceptionInfo:ExceptionInfo;

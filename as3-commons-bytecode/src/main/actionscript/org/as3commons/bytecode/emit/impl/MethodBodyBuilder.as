@@ -175,7 +175,11 @@ package org.as3commons.bytecode.emit.impl {
 			if (_methodBody.jumpTargets != null) {
 				_backpatches = _methodBody.jumpTargets.concat(new Vector.<JumpTargetData>);
 			}
-			_exceptionInfos = _methodBody.exceptionInfos.concat(new Vector.<ExceptionInfo>());
+			var exceptionInfoBuilder:ExceptionInfoBuilder;
+			for each (var exceptionInfo:ExceptionInfo in _methodBody.exceptionInfos) {
+				exceptionInfoBuilder = new ExceptionInfoBuilder(exceptionInfo);
+				_exceptionInfos[_exceptionInfos.length] = exceptionInfoBuilder;
+			}
 			_traits = _methodBody.traits.concat(new Vector.<TraitInfo>());
 			_maxStack = _methodBody.maxStack;
 			_maxScope = _methodBody.maxScopeDepth;
@@ -236,7 +240,7 @@ package org.as3commons.bytecode.emit.impl {
 			var i:int;
 			var infos:Vector.<ExceptionInfo> = mb.exceptionInfos ||= new Vector.<ExceptionInfo>();
 			for (i = 0; i < len; ++i) {
-				infos[infos.length] = _exceptionInfos[i].build();
+				infos[infos.length] = _exceptionInfos[int(i)].build();
 			}
 			mb.traits = _traits.concat(new Vector.<TraitInfo>());
 			extraLocalCount += analyzeOpcodes(mb, extraLocalCount);
