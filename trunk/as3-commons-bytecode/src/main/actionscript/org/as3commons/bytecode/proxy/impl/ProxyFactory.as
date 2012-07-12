@@ -183,7 +183,6 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		public function ProxyFactory() {
 			super();
-			_abcBuilder = new AbcBuilder();
 			_domains = new Dictionary();
 			_classProxyLookup = new Dictionary();
 			_proxyClassLookup = new Dictionary();
@@ -306,15 +305,18 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		public function generateProxyClasses():IAbcBuilder {
 			_isGenerating = true;
+			_abcBuilder ||= new AbcBuilder();
 			try {
 				for (var domain:* in _domains) {
 					var infos:Array = _domains[domain];
 					for each (var info:IClassProxyInfo in infos) {
-						var proxyInfo:ProxyInfo = buildProxyClass(info, domain);
-						proxyInfo.proxiedClass = info.proxiedClass;
-						proxyInfo.interceptorFactory = info.interceptorFactory;
-						_classProxyLookup[info.proxiedClass] = proxyInfo;
-						proxyInfo.methodInvocationInterceptorClass = info.methodInvocationInterceptorClass;
+						if (_classProxyLookup[info.proxiedClass] == null) {
+							var proxyInfo:ProxyInfo = buildProxyClass(info, domain);
+							proxyInfo.proxiedClass = info.proxiedClass;
+							proxyInfo.interceptorFactory = info.interceptorFactory;
+							_classProxyLookup[info.proxiedClass] = proxyInfo;
+							proxyInfo.methodInvocationInterceptorClass = info.methodInvocationInterceptorClass;
+						}
 					}
 				}
 			} finally {
@@ -344,8 +346,12 @@ package org.as3commons.bytecode.proxy.impl {
 				throw new ProxyBuildError(ProxyBuildError.PROXY_FACTORY_IS_BUSY_GENERATING);
 			}
 			applicationDomain ||= Type.currentApplicationDomain;
+			var proxyInfo:ProxyInfo;
 			for (var cls:* in _classProxyLookup) {
-				ProxyInfo(_classProxyLookup[cls]).applicationDomain = applicationDomain;
+				proxyInfo = _classProxyLookup[cls];
+				if (proxyInfo.applicationDomain == null) {
+					proxyInfo.applicationDomain = applicationDomain;
+				}
 			}
 			_abcBuilder.addEventListener(Event.COMPLETE, redispatch);
 			_abcBuilder.addEventListener(IOErrorEvent.IO_ERROR, redispatch);
@@ -685,6 +691,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			_abcBuilder.removeEventListener(Event.COMPLETE, redispatch);
 			_abcBuilder.removeEventListener(IOErrorEvent.IO_ERROR, redispatch);
+			_abcBuilder = null;
 			dispatchEvent(event);
 		}
 

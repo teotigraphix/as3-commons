@@ -112,6 +112,27 @@ package org.as3commons.bytecode.proxy.impl {
 		}
 
 		[Test]
+		public function testMultipleCreationsInSubsequentCalls():void {
+			_proxyFactory.defineProxy(IEventDispatcher, null, _applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, createNextProxy);
+			_proxyFactory.loadProxyClasses();
+		}
+
+		protected function createNextProxy(event:Event):void {
+			_proxyFactory.removeEventListener(Event.COMPLETE, createNextProxy);
+			_proxyFactory.addEventListener(Event.COMPLETE, createProxy);
+			_proxyFactory.defineProxy(EventDispatcher, null, _applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.loadProxyClasses();
+		}
+
+		protected function createProxy(event:Event):void {
+			_proxyFactory.removeEventListener(Event.COMPLETE, createProxy);
+			assertTrue(true);
+		}
+
+		[Test]
 		public function testDefineProxy():void {
 			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(EventDispatcherSubclass3, null, _applicationDomain);
 			assertStrictlyEquals(EventDispatcherSubclass3, classProxyInfo.proxiedClass);

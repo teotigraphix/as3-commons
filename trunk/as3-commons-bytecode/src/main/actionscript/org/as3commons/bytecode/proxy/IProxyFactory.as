@@ -121,7 +121,7 @@ package org.as3commons.bytecode.proxy {
 
 		/**
 		 * Returns a <code>ProxyInfo</code> instance associated with the specified proxied class,
-		 * or null if none can be found. This information is only available after the <code>generateProxyClasses()</code>
+		 * or null if none can be found. The full information is only available after the <code>generateProxyClasses()</code>
 		 * method has been invoked.
 		 * @param clazz The proxied class
 		 * @return A <code>ProxyInfo</code> instance associated with the specified proxied class.
