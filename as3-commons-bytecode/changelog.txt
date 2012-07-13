@@ -6,6 +6,8 @@ Note: dates are in DD.MM.YYYY format
 Changes in version 1.1.2 (??.??.2012)
 -------------------------------------
 
+* Fixed properly reflecting namespaced members of native classes (Thanks Drew)
+* Fixed proxying of classes that extend flash.utils.Proxy (Thanks Drew)
 * Added the ability for the ProxyFactory to handle multiple calls to generateProxyClasses() and loadProxyClasses() in a correct manner (thanks Drew)
 * Added implementInterface() method to IClassProxyInfo to add additional interfaces to a Proxy. (This one is for Drew)
 * Added ProxyNameCreationEvent that enables a user to specify the package and class names of the generated class names (Another one for Drew)
