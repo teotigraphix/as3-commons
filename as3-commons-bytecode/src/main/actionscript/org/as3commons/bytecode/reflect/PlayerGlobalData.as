@@ -92,12 +92,14 @@ package org.as3commons.bytecode.reflect {
 
 		private static function variableToBytecodeVariable(variable:Variable, applicationDomain:ApplicationDomain):ByteCodeVariable {
 			const result:ByteCodeVariable = new ByteCodeVariable(variable.name, variable.type.fullName, variable.declaringType.fullName, false, applicationDomain);
+			result.as3commons_reflect::setNamespaceURI(variable.namespaceURI);
 			result.as3commons_reflect::setVisibility(NamespaceKind.PACKAGE_NAMESPACE);
 			return result;
 		}
 
 		private static function accessorToBytecodeAccessor(accessor:Accessor, applicationDomain:ApplicationDomain):ByteCodeAccessor {
 			const result:ByteCodeAccessor = new ByteCodeAccessor(accessor.name, accessor.access, accessor.type.fullName, accessor.declaringType.fullName, false, applicationDomain);
+			result.as3commons_reflect::setNamespaceURI(accessor.namespaceURI);
 			result.as3commons_reflect::setVisibility(NamespaceKind.PACKAGE_NAMESPACE);
 			return result;
 		}
@@ -110,6 +112,7 @@ package org.as3commons.bytecode.reflect {
 				params[params.length] = paramToByteCodeParam(idx++, AbcFileUtil.normalizeFullName(method.declaringType.fullName) + PERIOD + method.name, param, applicationDomain, len);
 			}
 			const result:ByteCodeMethod = new ByteCodeMethod(method.declaringType.fullName, method.name, false, params, method.returnType.fullName, applicationDomain);
+			result.as3commons_reflect::setNamespaceURI(method.namespaceURI);
 			result.as3commons_reflect::setVisibility(NamespaceKind.PACKAGE_NAMESPACE);
 			return result;
 		}
