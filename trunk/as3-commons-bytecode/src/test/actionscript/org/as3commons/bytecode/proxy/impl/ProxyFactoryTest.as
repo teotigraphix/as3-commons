@@ -27,6 +27,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 	import mx.containers.Canvas;
 	import mx.core.FlexGlobals;
+	import mx.rpc.remoting.RemoteObject;
 
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.SimpleConstantPool;
@@ -146,6 +147,19 @@ package org.as3commons.bytecode.proxy.impl {
 			_proxyFactory.defineProxy(EventDispatcherSubclass3, null, _applicationDomain);
 			var builder:IAbcBuilder = _proxyFactory.generateProxyClasses();
 			assertNotNull(builder);
+		}
+
+		[Test(async)]
+		public function testCreateRemoteObjectProxy():void {
+			_proxyFactory.defineProxy(RemoteObject, null, _applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, Async.asyncHandler(this, handleRemoteObjectProxyTestComplete, 1000));
+			_proxyFactory.loadProxyClasses();
+		}
+
+		protected function handleRemoteObjectProxyTestComplete(event:Event, obj:Object):void {
+			var ro:RemoteObject = _proxyFactory.createProxy(RemoteObject);
+			assertNotNull(ro);
 		}
 
 		[Test(async)]

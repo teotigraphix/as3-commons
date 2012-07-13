@@ -22,6 +22,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
+	import flash.utils.Proxy;
 
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
@@ -651,7 +652,12 @@ package org.as3commons.bytecode.proxy.impl {
 		 * @param event
 		 */
 		protected function proxyCreatedHandler(event:ProxyCreationEvent):void {
-			var cls:Class = Object(event.proxyInstance).constructor as Class;
+			var cls:Class;
+			if (event.proxyInstance is Proxy) {
+				cls = ClassUtils.forInstance(event.proxyInstance);
+			} else {
+				cls = Object(event.proxyInstance).constructor as Class;
+			}
 			var proxyInfo:ProxyInfo = _proxyClassLookup[cls];
 			if (proxyInfo != null) {
 				var factoryEvent:ProxyFactoryEvent = new ProxyFactoryEvent(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, proxyInfo.proxiedClass, event.proxyConstructorArgs, proxyInfo.methodInvocationInterceptorClass);
@@ -803,10 +809,10 @@ package org.as3commons.bytecode.proxy.impl {
 				Assert.notNull(applicationDomain, "applicationDomain argument must not be null");
 			}
 			for each (var byteCodeMethod:ByteCodeMethod in type.methods) {
-				if ((byteCodeMethod.declaringType.name == null) || (byteCodeMethod.declaringType.name == OBJECT_DECLARINGTYPE_NAME)) {
-					continue;
-				}
 				if (byteCodeMethod != null) {
+					if ((byteCodeMethod.declaringType.name == null) || (byteCodeMethod.declaringType.name == OBJECT_DECLARINGTYPE_NAME)) {
+						continue;
+					}
 					if (!isEligibleForProxy(byteCodeMethod, classProxyInfo.proxyMethodScopes, classProxyInfo.proxyMethodNamespaces)) {
 						continue;
 					}
