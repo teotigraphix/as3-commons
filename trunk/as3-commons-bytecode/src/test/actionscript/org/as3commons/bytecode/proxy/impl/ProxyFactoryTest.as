@@ -27,6 +27,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 	import mx.containers.Canvas;
 	import mx.core.FlexGlobals;
+	import mx.messaging.ChannelSet;
 	import mx.rpc.remoting.RemoteObject;
 
 	import org.as3commons.bytecode.abc.AbcFile;
@@ -159,7 +160,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 		protected function handleRemoteObjectProxyTestComplete(event:Event, obj:Object):void {
 			var ro:RemoteObject = _proxyFactory.createProxy(RemoteObject);
-			assertNotNull(ro);
+			ro.channelSet = new ChannelSet();
 		}
 
 		[Test(async)]
