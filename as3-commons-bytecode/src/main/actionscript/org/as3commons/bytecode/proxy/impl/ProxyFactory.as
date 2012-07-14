@@ -141,7 +141,7 @@ package org.as3commons.bytecode.proxy.impl {
 		//private static constants
 		private static const AS3COMMONSBYTECODEPROXY:String = "as3commons_bytecode_proxy";
 		private static const CHARACTERS:String = "abcdefghijklmnopqrstuvwxys";
-		private static const CONSTRUCTOR:String = "constructor";
+		private static const CONSTRUCTOR:String = CONSTRUCTOR_FIELD_NAME;
 		private static const INTERCEPTOR_PROPERTYNAME:String = "methodInvocationInterceptor";
 		private static const IS_FINAL_FIELD_NAME:String = 'isFinal';
 		private static const IS_STATIC_FIELD_NAME:String = 'isStatic';
@@ -153,6 +153,7 @@ package org.as3commons.bytecode.proxy.impl {
 		private static const ORGAS3COMMONSBYTECODE:String = "org.as3commons.bytecode";
 		private static const PROXY_PACKAGE_NAME_PREFIX:String = "_as3commons_bytecode_generated_";
 		private static const VISIBILITY_FIELD_NAME:String = 'visibility';
+		private static const CONSTRUCTOR_FIELD_NAME:String = "constructor";
 
 		/**
 		 * Translates the specified <code>member.visibility</code> value to a valid <code>MemberVisibility</code> enum instance.
@@ -653,7 +654,7 @@ package org.as3commons.bytecode.proxy.impl {
 		 */
 		protected function proxyCreatedHandler(event:ProxyCreationEvent):void {
 			var cls:Class;
-			if (event.proxyInstance is Proxy) {
+			if ((event.proxyInstance is Proxy) || (event.proxyInstance.hasOwnProperty(CONSTRUCTOR_FIELD_NAME))) {
 				cls = ClassUtils.forInstance(event.proxyInstance);
 			} else {
 				cls = Object(event.proxyInstance).constructor as Class;
