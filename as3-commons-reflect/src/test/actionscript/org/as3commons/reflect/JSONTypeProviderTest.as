@@ -1,9 +1,11 @@
 package org.as3commons.reflect {
 	import flash.system.ApplicationDomain;
-
+	
 	import flexunit.framework.TestCase;
-
+	
 	import org.as3commons.reflect.testclasses.FullTestClass;
+	import org.as3commons.reflect.testclasses.ISubInterface;
+	import org.as3commons.reflect.testclasses.ISubSubInterface;
 	import org.as3commons.reflect.testclasses.Interface;
 
 	public class JSONTypeProviderTest extends TestCase {
@@ -35,7 +37,7 @@ package org.as3commons.reflect {
 		}
 
 		public function testGetType():void {
-			var type:Type = Type.forClass(FullTestClass, ApplicationDomain.currentDomain);
+			var type:Type = Type.forClass(FullTestClass, Type.currentApplicationDomain);
 			assertFalse(type.isInterface);
 			assertFalse(type.isDynamic);
 			assertFalse(type.isFinal);
@@ -66,6 +68,16 @@ package org.as3commons.reflect {
 			assertEquals(11, type.methods.length);
 			var m:Method = type.getMethod("someMethodWithRestParams");
 			var i:int = 0;
+		}
+		
+		public function testGetTypeForSubinterface():void {
+			var type:Type = Type.forClass(ISubInterface, Type.currentApplicationDomain);
+			assertEquals(1, type.interfaces);
+		}
+
+		public function testGetTypeForSubSubinterface():void {
+			var type:Type = Type.forClass(ISubSubInterface, Type.currentApplicationDomain);
+			assertEquals(2, type.interfaces);
 		}
 
 	}
