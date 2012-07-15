@@ -23,7 +23,8 @@ package org.as3commons.bytecode.proxy.impl {
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.Proxy;
-
+	import flash.utils.describeType;
+	
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.NamespaceSet;
@@ -472,11 +473,19 @@ package org.as3commons.bytecode.proxy.impl {
 			constructorProxyFactory.addConstructorBody(ctorBuilder, bytecodeQname, nsMultiname);
 
 			if (classProxyInfo.accessors.length == 0) {
-				reflectAccessors(classProxyInfo, type, applicationDomain);
+				if (!type.isInterface) {
+					reflectAccessors(classProxyInfo, type, applicationDomain);
+				} else {
+					reflectInterfaceAccessors(classProxyInfo, type, applicationDomain);
+				}
 			}
 
 			if (classProxyInfo.methods.length == 0) {
-				reflectMethods(classProxyInfo, type, applicationDomain);
+				if (!type.isInterface) {
+					reflectMethods(classProxyInfo, type, applicationDomain);
+				} else {
+					reflectInterfaceMethods(classProxyInfo, type, applicationDomain);
+				}
 			}
 
 			for each (var interfaze:Class in classProxyInfo.implementedInterfaces) {
@@ -755,6 +764,12 @@ package org.as3commons.bytecode.proxy.impl {
 					LOGGER.debug("Added interface accessor '{0}' to be proxied", [byteCodeAccessor.name]);
 				}
 			}
+			for each(var interfaceName:String in type.interfaces) {
+				type = ByteCodeType.forName(interfaceName);
+				if (type != null) {
+					reflectInterfaceAccessors(classProxyInfo, type, applicationDomain);
+				}
+			}
 			LOGGER.debug("ClassInfoProxy for class {0}, added interface accessors of interface {1}", [classProxyInfo.proxiedClass, type.fullName]);
 		}
 
@@ -774,6 +789,12 @@ package org.as3commons.bytecode.proxy.impl {
 				if ((byteCodeMethod.declaringType.name != null) && (byteCodeMethod.declaringType.name != OBJECT_DECLARINGTYPE_NAME)) {
 					classProxyInfo.proxyInterfaceMethod(byteCodeMethod.name, type);
 					LOGGER.debug("Added interface method '{0}' to be proxied", [byteCodeMethod.name]);
+				}
+			}
+			for each(var interfaceName:String in type.interfaces) {
+				type = ByteCodeType.forName(interfaceName);
+				if (type != null) {
+					reflectInterfaceMethods(classProxyInfo, type, applicationDomain);
 				}
 			}
 			LOGGER.debug("ClassInfoProxy for class {0}, added interface methods of interface {1}", [classProxyInfo.proxiedClass, type.fullName]);
