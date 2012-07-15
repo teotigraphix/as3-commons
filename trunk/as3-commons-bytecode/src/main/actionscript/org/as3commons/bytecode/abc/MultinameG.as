@@ -29,6 +29,10 @@ package org.as3commons.bytecode.abc {
 			_qualifiedName = qName;
 			_parameters = params;
 		}
+		
+		public function get fullName():String {
+			return _qualifiedName.fullName + ".<" + _parameters[0].fullName + ">";
+		}
 
 		override public function clone():* {
 			return new MultinameG(_qualifiedName.clone(), _parameters, kind);

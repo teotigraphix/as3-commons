@@ -52,12 +52,12 @@ package org.as3commons.bytecode.util {
 				var params:Array;
 				var i:uint;
 				if (className.match(DOUBLE_COLON_REGEXP) != null) {
-					portions = className.split(DOUBLE_COLON_REGEXP);
-					namespacePortion = String(portions[0]);
-					portions = String(portions[1]).split(PERIOD);
-					classNamePortion = portions[0];
-					paramPortion = portions[1];
-					paramPortion = paramPortion.substr(1, paramPortion.length - 2);
+					var idx:int = className.indexOf('<');
+					classNamePortion = className.substr(0, idx-1);
+					paramPortion = className.substr(idx+1, (className.length-idx-2));
+					var parts:Array = classNamePortion.split(DOUBLE_COLON);
+					namespacePortion = parts[0];
+					classNamePortion = parts[1];
 					params = paramPortion.split(COMMA);
 					for (i = 0; i < params.length; ++i) {
 						params[i] = toArgumentMultiName(String(params[i]));

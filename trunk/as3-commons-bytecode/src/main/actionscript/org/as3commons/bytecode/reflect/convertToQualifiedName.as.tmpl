@@ -14,7 +14,7 @@ if (!(classMultiname is QualifiedName)) {
 			}
 		}
 	} else if (classMultiname is MultinameG) {
-		fullName = (classMultiname as MultinameG).qualifiedName.fullName;
+		fullName = (classMultiname as MultinameG).fullName;
 	}
 } else {
 	fullName = (classMultiname as QualifiedName).fullName;

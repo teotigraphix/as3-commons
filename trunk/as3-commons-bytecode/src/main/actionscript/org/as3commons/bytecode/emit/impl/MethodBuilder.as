@@ -199,7 +199,7 @@ package org.as3commons.bytecode.emit.impl {
 			MethodTrait(trait).traitMethod = mi;
 			trait.addMetadataList(buildMetadata());
 			mi.as3commonsByteCodeAssignedMethodTrait = MethodTrait(trait);
-			mi.returnType = MultinameUtil.toQualifiedName(_returnType);
+			mi.returnType = MultinameUtil.toArgumentMultiName(_returnType);
 			mi.methodName = createMethodName(mi);
 			mi.as3commonsBytecodeName = name;
 			setMethodFlags(mi);

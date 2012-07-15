@@ -24,12 +24,12 @@ package org.as3commons.bytecode.proxy.impl {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
-
+	
 	import mx.containers.Canvas;
 	import mx.core.FlexGlobals;
 	import mx.messaging.ChannelSet;
 	import mx.rpc.remoting.RemoteObject;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.SimpleConstantPool;
 	import org.as3commons.bytecode.as3commons_bytecode;
@@ -45,6 +45,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryBuildEvent;
 	import org.as3commons.bytecode.proxy.event.ProxyFactoryEvent;
 	import org.as3commons.bytecode.reflect.ByteCodeType;
+	import org.as3commons.bytecode.testclasses.ClassWithVectorTypedProperty;
 	import org.as3commons.bytecode.testclasses.EventDispatcherExImpl;
 	import org.as3commons.bytecode.testclasses.EventDispatcherSubclass;
 	import org.as3commons.bytecode.testclasses.EventDispatcherSubclass2;
@@ -111,6 +112,18 @@ package org.as3commons.bytecode.proxy.impl {
 		[After]
 		public function tearDown():void {
 			ByteCodeType.getTypeProvider().clearCache();
+		}
+
+		[Test]
+		public function testProxyObjectWithVectorTypedProperty():void {
+			_proxyFactory.defineProxy(ClassWithVectorTypedProperty, null, _applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, createVectorPropertyProxy);
+			_proxyFactory.loadProxyClasses();
+		}
+
+		public function createVectorPropertyProxy(event:Event):void {
+			var instance:ClassWithVectorTypedProperty = _proxyFactory.createProxy(ClassWithVectorTypedProperty);
 		}
 
 		[Test]
