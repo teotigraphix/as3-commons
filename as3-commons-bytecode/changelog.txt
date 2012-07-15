@@ -6,6 +6,7 @@ Note: dates are in DD.MM.YYYY format
 Changes in version 1.1.2 (??.??.2012)
 -------------------------------------
 
+* Fixed proxying of interfaces that extend other interfaces
 * Fixed properly reflecting namespaced members of native classes (Thanks Drew)
 * Fixed proxying of classes that extend flash.utils.Proxy (Thanks Drew)
 * Added the ability for the ProxyFactory to handle multiple calls to generateProxyClasses() and loadProxyClasses() in a correct manner (thanks Drew)
