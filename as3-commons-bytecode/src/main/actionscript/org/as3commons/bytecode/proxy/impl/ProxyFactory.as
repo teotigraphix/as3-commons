@@ -731,7 +731,7 @@ package org.as3commons.bytecode.proxy.impl {
 					if (!isEligibleForProxy(byteCodeAccessor, classProxyInfo.proxyAccessorScopes, classProxyInfo.proxyAccessorNamespaces)) {
 						continue;
 					}
-					classProxyInfo.proxyAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI);
+					classProxyInfo.proxyAccessor(byteCodeAccessor.name, accessor.namespaceURI);
 					LOGGER.debug("Added accessor '{0}::{1}' to be proxied", [byteCodeAccessor.namespaceURI, byteCodeAccessor.name]);
 				}
 			}

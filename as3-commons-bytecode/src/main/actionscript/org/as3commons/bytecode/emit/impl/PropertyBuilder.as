@@ -17,7 +17,8 @@ package org.as3commons.bytecode.emit.impl {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
-
+	
+	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SlotOrConstantTrait;
@@ -104,7 +105,7 @@ package org.as3commons.bytecode.emit.impl {
 			trait.isOverride = isOverride;
 			trait.traitKind = (isConstant) ? TraitKind.CONST : TraitKind.SLOT;
 			trait.isStatic = isStatic;
-			trait.typeMultiname = MultinameUtil.toQualifiedName(_type);
+			trait.typeMultiname = MultinameUtil.toArgumentMultiName(_type);
 			var ns:LNamespace = createTraitNamespace();
 			trait.traitMultiname = new QualifiedName(name, ns);
 			if (_initialValue === undefined) {
@@ -149,7 +150,7 @@ package org.as3commons.bytecode.emit.impl {
 		}
 
 		protected function createSimplePropertyInitializer(result:Array):void {
-			var propertyTypeMultiname:QualifiedName = createPropertyTypeQualifiedName();
+			var propertyTypeMultiname:BaseMultiname = createPropertyTypeQualifiedName();
 			result[result.length] = Opcode.findpropstrict.op([propertyTypeMultiname]);
 			for each (var arg:* in _memberInitialization.constructorArguments) {
 				switch (true) {
@@ -180,8 +181,8 @@ package org.as3commons.bytecode.emit.impl {
 			result[result.length] = Opcode.constructprop.op([propertyTypeMultiname, _memberInitialization.constructorArguments.length]);
 		}
 
-		protected function createPropertyTypeQualifiedName():QualifiedName {
-			return MultinameUtil.toQualifiedName(_type, NamespaceKind.PACKAGE_NAMESPACE);
+		protected function createPropertyTypeQualifiedName():BaseMultiname {
+			return MultinameUtil.toArgumentMultiName(_type, NamespaceKind.PACKAGE_NAMESPACE);
 		}
 
 		protected function createPropertyQualifiedName():QualifiedName {
