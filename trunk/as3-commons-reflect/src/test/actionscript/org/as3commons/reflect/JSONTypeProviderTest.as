@@ -77,7 +77,7 @@ package org.as3commons.reflect {
 
 		public function testGetTypeForSubSubinterface():void {
 			var type:Type = Type.forClass(ISubSubInterface, Type.currentApplicationDomain);
-			assertEquals(2, type.interfaces);
+			assertEquals(1, type.interfaces);
 		}
 
 	}
