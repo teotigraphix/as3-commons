@@ -128,7 +128,7 @@ package org.as3commons.bytecode.proxy.impl {
 
 		[Test]
 		public function testMultipleCreationsInSubsequentCalls():void {
-			_proxyFactory.defineProxy(IEventDispatcher, null, _applicationDomain);
+			_proxyFactory.defineProxy(IAbcBuilder, null, _applicationDomain);
 			_proxyFactory.generateProxyClasses();
 			_proxyFactory.addEventListener(Event.COMPLETE, createNextProxy);
 			_proxyFactory.loadProxyClasses();
