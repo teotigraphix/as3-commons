@@ -266,7 +266,7 @@ package org.as3commons.bytecode.emit.impl {
 
 		/**
 		 *
-		 * @param instances Array of builder objects that represent the various elements to be added to the <code>AbcFile</code>.
+		 * @param instances Array or Dictionary of builder objects that represent the various elements to be added to the <code>AbcFile</code>.
 		 * @param abcFile The <code>AbcFile</code> that will be populated with the builder results.
 		 * @param applicationDomain The <code>ApplicationDomain</code> used to lookup superclasses.
 		 * @param index The current class index in the <code>AbcFile</code>.
@@ -293,9 +293,8 @@ package org.as3commons.bytecode.emit.impl {
 				} else if (inst is Object) {
 					addAbcObjects(inst, abcFile, applicationDomain, index);
 				} else {
-					throw new Error((Object(inst).constructor as Class).toString());
+					throw new Error("Unknown object type encountered: " + (Object(inst).constructor as Class).toString());
 				}
-
 			}
 			return index;
 		}
