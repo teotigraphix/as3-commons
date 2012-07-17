@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package org.as3commons.bytecode.emit.impl {
+	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.bytecode.abc.AbcFile;
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.ClassInfo;
@@ -238,6 +239,9 @@ package org.as3commons.bytecode.emit.impl {
 			for each (var pb:IPackageBuilder in _packageBuilders) {
 				var arr:Array = pb.build(applicationDomain);
 				idx = addAbcObjects(arr, _abcFile, applicationDomain, idx);
+			}
+			if (idx == 0) {
+				throw new IllegalOperationError("Nothing has been defined in the current AbcBuilder, there is nothing to build.");
 			}
 			return _abcFile;
 		}
