@@ -310,6 +310,7 @@ package org.as3commons.bytecode.proxy.impl {
 			_isGenerating = true;
 			_abcBuilder ||= new AbcBuilder();
 			try {
+				var total:int = 0;
 				for (var domain:* in _domains) {
 					var infos:Array = _domains[domain];
 					for each (var info:IClassProxyInfo in infos) {
@@ -319,6 +320,7 @@ package org.as3commons.bytecode.proxy.impl {
 							proxyInfo.interceptorFactory = info.interceptorFactory;
 							_classProxyLookup[info.proxiedClass] = proxyInfo;
 							proxyInfo.methodInvocationInterceptorClass = info.methodInvocationInterceptorClass;
+							total++;
 						}
 					}
 				}
@@ -326,6 +328,9 @@ package org.as3commons.bytecode.proxy.impl {
 				_isGenerating = false;
 				_domains = new Dictionary();
 				LOGGER.debug("Finished generating proxy classes");
+			}
+			if (total == 0) {
+				throw new ProxyBuildError(ProxyBuildError.NO_PROXIES_DEFINED);
 			}
 			return _abcBuilder;
 		}
@@ -350,16 +355,21 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			applicationDomain ||= Type.currentApplicationDomain;
 			var proxyInfo:ProxyInfo;
+			var total:int = 0;
 			for (var cls:* in _classProxyLookup) {
 				proxyInfo = _classProxyLookup[cls];
 				if (proxyInfo.applicationDomain == null) {
 					proxyInfo.applicationDomain = applicationDomain;
+					total++;
 				}
 			}
 			_abcBuilder.addEventListener(Event.COMPLETE, redispatch);
 			_abcBuilder.addEventListener(IOErrorEvent.IO_ERROR, redispatch);
 			_abcBuilder.addEventListener(IOErrorEvent.VERIFY_ERROR, redispatch, false, 0, true);
 			_abcBuilder.buildAndLoad(applicationDomain);
+			if (total == 0) {
+				throw new ProxyBuildError(ProxyBuildError.NO_PROXIES_DEFINED);
+			}
 			LOGGER.debug("Loading proxies into application domain {0}", [applicationDomain]);
 		}
 

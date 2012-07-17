@@ -62,7 +62,8 @@ package org.as3commons.bytecode.proxy.error {
 		public static const UNABLE_TO_RETRIEVE_PROXY_CLASS_ERROR:uint = 0x11;
 
 		public static const UNKNOWN_PROXIED_CLASS:uint = 0x12;
-
+		
+		public static const NO_PROXIES_DEFINED:uint = 0x13;
 
 		private static const messages:Dictionary = new Dictionary();
 		{
@@ -79,6 +80,7 @@ package org.as3commons.bytecode.proxy.error {
 			messages[NO_BYTECODE_TYPE_FOUND_FOR_CLASS] = "No ByteCodeType instance could be retrieved for class name '{0}', make sure the same ApplicationDomain instance is passed to defineProxy() as was passed to ByteCodeType.fromLoader().";
 			messages[UNABLE_TO_RETRIEVE_PROXY_CLASS_ERROR] = "Unable to retrieve the proxy class {0} from the proxy application domain";
 			messages[UNKNOWN_PROXIED_CLASS] = "No proxy class has been generated for class {0}";
+			messages[NO_PROXIES_DEFINED] = "No proxies were defined, there is nothing to generate.";
 		}
 
 		/**
