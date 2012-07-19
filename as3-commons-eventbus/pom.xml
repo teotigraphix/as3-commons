@@ -90,8 +90,13 @@
 			<artifactId>as3commons-logging</artifactId>
 			<version>${as3commons-logging.version}</version>
 			<type>swc</type>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>air-framework</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-reflect</artifactId>
