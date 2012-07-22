@@ -173,7 +173,7 @@ function handleVerifyError(event:IOErrorEvent):void {
   		<p>At this moment the <code><a href="asdoc/org/as3commons/bytecode/proxy/IProxyFactory.html" target="_blank">IProxyFactory</a></code> is ready to create proxy instances.</p>
   		<p>An <code><a href="asdoc/org/as3commons/bytecode/proxy/IProxyFactory.html" target="_blank">IProxyFactory</a></code> instance also functions as the classs factory for proxy instances.<br/>
   		To do this invoke the <code>IProxyFactory.createProxy()</code> method like this:</p>
-  		<div class="source"><pre>var instance:MyClass = proxyFactory.createProxy(MyClass, ["someVar"]) as MyClass;</pre></div>
+  		<div class="source"><pre>var instance:MyClass = proxyFactory.createProxy(MyClass, ["someVar"]);</pre></div>
   		<p>Now, at this point, by default, the <code><a href="asdoc/org/as3commons/bytecode/proxy/IProxyFactory.html" target="_blank">IProxyFactory</a></code> has created a <code><a href="asdoc/org/as3commons/bytecode/interception/BasicMethodInvocationInterceptor.html" target="_blank">BasicMethodInvocationInterceptor</a></code> instance and injected
   		it as a constructor argument into the proxy instance.</p>
   		<p>In itself this is pretty useless since no <code><a href="asdoc/org/as3commons/bytecode/interception/IIinterceptor.html" target="_blank">IIinterceptors</a></code> have been registered with the <code><a href="asdoc/org/as3commons/bytecode/interception/impl/BasicMethodInvocationInterceptor.html" target="_blank">BasicMethodInvocationInterceptor</a></code>.</p>
@@ -249,7 +249,7 @@ proxyFactory.loadProxyClasses();
 function proxiesLoadedHandler(event:Event):void {
 	var proxyFactory:IProxyFactory = (event.target as IProxyFactory);
 	proxyFactory.addEventListener(ProxyFactoryEvent.GET_METHOD_INVOCATION_INTERCEPTOR, createMethodInterceptor);
-	var myBusinessObj:MyBusinessObject = proxyFactory.createProxy(MyBusinessObject) as MyBusinessObject;
+	var myBusinessObj:MyBusinessObject = proxyFactory.createProxy(MyBusinessObject);
 	//This will yield a trace something like this: 'Sun Dec 26 17:43:19 GMT+0100 2010 DEBUG - MyBusinessObject was instantiated'
 	myBusinessObj.calculateTotalPrice(new Order());
 	//And this will yield a trace like this: 'Sun Dec 26 17:43:19 GMT+0100 2010 DEBUG - calculateOrderPrice was invoked with parameter Order'
@@ -296,7 +296,7 @@ function createMethodInterceptor(event:ProxyFactoryEvent):void {
 			<li>They can only inherit from the <code>Object</code> class.</li>
 		</ul>
 		<blockquote>
-			<strong>ATTENTION: Currently there are still some issues introducing methods, it is therefore adviced *not* too use try/catch blocks in introduced
+			<strong>ATTENTION: Currently there are still some issues introducing methods, it is therefore adviced *not* to use try/catch blocks in introduced
 			classes. Failing to do so results in verification errors in release builds of the code. The AS3Commons team hopes to have these issues resolved as soon as possible.</strong>
 		</blockquote>
 		<p>Let's take an actual example to illustrate just how this could work in the real world:</p>
@@ -490,7 +490,7 @@ proxyFactory.loadProxyClasses();
 	a dynamic proxy might offer a better solution.</p>
 	</subsection>
 	<subsection name="Dynamically implementing interfaces">
-		<p>A second, and perhaps more convenient, way to add interfaces to a proxy is by dynamically implementing them and letting the susual interceptor mechanism handle its implementation.</p>
+		<p>A second, and perhaps more convenient, way to add interfaces to a proxy is by dynamically implementing them and letting the usual interceptor mechanism handle its implementation.</p>
 		<p>Getting this to work is fairly easy, use the <code>implementedInterface()</code> method on the <code>IClassProxyInfo</code> and pass into it an interface class:</p>
 		<div class="source"><pre>var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyClass, null, _applicationDomain);
 classProxyInfo.implementInterface(IEventDispatcherEx);
