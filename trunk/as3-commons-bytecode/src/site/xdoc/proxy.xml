@@ -80,7 +80,7 @@ ByteCodeType.fromLoader(FlexGlobals.topLevelApplication.loaderInfo);</pre></div>
   		<p>Now, to define a proxy for a specified class invoke the defineProxy() method:</p>
   		<div class="source"><pre>var classProxyInfo:IClassProxyInfo = proxyFactory.defineProxy(MyClass, null, _applicationDomain);</pre></div>
   		<p>This method returns an <code><a href="asdoc/org/as3commons/bytecode/proxy/IClassProxyInfo.html" target="_blank">IClassProxyInfo</a></code> instance which allows further definition of the proxy.<br/>
-  		Its also possible to ignore the <code><a href="asdoc/org/as3commons/bytecode/proxy/IClassProxyInfo.html" target="_blank">IClassProxyInfo</a></code> instance entirely, in which case every public, protected and custom namespace scoped member on the specified class will be proxied. (Bytecode reflection is used here to obtain the information).</p>
+  		Its also possible to ignore the <code><a href="asdoc/org/as3commons/bytecode/proxy/IClassProxyInfo.html" target="_blank">IClassProxyInfo</a></code> instance entirely, in which case every public and protected member on the specified class will be proxied. (Bytecode reflection is used here to obtain the information).</p>
   		<p>Should this not be desirable these methods will define specific members for proxying:</p>
   		<div class="source"><pre>classProxyInfo.proxyMethod("myMethod");</pre></div>
   		<div class="source"><pre>classProxyInfo.proxyAccessor("myAccessor");</pre></div>
