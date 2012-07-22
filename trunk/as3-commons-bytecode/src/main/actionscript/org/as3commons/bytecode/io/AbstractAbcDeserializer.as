@@ -92,7 +92,7 @@ package org.as3commons.bytecode.io {
 			}
 
 			var itemCount:int;
-			var i:uint;
+			var i:int;
 			var result:int;
 			var kind:uint;
 			var ints:Vector.<int> = pool.integerPool;
@@ -109,7 +109,7 @@ package org.as3commons.bytecode.io {
 			itemCount = --result;
 			while (i < itemCount) {
 				include "readU32.as.tmpl";
-				ints[++i] = result;
+				ints[int(++i)] = result;
 			}
 
 			CONFIG::debug {
@@ -123,7 +123,7 @@ package org.as3commons.bytecode.io {
 			itemCount = --result;
 			while (i < itemCount) {
 				include "readU32.as.tmpl";
-				uints[++i] = result;
+				uints[int(++i)] = result;
 			}
 
 			CONFIG::debug {
@@ -137,7 +137,7 @@ package org.as3commons.bytecode.io {
 			i = 0;
 			itemCount = --result;
 			while (i < itemCount) {
-				doubles[++i] = _byteStream.readDouble();
+				doubles[int(++i)] = _byteStream.readDouble();
 			}
 			/* END:READ doublepool */
 
@@ -148,7 +148,7 @@ package org.as3commons.bytecode.io {
 			var str:String;
 			while (i < itemCount) {
 				include "readU32.as.tmpl";
-				strings[++i] = _byteStream.readUTFBytes(result);
+				strings[int(++i)] = _byteStream.readUTFBytes(result);
 			}
 			CONFIG::debug {
 				logConstantPoolRead("strings", startTime);
@@ -162,7 +162,7 @@ package org.as3commons.bytecode.io {
 			while (i < itemCount) {
 				kind = 0xff & _byteStream[_byteStream.position++];
 				include "readU32.as.tmpl";
-				namespaces[++i] = new LNamespace(NamespaceKind.determineKind(kind), strings[result]);
+				namespaces[int(++i)] = new LNamespace(NamespaceKind.determineKind(kind), strings[result]);
 			}
 			CONFIG::debug {
 				logConstantPoolRead("namespaces", startTime);
@@ -183,9 +183,9 @@ package org.as3commons.bytecode.io {
 				j = namespaceArray.length - 1;
 				while (--namespaceIndexRefCount - (-1)) {
 					include "readU32.as.tmpl";
-					namespaceArray[++j] = namespaces[result];
+					namespaceArray[int(++j)] = namespaces[result];
 				}
-				namespaceSets[++i] = new NamespaceSet(namespaceArray);
+				namespaceSets[int(++i)] = new NamespaceSet(namespaceArray);
 			}
 			CONFIG::debug {
 				logConstantPoolRead("namespace sets", startTime);
@@ -208,40 +208,40 @@ package org.as3commons.bytecode.io {
 				//QNAME or QNAME_A
 				if ((kind == 0x07) || (kind == 0x0D)) {
 					include "readU32.as.tmpl";
-					ns = namespaces[result];
+					ns = namespaces[int(result)];
 					include "readU32.as.tmpl";
-					multiNames[i] = new QualifiedName(strings[result], ns, (kind == 0x07) ? MultinameKind.QNAME : MultinameKind.QNAME_A);
+					multiNames[int(i)] = new QualifiedName(strings[int(result)], ns, (kind == 0x07) ? MultinameKind.QNAME : MultinameKind.QNAME_A);
 						//RTQName or RTQName_A
 				} else if ((kind == 0x0f) || (kind == 0x10)) {
 					include "readU32.as.tmpl";
-					multiNames[i] = new RuntimeQualifiedName(strings[result], (kind == 0x0f) ? MultinameKind.RTQNAME : MultinameKind.RTQNAME_A);
+					multiNames[int(i)] = new RuntimeQualifiedName(strings[int(result)], (kind == 0x0f) ? MultinameKind.RTQNAME : MultinameKind.RTQNAME_A);
 				} else if ((kind == 0x11) || (kind == 0x12)) {
 					//RTQNAME_L or RTQNAME_LA
-					multiNames[i] = new RuntimeQualifiedNameL((kind == 0x11) ? MultinameKind.RTQNAME_L : MultinameKind.RTQNAME_LA);
+					multiNames[int(i)] = new RuntimeQualifiedNameL((kind == 0x11) ? MultinameKind.RTQNAME_L : MultinameKind.RTQNAME_LA);
 				} else if ((kind == 0x09) || (kind == 0x0E)) {
 					//MULTINAME or MULTINAME_A
 					include "readU32.as.tmpl";
-					name = strings[result];
+					name = strings[int(result)];
 					include "readU32.as.tmpl";
-					nss = namespaceSets[result];
-					multiNames[i] = new Multiname(name, nss, (kind == 0x09) ? MultinameKind.MULTINAME : MultinameKind.MULTINAME_A);
+					nss = namespaceSets[int(result)];
+					multiNames[int(i)] = new Multiname(name, nss, (kind == 0x09) ? MultinameKind.MULTINAME : MultinameKind.MULTINAME_A);
 				} else if ((kind == 0x1B) || (kind == 0x1C)) {
 					//MULTINAME_L or MULTINAME_LA
 					include "readU32.as.tmpl";
-					multiNames[i] = new MultinameL(namespaceSets[result], (kind == 0x1B) ? MultinameKind.MULTINAME_L : MultinameKind.MULTINAME_LA);
+					multiNames[int(i)] = new MultinameL(namespaceSets[int(result)], (kind == 0x1B) ? MultinameKind.MULTINAME_L : MultinameKind.MULTINAME_LA);
 				} else if (kind == 0x1D) {
 					//GENERIC
 					include "readU32.as.tmpl";
-					qualifiedName = multiNames[result] as QualifiedName;
+					qualifiedName = multiNames[int(result)] as QualifiedName;
 					include "readU32.as.tmpl";
 					paramCount = result;
 					params = [];
 					j = 0;
 					while (paramCount--) {
 						include "readU32.as.tmpl";
-						params[j++] = multiNames[result];
+						params[int(j++)] = multiNames[int(result)];
 					}
-					multiNames[i] = new MultinameG(qualifiedName, params, MultinameKind.GENERIC)
+					multiNames[int(i)] = new MultinameG(qualifiedName, params, MultinameKind.GENERIC)
 				}
 			}
 
