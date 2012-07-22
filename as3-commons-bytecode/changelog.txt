@@ -3,7 +3,7 @@ AS3COMMONS-BYTECODE CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
-Changes in version 1.1.2 (??.??.2012)
+Changes in version 1.2 (??.??.2012)
 -------------------------------------
 
 * Specific error is thrown after calls to any of the build*() methods in the AbcBuilder when nothing has been defined yet.
