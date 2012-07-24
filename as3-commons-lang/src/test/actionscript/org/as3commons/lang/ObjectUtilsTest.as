@@ -74,5 +74,45 @@ package org.as3commons.lang {
 				a:"a1", b:"a2", c:"b3"}, ObjectUtils.merge(objA, objB));
 
 		}
+
+        [Test]
+        public function testCompare_equalSimpleObjects():void {
+            var object:Object = {a:"1"};
+            var other:Object = {a:"1"};
+
+            assertTrue(ObjectUtils.compare(object, other));
+        }
+
+        [Test]
+        public function testCompare_nonEqualObjects():void {
+            var object:Object = {a:"1"};
+            var other:Object = {a:"2"};
+
+            assertFalse(ObjectUtils.compare(object, other));
+        }
+
+        [Test]
+        public function testCompare_equalComplexObject():void {
+            var object:Object = {a:"1", b:{c:"1"}, d:[1,2,3], e:[{f:1},{g:false},{h:"1"}]};
+            var other:Object = {a:"1", b:{c:"1"}, d:[1,2,3], e:[{f:1},{g:false},{h:"1"}]};
+
+            assertTrue(ObjectUtils.compare(object, other));
+        }
+
+        [Test]
+        public function testCompare_withANullObject():void {
+            var object:Object = null;
+            var other:Object = {a:"1"};
+
+            assertFalse(ObjectUtils.compare(object, other));
+        }
+
+        [Test]
+        public function testCompare_withTwoNullObjects():void {
+            var object:Object = null;
+            var other:Object = null;
+
+            assertTrue(ObjectUtils.compare(object, other));
+        }
 	}
 }

@@ -115,6 +115,38 @@ package org.as3commons.lang {
 			return byteArray.readObject();
 		}
 
+
+        /**
+         * Compares two objects based on their serialized AMF representation
+         *
+         * @param object The object to compare
+         * @param other The object to compare to
+         *
+         * @return true if equal, false if not
+         */
+        public static function compare(object:Object, other:Object):Boolean {
+            var objectByteArray:ByteArray = new ByteArray();
+            var otherByteArray:ByteArray = new ByteArray();
+
+            objectByteArray.writeObject(object);
+            otherByteArray.writeObject(other);
+
+            var size:uint = objectByteArray.length;
+
+            if (objectByteArray.length == otherByteArray.length) {
+                objectByteArray.position = 0;
+                otherByteArray.position = 0;
+
+                while (objectByteArray.position < size) {
+                    if (objectByteArray.readByte() != otherByteArray.readByte()) {
+                        return false;
+                    }
+                }
+            }
+
+            return (objectByteArray.toString() == otherByteArray.toString());
+        }
+
 		/**
 		 * Converts a plain vanilla object to be an instance of the class
 		 * passed as the second variable.  This is not a recursive function
