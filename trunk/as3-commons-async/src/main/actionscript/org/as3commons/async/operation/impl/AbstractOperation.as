@@ -258,6 +258,7 @@ package org.as3commons.async.operation.impl {
 		public function set timeout(value:int):void {
 			if (value !== m_timeout) {
 				m_timeout = value;
+				startTimeout();
 			}
 		}
 
