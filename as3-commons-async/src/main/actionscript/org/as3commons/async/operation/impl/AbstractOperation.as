@@ -17,7 +17,7 @@ package org.as3commons.async.operation.impl {
 	import flash.events.EventDispatcher;
 	import flash.utils.clearTimeout;
 	import flash.utils.setTimeout;
-
+	
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.event.OperationEvent;
 
@@ -282,6 +282,9 @@ package org.as3commons.async.operation.impl {
 				addCompleteListener(completeHandler);
 				addErrorListener(errorHandler);
 
+				if (m_timeoutId > 0) {
+					stopTimeout();
+				}
 				// start the timeout
 				m_timeoutId = setTimeout(timeoutHandler, timeout);
 			}
@@ -289,9 +292,11 @@ package org.as3commons.async.operation.impl {
 
 		protected function stopTimeout():void {
 			clearTimeout(m_timeoutId);
+			m_timeoutId = 0;
 		}
 
 		protected function timeoutHandler():void {
+			stopTimeout();
 			m_timedOut = true;
 			dispatchTimeoutEvent();
 		}
