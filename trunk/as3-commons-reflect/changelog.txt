@@ -3,6 +3,11 @@ AS3COMMONS-REFLECT CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.6.1 (16.08.2012)
+-------------------------------------
+
+* member lookup now uses the QName as a key (otherwise members with different namespaces wouldn't get properly added)
+
 Changes in version 1.6.0 (22.03.2012)
 -------------------------------------
 

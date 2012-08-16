@@ -43,6 +43,9 @@ package org.as3commons.reflect {
 		// --------------------------------------------------------------------
 
 		private static const _cache:Object = {};
+		private static const PERIOD_CHAR:String = '.';
+		private static const UNDERSCORE_CHAR:String = '_';
+		private static const COLON_CHAR:String = ':';
 
 		// --------------------------------------------------------------------
 		//
@@ -155,6 +158,10 @@ package org.as3commons.reflect {
 
 		public function get qName():QName {
 			return new QName(_namespaceURI, _name);
+		}
+		
+		public function get memberKey():String {
+			return qName.toString().split(PERIOD_CHAR).join(UNDERSCORE_CHAR).split(COLON_CHAR).join(UNDERSCORE_CHAR);
 		}
 
 		// ----------------------------
