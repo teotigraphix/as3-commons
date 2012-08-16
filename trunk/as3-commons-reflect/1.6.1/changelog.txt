@@ -1,0 +1,145 @@
+AS3COMMONS-REFLECT CHANGELOG
+============================
+
+Note: dates are in DD.MM.YYYY format
+
+Changes in version 1.6.1 (16.08.2012)
+-------------------------------------
+
+* member lookup now uses the QName as a key (otherwise members with different namespaces wouldn't get properly added)
+
+Changes in version 1.6.0 (22.03.2012)
+-------------------------------------
+
+* Removed as3commons-logging dependency
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=94
+* Made metadata lookups case-insensitive again
+* Reintroduced the Parameter.index property, by way of decorating a cached BaseParameter. (issue https://code.google.com/p/as3-commons/issues/detail?id=99)
+* Fixed issue http://code.google.com/p/as3-commons/issues/detail?id=102
+* Fixed issue where declaringType was incorrectly set by the JSONTypeProvider
+* MethodInvoker now implements IEquals
+
+Changes in version 1.5 (23.09.2011)
+-----------------------------------
+
+* Updated to use as3commons-logging v2.6
+* Added improvements to the internal caching to allow for more speed and memory consumption improvements
+
+Changes in version 1.4.2 (04.08.2011)
+-----------------------------------
+
+* Updated to use as3commons-logging v2.5.1
+
+Changes in version 1.4.1 (19.06.2011)
+-----------------------------------
+
+* Fixed critical issue concerning illegal cache key names such as hasOwnProperty in member caching
+
+Changes in version 1.4 (19.06.2011)
+-----------------------------------
+
+* Removed the index property from the Parameter class, it is unnecessary because it can be derived from the array and makes caching more sufficient.
+* Added caching of Metadata, MetadataArgument, Accessor, Constant, Variable and Parameter instances to avoid duplicates which dramatically improves memory consumption.
+
+Changes in version 1.3.4 (30.01.2011)
+-----------------------------------
+
+* removed ClassUtils as it is now available in AS3Commons-Lang
+* renamed all references to "MetaData" to "Metadata"
+
+
+Changes in version 1.3.3.1 (21.12.2010)
+-------------------------------------
+
+* added optional namespace argument to Type.getMethod() and Type.getField() methods
+* fixed critical bug in type JSON reflection where only methods and accessors of the subclass were added to the type instead of all.
+
+
+Changes in version 1.3.3 (13.12.2010)
+-------------------------------------
+
+* added JSONTypeProvider implementation and enhanced Type to make use of it when the appropriate flash player is installed
+
+
+Changes in version 1.3.2 (10.12.2010)
+-------------------------------------
+
+* critical bugfix
+
+
+Changes in version 1.3.1 (29.08.2010)
+-------------------------------------
+
+Package org.as3commons.reflect
+* added support for type.getMetaDataContainers("MetadataName") to quickly retrieve all members that are decorated with specific metadata
+* added support for Type.alias property. When registerClassAlias() has been invoked for a Class, the value of this alias will be stored in the Type.alias property. This will not work if registerClassAlias() has been called AFTER the Type has been created already. In that case, call Type.clearCache() and retrieve the Type again.
+* added findClassMetadata() and findMetadataDeclaringClass() methods to MetadataUtils (thanks Andy Lewisohn)
+* added INamespaceOwner interface that is implemented by method and member classes
+* added support to MethodInvoker to invoke methods on an object in a custom namespace
+
+
+Changes in version 1.3 (17.05.2010)
+-----------------------------------
+
+Package org.as3commons.reflect
+* added extendsClasses property to Type which returns an Array of Classes that represent the inheritance order of the current Type
+* added optional applicationDomain arguments to new MetadataUtils methods
+* fixed ClassUtils.forName() call where no appropriate applicationDomain was passed in
+* fixed issue: http://code.google.com/p/as3-commons/issues/detail?id=21 (thanks Arnoud)
+
+
+Changes in version 1.2 (24.11.2009)
+-----------------------------------
+
+Package org.as3commons.reflect
+* added an optional ApplicationDomain argument to methods of Type
+* fixed Type.forName() so it does not throw ClassNotFoundError
+* commented out the debug log when creating a new class instance for resolving constructor arguments
+* added "properties" accessor to Type
+
+
+Changes in version 1.1 (12.09.2009)
+-----------------------------------
+
+Package org.as3commons.reflect
+* fixed "isReadable()" in Accessor
+* fixed "isWriteable()" in Accessor
+* added "readable" in Accessor
+* added "writeable" in Accessor
+* metadata of implemented interfaces is now available in Type instance
+* added "isInterface" in Type
+* fixed "isInterface" in ClasstUtils
+* moved ClassUtils to AS3Commons-Lang and as such is now deprecated in AS3Commons-Reflect
+
+
+Changes in version 1.0 (01.06.2009)
+-----------------------------------
+
+General
+* moved to AS3Commons-Reflect project
+
+
+Changes in version 1.0RC3 (01.05.2009)
+--------------------------------------
+
+Package as3reflect
+* introduced Constructor class and added support for it in Type
+* fixed "invoke" method on MethodInvoker to handle proxied methods correctly
+* fixed "hasMetaData" method in MetaDataContainer, always returned true
+* added "isInterface" method in ClassUtils
+* added "isAssignableFrom" method in ClassUtils
+* AbstractMember's constructor now takes "type" and "declaringType" as a string
+
+
+Changes in version 1.0RC2 (20.01.2009)
+--------------------------------------
+
+Package as3reflect
+* IMetaDataContainer.getMetaData() now returns an array of MetaData objects
+
+
+Changes in version 1.0RC1 (11.01.2009)
+--------------------------------------
+
+General
+* initial release
