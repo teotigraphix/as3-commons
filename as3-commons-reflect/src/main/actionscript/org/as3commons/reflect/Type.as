@@ -87,7 +87,7 @@ package org.as3commons.reflect {
 			PRIVATE.name = PRIVATE_NAME;
 		}
 
-		private static const MEMBER_PROPERTY_NAME:String = 'name';
+		private static const MEMBER_PROPERTY_NAME:String = 'memberKey';
 		public static const VOID_NAME:String = "void";
 		private static const UNTYPED_NAME:String = "*";
 		private static const PRIVATE_NAME:String = 'private';
