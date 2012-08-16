@@ -6,6 +6,7 @@ Note: dates are in DD.MM.YYYY format
 Changes in version 1.2 (??.??.2012)
 -------------------------------------
 
+* Members with the same name but different namespaces weren't correctly reported by the bytecode reflection. (Thanks Drew)
 * Specific error is thrown after calls to any of the build*() methods in the AbcBuilder when nothing has been defined yet.
 * Specific error is thrown after calls to loadProxyClasses() and generateProxyClasses() when no proxies have been defined yet.
 * Fixed proxying of interfaces that extend other interfaces
