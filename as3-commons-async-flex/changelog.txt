@@ -8,3 +8,9 @@ Changes in version 1.0.0-RC.2 (22.03.2011)
 ------------------------------------------
 
 * Initial release, moved from AS3Commons Async subproject
+
+(22.08.2012)
+------------
+
+* Replaced all abstract rpc service operations by the AbstractServiceOperation.
+
