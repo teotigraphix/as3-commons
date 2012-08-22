@@ -15,37 +15,55 @@
  */
 package org.as3commons.async.rpc.impl.soap {
 
-	import mx.rpc.AsyncToken;
-	import mx.rpc.Responder;
-	import mx.rpc.soap.Operation;
-	import mx.rpc.soap.WebService;
+import mx.rpc.AbstractOperation;
+import mx.rpc.soap.ISOAPDecoder;
+import mx.rpc.soap.ISOAPEncoder;
+import mx.rpc.soap.Operation;
+import mx.rpc.soap.WebService;
 
-	/**
-	 * An <code>IOperation</code> that invokes a method on a SOAP based webservice.
-	 * @author Roland Zwaga
-	 */
-	public class WebServiceOperation extends AbstractWebServiceOperation {
+import org.as3commons.async.rpc.impl.AbstractServiceOperation;
 
-		/**
-		 * Creates a new <code>WebServiceOperation</code> instance.
-		 * @param webService
-		 * @param methodName
-		 * @param parameters
-		 */
-		public function WebServiceOperation(webService:WebService, methodName:String, parameters:Array=null) {
-			super(webService, methodName, parameters);
-			invokeRemoteMethod();
-		}
+/**
+ * An <code>IOperation</code> that invokes a method on a SOAP based webservice.
+ * @author Roland Zwaga
+ */
+public class WebServiceOperation extends AbstractServiceOperation {
 
-		override protected function invokeRemoteMethod():void {
+    /**
+     * Creates a new <code>WebServiceOperation</code> instance.
+     * @param webService
+     * @param methodName
+     * @param parameters
+     */
+    public function WebServiceOperation(webService:WebService, methodName:String, parameters:Array = null, encoder:ISOAPEncoder = null, decoder:ISOAPDecoder = null) {
+        super(webService, methodName, parameters);
+        _encoder = encoder;
+        _decoder = decoder;
+    }
 
-			var operation:Operation = Operation(webService.getOperation(methodName));
-			operation.arguments = parameters;
+    private var _encoder:ISOAPEncoder;
+    protected function get encoder():ISOAPEncoder {
+        return _encoder;
+    }
 
-			var token:AsyncToken = operation.send();
-			var responder:Responder = new Responder(resultHandler, faultHandler);
-			token.addResponder(responder);
-		}
+    private var _decoder:ISOAPDecoder;
+    protected function get decoder():ISOAPDecoder {
+        return _decoder;
+    }
 
-	}
+    protected function get webService():WebService {
+        return super.service as WebService;
+    }
+
+    override protected function getOperation():AbstractOperation {
+        var result:AbstractOperation = super.getOperation();
+
+        if (result is Operation) {
+            Operation(result).encoder = encoder;
+            Operation(result).decoder = decoder;
+        }
+
+        return result;
+    }
+}
 }

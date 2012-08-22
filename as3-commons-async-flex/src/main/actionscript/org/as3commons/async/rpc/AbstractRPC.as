@@ -14,81 +14,83 @@
  * limitations under the License.
  */
 package org.as3commons.async.rpc {
-	import flash.errors.IllegalOperationError;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.events.ResultEvent;
-	import org.as3commons.async.operation.impl.AbstractOperation;
+import flash.errors.IllegalOperationError;
 
-	/**
-	 * Abstract base class for RPC operations.
-	 *
-	 * @author Roland Zwaga
-	 */
-	public class AbstractRPC extends AbstractOperation {
+import mx.rpc.events.FaultEvent;
+import mx.rpc.events.ResultEvent;
 
-		// --------------------------------------------------------------------
-		//
-		// Constructor
-		//
-		// --------------------------------------------------------------------
+import org.as3commons.async.operation.impl.AbstractOperation;
 
-		public function AbstractRPC(methodName:String, parameters:Array=null) {
-			super();
-			initAbstractRPC(methodName, parameters);
-		}
+/**
+ * Abstract base class for RPC operations.
+ *
+ * @author Roland Zwaga
+ */
+public class AbstractRPC extends AbstractOperation {
 
-		private var _methodName:String;
-		private var _parameters:Array;
+    // --------------------------------------------------------------------
+    //
+    // Constructor
+    //
+    // --------------------------------------------------------------------
 
-		// --------------------------------------------------------------------
-		//
-		// Public Properties
-		//
-		// --------------------------------------------------------------------
+    public function AbstractRPC(methodName:String, parameters:Array = null) {
+        super();
+        initAbstractRPC(methodName, parameters);
+    }
 
-		public function get methodName():String {
-			return _methodName;
-		}
+    private var _methodName:String;
+    private var _parameters:Array;
 
-		public function get parameters():Array {
-			return _parameters;
-		}
+    // --------------------------------------------------------------------
+    //
+    // Public Properties
+    //
+    // --------------------------------------------------------------------
 
-		/**
-		 * Assigns the <code>FaultEvent</code> value to the <code>error</code> property
-		 * and dispatches the <code>OperationEvent.ERROR</code> event.
-		 * @param event The specified <code>FaultEvent</code>
-		 * @see org.as3commons.async.operation.OperationEvent#ERROR OperationEvent.ERROR
-		 */
-		protected function faultHandler(event:FaultEvent):void {
-			error = event;
-			dispatchErrorEvent();
-		}
+    public function get methodName():String {
+        return _methodName;
+    }
 
-		// --------------------------------------------------------------------
-		//
-		// Protected Methods
-		//
-		// --------------------------------------------------------------------
+    public function get parameters():Array {
+        return _parameters;
+    }
 
-		protected function invokeRemoteMethod():void {
-			throw new IllegalOperationError("invokeRemoteMethod not implemented in base class");
-		}
+    /**
+     * Assigns the <code>FaultEvent</code> value to the <code>error</code> property
+     * and dispatches the <code>OperationEvent.ERROR</code> event.
+     * @param event The specified <code>FaultEvent</code>
+     * @see org.as3commons.async.operation.OperationEvent#ERROR OperationEvent.ERROR
+     */
+    protected function faultHandler(event:FaultEvent):void {
+        error = event;
+        dispatchErrorEvent();
+    }
 
-		/**
-		 * Assigns the <code>ResultEvent.result</code> value to the <code>result</code> property
-		 * and dispatches the <code>OperationEvent.COMPLETE</code> event.
-		 * @param event The specified <code>ResultEvent</code>.
-		 * @see org.as3commons.async.operation.OperationEvent#COMPLETE OperationEvent.COMPLETE
-		 */
-		protected function resultHandler(event:ResultEvent):void {
-			result = event.result;
-			dispatchCompleteEvent();
-		}
+    // --------------------------------------------------------------------
+    //
+    // Protected Methods
+    //
+    // --------------------------------------------------------------------
 
-		private function initAbstractRPC(methodName:String, parameters:Array):void {
-			_methodName = methodName;
-			_parameters = parameters;
-		}
-	}
+    protected function invokeRemoteMethod():void {
+        throw new IllegalOperationError("invokeRemoteMethod not implemented in base class");
+    }
+
+    /**
+     * Assigns the <code>ResultEvent.result</code> value to the <code>result</code> property
+     * and dispatches the <code>OperationEvent.COMPLETE</code> event.
+     * @param event The specified <code>ResultEvent</code>.
+     * @see org.as3commons.async.operation.OperationEvent#COMPLETE OperationEvent.COMPLETE
+     */
+    protected function resultHandler(event:ResultEvent):void {
+        result = event.result;
+        dispatchCompleteEvent();
+    }
+
+    private function initAbstractRPC(methodName:String, parameters:Array):void {
+        _methodName = methodName;
+        _parameters = parameters;
+    }
+}
 }

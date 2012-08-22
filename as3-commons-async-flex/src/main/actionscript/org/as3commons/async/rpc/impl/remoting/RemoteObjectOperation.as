@@ -15,59 +15,33 @@
  */
 package org.as3commons.async.rpc.impl.remoting {
 
-	import mx.rpc.AsyncToken;
-	import mx.rpc.Responder;
-	import mx.rpc.remoting.Operation;
-	import mx.rpc.remoting.RemoteObject;
+import mx.rpc.remoting.RemoteObject;
 
-	import org.as3commons.lang.Assert;
+import org.as3commons.async.rpc.impl.AbstractServiceOperation;
+import org.as3commons.lang.Assert;
 
-	/**
-	 * An <code>IOperation</code> that invokes a method on a remote object.
-	 * @author Christophe Herreman
-	 */
-	public class RemoteObjectOperation extends AbstractRemoteObjectOperation {
+/**
+ * An <code>IOperation</code> that invokes a method on a remote object.
+ * @author Christophe Herreman
+ */
+public class RemoteObjectOperation extends AbstractServiceOperation {
 
-		// --------------------------------------------------------------------
-		//
-		// Constructor
-		//Operati
-		// --------------------------------------------------------------------
+    /**
+     * Creates a new <code>RemoteObjectOperation</code> instance.
+     * @param remoteObject
+     * @param methodName
+     * @param parameters
+     */
+    public function RemoteObjectOperation(remoteObject:RemoteObject, methodName:String, parameters:Array = null) {
+        Assert.notNull(remoteObject, "The remote object is required");
+        Assert.hasText(methodName, "The method name must not be null or an empty string");
 
-		/**
-		 * Creates a new <code>RemoteObjectOperation</code> instance.
-		 * @param remoteObject
-		 * @param methodName
-		 * @param parameters
-		 */
-		public function RemoteObjectOperation(remoteObject:RemoteObject, methodName:String, parameters:Array=null) {
-			Assert.notNull(remoteObject, "The remote object is required");
-			Assert.hasText(methodName, "The method name must not be null or an empty string");
+        super(remoteObject, methodName, parameters);
+    }
 
-			super(remoteObject, methodName, parameters);
+    protected function get remoteObject():RemoteObject {
+        return super.service as RemoteObject;
+    }
 
-			invokeRemoteMethod();
-		}
-
-		// --------------------------------------------------------------------
-		//
-		// Protected Methods
-		//
-		// --------------------------------------------------------------------
-
-		/**
-		 * Retrieves the <code>Operation</code> from the <code>RemoteObject</code> instances,
-		 * assigns the parameters, calls the <code>Operation.send()</code> and adds a <code>Responder</code>
-		 * consisting of the <code>resultHandler</code> and <code>faultHandler</code> methods.
-		 */
-		override protected function invokeRemoteMethod():void {
-			var operation:Operation = Operation(remoteObject.getOperation(methodName));
-			operation.arguments = parameters;
-
-			var token:AsyncToken = operation.send();
-			var responder:Responder = new Responder(resultHandler, faultHandler);
-			token.addResponder(responder);
-		}
-
-	}
+}
 }

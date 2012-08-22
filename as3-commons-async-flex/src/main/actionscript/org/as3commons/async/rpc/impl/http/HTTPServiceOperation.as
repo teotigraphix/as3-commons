@@ -15,39 +15,30 @@
  */
 package org.as3commons.async.rpc.impl.http {
 
-	import mx.rpc.AsyncToken;
-	import mx.rpc.Responder;
-	import mx.rpc.http.HTTPMultiService;
-	import mx.rpc.http.HTTPService;
-	import mx.rpc.http.Operation;
+import mx.rpc.http.HTTPMultiService;
 
-	/**
-	 * An <code>IOperation</code> that invokes a method on a HTTP webservice.
-	 * @author Roland Zwaga
-	 */
-	public class HTTPServiceOperation extends AbstractHTTPServiceOperation {
+import org.as3commons.async.rpc.impl.AbstractServiceOperation;
 
-		/**
-		 * Creates a new <code>HTTPServiceOperation</code> instance.
-		 * @param httpService
-		 * @param methodName
-		 * @param parameters
-		 *
-		 */
-		public function HTTPServiceOperation(httpService:HTTPMultiService, methodName:String, parameters:Array=null) {
-			super(httpService, methodName, parameters);
-			invokeRemoteMethod();
-		}
+/**
+ * An <code>IOperation</code> that invokes a method on a HTTP webservice.
+ * @author Roland Zwaga
+ */
+public class HTTPServiceOperation extends AbstractServiceOperation {
 
-		override protected function invokeRemoteMethod():void {
+    /**
+     * Creates a new <code>HTTPServiceOperation</code> instance.
+     * @param httpService
+     * @param methodName
+     * @param parameters
+     */
+    public function HTTPServiceOperation(httpService:HTTPMultiService, methodName:String, parameters:Array = null) {
+        super(httpService, methodName, parameters);
+    }
 
-			var operation:Operation = Operation(httpService.getOperation(methodName));
-			operation.arguments = parameters;
+    protected function get httpService():HTTPMultiService {
+        return super.service as HTTPMultiService;
+    }
 
-			var token:AsyncToken = operation.send();
-			var responder:Responder = new Responder(resultHandler, faultHandler);
-			token.addResponder(responder);
-		}
 
-	}
+}
 }
