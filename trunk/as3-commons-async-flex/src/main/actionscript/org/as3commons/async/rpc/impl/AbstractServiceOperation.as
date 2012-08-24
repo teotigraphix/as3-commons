@@ -4,11 +4,11 @@ import mx.rpc.AbstractService;
 import mx.rpc.AsyncToken;
 import mx.rpc.Responder;
 
-import org.as3commons.async.ICancelable;
+import org.as3commons.async.operation.ICancelableOperation;
 import org.as3commons.async.rpc.AbstractRPC;
 import org.as3commons.lang.Assert;
 
-public class AbstractServiceOperation extends AbstractRPC implements ICancelable {
+public class AbstractServiceOperation extends AbstractRPC implements ICancelableOperation {
 
     private var _operation:AbstractOperation;
     private var _token:AsyncToken;
