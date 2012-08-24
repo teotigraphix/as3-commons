@@ -15,56 +15,56 @@
  */
 package org.as3commons.async.operation {
 
-	/**
-	 * Dispatched after the current <code>IProgressOperation</code> received a progress update.
-	 * @eventType org.as3commons.async.operation.OperationEvent.PROGRESS OperationEvent.PROGRESS
-	 */
-	[Event(name = "operationProgress", type = "org.as3commons.async.operation.OperationEvent")]
-	/**
-	 * Subinterface of <code>IOperation</code> that contains information about the progress of an operation.
-	 *
-	 * @author Christophe Herreman
-	 */
-	public interface IProgressOperation extends IOperation {
+/**
+ * Dispatched after the current <code>IProgressOperation</code> received a progress update.
+ * @eventType org.as3commons.async.operation.OperationEvent.PROGRESS OperationEvent.PROGRESS
+ */
+[Event(name="operationProgress", type="org.as3commons.async.operation.event.OperationEvent")]
+/**
+ * Subinterface of <code>IOperation</code> that contains information about the progress of an operation.
+ *
+ * @author Christophe Herreman
+ */
+public interface IProgressOperation extends IOperation {
 
-		// --------------------------------------------------------------------
-		//
-		// Properties
-		//
-		// --------------------------------------------------------------------
+    // --------------------------------------------------------------------
+    //
+    // Properties
+    //
+    // --------------------------------------------------------------------
 
-		/**
-		 * The progress of this operation.
-		 *
-		 * @return the progress of this operation
-		 */
-		function get progress():uint;
+    /**
+     * The progress of this operation.
+     *
+     * @return the progress of this operation
+     */
+    function get progress():uint;
 
-		/**
-		 * The total amount of progress this operation should make before being done.
-		 *
-		 * @return the total amount of progress this operation should make before being done
-		 */
-		function get total():uint;
+    /**
+     * The total amount of progress this operation should make before being done.
+     *
+     * @return the total amount of progress this operation should make before being done
+     */
+    function get total():uint;
 
-		// --------------------------------------------------------------------
-		//
-		// Methods
-		//
-		// --------------------------------------------------------------------
+    // --------------------------------------------------------------------
+    //
+    // Methods
+    //
+    // --------------------------------------------------------------------
 
-		/**
-		 * Convenience method for adding a listener to the OperationEvent.PROGRESS event.
-		 *
-		 * @param listener the event handler function
-		 */
-		function addProgressListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void;
+    /**
+     * Convenience method for adding a listener to the OperationEvent.PROGRESS event.
+     *
+     * @param listener the event handler function
+     */
+    function addProgressListener(listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void;
 
-		/**
-		 * Convenience method for removing a listener from the OperationEvent.PROGRESS event.
-		 *
-		 * @param listener the event handler function
-		 */
-		function removeProgressListener(listener:Function, useCapture:Boolean = false):void;
-	}
+    /**
+     * Convenience method for removing a listener from the OperationEvent.PROGRESS event.
+     *
+     * @param listener the event handler function
+     */
+    function removeProgressListener(listener:Function, useCapture:Boolean = false):void;
+}
 }
