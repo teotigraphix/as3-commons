@@ -2,7 +2,7 @@
 <document>
     <properties>
         <title>Welcome to as3commons-reflect</title>
-        <author email="mp@yoolab.com">Martino Piccinato</author>
+        <author email="scab@dds.nl">Roland Zwaga</author>
     </properties>
     <body>
         <section name="Welcome to as3-commons-reflect">
@@ -10,11 +10,11 @@
             <div id="downloadbox">
                 <h5>Get latest stable</h5>
                 <p>
-                    <a href="https://as3-commons.googlecode.com/files/as3commons-reflect-1.6.0.swc">
+                    <a href="https://as3-commons.googlecode.com/files/as3commons-reflect-1.6.2.swc">
                         <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
                         Download
                     </a>
-                    latest stable (1.6.0)
+                    latest stable (1.6.2)
                 </p>
                 <br/>
                 <h5>Get lastest development snapshot</h5>
