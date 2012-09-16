@@ -158,13 +158,13 @@ package org.as3commons.bytecode.proxy {
 		 *
 		 * @param accessorName
 		 */
-		function proxyInterfaceAccessor(accessorName:String, declaringType:ByteCodeType):void;
+		function proxyInterfaceAccessor(accessorName:String, namespace:String, declaringType:ByteCodeType):void;
 
 		/**
 		 *
 		 * @param methodName
 		 */
-		function proxyInterfaceMethod(methodName:String, declaringType:ByteCodeType):void;
+		function proxyInterfaceMethod(methodName:String, nameSpace:String, declaringType:ByteCodeType):void;
 
 		/**
 		 * Marks the specified method and optional namespace for proxying.

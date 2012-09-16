@@ -60,7 +60,7 @@ package org.as3commons.bytecode.reflect {
 			assertEquals(1, type.methods.length);
 			assertEquals(1, type.accessors.length);
 
-			bm = type.getMethod("testMethod") as ByteCodeMethod;
+			bm = type.getMethod("testMethod", type.fullName) as ByteCodeMethod;
 			assertEquals("interfaces:ITestInterface", bm.scopeName);
 
 			var classNames:Array = ByteCodeType.interfaceLookup["interfaces.ITestInterface"];
@@ -98,7 +98,7 @@ package org.as3commons.bytecode.reflect {
 			assertEquals(1, type.methods.length);
 			assertEquals(1, type.accessors.length);
 
-			bm = type.getMethod("testMethod") as ByteCodeMethod;
+			bm = type.getMethod("testMethod", type.fullName) as ByteCodeMethod;
 			assertEquals("interfaces:ITestInterface", bm.scopeName);
 
 			var classNames:Array = ByteCodeType.interfaceLookup["interfaces.ITestInterface"];

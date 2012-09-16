@@ -236,12 +236,12 @@ package org.as3commons.bytecode.proxy.impl {
 			_accessors[_accessors.length] = new MemberInfo(accessorName, namespace);
 		}
 
-		public function proxyInterfaceAccessor(accessorName:String, declaringType:ByteCodeType):void {
-			_interfaceAccessors[_interfaceAccessors.length] = new MemberInfo(accessorName, null, declaringType);
+		public function proxyInterfaceAccessor(accessorName:String, namespace:String, declaringType:ByteCodeType):void {
+			_interfaceAccessors[_interfaceAccessors.length] = new MemberInfo(accessorName, namespace, declaringType);
 		}
 
-		public function proxyInterfaceMethod(methodName:String, declaringType:ByteCodeType):void {
-			_interfaceMethods[_interfaceMethods.length] = new MemberInfo(methodName, null, declaringType);
+		public function proxyInterfaceMethod(methodName:String, namespace:String, declaringType:ByteCodeType):void {
+			_interfaceMethods[_interfaceMethods.length] = new MemberInfo(methodName, namespace, declaringType);
 		}
 
 		/**
