@@ -31,9 +31,9 @@ package org.as3commons.reflect {
 	 * @author Andrew Lewisohn
 	 */
 	public class Method extends MetadataContainer implements INamespaceOwner {
-		private static const PERIOD_CHAR:String = '.';
-		private static const UNDERSCORE_CHAR:String = '_';
-		private static const COLON_CHAR:String = ':';
+		public static const PERIOD_CHAR:String = '.';
+		public static const UNDERSCORE_CHAR:String = '_';
+		public static const COLON_CHAR:String = ':';
 
 		// -------------------------------------------------------------------------
 		//

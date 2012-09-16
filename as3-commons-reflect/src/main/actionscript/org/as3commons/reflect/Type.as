@@ -23,7 +23,7 @@ package org.as3commons.reflect {
 
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
-
+	
 	import org.as3commons.lang.ClassNotFoundError;
 	import org.as3commons.lang.ClassUtils;
 	import org.as3commons.lang.HashArray;
@@ -661,21 +661,8 @@ package org.as3commons.reflect {
 		 * @param name the name of the method
 		 */
 		public function getMethod(name:String, ns:String=null):Method {
-			if (ns == null) {
-				return _methods.get(name);
-			} else {
-				var mthds:Array = _methods.getArray();
-				var len:int = mthds.length;
-				var method:Method;
-				var i:int;
-				for (i = 0; i < len; ++i) {
-					method = mthds[i];
-					if ((method.name == name) && (method.namespaceURI == ns)) {
-						return method;
-					}
-				}
-				return null;
-			}
+			var qName:QName = new QName(ns, name);
+			return _methods.get(qName.toString().split(Method.PERIOD_CHAR).join(Method.UNDERSCORE_CHAR).split(Method.COLON_CHAR).join(Method.UNDERSCORE_CHAR));
 		}
 
 		/**
@@ -689,21 +676,8 @@ package org.as3commons.reflect {
 			if (_fields == null) {
 				createFieldsHashArray();
 			}
-			if ((ns == null) || (ns.length == 0)) {
-				return _fields.get(name);
-			} else {
-				var flds:Array = _fields.getArray();
-				var len:int = flds.length;
-				var i:int;
-				var field:Field;
-				for (i = 0; i < len; ++i) {
-					field = flds[i];
-					if ((field.name == name) && (field.namespaceURI == ns)) {
-						return field;
-					}
-				}
-				return null;
-			}
+			var qName:QName = new QName(ns, name);
+			return _fields.get(qName.toString().split(Method.PERIOD_CHAR).join(Method.UNDERSCORE_CHAR).split(Method.COLON_CHAR).join(Method.UNDERSCORE_CHAR));
 		}
 
 		private var _metadataLookup:Object;
