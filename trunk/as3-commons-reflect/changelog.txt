@@ -3,6 +3,11 @@ AS3COMMONS-REFLECT CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.6.2 (16.09.2012)
+-------------------------------------
+
+* Bug fix in the member lookup logic
+
 Changes in version 1.6.1 (16.08.2012)
 -------------------------------------
 
