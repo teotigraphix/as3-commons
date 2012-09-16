@@ -50,6 +50,7 @@ package org.as3commons.bytecode.proxy.impl {
 	import org.as3commons.bytecode.testclasses.EventDispatcherSubclass;
 	import org.as3commons.bytecode.testclasses.EventDispatcherSubclass2;
 	import org.as3commons.bytecode.testclasses.EventDispatcherSubclass3;
+	import org.as3commons.bytecode.testclasses.FlashProxyWithOverrides;
 	import org.as3commons.bytecode.testclasses.Flavour;
 	import org.as3commons.bytecode.testclasses.IEventDispatcherEx;
 	import org.as3commons.bytecode.testclasses.IFlavour;
@@ -145,6 +146,19 @@ package org.as3commons.bytecode.proxy.impl {
 		protected function createProxy(event:Event):void {
 			_proxyFactory.removeEventListener(Event.COMPLETE, createProxy);
 			assertTrue(true);
+		}
+		
+		[Test]
+		public function testProxyFlashProxyWithOverrides():void {
+			var classProxyInfo:IClassProxyInfo = _proxyFactory.defineProxy(FlashProxyWithOverrides, null, _applicationDomain);
+			_proxyFactory.generateProxyClasses();
+			_proxyFactory.addEventListener(Event.COMPLETE, flashProxyTestComplete);
+			_proxyFactory.loadProxyClasses();
+		}
+		
+		protected function flashProxyTestComplete(event:Event):void {
+			var proxy:FlashProxyWithOverrides = _proxyFactory.createProxy(FlashProxyWithOverrides);
+			assertNotNull(proxy);
 		}
 
 		[Test]

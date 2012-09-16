@@ -17,13 +17,13 @@ package org.as3commons.bytecode.reflect {
 	import flash.system.ApplicationDomain;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
-
+	
 	import org.as3commons.bytecode.abc.BaseMultiname;
 	import org.as3commons.bytecode.abc.IConstantPool;
+	import org.as3commons.bytecode.abc.InstanceInfo;
 	import org.as3commons.bytecode.abc.LNamespace;
 	import org.as3commons.bytecode.abc.Multiname;
 	import org.as3commons.bytecode.abc.MultinameG;
-	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.QualifiedName;
 	import org.as3commons.bytecode.abc.SimpleConstantPool;
 	import org.as3commons.bytecode.abc.TraitInfo;

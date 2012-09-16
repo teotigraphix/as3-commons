@@ -79,7 +79,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-reflect</artifactId>
-			<version>1.6.1</version>
+			<version>1.6.2</version>
 			<type>swc</type>
 			<scope>merged</scope>
 		</dependency>

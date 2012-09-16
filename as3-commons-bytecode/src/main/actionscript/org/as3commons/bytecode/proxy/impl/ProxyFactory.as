@@ -770,7 +770,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			for each (var byteCodeAccessor:ByteCodeAccessor in type.accessors) {
 				if ((byteCodeAccessor.declaringType.name != null) && (byteCodeAccessor.declaringType.name != OBJECT_DECLARINGTYPE_NAME)) {
-					classProxyInfo.proxyInterfaceAccessor(byteCodeAccessor.name, type);
+					classProxyInfo.proxyInterfaceAccessor(byteCodeAccessor.name, byteCodeAccessor.namespaceURI, type);
 					LOGGER.debug("Added interface accessor '{0}' to be proxied", [byteCodeAccessor.name]);
 				}
 			}
@@ -797,7 +797,7 @@ package org.as3commons.bytecode.proxy.impl {
 			}
 			for each (var byteCodeMethod:ByteCodeMethod in type.methods) {
 				if ((byteCodeMethod.declaringType.name != null) && (byteCodeMethod.declaringType.name != OBJECT_DECLARINGTYPE_NAME)) {
-					classProxyInfo.proxyInterfaceMethod(byteCodeMethod.name, type);
+					classProxyInfo.proxyInterfaceMethod(byteCodeMethod.name, byteCodeMethod.namespaceURI, type);
 					LOGGER.debug("Added interface method '{0}' to be proxied", [byteCodeMethod.name]);
 				}
 			}
