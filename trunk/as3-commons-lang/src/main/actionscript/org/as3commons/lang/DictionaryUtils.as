@@ -14,60 +14,77 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
-	
-	import flash.utils.Dictionary;
-	
+
+import flash.utils.Dictionary;
+
+/**
+ * Contains utilities for working with Dictionaries.
+ *
+ * @author Christophe Herreman
+ */
+public final class DictionaryUtils {
+
 	/**
-	 * Contains utilities for working with Dictionaries.
+	 * Returns an array with the keys of the dictionary.
 	 *
-	 * @author Christophe Herreman
 	 */
-	public final class DictionaryUtils {
-		
-		/**
-		 * Returns an array with the keys of the dictionary.
-		 *
-		 */
-		public static function getKeys(dictionary:Dictionary):Array {
-			return ObjectUtils.getKeys(dictionary);
-		}
-		
-		/**
-		 * Check whether the given dictionary contains the given key.
-		 *
-		 * @param dictionary the dictionary to check for a key
-		 * @param key the key to look up in the dictionary
-		 * @return <code>true</code> if the dictionary contains the given key, <code>false</code> if not
-		 */
-		public static function containsKey(dictionary:Dictionary, key:Object):Boolean {
-			var result:Boolean = false;
-			
-			for (var k:*in dictionary) {
-				if (key === k) {
-					result = true;
-					break;
-				}
+	public static function getKeys(dictionary:Dictionary):Array {
+		return ObjectUtils.getKeys(dictionary);
+	}
+
+	/**
+	 * Check whether the given dictionary contains the given key.
+	 *
+	 * @param dictionary the dictionary to check for a key
+	 * @param key the key to look up in the dictionary
+	 * @return <code>true</code> if the dictionary contains the given key, <code>false</code> if not
+	 */
+	public static function containsKey(dictionary:Dictionary, key:Object):Boolean {
+		var result:Boolean = false;
+
+		for (var k:*in dictionary) {
+			if (key === k) {
+				result = true;
+				break;
 			}
-			return result;
 		}
-		
-		/**
-		 * Check whether the given dictionary contains the given value.
-		 *
-		 * @param dictionary the dictionary to check for a value
-		 * @param value the value to look up in the dictionary
-		 * @return <code>true</code> if the dictionary contains the given value, <code>false</code> if not
-		 */
-		public static function containsValue(dictionary:Dictionary, value:Object):Boolean {
-			var result:Boolean = false;
-			
-			for each (var i:*in dictionary) {
-				if (i === value) {
-					result = true;
-					break;
-				}
+		return result;
+	}
+
+	/**
+	 * Check whether the given dictionary contains the given value.
+	 *
+	 * @param dictionary the dictionary to check for a value
+	 * @param value the value to look up in the dictionary
+	 * @return <code>true</code> if the dictionary contains the given value, <code>false</code> if not
+	 */
+	public static function containsValue(dictionary:Dictionary, value:Object):Boolean {
+		var result:Boolean = false;
+
+		for each (var i:*in dictionary) {
+			if (i === value) {
+				result = true;
+				break;
 			}
-			return result;
+		}
+		return result;
+	}
+
+	/**
+	 * Deletes the given keys from the given dictionary
+	 *
+	 * @param dictionary The Dictionary to delete the keys from
+	 * @param keys The keys to be deleted
+	 */
+	public static function deleteKeys(dictionary:Dictionary, keys:Array):void {
+		for each (var key:Object in keys) {
+			deleteKey(dictionary, key);
 		}
 	}
+
+	private static function deleteKey(dictionary:Dictionary, key:*):void {
+		delete dictionary[key];
+	}
+
+}
 }
