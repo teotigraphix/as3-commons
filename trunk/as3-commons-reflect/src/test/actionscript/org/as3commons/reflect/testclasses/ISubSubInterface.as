@@ -17,8 +17,7 @@ package org.as3commons.reflect.testclasses {
 	
 	/**
 	 *
-	 * @author rolandzwaga
-	 * @productionversion SpringActionscript 2.0
+	 * @author Roland Zwaga
 	 */
 	public interface ISubSubInterface extends ISubInterface{
 		
