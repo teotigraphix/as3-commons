@@ -241,7 +241,7 @@ public class MyInterceptorFactory:IFactory {
 	<div class="source"><pre>var proxyFactory:IProxyFactory = new ProxyFactory();
 //Note: we don't use the IClassProxyInfo instance returned by the defineProxy method
 //since we want all members (one method in this case) to be proxied:
-proxyFactory.defineProxy(TracingInterceptor, BasicMethodInvocationInterceptor, _applicationDomain);
+proxyFactory.defineProxy(MyBusinessObject, BasicMethodInvocationInterceptor, _applicationDomain);
 proxyFactory.generateProxyClasses();
 proxyFactory.addEventListener(Event.COMPLETE, proxiesLoadedHandler);
 proxyFactory.loadProxyClasses();
