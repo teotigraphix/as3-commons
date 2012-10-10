@@ -282,8 +282,8 @@ package org.as3commons.zip {
 		 * @param index The index of the file to retrieve
 		 * @return A reference to a ZipFile object
 		 */
-		public function getFileAt(index:uint):ZipFile {
-			return filesList ? filesList[index] as ZipFile : null;
+		public function getFileAt(index:uint):IZipFile {
+			return filesList ? filesList[index] as IZipFile : null;
 		}
 
 		/**
@@ -292,8 +292,8 @@ package org.as3commons.zip {
 		 * @param name The filename of the file to retrieve
 		 * @return A reference to a ZipFile object
 		 */
-		public function getFileByName(name:String):ZipFile {
-			return filesDict[name] ? filesDict[name] as ZipFile : null;
+		public function getFileByName(name:String):IZipFile {
+			return filesDict[name] ? filesDict[name] as IZipFile : null;
 		}
 
 		/**
@@ -392,9 +392,9 @@ package org.as3commons.zip {
 		 * @param index The index
 		 * @return A reference to the removed ZipFile object
 		 */
-		public function removeFileAt(index:uint):ZipFile {
+		public function removeFileAt(index:uint):IZipFile {
 			if (filesList != null && filesDict != null && index < filesList.length) {
-				var file:ZipFile = filesList[index] as ZipFile;
+				var file:IZipFile = filesList[index] as IZipFile;
 				if (file != null) {
 					filesList.splice(index, 1);
 					delete filesDict[file.filename];

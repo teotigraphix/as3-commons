@@ -31,12 +31,12 @@ package org.as3commons.zip {
 		function addFileFromString(name:String, content:String, charset:String="utf-8", doCompress:Boolean=true):ZipFile;
 		function addFileFromStringAt(index:uint, name:String, content:String, charset:String="utf-8", doCompress:Boolean=true):ZipFile;
 		function close():void;
-		function getFileAt(index:uint):ZipFile;
-		function getFileByName(name:String):ZipFile;
+		function getFileAt(index:uint):IZipFile;
+		function getFileByName(name:String):IZipFile;
 		function getFileCount():uint;
 		function load(request:URLRequest):void;
 		function loadBytes(bytes:ByteArray):void;
-		function removeFileAt(index:uint):ZipFile;
+		function removeFileAt(index:uint):IZipFile;
 		function serialize(stream:IDataOutput, includeAdler32:Boolean=false):void;
 	}
 }
