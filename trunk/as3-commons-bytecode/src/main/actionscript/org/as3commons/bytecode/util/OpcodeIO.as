@@ -34,6 +34,9 @@ package org.as3commons.bytecode.util {
 	import org.as3commons.bytecode.abc.enum.Opcode;
 	import org.as3commons.bytecode.emit.asm.ClassInfoReference;
 	import org.as3commons.lang.StringUtils;
+	CONFIG::debug {
+		import org.as3commons.lang.Assert;
+	}
 
 	/**
 	 *
