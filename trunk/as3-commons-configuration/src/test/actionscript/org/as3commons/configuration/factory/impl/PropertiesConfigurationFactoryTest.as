@@ -13,25 +13,25 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.configuration.reader.impl {
+package org.as3commons.configuration.factory.impl {
 	import org.flexunit.asserts.assertTrue;
 	
 
-	public class ConfigurationReaderTest {
-		private var _reader:ConfigurationReader;
+	public class PropertiesConfigurationFactoryTest {
+		private var _factory:PropertiesConfigurationFactory;
 
-		public function ConfigurationReaderTest() {
+		public function PropertiesConfigurationFactoryTest() {
 			super();
 		}
 
 		[Before]
 		public function setUp():void {
-			_reader = new ConfigurationReader();
+			_factory = new PropertiesConfigurationFactory();
 		}
 
 		[After]
 		public function tearDown():void {
-			_reader = null;
+			_factory = null;
 		}
 		
 		[Test]
