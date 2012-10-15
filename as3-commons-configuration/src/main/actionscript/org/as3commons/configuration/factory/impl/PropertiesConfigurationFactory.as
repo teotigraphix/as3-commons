@@ -13,19 +13,19 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.configuration.reader.impl {
+package org.as3commons.configuration.factory.impl {
 
 	import flash.utils.ByteArray;
 	
 	import org.as3commons.configuration.IConfiguration;
 	import org.as3commons.configuration.impl.Configuration;
-	import org.as3commons.configuration.reader.IConfigurationReader;
+	import org.as3commons.configuration.factory.IConfigurationFactory;
 
 	/**
 	 *
 	 * @author Roland Zwaga
 	 */
-	public class ConfigurationReader implements IConfigurationReader {
+	public class PropertiesConfigurationFactory implements IConfigurationFactory {
 
 		/** Character code for the WINDOWS line break. */
 		public static const WIN_BREAK:String = String.fromCharCode(13) + String.fromCharCode(10);
@@ -43,7 +43,7 @@ package org.as3commons.configuration.reader.impl {
 		/**
 		 * Creates a new <code>SettingsReader</code> instance.
 		 */
-		public function ConfigurationReader() {
+		public function PropertiesConfigurationFactory() {
 			super();
 		}
 

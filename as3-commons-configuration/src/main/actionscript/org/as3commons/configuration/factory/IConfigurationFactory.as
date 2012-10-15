@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.as3commons.configuration.reader {
+package org.as3commons.configuration.factory {
 	import flash.utils.ByteArray;
 	
 	import org.as3commons.configuration.IConfiguration;
@@ -22,7 +22,7 @@ package org.as3commons.configuration.reader {
 	 *
 	 * @author Roland Zwaga
 	 */
-	public interface IConfigurationReader {
+	public interface IConfigurationFactory {
 		function get lines():Array;
 		function get numLines():int;
 		function get originalString():String;
