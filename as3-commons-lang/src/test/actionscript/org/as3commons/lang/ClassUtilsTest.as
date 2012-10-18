@@ -383,6 +383,9 @@ package org.as3commons.lang {
 			cls = ClassUtils.getClassParameterFromFullyQualifiedName('__AS3__.vec::Vector.<org.as3commons.lang.testclasses::ComplexClass>');
 			assertNotNull(cls);
 			assertStrictlyEquals(ComplexClass, cls);
+			cls = ClassUtils.getClassParameterFromFullyQualifiedName('__AS3__.vec::Vector.<String>');
+			assertNotNull(cls);
+			assertStrictlyEquals(String, cls);
 		}
 
 		[Test]
