@@ -16,6 +16,7 @@
 package org.as3commons.eventbus.impl {
 	import flash.events.Event;
 	import flash.utils.Dictionary;
+	
 	import org.as3commons.eventbus.IEventBus;
 	import org.as3commons.eventbus.IEventBusListener;
 	import org.as3commons.eventbus.IEventInterceptor;
@@ -161,11 +162,12 @@ package org.as3commons.eventbus.impl {
 			dispatchedEvents[event] = true;
 			var eventClass:Class = Object(event).constructor as Class;
 			var result:Boolean = false;
-			var intercepted:Boolean = invokeInterceptors(event, eventClass, topic);
-			if (!intercepted) {
-				result = super.dispatchEvent(event, topic);
+			var newEvent:Event = invokeInterceptors(event, eventClass, topic);
+			if (newEvent) {
+				result = super.dispatchEvent(newEvent, topic);
+				event = newEvent;
 			}
-			invokePostProcessors(event, eventClass, topic, intercepted);
+			invokePostProcessors(event, eventClass, topic, (newEvent == null));
 			return result;
 		}
 
@@ -405,12 +407,12 @@ package org.as3commons.eventbus.impl {
 		 * @param topic
 		 * @return
 		 */
-		protected function classIntercepted(eventClass:Class, event:Event, topic:Object):Boolean {
+		protected function classIntercepted(eventClass:Class, event:Event, topic:Object):Event {
 			if (eventClassInterceptors[eventClass] != null) {
 				var interceptors:WeakLinkedList = EventBusCollectionLookup(eventClassInterceptors[eventClass]).getCollection(topic);
 				return intercept(interceptors, event, topic);
 			}
-			return false;
+			return event;
 		}
 
 		/**
@@ -436,20 +438,23 @@ package org.as3commons.eventbus.impl {
 		 * @param topic
 		 * @return
 		 */
-		protected function intercept(interceptors:WeakLinkedList, event:Event, topic:Object):Boolean {
+		protected function intercept(interceptors:WeakLinkedList, event:Event, topic:Object):Event {
 			if (interceptors != null) {
 				var iterator:WeakLinkedListIterator = WeakLinkedListIterator(interceptors.iterator());
 				while (iterator.hasNext()) {
 					iterator.next();
 					var interceptor:IEventInterceptor = IEventInterceptor(iterator.current);
 					interceptor.eventBus = this;
-					interceptor.intercept(event, topic);
+					var newEvent:Event = interceptor.intercept(event, topic);
+					if (newEvent) {
+						event = newEvent;
+					}
 					if (interceptor.blockEvent) {
-						return true;
+						return null;
 					}
 				}
 			}
-			return false;
+			return event;
 		}
 
 		/**
@@ -477,18 +482,21 @@ package org.as3commons.eventbus.impl {
 		 * @param topic
 		 * @return
 		 */
-		protected function invokeInterceptors(event:Event, eventClass:Class, topic:Object):Boolean {
+		protected function invokeInterceptors(event:Event, eventClass:Class, topic:Object):Event {
 			var interceptorList:WeakLinkedList = interceptors.getCollection(topic);
-			if (intercept(interceptorList, event, topic)) {
-				return true;
+			event = intercept(interceptorList, event, topic);
+			if (!event) {
+				return null;
 			}
-			if (specificEventIntercepted(event, topic)) {
-				return true;
+			event = specificEventIntercepted(event, topic);
+			if (!event) {
+				return null;
 			}
-			if (classIntercepted(eventClass, event, topic)) {
-				return true;
+			event = classIntercepted(eventClass, event, topic);
+			if (!event) {
+				return null;
 			}
-			return false;
+			return event;
 		}
 
 		/**
@@ -598,12 +606,12 @@ package org.as3commons.eventbus.impl {
 		 * @param topic
 		 * @return
 		 */
-		protected function specificEventIntercepted(event:Event, topic:Object):Boolean {
+		protected function specificEventIntercepted(event:Event, topic:Object):Event {
 			if (eventInterceptors[event.type] != null) {
 				var interceptors:WeakLinkedList = EventBusCollectionLookup(eventInterceptors[event.type]).getCollection(topic);
 				return intercept(interceptors, event, topic);
 			} else {
-				return false;
+				return event;
 			}
 		}
 

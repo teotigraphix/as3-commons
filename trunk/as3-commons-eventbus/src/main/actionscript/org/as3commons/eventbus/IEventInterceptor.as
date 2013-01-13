@@ -20,6 +20,6 @@ package org.as3commons.eventbus {
 	public interface IEventInterceptor extends IEventBusAware {
 		function get blockEvent():Boolean;
 		function set blockEvent(value:Boolean):void;
-		function intercept(event:Event, topic:Object=null):void;
+		function intercept(event:Event, topic:Object=null):Event;
 	}
 }
