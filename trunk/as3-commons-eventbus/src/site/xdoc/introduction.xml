@@ -83,7 +83,7 @@ eventBus.addEventClassInterceptor(MyCustomEvent, interceptor, "myTopic");</pre><
 	<p>The intercept() method will be invoked for each event that passes through the <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> and that adheres to the registration parameters of the <a href="asdoc/org/as3commons/eventbus/IEventInterceptor.html"><code>IEventInterceptor</code></a>.</p>
 	<p>To prevent the event to continue to be dispatched any further the <code>blockEvent</code> property can be set to true.</p>
 	<p>To replace the passed in <code>Event</code> instance by an alternative one, create that instance in the <a href="asdoc/org/as3commons/eventbus/IEventInterceptor.html"><code>IEventInterceptor</code></a> and return it in the <code>intercept()</code> method. If the <code>Event</code> doesn't need to be replaced either return
-	the original instance or <code>null</code>.
+	the original instance or <code>null</code>.</p>
 	<p>An <code>IEventInterceptor</code> also receives a reference to the current <a href="asdoc/org/as3commons/eventbus/impl/EventBus.html"><code>EventBus</code></a> each time its <code>intercept()</code> method is invoked, this allows an implementation to block certain events and replace them with a
 	different instance. Events could be split up into multiple events, etc.</p>
 	<p>AS3Comons-eventbus offers the <a href="asdoc/org/as3commons/eventbus/impl/AbstractEventInterceptor.html"><code>AbstractEventInterceptor</code></a> to be used as a general base class for event interceptors.</p>
