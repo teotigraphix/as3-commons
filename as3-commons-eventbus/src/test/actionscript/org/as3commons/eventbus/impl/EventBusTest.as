@@ -15,11 +15,11 @@
  */
 package org.as3commons.eventbus.impl {
 	import flash.events.Event;
-
-	import flexunit.framework.TestCase;
-
+	
 	import mx.events.FlexEvent;
-
+	
+	import flexunit.framework.TestCase;
+	
 	import org.as3commons.eventbus.IEventBusListener;
 	import org.as3commons.eventbus.IEventInterceptor;
 	import org.as3commons.eventbus.IEventListenerInterceptor;
@@ -34,9 +34,14 @@ package org.as3commons.eventbus.impl {
 		private var _eventBus:EventBus;
 
 		private var _eventReceived:Boolean = false;
+		private var _testEvent:Event;
 
 		public function eventBusTestListener(event:Event):void {
 			_eventReceived = true;
+		}
+
+		public function eventBusReplacingTestListener(event:Event):void {
+			_eventReceived = (_testEvent !== event);
 		}
 
 		override public function setUp():void {
@@ -334,6 +339,15 @@ package org.as3commons.eventbus.impl {
 			assertFalse(_eventReceived);
 		}
 
+		public function testReplaceEventIntercept():void {
+			_testEvent = new Event("testType");
+			_eventBus.addEventListener("testType", eventBusReplacingTestListener);
+			_eventBus.addInterceptor(new MockReplacingInterceptor(false));
+			assertFalse(_eventReceived);
+			_eventBus.dispatchEvent(_testEvent);
+			assertTrue(_eventReceived);
+		}
+		
 		public function testGlobalInterceptWithEventTopic():void {
 			var topic:String = "testTopic";
 			_eventBus.addEventListener("testType", eventBusTestListener, false, topic);
@@ -690,7 +704,19 @@ class MockInterceptor extends AbstractEventInterceptor {
 		blockEvent = block;
 	}
 
-	override public function intercept(event:Event, topic:Object=null):void {
+	override public function intercept(event:Event, topic:Object=null):Event {
+		return event;
+	}
+}
+
+class MockReplacingInterceptor extends AbstractEventInterceptor {
+	
+	public function MockReplacingInterceptor(block:Boolean) {
+		blockEvent = block;
+	}
+	
+	override public function intercept(event:Event, topic:Object=null):Event {
+		return new Event(event.type);
 	}
 }
 

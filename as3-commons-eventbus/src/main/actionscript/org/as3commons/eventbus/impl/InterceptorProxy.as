@@ -41,9 +41,10 @@ package org.as3commons.eventbus.impl {
 		 *
 		 * @param event
 		 */
-		override public function intercept(event:Event, topic:Object=null):void {
+		override public function intercept(event:Event, topic:Object=null):Event {
 			_methodInvoker.arguments = [event, topic];
 			_blockEvent = _methodInvoker.invoke();
+			return event;
 		}
 
 	}
