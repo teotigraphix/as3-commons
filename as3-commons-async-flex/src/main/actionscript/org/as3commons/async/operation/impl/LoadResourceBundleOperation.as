@@ -90,6 +90,7 @@ package org.as3commons.async.operation.impl {
 			}
 
 			ResourceManager.getInstance().addResourceBundle(resourceBundle);
+			ResourceManager.getInstance().update();
 			logger.debug("Added '{0}' resources to bundle '{1}' for locale '{2}'", [i, _name, _locale]);
 
 			dispatchCompleteEvent(resourceBundle);
