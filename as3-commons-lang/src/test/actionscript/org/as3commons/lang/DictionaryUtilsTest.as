@@ -17,6 +17,8 @@ package org.as3commons.lang {
 
 import flash.utils.Dictionary;
 
+import org.flexunit.asserts.assertEquals;
+
 import org.flexunit.asserts.assertFalse;
 import org.flexunit.asserts.assertTrue;
 
@@ -122,6 +124,27 @@ public class DictionaryUtilsTest {
 		assertTrue(DictionaryUtils.containsKey(dictionary, key1));
 		assertTrue(DictionaryUtils.containsKey(dictionary, key3));
 		assertTrue(DictionaryUtils.containsKey(dictionary, key2));
+	}
+
+	[Test]
+	public function testGetValues():void {
+		var key1:Object = {};
+		var key2:Object = {};
+		var key3:Object = {};
+
+		var value1:Object = {};
+		var value2:Object = {};
+		var value3:Object = {};
+
+		var dictionary:Dictionary = new Dictionary();
+		dictionary[key1] = value1;
+		dictionary[key2] = value2;
+		dictionary[key3] = value3;
+
+		var values:Array = DictionaryUtils.getValues(dictionary);
+		assertTrue(values.indexOf(value1) > -1);
+		assertTrue(values.indexOf(value2) > -1);
+		assertTrue(values.indexOf(value3) > -1);
 	}
 
 }

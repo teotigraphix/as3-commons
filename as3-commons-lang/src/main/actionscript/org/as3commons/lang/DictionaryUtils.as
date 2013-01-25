@@ -32,6 +32,14 @@ public final class DictionaryUtils {
 		return ObjectUtils.getKeys(dictionary);
 	}
 
+
+	/**
+	 * Returns an array with the values of the dictionary.
+	 */
+	public static function getValues(dictionary:Dictionary):Array {
+		return ObjectUtils.getProperties(dictionary);
+	}
+
 	/**
 	 * Check whether the given dictionary contains the given key.
 	 *
