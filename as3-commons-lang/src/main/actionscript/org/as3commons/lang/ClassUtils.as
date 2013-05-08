@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.as3commons.lang {
+
 import flash.events.TimerEvent;
 import flash.system.ApplicationDomain;
 import flash.utils.Proxy;
 import flash.utils.Timer;
-import flash.utils.describeType;
 import flash.utils.getQualifiedClassName;
 import flash.utils.getQualifiedSuperclassName;
 
@@ -69,7 +69,8 @@ public final class ClassUtils {
 	private static const LESS_THAN:String = '<';
 	private static const PACKAGE_CLASS_SEPARATOR:String = "::";
 
-	private static var _describeTypeCache:Object = {};
+
+	private static var _typeDescriptionCache:Object = {};
 
 	private static var _timer:Timer;
 
@@ -78,7 +79,7 @@ public final class ClassUtils {
 	 * defined by the clearCacheInterval property.
 	 */
 	public static function clearDescribeTypeCache():void {
-		_describeTypeCache = {};
+		_typeDescriptionCache = {};
 
 		stopTimer();
 	}
@@ -169,23 +170,9 @@ public final class ClassUtils {
 	 * given class implements.
 	 */
 	public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean = false, applicationDomain:ApplicationDomain = null):Array {
-		var result:Array = [];
-		var classDescription:XML = getFromObject(clazz, applicationDomain);
-		var interfacesDescription:XMLList = classDescription.factory.implementsInterface;
+		var typeDescription:ITypeDescription = getTypeDescription(clazz, applicationDomain);
 
-		if (interfacesDescription) {
-			var numInterfaces:int = interfacesDescription.length();
-
-			for (var i:int = 0; i < numInterfaces; i++) {
-				var fullyQualifiedInterfaceName:String = interfacesDescription[i].@type.toString();
-
-				if (replaceColons) {
-					fullyQualifiedInterfaceName = convertFullyQualifiedName(fullyQualifiedInterfaceName);
-				}
-				result[result.length] = fullyQualifiedInterfaceName;
-			}
-		}
-		return result;
+		return typeDescription.getFullyQualifiedImplementedInterfaceNames(replaceColons);
 	}
 
 	/**
@@ -287,42 +274,13 @@ public final class ClassUtils {
 	 * @param readable Only properties that are readable.
 	 * @param writable Only properties that are writable
 	 * @param applicationDomain ApplicationDomain where the class was defined
-	 * @return List of properties that match the criterias.
+	 *
+	 * @return List of properties that match the criteria.
 	 */
 	public static function getProperties(clazz:*, statik:Boolean = false, readable:Boolean = true, writable:Boolean = true, applicationDomain:ApplicationDomain = null):Object {
-		var xml:XML = getFromObject(clazz, applicationDomain);
-		var properties:XMLList;
-		if (!statik) {
-			xml = xml.factory[0];
-		}
-		if (readable && writable) {
-			// Only properties that are both read and writable
-			properties = xml.accessor.(@access == "readwrite") + xml.variable;
-		} else if (!readable && !writable) {
-			properties = new XMLList();
-		} else if (!writable) {
-			// All readable properties
-			properties = xml.constant + xml.accessor.(@access == "readonly");
-		} else {
-			// All writable properties
-			properties = xml.accessor.(@access == "writeonly");
-		}
-		var result:Object = {};
-		var node:XML;
-		for each (node in properties) {
-			var nodeClass:Class;
-			try {
-				nodeClass = ClassUtils.forName(node.@type);
-			} catch (e:Error) {
-				nodeClass = Object;
-			}
-			if (node.@uri && QName(node.@uri).localName != "") {
-				result[node.@uri + "::" + node.@name] = nodeClass;
-			} else {
-				result[node.@name] = nodeClass;
-			}
-		}
-		return result;
+		var typeDescription:ITypeDescription = getTypeDescription(clazz, applicationDomain);
+
+		return typeDescription.getProperties(statik, readable, writable);
 	}
 
 	/**
@@ -334,14 +292,9 @@ public final class ClassUtils {
 	 * @returns the super class or null if no parent class was found
 	 */
 	public static function getSuperClass(clazz:Class, applicationDomain:ApplicationDomain = null):Class {
-		var result:Class;
-		var classDescription:XML = getFromObject(clazz, applicationDomain);
-		var superClasses:XMLList = classDescription.factory.extendsClass;
+		var typeDescription:ITypeDescription = getTypeDescription(clazz, applicationDomain);
 
-		if (superClasses.length() > 0) {
-			result = ClassUtils.forName(superClasses[0].@type);
-		}
-		return result;
+		return typeDescription.getSuperClass();
 	}
 
 	/**
@@ -354,6 +307,7 @@ public final class ClassUtils {
 	public static function getSuperClassName(clazz:Class):String {
 		var fullyQualifiedName:String = getFullyQualifiedSuperClassName(clazz);
 		var index:int = fullyQualifiedName.indexOf(PACKAGE_CLASS_SEPARATOR) + PACKAGE_CLASS_SEPARATOR.length;
+
 		return fullyQualifiedName.substring(index, fullyQualifiedName.length);
 	}
 
@@ -377,15 +331,9 @@ public final class ClassUtils {
 	 * @return true if the clazz object implements the given interface; false if not
 	 */
 	public static function isImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
-		var result:Boolean;
+		var typeDescription:ITypeDescription = getTypeDescription(clazz, applicationDomain);
 
-		if (clazz == null) {
-			result = false;
-		} else {
-			var classDescription:XML = getFromObject(clazz, applicationDomain);
-			result = (classDescription.factory.implementsInterface.(@type == getQualifiedClassName(interfaze)).length() != 0);
-		}
-		return result;
+		return typeDescription.isImplementationOf(interfaze);
 	}
 
 	/**
@@ -398,49 +346,9 @@ public final class ClassUtils {
 	 * @return true if the clazz object implements the methods of the given interface; false if not
 	 */
 	public static function isInformalImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null):Boolean {
-		var result:Boolean = true;
+		var typeDescription:ITypeDescription = getTypeDescription(clazz, applicationDomain);
 
-		if (clazz == null) {
-			result = false;
-		} else {
-			var classDescription:XML = getFromObject(clazz, applicationDomain);
-			var interfaceDescription:XML = getFromObject(interfaze, applicationDomain);
-
-			// Test whether the interface's accessors have equivalent matches in the class
-			var interfaceAccessors:XMLList = interfaceDescription.factory.accessor;
-			for each (var interfaceAccessor:XML in interfaceAccessors) {
-				var accessorMatchesInClass:XMLList = classDescription.factory.accessor.(@name == interfaceAccessor.@name && @access == interfaceAccessor.@access && @type == interfaceAccessor.@type)
-				if (accessorMatchesInClass.length() < 1) {
-					result = false;
-					break;
-				}
-			}
-
-			// Test whether the interface's methods and their parameters are found in the class
-			var interfaceMethods:XMLList = interfaceDescription.factory.method;
-			for each (var interfaceMethod:XML in interfaceMethods) {
-				var methodMatchesInClass:XMLList = classDescription.factory.method.(@name == interfaceMethod.@name && @returnType == interfaceMethod.@returnType);
-				if (methodMatchesInClass.length() < 1) {
-					result = false;
-					break;
-				}
-				var interfaceMethodParameters:XMLList = interfaceMethod.parameter;
-				var classMethodParameters:XMLList = methodMatchesInClass.parameter;
-				if (interfaceMethodParameters.length() != classMethodParameters.length()) {
-					result = false;
-				}
-				for each (var interfaceParameter:XML in interfaceMethodParameters) {
-					var parameterMatchesInClass:XMLList = methodMatchesInClass.parameter.(@index == interfaceParameter.@index && @type == interfaceParameter.@type && @optional == interfaceParameter.@optional);
-					if (parameterMatchesInClass.length() < 1) {
-						result = false;
-						break;
-					}
-				}
-			}
-
-		}
-
-		return result;
+		return typeDescription.isInformalImplementationOf(interfaze);
 	}
 
 	/**
@@ -450,7 +358,9 @@ public final class ClassUtils {
 	 * @return true if the clazz is an interface; false if not
 	 */
 	public static function isInterface(clazz:Class):Boolean {
-		return (clazz === Object) ? false : (describeType(clazz).factory.extendsClass.length() == 0);
+		var typeDescription:ITypeDescription = getTypeDescription(clazz, ApplicationDomain.currentDomain);
+
+		return typeDescription.isInterface();
 	}
 
 	/**
@@ -477,9 +387,9 @@ public final class ClassUtils {
 	 * method instead.
 	 */
 	public static function isSubclassOf(clazz:Class, parentClass:Class, applicationDomain:ApplicationDomain = null):Boolean {
-		var classDescription:XML = getFromObject(clazz, applicationDomain);
-		var parentName:String = getQualifiedClassName(parentClass);
-		return (classDescription.factory.extendsClass.(@type == parentName).length() != 0);
+		var typeDescription:ITypeDescription = getTypeDescription(clazz, applicationDomain);
+
+		return typeDescription.isSubclassOf(parentClass);
 	}
 
 	/**
@@ -534,27 +444,15 @@ public final class ClassUtils {
 		return result;
 	}
 
-	/**
-	 * Will return the metadata for the given object or class. If metadata has already been requested for
-	 * this type, it will be retrieved from cache. Note that the metadata will allways be that of the class,
-	 * even if you pass an instance.
-	 * <p />
-	 * In order to get instance specific metadata, use the 'factory' property.
-	 * <p />
-	 * The reason we do not allow retrieval of instance metadata is because then we would need to cache the
-	 * metadata double. Metadata takes up a significant amount of memory.
-	 *
-	 * @param object  The object from which you want to grab the metadata
-	 *
-	 * @return The class metadata of the given object.
-	 */
-	private static function getFromObject(object:Object, applicationDomain:ApplicationDomain):XML {
-		Assert.notNull(object, "The object argument must not be null");
-		var className:String = getQualifiedClassName(object);
-		var metadata:XML;
 
-		if (_describeTypeCache.hasOwnProperty(className)) {
-			metadata = _describeTypeCache[className];
+	private static function getTypeDescription(object:Object, applicationDomain:ApplicationDomain):ITypeDescription {
+		Assert.notNull(object, "The clazz argument must not be null");
+
+		var className:String = getQualifiedClassName(object);
+		var typeDescription:ITypeDescription;
+
+		if (_typeDescriptionCache.hasOwnProperty(className)) {
+			typeDescription = _typeDescriptionCache[className];
 		} else {
 			if (!_timer && clearCacheIntervalEnabled) {
 				// Only run the timer once to prevent unneeded overhead. This also prevents
@@ -572,9 +470,9 @@ public final class ClassUtils {
 				}
 			}
 
-			metadata = describeType(object);
+			typeDescription = TypeDescriptor.getTypeDescriptionForClass(object as Class);
 
-			_describeTypeCache[className] = metadata;
+			_typeDescriptionCache[className] = typeDescription;
 
 			// Only run the timer if it is not already running.
 			if (_timer && !_timer.running) {
@@ -582,14 +480,7 @@ public final class ClassUtils {
 			}
 		}
 
-		return metadata;
-	}
-
-	/**
-	 * Timer handler. Clear the cache.
-	 */
-	private static function timerHandler(e:TimerEvent):void {
-		clearDescribeTypeCache();
+		return typeDescription;
 	}
 
 	private static function stopTimer():void {
@@ -597,5 +488,10 @@ public final class ClassUtils {
 			_timer.stop();
 		}
 	}
+
+	private static function timerHandler(e:TimerEvent):void {
+		clearDescribeTypeCache();
+	}
+
 }
 }
