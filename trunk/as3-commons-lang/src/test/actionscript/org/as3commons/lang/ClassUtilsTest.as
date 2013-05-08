@@ -15,7 +15,9 @@
  */
 package org.as3commons.lang {
 
-	import flash.utils.getQualifiedClassName;
+import flash.events.EventDispatcher;
+import flash.events.IEventDispatcher;
+import flash.utils.getQualifiedClassName;
 
 	import flexunit.framework.Assert;
 	import flexunit.framework.Reflective;
@@ -122,6 +124,12 @@ package org.as3commons.lang {
 			assertFalse(ClassUtils.isSubclassOf(ClassUtilsTest, String));
 			assertTrue(ClassUtils.isSubclassOf(String, Object));
 			assertTrue(ClassUtils.isSubclassOf(SampleEnum, Enum));
+		}
+
+
+		[Test]
+		public function testisImplementationOf():void {
+			assertTrue(ClassUtils.isImplementationOf(EventDispatcher, IEventDispatcher));
 		}
 
 		[Test]
