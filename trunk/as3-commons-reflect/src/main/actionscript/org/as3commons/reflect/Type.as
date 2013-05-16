@@ -21,733 +21,813 @@
  */
 package org.as3commons.reflect {
 
-	import flash.system.ApplicationDomain;
-	import flash.utils.Dictionary;
-	
-	import org.as3commons.lang.ClassNotFoundError;
-	import org.as3commons.lang.ClassUtils;
-	import org.as3commons.lang.HashArray;
+import flash.system.ApplicationDomain;
+
+import org.as3commons.lang.ClassNotFoundError;
+import org.as3commons.lang.ClassUtils;
+import org.as3commons.lang.HashArray;
+import org.as3commons.lang.ITypeDescription;
+
+/**
+ * Provides information about the characteristics of a class or an interface.
+ * These are the methods, accessors (getter/setter), variables and constants,
+ * but also if the class is <code>dynamic</code> and <code>final</code>.
+ *
+ * <p>Note that information about an object cannot be retrieved by calling the
+ * <code>Type</code> constructor. Instead use one of the following static
+ * methods:</p>
+ *
+ * <p>In case of an instance:
+ * <code>var type:Type = Type.forInstance(myInstance);</code>
+ * </p>
+ *
+ * <p>In case of a <code>Class</code> variable:
+ * <code>var type:Type = Type.forClass(MyClass);</code>
+ * </p>
+ *
+ * <p>In case of a classname:
+ * <code>var type:Type = Type.forName("MyClass");</code>
+ * </p>
+ *
+ * @author Christophe Herreman
+ * @author Martino Piccinato
+ * @author Andrew Lewisohn
+ */
+public class Type extends MetadataContainer {
 
 	/**
-	 * Provides information about the characteristics of a class or an interface.
-	 * These are the methods, accessors (getter/setter), variables and constants,
-	 * but also if the class is <code>dynamic</code> and <code>final</code>.
-	 *
-	 * <p>Note that information about an object cannot be retrieved by calling the
-	 * <code>Type</code> constructor. Instead use one of the following static
-	 * methods:</p>
-	 *
-	 * <p>In case of an instance:
-	 * <code>var type:Type = Type.forInstance(myInstance);</code>
-	 * </p>
-	 *
-	 * <p>In case of a <code>Class</code> variable:
-	 * <code>var type:Type = Type.forClass(MyClass);</code>
-	 * </p>
-	 *
-	 * <p>In case of a classname:
-	 * <code>var type:Type = Type.forName("MyClass");</code>
-	 * </p>
-	 *
-	 * @author Christophe Herreman
-	 * @author Martino Piccinato
-	 * @author Andrew Lewisohn
+	 * Clears the cache and set typeProvider to null.
 	 */
-	public class Type extends MetadataContainer {
-
-		/**
-		 * Clears the cache and set typeProvider to null.
-		 */
-		public static function reset():void {
-			if (typeProvider != null) {
-				typeProvider.clearCache();
-			}
-			typeProvider = null;
+	public static function reset():void {
+		if (typeProvider != null) {
+			typeProvider.clearCache();
 		}
-
-		public static function get currentApplicationDomain():ApplicationDomain {
-			return _currentApplicationDomain ||= ApplicationDomain.currentDomain;
-		}
-
-		public static const UNTYPED:Type = new Type(currentApplicationDomain);
-		{
-			UNTYPED.fullName = UNTYPED_NAME;
-			UNTYPED.name = UNTYPED_NAME;
-		}
-
-		public static const VOID:Type = new Type(currentApplicationDomain);
-		{
-			VOID.fullName = VOID_NAME;
-			VOID.name = VOID_NAME;
-		}
-
-		public static const PRIVATE:Type = new Type(currentApplicationDomain);
-		{
-			PRIVATE.fullName = PRIVATE_NAME;
-			PRIVATE.name = PRIVATE_NAME;
-		}
-
-		private static const MEMBER_PROPERTY_NAME:String = 'memberKey';
-		public static const VOID_NAME:String = "void";
-		private static const UNTYPED_NAME:String = "*";
-		private static const PRIVATE_NAME:String = 'private';
-		private static const CONSTRUCTOR_NAME:String = 'constructor';
-		private static const PREFIXED_CONSTRUCTOR_NAME:String = '_constructor';
-		public static var typeProviderKind:TypeProviderKind;
-		{
-			typeProviderKind = TypeProviderKind.JSON;
-		}
-
-		//private static var logger:ILogger = getLogger(Type);
-
-		private static var typeProvider:ITypeProvider;
-
-		// --------------------------------------------------------------------
-		//
-		// Static Methods
-		//
-		// --------------------------------------------------------------------
-
-		/**
-		 * Returns a <code>Type</code> object that describes the given instance.
-		 *
-		 * @param instance the instance from which to get a type description
-		 */
-		public static function forInstance(instance:*, applicationDomain:ApplicationDomain=null):Type {
-			applicationDomain ||= currentApplicationDomain;
-			var result:Type;
-			var clazz:Class = org.as3commons.lang.ClassUtils.forInstance(instance, applicationDomain);
-
-			if (clazz != null) {
-				result = Type.forClass(clazz, applicationDomain);
-			}
-			return result;
-		}
-
-		/**
-		 * Returns a <code>Type</code> object that describes the given classname.
-		 *
-		 * @param name the classname from which to get a type description
-		 */
-		public static function forName(name:String, applicationDomain:ApplicationDomain=null):Type {
-			applicationDomain ||= currentApplicationDomain;
-			var result:Type;
-
-			/*if(name.indexOf("$")!=-1){
-			   return Type.PRIVATE;
-			 }*/
-			switch (name) {
-				case VOID_NAME:
-					result = Type.VOID;
-					break;
-				case UNTYPED_NAME:
-					result = Type.UNTYPED;
-					break;
-				default:
-					if (getTypeProvider().getTypeCache().contains(name, applicationDomain)) {
-						result = getTypeProvider().getTypeCache().get(name, applicationDomain);
-					} else {
-						try {
-							result = Type.forClass(ClassUtils.forName(name, applicationDomain), applicationDomain);
-						} catch (e:ClassNotFoundError) {
-							trace("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
-						}
-					}
-			}
-			return result;
-		}
-
-		/**
-		 * Returns a <code>Type</code> object that describes the given class.
-		 *
-		 * @param clazz the class from which to get a type description
-		 */
-		public static function forClass(clazz:Class, applicationDomain:ApplicationDomain=null):Type {
-			applicationDomain ||= currentApplicationDomain;
-			var result:Type;
-			var fullyQualifiedClassName:String = org.as3commons.lang.ClassUtils.getFullyQualifiedName(clazz);
-
-			if (getTypeProvider().getTypeCache().contains(fullyQualifiedClassName, applicationDomain)) {
-				result = getTypeProvider().getTypeCache().get(fullyQualifiedClassName, applicationDomain);
-			} else {
-				result = getTypeProvider().getType(clazz, applicationDomain);
-			}
-
-			return result;
-		}
-
-		/**
-		 *
-		 */
-		public static function getTypeProvider():ITypeProvider {
-			if (typeProvider == null) {
-				if (typeProviderKind === TypeProviderKind.JSON) {
-					try {
-						typeProvider = new JSONTypeProvider();
-					} catch (e:*) {
-					}
-				}
-				if (typeProvider == null) {
-					typeProvider = new XmlTypeProvider();
-				}
-			}
-			return typeProvider;
-		}
-
-		// --------------------------------------------------------------------
-		//
-		// Constructor
-		//
-		// --------------------------------------------------------------------
-
-		/**
-		 * Creates a new <code>Type</code> instance.
-		 */
-		public function Type(applicationDomain:ApplicationDomain) {
-			super();
-			_accessors = [];
-			_staticConstants = [];
-			_constants = [];
-			_staticVariables = [];
-			_variables = [];
-			_extendsClasses = [];
-			_interfaces = [];
-			_parameters = [];
-			_applicationDomain = applicationDomain;
-		}
-
-		// --------------------------------------------------------------------
-		//
-		// Properties
-		//
-		// --------------------------------------------------------------------
-
-		// ----------------------------
-		// applicationDomain
-		// ----------------------------
-
-		private var _applicationDomain:ApplicationDomain;
-
-		/**
-		 * The ApplicationDomain which is able to retrieve the object definition for this type. The definition does not
-		 * necessarily have to be part of this <code>ApplicationDomain</code>, it could possibly be present in the parent domain as well.
-		 */
-		public function get applicationDomain():ApplicationDomain {
-			return _applicationDomain;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set applicationDomain(value:ApplicationDomain):void {
-			_applicationDomain = value;
-		}
-
-		// ----------------------------
-		// name
-		// ----------------------------
-
-		private var _alias:String;
-
-		public function get alias():String {
-			return _alias;
-		}
-
-		public function set alias(value:String):void {
-			_alias = value;
-		}
-
-		// ----------------------------
-		// name
-		// ----------------------------
-
-		private var _name:String;
-
-		/**
-		 * The name of the type
-		 */
-		public function get name():String {
-			return _name;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set name(value:String):void {
-			_name = value;
-		}
-
-		// ----------------------------
-		// fullName
-		// ----------------------------
-
-		private var _fullName:String;
-
-		/**
-		 * The fully qualified name of the type, this includes the namespace
-		 */
-		public function get fullName():String {
-			return _fullName;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set fullName(value:String):void {
-			_fullName = value;
-		}
-
-		// ----------------------------
-		// clazz
-		// ----------------------------
-
-		private var _class:Class;
-
-		/**
-		 * The Class of the <code>Type</code>
-		 */
-		public function get clazz():Class {
-			return _class;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set clazz(value:Class):void {
-			_class = value;
-		}
-
-		// ----------------------------
-		// isDynamic
-		// ----------------------------
-
-		private var _isDynamic:Boolean;
-
-		/**
-		 * True if the <code>Type</code> is dynamic
-		 */
-		public function get isDynamic():Boolean {
-			return _isDynamic;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set isDynamic(value:Boolean):void {
-			_isDynamic = value;
-		}
-
-		// ----------------------------
-		// isFinal
-		// ----------------------------
-
-		private var _isFinal:Boolean;
-
-		/**
-		 * True if the <code>Type</code> is final
-		 */
-		public function get isFinal():Boolean {
-			return _isFinal;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set isFinal(value:Boolean):void {
-			_isFinal = value;
-		}
-
-		// ----------------------------
-		// isStatic
-		// ----------------------------
-
-		private var _isStatic:Boolean;
-
-		/**
-		 * True if the <code>Type</code> is static
-		 */
-		public function get isStatic():Boolean {
-			return _isStatic;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set isStatic(value:Boolean):void {
-			_isStatic = value;
-		}
-
-		// ----------------------------
-		// isInterface
-		// ----------------------------
-
-		private var _isInterface:Boolean;
-
-		/**
-		 * True if the <code>Type</code> is an interface
-		 */
-		public function get isInterface():Boolean {
-			return _isInterface;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set isInterface(value:Boolean):void {
-			_isInterface = value;
-		}
-
-		// ----------------------------
-		// parameters
-		// ----------------------------
-
-		private var _parameters:Array;
-
-		public function get parameters():Array {
-			return _parameters;
-		}
-
-		// ----------------------------
-		// interfaces
-		// ----------------------------
-
-		private var _interfaces:Array;
-
-		public function get interfaces():Array {
-			return _interfaces;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set interfaces(value:Array):void {
-			_interfaces = value;
-		}
-
-		// ----------------------------
-		// constructor
-		// ----------------------------
-
-		private var _constructor:Constructor;
-
-		/**
-		 * A reference to a <code>Constructor</code> instance that describes the constructor of the <code>Type</code>
-		 * @see org.as3commons.reflect.Constructor Constructor
-		 */
-		public function get constructor():Constructor {
-			return _constructor;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set constructor(constructor:Constructor):void {
-			_constructor = constructor;
-		}
-
-		// ----------------------------
-		// accessors
-		// ----------------------------
-
-		private var _accessors:Array;
-
-		/**
-		 * An array of <code>Accessor</code> instances
-		 * @see org.as3commons.reflect.Accessor Accessor
-		 */
-		public function get accessors():Array {
-			return _accessors;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set accessors(value:Array):void {
-			_accessors = value;
-
-			/*
-			// Must invalidate the fields cache.
-			// Due to the work-around implemented for constructor argument types
-			// in ReflectionUtils.getTypeDescription(), an instance of Type is created,
-			// which could also lead to an invalid fields cache (e.g., empty cache)
-			// if the constructor uses Type.forName() and/or Type.getField().
-			// Therefore it is important to invalidate the cache when any of
-			// the constituents of the fields cache change.
-			// See also note in XmlTypeProvider#getType().
-			 */
-			_fields = null;
-		}
-
-		// ----------------------------
-		// methods
-		// ----------------------------
-
-		private var _methods:HashArray;
-
-		/**
-		 * An array of <code>Method</code> instances
-		 * @see org.as3commons.reflect.Method Method
-		 */
-		public function get methods():Array {
-			return (_methods != null) ? _methods.getArray() : [];
-		}
-
-		/**
-		 * @private
-		 */
-		public function set methods(value:Array):void {
-			_methods = new HashArray(MEMBER_PROPERTY_NAME, false, value);
-		}
-
-		// ----------------------------
-		// staticConstants
-		// ----------------------------
-
-		private var _staticConstants:Array;
-
-		/**
-		 * An array of <code>IMember</code> instances that describe the static constants of the <code>Type</code>
-		 * @see org.as3commons.reflect.IMember IMember
-		 */
-		public function get staticConstants():Array {
-			return _staticConstants;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set staticConstants(value:Array):void {
-			_staticConstants = value;
-
-			// Must invalidate the fields cache. See note in #accessors.
-			_fields = null;
-		}
-
-		// ----------------------------
-		// constants
-		// ----------------------------
-
-		private var _constants:Array;
-
-		/**
-		 * An array of <code>IMember</code> instances that describe the constants of the <code>Type</code>
-		 * @see org.as3commons.reflect.IMember IMember
-		 */
-		public function get constants():Array {
-			return _constants;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set constants(value:Array):void {
-			_constants = value;
-
-			// Must invalidate the fields cache. See note in #accessors.
-			_fields = null;
-		}
-
-		// ----------------------------
-		// staticVariables
-		// ----------------------------
-
-		private var _staticVariables:Array;
-
-		/**
-		 * An array of <code>IMember</code> instances that describe the static variables of the <code>Type</code>
-		 * @see org.as3commons.reflect.IMember IMember
-		 */
-		public function get staticVariables():Array {
-			return _staticVariables;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set staticVariables(value:Array):void {
-			_staticVariables = value;
-
-			// Must invalidate the fields cache. See note in #accessors.
-			_fields = null;
-		}
-
-		// ----------------------------
-		// extendsClass
-		// ----------------------------
-
-		private var _extendsClasses:Array /* of String */;
-
-		/**
-		 * @return An <code>Array</code> of fully qualified class names that represent the inheritance order of the current <code>Type</code>.
-		 * <p>The first item in the <code>Array</code> is the fully qualified classname of the super class of the current <code>Type</code>.</p>
-		 */
-		public function get extendsClasses():Array {
-			return _extendsClasses;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set extendsClasses(value:Array):void {
-			_extendsClasses = value;
-		}
-
-		// ----------------------------
-		// variables
-		// ----------------------------
-
-		private var _variables:Array;
-
-		/**
-		 * An array of <code>IMember</code> instances that describe the variables of the <code>Type</code>
-		 * @see org.as3commons.reflect.IMember IMember
-		 */
-		public function get variables():Array {
-			return _variables;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set variables(value:Array):void {
-			_variables = value;
-
-			// Must invalidate the fields cache. See note in #accessors.
-			_fields = null;
-		}
-
-		// ----------------------------
-		// fields
-		// ----------------------------
-
-		private var _fields:HashArray;
-
-		/**
-		 * An array of all the static constants, constants, static variables and variables of the <code>Type</code>
-		 * @see org.as3commons.reflect.IMember IMember
-		 */
-		public function get fields():Array {
-			if (_fields == null) {
-				createFieldsHashArray();
-			}
-			return _fields.getArray();
-		}
-
-		private function createFieldsHashArray():void {
-			_fields = new HashArray(MEMBER_PROPERTY_NAME, false, accessors.concat(staticConstants).concat(constants).concat(staticVariables).concat(variables));
-		}
-
-		/**
-		 * An array of Field containing all accessors and variables for the type.
-		 *
-		 * @see org.as3commons.reflect.Variable
-		 * @see org.as3commons.reflect.Accessor
-		 * @see org.as3commons.reflect.Field
-		 */
-		public function get properties():Array {
-			return accessors.concat(variables);
-		}
-
-		// --------------------------------------------------------------------
-		//
-		// Public Methods
-		//
-		// --------------------------------------------------------------------
-
-		/**
-		 * Returns the <code>Method</code> object for the method in this type
-		 * with the given name.
-		 *
-		 * @param name the name of the method
-		 */
-		public function getMethod(name:String, ns:String=null):Method {
-			var qName:QName = new QName(ns, name);
-			return _methods.get(qName.toString().split(Method.PERIOD_CHAR).join(Method.UNDERSCORE_CHAR).split(Method.COLON_CHAR).join(Method.UNDERSCORE_CHAR));
-		}
-
-		/**
-		 * Returns the <code>Field</code> object for the field in this type
-		 * with the given name.
-		 *
-		 * @param name the name of the field
-		 */
-		public function getField(name:String, ns:String=null):Field {
-			//force _fields HashArray to be created
-			if (_fields == null) {
-				createFieldsHashArray();
-			}
-			var qName:QName = new QName(ns, name);
-			return _fields.get(qName.toString().split(Method.PERIOD_CHAR).join(Method.UNDERSCORE_CHAR).split(Method.COLON_CHAR).join(Method.UNDERSCORE_CHAR));
-		}
-
-		private var _metadataLookup:Object;
-		private static var _currentApplicationDomain:ApplicationDomain;
-
-		public function createMetadataLookup():void {
-			_metadataLookup = {};
-			addToMetadataLookup([this]);
-			addToMetadataLookup(_methods.getArray());
-			if (_fields == null) {
-				createFieldsHashArray();
-			}
-			addToMetadataLookup(_fields.getArray());
-		}
-
-		/**
-		 * Retrieves an Array of <code>MetadataContainer</code> instances that are associated with the current <code>Type</code>
-		 * that contain <code>Metadata</code> with the specified name.
-		 * <p>Each <code>MetadataContainer</code> instance can be one of these subclasses:</p>
-		 * <ul>
-		 *   <li>Type</li>
-		 *   <li>Method</li>
-		 *   <li>Accessor</li>
-		 *   <li>Constant</li>
-		 *   <li>Variable</li>
-		 * </ul>
-		 * @param name The specified <code>Metadata</code> name.
-		 * @return An Array of <code>MetadataContainer</code> instances.
-		 */
-		public function getMetadataContainers(name:String):Array {
-			if (_metadataLookup != null) {
-				name = name.toLowerCase();
-				name = (name != CONSTRUCTOR_NAME) ? name : PREFIXED_CONSTRUCTOR_NAME;
-				return _metadataLookup[name] as Array;
-			} else {
-				return null;
-			}
-		}
-
-		private function addToMetadataLookup(containerList:Array):void {
-			if (!containerList) {
-				return;
-			}
-			var i:int;
-			var j:int;
-			var len:int = containerList.length;
-			var len2:int;
-			var container:MetadataContainer;
-			var m:Metadata;
-			var name:String;
-			var arr:Array;
-			for (i = 0; i < len; ++i) {
-				container = containerList[i];
-				var metadatas:Array = container.metadata;
-				len2 = metadatas.length;
-				for (j = 0; j < len2; ++j) {
-					m = metadatas[j];
-					if (m == null) {
-						continue;
-					}
-					name = (m.name != CONSTRUCTOR_NAME) ? m.name : PREFIXED_CONSTRUCTOR_NAME;
-					arr = _metadataLookup[name] ||= [];
-					arr[arr.length] = container;
-				}
-			}
-		}
-
-		as3commons_reflect function setParameters(value:Array):void {
-			_parameters = value;
-		}
-
+		typeProvider = null;
 	}
+
+	public static function get currentApplicationDomain():ApplicationDomain {
+		return _currentApplicationDomain ||= ApplicationDomain.currentDomain;
+	}
+
+	public static const UNTYPED:Type = new Type(currentApplicationDomain);
+	{
+		UNTYPED.fullName = UNTYPED_NAME;
+		UNTYPED.name = UNTYPED_NAME;
+	}
+
+	public static const VOID:Type = new Type(currentApplicationDomain);
+	{
+		VOID.fullName = VOID_NAME;
+		VOID.name = VOID_NAME;
+	}
+
+	public static const PRIVATE:Type = new Type(currentApplicationDomain);
+	{
+		PRIVATE.fullName = PRIVATE_NAME;
+		PRIVATE.name = PRIVATE_NAME;
+	}
+
+	private static const MEMBER_PROPERTY_NAME:String = 'memberKey';
+	public static const VOID_NAME:String = "void";
+	private static const UNTYPED_NAME:String = "*";
+	private static const PRIVATE_NAME:String = 'private';
+	private static const CONSTRUCTOR_NAME:String = 'constructor';
+	private static const PREFIXED_CONSTRUCTOR_NAME:String = '_constructor';
+	public static var typeProviderKind:TypeProviderKind;
+	{
+		typeProviderKind = TypeProviderKind.JSON;
+	}
+
+	private static var typeProvider:ITypeProvider;
+
+	// --------------------------------------------------------------------
+	//
+	// Static Methods
+	//
+	// --------------------------------------------------------------------
+
+	/**
+	 * Returns a <code>Type</code> object that describes the given instance.
+	 *
+	 * @param instance the instance from which to get a type description
+	 */
+	public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null):Type {
+		applicationDomain ||= currentApplicationDomain;
+		var result:Type;
+		var clazz:Class = ClassUtils.forInstance(instance, applicationDomain);
+
+		if (clazz != null) {
+			result = Type.forClass(clazz, applicationDomain);
+		}
+		return result;
+	}
+
+	/**
+	 * Returns a <code>Type</code> object that describes the given classname.
+	 *
+	 * @param name the classname from which to get a type description
+	 */
+	public static function forName(name:String, applicationDomain:ApplicationDomain = null):Type {
+		applicationDomain ||= currentApplicationDomain;
+		var result:Type;
+
+		/*if(name.indexOf("$")!=-1){
+		 return Type.PRIVATE;
+		 }*/
+		switch (name) {
+			case VOID_NAME:
+				result = Type.VOID;
+				break;
+			case UNTYPED_NAME:
+				result = Type.UNTYPED;
+				break;
+			default:
+				if (getTypeProvider().getTypeCache().contains(name, applicationDomain)) {
+					result = getTypeProvider().getTypeCache().get(name, applicationDomain);
+				} else {
+					try {
+						result = Type.forClass(ClassUtils.forName(name, applicationDomain), applicationDomain);
+					} catch (e:ClassNotFoundError) {
+						trace("Type.forName error: " + e.message + " The class '" + name + "' is probably an internal class or it may not have been compiled.");
+					}
+				}
+		}
+		return result;
+	}
+
+	/**
+	 * Returns a <code>Type</code> object that describes the given class.
+	 *
+	 * @param clazz the class from which to get a type description
+	 */
+	public static function forClass(clazz:Class, applicationDomain:ApplicationDomain = null):Type {
+		applicationDomain ||= currentApplicationDomain;
+		var result:Type;
+		var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz);
+
+		if (getTypeProvider().getTypeCache().contains(fullyQualifiedClassName, applicationDomain)) {
+			result = getTypeProvider().getTypeCache().get(fullyQualifiedClassName, applicationDomain);
+		} else {
+			result = getTypeProvider().getType(clazz, applicationDomain);
+		}
+
+		return result;
+	}
+
+
+	public static function getTypeProvider():ITypeProvider {
+		if (typeProvider == null) {
+			if (typeProviderKind === TypeProviderKind.JSON) {
+				try {
+					typeProvider = new JSONTypeProvider();
+				} catch (e:*) {
+				}
+			}
+			if (typeProvider == null) {
+				typeProvider = new XmlTypeProvider();
+			}
+		}
+		return typeProvider;
+	}
+
+
+	private static function getTypeMemberProvider():ITypeMemberProvider {
+		return getTypeProvider() as ITypeMemberProvider;
+	}
+
+
+	private var _metadataInitialized:Boolean = false;
+
+	// --------------------------------------------------------------------
+	//
+	// Constructor
+	//
+	// --------------------------------------------------------------------
+
+	/**
+	 * Creates a new <code>Type</code> instance.
+	 */
+	public function Type(applicationDomain:ApplicationDomain) {
+		super();
+
+		_extendsClasses = [];
+		_interfaces = [];
+		_parameters = [];
+
+		_applicationDomain = applicationDomain;
+	}
+
+	// --------------------------------------------------------------------
+	//
+	// Properties
+	//
+	// --------------------------------------------------------------------
+
+	override public function get metadata():Array {
+		initializeMetadata();
+
+		return super.metadata;
+	}
+
+	override public function getMetadata(key:String):Array {
+		initializeMetadata();
+
+		return super.getMetadata(key);
+	}
+
+	// ----------------------------
+	// applicationDomain
+	// ----------------------------
+
+	private var _applicationDomain:ApplicationDomain;
+
+	/**
+	 * The ApplicationDomain which is able to retrieve the object definition for this type. The definition does not
+	 * necessarily have to be part of this <code>ApplicationDomain</code>, it could possibly be present in the parent domain as well.
+	 */
+	public function get applicationDomain():ApplicationDomain {
+		return _applicationDomain;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set applicationDomain(value:ApplicationDomain):void {
+		_applicationDomain = value;
+	}
+
+	// ----------------------------
+	// name
+	// ----------------------------
+
+	private var _alias:String;
+
+	public function get alias():String {
+		return _alias;
+	}
+
+	public function set alias(value:String):void {
+		_alias = value;
+	}
+
+	// ----------------------------
+	// name
+	// ----------------------------
+
+	private var _name:String;
+
+	/**
+	 * The name of the type
+	 */
+	public function get name():String {
+		return _name;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set name(value:String):void {
+		_name = value;
+	}
+
+	// ----------------------------
+	// fullName
+	// ----------------------------
+
+	private var _fullName:String;
+
+	/**
+	 * The fully qualified name of the type, this includes the namespace
+	 */
+	public function get fullName():String {
+		return _fullName;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set fullName(value:String):void {
+		_fullName = value;
+	}
+
+	// ----------------------------
+	// clazz
+	// ----------------------------
+
+	private var _class:Class;
+
+	/**
+	 * The Class of the <code>Type</code>
+	 */
+	public function get clazz():Class {
+		return _class;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set clazz(value:Class):void {
+		_class = value;
+	}
+
+	// ----------------------------
+	// isDynamic
+	// ----------------------------
+
+	private var _isDynamic:Boolean;
+
+	/**
+	 * True if the <code>Type</code> is dynamic
+	 */
+	public function get isDynamic():Boolean {
+		return _isDynamic;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set isDynamic(value:Boolean):void {
+		_isDynamic = value;
+	}
+
+	// ----------------------------
+	// isFinal
+	// ----------------------------
+
+	private var _isFinal:Boolean;
+
+	/**
+	 * True if the <code>Type</code> is final
+	 */
+	public function get isFinal():Boolean {
+		return _isFinal;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set isFinal(value:Boolean):void {
+		_isFinal = value;
+	}
+
+	// ----------------------------
+	// isStatic
+	// ----------------------------
+
+	private var _isStatic:Boolean;
+
+	/**
+	 * True if the <code>Type</code> is static
+	 */
+	public function get isStatic():Boolean {
+		return _isStatic;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set isStatic(value:Boolean):void {
+		_isStatic = value;
+	}
+
+	// ----------------------------
+	// isInterface
+	// ----------------------------
+
+	private var _isInterface:Boolean;
+
+	/**
+	 * True if the <code>Type</code> is an interface
+	 */
+	public function get isInterface():Boolean {
+		return _isInterface;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set isInterface(value:Boolean):void {
+		_isInterface = value;
+	}
+
+	// ----------------------------
+	// parameters
+	// ----------------------------
+
+	private var _parameters:Array;
+
+	public function get parameters():Array {
+		return _parameters;
+	}
+
+	// ----------------------------
+	// interfaces
+	// ----------------------------
+
+	private var _interfaces:Array;
+
+	public function get interfaces():Array {
+		return _interfaces;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set interfaces(value:Array):void {
+		_interfaces = value;
+	}
+
+	// ----------------------------
+	// constructor
+	// ----------------------------
+
+	private var _constructor:Constructor;
+
+	/**
+	 * A reference to a <code>Constructor</code> instance that describes the constructor of the <code>Type</code>
+	 * @see org.as3commons.reflect.Constructor Constructor
+	 */
+	public function get constructor():Constructor {
+		if (!_constructor && getTypeMemberProvider()) {
+			constructor = getTypeMemberProvider().getConstructorForType(this);
+		}
+		return _constructor;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set constructor(constructor:Constructor):void {
+		_constructor = constructor;
+	}
+
+	// ----------------------------
+	// accessors
+	// ----------------------------
+
+	private var _accessors:Array;
+
+	/**
+	 * An array of <code>Accessor</code> instances
+	 * @see org.as3commons.reflect.Accessor Accessor
+	 */
+	public function get accessors():Array {
+		if (!_accessors && getTypeMemberProvider()) {
+			accessors = getTypeMemberProvider().getAccessorsForType(this);
+		}
+		return _accessors;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set accessors(value:Array):void {
+		_accessors = value;
+
+		/*
+		 // Must invalidate the fields cache.
+		 // Due to the work-around implemented for constructor argument types
+		 // in ReflectionUtils.getTypeDescription(), an instance of Type is created,
+		 // which could also lead to an invalid fields cache (e.g., empty cache)
+		 // if the constructor uses Type.forName() and/or Type.getField().
+		 // Therefore it is important to invalidate the cache when any of
+		 // the constituents of the fields cache change.
+		 // See also note in XmlTypeProvider#getType().
+		 */
+		_fields = null;
+	}
+
+	// ----------------------------
+	// methods
+	// ----------------------------
+
+	private var _methods:HashArray;
+
+	/**
+	 * An array of <code>Method</code> instances
+	 * @see org.as3commons.reflect.Method Method
+	 */
+	public function get methods():Array {
+		if (!_methods) {
+			methods = getTypeMemberProvider().getMethodsForType(this);
+		}
+		return (_methods != null) ? _methods.getArray() : [];
+	}
+
+	/**
+	 * @private
+	 */
+	public function set methods(value:Array):void {
+		_methods = new HashArray(MEMBER_PROPERTY_NAME, false, value);
+	}
+
+	// ----------------------------
+	// staticConstants
+	// ----------------------------
+
+	private var _staticConstants:Array;
+
+	/**
+	 * An array of <code>IMember</code> instances that describe the static constants of the <code>Type</code>
+	 * @see org.as3commons.reflect.IMember IMember
+	 */
+	public function get staticConstants():Array {
+		if (!_staticConstants && getTypeMemberProvider()) {
+			staticConstants = getTypeMemberProvider().getStaticConstantsForType(this);
+		}
+
+		return _staticConstants;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set staticConstants(value:Array):void {
+		_staticConstants = value;
+
+		// Must invalidate the fields cache. See note in #accessors.
+		_fields = null;
+	}
+
+	// ----------------------------
+	// constants
+	// ----------------------------
+
+	private var _constants:Array;
+
+	/**
+	 * An array of <code>IMember</code> instances that describe the constants of the <code>Type</code>
+	 * @see org.as3commons.reflect.IMember IMember
+	 */
+	public function get constants():Array {
+		if (!_constants && getTypeMemberProvider()) {
+			constants = getTypeMemberProvider().getConstantsForType(this);
+		}
+		return _constants;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set constants(value:Array):void {
+		_constants = value;
+
+		// Must invalidate the fields cache. See note in #accessors.
+		_fields = null;
+	}
+
+	// ----------------------------
+	// staticVariables
+	// ----------------------------
+
+	private var _staticVariables:Array;
+
+	/**
+	 * An array of <code>IMember</code> instances that describe the static variables of the <code>Type</code>
+	 * @see org.as3commons.reflect.IMember IMember
+	 */
+	public function get staticVariables():Array {
+		if (!_staticVariables && getTypeMemberProvider()) {
+			staticVariables = getTypeMemberProvider().getStaticVariablesForType(this);
+		}
+		return _staticVariables;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set staticVariables(value:Array):void {
+		_staticVariables = value;
+
+		// Must invalidate the fields cache. See note in #accessors.
+		_fields = null;
+	}
+
+	// ----------------------------
+	// extendsClass
+	// ----------------------------
+
+	private var _extendsClasses:Array /* of String */;
+
+	/**
+	 * @return An <code>Array</code> of fully qualified class names that represent the inheritance order of the current <code>Type</code>.
+	 * <p>The first item in the <code>Array</code> is the fully qualified classname of the super class of the current <code>Type</code>.</p>
+	 */
+	public function get extendsClasses():Array {
+		return _extendsClasses;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set extendsClasses(value:Array):void {
+		_extendsClasses = value;
+	}
+
+	// ----------------------------
+	// variables
+	// ----------------------------
+
+	private var _variables:Array;
+
+	/**
+	 * An array of <code>IMember</code> instances that describe the variables of the <code>Type</code>
+	 * @see org.as3commons.reflect.IMember IMember
+	 */
+	public function get variables():Array {
+		if (!_variables && getTypeMemberProvider()) {
+			variables = getTypeMemberProvider().getVariablesForType(this);
+		}
+		return _variables;
+	}
+
+	/**
+	 * @private
+	 */
+	public function set variables(value:Array):void {
+		_variables = value;
+
+		// Must invalidate the fields cache. See note in #accessors.
+		_fields = null;
+	}
+
+	// ----------------------------
+	// fields
+	// ----------------------------
+
+	private var _fields:HashArray;
+
+	/**
+	 * An array of all the static constants, constants, static variables and variables of the <code>Type</code>
+	 * @see org.as3commons.reflect.IMember IMember
+	 */
+	public function get fields():Array {
+		if (_fields == null) {
+			createFieldsHashArray();
+		}
+		return _fields.getArray();
+	}
+
+	private function createFieldsHashArray():void {
+		_fields = new HashArray(MEMBER_PROPERTY_NAME, false, accessors.concat(staticConstants).concat(constants).concat(staticVariables).concat(variables));
+	}
+
+	/**
+	 * An array of Field containing all accessors and variables for the type.
+	 *
+	 * @see org.as3commons.reflect.Variable
+	 * @see org.as3commons.reflect.Accessor
+	 * @see org.as3commons.reflect.Field
+	 */
+	public function get properties():Array {
+		return accessors.concat(variables);
+	}
+
+	// ----------------------------
+	// typeDescription
+	// ----------------------------
+
+	private var _typeDescription:ITypeDescription;
+
+	/**
+	 * The Type's ITypeDescription
+	 *
+	 * @see org.as3commons.lang.ITypeDescription
+	 */
+	public function get typeDescription():ITypeDescription {
+		return _typeDescription;
+	}
+
+	public function set typeDescription(value:ITypeDescription):void {
+		if (value !== _typeDescription) {
+			_typeDescription = value;
+		}
+	}
+
+
+	// --------------------------------------------------------------------
+	//
+	// Public Methods
+	//
+	// --------------------------------------------------------------------
+
+	/**
+	 * Returns the <code>Method</code> object for the method in this type
+	 * with the given name.
+	 *
+	 * @param name the name of the method
+	 */
+	public function getMethod(name:String, ns:String = null):Method {
+		var qName:QName = new QName(ns, name);
+
+		if (!_methods && getTypeMemberProvider()) {
+			methods = getTypeMemberProvider().getMethodsForType(this);
+		}
+
+		return _methods.get(qName.toString().split(Method.PERIOD_CHAR).join(Method.UNDERSCORE_CHAR).split(Method.COLON_CHAR).join(Method.UNDERSCORE_CHAR));
+	}
+
+	/**
+	 * Returns the <code>Field</code> object for the field in this type
+	 * with the given name.
+	 *
+	 * @param name the name of the field
+	 */
+	public function getField(name:String, ns:String = null):Field {
+		var qName:QName = new QName(ns, name);
+
+		if (_fields == null) {
+			createFieldsHashArray();
+		}
+
+		return _fields.get(qName.toString().split(Method.PERIOD_CHAR).join(Method.UNDERSCORE_CHAR).split(Method.COLON_CHAR).join(Method.UNDERSCORE_CHAR));
+	}
+
+	private var _metadataLookup:Object;
+	private static var _currentApplicationDomain:ApplicationDomain;
+
+	public function createMetadataLookup():void {
+		_metadataLookup = {};
+
+		addToMetadataLookup([this]);
+		addToMetadataLookup(methods);
+		addToMetadataLookup(fields);
+	}
+
+	/**
+	 * Retrieves an Array of <code>MetadataContainer</code> instances that are associated with the current <code>Type</code>
+	 * that contain <code>Metadata</code> with the specified name.
+	 * <p>Each <code>MetadataContainer</code> instance can be one of these subclasses:</p>
+	 * <ul>
+	 *   <li>Type</li>
+	 *   <li>Method</li>
+	 *   <li>Accessor</li>
+	 *   <li>Constant</li>
+	 *   <li>Variable</li>
+	 * </ul>
+	 * @param name The specified <code>Metadata</code> name.
+	 * @return An Array of <code>MetadataContainer</code> instances.
+	 */
+	public function getMetadataContainers(name:String):Array {
+		if (!_metadataLookup) {
+			createMetadataLookup();
+		}
+
+		if (_metadataLookup != null) {
+			name = name.toLowerCase();
+			name = (name != CONSTRUCTOR_NAME) ? name : PREFIXED_CONSTRUCTOR_NAME;
+			return _metadataLookup[name] as Array;
+		} else {
+			return null;
+		}
+	}
+
+	private function addToMetadataLookup(containerList:Array):void {
+		if (!containerList) {
+			return;
+		}
+		var i:int;
+		var j:int;
+		var len:int = containerList.length;
+		var len2:int;
+		var container:MetadataContainer;
+		var m:Metadata;
+		var name:String;
+		var arr:Array;
+
+		for (i = 0; i < len; ++i) {
+			container = containerList[i];
+
+			var metadatas:Array = container.metadata;
+			len2 = metadatas.length;
+
+			for (j = 0; j < len2; ++j) {
+				m = metadatas[j];
+
+				if (m == null) {
+					continue;
+				}
+
+				name = (m.name != CONSTRUCTOR_NAME) ? m.name : PREFIXED_CONSTRUCTOR_NAME;
+				arr = _metadataLookup[name] ||= [];
+				arr[arr.length] = container;
+			}
+		}
+	}
+
+	private function initializeMetadata():void {
+		if (!_metadataInitialized && getTypeMemberProvider()) {
+			var metadataArray:Array = getTypeMemberProvider().getMetadataForType(this);
+
+			for each (var metadataInstance:Metadata in metadataArray) {
+				addMetadata(metadataInstance);
+			}
+		}
+	}
+
+	as3commons_reflect function setParameters(value:Array):void {
+		_parameters = value;
+	}
+
+}
 }
