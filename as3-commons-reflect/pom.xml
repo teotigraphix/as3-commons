@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>org.as3commons</groupId>
 			<artifactId>as3commons-lang</artifactId>
-			<version>0.3.6</version>
+			<version>0.3.7-SNAPSHOT</version>
 			<scope>merged</scope>
 			<type>swc</type>
 		</dependency>
