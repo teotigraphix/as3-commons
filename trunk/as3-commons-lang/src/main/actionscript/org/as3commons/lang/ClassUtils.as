@@ -445,7 +445,7 @@ public final class ClassUtils {
 	}
 
 
-	private static function getTypeDescription(object:Object, applicationDomain:ApplicationDomain):ITypeDescription {
+	public static function getTypeDescription(object:Object, applicationDomain:ApplicationDomain):ITypeDescription {
 		Assert.notNull(object, "The clazz argument must not be null");
 
 		var className:String = getQualifiedClassName(object);
