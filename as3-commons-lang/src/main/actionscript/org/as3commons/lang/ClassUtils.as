@@ -128,10 +128,6 @@ public final class ClassUtils {
 		applicationDomain ||= ApplicationDomain.currentDomain;
 		var result:Class;
 
-		if (!applicationDomain) {
-			applicationDomain = ApplicationDomain.currentDomain;
-		}
-
 		while (!applicationDomain.hasDefinition(name)) {
 			if (applicationDomain.parentDomain) {
 				applicationDomain = applicationDomain.parentDomain;
