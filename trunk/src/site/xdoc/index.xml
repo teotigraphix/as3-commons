@@ -102,8 +102,8 @@
 							<strong><a href="as3-commons-lang/index.html">Lang</a></strong>
 						</td>
 						<td>Language utilities and extensions.</td>
-						<td>0.3.6</td>
-						<td>21 Mar 2012</td>
+						<td>0.3.7</td>
+						<td>24 May 2013</td>
 					</tr>
 					<tr>
 						<td>
@@ -134,8 +134,8 @@
 							any Flash/Flex/AIR project. It functions as a wrapper for the native describeType and
 							describeTypeJSON methods. Results are statically cached to improve performance.
 						</td>
-						<td>1.6.0</td>
-						<td>22 Mar 2012</td>
+						<td>1.6.3</td>
+						<td>24 May 2013</td>
 					</tr>
 					<tr>
 						<td>
