@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-lang</artifactId>
 	<packaging>swc</packaging>
-	<version>0.3.7</version>
+	<version>0.3.8-SNAPSHOT</version>
 	<name>AS3Commons Lang</name>
 	<description>Utilities and language extensions for ActionScript 3.0</description>
 	<inceptionYear>2009</inceptionYear>
