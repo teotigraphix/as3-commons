@@ -3,6 +3,14 @@ AS3COMMONS-REFLECT CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+
+Changes in version 1.6.3 (24.05.2013)
+-------------------------------------
+
+* Fixed broken JSONTypeProviderTest
+* JSONTypeProvider provides members lazily
+* Moved avmplus package with DescribeType to as3commons-lang
+
 Changes in version 1.6.2 (16.09.2012)
 -------------------------------------
 
