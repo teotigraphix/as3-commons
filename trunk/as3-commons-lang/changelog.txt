@@ -3,6 +3,17 @@ AS3COMMONS LANG CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 0.3.7 (24.05.2013)
+-------------------------------------
+
+* ClassUtils exposes getTypeDescription method
+* ClassUtils uses TypeDescription that hides XML/JSON describeType
+* ClassUtils exposes clearCacheIntervalEnabled to prevent the clearing of the describetypecache
+* Added getValues & deleteKeys methods to DictionaryUtils
+* Added compare method to ObjectUtils that compares two objects based on their serialized AMF representation
+* Moved avmplus package with DescribeType from as3commons-reflect
+
+
 Changes in version 0.3.6 (21.03.2012)
 -------------------------------------
 

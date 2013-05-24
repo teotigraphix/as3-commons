@@ -10,11 +10,11 @@
             <div id="downloadbox">
                 <h5>Get latest stable</h5>
                 <p>
-                    <a href="https://as3-commons.googlecode.com/files/as3commons-lang-0.3.6.swc">
+                    <a href="https://as3-commons.googlecode.com/files/as3commons-lang-0.3.7.swc">
                         <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
                         Download
                     </a>
-                    latest stable (0.3.6)
+                    latest stable (0.3.7)
                 </p>
                 <br/>
                 <h5>Get lastest development snapshot</h5>
