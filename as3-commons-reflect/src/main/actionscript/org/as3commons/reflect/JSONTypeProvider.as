@@ -2,6 +2,8 @@ package org.as3commons.reflect {
 import flash.errors.IllegalOperationError;
 import flash.system.ApplicationDomain;
 
+import org.as3commons.lang.ArrayUtils;
+
 import org.as3commons.lang.ClassUtils;
 import org.as3commons.lang.ITypeDescription;
 import org.as3commons.lang.typedescription.JSONTypeDescription;
@@ -92,8 +94,12 @@ public class JSONTypeProvider extends AbstractTypeProvider implements ITypeMembe
 	}
 
 	public function getMetadataForType(type:Type):Array {
-		var result:Array;
-		var metadataArray:Array = parseMetadata(getInstanceInfo(type).traits.metadata);
+		var typeMetadataArray:Array = parseMetadata(getInstanceInfo(type).traits.metadata);
+		var metaDataContainer:IMetadataContainer = new MetadataContainer();
+
+		for (var k:int = 0; k < typeMetadataArray.length; k++) {
+			metaDataContainer.addMetadata(typeMetadataArray[k]);
+		}
 
 		// Combine metadata from implemented interfaces
 		var numInterfaces:int = type.interfaces.length;
@@ -103,24 +109,28 @@ public class JSONTypeProvider extends AbstractTypeProvider implements ITypeMembe
 		var interfaceMetadata:Array;
 		var numMetadata:int;
 		var metadata:Metadata;
+
 		for (i = 0; i < numInterfaces; i++) {
 			interfaze = Type.forName(type.interfaces[int(i)], type.applicationDomain);
+
 			if (interfaze != null) {
 				concatMetadata(type, interfaze.methods, "methods");
 				concatMetadata(type, interfaze.accessors, "accessors");
+
 				interfaceMetadata = interfaze.metadata;
 				numMetadata = interfaceMetadata.length;
 
 				for (j = 0; j < numMetadata; j++) {
 					metadata = interfaceMetadata[int(j)];
-					if (!type.hasExactMetadata(metadata)) {
-						type.addMetadata(metadata);
+
+					if (!metaDataContainer.hasExactMetadata(metadata)) {
+						metaDataContainer.addMetadata(metadata);
 					}
 				}
 			}
 		}
 
-		return result;
+		return metaDataContainer.metadata;
 	}
 
 	protected function parseConstructor(type:Type, constructor:Array, applicationDomain:ApplicationDomain):Constructor {
@@ -142,12 +152,15 @@ public class JSONTypeProvider extends AbstractTypeProvider implements ITypeMembe
 		var i:int;
 		var container:IMetadataContainer;
 		var len:int = metadataContainers.length;
+
 		for (i = 0; i < len; ++i) {
 			container = metadataContainers[i];
+
 			type[propertyName].some(function (item:MetadataContainer, index:int, arr:Array):Boolean {
 				if (Object(item).name == Object(container).name) {
 					metadataList = container.metadata;
 					numMetadata = metadataList.length;
+
 					for (j = 0; j < numMetadata; j++) {
 						if (!item.hasExactMetadata(metadataList[j])) {
 							item.addMetadata(metadataList[j]);
