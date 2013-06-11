@@ -23,6 +23,8 @@ package org.as3commons.reflect {
 
 import flash.system.ApplicationDomain;
 
+import org.as3commons.lang.ArrayUtils;
+
 import org.as3commons.lang.ClassNotFoundError;
 import org.as3commons.lang.ClassUtils;
 import org.as3commons.lang.HashArray;
@@ -810,7 +812,10 @@ public class Type extends MetadataContainer {
 
 				name = (m.name != CONSTRUCTOR_NAME) ? m.name : PREFIXED_CONSTRUCTOR_NAME;
 				arr = _metadataLookup[name] ||= [];
-				arr[arr.length] = container;
+
+				if (!ArrayUtils.contains(arr,  container)) {
+					arr[arr.length] = container;
+				}
 			}
 		}
 	}
