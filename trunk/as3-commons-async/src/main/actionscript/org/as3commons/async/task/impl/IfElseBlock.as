@@ -198,7 +198,7 @@ package org.as3commons.async.task.impl {
 
 		public function next(item:Object, ... constructorArgs):ITask {
 			if (!isClosed) {
-				var command:ICommand = (item is ICommand) ? ICommand(item) : new GenericOperationCommand(Class(item), constructorArgs);
+				var command:ICommand = (item is ICommand) ? ICommand(item) : GenericOperationCommand.createNew(Class(item), constructorArgs);
 				_currentBlock.next(command);
 			}
 			return this;
@@ -206,7 +206,7 @@ package org.as3commons.async.task.impl {
 
 		public function and(item:Object, ... constructorArgs):ITask {
 			if (!isClosed) {
-				var command:ICommand = (item is ICommand) ? ICommand(item) : new GenericOperationCommand(Class(item), constructorArgs);
+				var command:ICommand = (item is ICommand) ? ICommand(item) : GenericOperationCommand.createNew(Class(item), constructorArgs);
 				_currentBlock.and(command);
 			}
 			return this;
