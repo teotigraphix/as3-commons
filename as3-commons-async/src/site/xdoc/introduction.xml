@@ -327,7 +327,7 @@ task.execute();</pre></div>
 	<div class="source"><pre>var task:Task = new Task();
 
 task.while_(new MyConditionProvider())
- .if(new MyOtherConditionProivder())
+ .if(new MyOtherConditionProvider())
   .next(new FirstCommand())
  .else
   .break_()
@@ -338,9 +338,9 @@ task.addEventListener(TaskEvent.TASK_COMPLETE, handleTaskComplete);
 task.execute();</pre></div>
 	<p>In closing there are three last methods that an ITask implementation offers:</p>
 	<ul>
-		<li>Exit(): stops the execution of the entire task.</li>
-		<li>Reset(): restarts the execution of the current task.</li>
-		<li>Pause(): pauses the execution of the current task for a specified period in milliseconds.</li>
+		<li>exit(): stops the execution of the entire task.</li>
+		<li>reset(): restarts the execution of the current task.</li>
+		<li>pause(): pauses the execution of the current task for a specified period in milliseconds.</li>
 	</ul>
 	</section>
     </section>
