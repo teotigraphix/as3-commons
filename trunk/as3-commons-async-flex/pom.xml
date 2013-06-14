@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-async-flex</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>AS3Commons Async Flex</name>
 	<url>http://www.as3commons.org/async-flex</url>
 	<description>Flex extensions of the AS3Commons Async library.</description>
