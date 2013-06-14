@@ -33,6 +33,7 @@ package org.as3commons.reflect {
 	import org.as3commons.reflect.testclasses.DynamicFinalComplexClass;
 	import org.as3commons.reflect.testclasses.PublicClass;
 	import org.as3commons.reflect.testclasses.PublicSubClass;
+	import org.as3commons.reflect.testclasses.MetadataClass;
 
 	/**
 	 * @author Christophe Herreman
@@ -110,6 +111,17 @@ package org.as3commons.reflect {
 			assertEquals(constructor.declaringType.clazz, PublicClass);
 			assertEquals(constructor.parameters.length, 0);
 		}
+		
+		public function testMultipleCallsReturnTheSameArrayLength():void {
+			var type:Type = Type.forClass(MetadataClass);
+			var arr:Array = type.getMetadata("ClassMetadata");
+			assertNotNull(arr);
+			assertEquals(3, arr.length)
+			arr = type.getMetadata("ClassMetadata");
+			assertNotNull(arr);
+			assertEquals(3, arr.length)
+		}
+
 
 		public function testWithArgumentConstructorClass():void {
 			var type:Type = Type.forClass(ComplexClass);
