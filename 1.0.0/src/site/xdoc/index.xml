@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>Welcome to AS3Commons Async Flex</title>
+        <author email="scab@dds.nl">Roland Zwaga</author>
+    </properties>
+    <body>
+    
+        <section name="Welcome to AS3Commons Async Flex">
+            
+            <div id="downloadbox">
+                    <h5>Get latest stable</h5>
+                    <p>
+                        <a href="https://as3-commons.googlecode.com/file/as3commons-async-flex-1.0.0.swc">
+                            <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                            Download
+                        </a>
+                        latest stable (1.0.0)
+                    </p>
+                    <br/>
+                    <h5>Get lastest development snapshot</h5>
+                    <p>
+                        <a href="downloads/as3commons-async-flex-latest-snapshot-bin.zip">
+                            <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                            Download
+                        </a>
+                        latest snapshot
+                    </p>
+                </div>
+
+	    <p>This library provides Flex extensions for the AS3Commons Async library.
+            </p>
+            
+        </section>
+
+    </body>
+</document>
+
