@@ -54,16 +54,16 @@
 						<td>A library that aims to make working with asynchronous processes easier. Providing operation,
 							command, service and task interfaces.
 						</td>
-						<td>1.0.0-RC.2</td>
-						<td>22 Mar 2012</td>
+						<td>1.0.0</td>
+						<td>14 Jun 2013</td>
 					</tr>
 					<tr>
 						<td>
 							<strong><a href="as3-commons-async-flex/index.html">Async Flex</a></strong>
 						</td>
 						<td>Includes an extra SWC with Flex extensions for the Async library.</td>
-						<td>1.0.0-RC.2</td>
-						<td>22 Mar 2012</td>
+						<td>1.0.0</td>
+						<td>14 Jun 2013</td>
 					</tr>
 					<tr>
 						<td>
