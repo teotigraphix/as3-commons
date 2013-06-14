@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>Welcome to AS3Commons Async</title>
+        <author email="scab@dds.nl">Roland Zwaga</author>
+    </properties>
+    <body>
+    
+        <section name="Welcome to AS3Commons Async">
+            
+            <div id="downloadbox">
+                    <h5>Get latest stable</h5>
+                    <p>
+                        <a href="https://as3-commons.googlecode.com/files/as3commons-async-1.0.0.swc">
+                            <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                            Download
+                        </a>
+                        latest stable (1.0.0)
+                    </p>
+                    <br/>
+                    <h5>Get lastest development snapshot</h5>
+                    <p>
+                        <a href="downloads/as3commons-async-latest-snapshot-bin.zip">
+                            <img valign="top" src="images/folder-open.gif" border="0" alt="Download latest stable" title="download"/>
+                            Download
+                        </a>
+                        latest snapshot
+                    </p>
+                </div>
+
+	    <p>AS3Commons Async is a pure ActionScript 3 library that aims to make working with asynchronous processes easier by abstracting various different implementations
+	    encountered in the Flash environment away behind a few easy-to-understand interfaces.</p>
+	    <p>This library used to be an integral part of <a href="http://www.springactionscript.org/">Spring Actionscript</a>, but has since been released as an independent API.</p>
+            <p>
+            	The library is thoroughly tested and is being used in the <a href="http://www.springactionscript.org/">Spring Actionscript</a> project.
+            </p>
+            
+        </section>
+
+    </body>
+</document>
+
