@@ -198,7 +198,7 @@ package org.as3commons.async.task.impl {
 		 */
 		public function if_(conditionProvider:IConditionProvider=null, ifElseBlock:IIfElseBlock=null):IIfElseBlock {
 			ifElseBlock = (ifElseBlock != null) ? ifElseBlock : new IfElseBlock(conditionProvider);
-			var cmd:ICommand = commandList[commandList.length - 1];
+			var cmd:ICommand = (commandList.length > 0) ? commandList[commandList.length - 1] : null;
 			if ((cmd is ICompositeCommand) || ((cmd is ITask) && (ITask(cmd).isClosed))) {
 				addToCommandList(ifElseBlock);
 			} else {
