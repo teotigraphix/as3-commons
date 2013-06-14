@@ -3,6 +3,10 @@ AS3COMMONS-ASYNC CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.0.0 (14.06.2013)
+------------------------------------------
+
+* Some small bug fixes, library is now considered stable so finally time to ship 1.0.0
 
 Changes in version 1.0.0-RC.2 (22.03.2011)
 ------------------------------------------
