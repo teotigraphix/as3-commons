@@ -3,6 +3,10 @@ AS3COMMONS-REFLECT CHANGELOG
 
 Note: dates are in DD.MM.YYYY format
 
+Changes in version 1.6.4 (14.06.2013)
+-------------------------------------
+
+* Fixed issue where repeated calls to getMetadata() returned an ever growing array of Metadata instances
 
 Changes in version 1.6.3 (24.05.2013)
 -------------------------------------
