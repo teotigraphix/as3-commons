@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>as3commons-async</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>AS3Commons Async</name>
 	<url>http://www.as3commons.org/async</url>
 	<description>A pure actionscript 3 library that aims to make working with asynchronous processes easier.
