@@ -134,8 +134,8 @@
 							any Flash/Flex/AIR project. It functions as a wrapper for the native describeType and
 							describeTypeJSON methods. Results are statically cached to improve performance.
 						</td>
-						<td>1.6.3</td>
-						<td>24 May 2013</td>
+						<td>1.6.4</td>
+						<td>14 Jun 2013</td>
 					</tr>
 					<tr>
 						<td>
