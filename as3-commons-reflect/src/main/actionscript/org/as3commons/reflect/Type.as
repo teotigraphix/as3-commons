@@ -827,6 +827,7 @@ public class Type extends MetadataContainer {
 			for each (var metadataInstance:Metadata in metadataArray) {
 				addMetadata(metadataInstance);
 			}
+			_metadataInitialized = true;
 		}
 	}
 
