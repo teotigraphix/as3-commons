@@ -40,7 +40,6 @@ package org.as3commons.async.operation.impl {
 		 * @see flash.net.URLLoaderDataFormat
 		 */
 		public function LoadURLOperation(url:String="", dataFormat:String=null, request:URLRequest=null) {
-			Assert.hasText(url, "url argument must not be null or empty");
 			super();
 			dataFormat ||= URLLoaderDataFormat.TEXT;
 			timeOutToken = setTimeout(createLoader, 1, url, dataFormat, request);
