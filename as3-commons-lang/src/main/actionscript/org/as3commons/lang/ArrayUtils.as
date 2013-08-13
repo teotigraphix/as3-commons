@@ -298,15 +298,15 @@ package org.as3commons.lang {
          * @param array the array to shuffle
          */
         public static function shuffle(array:Array):void {
-            var len:Number = array.length;
-            var rand:Number;
+            var len:int = array.length;
             var temp:*;
-
-            for (var i:Number = len - 1; i >= 0; i--) {
-                rand = Math.floor(Math.random() * len);
+            var j:int;
+            
+            for(var i:int = len - 1; i > 0; i--) {
+                j = Math.floor(Math.random() * (i + 1));
                 temp = array[i];
-                array[i] = array[rand];
-                array[rand] = temp;
+                array[i] = array[j];
+                array[j] = temp;
             }
         }
 
