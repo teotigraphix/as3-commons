@@ -16,10 +16,12 @@
 package org.as3commons.async.command.impl {
 
 	import flash.system.ApplicationDomain;
-
+	
 	import org.as3commons.async.command.IAsyncCommand;
+	import org.as3commons.async.operation.ICancelableOperation;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.IProgressOperation;
+	import org.as3commons.async.operation.event.CancelableOperationEvent;
 	import org.as3commons.async.operation.event.OperationEvent;
 	import org.as3commons.async.operation.impl.AbstractProgressOperation;
 	import org.as3commons.lang.Assert;
@@ -35,7 +37,7 @@ package org.as3commons.async.command.impl {
 	 * @see org.as3commons.async.operation.IProgressOperation IProgressOperation
 	 * @author Roland Zwaga
 	 */
-	public class GenericOperationCommand extends AbstractProgressOperation implements IAsyncCommand, IApplicationDomainAware {
+	public class GenericOperationCommand extends AbstractProgressOperation implements IAsyncCommand, IApplicationDomainAware, ICancelableOperation {
 
 		private var _operation:IOperation;
 
@@ -104,6 +106,9 @@ package org.as3commons.async.command.impl {
 			if (_operation is IProgressOperation) {
 				IProgressOperation(_operation).addProgressListener(operationProgress);
 			}
+			if (_operation is ICancelableOperation) {
+				(_operation as ICancelableOperation).addCancelListener(operationCancel);
+			}
 		}
 
 		/**
@@ -130,6 +135,13 @@ package org.as3commons.async.command.impl {
 			total = IProgressOperation(event.operation).total;
 			dispatchProgressEvent();
 		}
+		
+		/**
+		 * Event handler for the specified <code>ICancelableOperation</code>'s <code>CancelableOperationEvent.CANCELED</code> event.
+		 */
+		protected function operationCancel(event:CancelableOperationEvent):void {
+			cancel();
+		}
 
 		/**
 		 * Removes the complete and error listeners from the <code>IOperation</code>'s instance.
@@ -140,6 +152,9 @@ package org.as3commons.async.command.impl {
 				_operation.removeErrorListener(operationError);
 				if (_operation is IProgressOperation) {
 					(_operation as IProgressOperation).removeProgressListener(operationProgress);
+				}
+				if (_operation is ICancelableOperation) {
+					(_operation as ICancelableOperation).removeCancelListener(operationCancel);
 				}
 			}
 		}
@@ -156,6 +171,18 @@ package org.as3commons.async.command.impl {
 				goc.constructorArguments = constructorArgs;
 			}
 			return goc;
+		}
+
+		public function cancel():void {
+			dispatchEvent(new CancelableOperationEvent(CancelableOperationEvent.CANCELED, this));
+		}
+
+		public function addCancelListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
+			addEventListener(CancelableOperationEvent.CANCELED, listener, useCapture, priority, useWeakReference);
+		}
+
+		public function removeCancelListener(listener:Function, useCapture:Boolean=false):void {
+			removeEventListener(CancelableOperationEvent.CANCELED, listener, useCapture);
 		}
 
 	}

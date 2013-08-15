@@ -15,12 +15,15 @@
  */
 package org.as3commons.async.command.impl {
 
+	import org.as3commons.async.ICancelable;
 	import org.as3commons.async.command.CompositeCommandKind;
 	import org.as3commons.async.command.ICommand;
 	import org.as3commons.async.command.ICompositeCommand;
 	import org.as3commons.async.command.event.CommandEvent;
 	import org.as3commons.async.command.event.CompositeCommandEvent;
+	import org.as3commons.async.operation.ICancelableOperation;
 	import org.as3commons.async.operation.IOperation;
+	import org.as3commons.async.operation.event.CancelableOperationEvent;
 	import org.as3commons.async.operation.event.OperationEvent;
 	import org.as3commons.async.operation.impl.AbstractProgressOperation;
 	import org.as3commons.lang.Assert;
@@ -54,7 +57,7 @@ package org.as3commons.async.command.impl {
 	 * @author Christophe Herreman
 	 * @author Roland Zwaga
 	 */
-	public class CompositeCommand extends AbstractProgressOperation implements ICompositeCommand {
+	public class CompositeCommand extends AbstractProgressOperation implements ICompositeCommand, ICancelableOperation {
 
 		private static const LOGGER:ILogger = getLogger(CompositeCommand);
 
@@ -270,6 +273,9 @@ package org.as3commons.async.command.impl {
 				asyncCommand.addCompleteListener(onCommandResult);
 				asyncCommand.addErrorListener(onCommandFault);
 			}
+			if (asyncCommand is ICancelableOperation) {
+				(asyncCommand as ICancelableOperation).addCancelListener(onCommandCancel);
+			}
 		}
 
 		/**
@@ -279,6 +285,9 @@ package org.as3commons.async.command.impl {
 			if (asyncCommand) {
 				asyncCommand.removeCompleteListener(onCommandResult);
 				asyncCommand.removeErrorListener(onCommandFault);
+			}
+			if (asyncCommand is ICancelableOperation) {
+				(asyncCommand as ICancelableOperation).removeCancelListener(onCommandCancel);
 			}
 		}
 
@@ -298,6 +307,12 @@ package org.as3commons.async.command.impl {
 				default:
 					break;
 			}
+		}
+		
+		protected function onCommandCancel(event:CancelableOperationEvent):void {
+			LOGGER.debug("Cancelable command '{0}' was canceled, aborting.", [event.target]);
+			removeCommandListeners(IOperation(event.target));
+			cancel();
 		}
 
 		protected function onCommandFault(event:OperationEvent):void {
@@ -344,6 +359,17 @@ package org.as3commons.async.command.impl {
 			return addCommandAt(GenericOperationCommand.createNew(operationClass, constructorArgs), index);
 		}
 
+		public function cancel():void {
+			dispatchEvent(new CancelableOperationEvent(CancelableOperationEvent.CANCELED, this));
+		}
+
+		public function addCancelListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
+			addEventListener(CancelableOperationEvent.CANCELED, listener, useCapture, priority, useWeakReference);
+		}
+
+		public function removeCancelListener(listener:Function, useCapture:Boolean=false):void {
+			removeEventListener(CancelableOperationEvent.CANCELED, listener, useCapture);
+		}
 	}
 
 }
