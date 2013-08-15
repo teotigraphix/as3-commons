@@ -22,7 +22,7 @@ package org.as3commons.async.operation {
 
 		function set busy(value:Boolean):void;
 
-		function handleOperation(operation:IOperation, resultMethod:Function=null, resultTargetObject:Object=null, resultPropertyName:String=null, errorMethod:Function=null):void;
+		function handleOperation(operation:IOperation, resultMethod:Function=null, resultTargetObject:Object=null, resultPropertyName:String=null, errorMethod:Function=null, cancelMethod:Function=null):void;
 
 	}
 }

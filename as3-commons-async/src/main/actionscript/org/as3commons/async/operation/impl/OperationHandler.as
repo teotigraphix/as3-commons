@@ -17,11 +17,13 @@ package org.as3commons.async.operation.impl {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
-
+	
+	import org.as3commons.async.operation.ICancelableOperation;
 	import org.as3commons.async.operation.IOperation;
+	import org.as3commons.async.operation.IOperationHandler;
+	import org.as3commons.async.operation.event.CancelableOperationEvent;
 	import org.as3commons.async.operation.event.OperationEvent;
 	import org.as3commons.lang.Assert;
-	import org.as3commons.async.operation.IOperationHandler;
 
 	/**
 	 * Helper class that generically handles <code>IOperation</code> events and either routes their result or error
@@ -86,14 +88,17 @@ package org.as3commons.async.operation.impl {
 		 * Creates a new <code>OperationHandler</code> instance.
 		 * @param defaultErrorhandler a default method that is invoked when an operation returns an error.
 		 */
-		public function OperationHandler(defaultErrorHandler:Function=null) {
+		public function OperationHandler(defaultErrorHandler:Function=null, defaultCancelHandler:Function=null) {
 			super();
-			initOperationHandler(defaultErrorHandler);
+			_operations = new Dictionary();
+			_defaultErrorHandler = defaultErrorHandler;
+			_defaultCancelHandler = defaultCancelHandler;
 		}
 
 		private var _busy:Boolean;
 		private var _defaultErrorHandler:Function;
 		private var _operations:Dictionary;
+		private var _defaultCancelHandler:Function;
 
 		[Bindable(event="busyChanged")]
 		/**
@@ -122,12 +127,15 @@ package org.as3commons.async.operation.impl {
 		 * @param resultPropertyName The property name on the <code>resultTargetObject</code> that will have the <code>IOperation.result</code> or <code>resultMethod</code> result assigned to it.
 		 * @param errorMethod A <code>Function</code> that will be invoked using the <code>IOperation.error</code> as a parameter.
 		 */
-		public function handleOperation(operation:IOperation, resultMethod:Function=null, resultTargetObject:Object=null, resultPropertyName:String=null, errorMethod:Function=null):void {
+		public function handleOperation(operation:IOperation, resultMethod:Function=null, resultTargetObject:Object=null, resultPropertyName:String=null, errorMethod:Function=null, cancelMethod:Function=null):void {
 			if (operation != null) {
 				busy = true;
-				_operations[operation] = new OperationHandlerData(resultPropertyName, resultTargetObject, resultMethod, errorMethod);
+				_operations[operation] = new OperationHandlerData(resultPropertyName, resultTargetObject, resultMethod, errorMethod, cancelMethod);
 				operation.addCompleteListener(operationCompleteListener);
 				operation.addErrorListener(operationErrorHandler);
+				if (operation is ICancelableOperation) {
+					(operation as ICancelableOperation).addCancelListener(operationCancelHandler);
+				}
 			}
 		}
 
@@ -139,16 +147,10 @@ package org.as3commons.async.operation.impl {
 			Assert.notNull(operation, "operation argument must not be null");
 			operation.removeCompleteListener(operationCompleteListener);
 			operation.removeErrorListener(operationErrorHandler);
+			if (operation is ICancelableOperation) {
+				(operation as ICancelableOperation).removeCancelListener(operationCancelHandler);
+			}
 			delete _operations[operation];
-		}
-
-		/**
-		 * Initializes the current <code>OperationHandler</code>.
-		 * @param defaultErrorHandler a default method that is invoked when an operation returns an error.
-		 */
-		protected function initOperationHandler(defaultErrorHandler:Function):void {
-			_operations = new Dictionary();
-			_defaultErrorHandler = defaultErrorHandler;
 		}
 
 		/**
@@ -192,6 +194,19 @@ package org.as3commons.async.operation.impl {
 			}
 			if (errorMethod != null) {
 				errorMethod(event.operation.error);
+			}
+		}
+		
+		protected function operationCancelHandler(event:CancelableOperationEvent):void {
+			busy = false;
+			var data:OperationHandlerData = _operations[event.operation];
+			cleanupUpOperation(event.operation);
+			var cancelMethod:Function = _defaultCancelHandler;
+			if (data.cancelMethod != null) {
+				cancelMethod = data.cancelMethod;
+			}
+			if (cancelMethod != null) {
+				cancelMethod(event);
 			}
 		}
 	}
