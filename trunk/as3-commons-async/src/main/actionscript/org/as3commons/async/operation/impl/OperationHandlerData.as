@@ -42,8 +42,13 @@ package org.as3commons.async.operation.impl {
 			return _resultMethod;
 		}
 
+		public function get cancelMethod():Function {
+			return _cancelMethod;
+		}
+
 		private var _resultMethod:Function;
 		private var _errorMethod:Function;
+		private var _cancelMethod:Function;
 
 		/**
 		 * Creates a new <code>OperationHandlerData</code> instance.
@@ -52,18 +57,14 @@ package org.as3commons.async.operation.impl {
 		 * @param resultMethod
 		 * @param errorMethod
 		 */
-		public function OperationHandlerData(resultPropertyName:String=null, resultTargetObject:Object=null, resultMethod:Function=null, errorMethod:Function=null) {
+		public function OperationHandlerData(resultPropertyName:String=null, resultTargetObject:Object=null, resultMethod:Function=null, errorMethod:Function=null, cancelMethod:Function=null) {
 			super();
-			initOperationHandler(resultPropertyName, resultTargetObject, resultMethod, errorMethod);
-		}
-
-		protected function initOperationHandler(resultPropertyName:String, resultTargetObject:Object, resultMethod:Function, errorMethod:Function):void {
 			_resultPropertyName = resultPropertyName;
 			_resultTargetObject = resultTargetObject;
 			_resultMethod = resultMethod;
 			_errorMethod = errorMethod;
+			_cancelMethod = cancelMethod;
 		}
-
 
 	}
 }

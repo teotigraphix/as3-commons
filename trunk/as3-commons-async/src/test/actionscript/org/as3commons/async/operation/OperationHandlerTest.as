@@ -15,10 +15,12 @@
 */
 package org.as3commons.async.operation {
 	import asmock.integration.flexunit.IncludeMocksRule;
-
+	
 	import flexunit.framework.Assert;
-
+	
+	import org.as3commons.async.operation.event.CancelableOperationEvent;
 	import org.as3commons.async.operation.event.OperationEvent;
+	import org.as3commons.async.operation.impl.AbstractCancelableOperation;
 	import org.as3commons.async.operation.impl.AbstractOperation;
 	import org.as3commons.async.operation.impl.OperationHandler;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
@@ -29,7 +31,8 @@ package org.as3commons.async.operation {
 
 		[Rule]
 		public var includeMocks:IncludeMocksRule = new IncludeMocksRule([ //
-			AbstractOperation //
+			AbstractOperation, //
+			AbstractCancelableOperation //
 			]);
 
 		public function OperationHandlerTest() {
@@ -104,5 +107,19 @@ package org.as3commons.async.operation {
 			_operationHandler.handleOperation(o);
 			o.dispatchEvent(new OperationEvent(OperationEvent.COMPLETE, o));
 		}
+
+		[Test(async, timeout=1000)]
+		public function testHandleCanceledOperation():void {
+			var o:AbstractCancelableOperation = AbstractCancelableOperation(mockRepository.createDynamic(AbstractCancelableOperation));
+			mockRepository.stubEvents(o);
+			mockRepository.stubAllProperties(o);
+			mockRepository.replayAll();
+			
+			_operationHandler.handleOperation(o, null, null, null, null, function(event:CancelableOperationEvent):void {
+				Assert.assertTrue(true);
+			});
+			o.dispatchEvent(new CancelableOperationEvent(CancelableOperationEvent.CANCELED, o));
+		}
+
 	}
 }
