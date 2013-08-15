@@ -19,14 +19,14 @@ import flash.errors.IllegalOperationError;
 import mx.rpc.events.FaultEvent;
 import mx.rpc.events.ResultEvent;
 
-import org.as3commons.async.operation.impl.AbstractOperation;
+import org.as3commons.async.operation.impl.AbstractCancelableOperation;
 
 /**
  * Abstract base class for RPC operations.
  *
  * @author Roland Zwaga
  */
-public class AbstractRPC extends AbstractOperation {
+public class AbstractRPC extends AbstractCancelableOperation {
 
     // --------------------------------------------------------------------
     //
