@@ -28,7 +28,7 @@ public class AbstractServiceOperation extends AbstractRPC implements ICancelable
         return _service;
     }
 
-    public function cancel():void {
+    override public function cancel():void {
         if (null != _operation) {
             var messageId:String = null;
 
@@ -38,6 +38,7 @@ public class AbstractServiceOperation extends AbstractRPC implements ICancelable
 
             _operation.cancel(messageId);
         }
+        super.cancel();
     }
 
     override protected function invokeRemoteMethod():void {
