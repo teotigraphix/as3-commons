@@ -15,20 +15,25 @@
 */
 package org.as3commons.async.command {
 	import asmock.integration.flexunit.IncludeMocksRule;
-
+	
+	import flash.utils.setTimeout;
+	
 	import flexunit.framework.Assert;
-
+	
 	import org.as3commons.async.command.impl.CompositeCommand;
+	import org.as3commons.async.operation.ICancelableOperation;
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.impl.MockOperation;
 	import org.as3commons.async.test.AbstractTestWithMockRepository;
+	import org.as3commons.async.test.MockCanceleableOperation;
 
 	public class CompositeCommandTest extends AbstractTestWithMockRepository {
 
 		[Rule]
 		public var includeMocks:IncludeMocksRule = new IncludeMocksRule([ //
 			ICommand, //
-			IOperation //
+			IOperation, //
+			ICancelableOperation //
 			]);
 
 		private var _compositeCommand:CompositeCommand;
@@ -111,5 +116,26 @@ package org.as3commons.async.command {
 			cc.execute();
 		}
 
+		[Test(async, timeout="4000")]
+		public function testAddCancelableOperationAndCancelIt():void {
+			var cc:CompositeCommand = new CompositeCommand(CompositeCommandKind.SEQUENCE);
+			var counter:uint = 0;
+			var command1:Function = function():void {
+				Assert.assertEquals(0, counter);
+				counter++;
+			}
+			var command2:Function = function():void {
+				counter++;
+			}
+
+			cc.addOperation(MockCanceleableOperation, "test1", 1000, false, command1, false)//
+				.addOperation(MockOperation, "test2", 2000, false, command2, false);
+			
+			cc.failOnFault = false;
+			cc.addCancelListener(function():void {
+				Assert.assertEquals(1, counter);
+			});
+			cc.execute();
+		}
 	}
 }
