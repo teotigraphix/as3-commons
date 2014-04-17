@@ -36,10 +36,11 @@ public class WebServiceOperation extends AbstractServiceOperation {
      * @param parameters
      */
     public function WebServiceOperation(webService:WebService, methodName:String, parameters:Array = null, encoder:ISOAPEncoder = null, decoder:ISOAPDecoder = null) {
-        super(webService, methodName, parameters);
         _encoder = encoder;
-        _decoder = decoder;
-    }
+		_decoder = decoder;
+
+		super(webService, methodName, parameters);
+	}
 
     private var _encoder:ISOAPEncoder;
     protected function get encoder():ISOAPEncoder {
